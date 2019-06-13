@@ -6,11 +6,19 @@ using Core.Exceptions;
 using Core.Monads;
 using Core.Numbers;
 using Core.RegularExpressions;
+using Core.Strings;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Applications
 {
 	public class Arguments : IEnumerable<Argument>
 	{
+		static string[] splitArguments(string arguments)
+		{
+			var destringifier = new Destringifier(arguments);
+			return destringifier.Parse().Split("/s+").Select(s => destringifier.Restring(s, false)).ToArray();
+		}
+
 		Argument[] arguments;
 		string[] originalArguments;
 		int length;
@@ -24,7 +32,7 @@ namespace Core.Applications
 				this.arguments[i] = new Argument(originalArguments[i], i);
 		}
 
-		public Arguments(string arguments) : this(arguments.Split("/s+")) { }
+		public Arguments(string arguments) : this(splitArguments(arguments)) { }
 
 		public Arguments()
 		{
@@ -71,7 +79,7 @@ namespace Core.Applications
 				throw $"Count must be at most {maximumCount}--found {length}".Throws();
 		}
 
-		public IMaybe<Argument> Argument(int index) => MonadFunctions.when(Exists(index), () => arguments[index]);
+		public IMaybe<Argument> Argument(int index) => when(Exists(index), () => arguments[index]);
 
 		public IEnumerator<Argument> GetEnumerator()
 		{
@@ -81,7 +89,7 @@ namespace Core.Applications
 
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-		public Hash<string, string> Switches(string pattern, string keyReplacement, string valueReplacement = "$0")
+		public Hash<string, string> Switches(string pattern, string keyReplacement = "$0", string valueReplacement = "$1")
 		{
 			var result = new Hash<string, string>();
 

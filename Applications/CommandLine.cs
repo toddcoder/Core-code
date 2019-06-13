@@ -63,7 +63,18 @@ namespace Core.Applications
 		public virtual void Run(string[] args)
 		{
 			var arguments = new Arguments(args);
+			run(arguments);
+		}
 
+		public virtual void Run()
+		{
+			var arguments = new Arguments(Environment.CommandLine);
+			run(arguments);
+
+		}
+
+      void run(Arguments arguments)
+		{
 			try
 			{
 				Execute(arguments);
@@ -81,6 +92,17 @@ namespace Core.Applications
 		{
 			var arguments = new Arguments(args);
 
+			runInLoop(arguments, interval);
+		}
+
+		public virtual void RunInLoop(TimeSpan interval)
+		{
+			var arguments = new Arguments(Environment.CommandLine);
+			runInLoop(arguments, interval);
+		}
+
+		void runInLoop(Arguments arguments, TimeSpan interval)
+		{
 			try
 			{
 				while (Running)
