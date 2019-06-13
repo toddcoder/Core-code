@@ -93,10 +93,6 @@ namespace Core.Computers
          }
       }
 
-      public static FolderName AppData => specialFolder(Environment.SpecialFolder.UserProfile);
-
-      public static FolderName AppDataLocal => AppData["Local"];
-
       public static bool IsValidFolderName(string name) => IsValidUnresolvedFolderName(FileName.ResolveFolder(name));
 
       public static bool IsValidUnresolvedFolderName(string name)
