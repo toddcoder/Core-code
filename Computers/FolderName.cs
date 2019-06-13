@@ -93,7 +93,7 @@ namespace Core.Computers
          }
       }
 
-      public static FolderName AppData => specialFolder(Environment.SpecialFolder.UserProfile)["AppData"];
+      public static FolderName AppData => specialFolder(Environment.SpecialFolder.UserProfile);
 
       public static FolderName AppDataLocal => AppData["Local"];
 
