@@ -97,7 +97,7 @@ namespace Core.RegularExpressions.Parsers
          var word = tokens[2];
          var result = GetRange(word);
 
-         return when(result.IsNotEmpty(), () => (negative ? "[^" : "[") + result + "]");
+         return maybe(result.IsNotEmpty(), () => (negative ? "[^" : "[") + result + "]");
       }
    }
 }

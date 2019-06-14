@@ -11,7 +11,7 @@ namespace Core.Monads
 {
 	public static class MonadExtensions
 	{
-		public static IMaybe<T> SomeIfNotNull<T>(this T obj) => when(!obj.IsNull(), () => obj);
+		public static IMaybe<T> SomeIfNotNull<T>(this T obj) => maybe(!obj.IsNull(), () => obj);
 
 		public static IMaybe<T> Some<T>(this T obj) => new Some<T>(obj);
 
@@ -51,7 +51,7 @@ namespace Core.Monads
 			{
 				return none<T>();
 			}
-      }
+		}
 
 		public static IResult<T> FirstOrFail<T>(this IEnumerable<T> enumerable) => tryTo(() =>
 		{
@@ -109,7 +109,7 @@ namespace Core.Monads
 			}
 		}
 
-      public static IMatched<T> FirstOrNotMatched<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate)
+		public static IMatched<T> FirstOrNotMatched<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate)
 		{
 			try
 			{
@@ -128,24 +128,24 @@ namespace Core.Monads
 			}
 		}
 
-      public static IMatched<T> LastOrNotMatched<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate)
-      {
-	      try
-	      {
-		      var last = enumerable.Last(predicate);
+		public static IMatched<T> LastOrNotMatched<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate)
+		{
+			try
+			{
+				var last = enumerable.Last(predicate);
 
-		      if (last.IsNull())
-			      return notMatched<T>();
-		      else if (last.Equals(default))
-			      return notMatched<T>();
-		      else
-			      return last.Matched();
-	      }
-	      catch (Exception exception)
-	      {
-		      return failedMatch<T>(exception);
-	      }
-      }
+				if (last.IsNull())
+					return notMatched<T>();
+				else if (last.Equals(default))
+					return notMatched<T>();
+				else
+					return last.Matched();
+			}
+			catch (Exception exception)
+			{
+				return failedMatch<T>(exception);
+			}
+		}
 
 		public static IMatched<T> FirstOrNotMatched<T>(this IEnumerable<T> enumerable)
 		{
@@ -185,7 +185,7 @@ namespace Core.Monads
 			}
 		}
 
-      public static IMaybe<Type> UnderlyingType(this object obj)
+		public static IMaybe<Type> UnderlyingType(this object obj)
 		{
 			if (obj.IsNull())
 				return none<Type>();

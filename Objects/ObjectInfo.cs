@@ -12,7 +12,7 @@ namespace Core.Objects
       public static IMaybe<PropertyInfo> PropertyInfo(object obj, Signature signature)
       {
          var info = obj.GetType().GetProperty(signature.Name);
-         return when(info != null, () => info);
+         return maybe(info != null, () => info);
       }
 
       object obj;

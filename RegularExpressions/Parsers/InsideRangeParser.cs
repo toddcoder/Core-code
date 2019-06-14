@@ -13,7 +13,7 @@ namespace Core.RegularExpressions.Parsers
          var word = tokens[1];
          var result = OutsideRangeParser.GetRange(word);
 
-         return when(result.IsNotEmpty(), () => result);
+         return maybe(result.IsNotEmpty(), () => result);
       }
    }
 }

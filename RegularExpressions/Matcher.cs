@@ -312,7 +312,7 @@ namespace Core.RegularExpressions
       public IMaybe<string> Maybe(int matchIndex, int groupIndex)
       {
          var value = this[matchIndex, groupIndex];
-         return when(value.IsNotEmpty(), () => value);
+         return maybe(value.IsNotEmpty(), () => value);
       }
 
       public string this[int matchIndex]
@@ -324,7 +324,7 @@ namespace Core.RegularExpressions
       public IMaybe<string> Maybe(int matchIndex)
       {
          var value = this[matchIndex];
-         return when(value.IsNotEmpty(), () => value);
+         return maybe(value.IsNotEmpty(), () => value);
       }
 
       public string[] Matches => matches.Select(m => m.GetSlice(slicer)).ToArray();
@@ -352,7 +352,7 @@ namespace Core.RegularExpressions
 
       static IMaybe<Group> getGroupMaybe(IMaybe<Match> match, int index)
       {
-         return match.Map(m => when(index.Between(0).Until(m.Groups.Length), () => m.Groups[index]));
+         return match.Map(m => maybe(index.Between(0).Until(m.Groups.Length), () => m.Groups[index]));
       }
 
       Match getMatch(int index)
@@ -361,7 +361,7 @@ namespace Core.RegularExpressions
          return matches[index];
       }
 
-      IMaybe<Match> getMatchMaybe(int index) => when(index.Between(0).Until(matches.Length), () => matches[index]);
+      IMaybe<Match> getMatchMaybe(int index) => maybe(index.Between(0).Until(matches.Length), () => matches[index]);
 
       public int GroupCount(int index) => getMatch(index).Groups.Length;
 

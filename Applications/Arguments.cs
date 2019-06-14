@@ -79,7 +79,7 @@ namespace Core.Applications
 				throw $"Count must be at most {maximumCount}--found {length}".Throws();
 		}
 
-		public IMaybe<Argument> Argument(int index) => when(Exists(index), () => arguments[index]);
+		public IMaybe<Argument> Argument(int index) => maybe(Exists(index), () => arguments[index]);
 
 		public IEnumerator<Argument> GetEnumerator()
 		{

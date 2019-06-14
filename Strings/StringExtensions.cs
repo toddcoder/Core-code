@@ -963,7 +963,7 @@ namespace Core.Strings
 		public static IMaybe<bool> AsBool(this string source)
 		{
 			if (source.IsNotEmpty())
-				return when(bool.TryParse(source, out var result), () => result);
+				return maybe(bool.TryParse(source, out var result), () => result);
 			else
 				return none<bool>();
 		}
@@ -973,7 +973,7 @@ namespace Core.Strings
 		public static IMaybe<byte> AsByte(this string source)
 		{
 			if (source.IsNotEmpty())
-				return when(byte.TryParse(source, out var result), () => result);
+				return maybe(byte.TryParse(source, out var result), () => result);
 			else
 				return none<byte>();
 		}
@@ -983,7 +983,7 @@ namespace Core.Strings
 		public static IMaybe<int> AsInt(this string source)
 		{
 			if (source.IsNotEmpty())
-				return when(int.TryParse(source, out var result), () => result);
+				return maybe(int.TryParse(source, out var result), () => result);
 			else
 				return none<int>();
 		}
@@ -993,7 +993,7 @@ namespace Core.Strings
 		public static IMaybe<long> AsLong(this string source)
 		{
 			if (source.IsNotEmpty())
-				return when(long.TryParse(source, out var result), () => result);
+				return maybe(long.TryParse(source, out var result), () => result);
 			else
 				return none<long>();
 		}
@@ -1003,7 +1003,7 @@ namespace Core.Strings
 		public static IMaybe<float> AsFloat(this string source)
 		{
 			if (source.IsNotEmpty())
-				return when(float.TryParse(source, out var result), () => result);
+				return maybe(float.TryParse(source, out var result), () => result);
 			else
 				return none<float>();
 		}
@@ -1013,7 +1013,7 @@ namespace Core.Strings
 		public static IMaybe<double> AsDouble(this string source)
 		{
 			if (source.IsNotEmpty())
-				return when(double.TryParse(source, out var result), () => result);
+				return maybe(double.TryParse(source, out var result), () => result);
 			else
 				return none<double>();
 		}
@@ -1023,7 +1023,7 @@ namespace Core.Strings
 		public static IMaybe<decimal> AsDecimal(this string source)
 		{
 			if (source.IsNotEmpty())
-				return when(decimal.TryParse(source, out var result), () => result);
+				return maybe(decimal.TryParse(source, out var result), () => result);
 			else
 				return none<decimal>();
 		}
@@ -1033,7 +1033,7 @@ namespace Core.Strings
 		public static IMaybe<DateTime> AsDateTime(this string source)
 		{
 			if (source.IsNotEmpty())
-				return when(System.DateTime.TryParse(source, out var result), () => result);
+				return maybe(System.DateTime.TryParse(source, out var result), () => result);
 			else
 				return none<DateTime>();
 		}
@@ -1043,7 +1043,7 @@ namespace Core.Strings
 		public static IMaybe<Guid> AsGuid(this string source)
 		{
 			if (source.IsNotEmpty())
-				return when(System.Guid.TryParse(source, out var guid), () => guid);
+				return maybe(System.Guid.TryParse(source, out var guid), () => guid);
 			else
 				return none<Guid>();
 		}
@@ -1159,7 +1159,7 @@ namespace Core.Strings
 
 		public static string ToNonNullString(this object value) => value?.ToString() ?? "";
 
-		public static IMaybe<string> ToIMaybeString(this object value) => when(value != null, value.ToString);
+		public static IMaybe<string> ToIMaybeString(this object value) => maybe(value != null, value.ToString);
 
 		public static string ToLiteral(this object value)
 		{
@@ -1199,9 +1199,9 @@ namespace Core.Strings
 				return source.Matches("/(['+-']? /d* '.' /d* (['eE'] ['-+']? /d+)?)").Map(m => m[0, 1].ToDouble());
 		}
 
-		public static IMaybe<char> First(this string source) => when(source.IsNotEmpty(), () => source[0]);
+		public static IMaybe<char> First(this string source) => maybe(source.IsNotEmpty(), () => source[0]);
 
-		public static IMaybe<char> Last(this string source) => when(source.IsNotEmpty(), () => source[source.Length - 1]);
+		public static IMaybe<char> Last(this string source) => maybe(source.IsNotEmpty(), () => source[source.Length - 1]);
 
 		public static IMaybe<string> Left(this string source, int length)
 		{
@@ -1234,14 +1234,14 @@ namespace Core.Strings
 		public static IMaybe<string> Sub(this string source, int index, int length)
 		{
 			if (source.IsNotEmpty() && length > 0 && index >= 0)
-				return when(index + length - 1 < source.Length, () => source.Substring(index, length));
+				return maybe(index + length - 1 < source.Length, () => source.Substring(index, length));
 			else
 				return none<string>();
 		}
 
 		public static IMaybe<string> Sub(this string source, int index)
 		{
-			return when(source.IsNotEmpty() && index >= 0 && index < source.Length, () => source.Substring(index));
+			return maybe(source.IsNotEmpty() && index >= 0 && index < source.Length, () => source.Substring(index));
 		}
 
 		public static bool IsDate(this string date) => System.DateTime.TryParse(date, out _);
@@ -1774,7 +1774,7 @@ namespace Core.Strings
 				var comparison = ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
 				var index = source.IndexOf(substring, startIndex, comparison);
 
-				return when(index != -1, () => index);
+				return maybe(index != -1, () => index);
 			}
 			else
 				return none<int>();

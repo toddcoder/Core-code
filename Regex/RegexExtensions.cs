@@ -97,13 +97,13 @@ namespace Core.Regex
 		{
 			var matcher = new Matcher();
 
-			return when(matcher.IsMatch(input, pattern, ignoreCase, multiline), () => matcher);
+			return maybe(matcher.IsMatch(input, pattern, ignoreCase, multiline), () => matcher);
 		}
 
 		public static IMaybe<Matcher> Matches(this string input, string pattern, RegexOptions options)
 		{
 			var matcher = new Matcher();
-			return when(matcher.IsMatch(input, pattern, options), () => matcher);
+			return maybe(matcher.IsMatch(input, pattern, options), () => matcher);
 		}
 
 		public static bool Matches(this string input, string pattern, out Matcher matcher, bool ignoreCase = false,

@@ -107,13 +107,13 @@ namespace Core.Dates
 		public static string ToLongString(TimeSpan timeSpan, bool includeMilliseconds)
 		{
 			return ToLongString(timeSpan.Days, timeSpan.Hours, timeSpan.Minutes, timeSpan.Seconds,
-				when(includeMilliseconds, () => timeSpan.Milliseconds));
+				maybe(includeMilliseconds, () => timeSpan.Milliseconds));
 		}
 
 		public static string ToShortString(TimeSpan timeSpan, bool includeMilliseconds)
 		{
 			return ToShortString(timeSpan.Days, timeSpan.Hours,
-				timeSpan.Minutes, timeSpan.Seconds, when(includeMilliseconds, () => timeSpan.Milliseconds));
+				timeSpan.Minutes, timeSpan.Seconds, maybe(includeMilliseconds, () => timeSpan.Milliseconds));
 		}
 
 		public static string ToShortString(int days, int hours, int minutes, int seconds, IMaybe<int> milliseconds)
@@ -395,7 +395,7 @@ namespace Core.Dates
 
 		public string ToLongString(bool includeMilliseconds)
 		{
-			return ToLongString(0, hour, minute, second, when(includeMilliseconds, () => millisecond));
+			return ToLongString(0, hour, minute, second, maybe(includeMilliseconds, () => millisecond));
 		}
 
 		public DateTime ToDate()

@@ -28,7 +28,7 @@ namespace Core.Applications
 				if (Computers.FileName.IsValidFileName(text))
 				{
 					FileName file = text;
-					fileName = when(file.Exists(), () => file);
+					fileName = maybe(file.Exists(), () => file);
 				}
 				else
 					fileName = none<FileName>();
@@ -44,7 +44,7 @@ namespace Core.Applications
 				if (Computers.FolderName.IsValidFolderName(text))
 				{
 					FolderName folder = text;
-					folderName = when(folder.Exists(), () => folder);
+					folderName = maybe(folder.Exists(), () => folder);
 				}
 				else
 					folderName = none<FolderName>();

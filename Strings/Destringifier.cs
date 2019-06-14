@@ -95,7 +95,7 @@ namespace Core.Strings
 			var endComment1 = EndComment[0];
 			var endComment2 = EndComment[1];
 			var singleComment1 = SingleComment[0];
-			var singleComment2 = when(SingleComment.Length > 1, () => SingleComment[1]);
+			var singleComment2 = maybe(SingleComment.Length > 1, () => SingleComment[1]);
 			var possibleEither = comment1 == singleComment1;
 			var keepComment = !IgnoreMultilineComments;
 			var keepSingleComment = !IgnoreSingleComments;
