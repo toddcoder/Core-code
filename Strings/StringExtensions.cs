@@ -108,7 +108,7 @@ namespace Core.Strings
 				return source.Substring(0, limit);
 		}
 
-		public static string Elliptical(this string source, int limit, char upTo)
+		public static string Elliptical(this string source, int limit, char upTo, bool pad = false)
 		{
 			if (source.IsEmpty())
 				return "";
@@ -130,6 +130,8 @@ namespace Core.Strings
 					return result;
 				}
 			}
+			else if (source.Length < limit && pad)
+				return source.LeftJustify(limit);
 			else
 				return source;
 		}
