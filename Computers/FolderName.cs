@@ -189,7 +189,7 @@ namespace Core.Computers
          set => setAttr(FileAttributes.Temporary, value);
       }
 
-		public FolderName this[string subfolder]=> new FolderName(fullPath, subfolders.Append(subfolder));
+		public FolderName this[string subfolder]=> new FolderName(root, subfolders.Append(subfolder));
 
       public IMaybe<FolderName> Parent
       {
