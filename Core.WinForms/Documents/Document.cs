@@ -21,7 +21,7 @@ namespace Core.WinForms.Documents
 
 		public static IMaybe<string> ClipboardText()
 		{
-			return when(Clipboard.ContainsText(TextDataFormat.Text), () => Clipboard.GetText(TextDataFormat.Text));
+			return maybe(Clipboard.ContainsText(TextDataFormat.Text), () => Clipboard.GetText(TextDataFormat.Text));
 		}
 
 		protected Form form;
@@ -214,11 +214,11 @@ namespace Core.WinForms.Documents
 				{
 					case DialogResult.Yes:
 						YesButtonClicked?.Invoke(this, new EventArgs());
-                  Save();
+						Save();
 						break;
 					case DialogResult.No:
 						NoButtonClicked?.Invoke(this, new EventArgs());
-                  textBox.Clear();
+						textBox.Clear();
 						Clean();
 						break;
 					default:
@@ -332,7 +332,7 @@ namespace Core.WinForms.Documents
 						break;
 					case DialogResult.Cancel:
 						CancelButtonClicked?.Invoke(this, new EventArgs());
-                  e.Cancel = true;
+						e.Cancel = true;
 						break;
 				}
 			}

@@ -14,7 +14,7 @@ namespace Core.WinForms.Consoles
 		public TextBoxWriter(TextBoxConsole console)
 		{
 			this.console = console;
-			buffer = when(this.console.Buffer, () => new StringBuilder());
+			buffer = maybe(this.console.Buffer, () => new StringBuilder());
 		}
 
 		public bool AutoStop { get; set; }
