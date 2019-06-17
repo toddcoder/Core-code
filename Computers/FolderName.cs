@@ -63,6 +63,8 @@ namespace Core.Computers
 
       public static FolderName LocalApplicationData => specialFolder(Environment.SpecialFolder.LocalApplicationData);
 
+      public static FolderName UserProfile => specialFolder(Environment.SpecialFolder.UserProfile);
+
       public static FolderName Windows => Environment.GetEnvironmentVariable("windir");
 
       public static FolderName System => Environment.SystemDirectory;
