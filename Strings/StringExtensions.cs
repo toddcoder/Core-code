@@ -108,7 +108,7 @@ namespace Core.Strings
 				return source.Substring(0, limit);
 		}
 
-		public static string Elliptical(this string source, int limit, char upTo, bool pad = false)
+		public static string Elliptical(this string source, int limit, char upTo, bool pad = false, string ellipses= "…")
 		{
 			if (source.IsEmpty())
 				return "";
@@ -119,13 +119,14 @@ namespace Core.Strings
 					return source.Truncate(limit);
 				else
 				{
+					var ellipsesLength = ellipses.Length;
 					var suffix = source.Keep(-(source.Length - index));
 					var prefix = source.Keep(limit - (1 + suffix.Length));
 					if (!source.StartsWith(prefix))
-						prefix = $"…{prefix.Drop(1)}";
-					var result = prefix + "…" + suffix;
+						prefix = $"{ellipses}{prefix.Drop(ellipsesLength)}";
+					var result = $"{prefix}{ellipses}{suffix}";
 					if (result.Length > limit)
-						result = $"{result.Keep(limit - 1)}…";
+						result = $"{result.Keep(limit - ellipsesLength)}{ellipses}";
 
 					return result;
 				}
