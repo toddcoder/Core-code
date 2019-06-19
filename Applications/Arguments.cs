@@ -15,7 +15,7 @@ namespace Core.Applications
 	{
 		static string[] splitArguments(string arguments)
 		{
-			var destringifier = new Destringifier(arguments);
+			var destringifier = new Destringifier(arguments.Replace(@"\", @"\\"));
 			return destringifier.Parse().Split("/s+").Select(s => destringifier.Restring(s, false)).ToArray();
 		}
 
