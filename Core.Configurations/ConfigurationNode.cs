@@ -31,17 +31,25 @@ namespace Core.Configurations
 			get
 			{
 				if (value.IsSome)
-					return none<ConfigurationNode>();
-				else
-					return children.Value.Map(childName, cn => cn);
-			}
+            {
+               return none<ConfigurationNode>();
+            }
+            else
+            {
+               return children.Value.Map(childName, cn => cn);
+            }
+         }
 			set
 			{
 				if (value.If(out var configurationNode))
-					children.Value[childName] = configurationNode;
-				else
-					children.Value.Remove(childName);
-			}
+            {
+               children.Value[childName] = configurationNode;
+            }
+            else
+            {
+               children.Value.Remove(childName);
+            }
+         }
 		}
 	}
 }

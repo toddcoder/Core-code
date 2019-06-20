@@ -51,7 +51,9 @@ namespace Core.WinForms.Controls
             angle = 0;
             color++;
             if (color > 2)
+            {
                color = 0;
+            }
          }
 
          using (var g = CreateGraphics())
@@ -79,7 +81,9 @@ namespace Core.WinForms.Controls
             stopwatch.Start();
          }
          else
+         {
             stopwatch.Stop();
+         }
       }
    }
 }

@@ -52,10 +52,16 @@ namespace Core.Objects
          var hash = new Hash<string, object>();
 
          foreach (var info in memberInfos)
+         {
             if (getValue(obj, info).Out(out var value, out var result))
+            {
                hash[info.Name] = value;
+            }
             else
+            {
                return result.ExceptionAs<Hash<string, object>>();
+            }
+         }
 
          return hash.Success();
       }

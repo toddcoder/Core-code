@@ -12,7 +12,9 @@ namespace Core.Collections
       public BackHash(BackHash<TValue, TKey> backHash)
       {
          foreach (var item in backHash)
+         {
             this[item.Value] = item.Key;
+         }
       }
 
       public BackHash(int capacity) : base(capacity) => backHash = new Hash<TValue, TKey>();

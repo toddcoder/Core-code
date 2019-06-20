@@ -41,8 +41,10 @@ namespace Core.WinForms.Consoles
 			if (value == '\r' || value == '\n')
 			{
 				if (nextLineLastTime)
-					nextLineLastTime = false;
-				else
+            {
+               nextLineLastTime = false;
+            }
+            else
 				{
 					listBox.Items[index++] = builder.ToString();
 					builder.Clear();

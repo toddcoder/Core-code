@@ -14,7 +14,10 @@ namespace Core.RegularExpressions
          var options = None;
 
          if (ignoreCase)
+         {
             options |= IgnoreCase;
+         }
+
          options |= multiline ? Multiline : Singleline;
 
          return options;
@@ -23,7 +26,10 @@ namespace Core.RegularExpressions
       public static bool IsMatch(this string input, string pattern, RegexOptions options, bool friendly = true)
       {
          if (friendly)
+         {
             pattern = Matcher.getPattern(pattern);
+         }
+
          return System.Text.RegularExpressions.Regex.IsMatch(input, pattern, options);
       }
 
@@ -49,7 +55,9 @@ namespace Core.RegularExpressions
          bool friendly = true)
       {
          if (friendly)
+         {
             pattern = Matcher.getPattern(pattern);
+         }
 
          return System.Text.RegularExpressions.Regex.Replace(input, pattern, replacement, options);
       }
@@ -58,7 +66,10 @@ namespace Core.RegularExpressions
          int count, bool friendly = true)
       {
          if (friendly)
+         {
             pattern = Matcher.getPattern(pattern);
+         }
+
          var regex = new System.Text.RegularExpressions.Regex(pattern, options);
 
          return regex.Replace(input, replacement, count);
@@ -86,7 +97,9 @@ namespace Core.RegularExpressions
             return matcher.ToString();
          }
          else
+         {
             return input;
+         }
       }
 
       public static string Replace(this string input, string pattern, Action<Matcher> replacer,
@@ -98,7 +111,9 @@ namespace Core.RegularExpressions
       public static string[] Split(this string input, string pattern, RegexOptions options, bool friendly = true)
       {
          if (friendly)
+         {
             pattern = Matcher.getPattern(pattern);
+         }
 
          return System.Text.RegularExpressions.Regex.Split(input, pattern, options);
       }
@@ -149,7 +164,9 @@ namespace Core.RegularExpressions
       {
          var matcher = new Matcher(friendly);
          if (matcher.IsMatch(input, pattern, ignoreCase, multiline))
+         {
             ifTrue(matcher);
+         }
       }
 
       public static void IfMatches(this string input, string pattern, Action<Matcher> ifTrue, RegexOptions options,
@@ -157,7 +174,9 @@ namespace Core.RegularExpressions
       {
          var matcher = new Matcher(friendly);
          if (matcher.IsMatch(input, pattern, options))
+         {
             ifTrue(matcher);
+         }
       }
 
       public static void IfMatches(this string input, string pattern, Action<Matcher> ifTrue, Action ifFalse,
@@ -165,9 +184,13 @@ namespace Core.RegularExpressions
       {
          var matcher = new Matcher(friendly);
          if (matcher.IsMatch(input, pattern, ignoreCase, multiline))
+         {
             ifTrue(matcher);
+         }
          else
+         {
             ifFalse();
+         }
       }
 
       public static void IfMatches(this string input, string pattern, Action<Matcher> ifTrue, Action ifFalse,
@@ -175,9 +198,13 @@ namespace Core.RegularExpressions
       {
          var matcher = new Matcher(friendly);
          if (matcher.IsMatch(input, pattern, options))
+         {
             ifTrue(matcher);
+         }
          else
+         {
             ifFalse();
+         }
       }
 
       public static IMatched<Matcher.Match[]> MatchAll(this string input, string pattern, RegexOptions options,

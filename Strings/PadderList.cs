@@ -11,8 +11,12 @@ namespace Core.Strings
       static void allocate<T>(List<T> list, int index)
       {
          if (index >= list.Count)
+         {
             for (var i = list.Count; i <= index; i++)
+            {
                list.Add(default);
+            }
+         }
       }
 
       class Row
@@ -34,7 +38,9 @@ namespace Core.Strings
             var length = Min(columns.Count, lengths.Count);
             length = Min(length, padTypes.Length);
             for (var i = 0; i < length; i++)
+            {
                yield return columns[i].Pad(padTypes[i], lengths[i]);
+            }
          }
       }
 
@@ -59,7 +65,10 @@ namespace Core.Strings
       public void AddRow(params string[] items)
       {
          for (var i = 0; i < items.Length; i++)
+         {
             Add(i, items[i]);
+         }
+
          AddRow();
       }
 
@@ -72,7 +81,9 @@ namespace Core.Strings
       public IEnumerable<string> Lines(string columnSeparator, params PadType[] padTypes)
       {
          foreach (var row in rows)
+         {
             yield return row.Columns(lengths, padTypes).Stringify(columnSeparator);
+         }
       }
 
       static PadType[] getPadTypes(string source) => source.ToCharArray().Select(c =>
@@ -96,7 +107,9 @@ namespace Core.Strings
       public IEnumerable<string> Lines(string columnSeparator, string padTypes)
       {
          foreach (var row in rows)
+         {
             yield return row.Columns(lengths, getPadTypes(padTypes)).Stringify(columnSeparator);
+         }
       }
    }
 }

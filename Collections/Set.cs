@@ -19,13 +19,17 @@ namespace Core.Collections
       public Set(IEnumerable<T> items) : this()
       {
          foreach (var item in items)
+         {
             add(item);
+         }
       }
 
       public Set(Set<T> other) : this()
       {
          foreach (var item in other)
+         {
             add(item);
+         }
       }
 
       public T this[int index] => content[index];
@@ -37,19 +41,25 @@ namespace Core.Collections
       protected void add(T item)
       {
          if (!content.Contains(item))
+         {
             content.Add(item);
+         }
       }
 
       public void AddRange(IEnumerable<T> enumerable)
       {
          foreach (var item in enumerable)
+         {
             Add(item);
+         }
       }
 
       public virtual void Remove(T item)
       {
          if (content.Contains(item))
+         {
             content.Remove(item);
+         }
       }
 
       public virtual void Clear() => content.Clear();
@@ -63,7 +73,9 @@ namespace Core.Collections
          var set = new Set<T>();
 
          foreach (var item in this)
+         {
             set.Add(item);
+         }
 
          return set;
       }
@@ -73,7 +85,9 @@ namespace Core.Collections
          var copy = Clone();
 
          foreach (var item in set)
+         {
             copy.Add(item);
+         }
 
          return copy;
       }
@@ -83,10 +97,14 @@ namespace Core.Collections
          var newSet = new Set<T>();
 
          foreach (var item in this.Where(set.Contains))
+         {
             newSet.Add(item);
+         }
 
          foreach (var item in set.Where(Contains))
+         {
             newSet.Add(item);
+         }
 
          return newSet;
       }
@@ -96,7 +114,9 @@ namespace Core.Collections
          var newSet = new Set<T>();
 
          foreach (var item in this.Where(i => !set.Contains(i)))
+         {
             newSet.Add(item);
+         }
 
          return newSet;
       }

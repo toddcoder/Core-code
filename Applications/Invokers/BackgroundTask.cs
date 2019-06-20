@@ -69,10 +69,14 @@ namespace Core.Applications.Invokers
          {
             pause.WaitOne(Timeout.Infinite);
             if (shutDown.WaitOne(0))
+            {
                break;
+            }
 
             if (backgroundEnabled)
+            {
                background(this);
+            }
          }
       }
 
@@ -118,7 +122,10 @@ namespace Core.Applications.Invokers
             SetCursorPosition(x, y);
             var text = obj?.ToString() ?? "";
             if (pad)
+            {
                text = text.PadRight(maxLength, paddingChar);
+            }
+
             Console.Write(text);
             SetCursorPosition(x, y);
          }
@@ -130,12 +137,16 @@ namespace Core.Applications.Invokers
       {
          string text;
          if (longForm)
+         {
             text = stopwatch.Elapsed.ToLongString(includeMilliseconds);
+         }
          else
          {
             text = stopwatch.Elapsed.ToString("g");
             if (!includeMilliseconds && text.Contains("."))
+            {
                text = text.Substitute("'.' /d+ $", "");
+            }
          }
          WriteBackground(left, top, text, true);
       }

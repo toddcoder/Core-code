@@ -33,10 +33,16 @@ namespace Core.Dates
          var newSpan = new TimeSpan(0, 0, 0, 0);
 
          foreach (var span in spans)
+         {
             if (span.If(out var timeSpan))
+            {
                newSpan = newSpan.Add(timeSpan);
+            }
             else
+            {
                return none<TimeSpan>();
+            }
+         }
 
          return newSpan.Some();
       }
@@ -48,10 +54,16 @@ namespace Core.Dates
          var newSpan = new TimeSpan(0, 0, 0, 0);
 
          foreach (var span in spans)
+         {
             if (span.Out(out var timeSpan, out var original))
+            {
                newSpan = newSpan.Add(timeSpan);
+            }
             else
+            {
                return original;
+            }
+         }
 
          return newSpan.Success();
       }
@@ -71,17 +83,29 @@ namespace Core.Dates
             from span in tryTo(() =>
             {
                if (unit.IsMatch("'millisec' ('ond')? 's'?"))
+               {
                   return new TimeSpan(0, 0, 0, 0, intValue);
+               }
                else if (unit.IsMatch("'sec' ('ond') 's'?"))
+               {
                   return new TimeSpan(0, 0, 0, intValue, 0);
+               }
                else if (unit.IsMatch("'min' ('ute')? 's'?"))
+               {
                   return new TimeSpan(0, intValue, 0);
+               }
                else if (unit.IsMatch("'h' ('ou')? 'r' 's'?"))
+               {
                   return new TimeSpan(0, intValue, 0, 0);
+               }
                else if (unit.IsMatch("'days'?"))
+               {
                   return new TimeSpan(intValue, 0, 0, 0);
+               }
                else
+               {
                   throw $"Couldn't determine unit from {unit}".Throws();
+               }
             })
             select span;
       }

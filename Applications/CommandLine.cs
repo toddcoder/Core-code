@@ -43,8 +43,10 @@ namespace Core.Applications
 		public void Wait()
 		{
 			if (threading)
-				resetEvent.WaitOne();
-		}
+         {
+            resetEvent.WaitOne();
+         }
+      }
 
 		public IWriter StandardWriter { get; set; }
 
@@ -85,8 +87,10 @@ namespace Core.Applications
 			}
 
 			if (Test)
-				Console.ReadLine();
-		}
+         {
+            Console.ReadLine();
+         }
+      }
 
 		public virtual void RunInLoop(string[] args, TimeSpan interval)
 		{
@@ -117,8 +121,10 @@ namespace Core.Applications
 			}
 
 			if (Test)
-				Console.ReadLine();
-		}
+         {
+            Console.ReadLine();
+         }
+      }
 
 		void dispose()
 		{

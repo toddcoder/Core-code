@@ -24,12 +24,16 @@ namespace Core.Enumerables
             var minRowLen = array.Select(a => a.Length).Min();
             var squared = array;
             if (minRowLen != maxRowLen)
+            {
                squared = array.Select(row => row.Pad(maxRowLen, defaultValue())).ToArray();
+            }
 
             return 0.Until(maxRowLen).Select(i => squared.Select(row => row[i]).ToArray());
          }
          else
+         {
             return array;
+         }
       }
 
       public static IEnumerable<IEnumerable<T>> Pivot<T>(this IEnumerable<IEnumerable<T>> source) => source.Pivot(() => default);
@@ -41,25 +45,33 @@ namespace Core.Enumerables
       public static IEnumerable<int> UpTo(this int from, int to, int by = 1)
       {
          for (var i = from; i <= to; i += by)
+         {
             yield return i;
+         }
       }
 
       public static IEnumerable<int> UpUntil(this int from, int to, int by = 1)
       {
          for (var i = from; i < to; i += by)
+         {
             yield return i;
+         }
       }
 
       public static IEnumerable<int> DownTo(this int from, int to, int by = -1)
       {
          for (var i = from; i >= to; i += by)
+         {
             yield return i;
+         }
       }
 
       public static IEnumerable<int> DownUntil(this int from, int to, int by = -1)
       {
          for (var i = from; i > to; i += by)
+         {
             yield return i;
+         }
       }
 
       public static IEnumerable<T> Then<T>(this T seed, Func<T, T> next, Predicate<T> stop)
@@ -81,7 +93,9 @@ namespace Core.Enumerables
 	   {
 		   var index = 0;
 		   foreach (var item in enumerable)
-			   yield return (index++, item);
-	   }
+         {
+            yield return (index++, item);
+         }
+      }
    }
 }

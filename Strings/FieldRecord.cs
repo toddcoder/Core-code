@@ -50,9 +50,13 @@ namespace Core.Strings
       public void WriteField(string field)
       {
          if (AutoQuotify && FieldDelimiter == "','" && field.Has(","))
+         {
             fields.Add(Quote + field.Replace(Quote, EscapedQuote) + Quote);
+         }
          else
+         {
             fields.Add(field);
+         }
       }
 
       public void WriteRecord()
@@ -70,7 +74,9 @@ namespace Core.Strings
       public override string ToString()
       {
          if (fields.Count > 0)
+         {
             WriteRecord();
+         }
 
          return records.Stringify(RecordDelimiter);
       }
@@ -85,7 +91,9 @@ namespace Core.Strings
          var isDoubleQuote = Quote == DoubleQuote;
 
          foreach (var field in value.Split(recordDelimiterEscaped).SelectMany(line => line.Split(fieldDelimiterEscaped)))
+         {
             WriteField(destringifier.Restring(field, isDoubleQuote));
+         }
 
          WriteRecord();
       }

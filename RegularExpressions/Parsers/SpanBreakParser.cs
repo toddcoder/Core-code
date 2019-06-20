@@ -31,7 +31,10 @@ namespace Core.RegularExpressions.Parsers
                      escaped = false;
                   }
                   else
+                  {
                      escaped = true;
+                  }
+
                   break;
                case '}':
                   if (escaped)
@@ -57,7 +60,10 @@ namespace Core.RegularExpressions.Parsers
                      escaped = false;
                   }
                   else
+                  {
                      builder.Append(ch.ToString().Escape(false));
+                  }
+
                   break;
             }
          }

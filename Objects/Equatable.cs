@@ -33,10 +33,14 @@ namespace Core.Objects
 		public bool Equals(T other)
 		{
 			if (ReferenceEquals(null, other))
-				return false;
-			else if (ReferenceEquals(obj, other))
-				return true;
-			else
+         {
+            return false;
+         }
+         else if (ReferenceEquals(obj, other))
+         {
+            return true;
+         }
+         else
 			{
 				var values = getValues(obj, signatures);
 				var otherValues = getValues(other, signatures);

@@ -73,20 +73,29 @@ namespace Core.WinForms.Consoles
 				{
 					case Keys.Left:
 						if (!CanWrite || !inBox())
-							e.Handled = true;
-						break;
+                  {
+                     e.Handled = true;
+                  }
+
+                  break;
 					case Keys.Down:
 					{
 						if (history.Forward().If(out var c))
-							Text = c;
-						e.Handled = true;
+                  {
+                     Text = c;
+                  }
+
+                  e.Handled = true;
 						break;
 					}
 					case Keys.Up:
 					{
 						if (history.Backward().If(out var c))
-							Text = c;
-						e.Handled = true;
+                  {
+                     Text = c;
+                  }
+
+                  e.Handled = true;
 						break;
 					}
 					case Keys.Back:
@@ -101,10 +110,15 @@ namespace Core.WinForms.Consoles
 						var currentIndex = textBox.SelectionStart;
 						textBox.SelectionStart = writeStartingIndex;
 						if (e.Shift)
-							textBox.SelectionLength = currentIndex - writeStartingIndex;
-						else
-							textBox.SelectionLength = 0;
-						e.Handled = true;
+                  {
+                     textBox.SelectionLength = currentIndex - writeStartingIndex;
+                  }
+                  else
+                  {
+                     textBox.SelectionLength = 0;
+                  }
+
+                  e.Handled = true;
 						break;
 					}
 				}
@@ -171,8 +185,10 @@ namespace Core.WinForms.Consoles
 			this.textBox.MouseClick += (sender, e) =>
 			{
 				if (!inBox())
-					textBox.SelectionStart = textBox.TextLength;
-			};
+            {
+               textBox.SelectionStart = textBox.TextLength;
+            }
+         };
 
 			writeStartingIndex = 0;
 			history = new CommandLineHistory();
@@ -189,18 +205,26 @@ namespace Core.WinForms.Consoles
 		public void Do(Action<RichTextBox> action)
 		{
 			if (textBox.InvokeRequired && InvokeRequired)
-				textBox.Invoke((Action)(() => action(textBox)));
-			else
-				action(textBox);
-		}
+         {
+            textBox.Invoke((Action)(() => action(textBox)));
+         }
+         else
+         {
+            action(textBox);
+         }
+      }
 
 		public T Get<T>(Func<RichTextBox, T> func)
 		{
 			if (textBox.InvokeRequired && InvokeRequired)
-				return (T)textBox.Invoke(new Func<T>(() => Get(func)));
-			else
-				return func(textBox);
-		}
+         {
+            return (T)textBox.Invoke(new Func<T>(() => Get(func)));
+         }
+         else
+         {
+            return func(textBox);
+         }
+      }
 
 		public string Text
 		{
@@ -225,8 +249,11 @@ namespace Core.WinForms.Consoles
 		public void StopUpdating()
 		{
 			if (suspended == 0)
-				StopUpdating(Get(tb => tb));
-			suspended++;
+         {
+            StopUpdating(Get(tb => tb));
+         }
+
+         suspended++;
 		}
 
 		public void ResumeUpdating()
@@ -247,8 +274,11 @@ namespace Core.WinForms.Consoles
 			Do(tb =>
 			{
 				if (tb.TextLength > 100000)
-					tb.Clear();
-				tb.AppendText(value.ToString());
+            {
+               tb.Clear();
+            }
+
+            tb.AppendText(value.ToString());
 				goToEnd();
 			});
 		}

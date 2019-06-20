@@ -72,36 +72,66 @@ namespace Core.Dates
 			var builder = new List<string>();
 
 			if (days > 0)
-				if (days == 1)
-					builder.Add("1 day");
-				else
-					builder.Add($"{days} days");
+         {
+            if (days == 1)
+            {
+               builder.Add("1 day");
+            }
+            else
+            {
+               builder.Add($"{days} days");
+            }
+         }
 
-			if (hours > 0)
-				if (hours == 1)
-					builder.Add("1 hour");
-				else
-					builder.Add($"{hours} hours");
+         if (hours > 0)
+         {
+            if (hours == 1)
+            {
+               builder.Add("1 hour");
+            }
+            else
+            {
+               builder.Add($"{hours} hours");
+            }
+         }
 
-			if (minutes > 0)
-				if (minutes == 1)
-					builder.Add("1 minute");
-				else
-					builder.Add($"{minutes} minutes");
+         if (minutes > 0)
+         {
+            if (minutes == 1)
+            {
+               builder.Add("1 minute");
+            }
+            else
+            {
+               builder.Add($"{minutes} minutes");
+            }
+         }
 
-			if (seconds > 0)
-				if (seconds == 1)
-					builder.Add("1 second");
-				else
-					builder.Add($"{seconds} seconds");
+         if (seconds > 0)
+         {
+            if (seconds == 1)
+            {
+               builder.Add("1 second");
+            }
+            else
+            {
+               builder.Add($"{seconds} seconds");
+            }
+         }
 
-			if (milliseconds.If(out var ms) && ms > 0)
-				if (ms == 1)
-					builder.Add("1 millisecond");
-				else
-					builder.Add($"{ms} milliseconds");
+         if (milliseconds.If(out var ms) && ms > 0)
+         {
+            if (ms == 1)
+            {
+               builder.Add("1 millisecond");
+            }
+            else
+            {
+               builder.Add($"{ms} milliseconds");
+            }
+         }
 
-			return builder.ToArray().Andify();
+         return builder.ToArray().Andify();
 		}
 
 		public static string ToLongString(TimeSpan timeSpan, bool includeMilliseconds)
@@ -121,27 +151,45 @@ namespace Core.Dates
 			var list = new List<string>();
 
 			if (days > 0)
-				list.Add("day(s)".Plural(days));
-			if (hours > 0)
-				list.Add("hr(s)".Plural(hours));
-			if (minutes > 0)
-				list.Add("min(s)".Plural(minutes));
-			if (seconds > 0)
-				list.Add("sec(s)".Plural(seconds));
-			if (milliseconds.If(out var ms) && ms > 0)
-				list.Add("msec(s)".Plural(ms));
+         {
+            list.Add("day(s)".Plural(days));
+         }
 
-			if (list.Count == 0)
-				list.Add("0 secs");
+         if (hours > 0)
+         {
+            list.Add("hr(s)".Plural(hours));
+         }
 
-			return list.Stringify(" ");
+         if (minutes > 0)
+         {
+            list.Add("min(s)".Plural(minutes));
+         }
+
+         if (seconds > 0)
+         {
+            list.Add("sec(s)".Plural(seconds));
+         }
+
+         if (milliseconds.If(out var ms) && ms > 0)
+         {
+            list.Add("msec(s)".Plural(ms));
+         }
+
+         if (list.Count == 0)
+         {
+            list.Add("0 secs");
+         }
+
+         return list.Stringify(" ");
 		}
 
 		public static IEnumerator<Time> Enumerable(Time startingTime, Time endingTime, Time incrementTime)
 		{
 			for (var currentTime = startingTime; currentTime <= endingTime; currentTime += incrementTime)
-				yield return currentTime;
-		}
+         {
+            yield return currentTime;
+         }
+      }
 
 		public static bool operator ==(Time time1, Time time2) => time1.Equals(time2);
 
@@ -329,11 +377,15 @@ namespace Core.Dates
 		public override bool Equals(object obj)
 		{
 			if (obj is Time comparisand)
-				return hour == comparisand.Hour && minute == comparisand.Minute && second == comparisand.Second &&
-					millisecond == comparisand.Millisecond;
-			else
-				return false;
-		}
+         {
+            return hour == comparisand.Hour && minute == comparisand.Minute && second == comparisand.Second &&
+               millisecond == comparisand.Millisecond;
+         }
+         else
+         {
+            return false;
+         }
+      }
 
 		public int CompareTo(Time time)
 		{
@@ -350,14 +402,20 @@ namespace Core.Dates
 						return current;
 					}
 					else
-						return current;
-				}
+               {
+                  return current;
+               }
+            }
 				else
-					return current;
-			}
+            {
+               return current;
+            }
+         }
 			else
-				return current;
-		}
+         {
+            return current;
+         }
+      }
 
 		public int CompareTo(DateTime date)
 		{
@@ -374,14 +432,20 @@ namespace Core.Dates
 						return current;
 					}
 					else
-						return current;
-				}
+               {
+                  return current;
+               }
+            }
 				else
-					return current;
-			}
+            {
+               return current;
+            }
+         }
 			else
-				return current;
-		}
+         {
+            return current;
+         }
+      }
 
 		public TimeSpan Difference(Time comparisand)
 		{

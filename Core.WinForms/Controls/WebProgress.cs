@@ -32,9 +32,13 @@ namespace Core.WinForms.Controls
          {
             Tick?.Invoke(this, new ProgressEventArgs(stopwatch.Elapsed));
             if (value + 1 <= NUMBER_OF_CIRCLES)
+            {
                value++;
+            }
             else
+            {
                value = 1;
+            }
 
             Invalidate();
          }
@@ -49,7 +53,9 @@ namespace Core.WinForms.Controls
             stopwatch.Start();
          }
          else
+         {
             stopwatch.Stop();
+         }
       }
 
       void WebProgress_Paint(object sender, PaintEventArgs e)

@@ -17,10 +17,14 @@ namespace Core.Strings
 		{
 			var (test, result) = conditional;
 			if (test)
-				return stream.append(result, false);
-			else
-				return stream;
-		}
+         {
+            return stream.append(result, false);
+         }
+         else
+         {
+            return stream;
+         }
+      }
 
 		public static StringStream operator /(StringStream stream, object obj) => stream.append(obj, false);
 
@@ -34,10 +38,14 @@ namespace Core.Strings
 		{
 			var (test, result) = conditional;
 			if (test)
-				return stream.append(result, true);
-			else
-				return stream;
-		}
+         {
+            return stream.append(result, true);
+         }
+         else
+         {
+            return stream;
+         }
+      }
 
 		public static StringStream operator %(StringStream stream, object obj) => stream.append(obj, true);
 
@@ -52,9 +60,11 @@ namespace Core.Strings
 		protected StringStream append(string text, bool endLine)
 		{
 			if (endLine)
-				builder.Append(EndLine);
+         {
+            builder.Append(EndLine);
+         }
 
-			builder.Append(text);
+         builder.Append(text);
 
 			return this;
 		}
@@ -78,8 +88,10 @@ namespace Core.Strings
 				}
 			}
 			else
-				return this;
-		}
+         {
+            return this;
+         }
+      }
 
 		public override string ToString() => builder.ToString();
 	}

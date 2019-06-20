@@ -19,7 +19,9 @@ namespace Core.Collections
       public OrderedSet(IEnumerable<T> enumerable, IEqualityComparer<T> comparer) : this(comparer)
       {
          foreach (var item in enumerable)
+         {
             Add(item);
+         }
       }
 
       public OrderedSet(IEnumerable<T> enumerable) : this(enumerable, EqualityComparer<T>.Default) { }
@@ -57,7 +59,9 @@ namespace Core.Collections
             return true;
          }
          else
+         {
             return false;
+         }
       }
 
       public int Count => hash.Count;

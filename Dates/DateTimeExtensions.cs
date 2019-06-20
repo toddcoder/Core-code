@@ -19,12 +19,18 @@ namespace Core.Dates
          static IResult<DateTime> valid(int year, int month, int day)
          {
             if (year <= 0)
+            {
                return "Year must be > 0".Failure<DateTime>();
+            }
             else if (!month.Between(1).And(12))
+            {
                return "Month must be between 1 and 12".Failure<DateTime>();
+            }
             else
+            {
                return (day <= month.LastOfMonth(year)).Result(() => new DateTime(year, month, day),
                   $"{month:d.2}/{day:d.2}/{year:d.4} is an invalid date");
+            }
          }
 
          public IResult<int> Year { get; set; }
@@ -44,9 +50,13 @@ namespace Core.Dates
          {
             if (Year.Out(out var year, out var original) && Month.Out(out var month, out original) &&
                Day.Out(out var day, out original))
+            {
                return valid(year, month, day);
+            }
             else
+            {
                return original.ExceptionAs<DateTime>();
+            }
          }
 
          public IResult<ValidDate> AndYear(int year) => (Month.IsSuccessful || Day.IsSuccessful).Result(() =>
@@ -131,9 +141,13 @@ namespace Core.Dates
          var quarter = minutes % 15;
 
          if (quarter >= 0 && quarter <= 7)
+         {
             minutes -= quarter;
+         }
          else
+         {
             minutes += 15 - quarter;
+         }
 
          DateTime result;
          if (minutes == 60)
@@ -143,7 +157,9 @@ namespace Core.Dates
             result = result.AddHours(1);
          }
          else
+         {
             result = new DateTime(time.Year, time.Month, time.Day, time.Hour, 0, 0);
+         }
 
          return result;
       }
@@ -240,8 +256,11 @@ namespace Core.Dates
       public static IResult<DateTime> RelativeTo(this DateTime date, string pattern)
       {
          if (pattern.IsMatch("^ ['//|'] /s* ['//|'] /s* ['//|'] $"))
+         {
             return date.Success();
+         }
          else
+         {
             return pattern.MatchOne("/(['+-']? /d*) ['//|'] /(['+-']? /d*) ['//|'] /(['+-']? /d*)").FlatMap(match =>
             {
                if (match.Groups.Assign(out _, out var year, out var month, out var day).IsSuccessful)
@@ -252,12 +271,16 @@ namespace Core.Dates
                      var yearText = year.Text;
                      var yearAmount = yearText.ToInt();
                      if (yearText.IsMatch(REGEX_SIGN))
+                     {
                         builder.Year += yearAmount;
+                     }
                      else
                      {
                         var result = builder.SetYear(yearAmount);
                         if (result.IsFailed)
+                        {
                            return result;
+                        }
                      }
                   }
 
@@ -266,12 +289,16 @@ namespace Core.Dates
                      var monthText = month.Text;
                      var monthAmount = monthText.ToInt();
                      if (monthText.IsMatch(REGEX_SIGN))
+                     {
                         builder.Month += monthAmount;
+                     }
                      else
                      {
                         var result = builder.SetMonth(monthAmount);
                         if (result.IsFailed)
+                        {
                            return result;
+                        }
                      }
                   }
 
@@ -280,18 +307,24 @@ namespace Core.Dates
                      var dayText = day.Text;
                      var dayAmount = dayText.ToInt();
                      if (dayText.IsMatch(REGEX_SIGN))
+                     {
                         builder.Day += dayAmount;
+                     }
                      else if (dayAmount == 0)
                      {
                         var result = builder.SetToLastDay();
                         if (result.IsFailed)
+                        {
                            return result;
+                        }
                      }
                      else
                      {
                         var result = builder.SetDay(dayAmount);
                         if (result.IsFailed)
+                        {
                            return result;
+                        }
                      }
                   }
 
@@ -300,6 +333,7 @@ namespace Core.Dates
 
                return $"Couldn't extract date elements from {pattern}".Failure<DateTime>();
             }, () => $"Didn't understand {pattern}".Failure<DateTime>(), failure<DateTime>);
+         }
       }
 
       public static void Sleep(this TimeSpan interval) => Thread.Sleep(interval);

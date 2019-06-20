@@ -27,14 +27,18 @@ namespace Core.Strings
       public void EvaluateAll(int index, params string[] text)
       {
          foreach (var item in text)
+         {
             Evaluate(index, item);
+         }
       }
 
       public void EvaluateAll(IEnumerable<string> enumerable)
       {
          var array = enumerable.ToArray();
          for (var i = 0; i < array.Length; i++)
+         {
             Evaluate(i, array[i]);
+         }
       }
 
       public string PadLeft(int index, string text, char paddingCharacter = ' ')
@@ -42,9 +46,13 @@ namespace Core.Strings
          index = withinBounds(index);
 
          if (text.IsNotEmpty())
+         {
             return Padder.PadLeft(text, maximumLengths[index], paddingCharacter);
+         }
          else
+         {
             return Repeat(index, paddingCharacter.ToString());
+         }
       }
 
       public string PadRight(int index, string text, char paddingCharacter = ' ')
@@ -52,9 +60,13 @@ namespace Core.Strings
          index = withinBounds(index);
 
          if (text.IsNotEmpty())
+         {
             return Padder.PadRight(text, maximumLengths[index], paddingCharacter);
+         }
          else
+         {
             return Repeat(index, paddingCharacter.ToString());
+         }
       }
 
       public string PadCenter(int index, string text, char paddingCharacter = ' ')
@@ -62,9 +74,13 @@ namespace Core.Strings
          index = withinBounds(index);
 
          if (text.IsNotEmpty())
+         {
             return Padder.PadCenter(text, maximumLengths[index], paddingCharacter);
+         }
          else
+         {
             return Repeat(index, paddingCharacter.ToString());
+         }
       }
 
       public string Pad(int index, string text, PadType type, char paddingCharacter = ' ')

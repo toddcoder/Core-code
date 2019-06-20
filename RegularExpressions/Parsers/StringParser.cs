@@ -27,38 +27,51 @@ namespace Core.RegularExpressions.Parsers
 							escaped = false;
 						}
 						else
-							escaped = true;
-						break;
+                  {
+                     escaped = true;
+                  }
+
+                  break;
 					case '\'':
 						if (quote == '\'')
-							if (escaped)
-							{
-								contents.Append("'");
-								escaped = false;
-							}
-							else
-							{
-								index = i + 1;
-								return contents.ToString().Escape(false).Enclose(enclose).Some();
-							}
-						else
-							contents.Append("'");
-						break;
+                  {
+                     if (escaped)
+                     {
+                        contents.Append("'");
+                        escaped = false;
+                     }
+                     else
+                     {
+                        index = i + 1;
+                        return contents.ToString().Escape(false).Enclose(enclose).Some();
+                     }
+                  }
+                  else
+                  {
+                     contents.Append("'");
+                  }
+
+                  break;
 					case '"':
 						if (quote == '"')
-							if (escaped)
-							{
-								contents.Append('"');
-								escaped = false;
-							}
-							else
-							{
-								index = i + 1;
-								return contents.ToString().Escape(false).Enclose(enclose).Some();
-							}
-						else
-							contents.Append('"');
-						break;
+                  {
+                     if (escaped)
+                     {
+                        contents.Append('"');
+                        escaped = false;
+                     }
+                     else
+                     {
+                        index = i + 1;
+                        return contents.ToString().Escape(false).Enclose(enclose).Some();
+                     }
+                  }
+                  else
+                  {
+                     contents.Append('"');
+                  }
+
+                  break;
 					case 't':
 						if (escaped)
 						{
@@ -66,8 +79,11 @@ namespace Core.RegularExpressions.Parsers
 							escaped = false;
 						}
 						else
-							contents.Append(ch);
-						break;
+                  {
+                     contents.Append(ch);
+                  }
+
+                  break;
 					case 'r':
 						if (escaped)
 						{
@@ -75,8 +91,11 @@ namespace Core.RegularExpressions.Parsers
 							escaped = false;
 						}
 						else
-							contents.Append(ch);
-						break;
+                  {
+                     contents.Append(ch);
+                  }
+
+                  break;
 					case 'n':
 						if (escaped)
 						{
@@ -84,8 +103,11 @@ namespace Core.RegularExpressions.Parsers
 							escaped = false;
 						}
 						else
-							contents.Append(ch);
-						break;
+                  {
+                     contents.Append(ch);
+                  }
+
+                  break;
 					default:
 						contents.Append(ch);
 						escaped = false;

@@ -15,7 +15,9 @@ namespace Core.Computers
       static void forEach(Action<FileName> action, FolderName folder, bool recursive)
       {
          foreach (var file in folder.Files)
+         {
             action(file);
+         }
 
          if (recursive) { }
       }

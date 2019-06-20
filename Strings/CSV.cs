@@ -19,7 +19,9 @@ namespace Core.Strings
          public Record(string record, Destringifier destringifier) : this()
          {
             foreach (var field in record.Split("','"))
+            {
                fields.Add(destringifier.Restring(field, false));
+            }
 
             isEmpty = false;
          }
@@ -36,7 +38,9 @@ namespace Core.Strings
             set
             {
                if (FieldExists(index))
+               {
                   fields[index] = value;
+               }
             }
          }
 
@@ -64,8 +68,12 @@ namespace Core.Strings
          destringifier = new Destringifier(source);
          var destringified = destringifier.Parse();
          if (source.IsNotEmpty())
+         {
             foreach (var record in destringified.Split("/r /n | /r | /n"))
+            {
                records.Add(getNewRecord(record, destringifier));
+            }
+         }
       }
 
       internal CSV(IEnumerable<Record> records, Destringifier destringifier)
@@ -74,10 +82,16 @@ namespace Core.Strings
          this.destringifier = destringifier;
          var ignored = false;
          foreach (var record in records)
+         {
             if (ignored)
+            {
                this.records.Add(record);
+            }
             else
+            {
                ignored = true;
+            }
+         }
       }
 
       public Record this[int index] => index > -1 && index < records.Count ? records[index] : new Record();
@@ -108,10 +122,16 @@ namespace Core.Strings
          evaluator.Object = some<T, object>(entity);
          var field = 0;
          foreach (var signature in signatures)
+         {
             if (record.FieldExists(field))
+            {
                evaluator[signature] = record[field++].ToObject();
+            }
             else
+            {
                break;
+            }
+         }
 
          return entity;
       }
@@ -125,7 +145,9 @@ namespace Core.Strings
             return getObject<T>(evaluator, records[0], signatures).Some();
          }
          else
+         {
             return none<T>();
+         }
       }
    }
 }

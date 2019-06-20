@@ -22,7 +22,9 @@ namespace Core.Exceptions
             return formatter.Format(format);
          }
          else
+         {
             return exception.Message;
+         }
       }
 
       static IMaybe<string[]> getCallStack(StackTrace stack, string format)
@@ -55,7 +57,9 @@ namespace Core.Exceptions
             return stackArray.Some();
          }
          else
+         {
             return none<string[]>();
+         }
       }
 
       public static IMaybe<string[]> CallStack(string format = "{string}", int skip = 2)
@@ -92,9 +96,13 @@ namespace Core.Exceptions
             return formatter.Format(format);
          }
          else if (exception is FullStackException fse)
+         {
             return fse.FullStackTrace;
+         }
          else
+         {
             return exception.StackTrace;
+         }
       }
 
       public static string DeepException(this Exception exception) => $"{exception.DeepMessage()}\r\n{exception.DeepStack()}";

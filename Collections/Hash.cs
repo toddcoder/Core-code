@@ -24,7 +24,9 @@ namespace Core.Collections
       public Hash(IEnumerable<(TKey key, TValue value)> tuples)
       {
          foreach (var (key, value) in tuples)
+         {
             this[key] = value;
+         }
       }
 
       public new TValue this[TKey key]
@@ -32,16 +34,24 @@ namespace Core.Collections
          get
          {
             if (ContainsKey(key))
+            {
                return base[key];
+            }
             else
+            {
                return default;
+            }
          }
          set
          {
             if (ContainsKey(key))
+            {
                base[key] = value;
+            }
             else
+            {
                Add(key, value);
+            }
          }
       }
 
@@ -50,16 +60,20 @@ namespace Core.Collections
          lock (new object())
          {
             if (If(key, out var result))
+            {
                return result;
+            }
             else
             {
                var value = defaultValue(key);
                if (addIfNotFound)
+               {
                   try
                   {
                      Add(key, value);
                   }
                   catch (ArgumentException) { }
+               }
 
                return value;
             }
@@ -85,7 +99,9 @@ namespace Core.Collections
       public void SetValueTo(TValue value, params TKey[] keys)
       {
          foreach (var key in keys)
+         {
             this[key] = value;
+         }
       }
 
       public HashTrying<TKey, TValue> TryTo => new HashTrying<TKey, TValue>(this);
@@ -95,7 +111,9 @@ namespace Core.Collections
       public void Copy(Hash<TKey, TValue> other)
       {
          foreach (var (key, value) in other)
+         {
             this[key] = value;
+         }
       }
 
       public bool If(TKey key, out TValue value, TValue defaultValue = default)
@@ -116,11 +134,16 @@ namespace Core.Collections
       {
 	      var result = new Hash<TKey, TValue>();
 	      foreach (var (key, value) in this)
-		      result[key] = value;
-	      foreach (var (key, value) in otherHash)
-		      result[key] = value;
+         {
+            result[key] = value;
+         }
 
-	      return result;
+         foreach (var (key, value) in otherHash)
+         {
+            result[key] = value;
+         }
+
+         return result;
       }
    }
 }

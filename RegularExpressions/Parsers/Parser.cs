@@ -54,7 +54,10 @@ namespace Core.RegularExpressions.Parsers
                .Where(result => result.IsSome))
             {
                if (result.If(out var r))
+               {
                   content.Append(r);
+               }
+
                added = true;
                break;
             }

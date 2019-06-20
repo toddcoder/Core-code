@@ -40,7 +40,7 @@ namespace Core.RegularExpressions
             length = Length;
          }
 
-	      public override string ToString() => Text;
+         public override string ToString() => Text;
       }
 
       public class Match : Group, IEnumerable<Group>
@@ -63,13 +63,15 @@ namespace Core.RegularExpressions
 
          public (string firstGroup, string secondGroup, string thirdGroup) Groups3() => (FirstGroup, SecondGroup, ThirdGroup);
 
-	      public IEnumerator<Group> GetEnumerator()
-	      {
-		      foreach (var group in Groups.Skip(1))
-			      yield return group;
-	      }
+         public IEnumerator<Group> GetEnumerator()
+         {
+            foreach (var group in Groups.Skip(1))
+            {
+               yield return group;
+            }
+         }
 
-	      IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
       }
 
       protected static Hash<string, string> friendlyPatterns;
@@ -126,7 +128,9 @@ namespace Core.RegularExpressions
       public virtual bool IsMatch(string input, string pattern, RegexOptions options)
       {
          if (friendly)
+         {
             pattern = getPattern(pattern);
+         }
 
          Pattern = pattern;
          var regex = new System.Text.RegularExpressions.Regex(pattern, options);
@@ -148,7 +152,9 @@ namespace Core.RegularExpressions
          foreach (var name in regex.GetGroupNames())
          {
             if (System.Text.RegularExpressions.Regex.IsMatch(name, @"^[+-]?\d+$"))
+            {
                continue;
+            }
 
             var index = regex.GroupNumberFromName(name);
             indexesToNames.Add(index, name);
@@ -163,9 +169,13 @@ namespace Core.RegularExpressions
          try
          {
             if (IsMatch(input, pattern, options))
+            {
                return matches.Matched();
+            }
             else
+            {
                return notMatched<Match[]>();
+            }
          }
          catch (Exception exception)
          {
@@ -183,9 +193,13 @@ namespace Core.RegularExpressions
          try
          {
             if (IsMatch(input, pattern, options))
+            {
                return matches[0].Matched();
+            }
             else
+            {
                return notMatched<Match>();
+            }
          }
          catch (Exception exception)
          {
@@ -230,38 +244,38 @@ namespace Core.RegularExpressions
 
       public string FifthGroup
       {
-	      get => this[0, 5];
-	      set => this[0, 5] = value;
+         get => this[0, 5];
+         set => this[0, 5] = value;
       }
 
       public string SixthGroup
       {
-	      get => this[0, 6];
-	      set => this[0, 6] = value;
+         get => this[0, 6];
+         set => this[0, 6] = value;
       }
 
       public string SeventhGroup
       {
-	      get => this[0, 7];
-	      set => this[0, 7] = value;
+         get => this[0, 7];
+         set => this[0, 7] = value;
       }
 
       public string EighthGroup
       {
-	      get => this[0, 8];
-	      set => this[0, 8] = value;
+         get => this[0, 8];
+         set => this[0, 8] = value;
       }
 
       public string NinthGroup
       {
-	      get => this[0, 9];
-	      set => this[0, 9] = value;
+         get => this[0, 9];
+         set => this[0, 9] = value;
       }
 
       public string TenthGroup
       {
-	      get => this[0, 10];
-	      set => this[0, 10] = value;
+         get => this[0, 10];
+         set => this[0, 10] = value;
       }
 
       public virtual bool IsMatch(string input, string pattern, bool ignoreCase = false, bool multiline = false)
@@ -336,7 +350,9 @@ namespace Core.RegularExpressions
          set
          {
             for (var i = 0; i < matches.Length; i++)
+            {
                this[i] = value;
+            }
          }
       }
 
@@ -369,15 +385,17 @@ namespace Core.RegularExpressions
 
       public IMaybe<int> IndexFromName(string name) => namesToIndexes.Map(name);
 
-	   public IEnumerator<Match> GetEnumerator()
-	   {
-		   foreach (var match in matches)
-			   yield return match;
+      public IEnumerator<Match> GetEnumerator()
+      {
+         foreach (var match in matches)
+         {
+            yield return match;
+         }
       }
 
       public override string ToString() => slicer.ToString();
 
-	   IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+      IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
       public void Deconstruct(out string group1, out string group2)
       {
@@ -478,8 +496,12 @@ namespace Core.RegularExpressions
       {
          var hash = new Hash<string, string>();
          for (var i = 0; i < GroupCount(0); i++)
+         {
             if (indexesToNames.If(i, out var name))
+            {
                hash[name] = this[0, 1];
+            }
+         }
 
          return hash;
       }

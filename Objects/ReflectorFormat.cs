@@ -108,12 +108,18 @@ namespace Core.Objects
                   }
 
                   if (chosen.If(out var ch))
+                  {
                      members[reflectorReplacement.MemberName] = new Pair(reflectorReplacement, ch);
+                  }
                   else
+                  {
                      return failedFind(type, reflectorReplacement.MemberName);
+                  }
                }
                else
+               {
                   return failedFind(type, reflectorReplacement.MemberName);
+               }
             }
 
             return new MemberData(members, r.Source).Success();
@@ -144,7 +150,9 @@ namespace Core.Objects
          var slicer = new Slicer(memberData.Source);
 
          foreach (var item in memberData.Pairs)
+         {
             item.Value.Replace(obj, slicer);
+         }
 
          return slicer.ToString();
       });

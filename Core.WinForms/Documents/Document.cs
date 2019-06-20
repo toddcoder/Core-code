@@ -78,10 +78,15 @@ namespace Core.WinForms.Documents
 			textBox.TextChanged += (sender, e) =>
 			{
 				if (!keepClean)
-					Dirty();
-				if (colorizer.If(out var c))
-					c.Colorize(textBox);
-			};
+            {
+               Dirty();
+            }
+
+            if (colorizer.If(out var c))
+            {
+               c.Colorize(textBox);
+            }
+         };
 
 			form.FormClosing += (sender, e) => Close(e);
 
@@ -235,8 +240,10 @@ namespace Core.WinForms.Documents
 		public virtual void Open()
 		{
 			if (openFileDialog.ShowDialog() == DialogResult.OK)
-				Open(openFileDialog.FileName);
-		}
+         {
+            Open(openFileDialog.FileName);
+         }
+      }
 
 		public virtual bool OpenIf(out DialogResult dialogResult)
 		{
@@ -258,8 +265,11 @@ namespace Core.WinForms.Documents
 		{
 			file = fileName.Some();
 			if (file.If(out var f))
-				textBox.Text = f.Lines.Stringify("\r\n");
-			Clean();
+         {
+            textBox.Text = f.Lines.Stringify("\r\n");
+         }
+
+         Clean();
 		}
 
 		public virtual void DisplayFileName()
@@ -273,12 +283,17 @@ namespace Core.WinForms.Documents
 					title.Append(" - ");
 					title.Append(formName);
 					if (IsDirty)
-						title.Append(" *");
-					form.Text = title.ToString();
+               {
+                  title.Append(" *");
+               }
+
+               form.Text = title.ToString();
 				}
 				else
-					form.Text = formName;
-			}
+            {
+               form.Text = formName;
+            }
+         }
 		}
 
 		protected string getText() => GetWindowsText(textBox.Text);
@@ -288,19 +303,28 @@ namespace Core.WinForms.Documents
 		public virtual void Save()
 		{
 			if (IsDirty)
-				if (file.IsSome)
-					save();
-				else
-					SaveAs();
-		}
+         {
+            if (file.IsSome)
+            {
+               save();
+            }
+            else
+            {
+               SaveAs();
+            }
+         }
+      }
 
 		protected virtual void save()
 		{
 			if (file.If(out var f))
 			{
 				if (f.Exists())
-					f.Delete();
-				f.Encoding = Encoding.UTF8;
+            {
+               f.Delete();
+            }
+
+            f.Encoding = Encoding.UTF8;
 				f.Text = getText();
 			}
 
@@ -316,8 +340,10 @@ namespace Core.WinForms.Documents
 				save();
 			}
 			else
-				CancelButtonClicked?.Invoke(this, new EventArgs());
-		}
+         {
+            CancelButtonClicked?.Invoke(this, new EventArgs());
+         }
+      }
 
 		public virtual void Close(FormClosingEventArgs e)
 		{
@@ -351,8 +377,10 @@ namespace Core.WinForms.Documents
 		public virtual void Redo()
 		{
 			if (textBox.CanRedo)
-				textBox.Redo();
-		}
+         {
+            textBox.Redo();
+         }
+      }
 
 		public virtual void Cut() => textBox.Cut();
 
@@ -362,14 +390,18 @@ namespace Core.WinForms.Documents
 		{
 			var clipFormat = DataFormats.GetFormat(DataFormats.Text);
 			if (textBox.CanPaste(clipFormat))
-				textBox.Paste(clipFormat);
-		}
+         {
+            textBox.Paste(clipFormat);
+         }
+      }
 
 		public virtual void Delete()
 		{
 			if (textBox.SelectionLength > 0)
-				textBox.SelectedText = "";
-		}
+         {
+            textBox.SelectedText = "";
+         }
+      }
 
 		public virtual void SelectAll() => textBox.SelectAll();
 

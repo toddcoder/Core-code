@@ -14,13 +14,17 @@ namespace Core.Enumerables
 			var first = true;
 
 			foreach (var item in enumerable)
-				if (first)
-				{
-					firstAction(item);
-					first = false;
-				}
-				else
-					restAction(item);
-		}
+         {
+            if (first)
+            {
+               firstAction(item);
+               first = false;
+            }
+            else
+            {
+               restAction(item);
+            }
+         }
+      }
 	}
 }

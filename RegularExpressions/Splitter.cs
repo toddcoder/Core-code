@@ -15,9 +15,11 @@ namespace Core.RegularExpressions
 		{
 			var items = input.Split(pattern, options);
 			if (pattern.StartsWith("/(") && pattern.EndsWith(")"))
-				pattern = "";
+         {
+            pattern = "";
+         }
 
-			return items.Select(getSubPattern).Stringify(pattern);
+         return items.Select(getSubPattern).Stringify(pattern);
 		}
 
 		protected string getSubPattern(string item)

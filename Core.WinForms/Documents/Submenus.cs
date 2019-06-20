@@ -30,9 +30,13 @@ namespace Core.WinForms.Documents
 		public IEnumerator<ToolStripMenuItem> GetEnumerator()
 		{
 			foreach (var dropDownItem in parent.DropDownItems)
-				if (dropDownItem is ToolStripMenuItem item)
-					yield return item;
-		}
+         {
+            if (dropDownItem is ToolStripMenuItem item)
+            {
+               yield return item;
+            }
+         }
+      }
 
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 	}

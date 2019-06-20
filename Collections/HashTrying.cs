@@ -16,11 +16,15 @@ namespace Core.Collections
       {
          var result = this[key];
          if (result.IsSuccessful)
+         {
             return result;
+         }
          else
          {
             if (defaultValue(key).If(out var value) && addIfNotFound)
+            {
                hash.Add(key, value);
+            }
 
             return defaultValue(key);
          }

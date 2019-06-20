@@ -53,25 +53,36 @@ namespace Core.Collections
                   return base[key];
                case DefaultType.Value:
                   if (ContainsKey(key))
+                  {
                      return base[key];
+                  }
                   else
                   {
                      result = DefaultValue;
                      if (AutoAddDefault)
+                     {
                         this[key] = result;
+                     }
 
                      return result;
                   }
                case DefaultType.Lambda:
                   if (ContainsKey(key))
+                  {
                      return base[key];
+                  }
                   else
                   {
                      if (DefaultLambda == null)
+                     {
                         DefaultLambda = k => default;
+                     }
+
                      result = DefaultLambda(key);
                      if (AutoAddDefault)
+                     {
                         this[key] = result;
+                     }
 
                      return result;
                   }

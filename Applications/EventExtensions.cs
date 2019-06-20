@@ -24,8 +24,10 @@ namespace Core.Applications
 					return eventHandler.Some();
 				}
 				else
-					return none<Delegate>();
-			}
+            {
+               return none<Delegate>();
+            }
+         }
 			catch
 			{
 				return none<Delegate>();

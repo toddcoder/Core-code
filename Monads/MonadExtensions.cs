@@ -22,12 +22,18 @@ namespace Core.Monads
 				var first = enumerable.First();
 
 				if (first.IsNull())
-					return none<T>();
-				else if (first.Equals(default))
-					return none<T>();
-				else
-					return first.Some();
-			}
+            {
+               return none<T>();
+            }
+            else if (first.Equals(default))
+            {
+               return none<T>();
+            }
+            else
+            {
+               return first.Some();
+            }
+         }
 			catch
 			{
 				return none<T>();
@@ -41,12 +47,18 @@ namespace Core.Monads
 				var last = enumerable.Last();
 
 				if (last.IsNull())
-					return none<T>();
-				else if (last.Equals(default))
-					return none<T>();
-				else
-					return last.Some();
-			}
+            {
+               return none<T>();
+            }
+            else if (last.Equals(default))
+            {
+               return none<T>();
+            }
+            else
+            {
+               return last.Some();
+            }
+         }
 			catch
 			{
 				return none<T>();
@@ -57,19 +69,27 @@ namespace Core.Monads
 		{
 			var first = enumerable.First();
 			if (first.IsNull())
-				return "Default value".Failure<T>();
-			else
-				return first.Success();
-		});
+         {
+            return "Default value".Failure<T>();
+         }
+         else
+         {
+            return first.Success();
+         }
+      });
 
 		public static IResult<T> LastOrFail<T>(this IEnumerable<T> enumerable) => tryTo(() =>
 		{
 			var last = enumerable.Last();
 			if (last.IsNull())
-				return "Default value".Failure<T>();
-			else
-				return last.Success();
-		});
+         {
+            return "Default value".Failure<T>();
+         }
+         else
+         {
+            return last.Success();
+         }
+      });
 
 		public static IMaybe<T> FirstOrNone<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate)
 		{
@@ -78,12 +98,18 @@ namespace Core.Monads
 				var first = enumerable.First(predicate);
 
 				if (first.IsNull())
-					return none<T>();
-				else if (first.Equals(default))
-					return none<T>();
-				else
-					return first.Some();
-			}
+            {
+               return none<T>();
+            }
+            else if (first.Equals(default))
+            {
+               return none<T>();
+            }
+            else
+            {
+               return first.Some();
+            }
+         }
 			catch
 			{
 				return none<T>();
@@ -97,12 +123,18 @@ namespace Core.Monads
 				var last = enumerable.Last(predicate);
 
 				if (last.IsNull())
-					return none<T>();
-				else if (last.Equals(default))
-					return none<T>();
-				else
-					return last.Some();
-			}
+            {
+               return none<T>();
+            }
+            else if (last.Equals(default))
+            {
+               return none<T>();
+            }
+            else
+            {
+               return last.Some();
+            }
+         }
 			catch
 			{
 				return none<T>();
@@ -116,12 +148,18 @@ namespace Core.Monads
 				var first = enumerable.First(predicate);
 
 				if (first.IsNull())
-					return notMatched<T>();
-				else if (first.Equals(default))
-					return notMatched<T>();
-				else
-					return first.Matched();
-			}
+            {
+               return notMatched<T>();
+            }
+            else if (first.Equals(default))
+            {
+               return notMatched<T>();
+            }
+            else
+            {
+               return first.Matched();
+            }
+         }
 			catch (Exception exception)
 			{
 				return failedMatch<T>(exception);
@@ -135,12 +173,18 @@ namespace Core.Monads
 				var last = enumerable.Last(predicate);
 
 				if (last.IsNull())
-					return notMatched<T>();
-				else if (last.Equals(default))
-					return notMatched<T>();
-				else
-					return last.Matched();
-			}
+            {
+               return notMatched<T>();
+            }
+            else if (last.Equals(default))
+            {
+               return notMatched<T>();
+            }
+            else
+            {
+               return last.Matched();
+            }
+         }
 			catch (Exception exception)
 			{
 				return failedMatch<T>(exception);
@@ -154,12 +198,18 @@ namespace Core.Monads
 				var first = enumerable.First();
 
 				if (first.IsNull())
-					return notMatched<T>();
-				else if (first.Equals(default))
-					return notMatched<T>();
-				else
-					return first.Matched();
-			}
+            {
+               return notMatched<T>();
+            }
+            else if (first.Equals(default))
+            {
+               return notMatched<T>();
+            }
+            else
+            {
+               return first.Matched();
+            }
+         }
 			catch (Exception exception)
 			{
 				return failedMatch<T>(exception);
@@ -173,12 +223,18 @@ namespace Core.Monads
 				var last = enumerable.Last();
 
 				if (last.IsNull())
-					return notMatched<T>();
-				else if (last.Equals(default))
-					return notMatched<T>();
-				else
-					return last.Matched();
-			}
+            {
+               return notMatched<T>();
+            }
+            else if (last.Equals(default))
+            {
+               return notMatched<T>();
+            }
+            else
+            {
+               return last.Matched();
+            }
+         }
 			catch (Exception exception)
 			{
 				return failedMatch<T>(exception);
@@ -188,8 +244,10 @@ namespace Core.Monads
 		public static IMaybe<Type> UnderlyingType(this object obj)
 		{
 			if (obj.IsNull())
-				return none<Type>();
-			else
+         {
+            return none<Type>();
+         }
+         else
 			{
 				var type = obj.GetType();
 				return type.UnderlyingTypeOf();
@@ -199,10 +257,14 @@ namespace Core.Monads
 		public static IMaybe<Type> UnderlyingTypeOf(this Type type)
 		{
 			if (type.Name.IsMatch("^ ('IMaybe' | 'Some' | 'None') '`1'"))
-				return type.GetGenericArguments().FirstOrNone();
-			else
-				return none<Type>();
-		}
+         {
+            return type.GetGenericArguments().FirstOrNone();
+         }
+         else
+         {
+            return none<Type>();
+         }
+      }
 
 		public static IMaybe<TResult> SelectMany<T, TResult>(this IMaybe<T> maybe, Func<T, IMaybe<TResult>> projection)
 		{
@@ -228,10 +290,14 @@ namespace Core.Monads
 		public static IResult<TResult> Select<T, TResult>(this IResult<T> result, Func<T, TResult> func)
 		{
 			if (result.If(out var value))
-				return func(value).Success();
-			else
-				return failure<TResult>(result.Exception);
-		}
+         {
+            return func(value).Success();
+         }
+         else
+         {
+            return failure<TResult>(result.Exception);
+         }
+      }
 
 		public static bool Assign<T>(this IMaybe<T> maybe, out T value)
 		{
@@ -255,45 +321,65 @@ namespace Core.Monads
 		public static IResult<T> Result<T>(this bool test, Func<T> ifFunc, string exceptionMessage)
 		{
 			if (test)
-				return ifFunc().Success();
-			else
-				return exceptionMessage.Failure<T>();
-		}
+         {
+            return ifFunc().Success();
+         }
+         else
+         {
+            return exceptionMessage.Failure<T>();
+         }
+      }
 
 		public static IResult<T> Result<T>(this bool test, Func<T> ifFunc, Func<string> exceptionMessage)
 		{
 			if (test)
-				return ifFunc().Success();
-			else
-				return exceptionMessage().Failure<T>();
-		}
+         {
+            return ifFunc().Success();
+         }
+         else
+         {
+            return exceptionMessage().Failure<T>();
+         }
+      }
 
 		public static IResult<T> Result<T>(this bool test, Func<IResult<T>> ifFunc, string exceptionMessage)
 		{
 			if (test)
-				return ifFunc();
-			else
-				return exceptionMessage.Failure<T>();
-		}
+         {
+            return ifFunc();
+         }
+         else
+         {
+            return exceptionMessage.Failure<T>();
+         }
+      }
 
 		public static IResult<T> Result<T>(this bool test, Func<IResult<T>> ifFunc,
 			Func<string> exceptionMessage)
 		{
 			if (test)
-				return ifFunc();
-			else
-				return exceptionMessage().Failure<T>();
-		}
+         {
+            return ifFunc();
+         }
+         else
+         {
+            return exceptionMessage().Failure<T>();
+         }
+      }
 
 		public static IMatched<T> Matching<T>(this bool test, Func<T> ifFunc)
 		{
 			try
 			{
 				if (test)
-					return ifFunc().Matched();
-				else
-					return notMatched<T>();
-			}
+            {
+               return ifFunc().Matched();
+            }
+            else
+            {
+               return notMatched<T>();
+            }
+         }
 			catch (Exception exception)
 			{
 				return failedMatch<T>(exception);
@@ -365,15 +451,21 @@ namespace Core.Monads
 		{
 			var firstItem = none<TResult>();
 			foreach (var result in enumerable.Select(item => tryTo(() => func(item))))
-				if (result.Out(out var value, out var original))
-				{
-					if (firstItem.IsNone)
-						firstItem = value.Some();
-				}
-				else
-					return original;
+         {
+            if (result.Out(out var value, out var original))
+            {
+               if (firstItem.IsNone)
+               {
+                  firstItem = value.Some();
+               }
+            }
+            else
+            {
+               return original;
+            }
+         }
 
-			return firstItem.Result("Enumerable empty");
+         return firstItem.Result("Enumerable empty");
 		});
 
 		public static IResult<TResult> ForAny<TSource, TResult>(this IResult<IEnumerable<TSource>> enumerable,
@@ -386,16 +478,18 @@ namespace Core.Monads
 			Action<TSource> action, TResult result) => tryTo(() =>
 		{
 			foreach (var item in enumerable)
-				try
-				{
-					action(item);
-				}
-				catch (Exception exception)
-				{
-					return failure<TResult>(exception);
-				}
+         {
+            try
+            {
+               action(item);
+            }
+            catch (Exception exception)
+            {
+               return failure<TResult>(exception);
+            }
+         }
 
-			return result.Success();
+         return result.Success();
 		});
 
 		public static IResult<TResult> ForAny<TSource, TResult>(this IResult<IEnumerable<TSource>> enumerable,
@@ -408,16 +502,18 @@ namespace Core.Monads
 			Action<TSource> action, Func<TResult> result) => tryTo(() =>
 		{
 			foreach (var item in enumerable)
-				try
-				{
-					action(item);
-				}
-				catch (Exception exception)
-				{
-					return failure<TResult>(exception);
-				}
+         {
+            try
+            {
+               action(item);
+            }
+            catch (Exception exception)
+            {
+               return failure<TResult>(exception);
+            }
+         }
 
-			return result().Success();
+         return result().Success();
 		});
 
 		public static IResult<TResult> ForAny<TSource, TResult>(this IResult<IEnumerable<TSource>> enumerable,
@@ -471,51 +567,67 @@ namespace Core.Monads
 		public static T ThrowIfFailed<T>(this IResult<T> result)
 		{
 			if (result.If(out var value))
-				return value;
-			else
-				throw result.Exception;
-		}
+         {
+            return value;
+         }
+         else
+         {
+            throw result.Exception;
+         }
+      }
 
 		public static void ForEach<T>(this IResult<IEnumerable<T>> enumerable, Action<T> ifSuccess,
 			Action<Exception> ifFailure)
 		{
 			if (enumerable.If(out var e))
-				e.ForEach(ifSuccess, ifFailure);
-			else
-				ifFailure(enumerable.Exception);
-		}
+         {
+            e.ForEach(ifSuccess, ifFailure);
+         }
+         else
+         {
+            ifFailure(enumerable.Exception);
+         }
+      }
 
 		public static void ForEach<T>(this IEnumerable<T> enumerable, Action<T> ifSuccess, Action<Exception> ifFailure)
 		{
 			using (var enumerator = enumerable.GetEnumerator())
-				while (true)
-				{
-					var movedNext = false;
-					var value = default(T);
-					try
-					{
-						movedNext = enumerator.MoveNext();
-						if (movedNext)
-							value = enumerator.Current;
-						else
-							break;
-					}
-					catch (Exception exception)
-					{
-						ifFailure(exception);
-					}
+         {
+            while (true)
+            {
+               var movedNext = false;
+               var value = default(T);
+               try
+               {
+                  movedNext = enumerator.MoveNext();
+                  if (movedNext)
+                  {
+                     value = enumerator.Current;
+                  }
+                  else
+                  {
+                     break;
+                  }
+               }
+               catch (Exception exception)
+               {
+                  ifFailure(exception);
+               }
 
-					try
-					{
-						if (movedNext)
-							ifSuccess(value);
-					}
-					catch (Exception exception)
-					{
-						ifFailure(exception);
-					}
-				}
-		}
+               try
+               {
+                  if (movedNext)
+                  {
+                     ifSuccess(value);
+                  }
+               }
+               catch (Exception exception)
+               {
+                  ifFailure(exception);
+               }
+            }
+         }
+      }
 
 		public static IMaybe<T> IfCast<T>(this object obj) => obj is T t ? t.Some() : none<T>();
 
@@ -705,15 +817,23 @@ namespace Core.Monads
 		public static IEnumerable<T> SomeValue<T>(this IEnumerable<IMaybe<T>> enumerable)
 		{
 			foreach (var source in enumerable)
-				if (source.If(out var value))
-					yield return value;
-		}
+         {
+            if (source.If(out var value))
+            {
+               yield return value;
+            }
+         }
+      }
 
 		public static IEnumerable<T> SuccessfulValue<T>(this IEnumerable<IResult<T>> enumerable)
 		{
 			foreach (var result in enumerable)
-				if (result.If(out var value))
-					yield return value;
-		}
+         {
+            if (result.If(out var value))
+            {
+               yield return value;
+            }
+         }
+      }
 	}
 }

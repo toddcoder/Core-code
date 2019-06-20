@@ -21,12 +21,21 @@ namespace Core.WinForms.Consoles
 		public void Add(string line)
 		{
 			if (line.IsNotEmpty())
-				if (lines.Count > 0)
-					if (lines.Last() != line)
-						lines.Add(line);
-					else
-						lines.Add(line);
-			position = lines.Count;
+         {
+            if (lines.Count > 0)
+            {
+               if (lines.Last() != line)
+               {
+                  lines.Add(line);
+               }
+               else
+               {
+                  lines.Add(line);
+               }
+            }
+         }
+
+         position = lines.Count;
 		}
 
 		public IMaybe<string> Current => maybe(position.Between(0).Until(lines.Count), () => lines[position]);
@@ -39,8 +48,10 @@ namespace Core.WinForms.Consoles
 				return Current;
 			}
 			else
-				return none<string>();
-		}
+         {
+            return none<string>();
+         }
+      }
 
 		public IMaybe<string> Backward()
 		{
@@ -50,7 +61,9 @@ namespace Core.WinForms.Consoles
 				return Current;
 			}
 			else
-				return none<string>();
-		}
+         {
+            return none<string>();
+         }
+      }
 	}
 }

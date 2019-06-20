@@ -37,26 +37,40 @@ namespace Core.Dates.Relative
       public IResult<DateTime> Month(DateTime date)
       {
          if (isRelative)
+         {
             return date.AddMonths(amount).Success();
+         }
          else if (amount.Between(1).And(12))
+         {
             return new DateTime(date.Year, date.Month, safeDay(date, amount)).Success();
+         }
          else
+         {
             return $"Month {amount} must be in range 1 to 12".Failure<DateTime>();
+         }
       }
 
       public IResult<DateTime> Day(DateTime date)
       {
          if (isRelative)
+         {
             return date.AddDays(amount).Success();
+         }
          else if (amount == 0)
+         {
             return date.LastOfMonth().Success();
+         }
          else
          {
             var lastOfMonth = date.Month.LastOfMonth(date.Year);
             if (amount <= lastOfMonth)
+            {
                return new DateTime(date.Year, date.Month, amount).Success();
+            }
             else
+            {
                return $"Day {amount} must be in range 1-{lastOfMonth} for {date.Month}/{date.Year}".Failure<DateTime>();
+            }
          }
       }
    }

@@ -50,17 +50,21 @@ namespace Core.Applications
 			}
 
 			for (var i = 0; i < array.Length; i++)
-				listSlices[i % numberOfThreads].indexes.AddLast(i);
-		}
+         {
+            listSlices[i % numberOfThreads].indexes.AddLast(i);
+         }
+      }
 
 		void doWork(object o)
 		{
 			var slicedList = (SlicedList<T>)o;
 
 			foreach (var i in slicedList.indexes)
-				action(slicedList.items[i]);
+         {
+            action(slicedList.items[i]);
+         }
 
-			slicedList.manualResetEvent.Set();
+         slicedList.manualResetEvent.Set();
 		}
 	}
 

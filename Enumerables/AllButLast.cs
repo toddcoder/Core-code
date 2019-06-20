@@ -20,9 +20,13 @@ namespace Core.Enumerables
                var current = enumerator.Current;
                last = !enumerator.MoveNext();
                if (last)
+               {
                   lastAction(current);
+               }
                else
+               {
                   restAction(current);
+               }
             }
          }
       }

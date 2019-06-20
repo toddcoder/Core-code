@@ -103,8 +103,10 @@ namespace Core.Computers
 					userName = matcher[0, 2];
 				}
 				else
-					userName = value;
-			}
+            {
+               userName = value;
+            }
+         }
 		}
 
 		public string Password { get; set; }
@@ -119,10 +121,15 @@ namespace Core.Computers
 			set
 			{
 				if (value)
-					impersonate();
-				else
-					unimpersonate();
-				impersonating = value;
+            {
+               impersonate();
+            }
+            else
+            {
+               unimpersonate();
+            }
+
+            impersonating = value;
 			}
 		}
 
@@ -133,8 +140,10 @@ namespace Core.Computers
 			Assert(Password.IsNotEmpty(), "Password not set");
 
 			if (LogonUser(UserName, Domain, Password, (int)Type, (int)Provider, out tokenHandle) != 0)
-				throw new IdentityException(Domain, UserName);
-			else if (DuplicateToken(tokenHandle, SECURITY_IMPERSONATION, out dupTokenHandle) == 0)
+         {
+            throw new IdentityException(Domain, UserName);
+         }
+         else if (DuplicateToken(tokenHandle, SECURITY_IMPERSONATION, out dupTokenHandle) == 0)
 			{
 				CloseHandle(tokenHandle);
 				throw new IdentityException(Domain, UserName);
@@ -155,11 +164,16 @@ namespace Core.Computers
 				iu.Undo();
 
 				if (tokenHandle != IntPtr.Zero)
-					CloseHandle(tokenHandle);
+            {
+               CloseHandle(tokenHandle);
+            }
 
-				if (dupTokenHandle != IntPtr.Zero)
-					CloseHandle(dupTokenHandle);
-				impersonatedUser = none<WindowsImpersonationContext>();
+            if (dupTokenHandle != IntPtr.Zero)
+            {
+               CloseHandle(dupTokenHandle);
+            }
+
+            impersonatedUser = none<WindowsImpersonationContext>();
 			}
 
 			impersonating = false;
@@ -168,8 +182,10 @@ namespace Core.Computers
 		void dispose()
 		{
 			if (impersonating)
-				unimpersonate();
-		}
+         {
+            unimpersonate();
+         }
+      }
 
 		public void Dispose()
 		{

@@ -43,12 +43,20 @@ namespace Core.Objects
             var current = obj;
 
             foreach (var s in new SignatureCollection(signature))
+            {
                if (current.IsNull())
+               {
                   return null;
+               }
                else if (new ObjectInfo(current, s).Value.If(out var value))
+               {
                   current = value;
+               }
                else
+               {
                   return null;
+               }
+            }
 
             return current;
          }
@@ -116,28 +124,48 @@ namespace Core.Objects
       public bool Contains(string signature)
       {
          if (signature.IsMatch("[/w '.[]']+"))
+         {
             if (signature.Split("'.'").All(s => s.IsMatch(Signature.REGEX_FORMAT)))
             {
                var current = obj;
 
                foreach (var singleSignature in new SignatureCollection(signature))
+               {
                   if (current.IsNotNull())
+                  {
                      if (ObjectInfo.PropertyInfo(current, singleSignature).If(out var info))
+                     {
                         if (new ObjectInfo(current, singleSignature, info).Value.If(out var value))
+                        {
                            current = value;
+                        }
                         else
+                        {
                            return false;
+                        }
+                     }
                      else
+                     {
                         return false;
+                     }
+                  }
                   else
+                  {
                      return false;
+                  }
+               }
 
                return true;
             }
             else
+            {
                return false;
+            }
+         }
          else
+         {
             return false;
+         }
       }
 
       public Hash<string, object> ToHash()
@@ -146,7 +174,9 @@ namespace Core.Objects
          var info = obj.GetType().GetProperties();
 
          foreach (var pInfo in info)
+         {
             hash[pInfo.Name] = this[pInfo.Name];
+         }
 
          return hash;
       }
@@ -166,7 +196,9 @@ namespace Core.Objects
             .Select(i => new Signature(i.Name));
 
          foreach (var signature in properties)
+         {
             return ((IHash<Signature, object>)this).Map(signature, o => (T)o);
+         }
 
          return none<T>();
       }

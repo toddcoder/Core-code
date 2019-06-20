@@ -55,7 +55,10 @@ namespace Core.Objects
       {
          evaluator = GetEvaluator(entity);
          if (isConvertible && getIsConvertible(value?.GetType()))
+         {
             value = Convert.ChangeType(value, PropertyType);
+         }
+
          evaluator[Signature] = value;
       }
    }

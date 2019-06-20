@@ -51,9 +51,13 @@ namespace Core.Enumerables
             get
             {
                if (current.If(out var value))
+               {
                   return value;
+               }
                else
+               {
                   throw "MoveNext not called".Throws();
+               }
             }
          }
 
@@ -95,11 +99,16 @@ namespace Core.Enumerables
 
          increment = newIncrement;
          if (increment < 0)
+         {
             endingPredicate = inclusive ? ((Func<int, int, bool>)((x, y) => x >= y)).Some() :
                ((Func<int, int, bool>)((x, y) => x > y)).Some();
+         }
          else
+         {
             endingPredicate = inclusive ? ((Func<int, int, bool>)((x, y) => x <= y)).Some() :
                ((Func<int, int, bool>)((x, y) => x < y)).Some();
+         }
+
          return this;
       }
 

@@ -29,8 +29,10 @@ namespace Core.Applications
 			length = originalArguments.Length;
 			this.arguments = new Argument[length];
 			for (var i = 0; i < length; i++)
-				this.arguments[i] = new Argument(originalArguments[i], i);
-		}
+         {
+            this.arguments[i] = new Argument(originalArguments[i], i);
+         }
+      }
 
 		public Arguments(string arguments) : this(splitArguments(arguments)) { }
 
@@ -58,34 +60,44 @@ namespace Core.Applications
 		public void AssertCount(int exactCount)
 		{
 			if (length != exactCount)
-				throw $"Expected exact count of {exactCount}".Throws();
-		}
+         {
+            throw $"Expected exact count of {exactCount}".Throws();
+         }
+      }
 
 		public void AssertCount(int minimumCount, int maximumCount)
 		{
 			if (!length.Between(minimumCount).And(maximumCount))
-				$"Count must between {minimumCount} and {maximumCount}--found {length}".Throws();
-		}
+         {
+            $"Count must between {minimumCount} and {maximumCount}--found {length}".Throws();
+         }
+      }
 
 		public void AssertMinimumCount(int minimumCount)
 		{
 			if (length < minimumCount)
-				throw $"Count must be at least {minimumCount}--found {length}".Throws();
-		}
+         {
+            throw $"Count must be at least {minimumCount}--found {length}".Throws();
+         }
+      }
 
 		public void AssertMaximumCount(int maximumCount)
 		{
 			if (length > maximumCount)
-				throw $"Count must be at most {maximumCount}--found {length}".Throws();
-		}
+         {
+            throw $"Count must be at most {maximumCount}--found {length}".Throws();
+         }
+      }
 
 		public IMaybe<Argument> Argument(int index) => maybe(Exists(index), () => arguments[index]);
 
 		public IEnumerator<Argument> GetEnumerator()
 		{
 			foreach (var argument in arguments)
-				yield return argument;
-		}
+         {
+            yield return argument;
+         }
+      }
 
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
@@ -94,14 +106,16 @@ namespace Core.Applications
 			var result = new Hash<string, string>();
 
 			foreach (var text in arguments.Select(argument => argument.Text))
-				if (text.IsMatch(pattern, true))
-				{
-					var key = text.Substitute(pattern, keyReplacement, true);
-					var value = text.Substitute(pattern, valueReplacement, true);
-					result[key] = value;
-				}
+         {
+            if (text.IsMatch(pattern, true))
+            {
+               var key = text.Substitute(pattern, keyReplacement, true);
+               var value = text.Substitute(pattern, valueReplacement, true);
+               result[key] = value;
+            }
+         }
 
-			return result;
+         return result;
 		}
 
 		public ArgumentsTrying TryTo => new ArgumentsTrying(this);

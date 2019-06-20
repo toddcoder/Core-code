@@ -54,35 +54,53 @@ namespace Core.Objects
             {
                var parameters = inf.GetIndexParameters();
                if (index.If(out var ind))
+               {
                   if (parameters.Length == 0)
+                  {
                      return getValue(ind);
+                  }
                   else
+                  {
                      return inf.GetValue(obj, getIndex(ind)).Some();
+                  }
+               }
                else if (parameters.Length > 0)
+               {
                   return none<object>();
+               }
                else
+               {
                   return inf.GetValue(obj, null).Some();
+               }
             }
             else
+            {
                return none<object>();
+            }
          }
          set
          {
             var val = value.Required("Value must be set to a Some");
             var parameters = info.Required("No property exists for signature").GetIndexParameters();
             if (info.If(out var inf))
+            {
                if (index.If(out var i))
                {
                   if (parameters.Length == 0)
+                  {
                      Assert(setValue(val), "Value couldn't be set");
+                  }
                   else
+                  {
                      inf.SetValue(obj, val, getIndex(i));
+                  }
                }
                else
                {
                   Assert(parameters.Length == 0, "Index parameters not specified");
                   inf.SetValue(obj, val, null);
                }
+            }
          }
       }
 
@@ -92,8 +110,11 @@ namespace Core.Objects
          {
             var result = inf.GetValue(obj, null);
             if (result.IsNull())
+            {
                return result.Some();
+            }
             else
+            {
                switch (result)
                {
                   case Array array:
@@ -103,9 +124,12 @@ namespace Core.Objects
                   default:
                      return none<object>();
                }
+            }
          }
          else
+         {
             return none<object>();
+         }
       }
 
       static object[] getIndex(int singleIndex) => new object[] { singleIndex };
@@ -116,8 +140,11 @@ namespace Core.Objects
          {
             var result = i.GetValue(obj, null);
             if (result.IsNull())
+            {
                return false;
+            }
             else if (index.If(out var idx))
+            {
                switch (result)
                {
                   case Array array:
@@ -129,11 +156,16 @@ namespace Core.Objects
                   default:
                      return false;
                }
+            }
             else
+            {
                return false;
+            }
          }
          else
+         {
             return false;
+         }
       }
    }
 }

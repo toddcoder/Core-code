@@ -22,10 +22,14 @@ namespace Core.Configurations
 			set
 			{
 				if (value.If(out var configurationNode))
-					children[childName] = configurationNode;
-				else
-					children.Remove(childName);
-			}
+            {
+               children[childName] = configurationNode;
+            }
+            else
+            {
+               children.Remove(childName);
+            }
+         }
 		}
 	}
 }

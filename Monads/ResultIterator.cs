@@ -22,16 +22,22 @@ namespace Core.Monads
          if (result.If(out var value, out var exception))
          {
             if (success.If(out var action))
+            {
                action(value);
+            }
          }
          else if (failure.If(out var faction))
+         {
             faction(exception);
+         }
       }
 
       public IEnumerable<IResult<T>> All()
       {
          foreach (var result in enumerable)
+         {
             handle(result);
+         }
 
          return enumerable;
       }
@@ -44,7 +50,9 @@ namespace Core.Monads
          {
             handle(result);
             if (result.If(out var t))
+            {
                list.Add(t);
+            }
          }
 
          return list;
@@ -58,7 +66,9 @@ namespace Core.Monads
          {
             handle(result);
             if (result.IfNot(out var e))
+            {
                list.Add(e);
+            }
          }
 
          return list;
@@ -72,9 +82,13 @@ namespace Core.Monads
          {
             handle(result);
             if (result.If(out var value, out var exception))
+            {
                list.Add(value);
+            }
             else
+            {
                return (list, exception.Some());
+            }
          }
 
          return (list, MonadFunctions.none<Exception>());
@@ -88,9 +102,13 @@ namespace Core.Monads
          {
             handle(result);
             if (result.Out(out var value, out var original))
+            {
                list.Add(value);
+            }
             else
+            {
                return original.ExceptionAs<IEnumerable<T>>();
+            }
          }
 
          return MonadFunctions.success<IEnumerable<T>>(list);

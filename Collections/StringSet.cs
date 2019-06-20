@@ -27,9 +27,13 @@ namespace Core.Collections
 		public override bool Contains(string item)
 		{
 			if (item != null)
-				return content.Any(i => string.Compare(item, i, stringComparison) == 0);
-			else
-				return content.Any(i => i == null);
-		}
+         {
+            return content.Any(i => string.Compare(item, i, stringComparison) == 0);
+         }
+         else
+         {
+            return content.Any(i => i == null);
+         }
+      }
 	}
 }

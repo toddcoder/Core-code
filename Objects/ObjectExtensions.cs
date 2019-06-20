@@ -35,20 +35,28 @@ namespace Core.Objects
 		public static IResult<T> CastAs<T>(this object obj) => tryTo(() =>
 		{
 			if (obj is T o)
-				return o.Success();
-			else
-				return $"{obj} can't be cast to {typeof(T).FullName}".Failure<T>();
-		});
+         {
+            return o.Success();
+         }
+         else
+         {
+            return $"{obj} can't be cast to {typeof(T).FullName}".Failure<T>();
+         }
+      });
 
 		public static IMatched<T> MatchAs<T>(this object obj)
 		{
 			try
 			{
 				if (obj is T o)
-					return o.Matched();
-				else
-					return notMatched<T>();
-			}
+            {
+               return o.Matched();
+            }
+            else
+            {
+               return notMatched<T>();
+            }
+         }
 			catch (Exception exception)
 			{
 				return failedMatch<T>(exception);
@@ -64,36 +72,49 @@ namespace Core.Objects
 		public static bool IsDate(this object date)
 		{
 			if (date is DateTime)
-				return true;
-			else
-				return DateTime.TryParse(date.ToString(), out _);
-		}
+         {
+            return true;
+         }
+         else
+         {
+            return DateTime.TryParse(date.ToString(), out _);
+         }
+      }
 
 		public static IResult<string> FormatObject(this object obj, string format) => GetReflector(obj).Map(rf => rf.Format(format));
 
 		public static string FormatAs(this object obj, string format)
 		{
 			if (obj is DateTime dateTime)
-				return dateTime.ToString(format);
-			else
-				return format.MatchOne("/['cdefgnprxs'] /('-'? /d+)? ('.' /(/d+))?", true).FlatMap(match =>
-				{
-					var (specifier, width, places) = match.Groups3();
+         {
+            return dateTime.ToString(format);
+         }
+         else
+         {
+            return format.MatchOne("/['cdefgnprxs'] /('-'? /d+)? ('.' /(/d+))?", true).FlatMap(match =>
+            {
+               var (specifier, width, places) = match.Groups3();
 
-					var result = new StringBuilder("{0");
-					if (width.IsNotEmpty())
-						result.Append($",{width}");
-					if (specifier.IsNotEmpty() && specifier != "s")
-					{
-						result.Append($":{specifier}");
-						if (places.IsNotEmpty())
-							result.Append(places);
-					}
+               var result = new StringBuilder("{0");
+               if (width.IsNotEmpty())
+               {
+                  result.Append($",{width}");
+               }
 
-					result.Append("}");
-					return string.Format(result.ToString(), obj);
-				}, obj.ToString);
-		}
+               if (specifier.IsNotEmpty() && specifier != "s")
+               {
+                  result.Append($":{specifier}");
+                  if (places.IsNotEmpty())
+                  {
+                     result.Append(places);
+                  }
+               }
+
+               result.Append("}");
+               return string.Format(result.ToString(), obj);
+            }, obj.ToString);
+         }
+      }
 
 		public static T RequiredCast<T>(this object obj, Func<string> message)
 		{

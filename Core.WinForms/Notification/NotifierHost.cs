@@ -50,8 +50,10 @@ namespace Core.WinForms.Notification
 				Capture = true;
 				var mousePosition = PointToClient(MousePosition);
 				if (!ClientRectangle.Contains(mousePosition))
-					Close();
-			}
+            {
+               Close();
+            }
+         }
 			finally
 			{
 				Capture = false;
@@ -77,7 +79,9 @@ namespace Core.WinForms.Notification
 			var workingArea = Screen.PrimaryScreen.WorkingArea;
 			Location = new Point(workingArea.Right - x, workingArea.Bottom - Size.Height - 30);
 			if (Location.X == workingArea.Right - Size.Width || Location.X < workingArea.Right - Size.Width)
-				timerStyler.Stop();
-		}
+         {
+            timerStyler.Stop();
+         }
+      }
 	}
 }

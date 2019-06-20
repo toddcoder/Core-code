@@ -26,9 +26,13 @@ namespace Core.Strings
       {
          var result = UuidCreateSequential(out var guid);
          if (result != RPC_S_OK)
+         {
             return Guid.Empty;
+         }
          else
+         {
             return guid;
+         }
       }
 
       public static string uniqueID() => serialGUID().ToString();
@@ -41,16 +45,23 @@ namespace Core.Strings
 
          var source = "";
          if (alpha)
+         {
             source = STRING_ALPHA;
+         }
+
          if (numeric)
+         {
             source = source.Append(STRING_NUMERIC);
+         }
 
          var result = new StringBuilder();
          var random = new Random();
          var sourceLength = source.Length;
 
          for (var i = 0; i < length; i++)
+         {
             result.Append(source[random.Next(sourceLength)]);
+         }
 
          return result.ToString();
       }

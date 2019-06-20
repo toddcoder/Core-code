@@ -39,8 +39,10 @@ namespace Core.Computers
 				throw $"Couldn't impersonate user: error code {error}".Throws();
 			}
 			else
-				context = WindowsIdentity.Impersonate(handle.DangerousGetHandle());
-		}
+         {
+            context = WindowsIdentity.Impersonate(handle.DangerousGetHandle());
+         }
+      }
 
 		public Impersonator(ImpersonatorArguments arguments)
 			: this(arguments.Domain, arguments.UserName, arguments.Password, arguments.Service) { }

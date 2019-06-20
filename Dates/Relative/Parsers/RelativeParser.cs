@@ -38,29 +38,37 @@ namespace Core.Dates.Relative.Parsers
 				{
 					var innerSource = matcher[i, j];
 					if (innerSource.IsNotEmpty())
-						foreach (var result in parsers()
-							.Select(parser => parser.Scan(innerSource))
-							.Matches())
-						{
-							list.Add(result);
-							break;
-						}
-				}
+               {
+                  foreach (var result in parsers()
+                     .Select(parser => parser.Scan(innerSource))
+                     .Matches())
+                  {
+                     list.Add(result);
+                     break;
+                  }
+               }
+            }
 			}
 
 			list.Sort();
 			foreach (var dateOperation in list)
-				if (currentDate.Out(out var current, out currentDate))
-				{
-					currentDate = dateOperation.Operate(current);
-					if (currentDate.Out(out _, out currentDate)) { }
-					else
-						return currentDate;
-				}
-				else
-					return currentDate;
+         {
+            if (currentDate.Out(out var current, out currentDate))
+            {
+               currentDate = dateOperation.Operate(current);
+               if (currentDate.Out(out _, out currentDate)) { }
+               else
+               {
+                  return currentDate;
+               }
+            }
+            else
+            {
+               return currentDate;
+            }
+         }
 
-			return currentDate;
+         return currentDate;
 		}
 	}
 }

@@ -20,8 +20,10 @@ namespace Core.Applications
 		public string String(string name)
 		{
 			using (var reader = new StreamReader(Stream(name)))
-				return reader.ReadToEnd();
-		}
+         {
+            return reader.ReadToEnd();
+         }
+      }
 
 		public Stream Stream(string name) => type.Assembly.GetManifestResourceStream(nameSpace + name);
 

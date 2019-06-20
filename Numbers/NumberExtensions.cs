@@ -44,20 +44,32 @@ namespace Core.Numbers
       public static bool IsNumeric(this string value)
       {
          if (value.IsNotEmpty())
+         {
             if (value.IsMatch("^ ['-+']? /d* '.'? /d* (['eE'] ['-+']? /d+)? $"))
+            {
                return value != "." && value != "+." && value != "-." && value != "-" && value != "+";
+            }
             else
+            {
                return value.IsHex();
+            }
+         }
          else
+         {
             return false;
+         }
       }
 
       public static bool IsCommaNumeric(this string value)
       {
          if (value.IsNotEmpty())
+         {
             return value.Replace(",", "").IsNumeric();
+         }
          else
+         {
             return false;
+         }
       }
 
       public static bool IsIntegral(this Type type)
@@ -85,9 +97,13 @@ namespace Core.Numbers
       public static bool IsIntegral(this string value)
       {
          if (value.IsNotEmpty())
+         {
             return value.IsMatch("^ ['+-']? /d+ $") || value.IsHex();
+         }
          else
+         {
             return false;
+         }
       }
 
       public static bool IsFloat(this Type type)
@@ -109,10 +125,14 @@ namespace Core.Numbers
       public static bool IsFloat(this string value)
       {
          if (value.IsNotEmpty())
+         {
             return value.IsMatch("^ ['-+']? /d*  '.' /d* (['eE'] ['-+']? /d+)? $") && value != "." && value != "+." &&
                value != "-." && value != "-" && value != "+";
+         }
          else
+         {
             return false;
+         }
       }
 
       public static bool IsDouble(this Type type) => Type.GetTypeCode(type) == TypeCode.Double;
@@ -122,10 +142,14 @@ namespace Core.Numbers
       public static bool IsDouble(this string value)
       {
          if (value.IsNotEmpty())
+         {
             return value.IsMatch("^ ['-+']? /d*  '.' /d* (['eE'] ['-+']? /d+)? ['dD']? $") && value != "." &&
                value != "+." && value != "-." && value != "-" && value != "+";
+         }
          else
+         {
             return false;
+         }
       }
 
       public static bool IsSingle(this Type type) => Type.GetTypeCode(type) == TypeCode.Single;
@@ -135,10 +159,14 @@ namespace Core.Numbers
       public static bool IsSingle(this string value)
       {
          if (value.IsNotEmpty())
+         {
             return value.IsMatch("^ ['-+']? /d*  '.' /d* (['eE'] ['-+']? /d+)? ['fF']? $") && value != "." &&
                value != "+." && value != "-." && value != "-" && value != "+";
+         }
          else
+         {
             return false;
+         }
       }
 
       public static bool IsDecimal(this Type type) => Type.GetTypeCode(type) == TypeCode.Decimal;
@@ -148,10 +176,14 @@ namespace Core.Numbers
       public static bool IsDecimal(this string value)
       {
          if (value.IsNotEmpty())
+         {
             return value.IsMatch("^ ['-+']? /d*  '.' /d* (['eE'] ['-+']? /d+)? ['mM']? $") && value != "." &&
                value != "+." && value != "-." && value != "-" && value != "-";
+         }
          else
+         {
             return false;
+         }
       }
 
       public static bool IsHex(this string value) => value.IsMatch("^ ('0x' | '#') ['0-9a-fA-F']+ $");

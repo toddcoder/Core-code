@@ -25,14 +25,22 @@ namespace Core.Strings
             {
                var newIndex = index + offset;
                if (newIndex < 0 || newIndex > text.Length + 1)
+               {
                   return "";
+               }
                else if (newIndex + length < 0 || newIndex + length > text.Length)
+               {
                   return "";
+               }
                else
+               {
                   return text.ToString(newIndex, length);
+               }
             }
             else
+            {
                return "";
+            }
          }
          set
          {
@@ -42,7 +50,10 @@ namespace Core.Strings
                if (newIndex >= 0)
                {
                   if (length + newIndex > text.Length)
+                  {
                      length = text.Length - newIndex;
+                  }
+
                   text.Remove(newIndex, length);
                   if (value.IsNotEmpty())
                   {
@@ -50,7 +61,9 @@ namespace Core.Strings
                      offset += value.Length - length;
                   }
                   else
+                  {
                      offset -= length;
+                  }
                }
             }
          }
@@ -66,9 +79,13 @@ namespace Core.Strings
       {
          var newIndex = index + offset;
          if (newIndex < 0 || newIndex > text.Length + 1)
+         {
             return (char)0;
+         }
          else
+         {
             return text[newIndex];
+         }
       }
 
       public int Length => text.Length;

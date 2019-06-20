@@ -170,9 +170,13 @@ namespace Core.Monads
 	   public IResult<T> Assert(Predicate<T> predicate, Func<string> exceptionMessage)
 	   {
 		   if (predicate(value))
-			   return this;
-		   else
-			   return exceptionMessage().Failure<T>();
-	   }
+         {
+            return this;
+         }
+         else
+         {
+            return exceptionMessage().Failure<T>();
+         }
+      }
    }
 }

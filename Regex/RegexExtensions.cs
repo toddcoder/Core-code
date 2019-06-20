@@ -14,8 +14,11 @@ namespace Core.Regex
 			var options = None;
 
 			if (ignoreCase)
-				options |= IgnoreCase;
-			options |= multiline ? Multiline : Singleline;
+         {
+            options |= IgnoreCase;
+         }
+
+         options |= multiline ? Multiline : Singleline;
 
 			return options;
 		}
@@ -74,8 +77,10 @@ namespace Core.Regex
 				return matcher.ToString();
 			}
 			else
-				return input;
-		}
+         {
+            return input;
+         }
+      }
 
 		public static string Replace(this string input, string pattern, Action<Matcher> replacer, bool ignoreCase = false,
 			bool multiline = false)
@@ -122,34 +127,46 @@ namespace Core.Regex
 		{
 			var matcher = new Matcher();
 			if (matcher.IsMatch(input, pattern, ignoreCase, multiline))
-				ifTrue(matcher);
-		}
+         {
+            ifTrue(matcher);
+         }
+      }
 
 		public static void IfMatches(this string input, string pattern, Action<Matcher> ifTrue, RegexOptions options)
 		{
 			var matcher = new Matcher();
 			if (matcher.IsMatch(input, pattern, options))
-				ifTrue(matcher);
-		}
+         {
+            ifTrue(matcher);
+         }
+      }
 
 		public static void IfMatches(this string input, string pattern, Action<Matcher> ifTrue, Action ifFalse,
 			bool ignoreCase = false, bool multiline = false)
 		{
 			var matcher = new Matcher();
 			if (matcher.IsMatch(input, pattern, ignoreCase, multiline))
-				ifTrue(matcher);
-			else
-				ifFalse();
-		}
+         {
+            ifTrue(matcher);
+         }
+         else
+         {
+            ifFalse();
+         }
+      }
 
 		public static void IfMatches(this string input, string pattern, Action<Matcher> ifTrue, Action ifFalse, RegexOptions options)
 		{
 			var matcher = new Matcher();
 			if (matcher.IsMatch(input, pattern, options))
-				ifTrue(matcher);
-			else
-				ifFalse();
-		}
+         {
+            ifTrue(matcher);
+         }
+         else
+         {
+            ifFalse();
+         }
+      }
 
 		public static IMatched<RegularExpressions.Matcher.Match[]> MatchAll(this string input, string pattern, RegexOptions options)
 		{

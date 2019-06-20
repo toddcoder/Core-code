@@ -20,7 +20,9 @@ namespace Core.Strings
       {
          var currentRow = new string[length];
          for (var i = 0; i < length; i++)
+         {
             currentRow[i] = "";
+         }
 
          return currentRow;
       }
@@ -65,7 +67,10 @@ namespace Core.Strings
             var length = matcher[i, 3].AsInt();
             var item = new PadderItem { Length = length, PadType = getPadType(matcher[i, 4]) };
             if (item.Length.IsNone && !hasNoLength)
+            {
                hasNoLength = true;
+            }
+
             padderItems.Add(item);
             matcher[i, 2] = "";
          }
@@ -97,11 +102,19 @@ namespace Core.Strings
       {
          var item = items[itemIndex];
          if (item.Length.If(out var length))
+         {
             currentRow[itemIndex] = text.Pad(item.PadType, length);
+         }
          else
+         {
             currentRow[itemIndex] = text;
+         }
+
          if (hasNoLength)
+         {
             padder.Value.Evaluate(itemIndex, text);
+         }
+
          if (++itemIndex >= itemCount)
          {
             data.Add(currentRow);
@@ -115,7 +128,9 @@ namespace Core.Strings
       public PadderTable AddItems(params object[] texts)
       {
          foreach (var text in texts)
+         {
             Add(text.ToNonNullString());
+         }
 
          return this;
       }
@@ -124,16 +139,26 @@ namespace Core.Strings
       {
          var evaluator = new PropertyEvaluator(obj);
          foreach (var signature in signatures)
+         {
             Add(evaluator[signature].ToNonNullString());
+         }
       }
 
       public override string ToString()
       {
          if (hasNoLength)
+         {
             foreach (var datum in data)
+            {
                for (var j = 0; j < itemCount; j++)
+               {
                   if (items[j].Length.IsNone)
+                  {
                      datum[j] = padder.Value.Pad(j, datum[j], items[j].PadType);
+                  }
+               }
+            }
+         }
 
          var result = data.Select(line => string.Format(Format, line.Select(l => (object)l).ToArray()));
          return result.Stringify("\r\n");

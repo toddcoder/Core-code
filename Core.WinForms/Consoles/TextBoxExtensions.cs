@@ -68,7 +68,9 @@ namespace Core.WinForms.Consoles
 
          textBox.AppendText(text);
          if (moveToEndOfText)
+         {
             textBox.Select(textBox.TextLength, 0);
+         }
       }
 
       public static void Pad(this TextBoxBase textBox, Rectangle rectangle)
@@ -112,7 +114,9 @@ namespace Core.WinForms.Consoles
                return;
             case ScrollNearCaretType.ScrollNotAtLastLine:
                if (textBox.AtLastLIne())
+               {
                   return;
+               }
 
                break;
          }

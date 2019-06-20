@@ -186,8 +186,10 @@ namespace Core.Monads
 			{
 				result = tryTo(() => action(attempt));
 				if (result.IsSuccessful)
-					return result;
-			}
+            {
+               return result;
+            }
+         }
 
 			return result;
 		}

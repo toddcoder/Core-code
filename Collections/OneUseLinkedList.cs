@@ -31,25 +31,36 @@ namespace Core.Collections
       {
          var item = new Item(value).Some();
          if (head.IsSome && tail.If(out var t))
+         {
             t.Next = item;
+         }
          else
+         {
             head = item;
+         }
+
          tail = item;
       }
 
       public void AddRange(IEnumerable<T> values)
       {
          foreach (var value in values)
+         {
             Add(value);
+         }
       }
 
       public IMaybe<T> Shift() => head.Map(item =>
       {
          var value = item.Value;
          if (head.If(out var h))
+         {
             head = h.Next;
+         }
          else
+         {
             tail = none<Item>();
+         }
 
          return value;
       });

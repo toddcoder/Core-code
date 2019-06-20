@@ -252,10 +252,14 @@ namespace Core.Applications
 		public static string Mnemonic(int z)
 		{
 			foreach (int ix in Enum.GetValues(messagesType))
-				if (z == ix)
-					return Enum.GetName(messagesType, ix);
+         {
+            if (z == ix)
+            {
+               return Enum.GetName(messagesType, ix);
+            }
+         }
 
-			return z.ToString("X4");
+         return z.ToString("X4");
 		}
 
 		[StructLayout(LayoutKind.Sequential)]

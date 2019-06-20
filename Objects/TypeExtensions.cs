@@ -20,23 +20,32 @@ namespace Core.Objects
             return expression.Compile()().Some();
          }
          else
+         {
             return none<object>();
+         }
       }
 
       public static IMaybe<object> DefaultValue(this string typeName, bool defaultStringToEmpty = false)
       {
          if (typeName.StartsWith("$"))
+         {
             typeName = "System." + typeName.Tail();
+         }
 
          if (defaultStringToEmpty && typeName.IsMatch("^ 'System.string' $", true))
+         {
             return some<string, object>("");
+         }
          else
+         {
             return Type.GetType(typeName, false, true).DefaultValue();
+         }
       }
 
       public static object DefaultOf(this Type type)
       {
          if (type != null)
+         {
             try
             {
                var expression = Lambda<Func<object>>(Convert(Default(type), typeof(object)));
@@ -46,8 +55,11 @@ namespace Core.Objects
             {
                return null;
             }
+         }
          else
+         {
             return null;
+         }
       }
 
       public static IResult<Type> TypeOf(this string source)
@@ -55,11 +67,17 @@ namespace Core.Objects
          try
          {
             if (source.MatchOne("^ -/{,} ','? /s* /{a-zA-Z_0-9.} $").If(out var m))
+            {
                return getUngenericType(m.FirstGroup, m.SecondGroup).Success();
+            }
             else if (source.MatchOne("^ -/{,} ','? /s* /{a-zA-Z_0-9.} '<' -/{,} ',' -/{>} '>' $").If(out m))
+            {
                return getGenericType(m.FirstGroup, m.SecondGroup, m.ThirdGroup, m.FourthGroup).Success();
+            }
             else
+            {
                return Type.GetType(source).Success();
+            }
          }
          catch (Exception exception)
          {
@@ -70,9 +88,13 @@ namespace Core.Objects
       static Type getUngenericType(string assemblyPath, string typeName)
       {
          if (assemblyPath.IsEmpty())
+         {
             return Type.GetType(typeName.ToTitleCase().Replace("$", "System"), false);
+         }
          else
+         {
             return LoadFrom(assemblyPath).GetType(typeName);
+         }
       }
 
       static Type getGenericType(string genericAssemblyPath, string genericTypeName, string specificAssemblyPath,
@@ -85,7 +107,9 @@ namespace Core.Objects
             return LoadFrom(genericAssemblyPath).GetType(fullTypeName, false);
          }
          else
+         {
             return null;
+         }
       }
 
       public static IResult<object> New(this Type type, params object[] args) => tryTo(() => Activator.CreateInstance(type, array(args)));

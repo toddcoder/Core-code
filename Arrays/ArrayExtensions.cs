@@ -25,9 +25,11 @@ namespace Core.Arrays
 		public static T[] Append<T>(this T[] source, params T[] items)
 		{
 			if (source == null)
-				source = new T[0];
+         {
+            source = new T[0];
+         }
 
-			var targetLength = source.Length + items.Length;
+         var targetLength = source.Length + items.Length;
 			var target = new T[targetLength];
 			source.CopyTo(target, 0);
 			items.CopyTo(target, source.Length);
@@ -39,17 +41,21 @@ namespace Core.Arrays
 		{
 			var length = array.Length;
 			if (length == newLength)
-				return array;
-			else
+         {
+            return array;
+         }
+         else
 			{
 				Assert(newLength > length, "New length must be greater than the source array's length");
 
 				var newArray = new T[newLength];
 				Array.Copy(array, newArray, length);
 				for (var i = length; i < newLength; i++)
-					newArray[i] = fillValue;
+            {
+               newArray[i] = fillValue;
+            }
 
-				return newArray;
+            return newArray;
 			}
 		}
 
@@ -57,12 +63,18 @@ namespace Core.Arrays
 		{
 			var length = array.Length;
 			if (length == limitingSize)
-				return array;
-			else if (limitingSize == 0)
-				return new T[0];
-			else if (limitingSize > length)
-				return array.Pad(limitingSize, fillValue);
-			else
+         {
+            return array;
+         }
+         else if (limitingSize == 0)
+         {
+            return new T[0];
+         }
+         else if (limitingSize > length)
+         {
+            return array.Pad(limitingSize, fillValue);
+         }
+         else
 			{
 				var newArray = new T[limitingSize];
 				Array.Copy(array, newArray, limitingSize);
@@ -96,12 +108,18 @@ namespace Core.Arrays
 			var result = new StringBuilder();
 			var last = length - 1;
 			for (var i = 0; i < last; i++)
-				if (result.Length == 0)
-					result.Append(array[i]);
-				else
-					result.Append($", {array[i]}");
+         {
+            if (result.Length == 0)
+            {
+               result.Append(array[i]);
+            }
+            else
+            {
+               result.Append($", {array[i]}");
+            }
+         }
 
-			result.Append(", and ");
+         result.Append(", and ");
 			result.Append(array[last]);
 
 			return result.ToString();
@@ -130,9 +148,11 @@ namespace Core.Arrays
 			var result = new T[stop - start + 1];
 			var index = 0;
 			for (var i = start; i <= stop; i++)
-				result[index++] = array[i];
+         {
+            result[index++] = array[i];
+         }
 
-			return result;
+         return result;
 		}
 
 		public static Slice<T> From<T>(this T[] array, int startIndex) => new Slice<T>(array, startIndex);
@@ -164,20 +184,29 @@ namespace Core.Arrays
 			var matcher = new Matcher();
 
 			foreach (var group in columnIndexes.RemoveWhitespace().Split("','"))
-				if (matcher.IsMatch(group, "/(/d+) '-' /(/d+)"))
-				{
-					var (startIndex, stopIndex) = matcher;
-					var intStart = startIndex.ToInt();
-					var intStop = stopIndex.ToInt();
-					if (intStart > intStop)
-						swap(ref intStart, ref intStop);
-					for (var i = intStart; i <= intStop; i++)
-						indexes.Add(i);
-				}
-				else
-					indexes.Add(group.ToInt());
+         {
+            if (matcher.IsMatch(group, "/(/d+) '-' /(/d+)"))
+            {
+               var (startIndex, stopIndex) = matcher;
+               var intStart = startIndex.ToInt();
+               var intStop = stopIndex.ToInt();
+               if (intStart > intStop)
+               {
+                  swap(ref intStart, ref intStop);
+               }
 
-			indexes.Sort();
+               for (var i = intStart; i <= intStop; i++)
+               {
+                  indexes.Add(i);
+               }
+            }
+            else
+            {
+               indexes.Add(group.ToInt());
+            }
+         }
+
+         indexes.Sort();
 			return indexes.ToArray();
 		}
 
@@ -186,10 +215,14 @@ namespace Core.Arrays
 		public static T Of<T>(this T[] array, int index, T defaultValue)
 		{
 			if (index.Between(0).Until(array.Length))
-				return array[index];
-			else
-				return defaultValue;
-		}
+         {
+            return array[index];
+         }
+         else
+         {
+            return defaultValue;
+         }
+      }
 
 		public static IMaybe<T> Of<T>(this T[] array, int index) => maybe(index.Between(0).Until(array.Length), () => array[index]);
 
@@ -209,10 +242,14 @@ namespace Core.Arrays
 			Predicate<T> stopCondition, int startIndex = 0)
 		{
 			if (array.IsEmpty())
-				return none<Slice<T>>();
-			else if (startIndex >= array.Length)
-				return none<Slice<T>>();
-			else
+         {
+            return none<Slice<T>>();
+         }
+         else if (startIndex >= array.Length)
+         {
+            return none<Slice<T>>();
+         }
+         else
 			{
 				var count = 0;
 				var type = BalanceType.AwaitingStart;
@@ -234,12 +271,18 @@ namespace Core.Arrays
 							break;
 						case BalanceType.AwaitingStop:
 							if (startCondition(element))
-								count++;
-							else if (stopCondition(element))
-								if (--count == 0)
-									return array.From(index).To(i).Some();
+                     {
+                        count++;
+                     }
+                     else if (stopCondition(element))
+                     {
+                        if (--count == 0)
+                        {
+                           return array.From(index).To(i).Some();
+                        }
+                     }
 
-							break;
+                     break;
 					}
 				}
 
@@ -260,8 +303,10 @@ namespace Core.Arrays
 				return (newArray, bottom).Some();
 			}
 			else
-				return none<(T[], T)>();
-		}
+         {
+            return none<(T[], T)>();
+         }
+      }
 
 		public static IMaybe<T[]> Push<T>(this T[] array, T element)
 		{
@@ -276,8 +321,10 @@ namespace Core.Arrays
 				return newArray.Some();
 			}
 			else
-				return none<T[]>();
-		}
+         {
+            return none<T[]>();
+         }
+      }
 
 		public static IMaybe<(T[] array, T element)> Shift<T>(this T[] array)
 		{
@@ -292,8 +339,10 @@ namespace Core.Arrays
 				return (newArray, top).Some();
 			}
 			else
-				return none<(T[], T)>();
-		}
+         {
+            return none<(T[], T)>();
+         }
+      }
 
 		public static IMaybe<T[]> Unshift<T>(this T[] array, T element)
 		{
@@ -308,17 +357,21 @@ namespace Core.Arrays
 				return newArray.Some();
 			}
 			else
-				return none<T[]>();
-		}
+         {
+            return none<T[]>();
+         }
+      }
 
 		public static (T1, T2)[] Zip<T1, T2>(this T1[] leftArray, T2[] rightArray)
 		{
 			var list = new List<(T1, T2)>();
 			var length = Min(leftArray.Length, rightArray.Length);
 			for (var i = 0; i < length; i++)
-				list.Add((leftArray[i], rightArray[i]));
+         {
+            list.Add((leftArray[i], rightArray[i]));
+         }
 
-			return list.ToArray();
+         return list.ToArray();
 		}
 
 		public static (T1, T2)[] Zip<T1, T2>(this T1[] leftArray, Func<T1, int, T2> generatorFunc)
@@ -339,9 +392,11 @@ namespace Core.Arrays
 			var list = new List<T3>();
 			var length = Min(leftArray.Length, rightArray.Length);
 			for (var i = 0; i < length; i++)
-				list.Add(mappingFunc(leftArray[i], rightArray[i]));
+         {
+            list.Add(mappingFunc(leftArray[i], rightArray[i]));
+         }
 
-			return list.ToArray();
+         return list.ToArray();
 		}
 
 		public static T3[] Zip<T1, T2, T3>(this T1[] leftArray, Func<T1, int, T2> generatorFunc,
@@ -369,10 +424,14 @@ namespace Core.Arrays
 			var length = Max(leftLength, rightLength);
 
 			for (var i = 0; i < length; i++)
-				if (i.Between(0).Until(leftLength) && i.Between(0).Until(rightLength))
-					list.Add((leftArray[i], rightArray[i]).Some());
+         {
+            if (i.Between(0).Until(leftLength) && i.Between(0).Until(rightLength))
+            {
+               list.Add((leftArray[i], rightArray[i]).Some());
+            }
+         }
 
-			return list.ToArray();
+         return list.ToArray();
 		}
 
 		public static T[] Repeat<T>(this int count, T value) => Enumerable.Repeat(value, count).ToArray();
@@ -383,9 +442,11 @@ namespace Core.Arrays
 		{
 			var result = new List<T>();
 			for (var i = 0; i < count; i++)
-				result.AddRange(array);
+         {
+            result.AddRange(array);
+         }
 
-			return result.ToArray();
+         return result.ToArray();
 		}
 
 		public static IResult<int> Assign<T>(this T[] array, out T var0, out T var1)
@@ -399,8 +460,10 @@ namespace Core.Arrays
 				return 2.Success();
 			}
 			else
-				return "Array too small".Failure<int>();
-		}
+         {
+            return "Array too small".Failure<int>();
+         }
+      }
 
 		public static IResult<int> Assign<T>(this T[] array, out T var0, out T var1, out T var2)
 		{
@@ -413,8 +476,10 @@ namespace Core.Arrays
 				return 3.Success();
 			}
 			else
-				return result;
-		}
+         {
+            return result;
+         }
+      }
 
 		public static IResult<int> Assign<T>(this T[] array, out T var0, out T var1, out T var2, out T var3)
 		{
@@ -427,8 +492,10 @@ namespace Core.Arrays
 				return 4.Success();
 			}
 			else
-				return result;
-		}
+         {
+            return result;
+         }
+      }
 
 		public static IResult<int> Assign<T>(this T[] array, out T var0, out T var1, out T var2, out T var3,
 			out T var4)
@@ -442,8 +509,10 @@ namespace Core.Arrays
 				return 5.Success();
 			}
 			else
-				return result;
-		}
+         {
+            return result;
+         }
+      }
 
 		public static IResult<int> Assign<T>(this T[] array, out T var0, out T var1, out T var2, out T var3,
 			out T var4, out T var5)
@@ -457,8 +526,10 @@ namespace Core.Arrays
 				return 6.Success();
 			}
 			else
-				return result;
-		}
+         {
+            return result;
+         }
+      }
 
 		public static IResult<int> Assign<T>(this T[] array, out T var0, out T var1, out T var2, out T var3,
 			out T var4, out T var5, out T var6)
@@ -472,8 +543,10 @@ namespace Core.Arrays
 				return 7.Success();
 			}
 			else
-				return result;
-		}
+         {
+            return result;
+         }
+      }
 
 		public static IMaybe<int> Index<T>(this T[] array, T item, int startIndex = 0)
 		{
@@ -496,22 +569,28 @@ namespace Core.Arrays
 				return list.ToArray().Some();
 			}
 			else
-				return none<int[]>();
-		}
+         {
+            return none<int[]>();
+         }
+      }
 
 		public static IEnumerable<(int, T)> WithIndexes<T>(this T[] array)
 		{
 			for (var i = 0; i < array.Length; i++)
-				yield return (i, array[i]);
-		}
+         {
+            yield return (i, array[i]);
+         }
+      }
 
 		public static Hash<TKey, TValue> ToHash<TKey, TValue>(this (TKey, TValue)[] array)
 		{
 			var hash = new Hash<TKey, TValue>();
 			foreach (var (key, value) in array)
-				hash[key] = value;
+         {
+            hash[key] = value;
+         }
 
-			return hash;
+         return hash;
 		}
 
 		public static void Deconstruct<T>(this T[] array, out T e1, out T e2)

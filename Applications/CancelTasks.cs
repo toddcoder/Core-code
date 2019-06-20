@@ -16,8 +16,10 @@ namespace Core.Applications
 		public IEnumerator<TTask> GetEnumerator()
 		{
 			foreach (var task in tasks)
-				yield return task;
-		}
+         {
+            yield return task;
+         }
+      }
 
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
@@ -50,8 +52,10 @@ namespace Core.Applications
 		public void Start()
 		{
 			foreach (var task in tasks)
-				task.Start();
-		}
+         {
+            task.Start();
+         }
+      }
 
 		public void WaitAll(TimeSpan timeout)
 		{
@@ -61,7 +65,9 @@ namespace Core.Applications
 		void dispose()
 		{
 			foreach (var task in tasks)
-				task.Dispose();
+         {
+            task.Dispose();
+         }
       }
 
 		public void Dispose()

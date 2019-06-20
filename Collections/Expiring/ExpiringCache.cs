@@ -65,13 +65,17 @@ namespace Core.Collections.Expiring
       public void StartMonitoring()
       {
          if (timer.If(out var t))
+         {
             t.Enabled = true;
+         }
       }
 
       public void StopMonitoring()
       {
          if (timer.If(out var t))
+         {
             t.Enabled = false;
+         }
       }
 
       public TValue this[TKey key]
@@ -92,10 +96,14 @@ namespace Core.Collections.Expiring
                      return default;
                   }
                   else
+                  {
                      return value;
+                  }
                }
                else
+               {
                   return default;
+               }
             }
          }
          set
@@ -111,7 +119,9 @@ namespace Core.Collections.Expiring
       public bool ContainsKey(TKey key)
       {
          lock (locker)
+         {
             return cache.ContainsKey(key);
+         }
       }
 
       public void Remove(TKey key)

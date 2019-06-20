@@ -20,8 +20,10 @@ namespace Core.Exceptions
 		public void Add<T>(IResult<T> result)
 		{
 			if (result.IfNot(out var exception))
-				Add(exception);
-		}
+         {
+            Add(exception);
+         }
+      }
 
 		public void AddRange(IEnumerable<Exception> exceptions) => this.exceptions.AddRange(exceptions);
 

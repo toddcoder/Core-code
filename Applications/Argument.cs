@@ -31,9 +31,11 @@ namespace Core.Applications
 					fileName = maybe(file.Exists(), () => file);
 				}
 				else
-					fileName = none<FileName>();
+            {
+               fileName = none<FileName>();
+            }
 
-				return fileName;
+            return fileName;
 			}
 		}
 
@@ -47,9 +49,11 @@ namespace Core.Applications
 					folderName = maybe(folder.Exists(), () => folder);
 				}
 				else
-					folderName = none<FolderName>();
+            {
+               folderName = none<FolderName>();
+            }
 
-				return folderName;
+            return folderName;
 			}
 		}
 

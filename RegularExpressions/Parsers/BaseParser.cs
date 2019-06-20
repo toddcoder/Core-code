@@ -29,7 +29,9 @@ namespace Core.RegularExpressions.Parsers
             tokens = matcher.Groups(0);
             var result = Parse(source, ref index);
             if (result.IsSome)
+            {
                return result;
+            }
             else
             {
                index = oldIndex;
@@ -37,7 +39,9 @@ namespace Core.RegularExpressions.Parsers
             }
          }
          else
+         {
             return none<string>();
+         }
       }
 
       public abstract IMaybe<string> Parse(string source, ref int index);

@@ -70,7 +70,9 @@ namespace Core.Strings
                return getText(lines);
             }
             else
+            {
                return "";
+            }
          }
          set => text = value;
       }
@@ -90,7 +92,9 @@ namespace Core.Strings
                .Stringify("\r\n");
          }
          else
+         {
             return "";
+         }
       }
 
       public string ToString(IEnumerable<IEnumerable<string>> source)
@@ -103,7 +107,9 @@ namespace Core.Strings
       public string Header(params string[] headers)
       {
          if (sizes.Length == 0)
+         {
             return getText(new[] { headers });
+         }
          else
          {
             var newHeaders = headers.LimitTo(sizes.Length, "");

@@ -26,8 +26,11 @@ namespace Core.WinForms.Documents
 		{
 			var item = new ToolStripMenuItem(text) { Name = MenuName(text) };
 			if (shortcut.IsNotEmpty() && shortcutKeys(shortcut).If(out var keys))
-				item.ShortcutKeys = keys;
-			menuItems[item.Name] = item;
+         {
+            item.ShortcutKeys = keys;
+         }
+
+         menuItems[item.Name] = item;
 			tabIndexes[item.Name] = tabIndex++;
 		}
 
@@ -36,8 +39,11 @@ namespace Core.WinForms.Documents
 			var item = new ToolStripMenuItem(text) { Name = MenuName(text), Checked = isChecked };
 			item.Click += handler;
 			if (shortcut.IsNotEmpty() && shortcutKeys(shortcut).If(out var keys))
-				item.ShortcutKeys = keys;
-			menuItems[item.Name] = item;
+         {
+            item.ShortcutKeys = keys;
+         }
+
+         menuItems[item.Name] = item;
 			tabIndexes[item.Name] = tabIndex++;
 		}
 
@@ -58,8 +64,10 @@ namespace Core.WinForms.Documents
 		protected static void setShortcut(ToolStripMenuItem item, string shortcut)
 		{
 			if (shortcut.IsNotEmpty() && shortcutKeys(shortcut).If(out var keys))
-				item.ShortcutKeys = keys;
-		}
+         {
+            item.ShortcutKeys = keys;
+         }
+      }
 
 		public void Menu(string parentText, string text, EventHandler handler, string shortcut = "", bool isChecked = false,
 			int index = -1)
@@ -69,16 +77,22 @@ namespace Core.WinForms.Documents
 			item.Click += handler;
 			setShortcut(item, shortcut);
 			if (index == -1)
-				parent.DropDownItems.Add(item);
-			else
-				parent.DropDownItems.Insert(index, item);
-		}
+         {
+            parent.DropDownItems.Add(item);
+         }
+         else
+         {
+            parent.DropDownItems.Insert(index, item);
+         }
+      }
 
 		public void AddHandler(string parentText, string text, EventHandler handler)
 		{
 			if (Submenus(parentText).If(out var submenus) && submenus.If(text, out var toolStripMenuItem))
-				toolStripMenuItem.Click += handler;
-		}
+         {
+            toolStripMenuItem.Click += handler;
+         }
+      }
 
 		public IMaybe<Delegate> ReplaceHandler(string parentText, string text, EventHandler handler) =>
 			from submenus in Submenus(parentText)
@@ -121,26 +135,32 @@ namespace Core.WinForms.Documents
 				var keys = (Keys)0;
 				var prefix = m[0, 1];
 				if (prefix.IsNotEmpty())
-					foreach (var sign in prefix)
-						switch (sign)
-						{
-							case '^':
-								keys |= Keys.Control;
-								break;
-							case '%':
-								keys |= Keys.Alt;
-								break;
-							case '|':
-								keys |= Keys.Shift;
-								break;
-						}
+            {
+               foreach (var sign in prefix)
+               {
+                  switch (sign)
+                  {
+                     case '^':
+                        keys |= Keys.Control;
+                        break;
+                     case '%':
+                        keys |= Keys.Alt;
+                        break;
+                     case '|':
+                        keys |= Keys.Shift;
+                        break;
+                  }
+               }
+            }
 
-				return m[0, 2].AsEnumeration<Keys>().FlatMap(k => (keys | k).Success(),
+            return m[0, 2].AsEnumeration<Keys>().FlatMap(k => (keys | k).Success(),
 					() => $"Couldn't translate {m[0, 2]} into a key".Failure<Keys>());
 			}
 			else
-				return $"Didn't understand key {text}".Failure<Keys>();
-		}
+         {
+            return $"Didn't understand key {text}".Failure<Keys>();
+         }
+      }
 
 		public void CreateMainMenu(Form form)
 		{

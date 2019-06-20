@@ -23,8 +23,10 @@ namespace Core.Objects
 		public DataContainer(IEnumerable<KeyValuePair<string, object>> initializers) : this()
 		{
 			foreach (var (key, value) in initializers)
-				this[key] = value.Some();
-		}
+         {
+            this[key] = value.Some();
+         }
+      }
 
 		public string Format { get; set; } = "";
 
@@ -33,14 +35,18 @@ namespace Core.Objects
 		public void BeforeExecute()
 		{
 			if (beforeExecute.If(out var b))
-				b();
-		}
+         {
+            b();
+         }
+      }
 
 		public void AfterExecute()
 		{
 			if (afterExecute.If(out var b))
-				b();
-		}
+         {
+            b();
+         }
+      }
 
 		public Hash<TKey, TValue> ToHash<TKey, TValue>(Func<string, TKey> toKey, Func<object, TValue> toValue)
 			where TKey : class
@@ -85,14 +91,18 @@ namespace Core.Objects
 		public override string ToString()
 		{
 			if (Format.IsEmpty())
-				return KeyArray().Select(key => $"{key} = {this[key]}").Stringify();
-			else
+         {
+            return KeyArray().Select(key => $"{key} = {this[key]}").Stringify();
+         }
+         else
 			{
 				var builder = new StringBuilder(Format);
 				foreach (var key in KeyArray())
-					builder.Replace("{" + key + "}", this[key]?.ToString() ?? "");
+            {
+               builder.Replace("{" + key + "}", this[key]?.ToString() ?? "");
+            }
 
-				return builder.ToString();
+            return builder.ToString();
 			}
 		}
 	}

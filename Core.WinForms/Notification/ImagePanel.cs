@@ -47,8 +47,11 @@ namespace Core.WinForms.Notification
 				e.Graphics.CompositingMode = CompositingMode.SourceOver;
 				e.Graphics.SmoothingMode = SmoothingMode.HighQuality;
 				using (var brush = new SolidBrush(BackColor))
-					e.Graphics.FillRectangle(brush, ClientRectangle);
-				var left = (Width - image.Width) / 2;
+            {
+               e.Graphics.FillRectangle(brush, ClientRectangle);
+            }
+
+            var left = (Width - image.Width) / 2;
 				var top = (Height - image.Height) / 2;
 				e.Graphics.DrawImage(image, left, top, image.Width, image.Height);
 			}

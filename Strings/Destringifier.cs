@@ -40,18 +40,22 @@ namespace Core.Strings
 			public string Restringed(bool withQuotes, char escape)
 			{
 				if (withQuotes)
-					switch (QuoteType)
-					{
-						case QuoteType.Single:
-							return $"'{String.Replace("'", escape + "'")}'";
-						case QuoteType.Double:
-							return $"\"{String.Replace("\"", escape + "\"")}\"";
-						default:
-							return String;
-					}
-				else
-					return String;
-			}
+            {
+               switch (QuoteType)
+               {
+                  case QuoteType.Single:
+                     return $"'{String.Replace("'", escape + "'")}'";
+                  case QuoteType.Double:
+                     return $"\"{String.Replace("\"", escape + "\"")}\"";
+                  default:
+                     return String;
+               }
+            }
+            else
+            {
+               return String;
+            }
+         }
 		}
 
 		string source;
@@ -101,141 +105,179 @@ namespace Core.Strings
 			var keepSingleComment = !IgnoreSingleComments;
 
 			foreach (var ch in source)
-				switch (type)
-				{
-					case LocationType.Outside:
-						if (ch == SingleQuote)
-							type = LocationType.InsideSingle;
-						else if (ch == DoubleQuote)
-							type = LocationType.InsideDouble;
-						else if (ch == comment1 && keepComment)
-							type = possibleEither ? LocationType.PossibleEither : LocationType.PossibleComment;
-						else if (ch == singleComment1 && keepSingleComment)
-							type = singleComment2.IsSome ? LocationType.PossibleSingleComment : LocationType.SingleComment;
-						else
-							outerBuilder.Append(ch);
-						break;
-					case LocationType.InsideSingle:
-						if (ch == Escape)
-							type = LocationType.EscapedSingle;
-						else if (ch == SingleQuote)
-						{
-							outerBuilder.Append($"/({items.Count})");
-							var item = new StringItem { String = innerBuilder.ToString(), QuoteType = QuoteType.Single };
-							items.Add(item);
-							type = LocationType.Outside;
-							innerBuilder.Clear();
-						}
-						else
-							innerBuilder.Append(ch);
+         {
+            switch (type)
+            {
+               case LocationType.Outside:
+                  if (ch == SingleQuote)
+                  {
+                     type = LocationType.InsideSingle;
+                  }
+                  else if (ch == DoubleQuote)
+                  {
+                     type = LocationType.InsideDouble;
+                  }
+                  else if (ch == comment1 && keepComment)
+                  {
+                     type = possibleEither ? LocationType.PossibleEither : LocationType.PossibleComment;
+                  }
+                  else if (ch == singleComment1 && keepSingleComment)
+                  {
+                     type = singleComment2.IsSome ? LocationType.PossibleSingleComment : LocationType.SingleComment;
+                  }
+                  else
+                  {
+                     outerBuilder.Append(ch);
+                  }
 
-						break;
-					case LocationType.InsideDouble:
-						if (ch == Escape)
-							type = LocationType.EscapedDouble;
-						else if (ch == DoubleQuote)
-						{
-							outerBuilder.Append($"/({items.Count})");
-							var item = new StringItem { String = innerBuilder.ToString(), QuoteType = QuoteType.Double };
-							items.Add(item);
-							type = LocationType.Outside;
-							innerBuilder.Clear();
-						}
-						else
-							innerBuilder.Append(ch);
+                  break;
+               case LocationType.InsideSingle:
+                  if (ch == Escape)
+                  {
+                     type = LocationType.EscapedSingle;
+                  }
+                  else if (ch == SingleQuote)
+                  {
+                     outerBuilder.Append($"/({items.Count})");
+                     var item = new StringItem { String = innerBuilder.ToString(), QuoteType = QuoteType.Single };
+                     items.Add(item);
+                     type = LocationType.Outside;
+                     innerBuilder.Clear();
+                  }
+                  else
+                  {
+                     innerBuilder.Append(ch);
+                  }
 
-						break;
-					case LocationType.EscapedSingle:
-						switch (ch)
-						{
-							case 't':
-								innerBuilder.Append('\t');
-								break;
-							case 'r':
-								innerBuilder.Append('\r');
-								break;
-							case 'n':
-								innerBuilder.Append('\n');
-								break;
-							default:
-								innerBuilder.Append(ch);
-								break;
-						}
+                  break;
+               case LocationType.InsideDouble:
+                  if (ch == Escape)
+                  {
+                     type = LocationType.EscapedDouble;
+                  }
+                  else if (ch == DoubleQuote)
+                  {
+                     outerBuilder.Append($"/({items.Count})");
+                     var item = new StringItem { String = innerBuilder.ToString(), QuoteType = QuoteType.Double };
+                     items.Add(item);
+                     type = LocationType.Outside;
+                     innerBuilder.Clear();
+                  }
+                  else
+                  {
+                     innerBuilder.Append(ch);
+                  }
 
-						type = LocationType.InsideSingle;
-						break;
-					case LocationType.EscapedDouble:
-						switch (ch)
-						{
-							case 't':
-								innerBuilder.Append('\t');
-								break;
-							case 'r':
-								innerBuilder.Append('\r');
-								break;
-							case 'n':
-								innerBuilder.Append('\n');
-								break;
-							default:
-								innerBuilder.Append(ch);
-								break;
-						}
+                  break;
+               case LocationType.EscapedSingle:
+                  switch (ch)
+                  {
+                     case 't':
+                        innerBuilder.Append('\t');
+                        break;
+                     case 'r':
+                        innerBuilder.Append('\r');
+                        break;
+                     case 'n':
+                        innerBuilder.Append('\n');
+                        break;
+                     default:
+                        innerBuilder.Append(ch);
+                        break;
+                  }
 
-						type = LocationType.InsideDouble;
-						break;
-					case LocationType.PossibleComment:
-						if (ch == comment2)
-							type = LocationType.Comment;
-						else
-						{
-							outerBuilder.Append(comment1);
-							type = LocationType.Outside;
-							goto case LocationType.Outside;
-						}
+                  type = LocationType.InsideSingle;
+                  break;
+               case LocationType.EscapedDouble:
+                  switch (ch)
+                  {
+                     case 't':
+                        innerBuilder.Append('\t');
+                        break;
+                     case 'r':
+                        innerBuilder.Append('\r');
+                        break;
+                     case 'n':
+                        innerBuilder.Append('\n');
+                        break;
+                     default:
+                        innerBuilder.Append(ch);
+                        break;
+                  }
 
-						break;
-					case LocationType.PossibleSingleComment:
-						if (singleComment2.If(out var sc2) && sc2 == ch)
-							type = LocationType.SingleComment;
-						else
-						{
-							outerBuilder.Append(singleComment1);
-							type = LocationType.Outside;
-							goto case LocationType.Outside;
-						}
+                  type = LocationType.InsideDouble;
+                  break;
+               case LocationType.PossibleComment:
+                  if (ch == comment2)
+                  {
+                     type = LocationType.Comment;
+                  }
+                  else
+                  {
+                     outerBuilder.Append(comment1);
+                     type = LocationType.Outside;
+                     goto case LocationType.Outside;
+                  }
 
-						break;
-					case LocationType.Comment:
-						if (ch == endComment1)
-							type = LocationType.PossibleEndComment;
-						break;
-					case LocationType.SingleComment:
-						if (ch == '\r' || ch == '\n')
-							type = LocationType.IgnoreEndOfLine;
-						break;
-					case LocationType.PossibleEither:
-						if (ch == comment2)
-							type = LocationType.Comment;
-						else if (singleComment2.If(out sc2) && sc2 == ch)
-							type = LocationType.SingleComment;
-						else
-						{
-							outerBuilder.Append(comment1);
-							type = LocationType.Outside;
-							goto case LocationType.Outside;
-						}
+                  break;
+               case LocationType.PossibleSingleComment:
+                  if (singleComment2.If(out var sc2) && sc2 == ch)
+                  {
+                     type = LocationType.SingleComment;
+                  }
+                  else
+                  {
+                     outerBuilder.Append(singleComment1);
+                     type = LocationType.Outside;
+                     goto case LocationType.Outside;
+                  }
 
-						break;
-					case LocationType.PossibleEndComment:
-						type = ch == endComment2 ? LocationType.Outside : LocationType.Comment;
-						break;
-					case LocationType.IgnoreEndOfLine:
-						if (ch != '\r' && ch != '\n')
-							type = LocationType.Outside;
-						break;
-				}
+                  break;
+               case LocationType.Comment:
+                  if (ch == endComment1)
+                  {
+                     type = LocationType.PossibleEndComment;
+                  }
 
-			stringItems = items.ToArray();
+                  break;
+               case LocationType.SingleComment:
+                  if (ch == '\r' || ch == '\n')
+                  {
+                     type = LocationType.IgnoreEndOfLine;
+                  }
+
+                  break;
+               case LocationType.PossibleEither:
+                  if (ch == comment2)
+                  {
+                     type = LocationType.Comment;
+                  }
+                  else if (singleComment2.If(out sc2) && sc2 == ch)
+                  {
+                     type = LocationType.SingleComment;
+                  }
+                  else
+                  {
+                     outerBuilder.Append(comment1);
+                     type = LocationType.Outside;
+                     goto case LocationType.Outside;
+                  }
+
+                  break;
+               case LocationType.PossibleEndComment:
+                  type = ch == endComment2 ? LocationType.Outside : LocationType.Comment;
+                  break;
+               case LocationType.IgnoreEndOfLine:
+                  if (ch != '\r' && ch != '\n')
+                  {
+                     type = LocationType.Outside;
+                  }
+
+                  break;
+            }
+         }
+
+         stringItems = items.ToArray();
 			return outerBuilder.ToString();
 		}
 
@@ -256,8 +298,10 @@ namespace Core.Strings
 				return matcher.ToString();
 			}
 			else
-				return destringified;
-		}
+         {
+            return destringified;
+         }
+      }
 
 		public string[] Strings => stringItems.Select(i => i.String).ToArray();
 

@@ -8,9 +8,13 @@ namespace Core.WinForms
 		public static void Do(this Control control, Action action)
 		{
 			if (control.InvokeRequired)
-				control.Invoke(action);
-			else
-				action();
-		}
+         {
+            control.Invoke(action);
+         }
+         else
+         {
+            action();
+         }
+      }
 	}
 }

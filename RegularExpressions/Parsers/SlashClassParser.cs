@@ -11,9 +11,11 @@ namespace Core.RegularExpressions.Parsers
 		{
 			var letter = tokens[2];
 			if (tokens[1].IsNotEmpty())
-				letter = letter.ToUpper();
+         {
+            letter = letter.ToUpper();
+         }
 
-		   return $@"\{letter}".Some();
+         return $@"\{letter}".Some();
 		}
 	}
 }

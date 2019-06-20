@@ -89,9 +89,13 @@ namespace Core.Computers
          {
             var matcher = new Matcher();
             if (matcher.IsMatch(Environment.GetCommandLineArgs()[0], @"^ /(.+) '\' -['\']+ '.'('exe' | 'dll') $"))
+            {
                return ((FolderName)matcher.FirstGroup).Some();
+            }
             else
+            {
                return none<FolderName>();
+            }
          }
       }
 
@@ -117,9 +121,13 @@ namespace Core.Computers
       public FolderName(string root, params string[] subfolders)
       {
          if (subfolders.Length == 0)
+         {
             initialize(root);
+         }
          else
+         {
             initialize(root, subfolders);
+         }
       }
 
       public FolderName(string root, string subfolders) => initialize(root, getSubfolders(subfolders));
@@ -201,7 +209,9 @@ namespace Core.Computers
             {
                var length = subfolders.Length - 1;
                if (length <= 0)
+               {
                   return CreateRootOnly(root).Some();
+               }
                else
                {
                   var parentArray = new string[length];
@@ -210,7 +220,9 @@ namespace Core.Computers
                }
             }
             else
+            {
                return none<FolderName>();
+            }
          }
       }
 
@@ -224,15 +236,21 @@ namespace Core.Computers
             {
                result = self.Parent;
                if (result.If(out var parent))
+               {
                   self = parent;
+               }
                else
+               {
                   return result;
+               }
             }
 
             return result;
          }
          else
+         {
             return none<FolderName>();
+         }
       }
 
       public string FullPath
@@ -280,12 +298,16 @@ namespace Core.Computers
             {
                var newValue = value;
                while (newValue.StartsWith(@"\"))
+               {
                   newValue = newValue.Substring(1);
+               }
 
                subfolders = newValue.Split('\\');
             }
             else
+            {
                subfolders = new string[0];
+            }
          }
       }
 
@@ -301,7 +323,9 @@ namespace Core.Computers
                return copy.Reverse().ToArray();
             }
             else
+            {
                return subfolders;
+            }
          }
       }
 
@@ -320,12 +344,16 @@ namespace Core.Computers
          if (subfolders.IsNotEmpty())
          {
             while (subfolders.StartsWith(@"\"))
+            {
                subfolders = subfolders.Substring(1);
+            }
 
             return subfolders.Split(@"'\'");
          }
          else
+         {
             return new string[0];
+         }
       }
 
       void setFullPath()
@@ -357,7 +385,9 @@ namespace Core.Computers
 
          string folderSubfolders;
          if (folder.StartsWith(folderRoot))
+         {
             folderSubfolders = folder.Substring(folderRoot.Length);
+         }
          else
          {
             var matcher = new Matcher();
@@ -365,7 +395,9 @@ namespace Core.Computers
          }
 
          if (folderSubfolders.StartsWith(@"\"))
+         {
             folderSubfolders = folderSubfolders.Substring(1);
+         }
 
          initialize(folderRoot, folderSubfolders.IsEmpty() ? new string[0] : folderSubfolders.Split(@"'\'"));
       }
@@ -388,7 +420,9 @@ namespace Core.Computers
       static void createIfNonExistent(string folder)
       {
          if (!Directory.Exists(folder))
+         {
             CreateDirectory(folder);
+         }
       }
 
       public void CopyTo(FolderName targetFolder, bool overwrite)
@@ -407,11 +441,16 @@ namespace Core.Computers
 
          Predicate<FileName> exclude;
          if (excludePattern.IsEmpty())
+         {
             exclude = f => true;
+         }
          else
+         {
             exclude = f => !f.NameExtension.IsMatch(excludePattern);
+         }
 
          foreach (var file in Files.Where(f => include(f) && exclude(f)))
+         {
             if (overwrite)
             {
                file.CopyTo(targetFolder, true);
@@ -422,6 +461,7 @@ namespace Core.Computers
                file.CopyTo(candidateFile, true);
                FileSuccess?.Invoke(this, new FileArgs(file, candidateFile, "Copied"));
             }
+         }
       }
 
       public bool Exists() => Directory.Exists(fullPath);
@@ -431,7 +471,9 @@ namespace Core.Computers
       public void Delete()
       {
          if (Exists())
+         {
             Directory.Delete(fullPath);
+         }
       }
 
       public string NameToMatch => Name;
@@ -441,7 +483,9 @@ namespace Core.Computers
       public void DeleteFiles()
       {
          foreach (var fileName in Files)
+         {
             fileName.Delete();
+         }
       }
 
       public void MoveTo(FolderName targetFolder) => Move(fullPath, targetFolder.ToString());
@@ -457,8 +501,11 @@ namespace Core.Computers
       public bool IsParentOf(FolderName folder)
       {
          if (root.Same(folder.Root))
+         {
             if (subfolders.Length == folder.Subfolders.Length)
+            {
                if (subfolders.Length > 0)
+               {
                   if (subfolders.Length + 1 == folder.Subfolders.Length)
                   {
                      var selfSubfolders = subfolders;
@@ -467,13 +514,24 @@ namespace Core.Computers
                      return !selfSubfolders.Where((t, i) => !t.Same(folderSubfolders[i])).Any();
                   }
                   else
+                  {
                      return false;
+                  }
+               }
                else
+               {
                   return true;
+               }
+            }
             else
+            {
                return false;
+            }
+         }
          else
+         {
             return false;
+         }
       }
 
       public bool IsChildOf(FolderName folder) => folder.IsParentOf(this);

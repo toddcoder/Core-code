@@ -27,15 +27,25 @@ namespace Core.Dates
          var plural = intValue != 1;
 
          if (unit.IsMatch("'millisec' ('ond')? 's'?"))
+         {
             return getInterval(intValue, plural, IntervalUnit.Millisecond, IntervalUnit.Milliseconds);
+         }
          else if (unit.IsMatch("'sec' ('ond') 's'?"))
+         {
             return getInterval(intValue, plural, IntervalUnit.Second, IntervalUnit.Seconds);
+         }
          else if (unit.IsMatch("'min' ('ute')? 's'?"))
+         {
             return getInterval(intValue, plural, IntervalUnit.Minute, IntervalUnit.Minutes);
+         }
          else if (unit.IsMatch("'h' ('ou')? 'r' 's'?"))
+         {
             return getInterval(intValue, plural, IntervalUnit.Hour, IntervalUnit.Hours);
+         }
          else
+         {
             throw "Couldn't determine value or unit from \"{expression}\"".Throws();
+         }
       }
 
       static TimerInterval getInterval(int value, bool plural, IntervalUnit single, IntervalUnit moreThanOne)
@@ -72,6 +82,7 @@ namespace Core.Dates
       static int getInterval(int value, IntervalUnit unit)
       {
          while (true)
+         {
             switch (unit)
             {
                case IntervalUnit.Millisecond:
@@ -95,6 +106,7 @@ namespace Core.Dates
                default:
                   throw $"Didn't understand unit {unit}".Throws();
             }
+         }
       }
 
       int getInterval() => getInterval(Value, Unit);
@@ -102,6 +114,7 @@ namespace Core.Dates
       static double getIntervalAsSeconds(double value, IntervalUnit unit)
       {
          while (true)
+         {
             switch (unit)
             {
                case IntervalUnit.Millisecond:
@@ -125,6 +138,7 @@ namespace Core.Dates
                default:
                   throw $"Didn't understand unit {unit}".Throws();
             }
+         }
       }
 
       double getIntervalAsSeconds() => getIntervalAsSeconds(Value, Unit);

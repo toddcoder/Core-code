@@ -35,11 +35,14 @@ namespace Core.RegularExpressions.Parsers
             {
                var result = parser.Scan(source, ref index);
                if (result.If(out var r))
+               {
                   if (r == "]")
                   {
                      var value = (negative ? "[^" : "[") + content + "]";
                      if (enclose)
+                     {
                         value = $"({value})";
+                     }
 
                      return value.Some();
                   }
@@ -49,10 +52,13 @@ namespace Core.RegularExpressions.Parsers
                      added = true;
                      break;
                   }
+               }
             }
 
             if (!added)
+            {
                return none<string>();
+            }
          }
 
          return none<string>();

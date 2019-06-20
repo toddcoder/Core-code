@@ -42,10 +42,14 @@ namespace Core.Applications
 					IntPtr.Zero);
 				var file = new SafeFileHandle(handle, true);
 				if (!file.IsInvalid)
-					return new FileStream(file, fileAccess).Success();
-				else
-					return "Invalid file handle".Failure<FileStream>();
-			});
+            {
+               return new FileStream(file, fileAccess).Success();
+            }
+            else
+            {
+               return "Invalid file handle".Failure<FileStream>();
+            }
+         });
 
 		internal static IResult<Unit> initializeOutStream() =>
 			from fs in fileStream("CONOUT$", GENERIC_WRITE, FILE_SHARE_WRITE, FileAccess.Write)

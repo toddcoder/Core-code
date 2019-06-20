@@ -7,7 +7,9 @@ namespace Core.Strings
       public static void Evaluate(string source, ref int maximumLength)
       {
          if (source.IsNotEmpty())
+         {
             maximumLength = Math.Max(source.Length, maximumLength);
+         }
       }
 
       public static string PadLeft(string source, int maximumLength, char padding = ' ') => source.PadLeft(maximumLength, padding);
@@ -44,7 +46,9 @@ namespace Core.Strings
       public void Evaluate(params string[] text)
       {
          foreach (var item in text)
+         {
             Evaluate(item);
+         }
       }
 
       public string PadLeft(string source, char paddingCharacter = ' ') => PadLeft(source, maximumLength, paddingCharacter);

@@ -17,7 +17,9 @@ namespace Core.WinForms.Consoles
          this.form.FormClosing += (sender, e) =>
          {
             if (console.IOStatus == IOStatusType.Reading)
+            {
                e.Cancel = true;
+            }
          };
 
          this.console = console;
@@ -41,7 +43,9 @@ namespace Core.WinForms.Consoles
          Assertions.Assert(console.Suspended == 0, "Console must be updating");
 
          while (console.IOStatus == IOStatusType.Reading)
+         {
             Application.DoEvents();
+         }
 
          if (console.IOStatus == IOStatusType.Completed)
          {
@@ -82,7 +86,9 @@ namespace Core.WinForms.Consoles
          console.ReadOnly = true;
 
          if (previouslyFocused.If(out var pf))
+         {
             form.ActiveControl = pf;
+         }
       }
 
       public override void Write(byte[] buffer, int offset, int count) { }

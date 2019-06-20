@@ -9,7 +9,9 @@ namespace Core.Objects
       public static void Close(this IDbConnection connection)
       {
          if ((connection?.State ?? ConnectionState.Open) != ConnectionState.Closed)
+         {
             connection.Close();
+         }
       }
 
       public static void Close(this Stream stream) => stream?.Close();
@@ -19,7 +21,9 @@ namespace Core.Objects
       public static void DisposeIfDisposable(this object obj)
       {
          if (obj is IDisposable disp)
+         {
             disp.Dispose();
+         }
       }
    }
 }

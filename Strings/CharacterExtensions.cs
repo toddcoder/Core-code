@@ -8,7 +8,9 @@ namespace Core.Strings
       {
          var result = new StringBuilder();
          for (var i = 0; i < count; i++)
+         {
             result.Append(source);
+         }
 
          return result.ToString();
       }

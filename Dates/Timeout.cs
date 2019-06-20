@@ -31,7 +31,9 @@ namespace Core.Dates
 
             var expired = NowServer.Now >= tdt;
             if (expired)
+            {
                targetDateTime = none<DateTime>();
+            }
 
             return expired;
          }

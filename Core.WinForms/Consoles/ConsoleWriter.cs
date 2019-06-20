@@ -22,35 +22,53 @@ namespace Core.WinForms.Consoles
 		public override void Write(char value)
 		{
 			if (value != '\r')
-				if (buffer.If(out var b))
-					b.Append(value);
-				else
-				{
-					if (AutoStop)
-						console.StopUpdating();
-					console.Write(value);
-					if (AutoStop)
-						console.ResumeUpdating();
-				}
-		}
+         {
+            if (buffer.If(out var b))
+            {
+               b.Append(value);
+            }
+            else
+            {
+               if (AutoStop)
+               {
+                  console.StopUpdating();
+               }
+
+               console.Write(value);
+               if (AutoStop)
+               {
+                  console.ResumeUpdating();
+               }
+            }
+         }
+      }
 
 		protected void flush()
 		{
 			if (buffer.If(out var b))
 			{
 				if (AutoStop)
-					console.StopUpdating();
-				foreach (var ch in b.ToString())
-					console.Write(ch);
+            {
+               console.StopUpdating();
+            }
 
-				b.Clear();
+            foreach (var ch in b.ToString())
+            {
+               console.Write(ch);
+            }
+
+            b.Clear();
 
 				if (AutoStop)
-					console.ResumeUpdating();
-			}
+            {
+               console.ResumeUpdating();
+            }
+         }
 			else
-				console.Clear();
-		}
+         {
+            console.Clear();
+         }
+      }
 
 		public override void Flush() => flush();
 

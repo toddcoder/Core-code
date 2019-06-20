@@ -8,8 +8,10 @@ namespace Core.Objects
 		public SignatureCollection(string signature)
 		{
 		   foreach (var singleSignature in signature.Split("'.'"))
-				Add(singleSignature);
-		}
+         {
+            Add(singleSignature);
+         }
+      }
 
 		public void Add(string signature) => Add(new Signature(signature));
 	}

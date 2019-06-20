@@ -45,8 +45,10 @@ namespace Core.WinForms.Controls
 					onPerformPaint();
 				}
 				else
-					base.WndProc(ref m);
-			}
+            {
+               base.WndProc(ref m);
+            }
+         }
 
 			protected void onPerformPaint()
 			{
@@ -121,15 +123,24 @@ namespace Core.WinForms.Controls
 						if (modificationStates.Count < lineCount)
 						{
 							while (modificationStates.Count < CurrentLineNumber)
-								modificationStates.Add(ModificationState.Unmodified);
-							while (modificationStates.Count < lineCount)
-								modificationStates.Insert(CurrentLineNumber, ModificationState.Unmodified);
-						}
-						else
-							while (modificationStates.Count > lineCount)
-								modificationStates.RemoveAt(CurrentLineNumber);
+                     {
+                        modificationStates.Add(ModificationState.Unmodified);
+                     }
 
-						modificationStates[CurrentLineNumber] = ModificationState.Modified;
+                     while (modificationStates.Count < lineCount)
+                     {
+                        modificationStates.Insert(CurrentLineNumber, ModificationState.Unmodified);
+                     }
+                  }
+						else
+                  {
+                     while (modificationStates.Count > lineCount)
+                     {
+                        modificationStates.RemoveAt(CurrentLineNumber);
+                     }
+                  }
+
+                  modificationStates[CurrentLineNumber] = ModificationState.Modified;
 					}
 				}
 
@@ -154,69 +165,88 @@ namespace Core.WinForms.Controls
 				var glyphWidth = ModificationGlyphWidth;
 				var glyphLeft = ModificationGlyphLeftMargin;
 				foreach (var (lineNumber, line, position) in VisibleLines)
-					if (lineNumber.Between(0).Until(modificationStates.Count))
-					{
-						var draw = true;
-						var color = Color.Black;
-						switch (modificationStates[lineNumber])
-						{
-							case ModificationState.Modified:
-								color = ModifiedGlyphColor;
-								break;
-							case ModificationState.Saved:
-								color = SavedGlyphColor;
-								break;
-							default:
-								draw = false;
-								break;
-						}
+            {
+               if (lineNumber.Between(0).Until(modificationStates.Count))
+               {
+                  var draw = true;
+                  var color = Color.Black;
+                  switch (modificationStates[lineNumber])
+                  {
+                     case ModificationState.Modified:
+                        color = ModifiedGlyphColor;
+                        break;
+                     case ModificationState.Saved:
+                        color = SavedGlyphColor;
+                        break;
+                     default:
+                        draw = false;
+                        break;
+                  }
 
-						if (draw)
-						{
-							var currentLine = line.Copy();
-							if (currentLine.IsEmpty())
-								currentLine = "W";
-							var size = TextRenderer.MeasureText(graphics, currentLine, Font);
-							var height = size.Height;
+                  if (draw)
+                  {
+                     var currentLine = line.Copy();
+                     if (currentLine.IsEmpty())
+                     {
+                        currentLine = "W";
+                     }
 
-							using (var pen = new Pen(color, glyphWidth))
-								graphics.DrawLine(pen, glyphLeft, position.Y, glyphLeft, position.Y + height);
-						}
-					}
-			}
+                     var size = TextRenderer.MeasureText(graphics, currentLine, Font);
+                     var height = size.Height;
+
+                     using (var pen = new Pen(color, glyphWidth))
+                     {
+                        graphics.DrawLine(pen, glyphLeft, position.Y, glyphLeft, position.Y + height);
+                     }
+                  }
+               }
+            }
+         }
 		}
 
 		public void DrawModificationGlyphs()
 		{
 			using (var graphics = Graphics.FromHwnd(Handle))
-				DrawModificationGlyphs(graphics);
-		}
+         {
+            DrawModificationGlyphs(graphics);
+         }
+      }
 
 		public void SetToSavedGlyphs(bool drawModificationGlyphs = true)
 		{
 			for (var i = 0; i < modificationStates.Count; i++)
-				if (modificationStates[i] == ModificationState.Modified)
-					modificationStates[i] = ModificationState.Saved;
+         {
+            if (modificationStates[i] == ModificationState.Modified)
+            {
+               modificationStates[i] = ModificationState.Saved;
+            }
+         }
 
-			if (drawModificationGlyphs)
-				DrawModificationGlyphs();
-		}
+         if (drawModificationGlyphs)
+         {
+            DrawModificationGlyphs();
+         }
+      }
 
 		public void SetToUnmodifiedGlyphs(bool drawModificationGlyphs = true)
 		{
 			modificationStates = Lines.Select(l => ModificationState.Unmodified).ToList();
 
 			if (drawModificationGlyphs)
-				DrawModificationGlyphs();
-		}
+         {
+            DrawModificationGlyphs();
+         }
+      }
 
 		public void ClearModificationGlyphs(bool drawModificationGlyphs = true)
 		{
 			modificationStates.Clear();
 
 			if (drawModificationGlyphs)
-				DrawModificationGlyphs();
-		}
+         {
+            DrawModificationGlyphs();
+         }
+      }
 
 		public void SetTabs(params int[] tabs) => SelectionTabs = tabs;
 
@@ -234,8 +264,11 @@ namespace Core.WinForms.Controls
 			StopUpdating();
 			var (start, length) = Selection;
 			if (Focused)
-				Parent.Focus();
-			User32.SendMessage(Handle, User32.Messages.HideSelection, true, 0);
+         {
+            Parent.Focus();
+         }
+
+         User32.SendMessage(Handle, User32.Messages.HideSelection, true, 0);
 
 			return (start, length);
 		}
@@ -249,23 +282,30 @@ namespace Core.WinForms.Controls
 			Refresh();
 
 			if (!Focused)
-				Focus();
+         {
+            Focus();
+         }
 
-			updateLocked = false;
+         updateLocked = false;
 		}
 
 		public void StopUpdating()
 		{
 			if (updatingCount == 0)
-				User32.SendMessage(Handle, User32.Messages.SetRedraw, false, 0);
-			updatingCount++;
+         {
+            User32.SendMessage(Handle, User32.Messages.SetRedraw, false, 0);
+         }
+
+         updatingCount++;
 		}
 
 		public void ResumeUpdating()
 		{
 			if (--updatingCount == 0)
-				User32.SendMessage(Handle, User32.Messages.SetRedraw, true, 0);
-		}
+         {
+            User32.SendMessage(Handle, User32.Messages.SetRedraw, true, 0);
+         }
+      }
 
 		public void ResetUpdating() => updatingCount = 0;
 
@@ -299,11 +339,15 @@ namespace Core.WinForms.Controls
 		int getLineNumber(int lineNumber)
 		{
 			if (lineNumber.Between(0).Until(Lines.Length))
-				return lineNumber;
-			else
-				throw new ArgumentOutOfRangeException(nameof(lineNumber), lineNumber,
-					"Line number must not exceed 0 or lineNumber count - 1");
-		}
+         {
+            return lineNumber;
+         }
+         else
+         {
+            throw new ArgumentOutOfRangeException(nameof(lineNumber), lineNumber,
+               "Line number must not exceed 0 or lineNumber count - 1");
+         }
+      }
 
 		public Point PositionFrom(int lineNumber) => GetPositionFromCharIndex(GetFirstCharIndexFromLine(lineNumber));
 
@@ -342,13 +386,19 @@ namespace Core.WinForms.Controls
 			if (rectangle.Contains(position))
 			{
 				if (rectangle.Contains(rightPosition))
-					return SelectionVisibility.Visible;
-				else
-					return SelectionVisibility.PartiallyVisible;
-			}
+            {
+               return SelectionVisibility.Visible;
+            }
+            else
+            {
+               return SelectionVisibility.PartiallyVisible;
+            }
+         }
 			else
-				return SelectionVisibility.Invisible;
-		}
+         {
+            return SelectionVisibility.Invisible;
+         }
+      }
 
 		public SelectionVisibility IsCurrentSelectionVisible() => IsSelectionVisible(SelectionStart, SelectionLength);
 
@@ -394,10 +444,15 @@ namespace Core.WinForms.Controls
 				var rectangle = RectangleFromCurrentLine(graphics);
 				rectangle.Offset(rectangle.X + leftMargin, 0);
 				using (var brush = new SolidBrush(Color.FromArgb(alpha, backColor)))
-					graphics.FillRectangle(brush, rectangle);
-				using (var pen = new Pen(foreColor) { DashStyle = dashStyle })
-					graphics.DrawRectangle(pen, rectangle);
-			}
+            {
+               graphics.FillRectangle(brush, rectangle);
+            }
+
+            using (var pen = new Pen(foreColor) { DashStyle = dashStyle })
+            {
+               graphics.DrawRectangle(pen, rectangle);
+            }
+         }
 		}
 
 		static void drawTabLine(Graphics graphics, Pen pen, Point location, int tabStop, int height)
@@ -415,26 +470,34 @@ namespace Core.WinForms.Controls
 			var height = (int)graphics.MeasureString("\t", Font).Height;
 			var offset = leftMargin - 2;
 			foreach (var (_, line, point) in VisibleLines)
-				if (line.Matches("^ /(/t1%7)").If(out var matcher))
-					using (var pen = new Pen(Color.Gray) { DashStyle = DashStyle.Dot })
-					{
-						drawTabLine(graphics, pen, point, offset, height);
+         {
+            if (line.Matches("^ /(/t1%7)").If(out var matcher))
+            {
+               using (var pen = new Pen(Color.Gray) { DashStyle = DashStyle.Dot })
+               {
+                  drawTabLine(graphics, pen, point, offset, height);
 
-						var count = matcher.FirstGroup.Length;
-						for (var i = 0; i < count; i++)
-							if (i.Between(0).Until(SelectionTabs.Length))
-							{
-								var tabStop = SelectionTabs[i];
-								drawTabLine(graphics, pen, point, tabStop + offset, height);
-							}
-					}
-		}
+                  var count = matcher.FirstGroup.Length;
+                  for (var i = 0; i < count; i++)
+                  {
+                     if (i.Between(0).Until(SelectionTabs.Length))
+                     {
+                        var tabStop = SelectionTabs[i];
+                        drawTabLine(graphics, pen, point, tabStop + offset, height);
+                     }
+                  }
+               }
+            }
+         }
+      }
 
 		public static Size MeasureString(Graphics graphics, string text, Font font)
 		{
 			if (text.IsEmpty())
-				return new Size(0, 0);
-			else if (text.Contains(" "))
+         {
+            return new Size(0, 0);
+         }
+         else if (text.Contains(" "))
 			{
 				var size = graphics.MeasureString(text, font).ToSize();
 				return new Size(size.Width + 8, size.Height);
@@ -457,12 +520,17 @@ namespace Core.WinForms.Controls
 			var text = Text.Drop(start).Keep(length);
 			var size = MeasureString(graphics, text, Font);
 			if (expand)
-				size = new Size(VisibleRectangle.Width, size.Height);
-			var location = GetPositionFromCharIndex(start);
-			if (expand)
-				location = new Point(0, location.X);
+         {
+            size = new Size(VisibleRectangle.Width, size.Height);
+         }
 
-			return new Rectangle(location, size);
+         var location = GetPositionFromCharIndex(start);
+			if (expand)
+         {
+            location = new Point(0, location.X);
+         }
+
+         return new Rectangle(location, size);
 		}
 
 		public Rectangle RectangleFromCurrentSelection(Graphics graphics, bool expand)
@@ -481,9 +549,13 @@ namespace Core.WinForms.Controls
 				graphics.FillRectangle(backBrush, rectangle);
 				graphics.DrawString(annotation, AnnotationFont, foreBrush, rectangle);
 				if (outlineColor.HasValue)
-					using (var pen = new Pen(Color.FromArgb(ANNOTATION_ALPHA, outlineColor.Value)))
-						graphics.DrawRectangle(pen, rectangle);
-			}
+            {
+               using (var pen = new Pen(Color.FromArgb(ANNOTATION_ALPHA, outlineColor.Value)))
+               {
+                  graphics.DrawRectangle(pen, rectangle);
+               }
+            }
+         }
 		}
 
 		public void AnnotateAt(Graphics graphics, Point point, string annotation, Color foreColor, Color backColor,
@@ -530,15 +602,21 @@ namespace Core.WinForms.Controls
 
 			Point location;
 			if (!selectionRectangle.IntersectsWith(annotationRectangle) && annotationRectangle.IntersectsWith(ClientRectangle))
-				location = annotationRectangle.Location;
-			else
+         {
+            location = annotationRectangle.Location;
+         }
+         else
 			{
 				annotationRectangle.X = selectionRectangle.X - selectionRectangle.Width - margin;
 				if (!selectionRectangle.IntersectsWith(annotationRectangle))
-					location = annotationRectangle.Location;
-				else
-					location = new Point(0, selectionRectangle.Top);
-			}
+            {
+               location = annotationRectangle.Location;
+            }
+            else
+            {
+               location = new Point(0, selectionRectangle.Top);
+            }
+         }
 
 			AnnotateAt(graphics, location, annotation, foreColor, backColor, outlineColor);
 		}
@@ -553,15 +631,21 @@ namespace Core.WinForms.Controls
 			Color backColor, Color? outlineColor = null)
 		{
 			if (!lineNumber.Between(0).Until(Lines.Length))
-				throw $"Line number {lineNumber} out of range".Throws();
+         {
+            throw $"Line number {lineNumber} out of range".Throws();
+         }
 
-			var line = Lines[lineNumber];
+         var line = Lines[lineNumber];
 			if (position < 0)
-				position = 0;
-			else if (position > line.Length)
-				position = line.Length;
+         {
+            position = 0;
+         }
+         else if (position > line.Length)
+         {
+            position = line.Length;
+         }
 
-			line += " ";
+         line += " ";
 
 			var rectangle = RectangleFrom(graphics, lineNumber);
 			var width = MeasureString(graphics, line.Keep(position), Font).Width;
@@ -594,46 +678,60 @@ namespace Core.WinForms.Controls
 		{
 			var matcher = new Matcher();
 			if (matcher.IsMatch(Text, "/w+"))
-				for (var i = 0; i < matcher.MatchCount; i++)
-				{
-					var (text, index, length) = matcher.GetMatch(i);
-					var rectangle = RectangleFrom(graphics, index, length, false);
-					if (includeVisibleOnly(visibleOnly, rectangle))
-						yield return (rectangle, text);
-				}
-		}
+         {
+            for (var i = 0; i < matcher.MatchCount; i++)
+            {
+               var (text, index, length) = matcher.GetMatch(i);
+               var rectangle = RectangleFrom(graphics, index, length, false);
+               if (includeVisibleOnly(visibleOnly, rectangle))
+               {
+                  yield return (rectangle, text);
+               }
+            }
+         }
+      }
 
 		public IEnumerable<(int start, int length)> Words()
 		{
 			var matcher = new Matcher();
 			if (matcher.IsMatch(Text, "/w+"))
-				for (var i = 0; i < matcher.MatchCount; i++)
-				{
-					var (_, index, length) = matcher.GetMatch(i);
-					yield return (index, length);
-				}
-		}
+         {
+            for (var i = 0; i < matcher.MatchCount; i++)
+            {
+               var (_, index, length) = matcher.GetMatch(i);
+               yield return (index, length);
+            }
+         }
+      }
 
 		public IEnumerable<(char, Rectangle)> RectangleWhitespace(Graphics graphics, bool visibleOnly = true)
 		{
 			var matcher = new Matcher();
 			if (matcher.IsMatch(Text, "[' /t']"))
-				for (var i = 0; i < matcher.MatchCount; i++)
-				{
-					var (text, index, length) = matcher.GetMatch(i);
-					var rectangle = RectangleFrom(graphics, index, length, false);
-					if (includeVisibleOnly(visibleOnly, rectangle))
-						yield return (text[0], rectangle);
-				}
-		}
+         {
+            for (var i = 0; i < matcher.MatchCount; i++)
+            {
+               var (text, index, length) = matcher.GetMatch(i);
+               var rectangle = RectangleFrom(graphics, index, length, false);
+               if (includeVisibleOnly(visibleOnly, rectangle))
+               {
+                  yield return (text[0], rectangle);
+               }
+            }
+         }
+      }
 
 		public IMaybe<Rectangle> WordAtSelection(Graphics graphics, int start, int length)
 		{
 			if (length == 0)
-				return WordAtSelection(graphics, start);
-			else if (Text.IsEmpty() || start >= Text.Length)
-				return none<Rectangle>();
-			else
+         {
+            return WordAtSelection(graphics, start);
+         }
+         else if (Text.IsEmpty() || start >= Text.Length)
+         {
+            return none<Rectangle>();
+         }
+         else
 			{
 				var segment = Text.Drop(start).Keep(length);
 				return segment.Matches("/w+").Map(m => RectangleFrom(graphics, m.Index + start, m.Length, false));
@@ -644,8 +742,10 @@ namespace Core.WinForms.Controls
 		{
 			var text = Text;
 			if (text.IsEmpty() || start >= text.Length)
-				return none<Rectangle>();
-			else if (char.IsLetterOrDigit(text, start))
+         {
+            return none<Rectangle>();
+         }
+         else if (char.IsLetterOrDigit(text, start))
 			{
 				var i = start;
 				for (; i > -1 && char.IsLetterOrDigit(text, i); i--) { }
@@ -654,8 +754,10 @@ namespace Core.WinForms.Controls
 				return text.Drop(i).Matches("/w+").Map(m => RectangleFrom(graphics, m.Index + i, m.Length, false));
 			}
 			else
-				return none<Rectangle>();
-		}
+         {
+            return none<Rectangle>();
+         }
+      }
 
 		public IMaybe<Rectangle> WordAtCurrentSelection(Graphics graphics)
 		{
@@ -665,17 +767,24 @@ namespace Core.WinForms.Controls
 		public void DrawHighlight(Graphics graphics, Rectangle rectangle, Color color, DashStyle dashStyle)
 		{
 			using (var brush = new SolidBrush(Color.FromArgb(30, color)))
-				graphics.FillRectangle(brush, rectangle);
-			using (var pen = new Pen(Color.Black) { DashStyle = dashStyle })
-				graphics.DrawRectangle(pen, rectangle);
-		}
+         {
+            graphics.FillRectangle(brush, rectangle);
+         }
+
+         using (var pen = new Pen(Color.Black) { DashStyle = dashStyle })
+         {
+            graphics.DrawRectangle(pen, rectangle);
+         }
+      }
 
 		public void DrawWavyUnderline(Graphics graphics, Rectangle rectangle, Color color)
 		{
 			using (var brush = new HatchBrush(HatchStyle.ZigZag, color, Color.Transparent))
 			using (var pen = new Pen(brush, 2f))
-				graphics.DrawLine(pen, rectangle.Left, rectangle.Bottom, rectangle.Right, rectangle.Bottom);
-		}
+         {
+            graphics.DrawLine(pen, rectangle.Left, rectangle.Bottom, rectangle.Right, rectangle.Bottom);
+         }
+      }
 
 		public void DrawWhitespace(Graphics graphics, bool visibleOnly = false)
 		{
@@ -686,8 +795,10 @@ namespace Core.WinForms.Controls
 				Alignment = StringAlignment.Center
 			};
 			foreach (var (ch, rectangle) in RectangleWhitespace(graphics, visibleOnly))
-				graphics.DrawString(ch == '\t' ? "→" : "°", Font, brush, rectangle, format);
-		}
+         {
+            graphics.DrawString(ch == '\t' ? "→" : "°", Font, brush, rectangle, format);
+         }
+      }
 
 		public IEnumerable<Rectangle> RectanglesFromSelection(Graphics graphics, int start, int length)
 		{
@@ -695,9 +806,11 @@ namespace Core.WinForms.Controls
 			{
 				var text = Text.Drop(start).Keep(length);
 				if (text.IsEmpty())
-					yield break;
+            {
+               yield break;
+            }
 
-				if (text.Contains("\n"))
+            if (text.Contains("\n"))
 				{
 					var offset = 0;
 
@@ -712,8 +825,10 @@ namespace Core.WinForms.Controls
 					yield return RectangleFrom(graphics, start + offset, text.Length - offset - 2, false);
 				}
 				else
-					yield return RectangleFrom(graphics, start, length, false);
-			}
+            {
+               yield return RectangleFrom(graphics, start, length, false);
+            }
+         }
 		}
 
 		public void Colorize(int start, int length, Color color)
@@ -738,9 +853,13 @@ namespace Core.WinForms.Controls
 				var lineSize = lineCount.ToString().Length.MaxOf(5);
 
 				using (var brush = new SolidBrush(foreColor))
-					foreach (var (lineNumber, _, position) in VisibleLines)
-						drawLineNumber(graphics, lineNumber, position, lineSize, brush, backColor);
-			}
+            {
+               foreach (var (lineNumber, _, position) in VisibleLines)
+               {
+                  drawLineNumber(graphics, lineNumber, position, lineSize, brush, backColor);
+               }
+            }
+         }
 		}
 
 		protected void drawLineNumber(Graphics graphics, int lineNumber, Point point, int lineSize, Brush brush, Color backColor)
@@ -751,14 +870,20 @@ namespace Core.WinForms.Controls
 			var size = MeasureString(graphics, str, Font);
 
 			using (var backBrush = new SolidBrush(backColor))
-				graphics.FillRectangle(backBrush, new RectangleF(pointF, size));
-			var lineLeft = pointF.X + size.Width;
+         {
+            graphics.FillRectangle(backBrush, new RectangleF(pointF, size));
+         }
+
+         var lineLeft = pointF.X + size.Width;
 			var lineTop = pointF.Y;
 			var lineBottom = lineTop + size.Height;
 
 			using (var pen = new Pen(Color.Black))
-				graphics.DrawLine(pen, lineLeft, lineTop, lineLeft, lineBottom);
-			graphics.DrawString(str, Font, brush, pointF);
+         {
+            graphics.DrawLine(pen, lineLeft, lineTop, lineLeft, lineBottom);
+         }
+
+         graphics.DrawString(str, Font, brush, pointF);
 		}
 
 		public void DrawLineNumber(Graphics graphics, int lineNumber, Color foreColor, Color backColor)
@@ -769,7 +894,9 @@ namespace Core.WinForms.Controls
 			var point = PositionFrom(lineNumber);
 
 			using (var brush = new SolidBrush(foreColor))
-				drawLineNumber(graphics, lineNumber, point, lineSize, brush, backColor);
-		}
+         {
+            drawLineNumber(graphics, lineNumber, point, lineSize, brush, backColor);
+         }
+      }
 	}
 }

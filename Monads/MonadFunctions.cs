@@ -66,7 +66,9 @@ namespace Core.Monads
          try
          {
             if (test)
+            {
                return result();
+            }
 
             return notMatched<T>();
          }

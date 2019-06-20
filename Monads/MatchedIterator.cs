@@ -22,20 +22,28 @@ namespace Core.Monads
 		void handle(IMatched<T> match)
 		{
 			if (match.If(out var value, out var exception) && matched.If(out var action))
-				action(value);
-			else if (exception.If(out var e) && failure.If(out var exAction))
-				exAction(e);
-			else
+         {
+            action(value);
+         }
+         else if (exception.If(out var e) && failure.If(out var exAction))
+         {
+            exAction(e);
+         }
+         else
 				if (notMatched.If(out var nAction))
-					nAction();
-		}
+            {
+               nAction();
+            }
+      }
 
 		public IEnumerable<IMatched<T>> All()
 		{
 			foreach (var match in enumerable)
-				handle(match);
+         {
+            handle(match);
+         }
 
-			return enumerable;
+         return enumerable;
 		}
 
 		public IEnumerable<T> MatchesOnly()
@@ -44,8 +52,10 @@ namespace Core.Monads
 			{
 				handle(match);
 				if (match.If(out var value))
-					yield return value;
-			}
+            {
+               yield return value;
+            }
+         }
 		}
 
 		public IEnumerable<Exception> FailuresOnly()
@@ -54,8 +64,10 @@ namespace Core.Monads
 			{
 				handle(match);
 				if (!match.If(out _, out var exception) && exception.If(out var e))
-					yield return e;
-			}
+            {
+               yield return e;
+            }
+         }
       }
 	}
 }

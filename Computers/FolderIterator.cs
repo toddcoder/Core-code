@@ -29,7 +29,9 @@ namespace Core.Computers
 
          folderParts = pattern.Split('\\');
          if (folderParts.Length > 0 && prefix.IsNotEmpty())
+         {
             folderParts[0] = $"{prefix}{folderParts[0]}";
+         }
 
          this.endOnly = endOnly;
       }
@@ -54,17 +56,25 @@ namespace Core.Computers
                foreach (var folder in ((FolderName)current).Folders.Where(f => f.Name.IsMatch(part)))
                {
                   if (!endOnly || index == folderParts.Length - 1)
+                  {
                      yield return folder;
+                  }
 
                   var iterator = new FolderIterator(folder.FullPath, folderParts.Skip(index + 1).ToArray(), endOnly);
                   foreach (var subfolder in iterator)
+                  {
                      yield return subfolder;
+                  }
                }
             }
             else if (current.IsEmpty())
+            {
                current = part;
+            }
             else
+            {
                current = $"{current}\\{part}";
+            }
          }
       }
 

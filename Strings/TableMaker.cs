@@ -64,7 +64,9 @@ namespace Core.Strings
          public void Evaluate(ColumnHeader[] columnHeaders)
          {
             for (var i = 0; i < columns.Length; i++)
+            {
                columns[i].Evaluate(columnHeaders[i]);
+            }
          }
 
          public string Render(ColumnHeader[] columnHeaders, string columnSeparator)
@@ -129,11 +131,17 @@ namespace Core.Strings
          var length = Min(headersLength, itemsLength);
 
          for (var i = 0; i < length; i++)
+         {
             columns[i] = new Column(items[i].ToNonNullString());
+         }
 
          if (itemsLength < headersLength)
+         {
             for (var i = itemsLength; i < headersLength; i++)
+            {
                columns[i] = new Column("");
+            }
+         }
 
          var row = new Row(columns.ToArray());
          row.Evaluate(columnHeaders);
@@ -166,16 +174,24 @@ namespace Core.Strings
             headerWidth = header.Length;
             builder.AppendLine(header);
             if (HeaderFoot.If(out var headerFoot))
+            {
                builder.AppendLine(headerFoot.ToString().Repeat(headerWidth));
+            }
             else
+            {
                builder.AppendLine();
+            }
          }
          else
+         {
             headerWidth = columnHeaders.Select(ch => ch.MaxWidth).Sum() + (columnHeaders.Length - 1) * ColumnSeparator.Length;
+         }
 
          var rowSeparator = "\r\n";
          if (RowSeparator.If(out var separator))
+         {
             rowSeparator = rowSeparator + separator.ToString().Repeat(headerWidth) + rowSeparator;
+         }
 
          foreach (var row in rows)
          {

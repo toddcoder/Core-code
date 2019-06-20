@@ -20,9 +20,11 @@ namespace Core.WinForms.Notification
 		protected override void Dispose(bool disposing)
 		{
 			if (disposing)
-				components?.Dispose();
+         {
+            components?.Dispose();
+         }
 
-			base.Dispose(disposing);
+         base.Dispose(disposing);
 		}
 
 		[Description("Left side color"), Category("Appearance"), DefaultValue(typeof(ColorDialog), null), Browsable(true)]

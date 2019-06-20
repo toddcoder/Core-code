@@ -41,9 +41,14 @@ namespace Core.Exceptions
          var result = extract(state, exception);
          var key = exception.Message;
          if (data.ContainsKey(key))
+         {
             data[key].Add(result);
+         }
          else
+         {
             data[key] = new Set<T> { result };
+         }
+
          stackTraces[key] = exception.StackTrace ?? "";
       }
 

@@ -13,12 +13,16 @@ namespace Core.Applications
 		public static IResult<Unit> consoleNew(bool alwaysCreateNewConsole = true)
 		{
 			if (alwaysCreateNewConsole ? !Kernel32.consoleAllocate() : !Kernel32.consoleAttach())
-				return
-					from outStream in Kernel32.initializeOutStream()
-					from inStream in Kernel32.initializeInStream()
-					select Unit.Value;
-			else
-				return errorMessage().Failure<Unit>();
-		}
+         {
+            return
+               from outStream in Kernel32.initializeOutStream()
+               from inStream in Kernel32.initializeInStream()
+               select Unit.Value;
+         }
+         else
+         {
+            return errorMessage().Failure<Unit>();
+         }
+      }
 	}
 }

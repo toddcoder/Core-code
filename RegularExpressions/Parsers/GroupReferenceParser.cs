@@ -10,9 +10,11 @@ namespace Core.RegularExpressions.Parsers
 		{
 			var digits = tokens[1];
 			if (digits.Length > 1)
-				digits = $"{{{digits}}}";
+         {
+            digits = $"{{{digits}}}";
+         }
 
-			return new Some<string>($@"\{digits}");
+         return new Some<string>($@"\{digits}");
 		}
 	}
 }

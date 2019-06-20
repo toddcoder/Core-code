@@ -30,9 +30,13 @@ namespace Core.Objects
       public Type Type(string signature)
       {
          if (data.If(signature, out var value))
+         {
             return value?.GetType();
+         }
          else
+         {
             throw "Value isn't set".Throws();
+         }
       }
 
       public Type Type(Signature signature) => Type(signature.Name);

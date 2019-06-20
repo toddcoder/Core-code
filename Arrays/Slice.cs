@@ -70,7 +70,9 @@ namespace Core.Arrays
       public IEnumerator<T> GetEnumerator()
       {
          for (var i = startIndex; i <= stopIndex; i++)
+         {
             yield return array[i];
+         }
       }
 
       IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

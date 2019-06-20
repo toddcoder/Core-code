@@ -26,7 +26,9 @@ namespace Core.Dates
                return true;
             }
             else
+            {
                return false;
+            }
          }
       }
 

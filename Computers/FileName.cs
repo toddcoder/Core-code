@@ -44,17 +44,25 @@ namespace Core.Computers
       public static string ResolveFolder(string folder)
       {
          if (folder.Has("{"))
+         {
             return Formatter.WithStandard(true).Format(folder);
+         }
          else if (folder == "." || folder.IsEmpty())
+         {
             return Environment.CurrentDirectory;
+         }
          else
+         {
             return folder;
+         }
       }
 
       public static void DeleteExitingFile(FileName target)
       {
          if (target.Exists())
+         {
             target.Delete();
+         }
       }
 
       public static FileName RandomFileName(FolderName folder, string extension)
@@ -102,10 +110,14 @@ namespace Core.Computers
       public static string MakeFileNameValid(string fileName)
       {
          if (fileName.IsMatch("^ 'clock$' | 'aux' | 'con' | 'nul' | 'prn' | 'com' /d | 'lpt' /d"))
+         {
             fileName += "_" + fileName;
+         }
 
          if (fileName.IsMatch("^ '.'+ $"))
+         {
             fileName = fileName.Replace(".", "_dot_");
+         }
 
          fileName = fileName.Replace("*", "_star_");
          fileName = fileName.Replace("/", "_slash_");
@@ -125,7 +137,9 @@ namespace Core.Computers
       {
          var directoryName = Path.GetDirectoryName(fullPath);
          if (directoryName.IsEmpty())
+         {
             directoryName = Environment.CurrentDirectory;
+         }
 
          return directoryName;
       }
@@ -284,7 +298,9 @@ namespace Core.Computers
                try
                {
                   using (info.Open(FileMode.Open, FileAccess.ReadWrite, FileShare.None))
+                  {
                      return false;
+                  }
                }
                catch
                {
@@ -292,7 +308,9 @@ namespace Core.Computers
                }
             }
             else
+            {
                return false;
+            }
          }
       }
 
@@ -309,10 +327,16 @@ namespace Core.Computers
          get
          {
             if (Length == 0)
+            {
                return "";
+            }
             else
+            {
                using (var reader = new FileNameMappedReader(this))
+               {
                   return reader.ReadToEnd();
+               }
+            }
          }
          set
          {
@@ -363,7 +387,9 @@ namespace Core.Computers
             {
                var count = 0;
                while (reader.ReadLine() != null)
+               {
                   count++;
+               }
 
                return count;
             }
@@ -383,7 +409,9 @@ namespace Core.Computers
                return clone.Some();
             }
             else
+            {
                return none<FileName>();
+            }
          }
       }
 
@@ -423,9 +451,13 @@ namespace Core.Computers
       public IMaybe<FileName> Truncated(int limit)
       {
          if (limit < 3)
+         {
             return none<FileName>();
+         }
          else if (fullPath.Length <= limit)
+         {
             return Clone().Some();
+         }
          else
          {
             var parts = fullPath.Split(@"'\'");
@@ -446,7 +478,9 @@ namespace Core.Computers
                return truncatedName.Some();
             }
             else
+            {
                return none<FileName>();
+            }
          }
       }
 
@@ -459,9 +493,13 @@ namespace Core.Computers
       static string join(string[] parts, int index)
       {
          if (index == 0)
+         {
             return @"~~~\" + string.Join(@"\", parts, parts.Length - 2, 2);
+         }
          else
+         {
             return string.Join(@"\", parts, 0, index) + @"\~~~\" + string.Join(@"\", parts, parts.Length - 2, 2);
+         }
       }
 
       public IResult<FileName> Next()
@@ -475,13 +513,17 @@ namespace Core.Computers
                   var suffix = $".{i:D3}";
                   var targetFile = Folder.File(name + suffix, extension);
                   if (!targetFile.Exists())
+                  {
                      return targetFile.Success();
+                  }
                }
 
                return $"Couldn't generate next file for {fullPath}".Failure<FileName>();
             }
             else
+            {
                return this.Success();
+            }
          }
          catch (Exception exception)
          {
@@ -516,7 +558,10 @@ namespace Core.Computers
       {
          target.folder.CreateIfNonExistent();
          if (overwrite && target.Exists())
+         {
             target.Delete();
+         }
+
          File.Move(fullPath, target.ToString());
       }
 
@@ -546,25 +591,33 @@ namespace Core.Computers
       public void WriteTo(FileName target, bool overwriteTarget = false, bool deleteSelf = false)
       {
          if (overwriteTarget)
+         {
             target.Delete();
+         }
 
          var workingFile = CreateRandomFileName(Folder, "working");
          workingFile.Text = Text;
          workingFile.MoveTo(target);
          if (deleteSelf)
+         {
             Delete();
+         }
       }
 
       public void WriteToBinary(FileName target, bool overwriteTarget, bool deleteSelf)
       {
          if (overwriteTarget)
+         {
             target.Delete();
+         }
 
          var workingFile = CreateRandomFileName(Folder, "working");
          workingFile.Bytes = Bytes;
          workingFile.MoveTo(target);
          if (deleteSelf)
+         {
             Delete();
+         }
       }
 
       public void WriteToBinary(FileName target, bool overwriteTarget = false) => WriteToBinary(target, overwriteTarget, false);
@@ -622,11 +675,17 @@ namespace Core.Computers
       protected void setExtension(string anExtension)
       {
          if (anExtension.IsEmpty())
+         {
             extension = "";
+         }
          else if (anExtension.StartsWith("."))
+         {
             extension = anExtension;
+         }
          else
+         {
             extension = "." + anExtension;
+         }
 
          setFullPath();
       }
@@ -638,9 +697,14 @@ namespace Core.Computers
          if (anExtension.IsNotEmpty())
          {
             if (anExtension.StartsWith("."))
+            {
                extension += anExtension;
+            }
             else
+            {
                extension += "." + anExtension;
+            }
+
             setFullPath();
          }
       }
@@ -649,11 +713,20 @@ namespace Core.Computers
       {
          var newFile = Clone();
          if (name != null)
+         {
             newFile.Name = name;
+         }
+
          if (extension != null)
+         {
             newFile.Extension = extension;
+         }
+
          if (unique)
+         {
             newFile.Name = UniqueName(Folder, newFile.Name);
+         }
+
          MoveTo(newFile, overwrite);
 
          return newFile;
@@ -692,7 +765,9 @@ namespace Core.Computers
          folder.CreateIfNonExistent();
          using (var file = File.Open(fullPath, FileMode.Append, FileAccess.Write, FileShare.ReadWrite))
          using (var writer = new StreamWriter(file, Encoding))
+         {
             writer.Write(text);
+         }
       }
 
       public void Append(string text)
@@ -709,7 +784,9 @@ namespace Core.Computers
             }
          }
          else
+         {
             appendText(text);
+         }
       }
 
       public void Append(string format, params object[] args) => Append(string.Format(format, args));
@@ -718,7 +795,9 @@ namespace Core.Computers
       {
          folder.CreateIfNonExistent();
          using (var stream = new FileStream(fullPath, FileMode.Append, FileAccess.Write, FileShare.Write))
+         {
             stream.Write(bytes, 0, bytes.Length);
+         }
       }
 
       public void Append(string[] lines)
@@ -797,7 +876,9 @@ namespace Core.Computers
                return process.StandardOutput.ReadToEnd();
             }
             else
+            {
                return "";
+            }
          }
       }
 

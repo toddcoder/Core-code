@@ -36,14 +36,18 @@ namespace Core.WinForms.Documents
             textBox.BackColor = Color.White;
             var matcher = textBox.Text.Matches(pattern, multiline: true);
             if (matcher.If(out var m))
+            {
                for (var i = 0; i < m.MatchCount; i++)
                {
                   var match = m.GetMatch(i);
                   var groups = match.Groups;
 
                   for (var j = 0; j < groups.Length - 1; j++)
+                  {
                      colorize(textBox, groups[j + 1], colors[j]);
+                  }
                }
+            }
          }
          finally
          {
