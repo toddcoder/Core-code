@@ -376,11 +376,11 @@ namespace Core.Computers
          setFullPath();
       }
 
-      public void initialize(string newRoot) => initialize(newRoot, new string[0]);
+      void initialize(string newRoot) => initialize(newRoot, new string[0]);
 
-      public void setFullPath(string folder)
+      void setFullPath(string folder)
       {
-         folder = FileName.ResolveFolder(folder);
+         folder = Path.GetFullPath(folder);
          var folderRoot = GetDirectoryRoot(folder);
 
          string folderSubfolders;
