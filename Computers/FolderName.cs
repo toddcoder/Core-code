@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using Core.Arrays;
 using Core.Dates.Now;
+using Core.Exceptions;
 using Core.Monads;
 using Core.Numbers;
 using Core.RegularExpressions;
@@ -24,6 +26,8 @@ namespace Core.Computers
             return assert(IsValidFolderName(folder), () => new FolderName(folder), () => $"{folder} is an invalid folder name");
          }
       }
+
+      const int MAX_PATH = 260;
 
       public static implicit operator FolderName(string folder) => new FolderName(folder);
 
@@ -109,6 +113,10 @@ namespace Core.Computers
       public static FileName operator +(FolderName folder, string file) => folder.File(file);
 
       public static FileName operator +(FolderName folder, FileName file) => folder.File(file.NameExtension);
+
+      [DllImport("shlwapi.dll", CharSet = CharSet.Auto)]
+      static extern bool PathRelativePathTo(StringBuilder path, string from, FileAttributes fromAttributes, string to,
+         FileAttributes toAttributes);
 
       protected string root;
       protected string[] subfolders;
@@ -580,5 +588,19 @@ namespace Core.Computers
       public FolderNameTrying TryTo => new FolderNameTrying(this);
 
       public FileName UniqueFileName(string name, string extension) => FileName.UniqueFileName(this, name, extension);
+
+      public FolderName RelativeTo(FolderName otherFolder)
+      {
+         var path = new StringBuilder();
+         var result = PathRelativePathTo(path, fullPath, FileAttributes.Directory, otherFolder.fullPath, FileAttributes.Normal);
+         if (result)
+         {
+            return path.ToString();
+         }
+         else
+         {
+            throw "Couldn't determine relative path".Throws();
+         }
+      }
    }
 }
