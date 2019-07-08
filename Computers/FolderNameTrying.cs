@@ -7,12 +7,6 @@ namespace Core.Computers
 {
    public class FolderNameTrying
    {
-      public static IResult<FolderName> SetCurrent(FolderName newCurrent) => tryTo(() =>
-      {
-         FolderName.Current = newCurrent;
-         return FolderName.Current;
-      });
-
       FolderName folderName;
 
       public event EventHandler<FileArgs> FileSuccess;
@@ -70,7 +64,7 @@ namespace Core.Computers
 
       public IResult<FolderName> Exists()
       {
-         return assert(folderName.Exists(), () => folderName, $"Folder {folderName} doesnt exist");
+         return assert(folderName.Exists(), () => folderName, $"Folder {folderName} doesn't exist");
       }
 
       public IResult<FolderName> this[string subfolder] => tryTo(() =>
@@ -101,5 +95,11 @@ namespace Core.Computers
             });
          }
       }
+
+      IResult<FolderName> SetAsCurrent() => tryTo(() =>
+      {
+         FolderName.Current = folderName;
+         return FolderName.Current;
+      });
    }
 }
