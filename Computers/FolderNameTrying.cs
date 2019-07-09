@@ -96,7 +96,7 @@ namespace Core.Computers
          }
       }
 
-      IResult<FolderName> SetAsCurrent() => tryTo(() =>
+      public IResult<FolderName> SetAsCurrent() => tryTo(() =>
       {
          FolderName.Current = folderName;
          return FolderName.Current;
