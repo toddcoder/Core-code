@@ -589,10 +589,10 @@ namespace Core.Computers
 
       public FileName UniqueFileName(string name, string extension) => FileName.UniqueFileName(this, name, extension);
 
-      public FolderName RelativeTo(FolderName otherFolder)
+      protected string relativeTo(string otherPath, FileAttributes fileAttributes)
       {
-         var path = new StringBuilder();
-         var result = PathRelativePathTo(path, fullPath, FileAttributes.Directory, otherFolder.fullPath, FileAttributes.Normal);
+         var path = new StringBuilder(MAX_PATH);
+         var result = PathRelativePathTo(path, fullPath, FileAttributes.Directory, otherPath, fileAttributes);
          if (result)
          {
             return path.ToString();
@@ -602,5 +602,13 @@ namespace Core.Computers
             throw "Couldn't determine relative path".Throws();
          }
       }
+
+      public string RelativeTo(FileName file) => relativeTo(file.ToString(), FileAttributes.Normal);
+
+      public string RelativeTo(FolderName folder) => relativeTo(folder.fullPath, FileAttributes.Directory);
+
+      public FolderName AbsoluteFolder(string relativePath) => Path.Combine(fullPath, relativePath);
+
+      public FileName AbsoluteFile(string relativePath) => Path.Combine(fullPath, relativePath);
    }
 }

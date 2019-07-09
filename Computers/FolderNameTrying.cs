@@ -101,5 +101,13 @@ namespace Core.Computers
          FolderName.Current = folderName;
          return FolderName.Current;
       });
+
+      public IResult<string> RelativeTo(FileName file) => tryTo(() => folderName.RelativeTo(file));
+
+      public IResult<string> RelativeTo(FolderName folder) => tryTo(() => folderName.RelativeTo(folder));
+
+      public IResult<FolderName> AbsoluteFolder(string relativePath) => tryTo(() => folderName.AbsoluteFolder(relativePath));
+
+      public IResult<FileName> AbsoluteFile(string relativePath) => tryTo(() => folderName.AbsoluteFile(relativePath));
    }
 }
