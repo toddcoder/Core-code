@@ -109,5 +109,7 @@ namespace Core.Computers
       public IResult<FolderName> AbsoluteFolder(string relativePath) => tryTo(() => folderName.AbsoluteFolder(relativePath));
 
       public IResult<FileName> AbsoluteFile(string relativePath) => tryTo(() => folderName.AbsoluteFile(relativePath));
+
+      public IResult<string> AbsoluteString(string relativePath) => tryTo(() => folderName.AbsoluteString(relativePath));
    }
 }

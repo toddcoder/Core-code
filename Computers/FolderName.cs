@@ -610,5 +610,7 @@ namespace Core.Computers
       public FolderName AbsoluteFolder(string relativePath) => Path.Combine(fullPath, relativePath);
 
       public FileName AbsoluteFile(string relativePath) => Path.Combine(fullPath, relativePath);
+
+      public string AbsoluteString(string relativePath) => Path.Combine(fullPath, relativePath);
    }
 }
