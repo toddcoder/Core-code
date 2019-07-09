@@ -16,5 +16,14 @@ namespace Core.Tests
          var absolute = baseFolder.AbsoluteFolder(result);
          Console.WriteLine(absolute);
       }
+
+      [TestMethod]
+      public void RelativeFolderConversionToAbsolute()
+      {
+         var folderName = @"..\..\Estream.Migrations\_DDL";
+         FolderName baseFolder = @"C:\Users\tebennett\src\Estream\Source\Estream.MigrationTests\Configurations";
+         var folder = baseFolder.AbsoluteFolder(folderName);
+         Console.WriteLine(folder);
+      }
    }
 }
