@@ -512,38 +512,25 @@ namespace Core.Computers
 
       public bool IsParentOf(FolderName folder)
       {
-         if (root.Same(folder.Root))
+         if (root.Same(folder.Root) && subfolders.Length == folder.Subfolders.Length)
          {
-            if (subfolders.Length == folder.Subfolders.Length)
+            if (subfolders.Length > 0)
             {
-               if (subfolders.Length > 0)
+               if (subfolders.Length + 1 == folder.Subfolders.Length)
                {
-                  if (subfolders.Length + 1 == folder.Subfolders.Length)
-                  {
-                     var selfSubfolders = subfolders;
-                     var folderSubfolders = folder.Subfolders;
+                  var selfSubfolders = subfolders;
+                  var folderSubfolders = folder.Subfolders;
 
-                     return !selfSubfolders.Where((t, i) => !t.Same(folderSubfolders[i])).Any();
-                  }
-                  else
-                  {
-                     return false;
-                  }
-               }
-               else
-               {
-                  return true;
+                  return !selfSubfolders.Where((t, i) => !t.Same(folderSubfolders[i])).Any();
                }
             }
             else
             {
-               return false;
+               return true;
             }
          }
-         else
-         {
-            return false;
-         }
+
+         return false;
       }
 
       public bool IsChildOf(FolderName folder) => folder.IsParentOf(this);
