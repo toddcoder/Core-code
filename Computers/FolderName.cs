@@ -207,7 +207,7 @@ namespace Core.Computers
          set => setAttr(FileAttributes.Temporary, value);
       }
 
-		public FolderName this[string subfolder]=> new FolderName(root, subfolders.Append(subfolder));
+      public FolderName this[string subfolder] => new FolderName(root, subfolders.Append(subfolder));
 
       public IMaybe<FolderName> Parent
       {
@@ -279,7 +279,7 @@ namespace Core.Computers
 
       public string Name
       {
-	      get => subfolders.Last("");
+         get => subfolders.Last("");
          set
          {
             subfolders[subfolders.Length - 1] = value;
@@ -342,6 +342,10 @@ namespace Core.Computers
       public IEnumerable<FileName> Files => getFiles(fullPath);
 
       public IEnumerable<FolderName> Folders => getFolders(fullPath);
+
+      public IEnumerable<FileName> LocalAndParentFiles => getLocalAndParentFiles(fullPath);
+
+      public IEnumerable<FolderName> LocalAndParentFolders => getLocalAndParentFolders(fullPath);
 
       public int FileCount => getFileCount(fullPath);
 
@@ -549,6 +553,50 @@ namespace Core.Computers
       protected static IEnumerable<FolderName> getFolders(string folder)
       {
          return GetDirectories(folder).Select(f => (FolderName)f);
+      }
+
+      protected static IEnumerable<FileName> getLocalAndParentFiles(string folder)
+      {
+         if (folder == null)
+         {
+            yield break;
+         }
+
+         foreach (var file in getFiles(folder))
+         {
+            yield return file;
+         }
+
+         var parent = GetParent(folder)?.FullName;
+         foreach (var file in getLocalAndParentFiles(parent))
+         {
+            yield return file;
+         }
+      }
+
+      protected static IEnumerable<FolderName> getLocalAndParentFolders(string folder)
+      {
+         if (folder == null)
+         {
+            yield break;
+         }
+
+         foreach (var subFolder in getFolders(folder))
+         {
+            yield return subFolder;
+         }
+
+         var parent = GetParent(folder)?.FullName;
+
+         foreach (var subFolder in getLocalAndParentFolders(parent))
+         {
+            yield return subFolder;
+         }
+
+         if (parent != null)
+         {
+            yield return parent;
+         }
       }
 
       static int getFileCount(string folder) => getFiles(folder).Count();
