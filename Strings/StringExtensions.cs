@@ -876,7 +876,6 @@ namespace Core.Strings
                      matcher[matchIndex] = "";
                   }
                }
-               return $"{number} {matcher}";
             }
             else
             {
@@ -891,8 +890,37 @@ namespace Core.Strings
                      matcher[matchIndex] = matcher[matchIndex, 1];
                   }
                }
+            }
 
-               return $"{number} {matcher}";
+            var matcherText = matcher.ToString();
+            var numberAccountedFor = false;
+            if (matcher.IsMatch(matcherText, @"-(< '\') /'#'"))
+            {
+               numberAccountedFor = true;
+               for (var matchIndex = 0; matchIndex < matcher.MatchCount; matchIndex++)
+               {
+                  matcher[matchIndex, 1] = number.ToString();
+               }
+            }
+
+            matcherText = matcher.ToString();
+            if (matcher.IsMatch(matcherText, @"/('\#')"))
+            {
+               for (var matchIndex = 0; matchIndex < matcher.MatchCount; matchIndex++)
+               {
+                  matcher[matchIndex, 1] = "#";
+               }
+            }
+
+            matcherText = matcher.ToString();
+
+            if (numberAccountedFor)
+            {
+               return matcherText;
+            }
+            else
+            {
+               return $"{number} {matcherText}";
             }
          }
          else
