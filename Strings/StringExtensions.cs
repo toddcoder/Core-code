@@ -865,26 +865,31 @@ namespace Core.Strings
          {
             if (number == 1)
             {
-               if (matcher[0, 2].IsNotEmpty())
+               for (var matchIndex = 0; matchIndex < matcher.MatchCount; matchIndex++)
                {
-                  matcher[0] = matcher[0, 1];
+                  if (matcher[matchIndex, 2].IsNotEmpty())
+                  {
+                     matcher[matchIndex] = matcher[matchIndex, 1];
+                  }
+                  else
+                  {
+                     matcher[matchIndex] = "";
+                  }
                }
-               else
-               {
-                  matcher[0] = "";
-               }
-
                return $"{number} {matcher}";
             }
             else
             {
-               if (matcher[0, 2].IsNotEmpty())
+               for (var matchIndex = 0; matchIndex < matcher.MatchCount; matchIndex++)
                {
-                  matcher[0] = matcher[0, 2];
-               }
-               else
-               {
-                  matcher[0] = matcher[0, 1];
+                  if (matcher[matchIndex, 2].IsNotEmpty())
+                  {
+                     matcher[matchIndex] = matcher[matchIndex, 2];
+                  }
+                  else
+                  {
+                     matcher[matchIndex] = matcher[matchIndex, 1];
+                  }
                }
 
                return $"{number} {matcher}";
