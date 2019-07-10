@@ -66,6 +66,7 @@ namespace Core.Collections
 
                      return result;
                   }
+
                case DefaultType.Lambda:
                   if (ContainsKey(key))
                   {
@@ -86,6 +87,7 @@ namespace Core.Collections
 
                      return result;
                   }
+
                default:
                   return base[key];
             }

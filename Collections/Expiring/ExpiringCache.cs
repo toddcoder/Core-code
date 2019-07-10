@@ -10,7 +10,7 @@ namespace Core.Collections.Expiring
    {
       Hash<TKey, TValue> cache;
       Hash<TKey, ExpirationPolicy<TValue>> expirationPolicies;
-      IMaybe<Timer> timer;
+      IMaybe<Timer> anyTimer;
       object locker;
       Func<ExpirationPolicy<TValue>> newPolicy;
 
@@ -42,7 +42,7 @@ namespace Core.Collections.Expiring
             }
          };
 
-         timer = newTimer.Some();
+         anyTimer = newTimer.Some();
          locker = new object();
          NewPolicy = () => new NonExpiration<TValue>();
       }
@@ -51,7 +51,7 @@ namespace Core.Collections.Expiring
       {
          cache = new Hash<TKey, TValue>();
          expirationPolicies = new Hash<TKey, ExpirationPolicy<TValue>>();
-         timer = none<Timer>();
+         anyTimer = none<Timer>();
          locker = new object();
          NewPolicy = () => new NonExpiration<TValue>();
       }
@@ -64,17 +64,17 @@ namespace Core.Collections.Expiring
 
       public void StartMonitoring()
       {
-         if (timer.If(out var t))
+         if (anyTimer.If(out var timer))
          {
-            t.Enabled = true;
+            timer.Enabled = true;
          }
       }
 
       public void StopMonitoring()
       {
-         if (timer.If(out var t))
+         if (anyTimer.If(out var timer))
          {
-            t.Enabled = false;
+            timer.Enabled = false;
          }
       }
 

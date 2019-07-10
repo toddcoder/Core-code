@@ -109,7 +109,6 @@
     <Compile Include="Collections\Set.cs" />
     <Compile Include="Collections\StringHash.cs" />
     <Compile Include="Collections\StringSet.cs" />
-    <Compile Include="Collections\TupleExtensions.cs" />
     <Compile Include="Collections\TwoKeyHash.cs" />
     <Compile Include="Computers\FileArgs.cs" />
     <Compile Include="Computers\FileExceptionArgs.cs" />
@@ -209,7 +208,6 @@
     <Compile Include="Numbers\Between.cs" />
     <Compile Include="Numbers\Bits32.cs" />
     <Compile Include="Numbers\Comparison.cs" />
-    <Compile Include="Numbers\DivisionRemainder.cs" />
     <Compile Include="Numbers\GetHashCodeFunctions.cs" />
     <Compile Include="Numbers\NumberExtensions.cs" />
     <Compile Include="Objects\Assertions.cs" />

@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using Core.Booleans;
 using Core.Monads;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Consoles
 {
@@ -9,7 +10,7 @@ namespace Core.WinForms.Consoles
    {
       Form form;
       TextBoxConsole console;
-      IMaybe<Control> previouslyFocused;
+      IMaybe<Control> anyPreviouslyFocused;
 
       public TextBoxReader(Form form, TextBoxConsole console)
       {
@@ -24,7 +25,7 @@ namespace Core.WinForms.Consoles
 
          this.console = console;
          this.console.IOStatus = IOStatusType.Writing;
-         previouslyFocused = MonadFunctions.none<Control>();
+         anyPreviouslyFocused = none<Control>();
       }
 
       public override void Flush() { }
@@ -36,7 +37,7 @@ namespace Core.WinForms.Consoles
       public override int Read(byte[] buffer, int offset, int count)
       {
          console.ReadOnly = false;
-         previouslyFocused = form.ActiveControl.SomeIfNotNull();
+         anyPreviouslyFocused = form.ActiveControl.SomeIfNotNull();
          console.Focus();
          console.IOStatus = IOStatusType.Reading;
 
@@ -85,9 +86,9 @@ namespace Core.WinForms.Consoles
          console.GoToEnd();
          console.ReadOnly = true;
 
-         if (previouslyFocused.If(out var pf))
+         if (anyPreviouslyFocused.If(out var previouslyFocused))
          {
-            form.ActiveControl = pf;
+            form.ActiveControl = previouslyFocused;
          }
       }
 

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Core.Collections;
+using Core.Enumerables;
 using Core.Monads;
 using Core.Numbers;
 using Core.RegularExpressions;
@@ -83,14 +83,17 @@ namespace Core.Arrays
 			}
 		}
 
-		public static T[] Shuffle<T>(this T[] array)
-		{
-			var random = new Random();
-			var list = array.Select(value => new { Index = random.Next(), Value = value });
-			var sortedList = list.OrderBy(i => i.Index).Select(i => i.Value);
+		public static T[] Shuffle<T>(this T[] array) => shuffle(array, new Random());
 
-			return sortedList.ToArray();
-		}
+      public static T[] Shuffle<T>(this T[] array, int seed) => shuffle(array, new Random(seed));
+
+      static T[] shuffle<T>(T[] array, Random random)
+      {
+         var list = array.Select(value => new { Index = random.Next(), Value = value });
+         var sortedList = list.OrderBy(i => i.Index).Select(i => i.Value);
+
+         return sortedList.ToArray();
+      }
 
 		public static string Andify<T>(this T[] array)
 		{
@@ -105,25 +108,8 @@ namespace Core.Arrays
 					return $"{array[0]} and {array[1]}";
 			}
 
-			var result = new StringBuilder();
-			var last = length - 1;
-			for (var i = 0; i < last; i++)
-         {
-            if (result.Length == 0)
-            {
-               result.Append(array[i]);
-            }
-            else
-            {
-               result.Append($", {array[i]}");
-            }
-         }
-
-         result.Append(", and ");
-			result.Append(array[last]);
-
-			return result.ToString();
-		}
+         return $"{array.Take(array.Length - 1).Stringify(" and ")}, and {array[array.Length - 1]}";
+      }
 
 		public static bool IsEmpty<T>(this T[] array) => array == null || array.Length == 0;
 
@@ -574,7 +560,7 @@ namespace Core.Arrays
          }
       }
 
-		public static IEnumerable<(int, T)> WithIndexes<T>(this T[] array)
+		public static IEnumerable<(int index, T value)> WithIndexes<T>(this T[] array)
 		{
 			for (var i = 0; i < array.Length; i++)
          {
