@@ -14,7 +14,11 @@ namespace Core.Objects
 
       public IResult<object> this[string signature] => tryTo(() => evaluator[signature]);
 
+      public IResult<object> Set(string signature, object value) => tryTo(() => evaluator[signature] = value);
+
       public IResult<object> this[Signature signature] => tryTo(() => evaluator[signature]);
+
+      public IResult<object> Set(Signature signature, object value) => tryTo(() => evaluator[signature] = value);
 
       public IResult<Type> Type(string signature) => tryTo(() => evaluator.Type(signature));
 
