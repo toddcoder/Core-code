@@ -102,7 +102,9 @@ namespace Core.Monads
 
 		public void Force() => throw Exception;
 
-		public IMatched<T> UnmatchedOnly() => throw Exception;
+      public T ForceValue() => throw Exception;
+
+      public IMatched<T> UnmatchedOnly() => throw Exception;
 
 		public IMatched<TOther> UnmatchedOnly<TOther>() => throw Exception;
 

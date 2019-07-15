@@ -97,6 +97,8 @@ namespace Core.Monads
 
       public void Force() { }
 
+      public T ForceValue() => value;
+
       public IMatched<T> UnmatchedOnly() => notMatched<T>();
 
       public IMatched<TOther> UnmatchedOnly<TOther>() => notMatched<TOther>();

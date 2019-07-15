@@ -72,6 +72,8 @@ namespace Core.Monads
 
       void Force();
 
+      T ForceValue();
+
       IMatched<T> UnmatchedOnly();
 
       IMatched<TOther> UnmatchedOnly<TOther>();

@@ -107,6 +107,8 @@ namespace Core.Monads
 
       public void Force() => throw Exception;
 
+      public T ForceValue() => throw Exception;
+
       public IResult<T> OnSuccess(Action<T> action) => this;
 
       public IResult<T> OnFailure(Action<Exception> action)

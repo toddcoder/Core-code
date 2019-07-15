@@ -148,6 +148,8 @@ namespace Core.Monads
 
       public void Force() { }
 
+      public T ForceValue() => value;
+
       public IResult<T> OnSuccess(Action<T> action)
       {
          try

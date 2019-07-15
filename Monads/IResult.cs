@@ -52,6 +52,8 @@ namespace Core.Monads
 
       void Force();
 
+      T ForceValue();
+
       IResult<T> OnSuccess(Action<T> action);
 
       IResult<T> OnFailure(Action<Exception> action);
