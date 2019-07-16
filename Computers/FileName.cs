@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using Core.Enumerables;
 using Core.Monads;
 using Core.Numbers;
 using Core.Objects;
@@ -481,6 +482,21 @@ namespace Core.Computers
             {
                return none<FileName>();
             }
+         }
+      }
+
+      public string TruncateBySubfolder(int levels)
+      {
+         var subfolders = Folder.Subfolders;
+         var skipCount = subfolders.Length - levels;
+         if (skipCount <= 0)
+         {
+            return $@"\{NameExtension}";
+         }
+
+         {
+            var selectedSubfolders = subfolders.Skip(skipCount).ToArray().Stringify(@"\");
+            return $@"{selectedSubfolders}\{NameExtension}";
          }
       }
 
