@@ -47,6 +47,8 @@ namespace Core.Applications
          }
       }
 
+      public string EntryPointName { get; set; } = "Entry";
+
       public void Wait()
       {
          if (threading)
@@ -164,7 +166,7 @@ namespace Core.Applications
             });
          }
 
-         if (GetType().GetMethod("Main").SomeIfNotNull().If(out var methodInfo))
+         if (GetType().GetMethod(EntryPointName).SomeIfNotNull().If(out var methodInfo))
          {
             var arguments = methodInfo.GetParameters()
                .Select(p => (p.Name, p.ParameterType, anyDefaultValue: maybe(p.HasDefaultValue, () => p.DefaultValue)))
@@ -193,7 +195,7 @@ namespace Core.Applications
          }
          else
          {
-            HandleException(new ApplicationException("Couldn't find Main"));
+            HandleException(new ApplicationException($"Couldn't find {EntryPointName}"));
          }
       }
 

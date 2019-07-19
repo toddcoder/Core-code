@@ -11,7 +11,7 @@ namespace Core.Tests
          Run("/", ":", "/command: 'foobar' /code: 153 /amount: 153.69 /attributeTargets: all");
       }
 
-      public void Main(string command, int code, double amount, AttributeTargets attributeTargets)
+      public void Entry(string command, int code, double amount, AttributeTargets attributeTargets)
       {
          Console.WriteLine($"command: '{command}'");
          Console.WriteLine($"code: {code}");
