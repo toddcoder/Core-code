@@ -49,6 +49,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApplicationTests.cs" />
     <Compile Include="ArrayExtensionTests.cs" />
     <Compile Include="EnumerableExtensionTests.cs" />
     <Compile Include="FileNameTests.cs" />

@@ -1485,7 +1485,19 @@ namespace Core.Strings
 			}
 		}
 
-		public static string ExtractFromQuotes(this string source)
+      public static IResult<T> Enumeration<T>(this string value, bool ignoreCase = true) where T : struct
+      {
+         try
+         {
+            return ToEnumeration<T>(value, ignoreCase).Success();
+         }
+         catch (Exception exception)
+         {
+            return failure<T>(exception);
+         }
+      }
+
+      public static string ExtractFromQuotes(this string source)
 		{
 			if (source.IsEmpty())
          {
@@ -1864,6 +1876,25 @@ namespace Core.Strings
 			}
 		}
 
+      public static string Drop(this string source, string pattern, bool friendly = true, bool ignoreCase = false, bool multiline = false)
+      {
+         if (source.IsEmpty())
+         {
+            return "";
+         }
+
+         var matcher = new Matcher(friendly);
+         if (matcher.IsMatch(source, pattern, ignoreCase, multiline))
+         {
+            var count = matcher.Index + matcher.Length;
+            return source.Drop(count);
+         }
+         else
+         {
+            return source;
+         }
+      }
+
 		public static string DropWhile(this string source, Predicate<string> predicate)
 		{
 			if (source.IsEmpty())
@@ -1984,7 +2015,26 @@ namespace Core.Strings
 			}
 		}
 
-		public static string KeepWhile(this string source, Predicate<string> predicate)
+      public static string Keep(this string source, string pattern, bool friendly = true, bool ignoreCase = false, bool multiline = false)
+      {
+         if (source.IsEmpty())
+         {
+            return "";
+         }
+
+         var matcher = new Matcher(friendly);
+         if (matcher.IsMatch(source, pattern, ignoreCase, multiline))
+         {
+            var count = matcher.Index + matcher.Length;
+            return source.Keep(count);
+         }
+         else
+         {
+            return source;
+         }
+      }
+
+      public static string KeepWhile(this string source, Predicate<string> predicate)
 		{
 			if (source.IsEmpty())
          {
