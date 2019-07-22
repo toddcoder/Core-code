@@ -1,70 +1,48 @@
-﻿using System.Text;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace Core.Strings
 {
    public class Slicer
    {
+      class Replacement
+      {
+         public Replacement(int index, int length, string text)
+         {
+            Index = index;
+            Length = length;
+            Text = text.ToNonNullString();
+         }
+
+         public int Index { get; }
+
+         public int Length { get; }
+
+         public string Text { get; }
+      }
+
       public static implicit operator Slicer(string text) => new Slicer(text);
 
-      StringBuilder text;
-      int offset;
+      string text;
+      List<Replacement> replacements;
 
       public Slicer(string text)
       {
-         this.text = new StringBuilder(text);
-         offset = 0;
+         this.text = text;
+         replacements = new List<Replacement>();
       }
 
       public bool IsEmpty => text.Length == 0;
 
       public string this[int index, int length]
       {
-         get
-         {
-            if (!IsEmpty)
-            {
-               var newIndex = index + offset;
-               if (newIndex < 0 || newIndex > text.Length + 1)
-               {
-                  return "";
-               }
-               else if (newIndex + length < 0 || newIndex + length > text.Length)
-               {
-                  return "";
-               }
-               else
-               {
-                  return text.ToString(newIndex, length);
-               }
-            }
-            else
-            {
-               return "";
-            }
-         }
+         get => text.Drop(index).Keep(length);
          set
          {
             if (!IsEmpty)
             {
-               var newIndex = index + offset;
-               if (newIndex >= 0)
-               {
-                  if (length + newIndex > text.Length)
-                  {
-                     length = text.Length - newIndex;
-                  }
-
-                  text.Remove(newIndex, length);
-                  if (value.IsNotEmpty())
-                  {
-                     text.Insert(newIndex, value);
-                     offset += value.Length - length;
-                  }
-                  else
-                  {
-                     offset -= length;
-                  }
-               }
+               replacements.Add(new Replacement(index, length, value));
             }
          }
       }
@@ -75,37 +53,40 @@ namespace Core.Strings
          set => this[index, 1] = value;
       }
 
-      public char CharAt(int index)
-      {
-         var newIndex = index + offset;
-         if (newIndex < 0 || newIndex > text.Length + 1)
-         {
-            return (char)0;
-         }
-         else
-         {
-            return text[newIndex];
-         }
-      }
-
       public int Length => text.Length;
 
-      public string Substring(int index)
+      public override string ToString()
       {
-         offset = 0;
-         return text.ToString(index, text.Length - index);
+         var offset = 0;
+         var builder = new StringBuilder(text);
+
+         foreach (var replacement in replacements.OrderBy(r => r.Index))
+         {
+            var newIndex = replacement.Index + offset;
+            var length = replacement.Length;
+            if (newIndex >= 0)
+            {
+               if (length + newIndex > builder.Length)
+               {
+                  length = builder.Length - newIndex;
+               }
+
+               builder.Remove(newIndex, length);
+               if (replacement.Text.IsNotEmpty())
+               {
+                  builder.Insert(newIndex, replacement.Text);
+                  offset += replacement.Text.Length - length;
+               }
+               else
+               {
+                  offset -= length;
+               }
+            }
+         }
+
+         return builder.ToString();
       }
 
-      public void SetSubstring(int index, string value)
-      {
-         offset = 0;
-         var length = text.Length;
-
-         this[index, length - index] = value;
-      }
-
-      public override string ToString() => text.ToString();
-
-      public void Reset() => offset = 0;
+      public void Reset() => replacements.Clear();
    }
 }
