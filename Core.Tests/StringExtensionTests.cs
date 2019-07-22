@@ -22,5 +22,13 @@ namespace Core.Tests
          Console.WriteLine(message.Plural(1));
          Console.WriteLine(message.Plural(2));
       }
+
+      [TestMethod]
+      public void CamelAndPascalCaseTest()
+      {
+         var name = "SetSQL_nameForUser_ID";
+         Console.WriteLine(name.ToCamel());
+         Console.WriteLine(name.ToPascal());
+      }
    }
 }
