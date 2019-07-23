@@ -101,6 +101,8 @@ namespace Core.Strings
          }
       }
 
+      public IEnumerable<Replacement> Replacements => replacements.OrderBy(r => r.Index);
+
       public override string ToString()
       {
          var offset = 0;
