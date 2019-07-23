@@ -1,12 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
 namespace Core.Strings
 {
-   public class Slicer
+   public class Slicer : IEnumerable<Slicer.Replacement>
    {
-      class Replacement
+      public class Replacement
       {
          public Replacement(int index, int length, string text)
          {
@@ -59,6 +60,8 @@ namespace Core.Strings
 
       public int Length => text.Length;
 
+      public IEnumerator<Replacement> GetEnumerator() => replacements.GetEnumerator();
+
       public override string ToString()
       {
          var offset = 0;
@@ -90,6 +93,8 @@ namespace Core.Strings
 
          return builder.ToString();
       }
+
+      IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
       public void Reset() => replacements.Clear();
    }
