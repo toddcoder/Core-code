@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Core.Strings
 {
-   public class Slicer : IEnumerable<Slicer.Replacement>
+   public class Slicer : IEnumerable<(int index, int length, string text)>
    {
       public class Replacement
       {
@@ -69,33 +69,63 @@ namespace Core.Strings
 
       public int Length => text.Length;
 
-      public IEnumerator<Replacement> GetEnumerator() => replacements.OrderBy(r => r.Index).GetEnumerator();
+      public IEnumerator<(int index, int length, string text)> GetEnumerator()
+      {
+         var offset = 0;
+         var currentLength = text.Length;
+
+         foreach (var (index, length, replacementText) in replacements.OrderBy(r => r.Index))
+         {
+            var offsetIndex = index + offset;
+            var replacementLength = length;
+            if (offsetIndex >= 0)
+            {
+               if (replacementLength + offsetIndex > currentLength)
+               {
+                  replacementLength = currentLength - offsetIndex;
+               }
+
+               currentLength -= replacementLength;
+               if (replacementText.IsNotEmpty())
+               {
+                  currentLength += replacementText.Length;
+                  offset += replacementText.Length - replacementLength;
+               }
+               else
+               {
+                  offset += replacementText.Length - replacementLength;
+               }
+
+               yield return (offsetIndex, length, replacementText);
+            }
+         }
+      }
 
       public override string ToString()
       {
          var offset = 0;
          var builder = new StringBuilder(text);
 
-         foreach (var replacement in this)
+         foreach (var (index, length, replacementText) in replacements.OrderBy(r => r.Index))
          {
-            var newIndex = replacement.Index + offset;
-            var length = replacement.Length;
-            if (newIndex >= 0)
+            var offsetIndex = index + offset;
+            var replacementLength = length;
+            if (offsetIndex >= 0)
             {
-               if (length + newIndex > builder.Length)
+               if (replacementLength + offsetIndex > builder.Length)
                {
-                  length = builder.Length - newIndex;
+                  replacementLength = builder.Length - offsetIndex;
                }
 
-               builder.Remove(newIndex, length);
-               if (replacement.Text.IsNotEmpty())
+               builder.Remove(offsetIndex, replacementLength);
+               if (replacementText.IsNotEmpty())
                {
-                  builder.Insert(newIndex, replacement.Text);
-                  offset += replacement.Text.Length - length;
+                  builder.Insert(offsetIndex, replacementText);
+                  offset += replacementText.Length - replacementLength;
                }
                else
                {
-                  offset -= length;
+                  offset -= replacementLength;
                }
             }
          }
