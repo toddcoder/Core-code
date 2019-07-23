@@ -93,7 +93,7 @@ namespace Core.Strings
                }
                else
                {
-                  offset += replacementText.Length - replacementLength;
+                  offset -= replacementLength;
                }
 
                yield return (offsetIndex, length, replacementText);

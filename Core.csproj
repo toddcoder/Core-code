@@ -285,6 +285,7 @@
     <Compile Include="Strings\ITableMakerManager.cs" />
     <Compile Include="Strings\Justification.cs" />
     <Compile Include="Strings\ObjectFormatter.cs" />
+    <Compile Include="Strings\OffsetTracker.cs" />
     <Compile Include="Strings\Padder.cs" />
     <Compile Include="Strings\PadderArray.cs" />
     <Compile Include="Strings\PadderList.cs" />
