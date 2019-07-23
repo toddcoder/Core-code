@@ -50,6 +50,10 @@ namespace Core.Computers
 
 		public IResult<Unit> SetText(string text) => tryTo(() => fileName.Text = text).Unit;
 
+      public IResult<byte[]> Bytes => tryTo(() => fileName.Bytes);
+
+      public IResult<Unit> SetBytes(byte[] bytes) => tryTo(() => fileName.Bytes = bytes).Unit;
+
 		public IResult<string[]> Lines => tryTo(() => fileName.Lines);
 
 		public IResult<DateTime> CreationTime => tryTo(() => fileName.CreationTime);
