@@ -23,6 +23,13 @@ namespace Core.Strings
          public string Text { get; }
 
          public override string ToString() => $"\"{Text.Truncate(80)}\"[{Index}, {Length}]";
+
+         public void Deconstruct(out int index, out int length, out string text)
+         {
+            index = Index;
+            length = Length;
+            text = Text;
+         }
       }
 
       public static implicit operator Slicer(string text) => new Slicer(text);
