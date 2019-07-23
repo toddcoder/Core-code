@@ -47,10 +47,14 @@ namespace Core.Strings
          }
       }
 
-      public string this[int index]
+      public char this[int index]
       {
-         get => this[index, 1];
-         set => this[index, 1] = value;
+         get
+         {
+            var item = this[index, 1];
+            return item.Length > 0 ? item[0] : (char)0;
+         }
+         set => this[index, 1] = value.ToString();
       }
 
       public int Length => text.Length;
