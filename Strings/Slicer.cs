@@ -21,6 +21,8 @@ namespace Core.Strings
          public int Length { get; }
 
          public string Text { get; }
+
+         public override string ToString() => $"\"{Text.Truncate(80)}\"[{Index}, {Length}]";
       }
 
       public static implicit operator Slicer(string text) => new Slicer(text);
@@ -60,14 +62,14 @@ namespace Core.Strings
 
       public int Length => text.Length;
 
-      public IEnumerator<Replacement> GetEnumerator() => replacements.GetEnumerator();
+      public IEnumerator<Replacement> GetEnumerator() => replacements.OrderBy(r => r.Index).GetEnumerator();
 
       public override string ToString()
       {
          var offset = 0;
          var builder = new StringBuilder(text);
 
-         foreach (var replacement in replacements.OrderBy(r => r.Index))
+         foreach (var replacement in this)
          {
             var newIndex = replacement.Index + offset;
             var length = replacement.Length;
