@@ -59,7 +59,9 @@
     <Compile Include="Applications\CancelTask.cs" />
     <Compile Include="Applications\CancelTasks.cs" />
     <Compile Include="Applications\CommandLine.cs" />
+    <Compile Include="Applications\CommandLineInterface.cs" />
     <Compile Include="Applications\ConsoleFunctions.cs" />
+    <Compile Include="Applications\EntryPointAttribute.cs" />
     <Compile Include="Applications\EventExtensions.cs" />
     <Compile Include="Applications\Invokers\AsyncInvoker.cs" />
     <Compile Include="Applications\Invokers\BackgroundTask.cs" />

@@ -1,14 +1,7 @@
 ﻿using System;
-using System.Linq;
 using System.Threading;
 using Core.Applications.Writers;
-using Core.Enumerables;
-using Core.Monads;
 using Core.Objects;
-using Core.RegularExpressions;
-using Core.Strings;
-using static Core.Monads.AttemptFunctions;
-using static Core.Monads.MonadFunctions;
 
 namespace Core.Applications
 {
@@ -47,8 +40,6 @@ namespace Core.Applications
          }
       }
 
-      public string EntryPointName { get; set; } = "Entry";
-
       public void Wait()
       {
          if (threading)
@@ -77,11 +68,6 @@ namespace Core.Applications
          run(arguments);
       }
 
-      public virtual void Run(string prefix = "/", string suffix=":")
-      {
-         runUsingParameters(prefix, suffix, Environment.CommandLine);
-      }
-
       void run(Arguments arguments)
       {
          try
@@ -98,107 +84,6 @@ namespace Core.Applications
             Console.ReadLine();
          }
       }
-
-      public void runUsingParameters(string prefix, string suffix, string commandLine)
-      {
-         IResult<object> retrieveItem(string name, Type type, IMaybe<object> anyDefaultValue)
-         {
-            return tryTo(() =>
-            {
-               if (prefix == "/")
-               {
-                  prefix = "//";
-               }
-
-               var itemPrefix = $"'{prefix}' '{name}' '{suffix}' /(.*)";
-               var matcher = new Matcher();
-               if (matcher.IsMatch(commandLine, itemPrefix))
-               {
-                  var rest = matcher.FirstGroup;
-                  if (type == typeof(string))
-                  {
-                     if (rest.IsMatch("^ /s* [quote]"))
-                     {
-                        var source = rest.Keep("^ /s* /([quote]) .* /1").TrimStart().Drop(1).Drop(-1);
-                        return source.Success<object>();
-                     }
-                     else
-                     {
-                        return rest.Keep("^ /s* -/s+").TrimStart().Success<object>();
-                     }
-                  }
-                  else if (type == typeof(int))
-                  {
-                     var value = rest.Keep("^ /s* -/s+").TrimStart().Int32();
-                     return value.Map(i => (object)i);
-                  }
-                  else if (type == typeof(float) || type == typeof(double))
-                  {
-                     var source = rest.Keep("^ /s* -/s+").TrimStart();
-                     if (type == typeof(float))
-                     {
-                        return source.Single().Map(f => (object)f);
-                     }
-                     else
-                     {
-                        return source.Double().Map(d => (object)d);
-                     }
-                  }
-                  else if (type.IsEnum)
-                  {
-                     var source = rest.Keep("^ /s* -/s+").TrimStart();
-                     return tryTo(() => Enum.Parse(type, source, true));
-                  }
-                  else
-                  {
-                     return $"Can't handle type {type.Name}".Failure<object>();
-                  }
-               }
-               else if (anyDefaultValue.If(out var defaultValue))
-               {
-                  return defaultValue.Success();
-               }
-               else
-               {
-                  return $"No value for {name}".Failure<object>();
-               }
-            });
-         }
-
-         if (GetType().GetMethod(EntryPointName).SomeIfNotNull().If(out var methodInfo))
-         {
-            var arguments = methodInfo.GetParameters()
-               .Select(p => (p.Name, p.ParameterType, anyDefaultValue: maybe(p.HasDefaultValue, () => p.DefaultValue)))
-               .Select(t => retrieveItem(t.Name, t.ParameterType, t.anyDefaultValue));
-            var firstFailure = arguments.FirstOrNone(p => p.IsFailed);
-            if (firstFailure.If(out var failure))
-            {
-               HandleException(failure.Exception);
-            }
-            else
-            {
-               try
-               {
-                  methodInfo.Invoke(this, arguments.Select(a => a.ForceValue()).ToArray());
-               }
-               catch (Exception exception)
-               {
-                  HandleException(exception);
-               }
-
-               if (Test)
-               {
-                  Console.ReadLine();
-               }
-            }
-         }
-         else
-         {
-            HandleException(new ApplicationException($"Couldn't find {EntryPointName}"));
-         }
-      }
-
-      //public void Run(string prefix, string suffix) => runUsingParameters(prefix, suffix, Environment.CommandLine);
 
       public virtual void RunInLoop(string[] args, TimeSpan interval)
       {

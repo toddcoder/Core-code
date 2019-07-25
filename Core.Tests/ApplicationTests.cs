@@ -4,14 +4,10 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Core.Tests
 {
-   class Program : CommandLine
+   internal class Program : CommandLineInterface
    {
-      public override void Execute(Arguments arguments)
-      {
-         runUsingParameters("/", ":", "/command: 'foobar' /code: 153 /amount: 153.69 /attributeTargets: all");
-      }
-
-      public void Entry(string command, int code, double amount, AttributeTargets attributeTargets)
+      [EntryPoint]
+      public void Main(string command, int code, double amount, AttributeTargets attributeTargets)
       {
          Console.WriteLine($"command: '{command}'");
          Console.WriteLine($"code: {code}");
@@ -27,7 +23,7 @@ namespace Core.Tests
       public void RunTest()
       {
          var program = new Program();
-         program.Execute(new Arguments());
+         program.Run("/command: 'foobar' /code: 153 /amount: 153.69 /attributeTargets: all", "/", ":");
       }
    }
 }
