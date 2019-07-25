@@ -77,10 +77,9 @@ namespace Core.Applications
          run(arguments);
       }
 
-      public virtual void Run()
+      public virtual void Run(string prefix = "/", string suffix=":")
       {
-         var arguments = new Arguments(Environment.CommandLine);
-         run(arguments);
+         runUsingParameters(prefix, suffix, Environment.CommandLine);
       }
 
       void run(Arguments arguments)
@@ -100,7 +99,7 @@ namespace Core.Applications
          }
       }
 
-      public void Run(string prefix, string suffix, string commandLine)
+      public void runUsingParameters(string prefix, string suffix, string commandLine)
       {
          IResult<object> retrieveItem(string name, Type type, IMaybe<object> anyDefaultValue)
          {
@@ -130,12 +129,12 @@ namespace Core.Applications
                   }
                   else if (type == typeof(int))
                   {
-                     var value = rest.Keep("^ /s* ['+-']? [/d '_']+").TrimStart().Int32();
+                     var value = rest.Keep("^ /s* -/s+").TrimStart().Int32();
                      return value.Map(i => (object)i);
                   }
                   else if (type == typeof(float) || type == typeof(double))
                   {
-                     var source = rest.Keep("^ /s* ['+-']? [/d '_']+ ('.' [/d '_']+)? (['Ee'] ['+-']? /d+)?").TrimStart();
+                     var source = rest.Keep("^ /s* -/s+").TrimStart();
                      if (type == typeof(float))
                      {
                         return source.Single().Map(f => (object)f);
@@ -199,7 +198,7 @@ namespace Core.Applications
          }
       }
 
-      public void Run(string prefix, string suffix) => Run(prefix, suffix, Environment.CommandLine);
+      //public void Run(string prefix, string suffix) => runUsingParameters(prefix, suffix, Environment.CommandLine);
 
       public virtual void RunInLoop(string[] args, TimeSpan interval)
       {

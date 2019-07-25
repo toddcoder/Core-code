@@ -8,7 +8,7 @@ namespace Core.Tests
    {
       public override void Execute(Arguments arguments)
       {
-         Run("/", ":", "/command: 'foobar' /code: 153 /amount: 153.69 /attributeTargets: all");
+         runUsingParameters("/", ":", "/command: 'foobar' /code: 153 /amount: 153.69 /attributeTargets: all");
       }
 
       public void Entry(string command, int code, double amount, AttributeTargets attributeTargets)
