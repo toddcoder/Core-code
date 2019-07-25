@@ -46,7 +46,7 @@ namespace Core.Applications
 
       public void Run(string prefix = "/", string suffix = ":")
       {
-         Run(prefix, suffix, Environment.CommandLine);
+         Run(Environment.CommandLine, prefix, suffix);
       }
 
       public void Run(string commandLine, string prefix, string suffix)
