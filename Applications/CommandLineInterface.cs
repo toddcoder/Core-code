@@ -75,7 +75,11 @@ namespace Core.Applications
             if (matcher.IsMatch(commandLine, itemPrefix))
             {
                var rest = matcher.FirstGroup;
-               if (type == typeof(string))
+               if (type == typeof(bool))
+               {
+                  return rest.Keep("^ /s* ('false' | 'true') /b").TrimStart().Boolean().Map(b => (object)b);
+               }
+               else if (type == typeof(string))
                {
                   if (rest.IsMatch("^ /s* [quote]"))
                   {
