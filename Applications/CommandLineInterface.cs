@@ -132,9 +132,9 @@ namespace Core.Applications
          {
             var arguments = methodInfo.GetParameters()
                .Select(p => (p.Name, p.ParameterType, anyDefaultValue: maybe(p.HasDefaultValue, () => p.DefaultValue)))
-               .Select(t => retrieveItem(t.Name, t.ParameterType, t.anyDefaultValue));
-            var firstFailure = arguments.FirstOrNone(p => p.IsFailed);
-            if (firstFailure.If(out var failure))
+               .Select(t => retrieveItem(t.Name, t.ParameterType, t.anyDefaultValue))
+               .ToArray();
+            if (arguments.FirstOrNone(p => p.IsFailed).If(out var failure))
             {
                HandleException(failure.Exception);
             }
