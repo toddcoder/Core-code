@@ -123,7 +123,7 @@ namespace Core.Strings
 
 		public static string Truncate(this string source, int limit, bool addEllipses = true)
 		{
-			if (source.IsEmpty())
+			if (source.IsEmpty() || limit <= 0)
          {
             return "";
          }
@@ -133,17 +133,17 @@ namespace Core.Strings
          }
          else if (addEllipses)
          {
-            return source.Substring(0, limit - 1) + "…";
+            return source.Keep(limit - 1) + "…";
          }
          else
          {
-            return source.Substring(0, limit);
+            return source.Keep(limit);
          }
       }
 
 		public static string Elliptical(this string source, int limit, char upTo, bool pad = false, string ellipses= "…")
 		{
-			if (source.IsEmpty())
+			if (source.IsEmpty() || limit <= 0)
          {
             return "";
          }

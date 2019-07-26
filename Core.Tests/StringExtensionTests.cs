@@ -1,4 +1,5 @@
 ﻿using System;
+using Core.Enumerables;
 using Core.Strings;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -29,6 +30,30 @@ namespace Core.Tests
          var name = "SetSQL_nameForUser_ID";
          Console.WriteLine(name.ToCamel());
          Console.WriteLine(name.ToPascal());
+      }
+
+      [TestMethod]
+      public void EllipticalTest()
+      {
+         var text = "'We had joy, we had fun, we had seasons in the sun' -- the second most depressing song in the world";
+         foreach (var limit in 80.DownTo(-10, -10))
+         {
+            Console.WriteLine(limit);
+            Console.WriteLine(text.Elliptical(limit, ' '));
+            Console.WriteLine();
+         }
+      }
+
+      [TestMethod]
+      public void TruncateTest()
+      {
+         var text = "'We had joy, we had fun, we had seasons in the sun' -- the second most depressing song in the world";
+         foreach (var limit in 80.DownTo(-10, -10))
+         {
+            Console.WriteLine(limit);
+            Console.WriteLine(text.Truncate(limit));
+            Console.WriteLine();
+         }
       }
    }
 }
