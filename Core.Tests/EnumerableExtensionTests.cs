@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Core.Enumerables;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -33,6 +34,20 @@ namespace Core.Tests
          {
             Console.WriteLine(exception.Message);
          }
+      }
+
+      static void writeEnumerable<T>(string title, IEnumerable<T> array) => Console.WriteLine($"{title}: {array.Stringify()}");
+
+      [TestMethod]
+      public void LinqTerminologyTest()
+      {
+         var source = 0.UpUntil(10).ToArray();
+
+         var mapped = source.Map(i => i * 10);
+         writeEnumerable("Map", mapped);
+
+         var filtered = source.If(i => i % 2 == 0);
+         writeEnumerable("If", filtered);
       }
    }
 }

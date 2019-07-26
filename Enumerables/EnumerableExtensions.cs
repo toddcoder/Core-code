@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Core.Arrays;
 using Core.Collections;
+using Core.Exceptions;
 using Core.Monads;
 using Core.Numbers;
 using Core.Objects;
@@ -376,6 +377,99 @@ namespace Core.Enumerables
       public static Hash<TKey, TValue> ToHash<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> enumerable)
       {
          return enumerable.ToHash(kv => kv.Key, kv => kv.Value);
+      }
+
+      public static IEnumerable<TResult> Map<TSource, TResult>(this IEnumerable<TSource> enumerable, Func<TSource, TResult> mapFunc)
+      {
+         return enumerable.Select(mapFunc);
+      }
+
+      public static IEnumerable<TResult> FlatMap<TSource, TResult>(this IEnumerable<IEnumerable<TSource>> enumerable,
+         Func<TSource, TResult> mapFunc)
+      {
+         foreach (var outer in enumerable)
+         {
+            foreach (var inner in outer)
+            {
+               yield return mapFunc(inner);
+            }
+         }
+      }
+
+      public static IEnumerable<T> Flatten<T>(this IEnumerable<IEnumerable<T>> enumerable)
+      {
+         foreach (var outer in enumerable)
+         {
+            foreach (var inner in outer)
+            {
+               yield return inner;
+            }
+         }
+      }
+
+      public static IEnumerable<T> If<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate) => enumerable.Where(predicate);
+
+      public static TResult FoldLeft<TSource, TResult>(this IEnumerable<TSource> enumerable, TResult init,
+         Func<TResult, TSource, TResult> foldFunc)
+      {
+         return enumerable.Aggregate(init, foldFunc);
+      }
+
+      public static TResult FoldRight<TSource, TResult>(this IEnumerable<TSource> enumerable, TResult init,
+         Func<TSource, TResult, TResult> foldFunc)
+      {
+         var list = enumerable.ToList();
+         var accumulator = init;
+         for (var i = list.Count - 1; i >= 0; i--)
+         {
+            accumulator = foldFunc(list[i], accumulator);
+         }
+
+         return accumulator;
+      }
+
+      public static T FoldLeft<T>(this IEnumerable<T> enumerable, Func<T, T, T> foldFunc) => enumerable.Aggregate(foldFunc);
+
+      public static T FoldRight<T>(this IEnumerable<T> enumerable, Func<T, T, T> foldFunc)
+      {
+         var list = enumerable.ToList();
+         if (list.Count == 0)
+         {
+            throw "Enumerable can't be empty".Throws();
+         }
+
+         var accumulator = list[list.Count - 1];
+         for (var i = list.Count - 2; i >= 0; i--)
+         {
+            accumulator = foldFunc(list[i], accumulator);
+         }
+
+         return accumulator;
+      }
+
+      public static Hash<TKey, TValue[]> GroupBy<TKey, TValue>(this IEnumerable<TValue> enumerable, Func<TValue, TKey> groupingFunc)
+      {
+         var hash = new Hash<TKey, List<TValue>>();
+         foreach (var value in enumerable)
+         {
+            var key = groupingFunc(value);
+            if (hash.ContainsKey(key))
+            {
+               hash[key].Add(value);
+            }
+            else
+            {
+               hash[key] = new List<TValue> { value };
+            }
+         }
+
+         var result = new Hash<TKey, TValue[]>();
+         foreach (var (key, value) in hash)
+         {
+            result[key] = value.ToArray();
+         }
+
+         return result;
       }
    }
 }
