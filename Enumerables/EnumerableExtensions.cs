@@ -471,5 +471,24 @@ namespace Core.Enumerables
 
          return result;
       }
+
+      public static (IEnumerable<T> isTrue, IEnumerable<T> isFalse) Partition<T>(this IEnumerable<T> enumerable, Predicate<T> predicate)
+      {
+         var isTrue = new List<T>();
+         var isFalse = new List<T>();
+         foreach (var item in enumerable)
+         {
+            if (predicate(item))
+            {
+               isTrue.Add(item);
+            }
+            else
+            {
+               isFalse.Add(item);
+            }
+         }
+
+         return (isTrue, isFalse);
+      }
    }
 }

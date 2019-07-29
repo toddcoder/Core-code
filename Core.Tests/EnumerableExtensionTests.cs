@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Core.Collections;
 using Core.Enumerables;
+using Core.Numbers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Core.Arrays.ArrayFunctions;
 
@@ -73,6 +74,10 @@ namespace Core.Tests
          var sourceArray = array("alpha", "apple", "bravo", "charlie", "chuck");
          var hash = sourceArray.Group(v => v[0]);
          writeHash("Group", hash);
+
+         var (isTrue, isFalse) = source.Partition(i => i.IsEven());
+         writeEnumerable("is true", isTrue);
+         writeEnumerable("is false", isFalse);
       }
    }
 }
