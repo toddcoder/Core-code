@@ -83,7 +83,7 @@ namespace Core.Applications
                {
                   if (rest.IsMatch("^ /s* [quote]"))
                   {
-                     var source = rest.Keep("^ /s* /([quote]) .* /1").TrimStart().Drop(1).Drop(-1);
+                     var source = rest.Keep("^ /s* /([quote]) .*? /1").TrimStart().Drop(1).Drop(-1);
                      return source.Success<object>();
                   }
                   else
