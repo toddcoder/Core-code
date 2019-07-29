@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 using Core.Monads;
 using static Core.Monads.AttemptFunctions;
 
@@ -107,5 +108,9 @@ namespace Core.Computers
 			from writingStream in WritingStream()
 			from writer in tryTo(() => (TextWriter)new StreamWriter(writingStream))
 			select writer;
-	}
+
+      public IResult<string> GetText(Encoding encoding) => tryTo(() => fileName.GetText(encoding));
+
+      public IResult<Unit> SetText(string text, Encoding encoding) => tryTo(() => fileName.SetText(text, encoding));
+   }
 }

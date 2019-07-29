@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.IO.MemoryMappedFiles;
+using System.Text;
 
 namespace Core.Computers
 {
@@ -17,6 +18,15 @@ namespace Core.Computers
             HandleInheritability.None, false);
          viewStream = mappedFile.CreateViewStream(0, file.Length, MemoryMappedFileAccess.Read);
          reader = new StreamReader(viewStream);
+      }
+
+      public FileNameMappedReader(FileName file, Encoding encoding)
+      {
+         fileStream = new FileStream(file.ToString(), FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+         mappedFile = MemoryMappedFile.CreateFromFile(fileStream, null, 0, MemoryMappedFileAccess.Read, null,
+            HandleInheritability.None, false);
+         viewStream = mappedFile.CreateViewStream(0, file.Length, MemoryMappedFileAccess.Read);
+         reader = new StreamReader(viewStream, encoding);
       }
 
       public override void Close()

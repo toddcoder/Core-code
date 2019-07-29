@@ -351,6 +351,25 @@ namespace Core.Computers
          }
       }
 
+      public string GetText(Encoding encoding)
+      {
+         using (var reader = new FileNameMappedReader(this, encoding))
+         {
+            return reader.ReadToEnd();
+         }
+      }
+
+      public void SetText(string text, Encoding encoding)
+      {
+         using (var file = File.Open(fullPath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
+         using (var writer = new StreamWriter(file, encoding))
+         {
+            writer.Write(text);
+            writer.Flush();
+            writer.Close();
+         }
+      }
+
       public byte[] Bytes
       {
          get
@@ -759,7 +778,20 @@ namespace Core.Computers
          }
       }
 
+      public string GetText(int start, int length, Encoding encoding)
+      {
+         var charBuffer = new char[length];
+
+         using (var reader = new StreamReader(fullPath, encoding))
+         {
+            var actualLength = reader.Read(charBuffer, start, length);
+            return actualLength == 0 ? "" : new string(charBuffer, start, actualLength);
+         }
+      }
+
       public string GetText(int length) => GetText(0, length);
+
+      public string GetText(int length, Encoding encoding) => GetText(0, length, encoding);
 
       public byte[] GetBytes(int start, int length)
       {
