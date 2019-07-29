@@ -447,7 +447,7 @@ namespace Core.Enumerables
          return accumulator;
       }
 
-      public static Hash<TKey, TValue[]> GroupBy<TKey, TValue>(this IEnumerable<TValue> enumerable, Func<TValue, TKey> groupingFunc)
+      public static Hash<TKey, TValue[]> Group<TKey, TValue>(this IEnumerable<TValue> enumerable, Func<TValue, TKey> groupingFunc)
       {
          var hash = new Hash<TKey, List<TValue>>();
          foreach (var value in enumerable)
