@@ -79,5 +79,57 @@ namespace Core.Tests
          writeEnumerable("is true", isTrue);
          writeEnumerable("is false", isFalse);
       }
+
+      [TestMethod]
+      public void IndexesOfMinMaxTest()
+      {
+         var source = array("alpha", "apples", "brat", "IP");
+
+         Console.WriteLine("Index of max");
+         if (source.IndexOfMax().If(out var index))
+         {
+            Console.WriteLine(source[index]);
+         }
+         else
+         {
+            Console.WriteLine("empty");
+         }
+
+         Console.WriteLine();
+
+         Console.WriteLine("Index of max length");
+         if (source.IndexOfMax(s => s.Length).If(out index))
+         {
+            Console.WriteLine(source[index]);
+         }
+         else
+         {
+            Console.WriteLine("empty");
+         }
+
+         Console.WriteLine();
+
+         Console.WriteLine("Index of min");
+         if (source.IndexOfMin().If(out index))
+         {
+            Console.WriteLine(source[index]);
+         }
+         else
+         {
+            Console.WriteLine("empty");
+         }
+
+         Console.WriteLine();
+
+         Console.WriteLine("Index of min length");
+         if (source.IndexOfMin(s => s.Length).If(out index))
+         {
+            Console.WriteLine(source[index]);
+         }
+         else
+         {
+            Console.WriteLine("empty");
+         }
+      }
    }
 }

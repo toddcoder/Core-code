@@ -472,7 +472,8 @@ namespace Core.Enumerables
          return result;
       }
 
-      public static (IEnumerable<T> isTrue, IEnumerable<T> isFalse) Partition<T>(this IEnumerable<T> enumerable, Predicate<T> predicate)
+      public static (IEnumerable<T> isTrue, IEnumerable<T> isFalse) Partition<T>(this IEnumerable<T> enumerable,
+         Predicate<T> predicate)
       {
          var isTrue = new List<T>();
          var isFalse = new List<T>();
@@ -489,6 +490,120 @@ namespace Core.Enumerables
          }
 
          return (isTrue, isFalse);
+      }
+
+      public static IMaybe<int> IndexOfMax<T>(this IEnumerable<T> enumerable)
+         where T : IComparable<T>
+      {
+         var index = none<int>();
+         var currentIndex = 0;
+         var anyCurrentValue = none<T>();
+         foreach (var item in enumerable)
+         {
+            if (anyCurrentValue.If(out var currentValue))
+            {
+               if (item.ComparedTo(currentValue) > 0)
+               {
+                  index = currentIndex.Some();
+                  anyCurrentValue = item.Some();
+               }
+            }
+            else
+            {
+               index = currentIndex.Some();
+               anyCurrentValue = item.Some();
+            }
+
+            currentIndex++;
+         }
+
+         return index;
+      }
+
+      public static IMaybe<int> IndexOfMax<TSource, TResult>(this IEnumerable<TSource> enumerable, Func<TSource, TResult> mappingFunc)
+         where TResult : IComparable<TResult>
+      {
+         var index = none<int>();
+         var currentIndex = 0;
+         var anyCurrentValue = none<TResult>();
+         foreach (var item in enumerable)
+         {
+            var mappedItem = mappingFunc(item);
+            if (anyCurrentValue.If(out var currentValue))
+            {
+               if (mappedItem.ComparedTo(currentValue) > 0)
+               {
+                  index = currentIndex.Some();
+                  anyCurrentValue = mappedItem.Some();
+               }
+            }
+            else
+            {
+               index = currentIndex.Some();
+               anyCurrentValue = mappedItem.Some();
+            }
+
+            currentIndex++;
+         }
+
+         return index;
+      }
+
+      public static IMaybe<int> IndexOfMin<T>(this IEnumerable<T> enumerable)
+         where T : IComparable<T>
+      {
+         var index = none<int>();
+         var currentIndex = 0;
+         var anyCurrentValue = none<T>();
+         foreach (var item in enumerable)
+         {
+            if (anyCurrentValue.If(out var currentValue))
+            {
+               if (item.ComparedTo(currentValue) < 0)
+               {
+                  index = currentIndex.Some();
+                  anyCurrentValue = item.Some();
+               }
+            }
+            else
+            {
+               index = currentIndex.Some();
+               anyCurrentValue = item.Some();
+            }
+
+            currentIndex++;
+         }
+
+         return index;
+      }
+
+      public static IMaybe<int> IndexOfMin<TSource, TResult>(this IEnumerable<TSource> enumerable, Func<TSource, TResult> mappingFunc)
+         where TResult : IComparable<TResult>
+      {
+         var index = none<int>();
+         var currentIndex = 0;
+         var anyCurrentValue = none<TResult>();
+         foreach (var item in enumerable)
+         {
+            var mappedItem = mappingFunc(item);
+            if (anyCurrentValue.If(out var currentValue))
+            {
+               if (mappedItem.ComparedTo(currentValue) < 0)
+               {
+                  index = currentIndex.Some();
+                  anyCurrentValue = mappedItem.Some();
+               }
+            }
+            else
+            {
+               index = currentIndex.Some();
+               anyCurrentValue = mappedItem.Some();
+            }
+
+            currentIndex++;
+         }
+
+         return index;
       }
    }
 }
