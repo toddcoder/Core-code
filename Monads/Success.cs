@@ -180,5 +180,7 @@ namespace Core.Monads
             return exceptionMessage().Failure<T>();
          }
       }
+
+      public IMaybe<T> Maybe() => value.Some();
    }
 }

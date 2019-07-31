@@ -61,5 +61,7 @@ namespace Core.Monads
 	   void Deconstruct(out IMaybe<T> value, out Exception exception);
 
 	   IResult<T> Assert(Predicate<T> predicate, Func<string> exceptionMessage);
+
+      IMaybe<T> Maybe();
    }
 }

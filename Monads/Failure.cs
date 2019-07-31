@@ -129,5 +129,7 @@ namespace Core.Monads
 	   }
 
 	   public IResult<T> Assert(Predicate<T> predicate, Func<string> exceptionMessage) => this;
+
+      public IMaybe<T> Maybe() => none<T>();
    }
 }
