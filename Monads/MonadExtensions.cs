@@ -179,6 +179,24 @@ namespace Core.Monads
 			return result;
 		});
 
+      public static IMaybe<IEnumerable<T>> AllAreSome<T>(this IEnumerable<IMaybe<T>> enumerable)
+      {
+         var result = new List<T>();
+         foreach (var anyValue in enumerable)
+         {
+            if (anyValue.If(out var value))
+            {
+               result.Add(value);
+            }
+            else
+            {
+               return none<IEnumerable<T>>();
+            }
+         }
+
+         return result.Some<IEnumerable<T>>();
+      }
+
 		public static IEnumerable<IResult<T>> All<T>(this IEnumerable<IResult<T>> enumerable, Action<T> success = null,
 			Action<Exception> failure = null)
 		{
