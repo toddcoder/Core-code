@@ -32,6 +32,14 @@ namespace Core.Collections
          }
       }
 
+      public Set(params T[] items)
+      {
+         foreach (var item in items)
+         {
+            add(item);
+         }
+      }
+
       public T this[int index] => content[index];
 
       public int Count => content.Count;
