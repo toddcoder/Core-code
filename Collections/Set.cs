@@ -32,7 +32,7 @@ namespace Core.Collections
          }
       }
 
-      public Set(params T[] items)
+      public Set(params T[] items) : this()
       {
          foreach (var item in items)
          {
