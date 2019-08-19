@@ -138,6 +138,44 @@ namespace Core.Monads
 			}
 		}
 
+      public static IResult<T> assertNotNull<T>(T obj, Func<string> messageIfNull)
+      {
+         try
+         {
+            if (obj != null)
+            {
+               return obj.Success();
+            }
+            else
+            {
+               return messageIfNull().Failure<T>();
+            }
+         }
+         catch (Exception exception)
+         {
+            return failure<T>(exception);
+         }
+      }
+
+      public static IResult<T> assertNotNull<T>(T obj, string messageIfNull)
+      {
+         try
+         {
+            if (obj != null)
+            {
+               return obj.Success();
+            }
+            else
+            {
+               return messageIfNull.Failure<T>();
+            }
+         }
+         catch (Exception exception)
+         {
+            return failure<T>(exception);
+         }
+      }
+
 		public static IResult<T> reject<T>(bool test, Func<T> ifFalse, string messageIfTrue)
 		{
 			return assert(!test, ifFalse, messageIfTrue);

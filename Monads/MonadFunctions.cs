@@ -78,13 +78,7 @@ namespace Core.Monads
          }
       }
 
-		[Obsolete("Use maybe instead")]
-      public static IMaybe<T> when<T>(bool test, Func<T> ifTrue) => test ? ifTrue().Some() : none<T>();
-
       public static IMaybe<T> maybe<T>(bool test, Func<T> ifTrue) => test ? ifTrue().Some() : none<T>();
-
-      [Obsolete("Use maybe instead")]
-      public static IMaybe<T> when<T>(bool test, Func<IMaybe<T>> ifTrue) => test ? ifTrue() : none<T>();
 
       public static IMaybe<T> maybe<T>(bool test, Func<IMaybe<T>> ifTrue) => test ? ifTrue() : none<T>();
    }
