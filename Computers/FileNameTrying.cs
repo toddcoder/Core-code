@@ -112,5 +112,7 @@ namespace Core.Computers
       public IResult<string> GetText(Encoding encoding) => tryTo(() => fileName.GetText(encoding));
 
       public IResult<Unit> SetText(string text, Encoding encoding) => tryTo(() => fileName.SetText(text, encoding));
+
+      public IResult<string[]> SetLines(string[] lines) => tryTo(() => fileName.Lines = lines);
    }
 }
