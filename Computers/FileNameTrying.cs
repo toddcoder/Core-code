@@ -114,5 +114,7 @@ namespace Core.Computers
       public IResult<Unit> SetText(string text, Encoding encoding) => tryTo(() => fileName.SetText(text, encoding));
 
       public IResult<string[]> SetLines(string[] lines) => tryTo(() => fileName.Lines = lines);
+
+      public IResult<Unit> CreateIfNonexistent() => tryTo(() => fileName.CreateIfNonexistent());
    }
 }

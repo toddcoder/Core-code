@@ -989,5 +989,13 @@ namespace Core.Computers
       });
 
       public string Size => Length.ByteSize();
+
+      public void CreateIfNonexistent()
+      {
+         if (!Exists())
+         {
+            Text = "";
+         }
+      }
    }
 }
