@@ -33,5 +33,12 @@ namespace Core.Tests
          var program = new Program();
          program.Run("/command: 'C:\\Enterprise\\Temp' /code: 153 /amount: 153.69 /attributeTargets: all /text: 'foo'", "/", ":");
       }
+
+      [TestMethod]
+      public void AlternateSyntax2()
+      {
+         var program = new Program();
+         program.Run("--command 'C:\\Enterprise\\Temp' --code 153 --amount 153.69 --attribute-targets all --text 'foo'", "--", " ");
+      }
    }
 }

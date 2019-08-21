@@ -61,6 +61,24 @@ namespace Core.Applications
             .FirstOrFail(() => "No method with EntryPoint attribute found");
       }
 
+      static string namePattern(string name)
+      {
+         var matcher = new Matcher();
+         if (matcher.IsMatch(name, "['A-Z']"))
+         {
+            for (var i = 0; i < matcher.MatchCount; i++)
+            {
+               matcher[i, 0] = $"-{matcher[i, 0].ToLower()}";
+            }
+
+            return $"'{name}' | '{matcher}'";
+         }
+         else
+         {
+            return $"'{name}'";
+         }
+      }
+
       public void runUsingParameters(string prefix, string suffix, string commandLine)
       {
          IResult<object> retrieveItem(string name, Type type, IMaybe<object> anyDefaultValue) => tryTo(() =>
@@ -70,7 +88,7 @@ namespace Core.Applications
                prefix = "//";
             }
 
-            var itemPrefix = $"'{prefix}' '{name}' '{suffix}' /(.*)";
+            var itemPrefix = $"'{prefix}' {namePattern(name)} '{suffix}' /(.*)";
             var matcher = new Matcher();
             if (matcher.IsMatch(commandLine, itemPrefix))
             {
@@ -111,7 +129,7 @@ namespace Core.Applications
                else if (type.IsEnum)
                {
                   var source = rest.Keep("^ /s* -/s+").TrimStart();
-                  return tryTo(() => Enum.Parse(type, source, true));
+                  return tryTo(() => Enum.Parse(type, source.Replace("-", ""), true));
                }
                else
                {
