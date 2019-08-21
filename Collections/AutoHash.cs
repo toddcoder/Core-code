@@ -27,7 +27,21 @@ namespace Core.Collections
          AutoAddDefault = autoAddDefault;
       }
 
+      public AutoHash(Func<TKey, TValue> defaultLambda, bool autoAddDefault, IEqualityComparer<TKey> comparer) : this(comparer)
+      {
+         Default = DefaultType.Lambda;
+         DefaultLambda = defaultLambda;
+         AutoAddDefault = autoAddDefault;
+      }
+
       public AutoHash(TValue defaultValue, bool autoAddDefault = false)
+      {
+         Default = DefaultType.Value;
+         DefaultValue = defaultValue;
+         AutoAddDefault = autoAddDefault;
+      }
+
+      public AutoHash(TValue defaultValue, bool autoAddDefault, IEqualityComparer<TKey> comparer) : this(comparer)
       {
          Default = DefaultType.Value;
          DefaultValue = defaultValue;
