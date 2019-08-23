@@ -71,7 +71,7 @@ namespace Core.Applications
                matcher[i, 0] = $"-{matcher[i, 0].ToLower()}";
             }
 
-            return $"'{name}' | '{matcher}'";
+            return $"('{name}' | '{matcher}')";
          }
          else
          {
@@ -95,7 +95,14 @@ namespace Core.Applications
                var rest = matcher.FirstGroup;
                if (type == typeof(bool))
                {
-                  return rest.Keep("^ /s* ('false' | 'true') /b").TrimStart().Boolean().Map(b => (object)b);
+                  if (!rest.IsMatch("^ /s* 'false' | 'true'"))
+                  {
+                     return true.Success<object>();
+                  }
+                  else
+                  {
+                     return rest.Keep("^ /s* ('false' | 'true') /b").TrimStart().Boolean().Map(b => (object)b);
+                  }
                }
                else if (type == typeof(string))
                {

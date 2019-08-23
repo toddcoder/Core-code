@@ -7,13 +7,14 @@ namespace Core.Tests
    internal class Program : CommandLineInterface
    {
       [EntryPoint]
-      public void Main(string command, int code, double amount, AttributeTargets attributeTargets, string text = "")
+      public void Main(string command, int code, double amount, AttributeTargets attributeTargets, string text = "", bool recursive = true)
       {
          Console.WriteLine($"command: '{command}'");
          Console.WriteLine($"code: {code}");
          Console.WriteLine($"amount: {amount}");
          Console.WriteLine($"attribute targets: {attributeTargets}");
          Console.WriteLine($"text: '{text}'");
+         Console.WriteLine($"recursive: {recursive.ToString().ToLower()}");
       }
    }
 
@@ -31,14 +32,14 @@ namespace Core.Tests
       public void GreedyTest()
       {
          var program = new Program();
-         program.Run("/command: 'C:\\Enterprise\\Temp' /code: 153 /amount: 153.69 /attributeTargets: all /text: 'foo'", "/", ":");
+         program.Run("/command: 'C:\\Enterprise\\Temp' /code: 153 /amount: 153.69 /attributeTargets: all /text: 'foo' /recursive: false", "/", ":");
       }
 
       [TestMethod]
-      public void AlternateSyntax2()
+      public void AlternateSyntax()
       {
          var program = new Program();
-         program.Run("--command 'C:\\Enterprise\\Temp' --code 153 --amount 153.69 --attribute-targets all --text 'foo'", "--", " ");
+         program.Run("--command 'C:\\Enterprise\\Temp' --code 153 --recursive --amount 153.69 --attribute-targets all --text 'foo'", "--", " ");
       }
    }
 }
