@@ -95,7 +95,7 @@ namespace Core.Applications
                var rest = matcher.FirstGroup;
                if (type == typeof(bool))
                {
-                  if (suffix == " " && !rest.IsMatch("^ /s* 'false' | 'true'"))
+                  if (suffix == " " && (!rest.IsMatch("^ /s* 'false' | 'true'") || rest.IsEmpty()))
                   {
                      return true.Success<object>();
                   }
