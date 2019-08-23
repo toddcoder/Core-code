@@ -79,9 +79,9 @@ namespace Core.Applications
          }
       }
 
-      public void runUsingParameters(string prefix, string suffix, string commandLine)
+      static IResult<object> retrieveItem(string name, Type type, IMaybe<object> anyDefaultValue, string prefix, string suffix, string commandLine)
       {
-         IResult<object> retrieveItem(string name, Type type, IMaybe<object> anyDefaultValue) => tryTo(() =>
+         return tryTo(() =>
          {
             if (prefix == "/")
             {
@@ -152,12 +152,39 @@ namespace Core.Applications
                return $"No value for {name}".Failure<object>();
             }
          });
+      }
 
+      static string getCommand(string commandLine, string prefix, string suffix)
+      {
+         var matcher = new Matcher();
+         if (matcher.IsMatch(commandLine, "^ .+ '.exe' /s* /([/w '-']+)"))
+         {
+            var command = matcher.FirstGroup;
+            matcher.FirstGroup = $"{prefix}{command}{suffix}true";
+
+            return matcher.ToString();
+         }
+         else if (matcher.IsMatch(commandLine, "^ /([/w '-']+)"))
+         {
+            var command = matcher.FirstGroup;
+            matcher.FirstGroup = $"{prefix}{command}{suffix}true";
+
+            return matcher.ToString();
+         }
+         else
+         {
+            return commandLine;
+         }
+      }
+
+      public void runUsingParameters(string prefix, string suffix, string commandLine)
+      {
+         commandLine = getCommand(commandLine, prefix, suffix);
          if (getEntryPoint().If(out var methodInfo, out var entryPointException))
          {
             var arguments = methodInfo.GetParameters()
                .Select(p => (p.Name, p.ParameterType, anyDefaultValue: maybe(p.HasDefaultValue, () => p.DefaultValue)))
-               .Select(t => retrieveItem(t.Name, t.ParameterType, t.anyDefaultValue))
+               .Select(t => retrieveItem(t.Name, t.ParameterType, t.anyDefaultValue, prefix, suffix, commandLine))
                .ToArray();
             if (arguments.FirstOrNone(p => p.IsFailed).If(out var failure))
             {
