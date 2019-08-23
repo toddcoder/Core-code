@@ -88,14 +88,21 @@ namespace Core.Applications
                prefix = "//";
             }
 
+
             var itemPrefix = $"'{prefix}' {namePattern(name)} '{suffix}' /(.*)";
             var matcher = new Matcher();
+
+            if (matcher.IsMatch(commandLine, $"'{prefix}' {namePattern(name)} $") && type == typeof(bool))
+            {
+               return true.Success<object>();
+            }
+
             if (matcher.IsMatch(commandLine, itemPrefix))
             {
                var rest = matcher.FirstGroup;
                if (type == typeof(bool))
                {
-                  if (suffix == " " && (!rest.IsMatch("^ /s* 'false' | 'true'") || rest.IsEmpty()))
+                  if (suffix == " " && !rest.IsMatch("^ /s* 'false' | 'true'"))
                   {
                      return true.Success<object>();
                   }

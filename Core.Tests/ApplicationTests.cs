@@ -54,7 +54,7 @@ namespace Core.Tests
       public void AlternateSyntax()
       {
          var program = new Program();
-         program.Run("show --code 153 --recursive --amount 153.69 --attribute-targets all --text 'foo'", "--", " ");
+         program.Run("show --code 153 --amount 153.69 --attribute-targets all --text 'foo' --recursive", "--", " ");
       }
    }
 }
