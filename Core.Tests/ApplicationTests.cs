@@ -47,7 +47,7 @@ namespace Core.Tests
       public void GreedyTest()
       {
          var program = new Program();
-         program.Run("foo.exe push /code: 153 /amount: 153.69 /attributeTargets: all /text: 'foo' /recursive: false", "/", ":");
+         program.Run("\"foo.exe\" push /code: 153 /amount: 153.69 /attributeTargets: all /text: 'foo' /recursive: false", "/", ":");
       }
 
       [TestMethod]

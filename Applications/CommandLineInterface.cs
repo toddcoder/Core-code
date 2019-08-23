@@ -157,14 +157,7 @@ namespace Core.Applications
       static string getCommand(string commandLine, string prefix, string suffix)
       {
          var matcher = new Matcher();
-         if (matcher.IsMatch(commandLine, "^ .+ '.exe' /s* /([/w '-']+)"))
-         {
-            var command = matcher.FirstGroup;
-            matcher.FirstGroup = $"{prefix}{command}{suffix}true";
-
-            return matcher.ToString();
-         }
-         else if (matcher.IsMatch(commandLine, "^ /([/w '-']+)"))
+         if (matcher.IsMatch(commandLine, "^ (.+ '.exe' /s* [quote]? /s*)? /([/w '-']+) /s*"))
          {
             var command = matcher.FirstGroup;
             matcher.FirstGroup = $"{prefix}{command}{suffix}true";
