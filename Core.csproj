@@ -259,7 +259,7 @@
     <Compile Include="RegularExpressions\Parsers\GroupReferenceParser.cs" />
     <Compile Include="RegularExpressions\Parsers\InsideRangeParser.cs" />
     <Compile Include="RegularExpressions\Parsers\LookAroundParser.cs" />
-    <Compile Include="RegularExpressions\Parsers\NamedBackreferenceParser.cs" />
+    <Compile Include="RegularExpressions\Parsers\NamedBackReferenceParser.cs" />
     <Compile Include="RegularExpressions\Parsers\NamedCapturingGroupParser.cs" />
     <Compile Include="RegularExpressions\Parsers\NamedClassParser.cs" />
     <Compile Include="RegularExpressions\Parsers\NonCapturingGroupParser.cs" />

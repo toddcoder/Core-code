@@ -14,9 +14,9 @@ namespace Core.RegularExpressions.Parsers
          switch (type)
          {
             case ">":
-               return new Some<string>(negative ? "(?!" : "(?=");
+               return (negative ? "(?!" : "(?=").Some();
             case "<":
-               return new Some<string>(negative ? "(?<!" : "(?<=");
+               return (negative ? "(?<!" : "(?<=").Some();
             default:
                return none<string>();
          }

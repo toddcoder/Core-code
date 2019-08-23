@@ -25,7 +25,7 @@ namespace Core.RegularExpressions.Parsers
             if (star && ch == '/')
             {
                index = i + 1;
-               return new Some<string>($"(?#{contents.ToString().Escape()})");
+               return $"(?#{contents.ToString().Escape()})".Some();
             }
 
             contents.Append(ch);

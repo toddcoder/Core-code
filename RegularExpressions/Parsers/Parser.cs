@@ -24,7 +24,7 @@ namespace Core.RegularExpressions.Parsers
          new RemainderParser(),
          new GroupReferenceParser(),
          new SlashClassParser(),
-         new NamedBackreferenceParser(),
+         new NamedBackReferenceParser(),
          new OptionGroupParser(),
          new NamedCapturingGroupParser(),
          new CapturingGroupParser(),
