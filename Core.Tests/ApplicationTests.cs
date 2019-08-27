@@ -56,5 +56,13 @@ namespace Core.Tests
          var program = new Program();
          program.Run("show --code 153 --amount 153.69 --attribute-targets all --text 'foo' --recursive", "--", " ");
       }
+
+      [TestMethod]
+      public void Aliases()
+      {
+         var program = new Program { Application = "test" };
+         program.Run("alias std show --code 153 --amount 153.69 --attribute-targets all --text 'foo' --recursive", "--", " ");
+         program.Run("std", "--", " ");
+      }
    }
 }

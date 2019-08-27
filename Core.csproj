@@ -176,6 +176,7 @@
     <Compile Include="Enumerables\IntIterator.cs" />
     <Compile Include="Enumerables\Iterator.cs" />
     <Compile Include="Enumerables\Range.cs" />
+    <Compile Include="Enumerables\TupleExtensions.cs" />
     <Compile Include="Enumerables\XRange.cs" />
     <Compile Include="Exceptions\Deep.cs" />
     <Compile Include="Exceptions\GroupedExceptions.cs" />

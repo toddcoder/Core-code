@@ -2,6 +2,8 @@
 using System.Linq;
 using System.Reflection;
 using Core.Applications.Writers;
+using Core.Collections;
+using Core.Computers;
 using Core.Enumerables;
 using Core.Monads;
 using Core.Objects;
@@ -22,6 +24,8 @@ namespace Core.Applications
          BackgroundColor = ConsoleColor.White
       };
 
+      protected Hash<string, string> aliases;
+
       public CommandLineInterface() : this(getStandardWriter()) { }
 
       public CommandLineInterface(IWriter standardWriter) : this(standardWriter, getExceptionWriter()) { }
@@ -32,6 +36,7 @@ namespace Core.Applications
          ExceptionWriter = exceptionWriter;
          Test = false;
          Running = false;
+         aliases = new Hash<string, string>();
       }
 
       public IWriter StandardWriter { get; set; }
@@ -42,6 +47,8 @@ namespace Core.Applications
 
       public bool Running { get; set; }
 
+      public string Application { get; set; } = "";
+
       public virtual void HandleException(Exception exception) => ExceptionWriter.WriteExceptionLine(exception);
 
       public void Run(string prefix = "/", string suffix = ":")
@@ -51,7 +58,35 @@ namespace Core.Applications
 
       public void Run(string commandLine, string prefix, string suffix)
       {
+         var aliasFile = FolderName.LocalApplicationData.Subfolder(Application) + "aliases.txt";
+         if (Application.IsNotEmpty() && aliasFile.Exists() && aliasFile.Length > 0)
+         {
+            LoadAliases(aliasFile);
+         }
+
          runUsingParameters(prefix, suffix, commandLine);
+
+         if (Application.IsNotEmpty())
+         {
+            SaveAliases(aliasFile);
+         }
+      }
+
+      public virtual void LoadAliases(FileName aliasFile)
+      {
+         try
+         {
+            aliases = aliasFile.Lines.Select(line => line.Split('~').ToTuple2()).ToHash(i => i.Item1, i => i.Item2);
+         }
+         catch (Exception exception)
+         {
+            throw new ApplicationException($"Alias file {aliasFile} couldn't be loaded", exception);
+         }
+      }
+
+      public virtual void SaveAliases(FileName aliasFile)
+      {
+         aliasFile.Lines = aliases.Select(kv => $"{kv.Key}~{kv.Value}").ToArray();
       }
 
       IResult<MethodInfo> getEntryPoint()
@@ -87,7 +122,6 @@ namespace Core.Applications
             {
                prefix = "//";
             }
-
 
             var itemPrefix = $"'{prefix}' {namePattern(name)} '{suffix}' /(.*)";
             var matcher = new Matcher();
@@ -161,10 +195,23 @@ namespace Core.Applications
          });
       }
 
-      static string getCommand(string commandLine, string prefix, string suffix)
+      static string removeExecutableFromCommandLine(string commandLine)
       {
          var matcher = new Matcher();
-         if (matcher.IsMatch(commandLine, "^ (.+ '.exe' /s* [quote]? /s*)? /([/w '-']+) /s*"))
+         if (matcher.IsMatch(commandLine, "^ (.+ '.exe' /s* [quote]? /s*) /s* /(.*) $"))
+         {
+            return matcher.FirstGroup;
+         }
+         else
+         {
+            return commandLine;
+         }
+      }
+
+      static string fixCommand(string commandLine, string prefix, string suffix)
+      {
+         var matcher = new Matcher();
+         if (matcher.IsMatch(commandLine, "^ /([/w '-']+) /s*"))
          {
             var command = matcher.FirstGroup;
             matcher.FirstGroup = $"{prefix}{command}{suffix}true";
@@ -177,9 +224,58 @@ namespace Core.Applications
          }
       }
 
+      protected bool setPossibleAlias(string commandLine)
+      {
+         var matcher = new Matcher();
+         if (matcher.IsMatch(commandLine, "^ /s+ /([/w '-']+) /s+ /(.*) $"))
+         {
+            var aliasName = matcher.FirstGroup;
+            var command = matcher.SecondGroup;
+            aliases[aliasName] = command;
+
+            return true;
+         }
+
+         else
+         {
+            return false;
+         }
+      }
+
+      protected static IMaybe<string> getCommand(string commandLine)
+      {
+         var matcher = new Matcher();
+         if (matcher.IsMatch(commandLine, "^ /([/w '-']+) /b"))
+         {
+            return matcher.FirstGroup.Some();
+         }
+         else
+         {
+            return none<string>();
+         }
+      }
+
       public void runUsingParameters(string prefix, string suffix, string commandLine)
       {
-         commandLine = getCommand(commandLine, prefix, suffix);
+         commandLine = removeExecutableFromCommandLine(commandLine);
+
+         if (getCommand(commandLine).If(out var command))
+         {
+            if (command == "alias")
+            {
+               if (setPossibleAlias(commandLine.Drop(command.Length)))
+               {
+                  return;
+               }
+            }
+            else if (aliases.If(command, out var replacement))
+            {
+               commandLine = replacement;
+            }
+         }
+
+         commandLine = fixCommand(commandLine, prefix, suffix);
+
          if (getEntryPoint().If(out var methodInfo, out var entryPointException))
          {
             var arguments = methodInfo.GetParameters()
