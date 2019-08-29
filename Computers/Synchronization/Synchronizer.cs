@@ -32,6 +32,14 @@ namespace Core.Computers.Synchronization
 
       public void Synchronize() => handleFolder(sourceFolder, targetFolder);
 
+      public void Synchronize(params string[] fileNames)
+      {
+         foreach (var fileName in fileNames)
+         {
+            handleFile(sourceFolder + fileName, targetFolder);
+         }
+      }
+
       void handleFolder(FolderName currentSourceFolder, FolderName currentTargetFolder)
       {
          if (recursive)
