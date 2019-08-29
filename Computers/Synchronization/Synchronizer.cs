@@ -144,5 +144,7 @@ namespace Core.Computers.Synchronization
             return failedMatch<FileName>(exception);
          }
       }
+
+      public SynchronizerTrying TryTo => new SynchronizerTrying(this);
    }
 }

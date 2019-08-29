@@ -130,6 +130,7 @@
     <Compile Include="Computers\Synchronization\FileArgs.cs" />
     <Compile Include="Computers\Synchronization\FolderArgs.cs" />
     <Compile Include="Computers\Synchronization\Synchronizer.cs" />
+    <Compile Include="Computers\Synchronization\SynchronizerTrying.cs" />
     <Compile Include="Computers\Target.cs" />
     <Compile Include="DataStructures\MaybeQueue.cs" />
     <Compile Include="DataStructures\MaybeStack.cs" />
