@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.WinForms", "Core.WinFo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Tests", "Core.Tests\Core.Tests.csproj", "{77228C9D-168E-4959-9A5C-361625803672}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Internet", "Core.Internet\Core.Internet.csproj", "{38FFC55B-FE73-4618-86CF-05A3EF9CECAC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{77228C9D-168E-4959-9A5C-361625803672}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{77228C9D-168E-4959-9A5C-361625803672}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{77228C9D-168E-4959-9A5C-361625803672}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38FFC55B-FE73-4618-86CF-05A3EF9CECAC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38FFC55B-FE73-4618-86CF-05A3EF9CECAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38FFC55B-FE73-4618-86CF-05A3EF9CECAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38FFC55B-FE73-4618-86CF-05A3EF9CECAC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
