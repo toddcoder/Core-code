@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Core.Exceptions;
 using Core.Monads;
 using Core.RegularExpressions;
 using static Core.Monads.MonadFunctions;
@@ -12,36 +13,55 @@ namespace Core.Computers.Synchronization
       FolderName targetFolder;
       string pattern;
       bool move;
+      bool recursive;
 
       public event EventHandler<FileArgs> Success;
       public event EventHandler<FailedFileArgs> Failure;
       public event EventHandler<FileArgs> Untouched;
+      public event EventHandler<FolderArgs> NewFolderSuccess;
+      public event EventHandler<FailedFolderArgs> NewFolderFailure;
 
-      public Synchronizer(FolderName sourceFolder, FolderName targetFolder, string pattern, bool move)
+      public Synchronizer(FolderName sourceFolder, FolderName targetFolder, string pattern = "^ .* $", bool move = false, bool recursive = true)
       {
          this.sourceFolder = sourceFolder;
          this.targetFolder = targetFolder;
          this.pattern = pattern;
          this.move = move;
+         this.recursive = recursive;
       }
 
-      public void Synchronize()
+      public void Synchronize() => handleFolder(sourceFolder, targetFolder);
+
+      void handleFolder(FolderName currentSourceFolder, FolderName currentTargetFolder)
       {
-         foreach (var sourceFile in sourceFolder.Files.Where(f => f.NameExtension.IsMatch(pattern)))
+         if (recursive)
          {
-            var targetFile = targetFolder + sourceFile;
-            if (copyIfNeeded(sourceFile, targetFile).If(out var file, out var anyException))
+            foreach (var subFolder in currentSourceFolder.Folders)
             {
-               Success?.Invoke(this, new FileArgs(file, targetFile, $"{sourceFile} {(move ? "moved" : "copied")} to {targetFile}"));
+               handleFolder(subFolder, currentTargetFolder[subFolder.Name]);
             }
-            else if (anyException.If(out var exception))
-            {
-               Failure?.Invoke(this, new FailedFileArgs(sourceFile, targetFile, exception));
-            }
-            else
-            {
-               Untouched?.Invoke(this, new FileArgs(sourceFile, targetFile, $"{sourceFile} not touched"));
-            }
+         }
+
+         foreach (var sourceFile in currentSourceFolder.Files.Where(f => f.NameExtension.IsMatch(pattern)))
+         {
+            handleFile(sourceFile, currentTargetFolder);
+         }
+      }
+
+      void handleFile(FileName sourceFile, FolderName currentTargetFolder)
+      {
+         var targetFile = currentTargetFolder + sourceFile;
+         if (copyIfNeeded(sourceFile, targetFile).If(out var file, out var anyException))
+         {
+            Success?.Invoke(this, new FileArgs(file, targetFile, $"{sourceFile} {(move ? "moved" : "copied")} to {targetFile}"));
+         }
+         else if (anyException.If(out var exception))
+         {
+            Failure?.Invoke(this, new FailedFileArgs(sourceFile, targetFile, exception));
+         }
+         else
+         {
+            Untouched?.Invoke(this, new FileArgs(sourceFile, targetFile, $"{sourceFile} not touched"));
          }
       }
 
@@ -53,7 +73,7 @@ namespace Core.Computers.Synchronization
                from targetExists in targetFile.TryTo.Exists()
                from sourceLastWriteTime in sourceFile.TryTo.LastWriteTime
                from targetLastWriteTime in targetFile.TryTo.LastWriteTime
-               select !targetExists || sourceLastWriteTime != targetLastWriteTime;
+               select !targetExists || sourceLastWriteTime > targetLastWriteTime;
             if (result.If(out var mustCopy, out var exception))
             {
                if (mustCopy)
@@ -78,7 +98,22 @@ namespace Core.Computers.Synchronization
 
       IMatched<FileName> copy(FileName sourceFile, FileName targetFile)
       {
-         if (sourceFile.TryTo.CopyTo(targetFile, true).If(out _, out var exception))
+         var targetFileFolder = targetFile.Folder;
+         var anyWasCreated = targetFileFolder.TryTo.WasCreated();
+         if (anyWasCreated.If(out var wasCreated, out var exception))
+         {
+            if (wasCreated)
+            {
+               NewFolderSuccess?.Invoke(this, new FolderArgs(targetFileFolder, $"Folder {targetFileFolder} created"));
+            }
+         }
+         else
+         {
+            NewFolderFailure?.Invoke(this, new FailedFolderArgs(targetFileFolder, exception));
+            return failedMatch<FileName>("Folder creation failed; no action taken".Throws());
+         }
+
+         if (sourceFile.TryTo.CopyTo(targetFile, true).If(out _, out exception))
          {
             if (move)
             {

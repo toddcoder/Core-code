@@ -111,5 +111,7 @@ namespace Core.Computers
       public IResult<FileName> AbsoluteFile(string relativePath) => tryTo(() => folderName.AbsoluteFile(relativePath));
 
       public IResult<string> AbsoluteString(string relativePath) => tryTo(() => folderName.AbsoluteString(relativePath));
+
+      public IResult<bool> WasCreated() => tryTo(() => folderName.WasCreated());
    }
 }

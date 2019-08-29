@@ -647,5 +647,18 @@ namespace Core.Computers
       public FileName AbsoluteFile(string relativePath) => Path.Combine(fullPath, relativePath);
 
       public string AbsoluteString(string relativePath) => Path.Combine(fullPath, relativePath);
+
+      public bool WasCreated()
+      {
+         if (!Directory.Exists(fullPath))
+         {
+            CreateDirectory(fullPath);
+            return true;
+         }
+         else
+         {
+            return false;
+         }
+      }
    }
 }

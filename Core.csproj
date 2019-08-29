@@ -126,7 +126,9 @@
     <Compile Include="Computers\Impersonator.cs" />
     <Compile Include="Computers\ImpersonatorArguments.cs" />
     <Compile Include="Computers\Synchronization\FailedFileArgs.cs" />
+    <Compile Include="Computers\Synchronization\FailedFolderArgs.cs" />
     <Compile Include="Computers\Synchronization\FileArgs.cs" />
+    <Compile Include="Computers\Synchronization\FolderArgs.cs" />
     <Compile Include="Computers\Synchronization\Synchronizer.cs" />
     <Compile Include="Computers\Target.cs" />
     <Compile Include="DataStructures\MaybeQueue.cs" />
