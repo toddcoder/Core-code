@@ -88,6 +88,13 @@
     <Compile Include="Arrays\ByteArrayExtensions.cs" />
     <Compile Include="Arrays\ListFunctions.cs" />
     <Compile Include="Arrays\Slice.cs" />
+    <Compile Include="Assertion\AssertionExtensions.cs" />
+    <Compile Include="Assertion\AssertionFunctions.cs" />
+    <Compile Include="Assertion\AssertionProvider.cs" />
+    <Compile Include="Assertion\IAssertion.cs" />
+    <Compile Include="Assertion\INotProvider.cs" />
+    <Compile Include="Assertion\StringAssertion.cs" />
+    <Compile Include="Assertion\ThrowingStringAssertion.cs" />
     <Compile Include="Booleans\Assertions.cs" />
     <Compile Include="Booleans\BooleanExtensions.cs" />
     <Compile Include="Collections\AutoHash.cs" />
