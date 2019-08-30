@@ -89,11 +89,14 @@ namespace Core.Applications
          aliasFile.Lines = aliases.Select(kv => $"{kv.Key}~{kv.Value}").ToArray();
       }
 
-      IResult<MethodInfo> getEntryPoint()
+      IResult<(MethodInfo, bool)> getEntryPoint()
       {
-         return GetType().GetMethods()
-            .Where(m => m.GetCustomAttribute<EntryPointAttribute>() != null)
-            .FirstOrFail(() => "No method with EntryPoint attribute found");
+         return GetType()
+            .GetMethods()
+            .Select(mi => (methodInfo: mi, attr: mi.GetCustomAttribute<EntryPointAttribute>()))
+            .Where(t => t.attr != null)
+            .FirstOrFail("")
+            .Map(t => (t.methodInfo, t.attr.UsesObject));
       }
 
       static string namePattern(string name)
@@ -276,41 +279,177 @@ namespace Core.Applications
 
          commandLine = fixCommand(commandLine, prefix, suffix);
 
-         if (getEntryPoint().If(out var methodInfo, out var entryPointException))
+         if (getEntryPoint().If(out var tuple, out var entryPointException))
          {
-            var arguments = methodInfo.GetParameters()
-               .Select(p => (p.Name, p.ParameterType, anyDefaultValue: maybe(p.HasDefaultValue, () => p.DefaultValue)))
-               .Select(t => retrieveItem(t.Name, t.ParameterType, t.anyDefaultValue, prefix, suffix, commandLine))
-               .ToArray();
-            if (arguments.FirstOrNone(p => p.IsFailed).If(out var failure))
+            var (methodInfo, usesObject) = tuple;
+            if (usesObject)
             {
-               HandleException(failure.Exception);
+               useWithObject(methodInfo, prefix, suffix, commandLine);
             }
             else
             {
-               try
-               {
-                  Running = true;
-                  methodInfo.Invoke(this, arguments.Select(a => a.ForceValue()).ToArray());
-               }
-               catch (Exception exception)
-               {
-                  HandleException(exception);
-               }
-               finally
-               {
-                  Running = false;
-               }
-
-               if (Test)
-               {
-                  Console.ReadLine();
-               }
+               useWithParameters(methodInfo, prefix, suffix, commandLine);
             }
          }
          else
          {
             HandleException(entryPointException);
+         }
+      }
+
+      void useWithParameters(MethodInfo methodInfo, string prefix, string suffix, string commandLine)
+      {
+         var arguments = methodInfo.GetParameters()
+            .Select(p => (p.Name, p.ParameterType, anyDefaultValue: maybe(p.HasDefaultValue, () => p.DefaultValue)))
+            .Select(t => retrieveItem(t.Name, t.ParameterType, t.anyDefaultValue, prefix, suffix, commandLine))
+            .ToArray();
+         if (arguments.FirstOrNone(p => p.IsFailed).If(out var failure))
+         {
+            HandleException(failure.Exception);
+         }
+         else
+         {
+            try
+            {
+               Running = true;
+               methodInfo.Invoke(this, arguments.Select(a => a.ForceValue()).ToArray());
+            }
+            catch (Exception exception)
+            {
+               HandleException(exception);
+            }
+            finally
+            {
+               Running = false;
+            }
+
+            if (Test)
+            {
+               Console.ReadLine();
+            }
+         }
+      }
+
+      void useWithObject(MethodInfo methodInfo, string prefix, string suffix, string commandLine)
+      {
+         var anyArgument =
+            from parameterInfo in methodInfo.GetParameters().Take(1).FirstOrFail("Couldn't retrieve object information")
+            from obj in parameterInfo.ParameterType.TryCreate()
+            from filledObject in fillObject(obj, prefix, suffix, commandLine)
+            select filledObject;
+         if (anyArgument.If(out var argument, out var argumentException))
+         {
+            try
+            {
+               Running = true;
+               methodInfo.Invoke(this, new[] { argument });
+            }
+            catch (Exception exception)
+            {
+               HandleException(exception);
+            }
+         }
+         else
+         {
+            HandleException(argumentException);
+         }
+      }
+
+      static string xmlToPascal(string name)
+      {
+         var matcher = new Matcher();
+         if (name.IsMatch("'-' /(/w)"))
+         {
+            for (var matchIndex = 0; matchIndex < matcher.MatchCount; matchIndex++)
+            {
+               var letter = matcher.FirstGroup;
+               matcher[matchIndex] = letter.ToUpper();
+            }
+
+            return matcher.ToString().ToPascal();
+         }
+         else
+         {
+            return name.ToPascal();
+         }
+      }
+
+      static IResult<object> fillObject(object emptyObject, string prefix, string suffix, string commandLine)
+      {
+         try
+         {
+            var evaluator = new PropertyEvaluator(emptyObject);
+            if (prefix == "/")
+            {
+               prefix = "//";
+            }
+
+            var pattern = $"'{prefix}' /([/w '-']) '{suffix}'";
+            var matcher = new Matcher();
+            if (matcher.IsMatch(commandLine, pattern))
+            {
+               foreach (var match in matcher)
+               {
+                  var name = xmlToPascal(match.FirstGroup);
+                  var rest = commandLine.Drop(matcher.Index + matcher.Length);
+                  if (evaluator.ContainsKey(name))
+                  {
+                     var type = evaluator.Type(name);
+                     if (type == typeof(bool))
+                     {
+                        if (suffix == " " && (!rest.IsMatch("^ /s* 'false' | 'true'") || rest.IsEmpty()))
+                        {
+                           evaluator[name] = true;
+                        }
+                        else
+                        {
+                           evaluator[name] = rest.Keep("^ /s* ('false' | 'true') /b").TrimStart().ToBool();
+                        }
+                     }
+                     else if (type == typeof(string))
+                     {
+                        if (rest.IsMatch("^ /s* [quote]"))
+                        {
+                           evaluator[name] = rest.Keep("^ /s* /([quote]) .*? /1").TrimStart().Drop(1).Drop(-1);
+                        }
+                        else
+                        {
+                           evaluator[name] = rest.Keep("^ /s* -/s+").TrimStart();
+                        }
+                     }
+                     else if (type == typeof(int))
+                     {
+                        evaluator[name] = rest.Keep("^ /s* -/s+").TrimStart().ToInt();
+                     }
+                     else if (type == typeof(float) || type == typeof(double))
+                     {
+                        var source = rest.Keep("^ /s* -/s+").TrimStart();
+                        if (type == typeof(float))
+                        {
+                           evaluator[name] = source.ToFloat();
+                        }
+                        else
+                        {
+                           evaluator[name] = source.ToDouble();
+                        }
+                     }
+                     else if (type.IsEnum)
+                     {
+                        evaluator[name] = Enum.Parse(type, rest.Keep("^ /s* -/s+").TrimStart());
+                     }
+                     else
+                     {
+                        return $"No value for {name}".Failure<object>();
+                     }
+                  }
+               }
+            }
+
+            return evaluator.Object.Success();
+         }
+         catch (Exception exception)
+         {
+            return failure<object>(exception);
          }
       }
 
