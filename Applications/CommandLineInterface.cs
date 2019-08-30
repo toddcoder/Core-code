@@ -89,14 +89,14 @@ namespace Core.Applications
          aliasFile.Lines = aliases.Select(kv => $"{kv.Key}~{kv.Value}").ToArray();
       }
 
-      IResult<(MethodInfo, bool)> getEntryPoint()
+      IResult<(MethodInfo, EntryPointType)> getEntryPoint()
       {
          return GetType()
             .GetMethods()
             .Select(mi => (methodInfo: mi, attr: mi.GetCustomAttribute<EntryPointAttribute>()))
             .Where(t => t.attr != null)
             .FirstOrFail("")
-            .Map(t => (t.methodInfo, t.attr.UsesObject));
+            .Map(t => (t.methodInfo, t.attr.Type));
       }
 
       static string namePattern(string name)
@@ -281,14 +281,18 @@ namespace Core.Applications
 
          if (getEntryPoint().If(out var tuple, out var entryPointException))
          {
-            var (methodInfo, usesObject) = tuple;
-            if (usesObject)
+            var (methodInfo, type) = tuple;
+            switch (type)
             {
-               useWithObject(methodInfo, prefix, suffix, commandLine);
-            }
-            else
-            {
-               useWithParameters(methodInfo, prefix, suffix, commandLine);
+               case EntryPointType.Parameters:
+                  useWithParameters(methodInfo, prefix, suffix, commandLine);
+                  break;
+               case EntryPointType.Object:
+                  useWithObject(methodInfo, prefix, suffix, commandLine);
+                  break;
+               case EntryPointType.This:
+                  useWithThis(methodInfo, prefix, suffix, commandLine);
+                  break;
             }
          }
          else
@@ -352,6 +356,26 @@ namespace Core.Applications
          else
          {
             HandleException(argumentException);
+         }
+      }
+
+      void useWithThis(MethodInfo methodInfo, string prefix, string suffix, string commandLine)
+      {
+         if (fillObject(this, prefix, suffix, commandLine).If(out _, out var filledException))
+         {
+            try
+            {
+               Running = true;
+               methodInfo.Invoke(this, new object[0]);
+            }
+            catch (Exception exception)
+            {
+               HandleException(exception);
+            }
+         }
+         else
+         {
+            HandleException(filledException);
          }
       }
 

@@ -4,11 +4,11 @@ namespace Core.Applications
 {
    public class EntryPointAttribute : Attribute
    {
-      public EntryPointAttribute(bool usesObject = false)
+      public EntryPointAttribute(EntryPointType type)
       {
-         UsesObject = usesObject;
+         Type = type;
       }
 
-      public bool UsesObject { get; }
+      public EntryPointType Type { get; }
    }
 }

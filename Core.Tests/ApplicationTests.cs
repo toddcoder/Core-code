@@ -25,7 +25,7 @@ namespace Core.Tests
 
    internal class Program : CommandLineInterface
    {
-      [EntryPoint]
+      [EntryPoint(EntryPointType.Parameters)]
       public void Main(bool push = false, bool pull = false, bool show = false, int code = 0, double amount = 0,
          AttributeTargets attributeTargets = AttributeTargets.All, string text = "", bool recursive = true)
       {
@@ -54,7 +54,7 @@ namespace Core.Tests
 
    internal class ObjectProgram : CommandLineInterface
    {
-      [EntryPoint(true)]
+      [EntryPoint(EntryPointType.Object)]
       public void Main(Parameters parameters)
       {
          var command = "?";
@@ -80,6 +80,50 @@ namespace Core.Tests
       }
    }
 
+   internal class ThisProgram : CommandLineInterface
+   {
+      public bool Push { get; set; }
+
+      public bool Pull { get; set; }
+
+      public bool Show { get; set; }
+
+      public int Code { get; set; }
+
+      public double Amount { get; set; }
+
+      public AttributeTargets AttributeTargets { get; set; } = AttributeTargets.All;
+
+      public string Text { get; set; } = "";
+
+      public bool Recursive { get; set; } = true;
+
+      [EntryPoint(EntryPointType.This)]
+      public void Main()
+      {
+         var command = "?";
+         if (Pull)
+         {
+            command = "pull";
+         }
+         else if (Push)
+         {
+            command = "push";
+         }
+         else if (Show)
+         {
+            command = "show";
+         }
+
+         Console.WriteLine($"command: '{command}'");
+         Console.WriteLine($"code: {Code}");
+         Console.WriteLine($"amount: {Amount}");
+         Console.WriteLine($"attribute targets: {AttributeTargets}");
+         Console.WriteLine($"text: '{Text}'");
+         Console.WriteLine($"recursive: {Recursive.ToString().ToLower()}");
+      }
+   }
+
    [TestClass]
    public class ApplicationTests
    {
@@ -93,6 +137,11 @@ namespace Core.Tests
 
          var objectProgram = new ObjectProgram();
          objectProgram.Run("foo.exe pull /code: 153 /amount: 153.69 /attributeTargets: all", "/", ":");
+
+         Console.WriteLine();
+
+         var thisProgram = new ThisProgram();
+         thisProgram.Run("foo.exe pull /code: 153 /amount: 153.69 /attributeTargets: all", "/", ":");
       }
 
       [TestMethod]
@@ -105,6 +154,11 @@ namespace Core.Tests
 
          var objectProgram = new ObjectProgram();
          objectProgram.Run("\"foo.exe\" push /code: 153 /amount: 153.69 /attributeTargets: all /text: 'foo' /recursive: false", "/", ":");
+
+         Console.WriteLine();
+
+         var thisProgram = new ThisProgram();
+         thisProgram.Run("\"foo.exe\" push /code: 153 /amount: 153.69 /attributeTargets: all /text: 'foo' /recursive: false", "/", ":");
       }
 
       [TestMethod]
@@ -117,6 +171,11 @@ namespace Core.Tests
 
          var objectProgram = new ObjectProgram();
          objectProgram.Run("show --code 153 --amount 153.69 --attribute-targets all --text 'foo' --recursive", "--", " ");
+
+         Console.WriteLine();
+
+         var thisProgram = new ThisProgram();
+         thisProgram.Run("show --code 153 --amount 153.69 --attribute-targets all --text 'foo' --recursive", "--", " ");
       }
 
       [TestMethod]
@@ -131,6 +190,12 @@ namespace Core.Tests
          var objectProgram = new ObjectProgram { Application = "test.object" };
          objectProgram.Run("alias std show --code 153 --amount 153.69 --attribute-targets all --text 'foo' --recursive", "--", " ");
          objectProgram.Run("std", "--", " ");
+
+         Console.WriteLine();
+
+         var thisProgram = new ThisProgram { Application = "test.this" };
+         thisProgram.Run("alias std show --code 153 --amount 153.69 --attribute-targets all --text 'foo' --recursive", "--", " ");
+         thisProgram.Run("std", "--", " ");
       }
    }
 }
