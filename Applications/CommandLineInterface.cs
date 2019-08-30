@@ -384,14 +384,14 @@ namespace Core.Applications
                prefix = "//";
             }
 
-            var pattern = $"'{prefix}' /([/w '-']) '{suffix}'";
+            var pattern = $"'{prefix}' /([/w '-']+) '{suffix}'";
             var matcher = new Matcher();
             if (matcher.IsMatch(commandLine, pattern))
             {
                foreach (var match in matcher)
                {
                   var name = xmlToPascal(match.FirstGroup);
-                  var rest = commandLine.Drop(matcher.Index + matcher.Length);
+                  var rest = commandLine.Drop(match.Index + match.Length);
                   if (evaluator.ContainsKey(name))
                   {
                      var type = evaluator.Type(name);
@@ -435,7 +435,7 @@ namespace Core.Applications
                      }
                      else if (type.IsEnum)
                      {
-                        evaluator[name] = Enum.Parse(type, rest.Keep("^ /s* -/s+").TrimStart());
+                        evaluator[name] = Enum.Parse(type, rest.Keep("^ /s* -/s+").TrimStart(), true);
                      }
                      else
                      {
