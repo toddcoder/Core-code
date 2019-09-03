@@ -997,5 +997,9 @@ namespace Core.Computers
             Text = "";
          }
       }
+
+      public bool IsEmpty => fullPath.IsEmpty();
+
+      public bool IsNotEmpty => !IsEmpty;
    }
 }

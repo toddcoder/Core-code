@@ -660,5 +660,9 @@ namespace Core.Computers
             return false;
          }
       }
+
+      public bool IsEmpty => fullPath.IsEmpty();
+
+      public bool IsNotEmpty => !IsEmpty;
    }
 }
