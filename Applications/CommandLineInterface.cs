@@ -457,7 +457,7 @@ namespace Core.Applications
                prefix = "//";
             }
 
-            var pattern = $"'{prefix}' /([/w '-']+) '{suffix}'";
+            var pattern = $"'{prefix}' /([/w '-']+) ('{suffix}' | $)";
             var matcher = new Matcher();
             if (matcher.IsMatch(commandLine, pattern))
             {
