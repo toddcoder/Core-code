@@ -148,7 +148,7 @@ namespace Core.Applications
                      return rest.Keep("^ /s* ('false' | 'true') /b").TrimStart().Boolean().Map(b => (object)b);
                   }
                }
-               else if (type == typeof(string))
+               else if (type == typeof(string) || type == typeof(FileName) || type == typeof(FolderName))
                {
                   if (rest.IsMatch("^ /s* [quote]"))
                   {
@@ -382,7 +382,7 @@ namespace Core.Applications
       static string xmlToPascal(string name)
       {
          var matcher = new Matcher();
-         if (name.IsMatch("'-' /(/w)"))
+         if (matcher.IsMatch(name, "'-' /(/w)"))
          {
             for (var matchIndex = 0; matchIndex < matcher.MatchCount; matchIndex++)
             {
@@ -430,7 +430,7 @@ namespace Core.Applications
                            evaluator[name] = rest.Keep("^ /s* ('false' | 'true') /b").TrimStart().ToBool();
                         }
                      }
-                     else if (type == typeof(string))
+                     else if (type == typeof(string) || type == typeof(FileName) || type == typeof(FolderName))
                      {
                         if (rest.IsMatch("^ /s* [quote]"))
                         {
