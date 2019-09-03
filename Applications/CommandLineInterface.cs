@@ -117,6 +117,80 @@ namespace Core.Applications
          }
       }
 
+      static object getBoolean(string rest, string suffix)
+      {
+         if (suffix == " " && !rest.IsMatch("^ /s* 'false' | 'true'"))
+         {
+            return true;
+         }
+         else
+         {
+            return rest.Keep("^ /s* ('false' | 'true') /b").TrimStart().ToBool();
+         }
+      }
+
+      static object getString(string rest, Type type)
+      {
+         string source;
+         if (rest.IsMatch("^ /s* [quote]"))
+         {
+            source = rest.Keep("^ /s* /([quote]) .*? /1").TrimStart().Drop(1).Drop(-1);
+         }
+         else
+         {
+            source = rest.Keep("^ /s* -/s+").TrimStart();
+         }
+
+         if (type == typeof(string))
+         {
+            return source;
+         }
+         else if (type == typeof(FolderName))
+         {
+            return (FolderName)source;
+         }
+         else if (type == typeof(FileName))
+         {
+            return (FileName)source;
+         }
+         else if (type == typeof(IMaybe<FolderName>))
+         {
+            return maybe(source.IsNotEmpty(), () => (FolderName)source);
+         }
+         else if (type == typeof(IMaybe<FileName>))
+         {
+            return maybe(source.IsNotEmpty(), () => (FileName)source);
+         }
+         else
+         {
+            return source;
+         }
+      }
+
+      static object getInt32(string rest)
+      {
+         return rest.Keep("^ /s* -/s+").TrimStart().ToInt();
+      }
+
+      static object getFloatingPoint(string rest, Type type)
+      {
+         var source = rest.Keep("^ /s* -/s+").TrimStart();
+         if (type == typeof(float))
+         {
+            return source.ToFloat();
+         }
+         else
+         {
+            return source.ToDouble();
+         }
+      }
+
+      static object getEnum(string rest, Type type)
+      {
+         var source = rest.Keep("^ /s* -/s+").TrimStart();
+         return Enum.Parse(type, source.Replace("-", ""), true);
+      }
+
       static IResult<object> retrieveItem(string name, Type type, IMaybe<object> anyDefaultValue, string prefix, string suffix, string commandLine)
       {
          return tryTo(() =>
@@ -139,48 +213,23 @@ namespace Core.Applications
                var rest = matcher.FirstGroup;
                if (type == typeof(bool))
                {
-                  if (suffix == " " && !rest.IsMatch("^ /s* 'false' | 'true'"))
-                  {
-                     return true.Success<object>();
-                  }
-                  else
-                  {
-                     return rest.Keep("^ /s* ('false' | 'true') /b").TrimStart().Boolean().Map(b => (object)b);
-                  }
+                  return getBoolean(rest, suffix).Success();
                }
                else if (type == typeof(string) || type == typeof(FileName) || type == typeof(FolderName))
                {
-                  if (rest.IsMatch("^ /s* [quote]"))
-                  {
-                     var source = rest.Keep("^ /s* /([quote]) .*? /1").TrimStart().Drop(1).Drop(-1);
-                     return source.Success<object>();
-                  }
-                  else
-                  {
-                     return rest.Keep("^ /s* -/s+").TrimStart().Success<object>();
-                  }
+                  return getString(rest, type).Success();
                }
                else if (type == typeof(int))
                {
-                  var value = rest.Keep("^ /s* -/s+").TrimStart().Int32();
-                  return value.Map(i => (object)i);
+                  return getInt32(rest).Success();
                }
                else if (type == typeof(float) || type == typeof(double))
                {
-                  var source = rest.Keep("^ /s* -/s+").TrimStart();
-                  if (type == typeof(float))
-                  {
-                     return source.Single().Map(f => (object)f);
-                  }
-                  else
-                  {
-                     return source.Double().Map(d => (object)d);
-                  }
+                  return getFloatingPoint(rest, type).Success();
                }
                else if (type.IsEnum)
                {
-                  var source = rest.Keep("^ /s* -/s+").TrimStart();
-                  return tryTo(() => Enum.Parse(type, source.Replace("-", ""), true));
+                  return getEnum(rest, type).Success();
                }
                else
                {
