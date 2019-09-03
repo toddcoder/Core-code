@@ -470,45 +470,23 @@ namespace Core.Applications
                      var type = evaluator.Type(name);
                      if (type == typeof(bool))
                      {
-                        if (suffix == " " && (!rest.IsMatch("^ /s* 'false' | 'true'") || rest.IsEmpty()))
-                        {
-                           evaluator[name] = true;
-                        }
-                        else
-                        {
-                           evaluator[name] = rest.Keep("^ /s* ('false' | 'true') /b").TrimStart().ToBool();
-                        }
+                        evaluator[name] = getBoolean(rest, suffix);
                      }
-                     else if (type == typeof(string) || type == typeof(FileName) || type == typeof(FolderName))
+                     else if (type == typeof(string) || type == typeof(FileName) || type == typeof(FolderName) || type == typeof(IMaybe<FileName>) || type == typeof(IMaybe<FolderName>))
                      {
-                        if (rest.IsMatch("^ /s* [quote]"))
-                        {
-                           evaluator[name] = rest.Keep("^ /s* /([quote]) .*? /1").TrimStart().Drop(1).Drop(-1);
-                        }
-                        else
-                        {
-                           evaluator[name] = rest.Keep("^ /s* -/s+").TrimStart();
-                        }
+                        evaluator[name] = getString(rest, type);
                      }
                      else if (type == typeof(int))
                      {
-                        evaluator[name] = rest.Keep("^ /s* -/s+").TrimStart().ToInt();
+                        evaluator[name] = getInt32(rest);
                      }
                      else if (type == typeof(float) || type == typeof(double))
                      {
-                        var source = rest.Keep("^ /s* -/s+").TrimStart();
-                        if (type == typeof(float))
-                        {
-                           evaluator[name] = source.ToFloat();
-                        }
-                        else
-                        {
-                           evaluator[name] = source.ToDouble();
-                        }
+                        evaluator[name] = getFloatingPoint(rest, type);
                      }
                      else if (type.IsEnum)
                      {
-                        evaluator[name] = Enum.Parse(type, rest.Keep("^ /s* -/s+").TrimStart(), true);
+                        evaluator[name] = getEnum(rest, type);
                      }
                      else
                      {
