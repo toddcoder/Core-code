@@ -401,10 +401,19 @@ namespace Core.Applications
             {
                HandleException(exception);
             }
+            finally
+            {
+               Running = false;
+            }
          }
          else
          {
             HandleException(argumentException);
+         }
+
+         if (Test)
+         {
+            Console.ReadLine();
          }
       }
 
@@ -421,10 +430,19 @@ namespace Core.Applications
             {
                HandleException(exception);
             }
+            finally
+            {
+               Running = false;
+            }
          }
          else
          {
             HandleException(filledException);
+         }
+
+         if (Test)
+         {
+            Console.ReadLine();
          }
       }
 
