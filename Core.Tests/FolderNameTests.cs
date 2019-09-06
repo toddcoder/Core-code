@@ -12,9 +12,8 @@ namespace Core.Tests
       [TestMethod]
       public void RelativeToTest()
       {
-         FolderName baseFolder = @"C:\Users\tebennett\src\Estream\Source\Estream.MigrationTests\bin";
-         var result = baseFolder.RelativeTo(
-            (FileName)@"C:\Users\tebennett\src\Estream\Source\Estream.MigrationTests\Configurations\configuration.json");
+         FolderName baseFolder = @"~\src\Estream\Source\Estream.MigrationTests\bin";
+         var result = baseFolder.RelativeTo((FileName)@"~\src\Estream\Source\Estream.MigrationTests\Configurations\configuration.json");
          Console.WriteLine(result);
          var absolute = baseFolder.AbsoluteFolder(result);
          Console.WriteLine(absolute);
@@ -24,7 +23,7 @@ namespace Core.Tests
       public void RelativeFolderConversionToAbsolute()
       {
          var folderName = @"..\..\Estream.Migrations\_DDL";
-         FolderName baseFolder = @"C:\Users\tebennett\src\Estream\Source\Estream.MigrationTests\Configurations";
+         FolderName baseFolder = @"~\src\Estream\Source\Estream.MigrationTests\Configurations";
          var folder = baseFolder.AbsoluteFolder(folderName);
          Console.WriteLine(folder);
       }
@@ -32,8 +31,8 @@ namespace Core.Tests
       [TestMethod]
       public void LocalAndParentFilesTest1()
       {
-         FolderName folder = @"C:\Users\tebennett\src\Estream\Source\Estream.Measurements\WellSearchDomain\ValueObjects\MasterData";
-         FolderName baseFolder = @"C:\Users\tebennett\src\Estream\Source";
+         FolderName folder = @"~\src\Estream\Source\Estream.Measurements\WellSearchDomain\ValueObjects\MasterData";
+         FolderName baseFolder = @"~\src\Estream\Source";
          foreach (var file in folder.LocalAndParentFiles.Where(f => f.Extension == ".cs"))
          {
             var relative = baseFolder.RelativeTo(file);
@@ -78,8 +77,8 @@ namespace Core.Tests
       [TestMethod]
       public void LocalAndParentFoldersTest1()
       {
-         FolderName folder = @"C:\Users\tebennett\src\Estream\Source\Estream.Measurements\WellSearchDomain\ValueObjects\MasterData";
-         foreach (var subFolder in folder.LocalAndParentFolders /*.Where(f => f.Name.IsMatch("/b 'Source' /b"))*/)
+         FolderName folder = @"~\src\Estream\Source\Estream.Measurements\WellSearchDomain\ValueObjects\MasterData";
+         foreach (var subFolder in folder.LocalAndParentFolders)
          {
             Console.WriteLine(subFolder);
          }

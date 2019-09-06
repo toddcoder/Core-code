@@ -223,6 +223,8 @@ namespace Core.Computers
          set => setExtension(value);
       }
 
+      public string FullPath => fullPath;
+
       public DateTime CreationTime
       {
          get => info().CreationTime;
@@ -690,7 +692,7 @@ namespace Core.Computers
       {
          if (aName.IsMatch("^ '~'"))
          {
-            var fullName = Path.Combine(aFolder.ToString(), aName.Replace("/", @"\"));
+            var fullName = ComputerFunctions.replaceTilde(aFolder.ToString());
             folder = getDirectoryName(fullName);
             name = Path.GetFileNameWithoutExtension(fullName);
          }

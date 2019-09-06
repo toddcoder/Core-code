@@ -12,6 +12,7 @@ using Core.Numbers;
 using Core.RegularExpressions;
 using Core.Strings;
 using static System.IO.Directory;
+using static Core.Computers.ComputerFunctions;
 using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
 
@@ -392,6 +393,7 @@ namespace Core.Computers
 
       void setFullPath(string folder)
       {
+         folder = replaceTilde(folder);
          folder = Path.GetFullPath(folder);
          var folderRoot = GetDirectoryRoot(folder);
 
