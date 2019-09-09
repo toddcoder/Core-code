@@ -937,19 +937,27 @@ namespace Core.Computers
          return Execute(fileName.ToString().Quotify(), wait, useShellExecute, createNoWindow);
       }
 
-      public FileStream WritingStream()
+      public FileStream WritingStream(bool shared = false)
       {
          folder.CreateIfNonExistent();
-         return new FileStream(fullPath, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Write);
+         var fileShare = shared ? FileShare.ReadWrite : FileShare.Read;
+
+         return new FileStream(fullPath, FileMode.OpenOrCreate, FileAccess.Read, fileShare);
       }
 
-      public FileStream AppendingStream()
+      public FileStream AppendingStream(bool shared = false)
       {
          folder.CreateIfNonExistent();
-         return new FileStream(fullPath, FileMode.Append, FileAccess.Write, FileShare.Write);
+         var fileShare = shared ? FileShare.ReadWrite : FileShare.Write;
+
+         return new FileStream(fullPath, FileMode.Append, FileAccess.Write, fileShare);
       }
 
-      public FileStream ReadingStream() => new FileStream(fullPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+      public FileStream ReadingStream(bool shared = false)
+      {
+         var fileShare = shared ? FileShare.ReadWrite : FileShare.Read;
+         return new FileStream(fullPath, FileMode.Open, FileAccess.Read, fileShare);
+      }
 
       public FileStream ReadWriteStream()
       {
