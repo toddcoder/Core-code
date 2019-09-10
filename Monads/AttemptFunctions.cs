@@ -19,6 +19,20 @@ namespace Core.Monads
 			}
 		}
 
+      public static ICompletion<T> tryToComplete<T>(Func<T> func)
+      {
+         try
+         {
+            return func().Completed();
+         }
+         catch (Exception exception)
+         {
+            return interrupted<T>(exception);
+         }
+      }
+
+      public static ICompletion<T> tryToComplete<T>(Func<IResult<T>> func) => func().Completion();
+
 		public static IResult<T> tryTo<T>(Func<IResult<T>> func)
 		{
 			try
@@ -31,7 +45,19 @@ namespace Core.Monads
 			}
 		}
 
-		public static IResult<Unit> tryTo(Action action)
+      public static ICompletion<T> tryToComplete<T>(Func<ICompletion<T>> func)
+      {
+         try
+         {
+            return func();
+         }
+         catch (Exception exception)
+         {
+            return interrupted<T>(exception);
+         }
+      }
+
+      public static IResult<Unit> tryTo(Action action)
 		{
 			try
 			{
@@ -267,5 +293,5 @@ namespace Core.Monads
             return interrupted<T>(exception);
          }
       }
-	}
+   }
 }
