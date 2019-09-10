@@ -632,5 +632,12 @@ namespace Core.Monads
       public static ICompletion<T> Completed<T>(this T value) => new Completed<T>(value);
 
       public static ICompletion<T> Interrupted<T>(this string message) => new Interrupted<T>(new ApplicationException(message));
+
+      public static ICompletion<T> Completion<T>(this IResult<T> result) => result.FlatMap(v => v.Completed(), interrupted<T>);
+
+      public static ICompletion<T> Completion<T>(this IMatched<T> matched)
+      {
+         return matched.FlatMap(v => v.Completed(), cancelled<T>, interrupted<T>);
+      }
    }
 }
