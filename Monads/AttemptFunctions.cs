@@ -250,5 +250,22 @@ namespace Core.Monads
             return interrupted<T>(exception);
          }
       }
+
+      public static async Task<ICompletion<T>> runFromResult<T>(Func<CancellationToken, IResult<T>> func, CancellationTokenSource source)
+      {
+         try
+         {
+            var token = source.Token;
+            return await Task.Run(() => func(token).Completion(), token);
+         }
+         catch (OperationCanceledException)
+         {
+            return cancelled<T>();
+         }
+         catch (Exception exception)
+         {
+            return interrupted<T>(exception);
+         }
+      }
 	}
 }
