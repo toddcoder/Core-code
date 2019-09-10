@@ -9,5 +9,7 @@
       public static IResult<Unit> Success() => Value.Success();
 
       public static IMatched<Unit> Matched() => Value.Matched();
+
+      public static ICompletion<Unit> Completed() => Value.Completed();
    }
 }
