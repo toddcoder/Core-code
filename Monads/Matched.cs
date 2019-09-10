@@ -34,8 +34,7 @@ namespace Core.Monads
 
       public IMatched<T2> SelectMany<T1, T2>(Func<T, IMatched<T1>> func, Func<T, T1, T2> projection)
       {
-         var self = this;
-         return func(value).Map(t1 => projection(self.value, t1).Matched(), notMatched<T2>, failedMatch<T2>);
+         return func(value).Map(t1 => projection(value, t1).Matched(), notMatched<T2>, failedMatch<T2>);
       }
 
       public IMatched<TResult> SelectMany<TResult>(Func<T, TResult> func) => func(value).Matched();

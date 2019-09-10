@@ -628,5 +628,9 @@ namespace Core.Monads
             }
          }
       }
-	}
+
+      public static ICompletion<T> Completed<T>(this T value) => new Completed<T>(value);
+
+      public static ICompletion<T> Interrupted<T>(this string message) => new Interrupted<T>(new ApplicationException(message));
+   }
 }

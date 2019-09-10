@@ -81,5 +81,9 @@ namespace Core.Monads
       public static IMaybe<T> maybe<T>(bool test, Func<T> ifTrue) => test ? ifTrue().Some() : none<T>();
 
       public static IMaybe<T> maybe<T>(bool test, Func<IMaybe<T>> ifTrue) => test ? ifTrue() : none<T>();
+
+      public static ICompletion<T> cancelled<T>() => new Cancelled<T>();
+
+      public static ICompletion<T> interrupted<T>(Exception exception) => new Interrupted<T>(exception);
    }
 }

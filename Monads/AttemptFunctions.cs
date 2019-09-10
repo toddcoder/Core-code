@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads
@@ -231,5 +233,22 @@ namespace Core.Monads
 
 			return result;
 		}
+
+      public static async Task<ICompletion<T>> run<T>(Func<CancellationToken, ICompletion<T>> func, CancellationTokenSource source)
+      {
+         try
+         {
+            var token = source.Token;
+            return await Task.Run(() => func(token), token);
+         }
+         catch (OperationCanceledException)
+         {
+            return cancelled<T>();
+         }
+         catch (Exception exception)
+         {
+            return interrupted<T>(exception);
+         }
+      }
 	}
 }

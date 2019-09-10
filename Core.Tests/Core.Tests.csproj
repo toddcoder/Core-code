@@ -55,6 +55,7 @@
     <Compile Include="FileNameTests.cs" />
     <Compile Include="FolderNameTests.cs" />
     <Compile Include="LegacyMatcherTests.cs" />
+    <Compile Include="MonadTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StringClassTests.cs" />
     <Compile Include="StringExtensionTests.cs" />

@@ -193,13 +193,17 @@
     <Compile Include="Lambdas\LambdaExtensions.cs" />
     <Compile Include="Lambdas\LambdaFunctions.cs" />
     <Compile Include="Monads\AttemptFunctions.cs" />
+    <Compile Include="Monads\Cancelled.cs" />
+    <Compile Include="Monads\Completed.cs" />
     <Compile Include="Monads\FailedMatch.cs" />
     <Compile Include="Monads\Failure.cs" />
     <Compile Include="Monads\FailureEventArgs.cs" />
     <Compile Include="Monads\FullStackException.cs" />
     <Compile Include="Monads\Group.cs" />
+    <Compile Include="Monads\ICompletion.cs" />
     <Compile Include="Monads\IMatched.cs" />
     <Compile Include="Monads\IMaybe.cs" />
+    <Compile Include="Monads\Interrupted.cs" />
     <Compile Include="Monads\IResult.cs" />
     <Compile Include="Monads\Matched.cs" />
     <Compile Include="Monads\MatchedIterator.cs" />
