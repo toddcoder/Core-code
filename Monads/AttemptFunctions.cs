@@ -260,11 +260,12 @@ namespace Core.Monads
 			return result;
 		}
 
-      public static async Task<ICompletion<T>> run<T>(Func<CancellationToken, ICompletion<T>> func, CancellationTokenSource source)
+      public static async Task<ICompletion<T>> run<T>(Func<CancellationToken, ICompletion<T>> func, CancellationTokenSource source) => await run(func, source.Token);
+
+      public static async Task<ICompletion<T>> run<T>(Func<CancellationToken, ICompletion<T>> func, CancellationToken token)
       {
          try
          {
-            var token = source.Token;
             return await Task.Run(() => func(token), token);
          }
          catch (OperationCanceledException)
@@ -279,9 +280,13 @@ namespace Core.Monads
 
       public static async Task<ICompletion<T>> runFromResult<T>(Func<CancellationToken, IResult<T>> func, CancellationTokenSource source)
       {
+         return await runFromResult(func, source.Token);
+      }
+
+      public static async Task<ICompletion<T>> runFromResult<T>(Func<CancellationToken, IResult<T>> func, CancellationToken token)
+      {
          try
          {
-            var token = source.Token;
             return await Task.Run(() => func(token).Completion(), token);
          }
          catch (OperationCanceledException)
