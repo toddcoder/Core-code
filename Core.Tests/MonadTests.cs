@@ -22,7 +22,7 @@ namespace Core.Tests
 
       public async Task<ICompletion<long>> CountAsync(CancellationTokenSource source)
       {
-         return await run(t =>
+         return await runAsync(t =>
          {
             long result = 0;
 
@@ -49,7 +49,7 @@ namespace Core.Tests
          var counter = new Counter(100_000L);
          var source = new CancellationTokenSource(30.Seconds());
          var completion = Task.Run(() => counter.CountAsync(source), source.Token);
-         if (completion.Result.Out(out var value, out var anyException))
+         if (completion.Result.If(out var value, out var anyException))
          {
             Console.WriteLine($"Value is {value}");
          }
@@ -70,7 +70,7 @@ namespace Core.Tests
          var source = new CancellationTokenSource(30.Seconds());
          var completion = Task.Run(() => counter.CountAsync(source), source.Token);
          source.Cancel();
-         if (completion.Result.Out(out var value, out var anyException))
+         if (completion.Result.If(out var value, out var anyException))
          {
             Console.WriteLine($"Value is {value}");
          }
@@ -90,13 +90,43 @@ namespace Core.Tests
          var counter = new Counter(100_000L, true);
          var source = new CancellationTokenSource(30.Seconds());
          var completion = Task.Run(() => counter.CountAsync(source), source.Token);
-         if (completion.Result.Out(out var value, out var anyException))
+         if (completion.Result.If(out var value, out var anyException))
          {
             Console.WriteLine($"Value is {value}");
          }
          else if (anyException.If(out var exception))
          {
             Console.WriteLine($"Interrupted with: {exception.Message}");
+         }
+         else
+         {
+            Console.WriteLine("Cancelled");
+         }
+      }
+
+      static async Task<ICompletion<int>> getOne(CancellationToken token) => await runAsync(t => 1.Completed(), token);
+
+      static async Task<ICompletion<int>> getTwo(CancellationToken token) => await runAsync(t => 2.Completed(), token);
+
+      static async Task<ICompletion<int>> getThree(CancellationToken token) => await runAsync(t => 3.Completed(), token);
+
+      [TestMethod]
+      public void RunAsyncTest()
+      {
+         var source = new CancellationTokenSource(30.Seconds());
+         var token = source.Token;
+         var result =
+            from one in getOne(token)
+            from two in getTwo(token)
+            from three in getThree(token)
+            select one + two + three;
+         if (result.Result.If(out var six, out var anyException))
+         {
+            Console.WriteLine($"Value: {six}");
+         }
+         else if (anyException.If(out var exception))
+         {
+            Console.WriteLine($"Exception: {exception.Message}");
          }
          else
          {

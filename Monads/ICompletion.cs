@@ -55,7 +55,7 @@ namespace Core.Monads
 
       bool IfInterrupted(out Exception exception);
 
-      bool Out(out T value, out IMaybe<Exception> anyException);
+      bool If(out T value, out IMaybe<Exception> anyException);
 
       bool Else<TOther>(out ICompletion<TOther> result);
 

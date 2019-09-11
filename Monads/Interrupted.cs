@@ -95,7 +95,7 @@ namespace Core.Monads
          return true;
       }
 
-      public bool Out(out T value, out IMaybe<Exception> anyException)
+      public bool If(out T value, out IMaybe<Exception> anyException)
       {
          value = default;
          anyException = exception.Some();

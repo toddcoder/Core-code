@@ -95,7 +95,7 @@ namespace Core.Monads
          return false;
       }
 
-      public bool Out(out T value, out IMaybe<Exception> anyException)
+      public bool If(out T value, out IMaybe<Exception> anyException)
       {
          value = this.value;
          anyException = none<Exception>();
