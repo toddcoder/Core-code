@@ -609,28 +609,27 @@ namespace Core.Monads
 
       public static ICompletion<T> Completion<T>(this IResult<T> result) => result.FlatMap(v => v.Completed(), interrupted<T>);
 
+      public static ICompletion<T> Completion<T>(this IResult<T> result, CancellationToken token)
+      {
+         return result.FlatMap(v => v.Completed(token), interrupted<T>);
+      }
+
       public static ICompletion<T> Completion<T>(this IMatched<T> matched)
       {
          return matched.FlatMap(v => v.Completed(), cancelled<T>, interrupted<T>);
       }
 
-/*      public static async Task<ICompletion<TResult>> SelectMany<T, TResult>(this Task<ICompletion<T>> source,
-         Func<T, Task<ICompletion<TResult>>> projection)
+      public static ICompletion<T> Completion<T>(this IMatched<T> matched, CancellationToken token)
       {
-         var sourceResult = await source;
-         if (sourceResult.If(out var value, out var anyException))
-         {
-            return await projection(value);
-         }
-         else if (anyException.If(out var exception))
-         {
-            return interrupted<TResult>(exception);
-         }
-         else
-         {
-            return cancelled<TResult>();
-         }
-      }*/
+         return matched.FlatMap(v => v.Completed(token), cancelled<T>, interrupted<T>);
+      }
+
+      public static ICompletion<T> Completion<T>(this IMaybe<T> maybe) => maybe.FlatMap(v => v.Completed(), cancelled<T>);
+
+      public static ICompletion<T> Completion<T>(this IMaybe<T> maybe, CancellationToken token)
+      {
+         return maybe.FlatMap(v => v.Completed(token), cancelled<T>);
+      }
 
       public static async Task<ICompletion<T3>> SelectMany<T1, T2, T3>(this Task<ICompletion<T1>> source, Func<T1, Task<ICompletion<T2>>> func,
          Func<T1, T2, T3> projection)
