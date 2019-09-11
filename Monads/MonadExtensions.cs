@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Core.Enumerables;
 using Core.Objects;
@@ -591,6 +592,18 @@ namespace Core.Monads
       }
 
       public static ICompletion<T> Completed<T>(this T value) => new Completed<T>(value);
+
+      public static ICompletion<T> Completed<T>(this T value, CancellationToken token)
+      {
+         if (token.IsCancellationRequested)
+         {
+            return cancelled<T>();
+         }
+         else
+         {
+            return value.Completed();
+         }
+      }
 
       public static ICompletion<T> Interrupted<T>(this string message) => new Interrupted<T>(new ApplicationException(message));
 
