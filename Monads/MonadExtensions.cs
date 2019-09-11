@@ -660,5 +660,21 @@ namespace Core.Monads
             return cancelled<T3>();
          }
       }
+
+      public static IResult<T> Result<T>(this ICompletion<T> completion)
+      {
+         if (completion.If(out var value, out var anyException))
+         {
+            return value.Success();
+         }
+         else if (anyException.If(out var exception))
+         {
+            return failure<T>(exception);
+         }
+         else
+         {
+            return "Cancelled".Failure<T>();
+         }
+      }
    }
 }
