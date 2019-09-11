@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using Core.Arrays;
 using Core.Dates.Now;
 using Core.Exceptions;
@@ -342,11 +343,27 @@ namespace Core.Computers
 
       public IEnumerable<FileName> Files => getFiles(fullPath);
 
+      public IEnumerable<FileName> FilesAsync() => getFilesAsync(fullPath);
+
+      public IEnumerable<FileName> FilesAsync(CancellationToken token) => getFilesAsync(fullPath, token);
+
       public IEnumerable<FolderName> Folders => getFolders(fullPath);
+
+      public IEnumerable<FolderName> FoldersAsync() => getFoldersAsync(fullPath);
+
+      public IEnumerable<FolderName> FoldersAsync(CancellationToken token) => getFoldersAsync(fullPath, token);
 
       public IEnumerable<FileName> LocalAndParentFiles => getLocalAndParentFiles(fullPath);
 
+      public IEnumerable<FileName> LocalAndParentFilesAsync() => getLocalAndParentFilesAsync(fullPath);
+
+      public IEnumerable<FileName> LocalAndParentFilesAsync(CancellationToken token) => getLocalAndParentFilesAsync(fullPath, token);
+
       public IEnumerable<FolderName> LocalAndParentFolders => getLocalAndParentFolders(fullPath);
+
+      public IEnumerable<FolderName> LocalAndParentFoldersAsync() => getLocalAndParentFoldersAsync(fullPath);
+
+      public IEnumerable<FolderName> LocalAndParentFoldersAsync(CancellationToken token) => getLocalAndParentFoldersAsync(fullPath, token);
 
       public int FileCount => getFileCount(fullPath);
 
@@ -539,9 +556,26 @@ namespace Core.Computers
 
       protected static IEnumerable<FileName> getFiles(string folder) => GetFiles(folder).Select(f => (FileName)f);
 
+      protected static IEnumerable<FileName> getFilesAsync(string folder) => GetFiles(folder).AsParallel().Select(f => (FileName)f);
+
+      protected static IEnumerable<FileName> getFilesAsync(string folder, CancellationToken token)
+      {
+         return GetFiles(folder).AsParallel().WithCancellation(token).Select(f => (FileName)f);
+      }
+
       protected static IEnumerable<FolderName> getFolders(string folder)
       {
          return GetDirectories(folder).Select(f => (FolderName)f);
+      }
+
+      protected static IEnumerable<FolderName> getFoldersAsync(string folder)
+      {
+         return GetDirectories(folder).AsParallel().Select(f => (FolderName)f);
+      }
+
+      protected static IEnumerable<FolderName> getFoldersAsync(string folder, CancellationToken token)
+      {
+         return GetDirectories(folder).AsParallel().WithCancellation(token).Select(f => (FolderName)f);
       }
 
       protected static IEnumerable<FileName> getLocalAndParentFiles(string folder)
@@ -563,6 +597,44 @@ namespace Core.Computers
          }
       }
 
+      protected static IEnumerable<FileName> getLocalAndParentFilesAsync(string folder)
+      {
+         if (folder == null)
+         {
+            yield break;
+         }
+
+         foreach (var file in getFilesAsync(folder))
+         {
+            yield return file;
+         }
+
+         var parent = GetParent(folder)?.FullName;
+         foreach (var file in getLocalAndParentFilesAsync(parent))
+         {
+            yield return file;
+         }
+      }
+
+      protected static IEnumerable<FileName> getLocalAndParentFilesAsync(string folder, CancellationToken token)
+      {
+         if (folder == null)
+         {
+            yield break;
+         }
+
+         foreach (var file in getFilesAsync(folder, token))
+         {
+            yield return file;
+         }
+
+         var parent = GetParent(folder)?.FullName;
+         foreach (var file in getLocalAndParentFilesAsync(parent, token))
+         {
+            yield return file;
+         }
+      }
+
       protected static IEnumerable<FolderName> getLocalAndParentFolders(string folder)
       {
          if (folder == null)
@@ -578,6 +650,56 @@ namespace Core.Computers
          var parent = GetParent(folder)?.FullName;
 
          foreach (var subFolder in getLocalAndParentFolders(parent))
+         {
+            yield return subFolder;
+         }
+
+         if (parent != null)
+         {
+            yield return parent;
+         }
+      }
+
+      public static IEnumerable<FolderName> getLocalAndParentFoldersAsync(string folder)
+      {
+         if (folder == null)
+         {
+            yield break;
+         }
+
+         foreach (var subFolder in getFoldersAsync(folder))
+         {
+            yield return subFolder;
+         }
+
+         var parent = GetParent(folder)?.FullName;
+
+         foreach (var subFolder in getLocalAndParentFoldersAsync(parent))
+         {
+            yield return subFolder;
+         }
+
+         if (parent != null)
+         {
+            yield return parent;
+         }
+      }
+
+      public static IEnumerable<FolderName> getLocalAndParentFoldersAsync(string folder, CancellationToken token)
+      {
+         if (folder == null)
+         {
+            yield break;
+         }
+
+         foreach (var subFolder in getFoldersAsync(folder, token))
+         {
+            yield return subFolder;
+         }
+
+         var parent = GetParent(folder)?.FullName;
+
+         foreach (var subFolder in getLocalAndParentFoldersAsync(parent, token))
          {
             yield return subFolder;
          }
