@@ -8,7 +8,7 @@ namespace Core.Monads
    {
       protected T value;
 
-      public Completed(T value) => this.value = value;
+      internal Completed(T value) => this.value = value;
 
       public bool IsCompleted => true;
 
