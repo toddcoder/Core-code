@@ -76,6 +76,12 @@ namespace Core.Monads
          return false;
       }
 
+      public bool IfNot(out IMaybe<Exception> anyException)
+      {
+	      anyException = none<Exception>();
+	      return true;
+      }
+
       public bool Else<TOther>(out IMatched<TOther> result)
       {
          result = notMatched<TOther>();

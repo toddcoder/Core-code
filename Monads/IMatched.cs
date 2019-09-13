@@ -62,6 +62,8 @@ namespace Core.Monads
 
       bool If(out T value, out IMaybe<Exception> exception);
 
+      bool IfNot(out IMaybe<Exception> anyException);
+
       bool Else<TOther>(out IMatched<TOther> result);
 
       IMatched<TOther> Unmatched<TOther>();

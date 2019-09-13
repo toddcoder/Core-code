@@ -36,7 +36,7 @@ namespace Core.Monads
 
 		public Matching<T, TResult> IfFailedMatch(Func<Exception, TResult> ifFailedMatch)
 		{
-			if (matched.If(out _, out var anyException) && anyException.If(out var exception))
+			if (matched.IfNot(out var anyException) && anyException.If(out var exception))
          {
             action = func(() => ifFailedMatch(exception)).Some();
          }
