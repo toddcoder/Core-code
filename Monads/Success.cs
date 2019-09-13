@@ -32,8 +32,6 @@ namespace Core.Monads
 
       public bool IsFailed => false;
 
-      public Exception Exception => throw "There is no exception".Throws();
-
       public IResult<TOther> ExceptionAs<TOther>() => throw "There is no exception".Throws();
 
       [DebuggerStepThrough]

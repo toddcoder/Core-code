@@ -7,15 +7,17 @@ namespace Core.Monads
 {
    public class Failure<T> : IResult<T>
    {
+	   protected Exception exception;
+
       internal Failure(Exception exception)
       {
-         Exception = exception is FullStackException ? exception : new FullStackException(exception);
+         this.exception = exception is FullStackException ? exception : new FullStackException(exception);
       }
 
       public bool If(out T value, out Exception exception)
       {
          value = default;
-         exception = Exception;
+         exception = this.exception;
 
          return false;
       }
@@ -32,36 +34,34 @@ namespace Core.Monads
 
       public bool IsFailed => true;
 
-      public Exception Exception { get; }
-
-      public IResult<TOther> ExceptionAs<TOther>() => failure<TOther>(Exception);
+      public IResult<TOther> ExceptionAs<TOther>() => failure<TOther>(exception);
 
       [DebuggerStepThrough]
-      public IResult<TResult> Map<TResult>(Func<T, IResult<TResult>> ifSuccessful) => failure<TResult>(Exception);
+      public IResult<TResult> Map<TResult>(Func<T, IResult<TResult>> ifSuccessful) => failure<TResult>(exception);
 
       [DebuggerStepThrough]
-      public IResult<TResult> Map<TResult>(Func<T, TResult> ifSuccessful) => failure<TResult>(Exception);
+      public IResult<TResult> Map<TResult>(Func<T, TResult> ifSuccessful) => failure<TResult>(exception);
 
       [DebuggerStepThrough]
       public TResult FlatMap<TResult>(Func<T, TResult> ifSuccessful, Func<Exception, TResult> ifFailed)
       {
-         return ifFailed(Exception);
+         return ifFailed(exception);
       }
 
       [DebuggerStepThrough]
-      public IResult<TResult> SelectMany<TResult>(Func<T, IResult<TResult>> projection) => failure<TResult>(Exception);
+      public IResult<TResult> SelectMany<TResult>(Func<T, IResult<TResult>> projection) => failure<TResult>(exception);
 
       [DebuggerStepThrough]
       public IResult<T2> SelectMany<T1, T2>(Func<T, IResult<T1>> func, Func<T, T1, T2> projection)
       {
-         return failure<T2>(Exception);
+         return failure<T2>(exception);
       }
 
       [DebuggerStepThrough]
-      public IResult<TResult> SelectMany<TResult>(Func<T, TResult> func) => failure<TResult>(Exception);
+      public IResult<TResult> SelectMany<TResult>(Func<T, TResult> func) => failure<TResult>(exception);
 
       [DebuggerStepThrough]
-      public T Recover(Func<Exception, T> recovery) => recovery(Exception);
+      public T Recover(Func<Exception, T> recovery) => recovery(exception);
 
       [DebuggerStepThrough]
       public IResult<T> Or(IResult<T> other) => other;
@@ -75,7 +75,7 @@ namespace Core.Monads
       [DebuggerStepThrough]
       public IResult<T> Or(Func<T> other) => tryTo(other);
 
-      public IResult<Unit> Unit => failure<Unit>(Exception);
+      public IResult<Unit> Unit => failure<Unit>(exception);
 
       public IResult<T> Always(Action action)
       {
@@ -83,7 +83,7 @@ namespace Core.Monads
          return this;
       }
 
-      public IMatched<T> Match() => failedMatch<T>(Exception);
+      public IMatched<T> Match() => failedMatch<T>(exception);
 
       public bool If(out T value)
       {
@@ -93,21 +93,21 @@ namespace Core.Monads
 
       public bool IfNot(out Exception exception)
       {
-         exception = Exception;
+         exception = this.exception;
          return true;
       }
 
       public bool IfNot(out T value, out Exception exception)
       {
          value = default;
-         exception = Exception;
+         exception = this.exception;
 
          return true;
       }
 
-      public void Force() => throw Exception;
+      public void Force() => throw exception;
 
-      public T ForceValue() => throw Exception;
+      public T ForceValue() => throw exception;
 
       public IResult<T> OnSuccess(Action<T> action) => this;
 
@@ -115,7 +115,7 @@ namespace Core.Monads
       {
          try
          {
-            action(Exception);
+            action(exception);
          }
          catch { }
 
@@ -125,7 +125,7 @@ namespace Core.Monads
 	   public void Deconstruct(out IMaybe<T> value, out Exception exception)
 	   {
 		   value = none<T>();
-		   exception = Exception;
+		   exception = this.exception;
 	   }
 
 	   public IResult<T> Assert(Predicate<T> predicate, Func<string> exceptionMessage) => this;

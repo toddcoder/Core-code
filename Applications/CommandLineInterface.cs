@@ -358,7 +358,10 @@ namespace Core.Applications
             .ToArray();
          if (arguments.FirstOrNone(p => p.IsFailed).If(out var failure))
          {
-            HandleException(failure.Exception);
+	         if (failure.IfNot(out var exception))
+	         {
+		         HandleException(exception);
+	         }
          }
          else
          {

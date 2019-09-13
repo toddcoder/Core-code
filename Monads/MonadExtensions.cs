@@ -66,13 +66,13 @@ namespace Core.Monads
       [DebuggerStepThrough]
       public static IResult<TResult> Select<T, TResult>(this IResult<T> result, Func<T, TResult> func)
       {
-         if (result.If(out var value))
+         if (result.If(out var value, out var exception))
          {
             return func(value).Success();
          }
          else
          {
-            return failure<TResult>(result.Exception);
+            return failure<TResult>(exception);
          }
       }
 
@@ -321,26 +321,26 @@ namespace Core.Monads
 
       public static T ThrowIfFailed<T>(this IResult<T> result)
       {
-         if (result.If(out var value))
+         if (result.If(out var value, out var exception))
          {
             return value;
          }
          else
          {
-            throw result.Exception;
+            throw exception;
          }
       }
 
       public static void ForEach<T>(this IResult<IEnumerable<T>> enumerable, Action<T> ifSuccess,
          Action<Exception> ifFailure)
       {
-         if (enumerable.If(out var e))
+         if (enumerable.If(out var e, out var exception))
          {
             e.ForEach(ifSuccess, ifFailure);
          }
          else
          {
-            ifFailure(enumerable.Exception);
+            ifFailure(exception);
          }
       }
 

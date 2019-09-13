@@ -35,8 +35,6 @@ namespace Core.Monads
 
       IMatched<T> Do(Action<T> ifMatched, Action ifNotMatched, Action<Exception> ifFailedMatch);
 
-      Exception Exception { get; }
-
       IMatched<TOther> ExceptionAs<TOther>();
 
       IMatched<T> Or(IMatched<T> other);

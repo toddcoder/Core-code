@@ -20,8 +20,6 @@ namespace Core.Monads
          return this;
       }
 
-      public Exception Exception => throw "There is no exception".Throws();
-
       public IMatched<TOther> ExceptionAs<TOther>() => throw "There is no exception".Throws();
 
       public IMatched<T> Or(IMatched<T> other) => other;

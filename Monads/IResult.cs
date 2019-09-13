@@ -12,8 +12,6 @@ namespace Core.Monads
 
       bool IsFailed { get; }
 
-      Exception Exception { get; }
-
       IResult<TOther> ExceptionAs<TOther>();
 
       IResult<TResult> Map<TResult>(Func<T, IResult<TResult>> ifSuccessful);

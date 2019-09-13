@@ -1,5 +1,5 @@
 ﻿using System;
-using Core.Lambdas;
+using static Core.Lambdas.LambdaFunctions;
 
 namespace Core.Monads
 {
@@ -18,7 +18,7 @@ namespace Core.Monads
 		{
 			if (matched.If(out var value))
          {
-            action = LambdaFunctions.func(() => ifMatched(value)).Some();
+            action = func(() => ifMatched(value)).Some();
          }
 
          return this;
@@ -36,9 +36,9 @@ namespace Core.Monads
 
 		public Matching<T, TResult> IfFailedMatch(Func<Exception, TResult> ifFailedMatch)
 		{
-			if (matched.IsFailedMatch)
+			if (matched.If(out _, out var anyException) && anyException.If(out var exception))
          {
-            action = LambdaFunctions.func(() => ifFailedMatch(matched.Exception)).Some();
+            action = func(() => ifFailedMatch(exception)).Some();
          }
 
          return this;
