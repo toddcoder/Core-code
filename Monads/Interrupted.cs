@@ -130,5 +130,15 @@ namespace Core.Monads
          value = default;
          anyException = exception.Some();
       }
+
+      public ICompletion<T> OnCompleted(Action<T> action) => this;
+
+      public ICompletion<T> OnCancelled(Action action) => this;
+
+      public ICompletion<T> OnInterrupted(Action<Exception> action)
+      {
+         action(exception);
+         return this;
+      }
    }
 }

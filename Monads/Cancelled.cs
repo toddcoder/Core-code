@@ -126,5 +126,15 @@ namespace Core.Monads
          value = none<T>();
          anyException = none<Exception>();
       }
+
+      public ICompletion<T> OnCompleted(Action<T> action) => this;
+
+      public ICompletion<T> OnCancelled(Action action)
+      {
+         action();
+         return this;
+      }
+
+      public ICompletion<T> OnInterrupted(Action<Exception> action) => this;
    }
 }

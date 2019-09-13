@@ -72,5 +72,11 @@ namespace Core.Monads
       ICompletion<TOther> CancelledOnly<TOther>();
 
       void Deconstruct(out IMaybe<T> value, out IMaybe<Exception> anyException);
+
+      ICompletion<T> OnCompleted(Action<T> action);
+
+      ICompletion<T> OnCancelled(Action action);
+
+      ICompletion<T> OnInterrupted(Action<Exception> action);
    }
 }
