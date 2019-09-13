@@ -55,6 +55,8 @@
     <Compile Include="Applications\ArgumentsExtensions.cs" />
     <Compile Include="Applications\ArgumentsTrying.cs" />
     <Compile Include="Applications\ArgumentTrying.cs" />
+    <Compile Include="Applications\AsyncEvents\AsyncEventExtensions.cs" />
+    <Compile Include="Applications\AsyncEvents\AsyncEventHandler.cs" />
     <Compile Include="Applications\CancelAction.cs" />
     <Compile Include="Applications\CancelTask.cs" />
     <Compile Include="Applications\CancelTasks.cs" />
