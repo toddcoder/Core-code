@@ -316,6 +316,8 @@ namespace Core.Monads
 
       public static async Task<ICompletion<T>> runInterrupted<T>(Exception exception) => await Task.Run(() => interrupted<T>(exception));
 
+      public static async Task<ICompletion<T>> runInterrupted<T>(string message) => await Task.Run(message.Interrupted<T>);
+
       public static async Task<ICompletion<T>> runCancelled<T>() => await Task.Run(cancelled<T>);
    }
 }
