@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Core.Applications.AsyncEvents
@@ -12,6 +13,15 @@ namespace Core.Applications.AsyncEvents
          if (localHandler != null)
          {
             await Task.WhenAll(localHandler.GetInvocationList().Select(del => ((AsyncEventHandler<TArgs>)del).Invoke(sender, args)));
+         }
+      }
+
+      public static async Task InvokeAsync<TArgs>(this AsyncEventHandler<TArgs> eventHandler, object sender, TArgs args, CancellationToken token)
+         where TArgs : EventArgs
+      {
+         if (!token.IsCancellationRequested)
+         {
+            await eventHandler.InvokeAsync(sender, args);
          }
       }
    }
