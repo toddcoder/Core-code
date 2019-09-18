@@ -1,6 +1,5 @@
-﻿using Core.Monads;
-using Core.Objects;
-using static Core.Booleans.Assertions;
+﻿using Core.Assertions;
+using Core.Monads;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Collections
@@ -9,7 +8,7 @@ namespace Core.Collections
 	{
 		IHash<TKey, TValue> hash;
 
-		internal IfHash(IHash<TKey, TValue> hash) => this.hash = Ensure(hash, h => h.IsNotNull(), "Hash can't be null");
+      internal IfHash(IHash<TKey, TValue> hash) => this.hash = hash.Must().Not.BeNull().Ensure<IHash<TKey, TValue>>();
 
 		public IMaybe<TValue> this[TKey key] => maybe(hash.ContainsKey(key), () => hash[key]);
 	}

@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
+using Core.Assertions;
 using Core.Monads;
 using Core.RegularExpressions;
-using Core.Strings;
-using static Core.Booleans.Assertions;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Computers
@@ -135,9 +134,9 @@ namespace Core.Computers
 
 		void impersonate()
 		{
-			Assert(UserName.IsNotEmpty(), "User name not set");
-			Assert(Domain.IsNotEmpty(), "Domain not set");
-			Assert(Password.IsNotEmpty(), "Password not set");
+         UserName.Must().Not.BeNullOrEmpty().Assert("User name not set");
+         Domain.Must().Not.BeNullOrEmpty().Assert("Domain not set");
+         Password.Must().Not.BeNullOrEmpty().Assert("Password not set");
 
 			if (LogonUser(UserName, Domain, Password, (int)Type, (int)Provider, out tokenHandle) != 0)
          {

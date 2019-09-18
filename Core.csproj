@@ -91,6 +91,17 @@
     <Compile Include="Arrays\ByteArrayExtensions.cs" />
     <Compile Include="Arrays\ListFunctions.cs" />
     <Compile Include="Arrays\Slice.cs" />
+    <Compile Include="Assertions\AssertionExtensions.cs" />
+    <Compile Include="Assertions\AssertionFunctions.cs" />
+    <Compile Include="Assertions\Collections\ArrayAssertion.cs" />
+    <Compile Include="Assertions\Collections\ListAssertion.cs" />
+    <Compile Include="Assertions\Comparables\ComparableAssertion.cs" />
+    <Compile Include="Assertions\Comparables\DoubleAssertion.cs" />
+    <Compile Include="Assertions\Comparables\FloatAssertion.cs" />
+    <Compile Include="Assertions\Constraint.cs" />
+    <Compile Include="Assertions\IAssertion.cs" />
+    <Compile Include="Assertions\Objects\ObjectAssertion.cs" />
+    <Compile Include="Assertions\Strings\StringAssertion.cs" />
     <Compile Include="Booleans\Assertions.cs" />
     <Compile Include="Booleans\BooleanExtensions.cs" />
     <Compile Include="Collections\AutoHash.cs" />
@@ -140,7 +151,7 @@
     <Compile Include="DataStructures\MaybeStack.cs" />
     <Compile Include="Dates\DateEnumerator.cs" />
     <Compile Include="Dates\DateFunctions.cs" />
-    <Compile Include="Dates\DateHelps.cs" />
+    <Compile Include="Dates\DateExtensions.cs" />
     <Compile Include="Dates\DateIncrementer.cs" />
     <Compile Include="Dates\DateIncrements\DateIncrementExtensions.cs" />
     <Compile Include="Dates\DateTimeExtensions.cs" />

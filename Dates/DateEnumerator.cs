@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Core.Assertions;
 using Core.Dates.DateIncrements;
-using static Core.Booleans.Assertions;
 
 namespace Core.Dates
 {
@@ -15,7 +15,7 @@ namespace Core.Dates
 
       public DateEnumerator(DateTime begin, DateTime end, TimeSpan increment)
       {
-         Assert(begin < end, "Begin date must be less than or equal to the end date");
+         begin.Must().BeLessThan(end).Assert("Begin date must be less than or equal to the end date");
 
          this.begin = begin;
          this.end = end;

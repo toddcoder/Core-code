@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Reflection;
+using Core.Assertions;
 using Core.Monads;
-using static Core.Booleans.Assertions;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Objects
@@ -88,7 +88,7 @@ namespace Core.Objects
                {
                   if (parameters.Length == 0)
                   {
-                     Assert(setValue(val), "Value couldn't be set");
+                     setValue(value).Must().Equal(true).Assert("Value couldn't be set");
                   }
                   else
                   {
@@ -97,7 +97,7 @@ namespace Core.Objects
                }
                else
                {
-                  Assert(parameters.Length == 0, "Index parameters not specified");
+                  parameters.Must().BeEmpty().Assert("Index parameters not specified");
                   inf.SetValue(obj, val, null);
                }
             }

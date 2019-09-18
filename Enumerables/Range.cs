@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Core.Assertions;
 using Core.Exceptions;
 using Core.Monads;
-using static Core.Booleans.Assertions;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Enumerables
@@ -95,9 +95,7 @@ namespace Core.Enumerables
 
       public Range By(int newIncrement)
       {
-         Assert(newIncrement != 0, "Increment can't be 0");
-
-         increment = newIncrement;
+         increment = newIncrement.Must().Not.BeZero().Ensure("Increment can't be 0");
          if (increment < 0)
          {
             endingPredicate = inclusive ? ((Func<int, int, bool>)((x, y) => x >= y)).Some() :

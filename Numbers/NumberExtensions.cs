@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Text;
+using Core.Assertions;
 using Core.Enumerables;
 using Core.RegularExpressions;
 using Core.Strings;
 using static System.Math;
-using static Core.Booleans.Assertions;
 
 namespace Core.Numbers
 {
@@ -206,7 +206,7 @@ namespace Core.Numbers
 
       public static (double division, double remainder) DivRem(this double dividend, double divisor)
       {
-         Assert(divisor != 0.0, "Can't divide by 0");
+         divisor.Must().Not.NearlyEqual(0.0).Assert("Can't divide by 0");
 
          var result = dividend / divisor;
          var floor = Floor(result);
@@ -217,7 +217,7 @@ namespace Core.Numbers
 
       public static (int division, int remainder) DivRem(this int dividend, int divisor)
       {
-         Assert(divisor != 0, "Can't divide by 0");
+         divisor.Must().Not.BeZero().Assert("Can't divide by 0");
          return (dividend / divisor, dividend % divisor);
       }
 

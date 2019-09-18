@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using Core.Arrays;
+using Core.Assertions;
 using Core.Enumerables;
 using Core.Monads;
 using Core.Numbers;
 using Core.RegularExpressions;
 using Core.Strings;
 using static System.Math;
-using static Core.Booleans.Assertions;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Dates
@@ -18,7 +18,7 @@ namespace Core.Dates
 
 		static (int, int, int, int) deriveFromMilliseconds(long value)
 		{
-			Assert(value >= 0, "Milliseconds must be positive");
+         value.Must().BePositive().Assert("Milliseconds must be positive");
 
 			var milliseconds = 0;
 			var seconds = 0;
@@ -336,7 +336,7 @@ namespace Core.Dates
 			}
 			set
 			{
-				Assert(value < HOURS_IN_MILLISECONDS, "Milliseconds must be under 24 hours");
+            value.Must().BeLessThan(HOURS_IN_MILLISECONDS).Assert("Milliseconds must be under 24 hours");
 
 				(hour, minute, second, millisecond) = deriveFromMilliseconds(value);
 			}
@@ -344,31 +344,23 @@ namespace Core.Dates
 
 		void setHour(int newHour)
 		{
-			Assert(newHour.Between(0).And(23), $"The value of hour ({newHour}) is invalid");
-
-			hour = newHour;
+			hour = newHour.Must().BeBetween(0).And(23).Ensure($"The value of hour ({newHour}) is invalid");
 		}
 
 		void setMinute(int newMinute)
 		{
-			Assert(newMinute.Between(0).And(59), $"The value of minute ({newMinute}) is invalid");
-
-			minute = newMinute;
-		}
+			minute = newMinute.Must().BeBetween(0).And(59).Ensure($"The value of minute ({newMinute}) is invalid");
+      }
 
 		void setSecond(int newSecond)
 		{
-			Assert(newSecond.Between(0).And(59), $"The value of second ({newSecond}) is invalid");
-
-			second = newSecond;
-		}
+         second = newSecond.Must().BeBetween(0).And(59).Ensure($"The value of second ({newSecond}) is invalid");
+      }
 
 		void setMillisecond(int newMillisecond)
 		{
-			Assert(newMillisecond.Between(0).And(999), $"The value of millisecond ({newMillisecond}) is invalid");
-
-			millisecond = newMillisecond;
-		}
+         millisecond = newMillisecond.Must().BeBetween(0).And(999).Ensure($"The value of millisecond ({newMillisecond}) is invalid");
+      }
 
 		public override string ToString() => $"{hour:00}:{minute:00}:{second:00}.{millisecond:000}";
 

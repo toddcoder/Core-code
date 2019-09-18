@@ -1,6 +1,5 @@
-﻿using Core.Monads;
-using Core.Objects;
-using static Core.Booleans.Assertions;
+﻿using Core.Assertions;
+using Core.Monads;
 using static Core.Monads.AttemptFunctions;
 
 namespace Core.Collections
@@ -11,7 +10,7 @@ namespace Core.Collections
 
       internal RequiredHash(IHash<TKey, TValue> hash)
       {
-         this.hash = Ensure(hash, h => h.IsNotNull(), "Hash can't be null");
+         this.hash = hash.Must().Ensure<IHash<TKey, TValue>>();
       }
 
       public IResult<TValue> this[TKey key] => assert(hash.ContainsKey(key), () => hash[key], () => $"Key {key} not found");
