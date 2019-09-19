@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Text.RegularExpressions;
+using Core.Assertions;
 using Core.Monads;
 using static System.Text.RegularExpressions.RegexOptions;
-using static Core.Booleans.Assertions;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.RegularExpressions
@@ -42,13 +42,14 @@ namespace Core.RegularExpressions
       public static void RequiredMatch(this string input, string pattern, string message, RegexOptions options,
          bool friendly = true)
       {
-         Assert(input.IsMatch(pattern, options, friendly), message);
+         input.IsMatch(pattern, options, friendly).Must().Be().Assert(message);
+
       }
 
       public static void RequiredMatch(this string input, string pattern, string message, bool ignoreCase = false,
          bool multiline = false, bool friendly = true)
       {
-         Assert(input.IsMatch(pattern, ignoreCase, multiline, friendly), message);
+         input.IsMatch(pattern, ignoreCase, multiline, friendly).Must().Be().Assert(message);
       }
 
       public static string Substitute(this string input, string pattern, string replacement, RegexOptions options,

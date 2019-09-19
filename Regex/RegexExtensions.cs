@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text.RegularExpressions;
+using Core.Assertions;
 using Core.Monads;
-using static Core.Booleans.Assertions;
 using static System.Text.RegularExpressions.RegexOptions;
 using static Core.Monads.MonadFunctions;
 
@@ -14,11 +14,11 @@ namespace Core.Regex
 			var options = None;
 
 			if (ignoreCase)
-         {
-            options |= IgnoreCase;
-         }
+			{
+				options |= IgnoreCase;
+			}
 
-         options |= multiline ? Multiline : Singleline;
+			options |= multiline ? Multiline : Singleline;
 
 			return options;
 		}
@@ -35,13 +35,13 @@ namespace Core.Regex
 
 		public static void RequiredMatch(this string input, string pattern, string message, RegexOptions options)
 		{
-			Assert(input.IsMatch(pattern, options), message);
+			input.IsMatch(pattern, options).Must().Be().Assert(message);
 		}
 
 		public static void RequiredMatch(this string input, string pattern, string message, bool ignoreCase = false,
 			bool multiline = false)
 		{
-			Assert(input.IsMatch(pattern, ignoreCase, multiline), message);
+			input.IsMatch(pattern, ignoreCase, multiline).Must().Be().Assert(message);
 		}
 
 		public static string Substitute(this string input, string pattern, string replacement, RegexOptions options)
@@ -49,8 +49,7 @@ namespace Core.Regex
 			return System.Text.RegularExpressions.Regex.Replace(input, pattern, replacement, options);
 		}
 
-		public static string Substitute(this string input, string pattern, string replacement, RegexOptions options,
-			int count)
+		public static string Substitute(this string input, string pattern, string replacement, RegexOptions options, int count)
 		{
 			var regex = new System.Text.RegularExpressions.Regex(pattern, options);
 			return regex.Replace(input, replacement, count);
@@ -77,10 +76,10 @@ namespace Core.Regex
 				return matcher.ToString();
 			}
 			else
-         {
-            return input;
-         }
-      }
+			{
+				return input;
+			}
+		}
 
 		public static string Replace(this string input, string pattern, Action<Matcher> replacer, bool ignoreCase = false,
 			bool multiline = false)
@@ -127,46 +126,46 @@ namespace Core.Regex
 		{
 			var matcher = new Matcher();
 			if (matcher.IsMatch(input, pattern, ignoreCase, multiline))
-         {
-            ifTrue(matcher);
-         }
-      }
+			{
+				ifTrue(matcher);
+			}
+		}
 
 		public static void IfMatches(this string input, string pattern, Action<Matcher> ifTrue, RegexOptions options)
 		{
 			var matcher = new Matcher();
 			if (matcher.IsMatch(input, pattern, options))
-         {
-            ifTrue(matcher);
-         }
-      }
+			{
+				ifTrue(matcher);
+			}
+		}
 
 		public static void IfMatches(this string input, string pattern, Action<Matcher> ifTrue, Action ifFalse,
 			bool ignoreCase = false, bool multiline = false)
 		{
 			var matcher = new Matcher();
 			if (matcher.IsMatch(input, pattern, ignoreCase, multiline))
-         {
-            ifTrue(matcher);
-         }
-         else
-         {
-            ifFalse();
-         }
-      }
+			{
+				ifTrue(matcher);
+			}
+			else
+			{
+				ifFalse();
+			}
+		}
 
 		public static void IfMatches(this string input, string pattern, Action<Matcher> ifTrue, Action ifFalse, RegexOptions options)
 		{
 			var matcher = new Matcher();
 			if (matcher.IsMatch(input, pattern, options))
-         {
-            ifTrue(matcher);
-         }
-         else
-         {
-            ifFalse();
-         }
-      }
+			{
+				ifTrue(matcher);
+			}
+			else
+			{
+				ifFalse();
+			}
+		}
 
 		public static IMatched<RegularExpressions.Matcher.Match[]> MatchAll(this string input, string pattern, RegexOptions options)
 		{

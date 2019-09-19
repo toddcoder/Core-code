@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Text;
+using Core.Assertions;
 using Core.Dates.Now;
 using Core.Objects;
-using static Core.Booleans.Assertions;
 
 namespace Core.Strings
 {
@@ -41,7 +41,7 @@ namespace Core.Strings
 
       public static string randomString(int length, bool alpha, bool numeric)
       {
-         Assert(alpha || numeric, "You must specify Alpha and/or Numeric");
+			alpha.Must().Or(numeric).Assert("You must specify Alpha and/or Numeric");
 
          var source = "";
          if (alpha)

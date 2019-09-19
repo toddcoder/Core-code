@@ -21,6 +21,8 @@ namespace Core.Assertions
 
       public static ComparableAssertion<DateTime> Must(this DateTime value) => new ComparableAssertion<DateTime>(value);
 
+      public static BooleanAssertion Must(this bool value) => new BooleanAssertion(value);
+
       public static StringAssertion Must(this string value) => new StringAssertion(value);
 
       public static ArrayAssertion<T> Must<T>(this T[] value) => new ArrayAssertion<T>(value);

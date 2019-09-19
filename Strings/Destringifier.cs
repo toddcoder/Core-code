@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Core.Numbers;
+using Core.Assertions;
 using Core.RegularExpressions;
-using static Core.Booleans.Assertions;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Strings
@@ -85,9 +84,9 @@ namespace Core.Strings
 
 		public string Parse()
 		{
-			Assert(BeginComment.Length > 1, "BeginComment must be at least 2 characters");
-			Assert(EndComment.Length > 1, "EndComment must be at least 2 characters");
-			Assert(SingleComment.Length > 0, "SingleComment must be at least 1 character");
+			BeginComment.Must().HaveLengthOf(2).Assert("BeginComment must be at least 2 characters");
+			EndComment.Must().HaveLengthOf(2).Assert("EndComment must be at least 2 characters");
+			SingleComment.Must().HaveLengthOf(1).Assert("SingleComment must be at least 1 character");
 
 			var outerBuilder = new StringBuilder();
 			var innerBuilder = new StringBuilder();
@@ -291,7 +290,7 @@ namespace Core.Strings
 				{
 					var anIndex = matcher[i, 1];
 					var index = anIndex.AsInt().Required($"Didn't understand {anIndex} as an integer");
-					Assert(index.Between(0).Until(maximum), "String index out of range");
+					index.Must().BeBetween(0).Until(maximum).Assert("String index out of range");
 					matcher[i, 0] = stringItems[index].Restringed(withQuotes, Escape);
 				}
 

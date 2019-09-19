@@ -13,6 +13,8 @@ namespace Core.Assertions.Collections
 {
    public class ArrayAssertion<T> : IAssertion<T[]>
    {
+	   public static implicit operator bool(ArrayAssertion<T> assertion) => assertion.BeTrue();
+
       protected T[] array;
       protected List<Constraint> constraints;
       protected bool not;
@@ -106,7 +108,7 @@ namespace Core.Assertions.Collections
          return add(() => index > 0 && index < array.Length, $"{image} must $not have an index of {index}");
       }
 
-      public ArrayAssertion<T> HaveALengthOf(int minimumLength)
+      public ArrayAssertion<T> HaveLengthOf(int minimumLength)
       {
          return add(() => array.Length >= minimumLength, $"{image} must $not have a length of at least {minimumLength}");
       }

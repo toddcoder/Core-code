@@ -1,10 +1,10 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using Core.Assertions;
 using Core.Collections;
 using Core.Numbers;
 using Core.RegularExpressions;
-using static Core.Booleans.Assertions;
 using static Core.Strings.StringFunctions;
 
 namespace Core.Strings
@@ -51,15 +51,15 @@ namespace Core.Strings
 
 		static string format(string source, bool addStandard, bool includeFolders, params string[] args)
 		{
-			Assert(args.Length.IsEven(), "The number of items in the arguments must be even");
+			args.Length.IsEven().Must().Be().Assert("The number of items in the arguments must be even");
 
 			var formatter = addStandard ? WithStandard(includeFolders) : new Formatter();
 			for (var i = 0; i < args.Length; i += 2)
-         {
-            formatter[args[i]] = args[i + 1];
-         }
+			{
+				formatter[args[i]] = args[i + 1];
+			}
 
-         return formatter.Format(source);
+			return formatter.Format(source);
 		}
 
 		public static string Format(string source, params string[] args) => format(source, false, false, args);
@@ -75,19 +75,19 @@ namespace Core.Strings
 			{
 				var matcher = new Matcher();
 				if (matcher.IsMatch(source, REGEX_NAME, true, true))
-            {
-               return 0.Until(matcher.MatchCount).Select(i => matcher[i, 1]).ToArray();
-            }
-            else
-            {
-               return new string[0];
-            }
-         }
+				{
+					return 0.Until(matcher.MatchCount).Select(i => matcher[i, 1]).ToArray();
+				}
+				else
+				{
+					return new string[0];
+				}
+			}
 			else
-         {
-            return new string[0];
-         }
-      }
+			{
+				return new string[0];
+			}
+		}
 
 		protected Hash<string, string> names;
 
@@ -98,10 +98,10 @@ namespace Core.Strings
 		public Formatter(Formatter formatter)
 		{
 			foreach (var item in formatter.names)
-         {
-            names[item.Key] = item.Value;
-         }
-      }
+			{
+				names[item.Key] = item.Value;
+			}
+		}
 
 		public string this[string name]
 		{
@@ -125,18 +125,18 @@ namespace Core.Strings
 				{
 					var name = matcher[i, 1];
 					if (names.ContainsKey(name))
-               {
-                  matcher[i] = getText(name, matcher[i, 2]);
-               }
-            }
+					{
+						matcher[i] = getText(name, matcher[i, 2]);
+					}
+				}
 
 				return matcher.ToString().Replace("/{", "{");
 			}
 			else
-         {
-            return "";
-         }
-      }
+			{
+				return "";
+			}
+		}
 
 		protected virtual string getText(string name, string format)
 		{
@@ -146,40 +146,40 @@ namespace Core.Strings
 				{
 					var anObject = text.ToObject();
 					if (anObject.If(out var obj))
-               {
-                  text = string.Format($"{{0{format}}}", obj);
-               }
-            }
+					{
+						text = string.Format($"{{0{format}}}", obj);
+					}
+				}
 
 				return text;
 			}
 			else
-         {
-            return "";
-         }
-      }
+			{
+				return "";
+			}
+		}
 
 		public void Merge(Formatter formatter, bool overwriteOriginalValues)
 		{
 			if (overwriteOriginalValues)
-         {
-            foreach (var item in formatter.names)
-            {
-               names[item.Key] = item.Value;
-            }
-         }
-         else
-         {
-            foreach (var item in formatter.names)
-            {
-               var name = item.Key;
-               if (!names.ContainsKey(name))
-               {
-                  names[name] = item.Value;
-               }
-            }
-         }
-      }
+			{
+				foreach (var item in formatter.names)
+				{
+					names[item.Key] = item.Value;
+				}
+			}
+			else
+			{
+				foreach (var item in formatter.names)
+				{
+					var name = item.Key;
+					if (!names.ContainsKey(name))
+					{
+						names[name] = item.Value;
+					}
+				}
+			}
+		}
 
 		public virtual bool ContainsName(string name) => names.ContainsKey(name);
 	}

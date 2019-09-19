@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Core.Numbers;
-using static Core.Booleans.Assertions;
+using Core.Assertions;
 
 namespace Core.Strings
 {
@@ -18,7 +17,7 @@ namespace Core.Strings
          set => maximumLengths[index] = value;
       }
 
-      int withinBounds(int index) => Ensure(index, i => i.Between(0).Until(maximumLengths.Length), $"{index} out of range");
+      int withinBounds(int index) => index.Must().BeBetween(0).Until(maximumLengths.Length).Ensure("{index} out of range");
 
       public int MaximumLengths(int index) => maximumLengths[withinBounds(index)];
 

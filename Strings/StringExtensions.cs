@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using Core.Assertions;
 using Core.Collections;
 using Core.Dates.Now;
 using Core.Enumerables;
 using Core.Monads;
 using Core.Numbers;
 using Core.RegularExpressions;
-using static Core.Booleans.Assertions;
 using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
 using static Core.Strings.StringFunctions;
@@ -1816,7 +1816,7 @@ namespace Core.Strings
          var matcher = new Matcher();
 			foreach (var (key, replacement) in pairs)
 			{
-				Assert(key.IsNotEmpty(), "Key must have a value");
+				key.Must().Not.BeNullOrEmpty().Assert("Key must have a value");
 
 				var pattern = "-(< '//') '(" + key.Escape() + ")'";
 				if (matcher.IsMatch(format, pattern))

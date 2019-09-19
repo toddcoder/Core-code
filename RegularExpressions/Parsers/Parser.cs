@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using static Core.Booleans.Assertions;
+using Core.Assertions;
 
 namespace Core.RegularExpressions.Parsers
 {
@@ -62,7 +62,7 @@ namespace Core.RegularExpressions.Parsers
                break;
             }
 
-            Assert(added, $"Didn't recognize {source.Substring(index)}");
+				added.Must().Be().Assert($"Didn't recognize {source.Substring(index)}");
          }
 
          return content.ToString();

@@ -88,7 +88,7 @@ namespace Core.Objects
                {
                   if (parameters.Length == 0)
                   {
-                     setValue(value).Must().Equal(true).Assert("Value couldn't be set");
+                     setValue(value).Must().Be().Assert("Value couldn't be set");
                   }
                   else
                   {

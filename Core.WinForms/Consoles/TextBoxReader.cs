@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Windows.Forms;
+using Core.Assertions;
 using Core.Monads;
 using static Core.Monads.MonadFunctions;
 
@@ -40,7 +41,7 @@ namespace Core.WinForms.Consoles
          console.Focus();
          console.IOStatus = IOStatusType.Reading;
 
-         Booleans.Assertions.Assert(console.Suspended == 0, "Console must be updating");
+			console.Suspended.Must().BeZero().Assert("Console must be updating");
 
          while (console.IOStatus == IOStatusType.Reading)
          {
