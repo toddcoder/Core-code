@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Core.Enumerables;
 using Core.Exceptions;
 using Core.Monads;
 using static Core.Assertions.AssertionFunctions;
-using static Core.Monads.AttemptFunctions;
 
 namespace Core.Assertions.Strings
 {
@@ -116,65 +114,29 @@ namespace Core.Assertions.Strings
 			return add(() => subject.Length >= length, $"This value must $not have a length >= {length}");
 		}
 
-		public bool BeTrue() => constraints.All(constraint => constraint.IsTrue());
+      public string Value => subject;
 
-		public void Assert()
-		{
-			if (constraints.FirstOrNone(c => !c.IsTrue()).If(out var constraint))
-			{
-				throw constraint.Message.Throws();
-			}
-		}
+      public IEnumerable<Constraint> Constraints => constraints;
 
-		public void Assert(string message)
-		{
-			if (constraints.Any(c => !c.IsTrue()))
-			{
-				throw message.Throws();
-			}
-		}
+      public bool BeTrue() => beTrue(this);
 
-		public void Assert(Func<string> messageFunc)
-		{
-			if (constraints.Any(c => !c.IsTrue()))
-			{
-				throw messageFunc().Throws();
-			}
-		}
+		public void Assert() => assert(this);
 
-		public void Assert<TException>(params object[] args) where TException : Exception
-		{
-			if (constraints.Any(c => !c.IsTrue()))
-			{
-				throw getException<TException>(args);
-			}
-		}
+      public void Assert(string message) => assert(this, message);
 
-		public string Ensure()
-		{
-			Assert();
-			return subject;
-		}
+      public void Assert(Func<string> messageFunc) => assert(this, messageFunc);
 
-		public string Ensure(string message)
-		{
-			Assert(message);
-			return subject;
-		}
+      public void Assert<TException>(params object[] args) where TException : Exception => assert<TException, string>(this, args);
 
-		public string Ensure(Func<string> messageFunc)
-		{
-			Assert(messageFunc);
-			return subject;
-		}
+      public string Ensure() => ensure(this);
 
-		public string Ensure<TException>(params object[] args) where TException : Exception
-		{
-			Assert<TException>(args);
-			return subject;
-		}
+      public string Ensure(string message) => ensure(this, message);
 
-		public TResult Ensure<TResult>() => throw "Can't convert string to another type".Throws();
+      public string Ensure(Func<string> messageFunc) => ensure(this, messageFunc);
+
+      public string Ensure<TException>(params object[] args) where TException : Exception => ensure<TException, string>(this, args);
+
+      public TResult Ensure<TResult>() => throw "Can't convert string to another type".Throws();
 
 		public TResult Ensure<TResult>(string message) => Ensure<TResult>();
 
@@ -182,28 +144,16 @@ namespace Core.Assertions.Strings
 
 		public TResult Ensure<TException, TResult>(params object[] args) where TException : Exception => Ensure<TResult>();
 
-		public IResult<string> Try()
-		{
-			if (constraints.FirstOrNone(c => !c.IsTrue()).If(out var constraint))
-			{
-				return constraint.Message.Failure<string>();
-			}
-			else
-			{
-				return subject.Success();
-			}
-		}
+		public IResult<string> Try() => @try(this);
 
-		public async Task<ICompletion<string>> TryAsync(CancellationToken token) => await runAsync(t =>
-		{
-			if (constraints.FirstOrNone(c => !c.IsTrue()).If(out var constraint))
-			{
-				return constraint.Message.Interrupted<string>();
-			}
-			else
-			{
-				return subject.Completed(t);
-			}
-		}, token);
-	}
+      public IResult<string> Try(string message) => @try(this, message);
+
+      public IResult<string> Try(Func<string> messageFunc) => @try(this, messageFunc);
+
+      public async Task<ICompletion<string>> TryAsync(CancellationToken token) => await tryAsync(this, token);
+
+      public async Task<ICompletion<string>> TryAsync(string message, CancellationToken token) => await tryAsync(this, message, token);
+
+      public async Task<ICompletion<string>> TryAsync(Func<string> messageFunc, CancellationToken token) => await tryAsync(this, messageFunc, token);
+   }
 }

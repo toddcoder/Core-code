@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Core.Monads;
@@ -7,6 +8,10 @@ namespace Core.Assertions
 {
    public interface IAssertion<T>
    {
+      T Value { get; }
+
+      IEnumerable<Constraint> Constraints { get; }
+
       bool BeTrue();
 
       void Assert();
@@ -35,6 +40,14 @@ namespace Core.Assertions
 
       IResult<T> Try();
 
+      IResult<T> Try(string message);
+
+      IResult<T> Try(Func<string> messageFunc);
+
       Task<ICompletion<T>> TryAsync(CancellationToken token);
+
+      Task<ICompletion<T>> TryAsync(string message, CancellationToken token);
+
+      Task<ICompletion<T>> TryAsync(Func<string> messageFunc, CancellationToken token);
    }
 }

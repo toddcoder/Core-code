@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Core.Enumerables;
-using Core.Exceptions;
 using Core.Monads;
 using static Core.Assertions.AssertionFunctions;
 
@@ -13,7 +11,7 @@ namespace Core.Assertions.Collections
 {
    public class ArrayAssertion<T> : IAssertion<T[]>
    {
-	   public static implicit operator bool(ArrayAssertion<T> assertion) => assertion.BeTrue();
+      public static implicit operator bool(ArrayAssertion<T> assertion) => assertion.BeTrue();
 
       protected T[] array;
       protected List<Constraint> constraints;
@@ -113,114 +111,49 @@ namespace Core.Assertions.Collections
          return add(() => array.Length >= minimumLength, $"{image} must $not have a length of at least {minimumLength}");
       }
 
-      public bool BeTrue() => constraints.All(constraint => constraint.IsTrue());
+      public T[] Value => array;
 
-      public void Assert()
-      {
-         if (constraints.FirstOrNone(c => !c.IsTrue()).If(out var constraint))
-         {
-            throw constraint.Message.Throws();
-         }
-      }
+      public IEnumerable<Constraint> Constraints => constraints;
 
-      public void Assert(string message)
-      {
-         if (constraints.Any(c => !c.IsTrue()))
-         {
-            throw message.Throws();
-         }
-      }
+      public bool BeTrue() => beTrue(this);
 
-      public void Assert(Func<string> messageFunc)
-      {
-         if (constraints.Any(c => !c.IsTrue()))
-         {
-            throw messageFunc().Throws();
-         }
-      }
+      public void Assert() => assert(this);
 
-      public void Assert<TException>(params object[] args) where TException : Exception
-      {
-         if (constraints.Any(c => !c.IsTrue()))
-         {
-            throw getException<TException>(args);
-         }
-      }
+      public void Assert(string message) => assert(this, message);
 
-      public T[] Ensure()
-      {
-         Assert();
-         return array;
-      }
+      public void Assert(Func<string> messageFunc) => assert(this, messageFunc);
 
-      public T[] Ensure(string message)
-      {
-         Assert(message);
-         return array;
-      }
+      public void Assert<TException>(params object[] args) where TException : Exception => assert<TException, T[]>(this, args);
 
-      public T[] Ensure(Func<string> messageFunc)
-      {
-         Assert(messageFunc);
-         return array;
-      }
+      public T[] Ensure() => ensure(this);
 
-      public T[] Ensure<TException>(params object[] args) where TException : Exception
-      {
-         Assert<TException>(args);
-         return array;
-      }
+      public T[] Ensure(string message) => ensure(this, message);
 
-      public TResult Ensure<TResult>()
-      {
-         Assert();
-         var converter = TypeDescriptor.GetConverter(typeof(T[]));
-         return (TResult)converter.ConvertTo(array, typeof(TResult));
-      }
+      public T[] Ensure(Func<string> messageFunc) => ensure(this, messageFunc);
 
-      public TResult Ensure<TResult>(string message)
-      {
-         Assert(message);
-         var converter = TypeDescriptor.GetConverter(typeof(T[]));
-         return (TResult)converter.ConvertTo(array, typeof(TResult));
-      }
+      public T[] Ensure<TException>(params object[] args) where TException : Exception => ensure<TException, T[]>(this, args);
 
-      public TResult Ensure<TResult>(Func<string> messageFunc)
-      {
-         Assert(messageFunc);
-         var converter = TypeDescriptor.GetConverter(typeof(T[]));
-         return (TResult)converter.ConvertTo(array, typeof(TResult));
-      }
+      public TResult Ensure<TResult>() => ensureConvert<T[], TResult>(this);
+
+      public TResult Ensure<TResult>(string message) => ensureConvert<T[], TResult>(this, message);
+
+      public TResult Ensure<TResult>(Func<string> messageFunc) => ensureConvert<T[], TResult>(this, messageFunc);
 
       public TResult Ensure<TException, TResult>(params object[] args) where TException : Exception
       {
-         Assert<TException>(args);
-         var converter = TypeDescriptor.GetConverter(typeof(T[]));
-         return (TResult)converter.ConvertTo(array, typeof(TResult));
+         return ensureConvert<T[], TException, TResult>(this, args);
       }
 
-      public IResult<T[]> Try()
-      {
-         if (constraints.FirstOrNone(c => !c.IsTrue()).If(out var constraint))
-         {
-            return constraint.Message.Failure<T[]>();
-         }
-         else
-         {
-            return array.Success();
-         }
-      }
+      public IResult<T[]> Try() => @try(this);
 
-      public async Task<ICompletion<T[]>> TryAsync(CancellationToken token) => await AttemptFunctions.runAsync(t =>
-      {
-         if (constraints.FirstOrNone(c => !c.IsTrue()).If(out var constraint))
-         {
-            return constraint.Message.Interrupted<T[]>();
-         }
-         else
-         {
-            return array.Completed(t);
-         }
-      }, token);
+      public IResult<T[]> Try(string message) => @try(this, message);
+
+      public IResult<T[]> Try(Func<string> messageFunc) => @try(this, messageFunc);
+
+      public async Task<ICompletion<T[]>> TryAsync(CancellationToken token) => await tryAsync(this, token);
+
+      public async Task<ICompletion<T[]>> TryAsync(string message, CancellationToken token) => await tryAsync(this, message, token);
+
+      public async Task<ICompletion<T[]>> TryAsync(Func<string> messageFunc, CancellationToken token) => await tryAsync(this, messageFunc, token);
    }
 }
