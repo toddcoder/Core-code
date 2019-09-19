@@ -11,6 +11,10 @@ namespace Core.Assertions.Comparables
    {
       public static implicit operator bool(BooleanAssertion assertion) => assertion.BeTrue();
 
+      public static bool operator &(BooleanAssertion x, ICanBeTrue y) => and(x, y);
+
+      public static bool operator |(BooleanAssertion x, ICanBeTrue y) => or(x, y);
+
       protected bool boolean;
       protected List<Constraint> constraints;
       protected bool not;

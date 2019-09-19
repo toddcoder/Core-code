@@ -14,6 +14,10 @@ namespace Core.Assertions.Collections
    {
       public static implicit operator bool(ListAssertion<T> assertion) => assertion.BeTrue();
 
+      public static bool operator &(ListAssertion<T> x, ICanBeTrue y) => and(x, y);
+
+      public static bool operator |(ListAssertion<T> x, ICanBeTrue y) => or(x, y);
+
       static string listImage(List<T> list)
       {
          if (list == null)

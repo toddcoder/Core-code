@@ -13,6 +13,10 @@ namespace Core.Assertions.Collections
    {
       public static implicit operator bool(ArrayAssertion<T> assertion) => assertion.BeTrue();
 
+      public static bool operator &(ArrayAssertion<T> x, ICanBeTrue y) => and(x, y);
+
+      public static bool operator |(ArrayAssertion<T> x, ICanBeTrue y) => or(x, y);
+
       protected T[] array;
       protected List<Constraint> constraints;
       protected bool not;

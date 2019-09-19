@@ -6,13 +6,11 @@ using Core.Monads;
 
 namespace Core.Assertions
 {
-   public interface IAssertion<T>
+   public interface IAssertion<T> : ICanBeTrue
    {
       T Value { get; }
 
       IEnumerable<Constraint> Constraints { get; }
-
-      bool BeTrue();
 
       void Assert();
 

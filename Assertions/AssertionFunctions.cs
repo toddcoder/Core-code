@@ -17,6 +17,10 @@ namespace Core.Assertions
          return (TException)Activator.CreateInstance(typeof(TException), args);
       }
 
+      public static bool and(ICanBeTrue x, ICanBeTrue y) => x.BeTrue() && y.BeTrue();
+
+      public static bool or(ICanBeTrue x, ICanBeTrue y) => x.BeTrue() || y.BeTrue();
+
       public static bool beTrue<T>(IAssertion<T> assertion) => assertion.Constraints.All(c => c.IsTrue());
 
       public static void assert<T>(IAssertion<T> assertion)

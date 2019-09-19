@@ -11,6 +11,11 @@ namespace Core.Assertions.Objects
    {
       public static implicit operator bool(ObjectAssertion assertion) => assertion.BeTrue();
 
+      public static bool operator &(ObjectAssertion x, ICanBeTrue y) => and(x, y);
+
+      public static bool operator |(ObjectAssertion x, ICanBeTrue y) => or(x, y);
+
+
       protected object obj;
       protected List<Constraint> constraints;
       protected bool not;

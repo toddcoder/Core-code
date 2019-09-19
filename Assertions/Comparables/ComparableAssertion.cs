@@ -13,6 +13,10 @@ namespace Core.Assertions.Comparables
    {
       public static implicit operator bool(ComparableAssertion<T> assertion) => assertion.BeTrue();
 
+      public static bool operator &(ComparableAssertion<T> x, ICanBeTrue y) => and(x, y);
+
+      public static bool operator |(ComparableAssertion<T> x, ICanBeTrue y) => or(x, y);
+
       protected static bool inList(IComparable comparable, object[] objects)
       {
          foreach (var obj in objects)

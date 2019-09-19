@@ -13,7 +13,11 @@ namespace Core.Assertions.Strings
 	{
 		public static implicit operator bool(StringAssertion assertion) => assertion.BeTrue();
 
-		protected static bool inList(string subject, object[] strings) => strings.Any(s => subject.CompareTo(s) == 0);
+      public static bool operator &(StringAssertion x, ICanBeTrue y) => and(x, y);
+
+      public static bool operator |(StringAssertion x, ICanBeTrue y) => or(x, y);
+
+      protected static bool inList(string subject, object[] strings) => strings.Any(s => subject.CompareTo(s) == 0);
 
 		protected string subject;
 		protected List<Constraint> constraints;
