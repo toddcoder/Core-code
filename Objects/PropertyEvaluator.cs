@@ -29,7 +29,7 @@ namespace Core.Objects
 
 		public PropertyEvaluator(object obj)
 		{
-			this.obj = obj.Must().Not.BeNull().Ensure<ArgumentNullException>("Object set to evaluator can't be null.");
+			this.obj = obj.Must().Not.BeNull().Ensure<ArgumentNullException, object>("Object set to evaluator can't be null.");
 			type = this.obj.GetType();
 		}
 
