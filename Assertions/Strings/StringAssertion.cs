@@ -17,7 +17,7 @@ namespace Core.Assertions.Strings
 
       public static bool operator |(StringAssertion x, ICanBeTrue y) => or(x, y);
 
-      protected static bool inList(string subject, object[] strings) => strings.Any(s => subject.CompareTo(s) == 0);
+      protected static bool inList(string subject, string[] strings) => strings.Any(s => subject.CompareTo(s) == 0);
 
 		protected string subject;
 		protected List<Constraint> constraints;
@@ -117,6 +117,21 @@ namespace Core.Assertions.Strings
 		{
 			return add(() => subject.Length >= length, $"This value must $not have a length >= {length}");
 		}
+
+      public StringAssertion BeIn(params string[] strings)
+      {
+         return add(() => inList(subject, strings), $"This value must $not be in {enumerableImage(strings)}");
+      }
+
+      public StringAssertion StartWith(string substring)
+      {
+         return add(() => subject.StartsWith(substring), $"This string must start with \"{substring}\"");
+      }
+
+      public StringAssertion EndWith(string substring)
+      {
+         return add(() => subject.EndsWith(substring), $"This string must end with \"{substring}\"");
+      }
 
       public string Value => subject;
 

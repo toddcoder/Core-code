@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading;
@@ -15,6 +16,17 @@ namespace Core.Assertions
       public static TException getException<TException>(params object[] args) where TException : Exception
       {
          return (TException)Activator.CreateInstance(typeof(TException), args);
+      }
+
+      public static string enumerableImage<T>(IEnumerable<T> enumerable)
+      {
+         var list = enumerable.ToList();
+         if (list.Count > 10)
+         {
+            list = list.Take(10).ToList();
+         }
+
+         return list.Stringify();
       }
 
       public static bool and(ICanBeTrue x, ICanBeTrue y) => x.BeTrue() && y.BeTrue();
