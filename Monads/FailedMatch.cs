@@ -11,6 +11,8 @@ namespace Core.Monads
 
       public static bool operator |(FailedMatch<T> x, IHasValue y) => y.HasValue;
 
+      public static bool operator !(FailedMatch<T> _) => true;
+
       protected Exception exception;
 
       internal FailedMatch(Exception exception)

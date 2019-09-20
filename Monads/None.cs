@@ -12,6 +12,8 @@ namespace Core.Monads
 
       public static bool operator |(None<T> x, IHasValue y) => y.HasValue;
 
+      public static bool operator !(None<T> _) => true;
+
       internal None() { }
 
 		public bool IsSome => false;

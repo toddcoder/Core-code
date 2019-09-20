@@ -12,6 +12,8 @@ namespace Core.Monads
 
       public static bool operator |(NotMatched<T> x, IHasValue y) => y.HasValue;
 
+      public static bool operator !(NotMatched<T> _) => true;
+
       internal NotMatched() { }
 
       public IMatched<T> Do(Action<T> ifMatched, Action ifNotOrFailed)

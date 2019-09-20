@@ -10,7 +10,9 @@ namespace Core.Monads
 
       public static bool operator |(Some<T> x, IHasValue y) => true;
 
-	   protected T value;
+      public static bool operator !(Some<T> _) => false;
+
+      protected T value;
 
       internal Some(T value) => this.value = value;
 

@@ -12,6 +12,8 @@ namespace Core.Monads
 
       public static bool operator |(Cancelled<T> x, IHasValue y) => y.HasValue;
 
+      public static bool operator !(Cancelled<T> _) => true;
+
       internal Cancelled() { }
 
       public bool IsCompleted => false;

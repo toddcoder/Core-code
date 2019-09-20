@@ -12,6 +12,8 @@ namespace Core.Monads
 
       public static bool operator |(Completed<T> x, IHasValue y) => true;
 
+      public static bool operator !(Completed<T> _) => false;
+
       protected T value;
 
       internal Completed(T value) => this.value = value;

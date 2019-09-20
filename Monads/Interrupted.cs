@@ -11,6 +11,8 @@ namespace Core.Monads
 
       public static bool operator |(Interrupted<T> x, IHasValue y) => y.HasValue;
 
+      public static bool operator !(Interrupted<T> _) => true;
+
       protected Exception exception;
 
       internal Interrupted(Exception exception)

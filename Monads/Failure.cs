@@ -13,6 +13,8 @@ namespace Core.Monads
 
       public static bool operator |(Failure<T> x, IHasValue y) => y.HasValue;
 
+      public static bool operator !(Failure<T> _) => true;
+
       protected Exception exception;
 
       internal Failure(Exception exception)

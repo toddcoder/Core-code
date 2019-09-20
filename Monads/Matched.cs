@@ -12,6 +12,8 @@ namespace Core.Monads
 
       public static bool operator |(Matched<T> x, IHasValue y) => true;
 
+      public static bool operator !(Matched<T> _) => false;
+
       protected T value;
 
 	   internal Matched(T value) => this.value = value;
