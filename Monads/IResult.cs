@@ -2,7 +2,7 @@
 
 namespace Core.Monads
 {
-   public interface IResult<T>
+   public interface IResult<T> : IHasValue
    {
       bool If(out T value, out Exception exception);
 

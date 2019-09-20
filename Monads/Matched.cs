@@ -6,7 +6,13 @@ namespace Core.Monads
 {
    public class Matched<T> : IMatched<T>
    {
-	   protected T value;
+      public static implicit operator bool(Matched<T> _) => true;
+
+      public static bool operator &(Matched<T> x, IHasValue y) => y.HasValue;
+
+      public static bool operator |(Matched<T> x, IHasValue y) => true;
+
+      protected T value;
 
 	   internal Matched(T value) => this.value = value;
 
@@ -156,5 +162,7 @@ namespace Core.Monads
       public IMatched<T> Else(Action action) => this;
 
       public IMatched<T> Else(Action<Exception> action) => this;
+
+      public bool HasValue => true;
    }
 }

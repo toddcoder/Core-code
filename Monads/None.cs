@@ -6,7 +6,13 @@ namespace Core.Monads
 {
 	public class None<T> : IMaybe<T>
 	{
-		internal None() { }
+      public static implicit operator bool(None<T> _) => false;
+
+      public static bool operator &(None<T> x, IHasValue y) => false;
+
+      public static bool operator |(None<T> x, IHasValue y) => y.HasValue;
+
+      internal None() { }
 
 		public bool IsSome => false;
 
@@ -53,5 +59,7 @@ namespace Core.Monads
 		}
 
 		public IMaybe<T> IfThen(Action<T> action) => this;
-	}
+
+      public bool HasValue => false;
+   }
 }

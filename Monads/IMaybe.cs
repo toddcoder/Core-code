@@ -2,7 +2,7 @@
 
 namespace Core.Monads
 {
-   public interface IMaybe<T>
+   public interface IMaybe<T> : IHasValue
    {
       bool IsSome { get; }
 

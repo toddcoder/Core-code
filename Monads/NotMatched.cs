@@ -6,6 +6,12 @@ namespace Core.Monads
 {
    public class NotMatched<T> : IMatched<T>
    {
+      public static implicit operator bool(NotMatched<T> _) => false;
+
+      public static bool operator &(NotMatched<T> x, IHasValue y) => false;
+
+      public static bool operator |(NotMatched<T> x, IHasValue y) => y.HasValue;
+
       internal NotMatched() { }
 
       public IMatched<T> Do(Action<T> ifMatched, Action ifNotOrFailed)
@@ -154,5 +160,7 @@ namespace Core.Monads
       }
 
       public IMatched<T> Else(Action<Exception> action) => this;
+
+      public bool HasValue => false;
    }
 }

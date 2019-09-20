@@ -5,6 +5,12 @@ namespace Core.Monads
 {
    public class Interrupted<T> : ICompletion<T>
    {
+      public static implicit operator bool(Interrupted<T> _) => false;
+
+      public static bool operator &(Interrupted<T> x, IHasValue y) => false;
+
+      public static bool operator |(Interrupted<T> x, IHasValue y) => y.HasValue;
+
       protected Exception exception;
 
       internal Interrupted(Exception exception)
@@ -140,5 +146,7 @@ namespace Core.Monads
          action(exception);
          return this;
       }
+
+      public bool HasValue => false;
    }
 }

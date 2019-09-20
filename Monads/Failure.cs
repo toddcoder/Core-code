@@ -7,7 +7,13 @@ namespace Core.Monads
 {
    public class Failure<T> : IResult<T>
    {
-	   protected Exception exception;
+      public static implicit operator bool(Failure<T> _) => false;
+
+      public static bool operator &(Failure<T> x, IHasValue y) => false;
+
+      public static bool operator |(Failure<T> x, IHasValue y) => y.HasValue;
+
+      protected Exception exception;
 
       internal Failure(Exception exception)
       {
@@ -131,5 +137,7 @@ namespace Core.Monads
 	   public IResult<T> Assert(Predicate<T> predicate, Func<string> exceptionMessage) => this;
 
       public IMaybe<T> Maybe() => none<T>();
+
+      public bool HasValue => false;
    }
 }

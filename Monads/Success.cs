@@ -8,6 +8,12 @@ namespace Core.Monads
 {
    public class Success<T> : IResult<T>
    {
+      public static implicit operator bool(Success<T> _) => true;
+
+      public static bool operator &(Success<T> x, IHasValue y) => y.HasValue;
+
+      public static bool operator |(Success<T> x, IHasValue y) => true;
+
 	   protected T value;
 
       internal Success(T value) => this.value = value;
@@ -180,5 +186,7 @@ namespace Core.Monads
       }
 
       public IMaybe<T> Maybe() => value.Some();
+
+      public bool HasValue => true;
    }
 }

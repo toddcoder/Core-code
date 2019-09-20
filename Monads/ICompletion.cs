@@ -2,7 +2,7 @@
 
 namespace Core.Monads
 {
-   public interface ICompletion<T>
+   public interface ICompletion<T> : IHasValue
    {
       bool IsCompleted { get; }
 

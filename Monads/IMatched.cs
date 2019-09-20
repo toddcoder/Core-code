@@ -2,7 +2,7 @@
 
 namespace Core.Monads
 {
-   public interface IMatched<T>
+   public interface IMatched<T> : IHasValue
    {
       bool IsMatched { get; }
 

@@ -4,6 +4,12 @@ namespace Core.Monads
 {
    public class Some<T> : IMaybe<T>
    {
+      public static implicit operator bool(Some<T> _) => true;
+
+      public static bool operator &(Some<T> x, IHasValue y) => y.HasValue;
+
+      public static bool operator |(Some<T> x, IHasValue y) => true;
+
 	   protected T value;
 
       internal Some(T value) => this.value = value;
@@ -63,5 +69,7 @@ namespace Core.Monads
 		   action(value);
          return this;
 	   }
+
+      public bool HasValue => true;
    }
 }

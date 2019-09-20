@@ -5,7 +5,13 @@ namespace Core.Monads
 {
    public class FailedMatch<T> : IMatched<T>
    {
-	   protected Exception exception;
+      public static implicit operator bool(FailedMatch<T> _) => false;
+
+      public static bool operator &(FailedMatch<T> x, IHasValue y) => false;
+
+      public static bool operator |(FailedMatch<T> x, IHasValue y) => y.HasValue;
+
+      protected Exception exception;
 
       internal FailedMatch(Exception exception)
       {
@@ -164,5 +170,7 @@ namespace Core.Monads
          action(exception);
          return this;
       }
+
+      public bool HasValue => false;
    }
 }

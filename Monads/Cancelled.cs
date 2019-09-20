@@ -6,6 +6,12 @@ namespace Core.Monads
 {
    public class Cancelled<T> : ICompletion<T>
    {
+      public static implicit operator bool(Cancelled<T> _) => false;
+
+      public static bool operator &(Cancelled<T> x, IHasValue y) => false;
+
+      public static bool operator |(Cancelled<T> x, IHasValue y) => y.HasValue;
+
       internal Cancelled() { }
 
       public bool IsCompleted => false;
@@ -136,5 +142,7 @@ namespace Core.Monads
       }
 
       public ICompletion<T> OnInterrupted(Action<Exception> action) => this;
+
+      public bool HasValue => false;
    }
 }
