@@ -6,7 +6,6 @@ using Core.Exceptions;
 using Core.Monads;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Core.Monads.AttemptFunctions;
-using static Core.Monads.MonadFunctions;
 
 namespace Core.Tests
 {
