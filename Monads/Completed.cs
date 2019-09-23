@@ -131,6 +131,12 @@ namespace Core.Monads
          return true;
       }
 
+      public bool WasNotCompleted(out ICompletion<T> notCompleted)
+      {
+         notCompleted = this;
+         return false;
+      }
+
       public void Force() { }
 
       public T ForceValue() => value;
@@ -138,6 +144,8 @@ namespace Core.Monads
       public ICompletion<T> CancelledOnly() => cancelled<T>();
 
       public ICompletion<TOther> CancelledOnly<TOther>() => cancelled<TOther>();
+
+      public ICompletion<TOther> NotCompletedOnly<TOther>() => cancelled<TOther>();
 
       public void Deconstruct(out IMaybe<T> value, out IMaybe<Exception> anyException)
       {

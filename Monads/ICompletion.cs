@@ -65,6 +65,8 @@ namespace Core.Monads
 
       bool WasCompleted(out ICompletion<T> completed);
 
+      bool WasNotCompleted(out ICompletion<T> notCompleted);
+
       void Force();
 
       T ForceValue();
@@ -72,6 +74,8 @@ namespace Core.Monads
       ICompletion<T> CancelledOnly();
 
       ICompletion<TOther> CancelledOnly<TOther>();
+
+      ICompletion<TOther> NotCompletedOnly<TOther>();
 
       void Deconstruct(out IMaybe<T> value, out IMaybe<Exception> anyException);
 
