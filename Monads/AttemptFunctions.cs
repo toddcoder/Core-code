@@ -281,6 +281,23 @@ namespace Core.Monads
          }
       }
 
+      public static async Task<ICompletion<Unit>> runAsync(Action action, CancellationToken token)
+      {
+         try
+         {
+            await Task.Run(action, token);
+            return Unit.Completed(token);
+         }
+         catch (OperationCanceledException)
+         {
+            return cancelled<Unit>();
+         }
+         catch (Exception exception)
+         {
+            return interrupted<Unit>(exception);
+         }
+      }
+
       public static async Task<ICompletion<T>> runAsync<T>(Func<Task<ICompletion<T>>> func)
       {
          try
