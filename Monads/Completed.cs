@@ -111,6 +111,12 @@ namespace Core.Monads
          return true;
       }
 
+      public bool IfNot(out IMaybe<Exception> anyException)
+      {
+         anyException = none<Exception>();
+         return false;
+      }
+
       public bool Else<TOther>(out ICompletion<TOther> result)
       {
          result = default;

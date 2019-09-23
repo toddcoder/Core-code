@@ -57,6 +57,8 @@ namespace Core.Monads
 
       bool If(out T value, out IMaybe<Exception> anyException);
 
+      bool IfNot(out IMaybe<Exception> anyException);
+
       bool Else<TOther>(out ICompletion<TOther> result);
 
       ICompletion<TOther> NotCompleted<TOther>();
