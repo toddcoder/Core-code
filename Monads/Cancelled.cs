@@ -16,12 +16,6 @@ namespace Core.Monads
 
       internal Cancelled() { }
 
-      public bool IsCompleted => false;
-
-      public bool IsCancelled => true;
-
-      public bool IsInterrupted => false;
-
       public ICompletion<TResult> Map<TResult>(Func<T, ICompletion<TResult>> ifCompleted) => cancelled<TResult>();
 
       public ICompletion<TResult> Map<TResult>(Func<T, TResult> ifCompleted) => cancelled<TResult>();
@@ -121,13 +115,13 @@ namespace Core.Monads
 
       public ICompletion<TOther> NotCompleted<TOther>() => cancelled<TOther>();
 
-      public bool WasCompleted(out ICompletion<T> completed)
+      public bool IsCompleted(out ICompletion<T> completed)
       {
          completed = this;
          return false;
       }
 
-      public bool WasNotCompleted(out ICompletion<T> notCompleted)
+      public bool NotCompleted(out ICompletion<T> notCompleted)
       {
          notCompleted = this;
          return true;

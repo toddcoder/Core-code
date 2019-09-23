@@ -4,12 +4,6 @@ namespace Core.Monads
 {
    public interface ICompletion<T> : IHasValue
    {
-      bool IsCompleted { get; }
-
-      bool IsCancelled { get; }
-
-      bool IsInterrupted { get; }
-
       ICompletion<TResult> Map<TResult>(Func<T, ICompletion<TResult>> ifCompleted);
 
       ICompletion<TResult> Map<TResult>(Func<T, TResult> ifCompleted);
@@ -63,9 +57,9 @@ namespace Core.Monads
 
       ICompletion<TOther> NotCompleted<TOther>();
 
-      bool WasCompleted(out ICompletion<T> completed);
+      bool IsCompleted(out ICompletion<T> completed);
 
-      bool WasNotCompleted(out ICompletion<T> notCompleted);
+      bool NotCompleted(out ICompletion<T> notCompleted);
 
       void Force();
 

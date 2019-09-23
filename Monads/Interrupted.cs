@@ -20,12 +20,6 @@ namespace Core.Monads
          this.exception = exception is FullStackException ? exception : new FullStackException(exception);
       }
 
-      public bool IsCompleted => false;
-
-      public bool IsCancelled => false;
-
-      public bool IsInterrupted => true;
-
       public ICompletion<TResult> Map<TResult>(Func<T, ICompletion<TResult>> ifCompleted) => interrupted<TResult>(exception);
 
       public ICompletion<TResult> Map<TResult>(Func<T, TResult> ifCompleted) => interrupted<TResult>(exception);
@@ -125,13 +119,13 @@ namespace Core.Monads
 
       public ICompletion<TOther> NotCompleted<TOther>() => interrupted<TOther>(exception);
 
-      public bool WasCompleted(out ICompletion<T> completed)
+      public bool IsCompleted(out ICompletion<T> completed)
       {
          completed = this;
          return false;
       }
 
-      public bool WasNotCompleted(out ICompletion<T> notCompleted)
+      public bool NotCompleted(out ICompletion<T> notCompleted)
       {
          notCompleted = this;
          return true;
