@@ -336,5 +336,166 @@ namespace Core.Monads
       public static async Task<ICompletion<T>> runInterrupted<T>(string message) => await Task.Run(message.Interrupted<T>);
 
       public static async Task<ICompletion<T>> runCancelled<T>() => await Task.Run(cancelled<T>);
+
+      public static async Task<ICompletion<T>> assertAsync<T>(bool test, Func<T> ifTrue, string messageIfFalse, CancellationToken token)
+      {
+         try
+         {
+            if (test)
+            {
+               return await runAsync(t => ifTrue().Completed(t), token);
+            }
+            else
+            {
+               return messageIfFalse.Interrupted<T>();
+            }
+         }
+         catch (OperationCanceledException)
+         {
+            return cancelled<T>();
+         }
+         catch (Exception exception)
+         {
+            return interrupted<T>(exception);
+         }
+      }
+
+      public static async Task<ICompletion<T>> assertAsync<T>(Func<bool> test, Func<T> ifTrue, string messageIfFalse, CancellationToken token)
+      {
+         try
+         {
+            if (test())
+            {
+               return await runAsync(t => ifTrue().Completed(t), token);
+            }
+            else
+            {
+               return messageIfFalse.Interrupted<T>();
+            }
+         }
+         catch (OperationCanceledException)
+         {
+            return cancelled<T>();
+         }
+         catch (Exception exception)
+         {
+            return interrupted<T>(exception);
+         }
+      }
+
+      public static async Task<ICompletion<T>> assertAsync<T>(bool test, Func<T> ifTrue, Func<string> messageIfFalse, CancellationToken token)
+      {
+         try
+         {
+            if (test)
+            {
+               return await runAsync(t => ifTrue().Completed(t), token);
+            }
+            else
+            {
+               return messageIfFalse().Interrupted<T>();
+            }
+         }
+         catch (OperationCanceledException)
+         {
+            return cancelled<T>();
+         }
+         catch (Exception exception)
+         {
+            return interrupted<T>(exception);
+         }
+      }
+
+      public static async Task<ICompletion<T>> assertAsync<T>(Func<bool> test, Func<T> ifTrue, Func<string> messageIfFalse, CancellationToken token)
+      {
+         try
+         {
+            if (test())
+            {
+               return await runAsync(t => ifTrue().Completed(t), token);
+            }
+            else
+            {
+               return messageIfFalse().Interrupted<T>();
+            }
+         }
+         catch (OperationCanceledException)
+         {
+            return cancelled<T>();
+         }
+         catch (Exception exception)
+         {
+            return interrupted<T>(exception);
+         }
+      }
+
+      public static async Task<ICompletion<T>> assertAsync<T>(bool test, Func<ICompletion<T>> ifTrue, string messageIfFalse, CancellationToken token)
+      {
+         try
+         {
+            if (test)
+            {
+               return await runAsync(t => ifTrue(), token);
+            }
+            else
+            {
+               return messageIfFalse.Interrupted<T>();
+            }
+         }
+         catch (OperationCanceledException)
+         {
+            return cancelled<T>();
+         }
+         catch (Exception exception)
+         {
+            return interrupted<T>(exception);
+         }
+      }
+
+      public static async Task<ICompletion<T>> assertAsync<T>(bool test, Func<ICompletion<T>> ifTrue, Func<string> messageIfFalse, CancellationToken token)
+      {
+         try
+         {
+            if (test)
+            {
+               return await runAsync(t => ifTrue(), token);
+            }
+            else
+            {
+               return messageIfFalse().Interrupted<T>();
+            }
+         }
+         catch (OperationCanceledException)
+         {
+            return cancelled<T>();
+         }
+         catch (Exception exception)
+         {
+            return interrupted<T>(exception);
+         }
+      }
+
+      public static async Task<ICompletion<T>> assertAsync<T>(Func<bool> test, Func<ICompletion<T>> ifTrue, Func<string> messageIfFalse, CancellationToken token)
+      {
+         try
+         {
+            if (test())
+            {
+               return await runAsync(t => ifTrue(), token);
+            }
+            else
+            {
+               return messageIfFalse().Interrupted<T>();
+            }
+         }
+         catch (OperationCanceledException)
+         {
+            return cancelled<T>();
+         }
+         catch (Exception exception)
+         {
+            return interrupted<T>(exception);
+         }
+      }
    }
 }
