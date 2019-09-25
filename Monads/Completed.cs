@@ -165,7 +165,7 @@ namespace Core.Monads
          return true;
       }
 
-      public bool ValueOrCompletion<TCompletion>(out T value, out ICompletion<TCompletion> completion)
+      public bool ValueOrCast<TCompletion>(out T value, out ICompletion<TCompletion> completion)
       {
          value = this.value;
          completion = "Do not use this".Interrupted<TCompletion>();

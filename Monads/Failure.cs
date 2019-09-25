@@ -46,7 +46,7 @@ namespace Core.Monads
          return false;
       }
 
-      public bool ValueOrResult<TResult>(out T value, out IResult<TResult> result)
+      public bool ValueOrCast<TResult>(out T value, out IResult<TResult> result)
       {
          value = default;
          result = failure<TResult>(exception);

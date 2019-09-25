@@ -102,7 +102,7 @@ namespace Core.Monads
          foreach (var result in enumerable)
          {
             handle(result);
-            if (result.ValueOrResult<IEnumerable<T>>(out var value, out var original))
+            if (result.ValueOrCast<IEnumerable<T>>(out var value, out var original))
             {
                list.Add(value);
             }

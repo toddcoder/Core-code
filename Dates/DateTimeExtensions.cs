@@ -48,8 +48,8 @@ namespace Core.Dates
 
          IResult<DateTime> validate()
          {
-            if (Year.ValueOrResult<DateTime>(out var year, out var original) && Month.ValueOrResult(out var month, out original) &&
-               Day.ValueOrResult(out var day, out original))
+            if (Year.ValueOrCast<DateTime>(out var year, out var original) && Month.ValueOrCast(out var month, out original) &&
+               Day.ValueOrCast(out var day, out original))
             {
                return valid(year, month, day);
             }

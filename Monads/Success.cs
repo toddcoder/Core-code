@@ -44,7 +44,7 @@ namespace Core.Monads
          return true;
       }
 
-      public bool ValueOrResult<TResult>(out T value, out IResult<TResult> result)
+      public bool ValueOrCast<TResult>(out T value, out IResult<TResult> result)
       {
          value = this.value;
          result = "Do not use this".Failure<TResult>();

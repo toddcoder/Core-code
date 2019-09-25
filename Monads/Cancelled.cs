@@ -161,7 +161,7 @@ namespace Core.Monads
          return false;
       }
 
-      public bool ValueOrCompletion<TCompletion>(out T value, out ICompletion<TCompletion> completion)
+      public bool ValueOrCast<TCompletion>(out T value, out ICompletion<TCompletion> completion)
       {
          value = default;
          completion = cancelled<TCompletion>();

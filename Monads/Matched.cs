@@ -77,7 +77,7 @@ namespace Core.Monads
          return true;
       }
 
-      public bool ValueOrMatched<TMatched>(out T value, out IMatched<TMatched> matched)
+      public bool ValueOrCast<TMatched>(out T value, out IMatched<TMatched> matched)
       {
          value = this.value;
          matched = "Do not use this".FailedMatch<TMatched>();

@@ -75,7 +75,7 @@ namespace Core.Monads
          return false;
       }
 
-      public bool ValueOrMatched<TMatched>(out T value, out IMatched<TMatched> matched)
+      public bool ValueOrCast<TMatched>(out T value, out IMatched<TMatched> matched)
       {
          value = default;
          matched = notMatched<TMatched>();
