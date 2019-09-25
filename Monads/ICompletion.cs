@@ -78,5 +78,9 @@ namespace Core.Monads
       ICompletion<T> OnCancelled(Action action);
 
       ICompletion<T> OnInterrupted(Action<Exception> action);
+
+      bool ValueOrOriginal(out T value, out ICompletion<T> original);
+
+      bool ValueOrCompletion<TCompletion>(out T value, out ICompletion<TCompletion> completion);
    }
 }

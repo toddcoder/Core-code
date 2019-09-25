@@ -157,6 +157,22 @@ namespace Core.Monads
 
       public ICompletion<T> OnInterrupted(Action<Exception> action) => this;
 
+      public bool ValueOrOriginal(out T value, out ICompletion<T> original)
+      {
+         value = this.value;
+         original = this;
+
+         return true;
+      }
+
+      public bool ValueOrCompletion<TCompletion>(out T value, out ICompletion<TCompletion> completion)
+      {
+         value = this.value;
+         completion = "Do not use this".Interrupted<TCompletion>();
+
+         return true;
+      }
+
       public bool HasValue => true;
    }
 }

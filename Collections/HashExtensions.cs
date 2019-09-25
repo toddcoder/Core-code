@@ -223,13 +223,13 @@ namespace Core.Collections
 			var result = new Hash<TKey, TValue>();
 			foreach (var item in enumerable)
          {
-            if (valueSelector(item).Out(out var selector, out var original))
+            if (valueSelector(item).ValueOrResult<Hash<TKey, TValue>>(out var selector, out var original))
             {
                result[keySelector(item)] = selector;
             }
             else
             {
-               return original.ExceptionAs<Hash<TKey, TValue>>();
+               return original;
             }
          }
 
@@ -246,7 +246,7 @@ namespace Core.Collections
 					from selector in valueSelector(item)
 					from key in keySelector(item)
 					select (value: selector, key);
-				if (pair.Out(out var keyValue, out var original))
+				if (pair.ValueOrOriginal(out var keyValue, out var original))
             {
                result[keyValue.key] = keyValue.value;
             }
@@ -265,13 +265,13 @@ namespace Core.Collections
 			var result = new Hash<TKey, TValue>();
 			foreach (var item in enumerable)
          {
-            if (tryTo(() => valueSelector(item)).Out(out var selector, out var original))
+            if (tryTo(() => valueSelector(item)).ValueOrResult<Hash<TKey, TValue>>(out var selector, out var original))
             {
                result[keySelector(item)] = selector;
             }
             else
             {
-               return original.ExceptionAs<Hash<TKey, TValue>>();
+               return original;
             }
          }
 

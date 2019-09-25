@@ -55,7 +55,7 @@ namespace Core.Dates
 
          foreach (var span in spans)
          {
-            if (span.Out(out var timeSpan, out var original))
+            if (span.ValueOrOriginal(out var timeSpan, out var original))
             {
                newSpan = newSpan.Add(timeSpan);
             }

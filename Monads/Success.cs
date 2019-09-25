@@ -36,6 +36,22 @@ namespace Core.Monads
          return true;
       }
 
+      public bool ValueOrOriginal(out T value, out IResult<T> original)
+      {
+         value = this.value;
+         original = this;
+
+         return true;
+      }
+
+      public bool ValueOrResult<TResult>(out T value, out IResult<TResult> result)
+      {
+         value = this.value;
+         result = "Do not use this".Failure<TResult>();
+
+         return true;
+      }
+
       public bool IsSuccessful => true;
 
       public bool IsFailed => false;

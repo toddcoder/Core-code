@@ -157,6 +157,22 @@ namespace Core.Monads
          return this;
       }
 
+      public bool ValueOrOriginal(out T value, out ICompletion<T> original)
+      {
+         value = default;
+         original = this;
+
+         return false;
+      }
+
+      public bool ValueOrCompletion<TCompletion>(out T value, out ICompletion<TCompletion> completion)
+      {
+         value = default;
+         completion = interrupted<TCompletion>(exception);
+
+         return false;
+      }
+
       public bool HasValue => false;
    }
 }

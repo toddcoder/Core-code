@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads
 {
@@ -91,7 +92,7 @@ namespace Core.Monads
             }
          }
 
-         return (list, MonadFunctions.none<Exception>());
+         return (list, none<Exception>());
       }
 
       public IResult<IEnumerable<T>> IfAllSuccesses()
@@ -101,17 +102,17 @@ namespace Core.Monads
          foreach (var result in enumerable)
          {
             handle(result);
-            if (result.Out(out var value, out var original))
+            if (result.ValueOrResult<IEnumerable<T>>(out var value, out var original))
             {
                list.Add(value);
             }
             else
             {
-               return original.ExceptionAs<IEnumerable<T>>();
+               return original;
             }
          }
 
-         return MonadFunctions.success<IEnumerable<T>>(list);
+         return success<IEnumerable<T>>(list);
       }
    }
 }

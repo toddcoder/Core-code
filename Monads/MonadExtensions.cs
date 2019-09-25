@@ -247,7 +247,7 @@ namespace Core.Monads
          var firstItem = none<TResult>();
          foreach (var result in enumerable.Select(item => tryTo(() => func(item))))
          {
-            if (result.Out(out var value, out var original))
+            if (result.ValueOrOriginal(out var value, out var original))
             {
                if (firstItem.IsNone)
                {

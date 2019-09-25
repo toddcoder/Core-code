@@ -67,6 +67,22 @@ namespace Core.Monads
          return false;
       }
 
+      public bool ValueOrOriginal(out T value, out IMatched<T> original)
+      {
+         value = default;
+         original = this;
+
+         return false;
+      }
+
+      public bool ValueOrMatched<TMatched>(out T value, out IMatched<TMatched> matched)
+      {
+         value = default;
+         matched = notMatched<TMatched>();
+
+         return false;
+      }
+
       public bool If(out T value, out bool isNotMatched, out Exception exception)
       {
          value = default;

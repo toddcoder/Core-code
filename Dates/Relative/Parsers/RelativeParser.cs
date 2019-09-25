@@ -8,36 +8,36 @@ using Core.Strings;
 
 namespace Core.Dates.Relative.Parsers
 {
-	public class RelativeParser
-	{
-		string[] source;
+   public class RelativeParser
+   {
+      string[] source;
 
-		public RelativeParser(string source) => this.source = source.Split("/s* ',' /s*").Select(s => s.Trim()).ToArray();
+      public RelativeParser(string source) => this.source = source.Split("/s* ',' /s*").Select(s => s.Trim()).ToArray();
 
-		static IEnumerable<Parser> parsers()
-		{
-			yield return new AbsoluteParser();
-			yield return new ForwardAndBackwardParser();
-			yield return new SpecialDayParser();
-			yield return new SpecialMonthParser();
-			yield return new ThisParser();
-		}
+      static IEnumerable<Parser> parsers()
+      {
+         yield return new AbsoluteParser();
+         yield return new ForwardAndBackwardParser();
+         yield return new SpecialDayParser();
+         yield return new SpecialMonthParser();
+         yield return new ThisParser();
+      }
 
-		public IResult<DateTime> Parse(DateTime date)
-		{
-			var matcher = new Matcher();
-			var currentDate = date.Success();
+      public IResult<DateTime> Parse(DateTime date)
+      {
+         var matcher = new Matcher();
+         var currentDate = date.Success();
 
-			var list = new List<DateOperation>();
+         var list = new List<DateOperation>();
 
-			foreach (var sourceItem in source)
-			{
-				matcher.Evaluate(sourceItem, "^ /(.*?) (/s+ 'of' /s+ /(.*?))? (/s+ 'of' /s+ /(.*?))? $");
-				for (var i = 0; i < matcher.MatchCount; i++)
-				for (var j = 1; j < matcher.GroupCount(i); j++)
-				{
-					var innerSource = matcher[i, j];
-					if (innerSource.IsNotEmpty())
+         foreach (var sourceItem in source)
+         {
+            matcher.Evaluate(sourceItem, "^ /(.*?) (/s+ 'of' /s+ /(.*?))? (/s+ 'of' /s+ /(.*?))? $");
+            for (var i = 0; i < matcher.MatchCount; i++)
+            for (var j = 1; j < matcher.GroupCount(i); j++)
+            {
+               var innerSource = matcher[i, j];
+               if (innerSource.IsNotEmpty())
                {
                   foreach (var result in parsers()
                      .Select(parser => parser.Scan(innerSource))
@@ -48,15 +48,15 @@ namespace Core.Dates.Relative.Parsers
                   }
                }
             }
-			}
+         }
 
-			list.Sort();
-			foreach (var dateOperation in list)
+         list.Sort();
+         foreach (var dateOperation in list)
          {
-            if (currentDate.Out(out var current, out currentDate))
+            if (currentDate.ValueOrOriginal(out var current, out currentDate))
             {
                currentDate = dateOperation.Operate(current);
-               if (currentDate.Out(out _, out currentDate)) { }
+               if (currentDate.ValueOrOriginal(out _, out currentDate)) { }
                else
                {
                   return currentDate;
@@ -69,6 +69,6 @@ namespace Core.Dates.Relative.Parsers
          }
 
          return currentDate;
-		}
-	}
+      }
+   }
 }

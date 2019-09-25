@@ -53,13 +53,13 @@ namespace Core.Objects
 
          foreach (var info in memberInfos)
          {
-            if (getValue(obj, info).Out(out var value, out var result))
+            if (getValue(obj, info).ValueOrResult<Hash<string, object>>(out var value, out var result))
             {
                hash[info.Name] = value;
             }
             else
             {
-               return result.ExceptionAs<Hash<string, object>>();
+               return result;
             }
          }
 

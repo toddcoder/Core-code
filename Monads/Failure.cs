@@ -38,6 +38,22 @@ namespace Core.Monads
          return false;
       }
 
+      public bool ValueOrOriginal(out T value, out IResult<T> original)
+      {
+         value = default;
+         original = this;
+
+         return false;
+      }
+
+      public bool ValueOrResult<TResult>(out T value, out IResult<TResult> result)
+      {
+         value = default;
+         result = failure<TResult>(exception);
+
+         return false;
+      }
+
       public bool IsSuccessful => false;
 
       public bool IsFailed => true;

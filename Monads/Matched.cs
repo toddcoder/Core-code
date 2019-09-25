@@ -16,9 +16,9 @@ namespace Core.Monads
 
       protected T value;
 
-	   internal Matched(T value) => this.value = value;
+      internal Matched(T value) => this.value = value;
 
-	   public IMatched<T> Do(Action<T> ifMatched, Action ifNotOrFailed)
+      public IMatched<T> Do(Action<T> ifMatched, Action ifNotOrFailed)
       {
          ifMatched(value);
          return this;
@@ -69,6 +69,22 @@ namespace Core.Monads
          return true;
       }
 
+      public bool ValueOrOriginal(out T value, out IMatched<T> original)
+      {
+         value = this.value;
+         original = this;
+
+         return true;
+      }
+
+      public bool ValueOrMatched<TMatched>(out T value, out IMatched<TMatched> matched)
+      {
+         value = this.value;
+         matched = "Do not use this".FailedMatch<TMatched>();
+
+         return true;
+      }
+
       public bool If(out T value, out bool isNotMatched, out Exception exception)
       {
          value = this.value;
@@ -80,21 +96,21 @@ namespace Core.Monads
 
       public bool If(out T value, out IMaybe<Exception> exception)
       {
-	      value = this.value;
-	      exception = none<Exception>();
+         value = this.value;
+         exception = none<Exception>();
 
-	      return true;
+         return true;
       }
 
       public bool IfNot(out IMaybe<Exception> anyException)
       {
-	      anyException = none<Exception>();
-	      return false;
+         anyException = none<Exception>();
+         return false;
       }
 
       public bool Else<TOther>(out IMatched<TOther> result)
       {
-	      result = notMatched<TOther>();
+         result = notMatched<TOther>();
          return false;
       }
 
@@ -114,13 +130,13 @@ namespace Core.Monads
 
       public IMatched<TOther> UnmatchedOnly<TOther>() => notMatched<TOther>();
 
-	   public void Deconstruct(out IMaybe<T> value, out IMaybe<Exception> exception)
-	   {
-		   value = this.value.Some();
-		   exception = none<Exception>();
-	   }
+      public void Deconstruct(out IMaybe<T> value, out IMaybe<Exception> exception)
+      {
+         value = this.value.Some();
+         exception = none<Exception>();
+      }
 
-	   public bool IsMatched => true;
+      public bool IsMatched => true;
 
       public bool IsNotMatched => false;
 
