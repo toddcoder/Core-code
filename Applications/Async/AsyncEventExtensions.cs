@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Core.Applications.AsyncEvents
+namespace Core.Applications.Async
 {
    public static class AsyncEventExtensions
    {
