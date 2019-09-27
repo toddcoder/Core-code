@@ -1011,5 +1011,21 @@ namespace Core.Computers
       public bool IsEmpty => fullPath.IsEmpty();
 
       public bool IsNotEmpty => !IsEmpty;
+
+      public IMaybe<FileName> Indexed(int maximumIndex = 1000)
+      {
+         for (var index = 0; index < maximumIndex; index++)
+         {
+            var formattedIndex = index.ToString().PadLeft(3, '0');
+            var newName = $"{name}.{formattedIndex}{extension}";
+            var newFile = folder + newName;
+            if (!newFile.Exists())
+            {
+               return newFile.Some();
+            }
+         }
+
+         return none<FileName>();
+      }
    }
 }

@@ -16,7 +16,7 @@ namespace Core.Tests
       [TestMethod]
       public void TruncateBySubfolderTest()
       {
-         FileName file = @"C:\Enterprise\Test\Sql Data\foobar.sql";
+         FileName file = @"C:\Enterprise\Test\Sql Data\test.sql";
          var name = file.TruncateBySubfolder(2);
          Console.WriteLine(name);
          name = file.TruncateBySubfolder(0);
@@ -41,7 +41,7 @@ namespace Core.Tests
       [TestMethod]
       public void SynchronizePickedFilesTest()
       {
-         var synchronizer=new Synchronizer(SOURCE_FOLDER1, TARGET_FOLDER1, "'.dll' $");
+         var synchronizer = new Synchronizer(SOURCE_FOLDER1, TARGET_FOLDER1, "'.dll' $");
 
          synchronizer.Success += (sender, args) => Console.WriteLine($"Success: {args.Message}");
          synchronizer.Failure += (sender, args) => Console.WriteLine($"Failure: {args.Message}");
@@ -51,6 +51,20 @@ namespace Core.Tests
          synchronizer.Synchronize("ApexSQL.Activation.dll", "ApexSQL.Common.Formatting.dll", "ApexSQL.Common.GrammarParser.dll",
             "ApexSQL.Common.Shared.dll", "ApexSQL.Common.UI.dll", "ApexSql.Refactor.dll", "Core.dll", "Microsoft.SqlServer.TransactSql.ScriptDom.dll",
             "Newtonsoft.Json.dll", "SqlConformance.Library.dll", "SqlConformance.Util.dll");
+      }
+
+      [TestMethod]
+      public void IndexedFileTest()
+      {
+         FileName originalFile = @"C:\Enterprise\Working\_DDL\tsqlcop.json";
+         if (originalFile.Indexed().If(out var file))
+         {
+            originalFile.CopyTo(file);
+         }
+         else
+         {
+            Console.WriteLine("Out of indexes");
+         }
       }
    }
 }
