@@ -104,6 +104,10 @@
     <Compile Include="Assertions\Constraint.cs" />
     <Compile Include="Assertions\IAssertion.cs" />
     <Compile Include="Assertions\ICanBeTrue.cs" />
+    <Compile Include="Assertions\Monads\CompletionAssertion.cs" />
+    <Compile Include="Assertions\Monads\MatchedAssertion.cs" />
+    <Compile Include="Assertions\Monads\MaybeAssertion.cs" />
+    <Compile Include="Assertions\Monads\ResultAssertion.cs" />
     <Compile Include="Assertions\Objects\ObjectAssertion.cs" />
     <Compile Include="Assertions\Strings\StringAssertion.cs" />
     <Compile Include="Booleans\Assertions.cs" />

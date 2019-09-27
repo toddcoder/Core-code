@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using Core.Assertions.Collections;
 using Core.Assertions.Comparables;
+using Core.Assertions.Monads;
 using Core.Assertions.Objects;
 using Core.Assertions.Strings;
+using Core.Monads;
 
 namespace Core.Assertions
 {
@@ -30,5 +32,13 @@ namespace Core.Assertions
       public static ListAssertion<T> Must<T>(this List<T> value) => new ListAssertion<T>(value);
 
       public static ObjectAssertion Must(this object value) => new ObjectAssertion(value);
+
+      public static MaybeAssertion<T> Must<T>(this IMaybe<T> value) => new MaybeAssertion<T>(value);
+
+      public static ResultAssertion<T> Must<T>(this IResult<T> value) => new ResultAssertion<T>(value);
+
+      public static MatchedAssertion<T> Must<T>(this IMatched<T> value) => new MatchedAssertion<T>(value);
+
+      public static CompletionAssertion<T> Must<T>(this ICompletion<T> value) => new CompletionAssertion<T>(value);
    }
 }
