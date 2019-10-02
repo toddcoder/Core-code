@@ -10,6 +10,7 @@ using Core.Dates.Now;
 using Core.Exceptions;
 using Core.Monads;
 using Core.Numbers;
+using Core.Objects;
 using Core.RegularExpressions;
 using Core.Strings;
 using static System.IO.Directory;
@@ -19,7 +20,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Computers
 {
-   public class FolderName : IComparable, IComparable<FolderName>
+   public class FolderName : IComparable, IComparable<FolderName>, IEquatable<FolderName>
    {
       public class Try
       {
@@ -32,6 +33,10 @@ namespace Core.Computers
       const int MAX_PATH = 260;
 
       public static implicit operator FolderName(string folder) => new FolderName(folder);
+
+      public static bool operator ==(FolderName lhs, FolderName rhs) => lhs.Equals(rhs);
+
+      public static bool operator !=(FolderName lhs, FolderName rhs) => !(lhs == rhs);
 
       public static Target operator |(FolderName folder, Target.Option option) => new Target(folder, option);
 
@@ -123,10 +128,15 @@ namespace Core.Computers
       protected string root;
       protected string[] subfolders;
       protected string fullPath;
+      protected Equatable<FolderName> equatable;
 
       public event EventHandler<FileArgs> FileSuccess;
 
-      public FolderName(string folder) => setFullPath(folder);
+      public FolderName(string folder)
+      {
+         setFullPath(folder);
+         equatable = new Equatable<FolderName>(this, "fullPath");
+      }
 
       public FolderName(string root, params string[] subfolders)
       {
@@ -726,11 +736,13 @@ namespace Core.Computers
 
       public FolderName Clone() => subfolders.Length > 0 ? new FolderName(root, subfolders) : new FolderName(root, "");
 
-      public override int GetHashCode() => fullPath.GetHashCode();
+      public override int GetHashCode() => equatable.GetHashCode();
 
       public int CompareTo(object obj) => obj is FolderName fn ? fullPath.CompareTo(fn.ToString()) : -1;
 
       public int CompareTo(FolderName other) => fullPath.CompareTo(other.fullPath);
+
+      public bool Equals(FolderName other) => equatable.Equals(other);
 
       public override string ToString() => fullPath;
 

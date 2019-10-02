@@ -16,7 +16,7 @@ using static Core.Strings.StringFunctions;
 
 namespace Core.Computers
 {
-   public class FileName : IComparable, IComparable<FileName>
+   public class FileName : IComparable, IComparable<FileName>, IEquatable<FileName>
    {
       public class Try
       {
@@ -145,7 +145,7 @@ namespace Core.Computers
          return directoryName;
       }
 
-      public static bool operator ==(FileName left, FileName right) => (left?.ToString() ?? "") == (right?.ToString() ?? "");
+      public static bool operator ==(FileName left, FileName right) => left.Equals(right);
 
       public static bool operator !=(FileName left, FileName right) => !(left == right);
 
@@ -155,6 +155,7 @@ namespace Core.Computers
       string fullPath;
       StringBuilder buffer;
       bool useBuffer;
+      Equatable<FileName> equatable;
 
       public FileName(FolderName folder, string name, string extension) => initialize(folder, name, extension);
 
@@ -704,6 +705,7 @@ namespace Core.Computers
 
          setExtension(anExtension);
          setFullPath();
+         equatable = new Equatable<FileName>(this, "fullPath");
          BufferSize = 2048;
          Encoding = Encoding.ASCII;
          SplitType = SplitType.CRLF;
@@ -881,6 +883,8 @@ namespace Core.Computers
 
       public int CompareTo(FileName other) => ToString().CompareTo(other.ToString());
 
+      public bool Equals(FileName other) => equatable.Equals(other);
+
       public override string ToString() => fullPath;
 
       public virtual string ToURL(string host)
@@ -980,7 +984,7 @@ namespace Core.Computers
          }
       }
 
-      public override int GetHashCode() => fullPath.GetHashCode();
+      public override int GetHashCode() => equatable.GetHashCode();
 
       public int CompareTo(object obj) => obj is FileName fn ? ToString().CompareTo(fn.ToString()) : -1;
 

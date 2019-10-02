@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using Core.Assertions.Collections;
 using Core.Assertions.Comparables;
+using Core.Assertions.Computers;
 using Core.Assertions.Monads;
 using Core.Assertions.Objects;
 using Core.Assertions.Strings;
+using Core.Computers;
 using Core.Monads;
 
 namespace Core.Assertions
@@ -40,5 +42,9 @@ namespace Core.Assertions
       public static MatchedAssertion<T> Must<T>(this IMatched<T> value) => new MatchedAssertion<T>(value);
 
       public static CompletionAssertion<T> Must<T>(this ICompletion<T> value) => new CompletionAssertion<T>(value);
+
+      public static FileNameAssertion Must(this FileName value) => new FileNameAssertion(value);
+
+      public static FolderNameAssertion Must(this FolderName value) => new FolderNameAssertion(value);
    }
 }

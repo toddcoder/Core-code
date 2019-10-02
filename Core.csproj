@@ -101,6 +101,8 @@
     <Compile Include="Assertions\Comparables\ComparableAssertion.cs" />
     <Compile Include="Assertions\Comparables\DoubleAssertion.cs" />
     <Compile Include="Assertions\Comparables\FloatAssertion.cs" />
+    <Compile Include="Assertions\Computers\FileNameAssertion.cs" />
+    <Compile Include="Assertions\Computers\FolderNameAssertion.cs" />
     <Compile Include="Assertions\Constraint.cs" />
     <Compile Include="Assertions\IAssertion.cs" />
     <Compile Include="Assertions\ICanBeTrue.cs" />
