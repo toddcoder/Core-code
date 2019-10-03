@@ -66,5 +66,9 @@ namespace Core.Monads
 	   IResult<T> Assert(Predicate<T> predicate, Func<string> exceptionMessage);
 
       IMaybe<T> Maybe();
+
+      bool EqualToValueOf(IResult<T> otherResult);
+
+      bool ValueEqualTo(T otherValue);
    }
 }

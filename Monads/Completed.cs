@@ -173,6 +173,10 @@ namespace Core.Monads
          return true;
       }
 
+      public bool ValueEqualTo(ICompletion<T> otherCompletion) => otherCompletion.If(out var otherValue) && EqualToValueOf(otherValue);
+
+      public bool EqualToValueOf(T otherValue) => value.Equals(otherValue);
+
       public bool HasValue => true;
    }
 }

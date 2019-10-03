@@ -82,5 +82,9 @@ namespace Core.Monads
       bool ValueOrOriginal(out T value, out ICompletion<T> original);
 
       bool ValueOrCast<TCompletion>(out T value, out ICompletion<TCompletion> completion);
+
+      bool ValueEqualTo(ICompletion<T> otherCompletion);
+
+      bool EqualToValueOf(T otherValue);
    }
 }

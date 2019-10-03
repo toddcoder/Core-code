@@ -136,6 +136,10 @@ namespace Core.Monads
          exception = none<Exception>();
       }
 
+      public bool EqualToValueOf(IMatched<T> otherMatched) => otherMatched.If(out var otherValue) && ValueEqualTo(otherValue);
+
+      public bool ValueEqualTo(T otherValue) => value.Equals(otherValue);
+
       public bool IsMatched => true;
 
       public bool IsNotMatched => false;

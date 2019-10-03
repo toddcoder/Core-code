@@ -205,6 +205,10 @@ namespace Core.Monads
 
       public IMaybe<T> Maybe() => value.Some();
 
+      public bool EqualToValueOf(IResult<T> otherResult) => otherResult.If(out var otherValue) && ValueEqualTo(otherValue);
+
+      public bool ValueEqualTo(T otherValue) => value.Equals(otherValue);
+
       public bool HasValue => true;
    }
 }

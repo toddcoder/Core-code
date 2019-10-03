@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -59,25 +58,6 @@ namespace Core.Assertions.Collections
          }
       }
 
-      protected ListAssertion<T> add(IList otherList, Func<List<T>, bool> constraintFunction, string message)
-      {
-         switch (otherList)
-         {
-            case null:
-               constraints.Add(Constraint.Failing("RHS must be non-null"));
-               break;
-            case List<T> tList:
-               constraints.Add(new Constraint(() => constraintFunction(tList), message, not));
-               break;
-            default:
-               constraints.Add(Constraint.Failing("Expected list"));
-               break;
-         }
-
-         not = false;
-         return this;
-      }
-
       protected ListAssertion<T> add(Func<bool> constraintFunction, string message)
       {
          constraints.Add(new Constraint(constraintFunction, message, not));
@@ -88,7 +68,7 @@ namespace Core.Assertions.Collections
 
       public ListAssertion<T> Equal(List<T> otherList)
       {
-         return add(otherList, a => list.Equals(a), $"{image} must $not equal {listImage(otherList)}");
+         return add(() => list.Equals(otherList), $"{image} must $not equal {listImage(otherList)}");
       }
 
       public ListAssertion<T> BeNull()

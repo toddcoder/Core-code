@@ -62,6 +62,10 @@ namespace Core.Monads
 
 		public IMaybe<T> IfThen(Action<T> action) => this;
 
+      public bool EqualToValueOf(IMaybe<T> otherMaybe) => false;
+
+      public bool ValueEqualTo(T otherValue) => false;
+
       public bool HasValue => false;
    }
 }

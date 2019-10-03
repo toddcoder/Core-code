@@ -74,9 +74,14 @@ namespace Core.Assertions.Monads
 
       public ResultAssertion<T> BeFailed() => add(() => result.IsFailed, "Result be $not be failed");
 
-      public ResultAssertion<T> Equal(object obj)
+      public ResultAssertion<T> EqualToValueOf(IResult<T> otherResult)
       {
-         return add(obj, other => result.If(out var value) && value.Equals(other), $"Result must $not equal {obj}");
+         return add(() => result.EqualToValueOf(otherResult), $"Value of result must $not equal to value of {otherResult}");
+      }
+
+      public ResultAssertion<T> ValueEqualTo(T otherValue)
+      {
+         return add(() => result.ValueEqualTo(otherValue), $"Value of result must $not equal to {otherValue}");
       }
 
       public void Assert() => assert(this);

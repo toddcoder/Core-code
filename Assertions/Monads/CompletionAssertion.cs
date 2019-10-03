@@ -32,35 +32,6 @@ namespace Core.Assertions.Monads
 
       public IEnumerable<Constraint> Constraints => constraints;
 
-      protected CompletionAssertion<T> add(object obj, Func<T, bool> constraintFunction, string message)
-      {
-         switch (obj)
-         {
-            case null:
-               constraints.Add(Constraint.Failing("RHS must be non-null"));
-               break;
-            case T otherT:
-               constraints.Add(new Constraint(() => constraintFunction(otherT), message, not));
-               break;
-            case ICompletion<T> anyValue:
-               if (anyValue.If(out var value, out var anyException))
-               {
-                  constraints.Add(new Constraint(() => constraintFunction(value), message, not));
-               }
-               else if (anyException.If(out var exception))
-               {
-                  constraints.Add(Constraint.Failing(exception.Message));
-               }
-               break;
-            default:
-               constraints.Add(Constraint.Failing($"{obj} must be of type {typeof(T)}"));
-               break;
-         }
-
-         not = false;
-         return this;
-      }
-
       protected CompletionAssertion<T> add(Func<bool> constraintFunction, string message)
       {
          constraints.Add(new Constraint(constraintFunction, message, not));
@@ -75,9 +46,14 @@ namespace Core.Assertions.Monads
 
       public CompletionAssertion<T> BeInterrupted() => add(() => completion.IfInterrupted(out _), "Must be $not interrupted");
 
-      public CompletionAssertion<T> Equal(object obj)
+      public CompletionAssertion<T> ValueEqualTo(ICompletion<T> otherCompletion)
       {
-         return add(obj, other => completion.If(out var value) && value.Equals(other), $"Completion must $not equal {obj}");
+         return add(() => completion.ValueEqualTo(otherCompletion), $"Value of completion must $not equal value of {otherCompletion}");
+      }
+
+      public CompletionAssertion<T> EqualToValueOf(T otherValue)
+      {
+         return add(() => completion.EqualToValueOf(otherValue), $"Value of completion must $not equal {otherValue}");
       }
 
       public void Assert() => assert(this);

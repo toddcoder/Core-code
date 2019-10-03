@@ -41,25 +41,6 @@ namespace Core.Assertions.Collections
          }
       }
 
-      protected ArrayAssertion<T> add(Array otherArray, Func<T[], bool> constraintFunction, string message)
-      {
-         switch (otherArray)
-         {
-            case null:
-               constraints.Add(Constraint.Failing("RHS must be non-null"));
-               break;
-            case T[] tArray:
-               constraints.Add(new Constraint(() => constraintFunction(tArray), message, not));
-               break;
-            default:
-               constraints.Add(Constraint.Failing($"{otherArray}"));
-               break;
-         }
-
-         not = false;
-         return this;
-      }
-
       protected ArrayAssertion<T> add(Func<bool> constraintFunction, string message)
       {
          constraints.Add(new Constraint(constraintFunction, message, not));
@@ -87,7 +68,7 @@ namespace Core.Assertions.Collections
 
       public ArrayAssertion<T> Equal(T[] otherArray)
       {
-         return add(otherArray, a => array.Equals(a), $"{image} must $not equal {arrayImage(otherArray)}");
+         return add(() => array.Equals(otherArray), $"{image} must $not equal {arrayImage(otherArray)}");
       }
 
       public ArrayAssertion<T> BeNull()

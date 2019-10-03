@@ -41,26 +41,7 @@ namespace Core.Assertions.Strings
 			}
 		}
 
-		protected StringAssertion add(object other, Func<string, bool> constraintFunction, string message)
-		{
-			switch (other)
-			{
-				case null:
-					constraints.Add(Constraint.Failing("RHS must be non-null"));
-					break;
-				case string otherString:
-					constraints.Add(new Constraint(() => constraintFunction(otherString), message, not));
-					break;
-				default:
-					constraints.Add(Constraint.Failing($"{other} must be string"));
-					break;
-			}
-
-			not = false;
-			return this;
-		}
-
-		protected StringAssertion add(Func<bool> constraintFunction, string message)
+      protected StringAssertion add(Func<bool> constraintFunction, string message)
 		{
 			constraints.Add(new Constraint(constraintFunction, message, not));
 			not = false;
@@ -68,29 +49,29 @@ namespace Core.Assertions.Strings
 			return this;
 		}
 
-		public StringAssertion Equal(object obj)
+		public StringAssertion Equal(string obj)
 		{
-			return add(obj, s => subject.CompareTo(s) == 0, $"{subject} must $not equal \"{obj}\"");
+			return add(() => subject.CompareTo(obj) == 0, $"{subject} must $not equal \"{obj}\"");
 		}
 
-		public StringAssertion BeGreaterThan(object obj)
+		public StringAssertion BeGreaterThan(string obj)
 		{
-			return add(obj, s => subject.CompareTo(s) > 0, $"{subject} must $not be > \"{obj}\"");
+			return add(() => subject.CompareTo(obj) > 0, $"{subject} must $not be > \"{obj}\"");
 		}
 
-		public StringAssertion BeGreaterThanOrEqual(object obj)
+		public StringAssertion BeGreaterThanOrEqual(string obj)
 		{
-			return add(obj, s => subject.CompareTo(s) >= 0, $"{subject} must $not be >= \"{obj}\"");
+			return add(() => subject.CompareTo(obj) >= 0, $"{subject} must $not be >= \"{obj}\"");
 		}
 
-		public StringAssertion BeLessThan(object obj)
+		public StringAssertion BeLessThan(string obj)
 		{
-			return add(obj, s => subject.CompareTo(s) < 0, $"{subject} must $not be < \"{obj}\"");
+			return add(() => subject.CompareTo(obj) < 0, $"{subject} must $not be < \"{obj}\"");
 		}
 
-		public StringAssertion BeLessThanOrEqual(object obj)
+		public StringAssertion BeLessThanOrEqual(string obj)
 		{
-			return add(obj, s => subject.CompareTo(s) <= 0, $"{subject} must $not be <= \"{obj}\"");
+			return add(() => subject.CompareTo(obj) <= 0, $"{subject} must $not be <= \"{obj}\"");
 		}
 
 		public StringAssertion BeNull()

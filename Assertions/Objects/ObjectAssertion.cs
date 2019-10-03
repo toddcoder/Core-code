@@ -36,22 +36,6 @@ namespace Core.Assertions.Objects
          }
       }
 
-      protected ObjectAssertion add(object other, Func<object, bool> constraintFunction, string message)
-      {
-         switch (other)
-         {
-            case null:
-               constraints.Add(Constraint.Failing("RHS must be non-null"));
-               break;
-            default:
-               constraints.Add(new Constraint(() => constraintFunction(other), message, not));
-               break;
-         }
-
-         not = false;
-         return this;
-      }
-
       protected ObjectAssertion add(Func<bool> constraintFunction, string message)
       {
          constraints.Add(new Constraint(constraintFunction, message, not));
@@ -62,7 +46,7 @@ namespace Core.Assertions.Objects
 
       public ObjectAssertion Equal(object other)
       {
-         return add(other, o => obj.Equals(o), $"{obj} must $not equal {other}");
+         return add(() => obj.Equals(other), $"{obj} must $not equal {other}");
       }
 
       public ObjectAssertion BeNull()

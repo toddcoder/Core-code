@@ -84,5 +84,9 @@ namespace Core.Monads
       IMatched<TOther> UnmatchedOnly<TOther>();
 
 	   void Deconstruct(out IMaybe<T> value, out IMaybe<Exception> exception);
+
+      bool EqualToValueOf(IMatched<T> otherMatched);
+
+      bool ValueEqualTo(T otherValue);
    }
 }

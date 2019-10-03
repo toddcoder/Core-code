@@ -72,6 +72,10 @@ namespace Core.Monads
          return this;
 	   }
 
+      public bool EqualToValueOf(IMaybe<T> otherMaybe) => otherMaybe.If(out var otherValue) && ValueEqualTo(otherValue);
+
+      public bool ValueEqualTo(T otherValue) => value.Equals(otherValue);
+
       public bool HasValue => true;
    }
 }

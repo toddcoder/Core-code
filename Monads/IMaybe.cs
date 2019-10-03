@@ -37,5 +37,9 @@ namespace Core.Monads
       void Deconstruct(out bool isSome, out T value);
 
 	   IMaybe<T> IfThen(Action<T> action);
+
+      bool EqualToValueOf(IMaybe<T> otherMaybe);
+
+      bool ValueEqualTo(T otherValue);
    }
 }

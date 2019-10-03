@@ -37,25 +37,6 @@ namespace Core.Assertions.Comparables
          }
       }
 
-      protected BooleanAssertion add(object obj, Func<bool, bool> constraintFunction, string message)
-      {
-         switch (obj)
-         {
-            case null:
-               constraints.Add(Constraint.Failing("RHS must be non-null"));
-               break;
-            case bool otherBoolean:
-               constraints.Add(new Constraint(() => constraintFunction(otherBoolean), message, not));
-               break;
-            default:
-               constraints.Add(Constraint.Failing($"{obj} must be comparable"));
-               break;
-         }
-
-         not = false;
-         return this;
-      }
-
       protected BooleanAssertion add(Func<bool> constraintFunction, string message)
       {
          constraints.Add(new Constraint(constraintFunction, message, not));
