@@ -10,6 +10,12 @@ namespace Core.Assertions.Computers
 {
    public class FileNameAssertion : IAssertion<FileName>
    {
+      public static implicit operator bool(FileNameAssertion assertion) => assertion.BeTrue();
+
+      public static bool operator &(FileNameAssertion x, ICanBeTrue y) => and(x, y);
+
+      public static bool operator |(FileNameAssertion x, ICanBeTrue y) => or(x, y);
+
       protected FileName file;
       protected List<Constraint> constraints;
       protected bool not;

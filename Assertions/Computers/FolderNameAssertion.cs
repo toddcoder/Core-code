@@ -11,6 +11,12 @@ namespace Core.Assertions.Computers
 {
    public class FolderNameAssertion : IAssertion<FolderName>
    {
+      public static implicit operator bool(FolderNameAssertion assertion) => assertion.BeTrue();
+
+      public static bool operator &(FolderNameAssertion x, ICanBeTrue y) => and(x, y);
+
+      public static bool operator |(FolderNameAssertion x, ICanBeTrue y) => or(x, y);
+
       protected FolderName folder;
       protected List<Constraint> constraints;
       protected bool not;
