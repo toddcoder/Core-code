@@ -55,8 +55,7 @@ namespace Core.Assertions.Collections
          {
             return "(null)";
          }
-
-         if (array.Length > 10)
+         else if (array.Length > 10)
          {
             return $"{{{array.Take(10).Stringify()}...}}";
          }
@@ -73,17 +72,17 @@ namespace Core.Assertions.Collections
 
       public ArrayAssertion<T> BeNull()
       {
-         return add(() => array == null, "This array must $not be null");
+         return add(() => array == null, $"{image} must $not be null");
       }
 
       public ArrayAssertion<T> BeEmpty()
       {
-         return add(() => array.Length == 0, "This array must $not be empty");
+         return add(() => array.Length == 0, $"{image} must $not be empty");
       }
 
       public ArrayAssertion<T> BeNullOrEmpty()
       {
-         return add(() => array == null || array.Length == 0, "This array must $not be null or empty");
+         return add(() => array == null || array.Length == 0, $"{image} must $not be null or empty");
       }
 
       public ArrayAssertion<T> HaveIndexOf(int index)

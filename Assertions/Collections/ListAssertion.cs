@@ -23,8 +23,7 @@ namespace Core.Assertions.Collections
          {
             return "(null)";
          }
-
-         if (list.Count > 10)
+         else if (list.Count > 10)
          {
             return $"{{{list.Take(10).Stringify()}...}}";
          }
@@ -73,17 +72,17 @@ namespace Core.Assertions.Collections
 
       public ListAssertion<T> BeNull()
       {
-         return add(() => list == null, "This list must $not be null");
+         return add(() => list == null, $"{image} must $not be null");
       }
 
       public ListAssertion<T> BeEmpty()
       {
-         return add(() => list.Count == 0, "This list must $not be empty");
+         return add(() => list.Count == 0, $"{image} must $not be empty");
       }
 
       public ListAssertion<T> BeNullOrEmpty()
       {
-         return add(() => list == null || list.Count == 0, "This list must $not be null or empty");
+         return add(() => list == null || list.Count == 0, $"{image} must $not be null or empty");
       }
 
       public ListAssertion<T> HaveIndexOf(int index)

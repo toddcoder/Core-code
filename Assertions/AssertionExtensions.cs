@@ -6,6 +6,7 @@ using Core.Assertions.Computers;
 using Core.Assertions.Monads;
 using Core.Assertions.Objects;
 using Core.Assertions.Strings;
+using Core.Collections;
 using Core.Computers;
 using Core.Monads;
 
@@ -46,5 +47,7 @@ namespace Core.Assertions
       public static FileNameAssertion Must(this FileName value) => new FileNameAssertion(value);
 
       public static FolderNameAssertion Must(this FolderName value) => new FolderNameAssertion(value);
+
+      public static HashAssertion<TKey, TValue> Must<TKey, TValue>(this Hash<TKey, TValue> value) => new HashAssertion<TKey, TValue>(value);
    }
 }
