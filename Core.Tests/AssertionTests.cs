@@ -1,5 +1,6 @@
 ﻿using System;
 using Core.Assertions;
+using Core.Collections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Core.Arrays.ArrayFunctions;
 
@@ -74,6 +75,14 @@ namespace Core.Tests
                Console.WriteLine("is empty");
             }
          }
+      }
+
+      [TestMethod]
+      public void DictionaryAssertionTest()
+      {
+         var hash = new Hash<char, string> { ['a'] = "alfa", ['b'] = "bravo", ['c'] = "charlie" };
+         hash.Must().Not.BeNullOrEmpty().Assert();
+         hash.Must().HaveKeyOf('b').Assert();
       }
    }
 }

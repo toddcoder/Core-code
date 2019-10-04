@@ -96,7 +96,7 @@
     <Compile Include="Assertions\AssertionExtensions.cs" />
     <Compile Include="Assertions\AssertionFunctions.cs" />
     <Compile Include="Assertions\Collections\ArrayAssertion.cs" />
-    <Compile Include="Assertions\Collections\HashAssertion.cs" />
+    <Compile Include="Assertions\Collections\DictionaryAssertion.cs" />
     <Compile Include="Assertions\Collections\ListAssertion.cs" />
     <Compile Include="Assertions\Comparables\BooleanAssertion.cs" />
     <Compile Include="Assertions\Comparables\ComparableAssertion.cs" />
