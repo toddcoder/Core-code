@@ -48,5 +48,7 @@ namespace Core.Assertions
       public static FolderNameAssertion Must(this FolderName value) => new FolderNameAssertion(value);
 
       public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this Dictionary<TKey, TValue> value) => new DictionaryAssertion<TKey, TValue>(value);
+
+      public static TypeAssertion Must(this Type value) => new TypeAssertion(value);
    }
 }

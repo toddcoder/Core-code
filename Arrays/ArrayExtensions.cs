@@ -108,7 +108,7 @@ namespace Core.Arrays
 					return $"{array[0]} and {array[1]}";
 			}
 
-         return $"{array.Take(array.Length - 1).Stringify(" and ")}, and {array[array.Length - 1]}";
+         return $"{array.Take(array.Length - 1).Stringify()}, and {array[array.Length - 1]}";
       }
 
 		public static bool IsEmpty<T>(this T[] array) => array == null || array.Length == 0;

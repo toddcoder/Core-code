@@ -112,6 +112,7 @@
     <Compile Include="Assertions\Monads\MaybeAssertion.cs" />
     <Compile Include="Assertions\Monads\ResultAssertion.cs" />
     <Compile Include="Assertions\Objects\ObjectAssertion.cs" />
+    <Compile Include="Assertions\Objects\TypeAssertion.cs" />
     <Compile Include="Assertions\Strings\StringAssertion.cs" />
     <Compile Include="Booleans\Assertions.cs" />
     <Compile Include="Booleans\BooleanExtensions.cs" />

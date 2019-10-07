@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Core.Assertions;
 using Core.Collections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -83,6 +84,18 @@ namespace Core.Tests
          var hash = new Hash<char, string> { ['a'] = "alfa", ['b'] = "bravo", ['c'] = "charlie" };
          hash.Must().Not.BeNullOrEmpty().Assert();
          hash.Must().HaveKeyOf('b').Assert();
+      }
+
+      [TestMethod]
+      public void TypeAssertionTest()
+      {
+         0.GetType().Must().EqualToTypeOf(1).Assert();
+         0.GetType().Must().BeConvertibleTo(1L.GetType()).Assert();
+         0.GetType().Must().BeValue().Assert();
+         "".GetType().Must().BeClass().Assert();
+         typeof(DayOfWeek).Must().BeEnumeration().Assert();
+         var listType = new List<string>().GetType();
+         listType.Must().BeGeneric().ContainGenericArgument(typeof(string)).Assert();
       }
    }
 }
