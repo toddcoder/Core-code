@@ -138,6 +138,7 @@
     <Compile Include="Collections\StringHash.cs" />
     <Compile Include="Collections\StringSet.cs" />
     <Compile Include="Collections\TwoKeyHash.cs" />
+    <Compile Include="Computers\ComputerExtensions.cs" />
     <Compile Include="Computers\ComputerFunctions.cs" />
     <Compile Include="Computers\FileArgs.cs" />
     <Compile Include="Computers\FileExceptionArgs.cs" />
