@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using Core.Arrays;
 using Core.Dates.Now;
+using Core.Enumerables;
 using Core.Exceptions;
 using Core.Monads;
 using Core.Numbers;
@@ -800,5 +801,9 @@ namespace Core.Computers
       public bool IsEmpty => fullPath.IsEmpty();
 
       public bool IsNotEmpty => !IsEmpty;
+
+      public bool Contains(string nameExtension) => getFiles(fullPath).Any(f => f.NameExtension == nameExtension);
+
+      public IMaybe<FileName> ExistingFile(string nameExtension) => getFiles(fullPath).Where(f => f.NameExtension == nameExtension).FirstOrNone();
    }
 }
