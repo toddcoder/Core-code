@@ -31,7 +31,7 @@ namespace Core.Strings
 		{
 			if (source.IsEmpty())
          {
-            return "";
+            return string.Empty;
          }
 
          var result = new StringBuilder();
@@ -47,7 +47,7 @@ namespace Core.Strings
 		{
 			if (source.IsEmpty())
          {
-            return "";
+            return string.Empty;
          }
 
          var result = source.Repeat(count);
@@ -58,7 +58,7 @@ namespace Core.Strings
 		{
 			if (source.IsEmpty())
          {
-            return "";
+            return string.Empty;
          }
 
          var result = new List<string>();
@@ -92,7 +92,7 @@ namespace Core.Strings
 		{
 			if (source.IsEmpty())
          {
-            return "";
+            return string.Empty;
          }
 
          if (startIndex < 0)
@@ -112,7 +112,7 @@ namespace Core.Strings
          }
          else
          {
-            return "";
+            return string.Empty;
          }
       }
 
@@ -125,7 +125,7 @@ namespace Core.Strings
 		{
 			if (source.IsEmpty() || limit <= 0)
          {
-            return "";
+            return string.Empty;
          }
          else if (source.Length <= limit)
          {
@@ -145,7 +145,7 @@ namespace Core.Strings
 		{
 			if (source.IsEmpty() || limit <= 0)
          {
-            return "";
+            return string.Empty;
          }
          else if (source.Length > limit)
 			{
@@ -187,7 +187,7 @@ namespace Core.Strings
 		{
 			if (source.IsEmpty())
          {
-            return "";
+            return string.Empty;
          }
          else
          {
@@ -197,13 +197,13 @@ namespace Core.Strings
 
 		public static string NormalizeWhitespace(this string source) => replaceWhitespace(source, " ");
 
-		public static string RemoveWhitespace(this string source) => replaceWhitespace(source, "");
+		public static string RemoveWhitespace(this string source) => replaceWhitespace(source, string.Empty);
 
 		public static string ToTitleCase(this string source)
 		{
 			if (source.IsEmpty())
          {
-            return "";
+            return string.Empty;
          }
          else
          {
@@ -215,7 +215,7 @@ namespace Core.Strings
 		{
 			if (source.IsEmpty())
          {
-            return "";
+            return string.Empty;
          }
          else
          {
@@ -251,9 +251,10 @@ namespace Core.Strings
 		{
 			if (source.IsEmpty())
          {
-            return "";
+            return string.Empty;
          }
-         else if (source.IsMatch("^ {A-Z} $"))
+
+         if (source.IsMatch("^ {A-Z} $"))
          {
             return source.ToLower();
          }
@@ -280,7 +281,7 @@ namespace Core.Strings
 		{
 			if (source.IsEmpty())
          {
-            return "";
+            return string.Empty;
          }
          else
          {
@@ -292,7 +293,7 @@ namespace Core.Strings
 		{
 			if (source.IsEmpty())
          {
-            return "";
+            return string.Empty;
          }
          else
          {
@@ -304,7 +305,7 @@ namespace Core.Strings
 		{
 			if (source.IsEmpty())
          {
-            return "";
+            return string.Empty;
          }
          else
 			{
@@ -340,7 +341,7 @@ namespace Core.Strings
 		{
 			if (source.IsEmpty())
          {
-            return "";
+            return string.Empty;
          }
 
          var text = source;
@@ -353,7 +354,7 @@ namespace Core.Strings
 			if (matcher.IsMatch(text, "['A-Z'] ['a-z']*"))
 			{
 				var numericMatcher = new Matcher();
-				var numeric = "";
+				var numeric = string.Empty;
 				if (numericMatcher.IsMatch(text, "/d+ $"))
             {
                numeric = numericMatcher[0];
@@ -458,7 +459,7 @@ namespace Core.Strings
 		{
 			if (source.IsEmpty())
          {
-            return "";
+            return string.Empty;
          }
 
          source = source.ToLower().Replace("a", "@");
@@ -480,7 +481,7 @@ namespace Core.Strings
 		{
 			if (source.IsEmpty())
          {
-            return "";
+            return string.Empty;
          }
 
          source = source.Replace("@", "a");
@@ -498,17 +499,17 @@ namespace Core.Strings
 			return source.Replace("2", "z");
 		}
 
-		public static string Copy(this string source) => string.Copy(source.IsEmpty() ? "" : source);
+		public static string Copy(this string source) => string.Copy(source.IsEmpty() ? string.Empty : source);
 
 		public static string RemoveCComments(this string source)
 		{
 			if (source.IsEmpty())
          {
-            return "";
+            return string.Empty;
          }
          else
          {
-            return source.Substitute("'/*' .*? '*/'", "");
+            return source.Substitute("'/*' .*? '*/'", string.Empty);
          }
       }
 
@@ -516,11 +517,11 @@ namespace Core.Strings
 		{
 			if (source.IsEmpty())
          {
-            return "";
+            return string.Empty;
          }
          else
          {
-            return source.Substitute("'//' .*? /crlf", "", false, true);
+            return source.Substitute("'//' .*? /crlf", string.Empty, false, true);
          }
       }
 
@@ -528,11 +529,11 @@ namespace Core.Strings
 		{
 			if (source.IsEmpty())
          {
-            return "";
+            return string.Empty;
          }
          else
          {
-            return source.Substitute("'--' .*? /crlf", "", false, true);
+            return source.Substitute("'--' .*? /crlf", string.Empty, false, true);
          }
       }
 
@@ -540,7 +541,7 @@ namespace Core.Strings
 		{
 			if (source.IsEmpty())
          {
-            return "";
+            return string.Empty;
          }
 
          if (!allowed.IsMatch("'[' -[']']+ ']'"))
@@ -561,7 +562,7 @@ namespace Core.Strings
 			}
 			else
          {
-            return "";
+            return string.Empty;
          }
       }
 
@@ -569,7 +570,7 @@ namespace Core.Strings
 		{
 			if (source.IsEmpty())
          {
-            return "";
+            return string.Empty;
          }
 
          var characters = new StringBuilder();
@@ -585,7 +586,7 @@ namespace Core.Strings
 		{
 			if (source.IsEmpty())
          {
-            return "";
+            return string.Empty;
          }
          else
          {
@@ -597,7 +598,7 @@ namespace Core.Strings
 		{
 			if (source.IsEmpty())
          {
-            return "";
+            return string.Empty;
          }
          else
          {
@@ -627,7 +628,7 @@ namespace Core.Strings
 		{
 			if (source.IsEmpty())
          {
-            return "";
+            return string.Empty;
          }
 
          var matcher = new Matcher();
@@ -645,7 +646,7 @@ namespace Core.Strings
 		{
 			if (source.IsEmpty())
          {
-            return "";
+            return string.Empty;
          }
 
          var matcher = new Matcher();
@@ -663,11 +664,11 @@ namespace Core.Strings
 		{
 			if (source.IsEmpty())
          {
-            return "";
+            return string.Empty;
          }
          else
          {
-            return '«' + source + '»';
+            return $"«{source}»";
          }
       }
 
@@ -675,7 +676,7 @@ namespace Core.Strings
 		{
 			if (source.IsEmpty())
          {
-            return "";
+            return string.Empty;
          }
 
          if (spaceVisible)
@@ -694,7 +695,7 @@ namespace Core.Strings
 		{
 			if (source.IsEmpty())
          {
-            return "";
+            return string.Empty;
          }
          else
          {
@@ -747,7 +748,7 @@ namespace Core.Strings
 		{
 			if (source.IsEmpty())
          {
-            return "";
+            return string.Empty;
          }
          else
          {
@@ -759,7 +760,7 @@ namespace Core.Strings
 		{
 			if (source.IsEmpty())
          {
-            return "";
+            return string.Empty;
          }
 
          PadType padType;
@@ -822,7 +823,7 @@ namespace Core.Strings
 		{
 			if (source.IsEmpty())
          {
-            return "";
+            return string.Empty;
          }
          else
          {
@@ -837,27 +838,27 @@ namespace Core.Strings
 			return source.IsEmpty() ? defaultValue : source;
 		}
 
-		public static string TrimLeft(this string source) => source.IsNotEmpty() ? source.TrimStart() : "";
+		public static string TrimLeft(this string source) => source.IsNotEmpty() ? source.TrimStart() : string.Empty;
 
-		public static string TrimRight(this string source) => source.IsNotEmpty() ? source.TrimEnd() : "";
+		public static string TrimRight(this string source) => source.IsNotEmpty() ? source.TrimEnd() : string.Empty;
 
-		public static string TrimAll(this string source) => source.IsNotEmpty() ? source.Trim() : "";
+		public static string TrimAll(this string source) => source.IsNotEmpty() ? source.Trim() : string.Empty;
 
 		public static string ToUpper1(this string source)
 		{
-			return source.IsNotEmpty() ? source.Keep(1).ToUpper() + source.Drop(1) : "";
+			return source.IsNotEmpty() ? source.Keep(1).ToUpper() + source.Drop(1) : string.Empty;
 		}
 
 		public static string ToLower1(this string source)
 		{
-			return source.IsNotEmpty() ? source.Keep(1).ToLower() + source.Drop(1) : "";
+			return source.IsNotEmpty() ? source.Keep(1).ToLower() + source.Drop(1) : string.Empty;
 		}
 
 		public static string Plural(this string source, int number)
 		{
 			if (source.IsEmpty())
          {
-            return "";
+            return string.Empty;
          }
 
          var matcher = new Matcher();
@@ -873,7 +874,7 @@ namespace Core.Strings
                   }
                   else
                   {
-                     matcher[matchIndex] = "";
+                     matcher[matchIndex] = string.Empty;
                   }
                }
             }
@@ -933,7 +934,7 @@ namespace Core.Strings
 		{
 			if (source.IsEmpty())
          {
-            return "";
+            return string.Empty;
          }
          else
          {
@@ -1501,7 +1502,7 @@ namespace Core.Strings
 		{
 			if (source.IsEmpty())
          {
-            return "";
+            return string.Empty;
          }
          else
          {
@@ -1570,7 +1571,7 @@ namespace Core.Strings
          }
       }
 
-		public static string ToNonNullString(this object value) => value?.ToString() ?? "";
+		public static string ToNonNullString(this object value) => value?.ToString() ?? string.Empty;
 
 		public static IMaybe<string> ToIMaybeString(this object value) => maybe(value != null, value.ToString);
 
@@ -1578,9 +1579,10 @@ namespace Core.Strings
 		{
 			if (value == null)
          {
-            return "";
+            return string.Empty;
          }
-         else if (value.IsFloat())
+
+         if (value.IsFloat())
 			{
 				var result = value.ToString();
 				if (!result.Has("."))
@@ -1705,27 +1707,21 @@ namespace Core.Strings
 
 		public static byte[] FromBase64(this string source) => Convert.FromBase64String(source);
 
-		public static string Head(this string source) => source.IsNotEmpty() ? source.Substring(0, 1) : "";
+      public static string Head(this string source) => source.Keep(1);
 
-		public static string Tail(this string source) => source.IsNotEmpty() ? source.Substring(1) : "";
+      public static string Tail(this string source) => source.Drop(1);
 
-		public static string Foot(this string source)
-		{
-			return source.IsNotEmpty() ? source.Substring(source.Length - 1, 1) : "";
-		}
+		public static string Foot(this string source) => source.Keep(-1);
 
-		public static string Front(this string source)
-		{
-			return source.IsNotEmpty() ? source.Substring(0, source.Length - 1) : "";
-		}
+      public static string Front(this string source) => source.Drop(-1);
 
-		public static IEnumerable<string> Enumerable(this string source) => new StringEnumerable(source);
+      public static IEnumerable<string> Enumerable(this string source) => source.Select(ch => ch.ToString());
 
-		public static StringSegment Balanced(this string source, char left, int startIndex = 0)
+      public static StringSegment Balanced(this string source, char left, int startIndex = 0)
 		{
 			if (source.IsNotEmpty() && startIndex < source.Length)
 			{
-				var destringifier = new Destringifier(source.Substring(startIndex));
+				var destringifier = new Destringifier(source.Drop(startIndex));
 
 				var leftOfPairIndex = PAIRS.IndexOf(left);
 				if (leftOfPairIndex != -1 && leftOfPairIndex.IsEven())
@@ -1810,7 +1806,7 @@ namespace Core.Strings
 		{
 			if (format.IsEmpty())
          {
-            return "";
+            return string.Empty;
          }
 
          var matcher = new Matcher();
@@ -1837,7 +1833,7 @@ namespace Core.Strings
 		{
 			if (format.IsEmpty())
          {
-            return "";
+            return string.Empty;
          }
 
          if (matcher.IsMatch(format, "'//('"))
@@ -1857,7 +1853,7 @@ namespace Core.Strings
 		{
 			if (source.IsEmpty())
          {
-            return "";
+            return string.Empty;
          }
 
          if (count > 0)
@@ -1880,7 +1876,7 @@ namespace Core.Strings
       {
          if (source.IsEmpty())
          {
-            return "";
+            return string.Empty;
          }
 
          var matcher = new Matcher(friendly);
@@ -1899,7 +1895,7 @@ namespace Core.Strings
 		{
 			if (source.IsEmpty())
          {
-            return "";
+            return string.Empty;
          }
 
          for (var i = 0; i < source.Length; i++)
@@ -1919,7 +1915,7 @@ namespace Core.Strings
 		{
 			if (source.IsEmpty())
          {
-            return "";
+            return string.Empty;
          }
 
          var index = source.LastIndexOf(searchString, comparisonType);
@@ -1930,7 +1926,7 @@ namespace Core.Strings
 		{
 			if (source.IsEmpty())
          {
-            return "";
+            return string.Empty;
          }
 
          for (var i = 0; i < source.Length; i++)
@@ -1948,7 +1944,7 @@ namespace Core.Strings
 		{
 			if (source.IsEmpty())
          {
-            return "";
+            return string.Empty;
          }
 
          for (var i = 0; i < source.Length; i++)
@@ -1968,7 +1964,7 @@ namespace Core.Strings
 		{
 			if (source.IsEmpty())
          {
-            return "";
+            return string.Empty;
          }
 
          var index = source.IndexOf(searchString, comparisonType);
@@ -1979,7 +1975,7 @@ namespace Core.Strings
 		{
 			if (source.IsEmpty())
          {
-            return "";
+            return string.Empty;
          }
 
          for (var i = 0; i < source.Length; i++)
@@ -1997,16 +1993,17 @@ namespace Core.Strings
 		{
 			if (source.IsEmpty())
          {
-            return "";
+            return string.Empty;
          }
-         else if (count > 0)
+
+         if (count > 0)
 			{
 				count = count.MinOf(source.Length);
 				return source.Substring(0, count);
 			}
 			else if (count == 0)
          {
-            return "";
+            return string.Empty;
          }
          else
 			{
@@ -2019,7 +2016,7 @@ namespace Core.Strings
       {
          if (source.IsEmpty())
          {
-            return "";
+            return string.Empty;
          }
 
          var matcher = new Matcher(friendly);
@@ -2038,7 +2035,7 @@ namespace Core.Strings
 		{
 			if (source.IsEmpty())
          {
-            return "";
+            return string.Empty;
          }
 
          for (var i = 0; i < source.Length; i++)
@@ -2058,7 +2055,7 @@ namespace Core.Strings
 		{
 			if (source.IsEmpty())
          {
-            return "";
+            return string.Empty;
          }
 
          var index = source.LastIndexOf(searchString, comparisonType);
@@ -2069,7 +2066,7 @@ namespace Core.Strings
 		{
 			if (source.IsEmpty())
          {
-            return "";
+            return string.Empty;
          }
 
          for (var i = 0; i < source.Length; i++)
@@ -2087,7 +2084,7 @@ namespace Core.Strings
 		{
 			if (source.IsEmpty())
          {
-            return "";
+            return string.Empty;
          }
 
          for (var i = 0; i < source.Length; i++)
@@ -2107,7 +2104,7 @@ namespace Core.Strings
 		{
 			if (source.IsEmpty())
          {
-            return "";
+            return string.Empty;
          }
 
          var index = source.IndexOf(searchString, comparisonType);
@@ -2118,7 +2115,7 @@ namespace Core.Strings
 		{
 			if (source.IsEmpty())
          {
-            return "";
+            return string.Empty;
          }
 
          for (var i = 0; i < source.Length; i++)
@@ -2136,7 +2133,7 @@ namespace Core.Strings
 		{
 			if (source.IsEmpty())
          {
-            return "";
+            return string.Empty;
          }
 
          var builder = new StringBuilder();
@@ -2167,7 +2164,7 @@ namespace Core.Strings
 		{
 			if (source.IsEmpty())
          {
-            return "";
+            return string.Empty;
          }
 
          var builder = new StringBuilder();
@@ -2268,7 +2265,7 @@ namespace Core.Strings
 			}
 			else
          {
-            return "";
+            return string.Empty;
          }
       }
 
@@ -2276,7 +2273,7 @@ namespace Core.Strings
 		{
 			if (source.IsEmpty())
          {
-            return "";
+            return string.Empty;
          }
 
          var result = source;
@@ -2297,7 +2294,7 @@ namespace Core.Strings
          }
          else
          {
-            return "";
+            return string.Empty;
          }
       }
 
@@ -2305,7 +2302,7 @@ namespace Core.Strings
 		{
 			if (source.IsEmpty())
          {
-            return "";
+            return string.Empty;
          }
 
          var builder = new StringBuilder(source);
@@ -2373,11 +2370,11 @@ namespace Core.Strings
 		{
 			if (source.IsEmpty())
          {
-            return "";
+            return string.Empty;
          }
 
          var array = source.Split(splitPattern);
-			var result = array.Select(e => $"{e}{" ".Repeat(padding)}").Stringify("").Trim();
+			var result = array.Select(e => $"{e}{" ".Repeat(padding)}").Stringify(string.Empty).Trim();
 			return result.Center(allowedLength).Elliptical(allowedLength, ' ');
 		}
 

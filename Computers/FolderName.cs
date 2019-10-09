@@ -354,27 +354,27 @@ namespace Core.Computers
 
       public IEnumerable<FileName> Files => getFiles(fullPath);
 
-      public IEnumerable<FileName> FilesAsync() => getFilesAsync(fullPath);
+      public IEnumerable<FileName> FilesAsync() => getFilesParallel(fullPath);
 
-      public IEnumerable<FileName> FilesAsync(CancellationToken token) => getFilesAsync(fullPath, token);
+      public IEnumerable<FileName> FilesAsync(CancellationToken token) => getFilesParallel(fullPath, token);
 
       public IEnumerable<FolderName> Folders => getFolders(fullPath);
 
-      public IEnumerable<FolderName> FoldersAsync() => getFoldersAsync(fullPath);
+      public IEnumerable<FolderName> FoldersAsync() => getFoldersParallel(fullPath);
 
-      public IEnumerable<FolderName> FoldersAsync(CancellationToken token) => getFoldersAsync(fullPath, token);
+      public IEnumerable<FolderName> FoldersAsync(CancellationToken token) => getFoldersParallel(fullPath, token);
 
       public IEnumerable<FileName> LocalAndParentFiles => getLocalAndParentFiles(fullPath);
 
-      public IEnumerable<FileName> LocalAndParentFilesAsync() => getLocalAndParentFilesAsync(fullPath);
+      public IEnumerable<FileName> LocalAndParentFilesAsync() => getLocalAndParentFilesParallel(fullPath);
 
-      public IEnumerable<FileName> LocalAndParentFilesAsync(CancellationToken token) => getLocalAndParentFilesAsync(fullPath, token);
+      public IEnumerable<FileName> LocalAndParentFilesAsync(CancellationToken token) => getLocalAndParentFilesParallel(fullPath, token);
 
       public IEnumerable<FolderName> LocalAndParentFolders => getLocalAndParentFolders(fullPath);
 
-      public IEnumerable<FolderName> LocalAndParentFoldersAsync() => getLocalAndParentFoldersAsync(fullPath);
+      public IEnumerable<FolderName> LocalAndParentFoldersAsync() => getLocalAndParentFoldersParallel(fullPath);
 
-      public IEnumerable<FolderName> LocalAndParentFoldersAsync(CancellationToken token) => getLocalAndParentFoldersAsync(fullPath, token);
+      public IEnumerable<FolderName> LocalAndParentFoldersAsync(CancellationToken token) => getLocalAndParentFoldersParallel(fullPath, token);
 
       public int FileCount => getFileCount(fullPath);
 
@@ -567,9 +567,9 @@ namespace Core.Computers
 
       protected static IEnumerable<FileName> getFiles(string folder) => GetFiles(folder).Select(f => (FileName)f);
 
-      protected static IEnumerable<FileName> getFilesAsync(string folder) => GetFiles(folder).AsParallel().Select(f => (FileName)f);
+      protected static IEnumerable<FileName> getFilesParallel(string folder) => GetFiles(folder).AsParallel().Select(f => (FileName)f);
 
-      protected static IEnumerable<FileName> getFilesAsync(string folder, CancellationToken token)
+      protected static IEnumerable<FileName> getFilesParallel(string folder, CancellationToken token)
       {
          return GetFiles(folder).AsParallel().WithCancellation(token).Select(f => (FileName)f);
       }
@@ -579,12 +579,12 @@ namespace Core.Computers
          return GetDirectories(folder).Select(f => (FolderName)f);
       }
 
-      protected static IEnumerable<FolderName> getFoldersAsync(string folder)
+      protected static IEnumerable<FolderName> getFoldersParallel(string folder)
       {
          return GetDirectories(folder).AsParallel().Select(f => (FolderName)f);
       }
 
-      protected static IEnumerable<FolderName> getFoldersAsync(string folder, CancellationToken token)
+      protected static IEnumerable<FolderName> getFoldersParallel(string folder, CancellationToken token)
       {
          return GetDirectories(folder).AsParallel().WithCancellation(token).Select(f => (FolderName)f);
       }
@@ -608,39 +608,39 @@ namespace Core.Computers
          }
       }
 
-      protected static IEnumerable<FileName> getLocalAndParentFilesAsync(string folder)
+      protected static IEnumerable<FileName> getLocalAndParentFilesParallel(string folder)
       {
          if (folder == null)
          {
             yield break;
          }
 
-         foreach (var file in getFilesAsync(folder))
+         foreach (var file in getFilesParallel(folder))
          {
             yield return file;
          }
 
          var parent = GetParent(folder)?.FullName;
-         foreach (var file in getLocalAndParentFilesAsync(parent))
+         foreach (var file in getLocalAndParentFilesParallel(parent))
          {
             yield return file;
          }
       }
 
-      protected static IEnumerable<FileName> getLocalAndParentFilesAsync(string folder, CancellationToken token)
+      protected static IEnumerable<FileName> getLocalAndParentFilesParallel(string folder, CancellationToken token)
       {
          if (folder == null)
          {
             yield break;
          }
 
-         foreach (var file in getFilesAsync(folder, token))
+         foreach (var file in getFilesParallel(folder, token))
          {
             yield return file;
          }
 
          var parent = GetParent(folder)?.FullName;
-         foreach (var file in getLocalAndParentFilesAsync(parent, token))
+         foreach (var file in getLocalAndParentFilesParallel(parent, token))
          {
             yield return file;
          }
@@ -671,21 +671,21 @@ namespace Core.Computers
          }
       }
 
-      public static IEnumerable<FolderName> getLocalAndParentFoldersAsync(string folder)
+      public static IEnumerable<FolderName> getLocalAndParentFoldersParallel(string folder)
       {
          if (folder == null)
          {
             yield break;
          }
 
-         foreach (var subFolder in getFoldersAsync(folder))
+         foreach (var subFolder in getFoldersParallel(folder))
          {
             yield return subFolder;
          }
 
          var parent = GetParent(folder)?.FullName;
 
-         foreach (var subFolder in getLocalAndParentFoldersAsync(parent))
+         foreach (var subFolder in getLocalAndParentFoldersParallel(parent))
          {
             yield return subFolder;
          }
@@ -696,21 +696,21 @@ namespace Core.Computers
          }
       }
 
-      public static IEnumerable<FolderName> getLocalAndParentFoldersAsync(string folder, CancellationToken token)
+      public static IEnumerable<FolderName> getLocalAndParentFoldersParallel(string folder, CancellationToken token)
       {
          if (folder == null)
          {
             yield break;
          }
 
-         foreach (var subFolder in getFoldersAsync(folder, token))
+         foreach (var subFolder in getFoldersParallel(folder, token))
          {
             yield return subFolder;
          }
 
          var parent = GetParent(folder)?.FullName;
 
-         foreach (var subFolder in getLocalAndParentFoldersAsync(parent, token))
+         foreach (var subFolder in getLocalAndParentFoldersParallel(parent, token))
          {
             yield return subFolder;
          }
@@ -802,8 +802,34 @@ namespace Core.Computers
 
       public bool IsNotEmpty => !IsEmpty;
 
-      public bool Contains(string nameExtension) => getFiles(fullPath).Any(f => f.NameExtension == nameExtension);
+      public IMaybe<FileName> ExistingFile(string nameExtension, bool parallel = false)
+      {
+         var files = parallel ? getFilesParallel(fullPath) : getFiles(fullPath);
+         return files.Where(f => f.NameExtension == nameExtension).FirstOrNone();
+      }
 
-      public IMaybe<FileName> ExistingFile(string nameExtension) => getFiles(fullPath).Where(f => f.NameExtension == nameExtension).FirstOrNone();
+      public IMaybe<FileName> ExistingFile(string nameExtension, CancellationToken token)
+      {
+         return getFilesParallel(fullPath, token).Where(f => f.NameExtension == nameExtension).FirstOrNone();
+      }
+
+      public IMaybe<FolderName> ExistingFolder(string name, bool parallel)
+      {
+         var folders = parallel ? getFoldersParallel(fullPath) : getFolders(fullPath);
+         return folders.Where(f => f.Name == name).FirstOrNone();
+      }
+
+      public IMaybe<FolderName> ExistingFolder(string name, CancellationToken token)
+      {
+         return getFoldersParallel(fullPath, token).Where(f => f.Name == name).FirstOrNone();
+      }
+
+      public bool ContainsFile(string nameExtension, bool parallel = false) => ExistingFile(nameExtension, parallel).IsSome;
+
+      public bool ContainsFile(string nameExtension, CancellationToken token) => ExistingFile(nameExtension, token).IsSome;
+
+      public bool ContainsFolder(string name, bool parallel = false) => ExistingFolder(name, parallel).IsSome;
+
+      public bool ContainsFolder(string name, CancellationToken token) => ExistingFolder(name, token).IsSome;
    }
 }
