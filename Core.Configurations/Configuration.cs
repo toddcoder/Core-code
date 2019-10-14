@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using Core.Collections;
+﻿using Core.Collections;
 using Core.Monads;
-using Newtonsoft.Json;
 
 namespace Core.Configurations
 {
@@ -11,9 +9,8 @@ namespace Core.Configurations
 
 		public Configuration() => children = new Hash<string, ConfigurationNode>();
 
-		public Configuration(string jsonSource)
+		public Configuration(string source)
 		{
-			children = JsonConvert.DeserializeObject<Dictionary<string, ConfigurationNode>>(jsonSource).ToHash();
 		}
 
 		public IMaybe<ConfigurationNode> this[string childName]
