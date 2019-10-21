@@ -13,9 +13,12 @@ namespace Core.Computers
       {
          foreach (var folder in folders)
          {
-            foreach (var file in folder.LocalAndParentFiles)
+            if (folder.Exists())
             {
-               yield return file;
+               foreach (var file in folder.LocalAndParentFiles)
+               {
+                  yield return file;
+               }
             }
          }
       }
