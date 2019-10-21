@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Core.Enumerables;
 using Core.Monads;
 
 namespace Core.Computers
@@ -13,14 +16,24 @@ namespace Core.Computers
       {
          foreach (var folder in folders)
          {
-            if (folder.Exists())
+            foreach (var file in folder.LocalAndParentFiles)
             {
-               foreach (var file in folder.LocalAndParentFiles)
-               {
-                  yield return file;
-               }
+               yield return file;
             }
          }
+      }
+
+      public static IResult<FileName> LocalAndParentFiles(this IEnumerable<FolderName> folders, Predicate<FileName> predicate)
+      {
+         foreach (var folder in folders)
+         {
+            if (folder.LocalAndParentFiles.Where(f => predicate(f)).FirstOrNone().If(out var file))
+            {
+               return file.Success();
+            }
+         }
+
+         return "File not found".Failure<FileName>();
       }
 
       public static IEnumerable<FolderName> LocalAndParentFolders(this IEnumerable<FolderName> folders)
@@ -32,6 +45,19 @@ namespace Core.Computers
                yield return subfolder;
             }
          }
+      }
+
+      public static IResult<FolderName> LocalAndParentFolders(this IEnumerable<FolderName> folders, Predicate<FolderName> predicate)
+      {
+         foreach (var folder in folders)
+         {
+            if (folder.LocalAndParentFolders.Where(f => predicate(f)).FirstOrNone().If(out var foundFolder))
+            {
+               return foundFolder.Success();
+            }
+         }
+
+         return "Folder not found".Failure<FolderName>();
       }
    }
 }
