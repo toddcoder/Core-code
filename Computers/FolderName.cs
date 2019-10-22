@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using Core.Arrays;
 using Core.Dates.Now;
 using Core.Enumerables;
@@ -354,27 +355,33 @@ namespace Core.Computers
 
       public IEnumerable<FileName> Files => getFiles(fullPath);
 
-      public IEnumerable<FileName> FilesAsync() => getFilesParallel(fullPath);
+      public async Task<IEnumerable<FileName>> FilesAsync() => await getFilesAsync(fullPath);
 
-      public IEnumerable<FileName> FilesAsync(CancellationToken token) => getFilesParallel(fullPath, token);
+      public async Task<IEnumerable<FileName>> FilesAsync(CancellationToken token) => await getFilesAsync(fullPath, token);
 
       public IEnumerable<FolderName> Folders => getFolders(fullPath);
 
-      public IEnumerable<FolderName> FoldersAsync() => getFoldersParallel(fullPath);
+      public async Task<IEnumerable<FolderName>> FoldersAsync() => await getFoldersAsync(fullPath);
 
-      public IEnumerable<FolderName> FoldersAsync(CancellationToken token) => getFoldersParallel(fullPath, token);
+      public async Task<IEnumerable<FolderName>> FoldersAsync(CancellationToken token) => await getFoldersAsync(fullPath, token);
 
       public IEnumerable<FileName> LocalAndParentFiles => getLocalAndParentFiles(fullPath);
 
-      public IEnumerable<FileName> LocalAndParentFilesAsync() => getLocalAndParentFilesParallel(fullPath);
+      public async Task<IEnumerable<FileName>> LocalAndParentFilesAsync() => await getLocalAndParentFilesAsync(fullPath);
 
-      public IEnumerable<FileName> LocalAndParentFilesAsync(CancellationToken token) => getLocalAndParentFilesParallel(fullPath, token);
+      public async Task<IEnumerable<FileName>> LocalAndParentFilesAsync(CancellationToken token)
+      {
+         return await getLocalAndParentFilesAsync(fullPath, token);
+      }
 
       public IEnumerable<FolderName> LocalAndParentFolders => getLocalAndParentFolders(fullPath);
 
-      public IEnumerable<FolderName> LocalAndParentFoldersAsync() => getLocalAndParentFoldersParallel(fullPath);
+      public async Task<IEnumerable<FolderName>> LocalAndParentFoldersAsync() => await getLocalAndParentFoldersAsync(fullPath);
 
-      public IEnumerable<FolderName> LocalAndParentFoldersAsync(CancellationToken token) => getLocalAndParentFoldersParallel(fullPath, token);
+      public async Task<IEnumerable<FolderName>> LocalAndParentFoldersAsync(CancellationToken token)
+      {
+         return await getLocalAndParentFoldersAsync(fullPath, token);
+      }
 
       public int FileCount => getFileCount(fullPath);
 
@@ -569,6 +576,16 @@ namespace Core.Computers
 
       protected static IEnumerable<FileName> getFilesParallel(string folder) => GetFiles(folder).AsParallel().Select(f => (FileName)f);
 
+      protected static async Task<IEnumerable<FileName>> getFilesAsync(string folder)
+      {
+         return await Task.Run(() => GetFiles(folder).Select(f => (FileName)f));
+      }
+
+      protected static async Task<IEnumerable<FileName>> getFilesAsync(string folder, CancellationToken token)
+      {
+         return await Task.Run(() => GetFiles(folder).Select(f => (FileName)f), token);
+      }
+
       protected static IEnumerable<FileName> getFilesParallel(string folder, CancellationToken token)
       {
          return GetFiles(folder).AsParallel().WithCancellation(token).Select(f => (FileName)f);
@@ -577,6 +594,16 @@ namespace Core.Computers
       protected static IEnumerable<FolderName> getFolders(string folder)
       {
          return GetDirectories(folder).Select(f => (FolderName)f);
+      }
+
+      protected static async Task<IEnumerable<FolderName>> getFoldersAsync(string folder)
+      {
+         return await Task.Run(() => GetDirectories(folder).Select(f => (FolderName)f));
+      }
+
+      protected static async Task<IEnumerable<FolderName>> getFoldersAsync(string folder, CancellationToken token)
+      {
+         return await Task.Run(() => GetDirectories(folder).Select(f => (FolderName)f), token);
       }
 
       protected static IEnumerable<FolderName> getFoldersParallel(string folder)
@@ -606,6 +633,16 @@ namespace Core.Computers
          {
             yield return file;
          }
+      }
+
+      protected static async Task<IEnumerable<FileName>> getLocalAndParentFilesAsync(string folder)
+      {
+         return await Task.Run(() => getLocalAndParentFiles(folder));
+      }
+
+      protected static async Task<IEnumerable<FileName>> getLocalAndParentFilesAsync(string folder, CancellationToken token)
+      {
+         return await Task.Run(() => getLocalAndParentFiles(folder), token);
       }
 
       protected static IEnumerable<FileName> getLocalAndParentFilesParallel(string folder)
@@ -669,6 +706,16 @@ namespace Core.Computers
          {
             yield return parent;
          }
+      }
+
+      protected static async Task<IEnumerable<FolderName>> getLocalAndParentFoldersAsync(string folder)
+      {
+         return await Task.Run(() => getLocalAndParentFolders(folder));
+      }
+
+      protected static async Task<IEnumerable<FolderName>> getLocalAndParentFoldersAsync(string folder, CancellationToken token)
+      {
+         return await Task.Run(() => getLocalAndParentFolders(folder), token);
       }
 
       public static IEnumerable<FolderName> getLocalAndParentFoldersParallel(string folder)

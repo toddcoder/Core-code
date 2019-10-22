@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Core.Enumerables;
 using Core.Monads;
+using static Core.Monads.AttemptFunctions;
 
 namespace Core.Computers
 {
@@ -36,6 +39,17 @@ namespace Core.Computers
          return "File not found".Failure<FileName>();
       }
 
+      public static async Task<ICompletion<FileName>> LocalAndParentFilesAsync(this IEnumerable<FolderName> folders, Predicate<FileName> predicate)
+      {
+         return await runFromResultAsync(() => folders.LocalAndParentFiles(predicate));
+      }
+
+      public static async Task<ICompletion<FileName>> LocalAndParentFilesAsync(this IEnumerable<FolderName> folders, Predicate<FileName> predicate,
+         CancellationToken token)
+      {
+         return await runFromResultAsync(t => folders.LocalAndParentFiles(predicate), token);
+      }
+
       public static IEnumerable<FolderName> LocalAndParentFolders(this IEnumerable<FolderName> folders)
       {
          foreach (var folder in folders)
@@ -58,6 +72,17 @@ namespace Core.Computers
          }
 
          return "Folder not found".Failure<FolderName>();
+      }
+
+      public static async Task<ICompletion<FolderName>> LocalAndParentFoldersAsync(this IEnumerable<FolderName> folders,
+         Predicate<FolderName> predicate)
+      {
+         return await runFromResultAsync(() => folders.LocalAndParentFolders(predicate));
+      }
+      public static async Task<ICompletion<FolderName>> LocalAndParentFoldersAsync(this IEnumerable<FolderName> folders,
+         Predicate<FolderName> predicate, CancellationToken token)
+      {
+         return await runFromResultAsync(t => folders.LocalAndParentFolders(predicate), token);
       }
    }
 }

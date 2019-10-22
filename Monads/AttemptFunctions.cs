@@ -310,12 +310,28 @@ namespace Core.Monads
          }
       }
 
-      public static async Task<ICompletion<T>> runFromResult<T>(Func<CancellationToken, IResult<T>> func, CancellationTokenSource source)
+      public static async Task<ICompletion<T>> runFromResultAsync<T>(Func<IResult<T>> func)
       {
-         return await runFromResult(func, source.Token);
+         try
+         {
+            return await Task.Run(() => func().Completion());
+         }
+         catch (OperationCanceledException)
+         {
+            return cancelled<T>();
+         }
+         catch (Exception exception)
+         {
+            return interrupted<T>(exception);
+         }
       }
 
-      public static async Task<ICompletion<T>> runFromResult<T>(Func<CancellationToken, IResult<T>> func, CancellationToken token)
+      public static async Task<ICompletion<T>> runFromResultAsync<T>(Func<CancellationToken, IResult<T>> func, CancellationTokenSource source)
+      {
+         return await runFromResultAsync(func, source.Token);
+      }
+
+      public static async Task<ICompletion<T>> runFromResultAsync<T>(Func<CancellationToken, IResult<T>> func, CancellationToken token)
       {
          try
          {
