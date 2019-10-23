@@ -174,8 +174,8 @@ namespace Core.Tests
 
          Console.WriteLine();
 
-         var thisProgram = new ThisProgram();
-         thisProgram.Run("show --code 153 --amount 153.69 --attribute-targets all --text 'foo' --recursive", "--", " ");
+         var thisProgram = new ThisProgram { Shortcuts = "C = code; A = amount; R = recursive" };
+         thisProgram.Run("show -C 153 -A 153.69 --attribute-targets all --text 'foo' -R", "--", " ");
       }
 
       [TestMethod]

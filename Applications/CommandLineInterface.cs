@@ -49,9 +49,15 @@ namespace Core.Applications
 
       public string Application { get; set; } = "";
 
+      public string Shortcuts { get; set; } = "";
+
+      public string ShortPrefix { get; set; } = "-";
+
+      public string ShortSuffix { get; set; } = " ";
+
       public virtual void HandleException(Exception exception) => ExceptionWriter.WriteExceptionLine(exception);
 
-      public void Run(string prefix = "/", string suffix = ":")
+      public void Run(string prefix = "--", string suffix = " ")
       {
          Run(Environment.CommandLine, prefix, suffix);
       }
@@ -200,8 +206,9 @@ namespace Core.Applications
                prefix = "//";
             }
 
-            var itemPrefix = $"'{prefix}' {namePattern(name)} '{suffix}' /(.*)";
             var matcher = new Matcher();
+
+            var itemPrefix = $"'{prefix}' {namePattern(name)} '{suffix}' /(.*)";
 
             if (matcher.IsMatch(commandLine, $"'{prefix}' {namePattern(name)} $") && type == typeof(bool))
             {
@@ -260,7 +267,14 @@ namespace Core.Applications
          }
       }
 
-      static string fixCommand(string commandLine, string prefix, string suffix)
+      static Hash<char, string> getShortcuts(string source) =>
+         source.Split("/s* ';' /s*").Select(s =>
+         {
+            var pair = s.Split("/s* '=' /s*");
+            return (key: pair[0][0], value: pair[1]);
+         }).ToHash(i => i.key, i => i.value);
+
+      string fixCommand(string commandLine, string prefix, string suffix)
       {
          var matcher = new Matcher();
          if (matcher.IsMatch(commandLine, "^ /([/w '-']+) /s*"))
@@ -268,12 +282,34 @@ namespace Core.Applications
             var command = matcher.FirstGroup;
             matcher.FirstGroup = $"{prefix}{command}{suffix}true";
 
-            return matcher.ToString();
+            commandLine = matcher.ToString();
          }
-         else
+
+         if (Shortcuts.IsEmpty())
          {
             return commandLine;
          }
+
+         if (matcher.IsMatch(commandLine, $"'{ShortPrefix}' /['a-zA-Z0-9'] '{ShortSuffix}'"))
+         {
+            var shortcuts = getShortcuts(Shortcuts);
+            for (var matchIndex = 0; matchIndex < matcher.MatchCount; matchIndex++)
+            {
+               var key = matcher[matchIndex, 1][0];
+               if (shortcuts.If(key, out var replacement))
+               {
+                  matcher[matchIndex, 0] = $"{prefix}{replacement}{suffix}";
+               }
+               else
+               {
+                  matcher[matchIndex, 0] = "";
+               }
+            }
+
+            commandLine = matcher.ToString();
+         }
+
+         return commandLine;
       }
 
       protected bool setPossibleAlias(string commandLine)
@@ -358,10 +394,10 @@ namespace Core.Applications
             .ToArray();
          if (arguments.FirstOrNone(p => p.IsFailed).If(out var failure))
          {
-	         if (failure.IfNot(out var exception))
-	         {
-		         HandleException(exception);
-	         }
+            if (failure.IfNot(out var exception))
+            {
+               HandleException(exception);
+            }
          }
          else
          {
@@ -493,7 +529,8 @@ namespace Core.Applications
                      {
                         evaluator[name] = getBoolean(rest, suffix);
                      }
-                     else if (type == typeof(string) || type == typeof(FileName) || type == typeof(FolderName) || type == typeof(IMaybe<FileName>) || type == typeof(IMaybe<FolderName>))
+                     else if (type == typeof(string) || type == typeof(FileName) || type == typeof(FolderName) || type == typeof(IMaybe<FileName>) ||
+                        type == typeof(IMaybe<FolderName>))
                      {
                         evaluator[name] = getString(rest, type);
                      }
