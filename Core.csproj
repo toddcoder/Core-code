@@ -65,6 +65,7 @@
     <Compile Include="Applications\CommandLine.cs" />
     <Compile Include="Applications\CommandLineInterface.cs" />
     <Compile Include="Applications\ConsoleFunctions.cs" />
+    <Compile Include="Applications\ConvertArgs.cs" />
     <Compile Include="Applications\EntryPointAttribute.cs" />
     <Compile Include="Applications\EntryPointType.cs" />
     <Compile Include="Applications\EventExtensions.cs" />
@@ -236,7 +237,6 @@
     <Compile Include="Monads\Matching.cs" />
     <Compile Include="Monads\MatchingContext.cs" />
     <Compile Include="Monads\MatchingExtensions.cs" />
-    <Compile Include="Monads\MatchType.cs" />
     <Compile Include="Monads\MonadExtensions.cs" />
     <Compile Include="Monads\MonadFunctions.cs" />
     <Compile Include="Monads\None.cs" />

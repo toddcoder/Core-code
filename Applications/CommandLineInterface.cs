@@ -26,6 +26,8 @@ namespace Core.Applications
 
       protected Hash<string, string> aliases;
 
+      public event EventHandler<ConvertArgs> Convert;
+
       public CommandLineInterface() : this(getStandardWriter()) { }
 
       public CommandLineInterface(IWriter standardWriter) : this(standardWriter, getExceptionWriter()) { }
@@ -95,7 +97,7 @@ namespace Core.Applications
          aliasFile.Lines = aliases.Select(kv => $"{kv.Key}~{kv.Value}").ToArray();
       }
 
-      IResult<(MethodInfo, EntryPointType)> getEntryPoint()
+      protected IResult<(MethodInfo, EntryPointType)> getEntryPoint()
       {
          return GetType()
             .GetMethods()
@@ -105,7 +107,7 @@ namespace Core.Applications
             .Map(t => (t.methodInfo, t.attr.Type));
       }
 
-      static string namePattern(string name)
+      protected static string namePattern(string name)
       {
          var matcher = new Matcher();
          if (matcher.IsMatch(name, "['A-Z']"))
@@ -123,7 +125,7 @@ namespace Core.Applications
          }
       }
 
-      static object getBoolean(string rest, string suffix)
+      protected static object getBoolean(string rest, string suffix)
       {
          if (suffix == " " && !rest.IsMatch("^ /s* 'false' | 'true'"))
          {
@@ -135,7 +137,7 @@ namespace Core.Applications
          }
       }
 
-      static object getString(string rest, Type type)
+      protected object getString(string rest, Type type)
       {
          string source;
          if (rest.IsMatch("^ /s* [quote]"))
@@ -169,16 +171,25 @@ namespace Core.Applications
          }
          else
          {
-            return source;
+            if (Convert != null)
+            {
+               var args = new ConvertArgs(source);
+               Convert.Invoke(this, args);
+               return args.Result.DefaultTo(() => source);
+            }
+            else
+            {
+               return source;
+            }
          }
       }
 
-      static object getInt32(string rest)
+      protected static object getInt32(string rest)
       {
          return rest.Keep("^ /s* -/s+").TrimStart().ToInt();
       }
 
-      static object getFloatingPoint(string rest, Type type)
+      protected static object getFloatingPoint(string rest, Type type)
       {
          var source = rest.Keep("^ /s* -/s+").TrimStart();
          if (type == typeof(float))
@@ -191,13 +202,13 @@ namespace Core.Applications
          }
       }
 
-      static object getEnum(string rest, Type type)
+      protected static object getEnum(string rest, Type type)
       {
          var source = rest.Keep("^ /s* -/s+").TrimStart();
          return Enum.Parse(type, source.Replace("-", ""), true);
       }
 
-      static IResult<object> retrieveItem(string name, Type type, IMaybe<object> anyDefaultValue, string prefix, string suffix, string commandLine)
+      protected IResult<object> retrieveItem(string name, Type type, IMaybe<object> anyDefaultValue, string prefix, string suffix, string commandLine)
       {
          return tryTo(() =>
          {
@@ -254,7 +265,7 @@ namespace Core.Applications
          });
       }
 
-      static string removeExecutableFromCommandLine(string commandLine)
+      protected static string removeExecutableFromCommandLine(string commandLine)
       {
          var matcher = new Matcher();
          if (matcher.IsMatch(commandLine, "^ (.+ '.exe' /s* [quote]? /s*) /s* /(.*) $"))
@@ -267,14 +278,14 @@ namespace Core.Applications
          }
       }
 
-      static Hash<char, string> getShortcuts(string source) =>
+      protected static Hash<char, string> getShortcuts(string source) =>
          source.Split("/s* ';' /s*").Select(s =>
          {
             var pair = s.Split("/s* '=' /s*");
             return (key: pair[0][0], value: pair[1]);
          }).ToHash(i => i.key, i => i.value);
 
-      string fixCommand(string commandLine, string prefix, string suffix)
+      protected string fixCommand(string commandLine, string prefix, string suffix)
       {
          var matcher = new Matcher();
          if (matcher.IsMatch(commandLine, "^ /([/w '-']+) /s*"))
@@ -386,7 +397,7 @@ namespace Core.Applications
          }
       }
 
-      void useWithParameters(MethodInfo methodInfo, string prefix, string suffix, string commandLine)
+      protected void useWithParameters(MethodInfo methodInfo, string prefix, string suffix, string commandLine)
       {
          var arguments = methodInfo.GetParameters()
             .Select(p => (p.Name, p.ParameterType, anyDefaultValue: maybe(p.HasDefaultValue, () => p.DefaultValue)))
@@ -422,7 +433,7 @@ namespace Core.Applications
          }
       }
 
-      void useWithObject(MethodInfo methodInfo, string prefix, string suffix, string commandLine)
+      protected void useWithObject(MethodInfo methodInfo, string prefix, string suffix, string commandLine)
       {
          var anyArgument =
             from parameterInfo in methodInfo.GetParameters().Take(1).FirstOrFail("Couldn't retrieve object information")
@@ -456,7 +467,7 @@ namespace Core.Applications
          }
       }
 
-      void useWithThis(MethodInfo methodInfo, string prefix, string suffix, string commandLine)
+      protected void useWithThis(MethodInfo methodInfo, string prefix, string suffix, string commandLine)
       {
          if (fillObject(this, prefix, suffix, commandLine).If(out _, out var filledException))
          {
@@ -485,7 +496,7 @@ namespace Core.Applications
          }
       }
 
-      static string xmlToPascal(string name)
+      protected static string xmlToPascal(string name)
       {
          var matcher = new Matcher();
          if (matcher.IsMatch(name, "'-' /(/w)"))
@@ -504,7 +515,7 @@ namespace Core.Applications
          }
       }
 
-      static IResult<object> fillObject(object emptyObject, string prefix, string suffix, string commandLine)
+      protected IResult<object> fillObject(object emptyObject, string prefix, string suffix, string commandLine)
       {
          try
          {
