@@ -2,24 +2,48 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Threading;
 
 namespace Core.Collections
 {
    public class Hash<TKey, TValue> : Dictionary<TKey, TValue>, IHash<TKey, TValue>
    {
-      public Hash() { }
+      protected ReaderWriterLockSlim locker;
 
-      public Hash(int capacity) : base(capacity) { }
+      public Hash()
+      {
+         locker = new ReaderWriterLockSlim();
+      }
 
-      public Hash(IEqualityComparer<TKey> comparer) : base(comparer) { }
+      public Hash(int capacity) : base(capacity)
+      {
+         locker = new ReaderWriterLockSlim();
+      }
 
-      public Hash(int capacity, IEqualityComparer<TKey> comparer) : base(capacity, comparer) { }
+      public Hash(IEqualityComparer<TKey> comparer) : base(comparer)
+      {
+         locker = new ReaderWriterLockSlim();
+      }
 
-      public Hash(IDictionary<TKey, TValue> dictionary) : base(dictionary) { }
+      public Hash(int capacity, IEqualityComparer<TKey> comparer) : base(capacity, comparer)
+      {
+         locker = new ReaderWriterLockSlim();
+      }
 
-      public Hash(IDictionary<TKey, TValue> dictionary, IEqualityComparer<TKey> comparer) : base(dictionary, comparer) { }
+      public Hash(IDictionary<TKey, TValue> dictionary) : base(dictionary)
+      {
+         locker = new ReaderWriterLockSlim();
+      }
 
-      protected Hash(SerializationInfo info, StreamingContext context) : base(info, context) { }
+      public Hash(IDictionary<TKey, TValue> dictionary, IEqualityComparer<TKey> comparer) : base(dictionary, comparer)
+      {
+         locker = new ReaderWriterLockSlim();
+      }
+
+      protected Hash(SerializationInfo info, StreamingContext context) : base(info, context)
+      {
+         locker = new ReaderWriterLockSlim();
+      }
 
       public Hash(IEnumerable<(TKey key, TValue value)> tuples)
       {
@@ -27,6 +51,8 @@ namespace Core.Collections
          {
             this[key] = value;
          }
+
+         locker = new ReaderWriterLockSlim();
       }
 
       public new TValue this[TKey key]
@@ -57,26 +83,28 @@ namespace Core.Collections
 
       public TValue Find(TKey key, Func<TKey, TValue> defaultValue, bool addIfNotFound = false)
       {
-         lock (new object())
+         if (If(key, out var result))
          {
-            if (If(key, out var result))
+            return result;
+         }
+         else
+         {
+            var value = defaultValue(key);
+            if (addIfNotFound)
             {
-               return result;
-            }
-            else
-            {
-               var value = defaultValue(key);
-               if (addIfNotFound)
+               try
                {
-                  try
-                  {
-                     Add(key, value);
-                  }
-                  catch (ArgumentException) { }
+                  locker.EnterWriteLock();
+                  Add(key, value);
                }
-
-               return value;
+               catch (ArgumentException) { }
+               finally
+               {
+                  locker.ExitWriteLock();
+               }
             }
+
+            return value;
          }
       }
 
@@ -120,8 +148,17 @@ namespace Core.Collections
       {
          if (ContainsKey(key))
          {
-            value = this[key];
-            return true;
+            try
+            {
+               locker.EnterReadLock();
+               value = this[key];
+
+               return true;
+            }
+            finally
+            {
+               locker.ExitReadLock();
+            }
          }
          else
          {
@@ -132,8 +169,8 @@ namespace Core.Collections
 
       public Hash<TKey, TValue> Merge(Hash<TKey, TValue> otherHash)
       {
-	      var result = new Hash<TKey, TValue>();
-	      foreach (var (key, value) in this)
+         var result = new Hash<TKey, TValue>();
+         foreach (var (key, value) in this)
          {
             result[key] = value;
          }
