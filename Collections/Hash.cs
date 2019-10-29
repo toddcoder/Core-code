@@ -12,37 +12,37 @@ namespace Core.Collections
 
       public Hash()
       {
-         locker = new ReaderWriterLockSlim();
+         locker = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
       }
 
       public Hash(int capacity) : base(capacity)
       {
-         locker = new ReaderWriterLockSlim();
+         locker = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
       }
 
       public Hash(IEqualityComparer<TKey> comparer) : base(comparer)
       {
-         locker = new ReaderWriterLockSlim();
+         locker = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
       }
 
       public Hash(int capacity, IEqualityComparer<TKey> comparer) : base(capacity, comparer)
       {
-         locker = new ReaderWriterLockSlim();
+         locker = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
       }
 
       public Hash(IDictionary<TKey, TValue> dictionary) : base(dictionary)
       {
-         locker = new ReaderWriterLockSlim();
+         locker = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
       }
 
       public Hash(IDictionary<TKey, TValue> dictionary, IEqualityComparer<TKey> comparer) : base(dictionary, comparer)
       {
-         locker = new ReaderWriterLockSlim();
+         locker = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
       }
 
       protected Hash(SerializationInfo info, StreamingContext context) : base(info, context)
       {
-         locker = new ReaderWriterLockSlim();
+         locker = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
       }
 
       public Hash(IEnumerable<(TKey key, TValue value)> tuples)
