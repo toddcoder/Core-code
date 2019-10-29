@@ -5,9 +5,9 @@ namespace Core.Enumerables
 {
    public class DateTimeRange : XRange<DateTime, uint>
    {
-      public static string DefaultFormatString = "dd-MM-yyyy";
+	   public const string DEFAULT_FORMAT_STRING = "dd-MM-yyyy";
 
-      public DateTimeRange(DateTime from, DateTime to, uint distance, bool includeFrom, bool includeTo) : base(from, to, distance,
+	   public DateTimeRange(DateTime from, DateTime to, uint distance, bool includeFrom, bool includeTo) : base(from, to, distance,
          includeFrom, includeTo)
       {
          Format = "";
@@ -23,7 +23,7 @@ namespace Core.Enumerables
 
       protected override string valueAsString(DateTime value)
       {
-         var format = Format.IsNotEmpty() ? Format : DefaultFormatString;
+         var format = Format.IsNotEmpty() ? Format : DEFAULT_FORMAT_STRING;
          return value.ToString(format);
       }
    }
