@@ -332,11 +332,6 @@ namespace Core.Strings
 			return source.LowerToCamelCase("_", upperCase);
 		}
 
-		public static string ObjectGraphToCamelCase(this string source, bool upperCase)
-		{
-			return source.LowerToCamelCase("-", upperCase);
-		}
-
 		public static string Abbreviate(this string source)
 		{
 			if (source.IsEmpty())
@@ -1485,6 +1480,11 @@ namespace Core.Strings
 				return none<T>();
 			}
 		}
+
+      public static IResult<object> Enumeration(this string value, Type enumerationType, bool ignoreCase = true)
+      {
+         return tryTo(() => Enum.Parse(enumerationType, value, ignoreCase));
+      }
 
       public static IResult<T> Enumeration<T>(this string value, bool ignoreCase = true) where T : struct
       {

@@ -1,6 +1,7 @@
 ﻿using Core.Assertions;
 using Core.Computers;
 using Core.RegularExpressions;
+using Core.Strings;
 
 namespace Core.ObjectGraphs.Parsers
 {
@@ -29,7 +30,7 @@ namespace Core.ObjectGraphs.Parsers
 
          if (value.StartsWith("@"))
          {
-            value = value.Substring(1);
+            value = value.Drop(1);
             value = replacer.Replace(value);
             FileName file = value;
 

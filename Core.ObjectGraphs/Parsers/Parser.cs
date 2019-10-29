@@ -25,15 +25,15 @@ namespace Core.ObjectGraphs.Parsers
       public const string DEFAULT_CONFIGS = @"C:\Configurations";
 
       string source;
-      IMaybe<string> configFolder;
+      IMaybe<string> anyConfigFolder;
 
       public IMaybe<Replacer> Replacer { get; set; }
 
-      public Parser(string source, IMaybe<string> configFolder)
+      public Parser(string source, IMaybe<string> anyConfigFolder)
       {
          this.source = source;
          Replacer = none<Replacer>();
-         this.configFolder = configFolder;
+         this.anyConfigFolder = anyConfigFolder;
       }
 
       public Parser(string source) : this(source, none<string>()) { }
@@ -45,9 +45,9 @@ namespace Core.ObjectGraphs.Parsers
          var replacer = Duplicate(Replacer, source);
          Replacer = replacer.Some();
          replacer["configs"] = configs;
-         if (configFolder.If(out var cf))
+         if (anyConfigFolder.If(out var configFolder))
          {
-            replacer["config"] = cf;
+            replacer["config"] = configFolder;
          }
 
          var parsed = replacer.Parse();

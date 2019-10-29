@@ -102,7 +102,7 @@ namespace Core.ObjectGraphs
          foreach (var info in infos)
          {
             var signature = info.Name;
-            var childName = signature.CamelToObjectGraphCase();
+            var childName = signature.ToCamel();
             if (evaluator.Attribute<SignatureAttribute>(signature).If(out var a))
             {
                childName = a.Signature;
@@ -555,7 +555,14 @@ namespace Core.ObjectGraphs
 
       public virtual IResult<object> Convert(Type conversionType)
       {
-         return Value.AsObject().Otherwise(e => System.Convert.ChangeType(Value, conversionType));
+         if (conversionType.IsEnum)
+         {
+            return Value.Enumeration(conversionType);
+         }
+         else
+         {
+            return Value.AsObject().Otherwise(e => System.Convert.ChangeType(Value, conversionType));
+         }
       }
 
       IResult<object[]> getArguments(Type arrayType)
@@ -577,13 +584,11 @@ namespace Core.ObjectGraphs
       protected virtual void setValue(PropertyEvaluator evaluator)
       {
          string signature;
-         var graphName = name.CamelToObjectGraphCase();
-         var aSignature = evaluator.WithAttribute<SignatureAttribute>()
-            .Where(s => s.Name.CamelToObjectGraphCase() == graphName)
-            .FirstOrNone();
-         if (aSignature.If(out var sv))
+         var graphName = name.ToCamel();
+         var anyWithAttribute = evaluator.WithAttribute<SignatureAttribute>().Where(s => s.Name.ToCamel() == graphName).FirstOrNone();
+         if (anyWithAttribute.If(out var withAttribute))
          {
-            signature = sv.Name;
+            signature = withAttribute.Name;
          }
          else if (type.IsNotEmpty())
          {
@@ -591,7 +596,7 @@ namespace Core.ObjectGraphs
          }
          else
          {
-            signature = name.ObjectGraphToCamelCase(true);
+            signature = name.ToPascal();
          }
 
          if (evaluator.Contains(signature))
@@ -651,7 +656,7 @@ namespace Core.ObjectGraphs
          {
             var signature = "";
             if (evaluator.WithAttribute<SignatureAttribute>()
-               .Where(sig => sig.Name.CamelToObjectGraphCase() == graph.Name)
+               .Where(sig => sig.Name == graph.Name)
                .FirstOrNone().If(out var s))
             {
                signature = s.Name;
@@ -662,7 +667,7 @@ namespace Core.ObjectGraphs
             }
             else
             {
-               signature = graph.Name.ObjectGraphToCamelCase(true);
+               signature = graph.Name.ToPascal();
             }
 
             if (evaluator.Contains(signature))
@@ -801,8 +806,6 @@ namespace Core.ObjectGraphs
 
          return hash;
       }
-
-      public SwitchContext Match() => new SwitchContext(this);
 
       public ObjectGraph Subgraph
       {

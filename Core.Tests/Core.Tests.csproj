@@ -58,6 +58,7 @@
     <Compile Include="FolderNameTests.cs" />
     <Compile Include="LegacyMatcherTests.cs" />
     <Compile Include="MonadTests.cs" />
+    <Compile Include="ObjectGraphTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StringClassTests.cs" />
     <Compile Include="StringExtensionTests.cs" />
@@ -66,6 +67,10 @@
     <ProjectReference Include="..\Core.csproj">
       <Project>{fe997a92-d183-4c85-9a1a-fb032311ef62}</Project>
       <Name>Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Core.ObjectGraphs\Core.ObjectGraphs.csproj">
+      <Project>{d832ee86-c29e-48c6-9704-73486d3b089c}</Project>
+      <Name>Core.ObjectGraphs</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

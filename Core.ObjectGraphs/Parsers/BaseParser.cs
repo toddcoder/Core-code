@@ -1,5 +1,4 @@
-﻿using System;
-using Core.Monads;
+﻿using Core.Monads;
 using Core.RegularExpressions;
 using Core.Strings;
 using static Core.Monads.MonadFunctions;
@@ -11,23 +10,15 @@ namespace Core.ObjectGraphs.Parsers
       public const string REGEX_NAME = "/(([/w '$@.'] [/w '-']* | '//(' /d+ ')') '*'?)";
       public const string REGEX_TYPE = "(/s* ':' /s* /([/w '$@.'] [/w '-']* (['(<{['] -[']}>)']* [']}>)'])?))?";
       public const string REGEX_VALUE = "/(.*)";
-      public const string REGEX_SERVICE = "/(-[';']+) ';'";
-      public const string REGEX_OBJECT_SERVICE_REFERENCE = "^ /s* " + REGEX_NAME + " '(' /(-[')']*) ')' $";
-      public const string REGEX_STEM = "(['-='] '>')";
+      public const string REGEX_STEM = "'->'";
 
       public static int TabCount;
 
       static BaseParser() => TabCount = -1;
 
-      public static void Assert(bool test, string[] source, int position, string message)
+      public static string AssertionMessage(string[] source, int position, string message)
       {
-         if (test)
-         {
-            return;
-         }
-
-         message = $"line '{source[position]}' at {position + 1}: {message}";
-         throw new ApplicationException(message);
+         return $"line '{source[position]}' at {position + 1}: {message}";
       }
 
       protected Matcher matcher;

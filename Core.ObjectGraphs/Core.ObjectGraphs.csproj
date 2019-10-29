@@ -65,7 +65,6 @@
     <Compile Include="SignatureAttribute.cs" />
     <Compile Include="StringExtensions.cs" />
     <Compile Include="Switch.cs" />
-    <Compile Include="SwitchContext.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core.csproj">

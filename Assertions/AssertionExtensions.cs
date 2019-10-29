@@ -8,6 +8,7 @@ using Core.Assertions.Objects;
 using Core.Assertions.Strings;
 using Core.Computers;
 using Core.Monads;
+using Core.RegularExpressions;
 
 namespace Core.Assertions
 {
@@ -50,5 +51,7 @@ namespace Core.Assertions
       public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this Dictionary<TKey, TValue> value) => new DictionaryAssertion<TKey, TValue>(value);
 
       public static TypeAssertion Must(this Type value) => new TypeAssertion(value);
+
+      public static MatcherAssertion Must(this Matcher value) => new MatcherAssertion(value);
    }
 }

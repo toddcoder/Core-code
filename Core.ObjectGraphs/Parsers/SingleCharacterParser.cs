@@ -25,7 +25,7 @@ namespace Core.ObjectGraphs.Parsers
          {
             case "=":
                value = matcher.IsMatch(name, "^ ['@$.'] /(.+) $") ? matcher[0, 1] : name;
-               value = value.ObjectGraphToCamelCase(true);
+               value = value.ToPascal();
                break;
             case "+":
                value = "true";

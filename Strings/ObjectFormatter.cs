@@ -15,7 +15,7 @@ namespace Core.Strings
       {
          for (var i = 0; i < matcher.MatchCount; i++)
          {
-            var name = matcher[i, 1].ObjectGraphToCamelCase(true);
+            var name = matcher[i, 1].ToCamel();
             var format = matcher[i, 2];
             if (evaluator.ContainsKey(name))
             {
