@@ -160,6 +160,30 @@ namespace Core.Monads
 
       public bool ValueEqualTo(T otherValue) => false;
 
+      public IResult<T> Otherwise(Func<Exception, T> func)
+      {
+         try
+         {
+            return func(exception).Success();
+         }
+         catch (Exception otherException)
+         {
+            return failure<T>(otherException);
+         }
+      }
+
+      public IResult<T> Otherwise(Func<Exception, IResult<T>> func)
+      {
+         try
+         {
+            return func(exception);
+         }
+         catch (Exception otherException)
+         {
+            return failure<T>(otherException);
+         }
+      }
+
       public bool HasValue => false;
    }
 }

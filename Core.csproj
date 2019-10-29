@@ -255,7 +255,7 @@
     <Compile Include="Objects\DataContainer.cs" />
     <Compile Include="Objects\DataContainerEvaluator.cs" />
     <Compile Include="Objects\DataContainerExtensions.cs" />
-    <Compile Include="Objects\DisposeHelps.cs" />
+    <Compile Include="Objects\DisposeExtensions.cs" />
     <Compile Include="Objects\Equatable.cs" />
     <Compile Include="Objects\FieldGetter.cs" />
     <Compile Include="Objects\IEvaluator.cs" />

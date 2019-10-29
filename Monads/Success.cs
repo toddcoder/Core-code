@@ -209,6 +209,10 @@ namespace Core.Monads
 
       public bool ValueEqualTo(T otherValue) => value.Equals(otherValue);
 
+      public IResult<T> Otherwise(Func<Exception, T> func) => this;
+
+      public IResult<T> Otherwise(Func<Exception, IResult<T>> func) => this;
+
       public bool HasValue => true;
    }
 }

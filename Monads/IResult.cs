@@ -70,5 +70,9 @@ namespace Core.Monads
       bool EqualToValueOf(IResult<T> otherResult);
 
       bool ValueEqualTo(T otherValue);
+
+      IResult<T> Otherwise(Func<Exception, T> func);
+
+      IResult<T> Otherwise(Func<Exception, IResult<T>> func);
    }
 }

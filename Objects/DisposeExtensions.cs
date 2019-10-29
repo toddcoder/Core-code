@@ -4,7 +4,7 @@ using System.IO;
 
 namespace Core.Objects
 {
-   public static class DisposeHelps
+   public static class DisposeExtensions
    {
       public static void Close(this IDbConnection connection)
       {

@@ -1571,6 +1571,69 @@ namespace Core.Strings
          }
       }
 
+      public static IResult<object> AsObject(this string value)
+      {
+         if (value == null)
+         {
+            return "value is null".Failure<object>();
+         }
+         else if (value.IsQuoted())
+         {
+            return value.ExtractFromQuotes().Success<object>();
+         }
+         else if (value.IsIntegral())
+         {
+            return
+               from newValue in value.Int64()
+               from assertion in newValue.Must().BeBetween(int.MinValue).And(int.MaxValue).Try("Out of range for int32")
+               select (object)(int)assertion;
+         }
+
+         if (value.IsSingle())
+         {
+            var matcher = new Matcher();
+            return
+               from attempt in matcher.IsMatch(value, "^ /(.+) ['fF'] $").Must().Be().Try("Single in invalid format")
+               from floated in matcher.FirstGroup.Single()
+               select (object)floated;
+         }
+
+         if (value.IsDouble())
+         {
+            var matcher = new Matcher();
+            return
+               from attempt in matcher.IsMatch(value, "^ /(.+) ['dD'] $").Must().Be().Try("Double in invalid format")
+               from doubled in matcher.FirstGroup.Double()
+               select (object)doubled;
+         }
+
+         if (value.IsDecimal())
+         {
+            var matcher = new Matcher();
+            return
+               from attempt in matcher.IsMatch(value, "^ /(.+) ['mM'] $").Must().Be().Try("Decimal in invalid format")
+               from result in matcher.FirstGroup.Decimal()
+               select (object)result;
+         }
+
+         if (value.IsGUID())
+         {
+            return value.Guid().Map(g => (object)g);
+         }
+         else if (value.IsDate())
+         {
+            return value.DateTime().Map(dt => (object)dt);
+         }
+         else if (value.Same("false") || value.Same("true"))
+         {
+            return value.Boolean().Map(b => (object)b);
+         }
+         else
+         {
+            return $"Couldn't determine type of {value}".Failure<object>();
+         }
+      }
+
 		public static string ToNonNullString(this object value) => value?.ToString() ?? string.Empty;
 
 		public static IMaybe<string> ToIMaybeString(this object value) => maybe(value != null, value.ToString);
