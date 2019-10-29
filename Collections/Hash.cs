@@ -61,7 +61,15 @@ namespace Core.Collections
          {
             if (ContainsKey(key))
             {
-               return base[key];
+               try
+               {
+                  locker.EnterReadLock();
+                  return base[key];
+               }
+               finally
+               {
+                  locker.ExitReadLock();
+               }
             }
             else
             {
@@ -70,13 +78,21 @@ namespace Core.Collections
          }
          set
          {
-            if (ContainsKey(key))
+            try
             {
-               base[key] = value;
+               locker.EnterWriteLock();
+               if (ContainsKey(key))
+               {
+                  base[key] = value;
+               }
+               else
+               {
+                  Add(key, value);
+               }
             }
-            else
+            finally
             {
-               Add(key, value);
+               locker.ExitWriteLock();
             }
          }
       }
