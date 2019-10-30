@@ -49,5 +49,15 @@ namespace Core.Tests
 
          Console.WriteLine(builder);
       }
+
+      [TestMethod]
+      public void ListStringTest()
+      {
+         var listString = new ListString("alpha", "; ", true) { Text = "bravo" };
+         listString.Text = "charlie";
+         Console.WriteLine(listString);
+         listString.Text = "alpha";
+         Console.WriteLine(listString);
+      }
    }
 }

@@ -326,6 +326,7 @@
     <Compile Include="Strings\IStringStream.cs" />
     <Compile Include="Strings\ITableMakerManager.cs" />
     <Compile Include="Strings\Justification.cs" />
+    <Compile Include="Strings\ListString.cs" />
     <Compile Include="Strings\ObjectFormatter.cs" />
     <Compile Include="Strings\OffsetTracker.cs" />
     <Compile Include="Strings\Padder.cs" />
