@@ -1,0 +1,92 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{5D564FEF-44E1-47A1-AD5C-B0F3CA6BE2C5}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Core.Data</RootNamespace>
+    <AssemblyName>Core.Data</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Adapter.cs" />
+    <Compile Include="AdapterExtensions.cs" />
+    <Compile Include="Adapters.cs" />
+    <Compile Include="AdapterTrying.cs" />
+    <Compile Include="Command.cs" />
+    <Compile Include="Configurations\DataGraphs.cs" />
+    <Compile Include="Connection.cs" />
+    <Compile Include="ConnectionStrings\AccessConnectionString.cs" />
+    <Compile Include="ConnectionStrings\CSVConnectionString.cs" />
+    <Compile Include="ConnectionStrings\ExcelConnectionString.cs" />
+    <Compile Include="ConnectionStrings\IConnectionString.cs" />
+    <Compile Include="ConnectionStrings\SQLConnectionString.cs" />
+    <Compile Include="ConnectionStrings\TextConnectionString.cs" />
+    <Compile Include="DataExtensions.cs" />
+    <Compile Include="DataGraphExtensions.cs" />
+    <Compile Include="DataSources\CancelEventArgs.cs" />
+    <Compile Include="DataSources\DataSource.cs" />
+    <Compile Include="DataSources\OLEDBDataSource.cs" />
+    <Compile Include="DataSources\SQLDataSource.cs" />
+    <Compile Include="DataSources\TextDataSource.cs" />
+    <Compile Include="Fields\Field.cs" />
+    <Compile Include="Fields\Fields.cs" />
+    <Compile Include="IActive.cs" />
+    <Compile Include="IBulkCopyTarget.cs" />
+    <Compile Include="Parameters\Parameter.cs" />
+    <Compile Include="Parameters\Parameters.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Reader.cs" />
+    <Compile Include="Setups\ISetup.cs" />
+    <Compile Include="Setups\ISetupWithInfo.cs" />
+    <Compile Include="Setups\OLEDBSetup.cs" />
+    <Compile Include="Setups\OLEDBSetupInfo.cs" />
+    <Compile Include="Setups\SetupInfo.cs" />
+    <Compile Include="Setups\SQLSetup.cs" />
+    <Compile Include="Setups\TextSetup.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Core.csproj">
+      <Project>{fe997a92-d183-4c85-9a1a-fb032311ef62}</Project>
+      <Name>Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Core.ObjectGraphs\Core.ObjectGraphs.csproj">
+      <Project>{d832ee86-c29e-48c6-9704-73486d3b089c}</Project>
+      <Name>Core.ObjectGraphs</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
