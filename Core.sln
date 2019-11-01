@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Internet", "Core.Inter
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.ObjectGraphs", "Core.ObjectGraphs\Core.ObjectGraphs.csproj", "{D832EE86-C29E-48C6-9704-73486D3B089C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Io", "Core.Io\Core.Io.csproj", "{57AA31E6-00C7-4C62-A045-3B51BD61D685}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{D832EE86-C29E-48C6-9704-73486D3B089C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D832EE86-C29E-48C6-9704-73486D3B089C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D832EE86-C29E-48C6-9704-73486D3B089C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{57AA31E6-00C7-4C62-A045-3B51BD61D685}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{57AA31E6-00C7-4C62-A045-3B51BD61D685}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{57AA31E6-00C7-4C62-A045-3B51BD61D685}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{57AA31E6-00C7-4C62-A045-3B51BD61D685}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
