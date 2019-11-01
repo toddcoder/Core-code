@@ -28,14 +28,6 @@ namespace Core.Monads
          return true;
       }
 
-      public bool Out(out T value, out IResult<T> original)
-      {
-         value = this.value;
-         original = this;
-
-         return true;
-      }
-
       public bool ValueOrOriginal(out T value, out IResult<T> original)
       {
          value = this.value;

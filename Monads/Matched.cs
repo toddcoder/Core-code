@@ -61,14 +61,6 @@ namespace Core.Monads
          return false;
       }
 
-      public bool Out(out T value, out IMatched<T> original)
-      {
-         value = this.value;
-         original = this;
-
-         return true;
-      }
-
       public bool ValueOrOriginal(out T value, out IMatched<T> original)
       {
          value = this.value;
@@ -81,15 +73,6 @@ namespace Core.Monads
       {
          value = this.value;
          matched = "Do not use this".FailedMatch<TMatched>();
-
-         return true;
-      }
-
-      public bool If(out T value, out bool isNotMatched, out Exception exception)
-      {
-         value = this.value;
-         isNotMatched = false;
-         exception = "There is no exception".Throws();
 
          return true;
       }

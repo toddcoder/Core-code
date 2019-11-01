@@ -55,15 +55,9 @@ namespace Core.Monads
 
       bool Failed(out Exception exception);
 
-      [Obsolete("Use ValueOrOriginal or ValueOrCast")]
-      bool Out(out T value, out IMatched<T> original);
-
       bool ValueOrOriginal(out T value, out IMatched<T> original);
 
       bool ValueOrCast<TMatched>(out T value, out IMatched<TMatched> matched);
-
-		[Obsolete("Use new if")]
-      bool If(out T value, out bool isNotMatched, out Exception exception);
 
       bool If(out T value, out IMaybe<Exception> exception);
 

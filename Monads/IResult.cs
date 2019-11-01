@@ -6,9 +6,6 @@ namespace Core.Monads
    {
       bool If(out T value, out Exception exception);
 
-      [Obsolete("Use ValueOrOriginal or ValueOrCast")]
-      bool Out(out T value, out IResult<T> original);
-
       bool ValueOrOriginal(out T value, out IResult<T> original);
 
       bool ValueOrCast<TResult>(out T value, out IResult<TResult> result);

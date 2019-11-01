@@ -30,14 +30,6 @@ namespace Core.Monads
          return false;
       }
 
-      public bool Out(out T value, out IResult<T> original)
-      {
-         value = default;
-         original = this;
-
-         return false;
-      }
-
       public bool ValueOrOriginal(out T value, out IResult<T> original)
       {
          value = default;

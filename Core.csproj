@@ -116,7 +116,6 @@
     <Compile Include="Assertions\Objects\TypeAssertion.cs" />
     <Compile Include="Assertions\Strings\MatcherAssertion.cs" />
     <Compile Include="Assertions\Strings\StringAssertion.cs" />
-    <Compile Include="Booleans\Assertions.cs" />
     <Compile Include="Booleans\BooleanExtensions.cs" />
     <Compile Include="Collections\AutoHash.cs" />
     <Compile Include="Collections\BackHash.cs" />
@@ -200,7 +199,6 @@
     <Compile Include="Dates\Second.cs" />
     <Compile Include="Dates\Time.cs" />
     <Compile Include="Dates\Timeout.cs" />
-    <Compile Include="Dates\TimerInterval.cs" />
     <Compile Include="Dates\TimeSpanExtensions.cs" />
     <Compile Include="Dates\Trigger.cs" />
     <Compile Include="Dates\Year.cs" />
@@ -252,7 +250,6 @@
     <Compile Include="Numbers\Comparison.cs" />
     <Compile Include="Numbers\GetHashCodeFunctions.cs" />
     <Compile Include="Numbers\NumberExtensions.cs" />
-    <Compile Include="Objects\Assertions.cs" />
     <Compile Include="Objects\DataContainer.cs" />
     <Compile Include="Objects\DataContainerEvaluator.cs" />
     <Compile Include="Objects\DataContainerExtensions.cs" />
