@@ -41,5 +41,7 @@ namespace Core.Monads
       bool EqualToValueOf(IMaybe<T> otherMaybe);
 
       bool ValueEqualTo(T otherValue);
+
+      IMaybe<object> AsObject();
    }
 }

@@ -82,5 +82,7 @@ namespace Core.Monads
       bool EqualToValueOf(IMatched<T> otherMatched);
 
       bool ValueEqualTo(T otherValue);
+
+      IMatched<object> AsObject();
    }
 }

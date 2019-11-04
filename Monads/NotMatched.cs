@@ -121,6 +121,8 @@ namespace Core.Monads
 
       public bool ValueEqualTo(T otherValue) => false;
 
+      public IMatched<object> AsObject() => notMatched<object>();
+
       public bool IsMatched => false;
 
       public bool IsNotMatched => true;

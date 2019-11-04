@@ -42,6 +42,22 @@ namespace Core.ObjectGraphs.Parsers
 
             return true;
          }
+         else if (value.StartsWith("[") && value.EndsWith("]"))
+         {
+            value = value.Drop(1).Drop(-1).Trim();
+            value = replacer.Replace(value);
+            var values = value.Split("/s* ',' /s*");
+            var result = new ObjectGraph(name, "", type, key);
+            for (var i = 0; i < value.Length; i++)
+            {
+               var itemGraph = new ObjectGraph(i.ToString(), values[i], key: i.ToString());
+               result[itemGraph.Key] = itemGraph;
+            }
+
+            Result = result;
+
+            return true;
+         }
          else
          {
             value = replacer.Replace(value);

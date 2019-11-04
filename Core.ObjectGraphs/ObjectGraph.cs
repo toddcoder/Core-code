@@ -135,17 +135,14 @@ namespace Core.ObjectGraphs
 
          if (childType.IsArray)
          {
-            var graph = new ObjectGraph(childName);
             var array = (Array)obj;
+            var list = new List<string>();
             for (var i = 0; i < array.Length; i++)
             {
-               var item = array.GetValue(i);
-               var itemName = i.ToString();
-               var itemType = item.GetType();
-               graph[itemName] = getGraph(item.Some(), itemName, itemType, exclude, signatures);
+               list.Add(array.GetValue(i).ToNonNullString());
             }
 
-            return graph;
+            return new ObjectGraph(childName, $"[{list.Stringify()}]");
          }
          else if (!(obj is IConvertible))
          {
@@ -558,10 +555,39 @@ namespace Core.ObjectGraphs
          {
             return Value.Enumeration(conversionType);
          }
+         else if (conversionType.IsArray)
+         {
+            return getArray(Value);
+         }
          else
          {
             return Value.AsObject().Otherwise(e => System.Convert.ChangeType(Value, conversionType));
          }
+      }
+
+      static IResult<object> getArray(string source)
+      {
+         if (source.StartsWith("["))
+         {
+            source = source.Drop(1);
+         }
+
+         if (source.EndsWith("]"))
+         {
+            source = source.Drop(-1);
+         }
+
+         source = source.Trim();
+
+         var items = source.Split("/s* ',' /s*");
+
+         return
+            from notEmpty in items.Must().HaveLengthOf(1).Try("Array can't be empty")
+            from type in items[0].Type()
+            from instance in tryTo(() => Array.CreateInstance(type, items.Length))
+            from parsed in items.Select(i => i.Parsed(type)).IfAllSuccesses()
+            from array in tryTo(parsed.ToArray)
+            select (object)array;
       }
 
       IResult<object[]> getArguments(Type arrayType)

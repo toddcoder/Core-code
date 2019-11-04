@@ -205,6 +205,8 @@ namespace Core.Monads
 
       public IResult<T> Otherwise(Func<Exception, IResult<T>> func) => this;
 
+      public IResult<object> AsObject() => value.Success<object>();
+
       public bool HasValue => true;
    }
 }

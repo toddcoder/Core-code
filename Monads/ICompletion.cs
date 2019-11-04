@@ -86,5 +86,7 @@ namespace Core.Monads
       bool ValueEqualTo(ICompletion<T> otherCompletion);
 
       bool EqualToValueOf(T otherValue);
+
+      ICompletion<object> AsObject();
    }
 }

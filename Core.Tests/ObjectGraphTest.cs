@@ -1,4 +1,5 @@
 ﻿using System;
+using Core.Enumerables;
 using Core.ObjectGraphs;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Core.Arrays.ArrayFunctions;
@@ -46,7 +47,7 @@ namespace Core.Tests
       [TestMethod]
       public void SerializationTest()
       {
-         var test = new TestClass { Name = "foobar", Index = 153, IsTrue = true, TestEnum = TestEnum.PayAttention};
+         var test = new TestClass { Name = "foobar", Index = 153, IsTrue = true, TestEnum = TestEnum.PayAttention, Array = array(111, 123, 153) };
          var graph = ObjectGraph.Serialize(test);
          Console.WriteLine(graph);
 
@@ -56,6 +57,7 @@ namespace Core.Tests
             Console.WriteLine(test2.Index);
             Console.WriteLine(test2.IsTrue);
             Console.WriteLine(test2.TestEnum);
+            Console.WriteLine(test2.Array.Stringify());
          }
       }
    }

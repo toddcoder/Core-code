@@ -71,5 +71,7 @@ namespace Core.Monads
       IResult<T> Otherwise(Func<Exception, T> func);
 
       IResult<T> Otherwise(Func<Exception, IResult<T>> func);
+
+      IResult<object> AsObject();
    }
 }

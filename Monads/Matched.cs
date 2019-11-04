@@ -123,6 +123,8 @@ namespace Core.Monads
 
       public bool ValueEqualTo(T otherValue) => value.Equals(otherValue);
 
+      public IMatched<object> AsObject() => value.Matched<object>();
+
       public bool IsMatched => true;
 
       public bool IsNotMatched => false;

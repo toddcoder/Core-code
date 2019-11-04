@@ -76,6 +76,8 @@ namespace Core.Monads
 
       public bool ValueEqualTo(T otherValue) => value.Equals(otherValue);
 
+      public IMaybe<object> AsObject() => value.Some<object>();
+
       public bool HasValue => true;
    }
 }

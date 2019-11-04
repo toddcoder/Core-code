@@ -17,68 +17,68 @@ using static Core.Strings.StringStreamFunctions;
 
 namespace Core.Strings
 {
-	public static class StringExtensions
-	{
-		enum StageType
-		{
-			LeftNotFound,
-			LeftFound
-		}
+   public static class StringExtensions
+   {
+      enum StageType
+      {
+         LeftNotFound,
+         LeftFound
+      }
 
-		const string PAIRS = "()[]{}<>";
+      const string PAIRS = "()[]{}<>";
 
-		public static string Repeat(this string source, int count)
-		{
-			if (source.IsEmpty())
+      public static string Repeat(this string source, int count)
+      {
+         if (source.IsEmpty())
          {
             return string.Empty;
          }
 
          var result = new StringBuilder();
-			for (var i = 0; i < count; i++)
+         for (var i = 0; i < count; i++)
          {
             result.Append(source);
          }
 
          return result.ToString();
-		}
+      }
 
-		public static string Repeat(this string source, int count, int maxLength)
-		{
-			if (source.IsEmpty())
+      public static string Repeat(this string source, int count, int maxLength)
+      {
+         if (source.IsEmpty())
          {
             return string.Empty;
          }
 
          var result = source.Repeat(count);
-			return result.Length <= maxLength ? result : result.Substring(0, maxLength);
-		}
+         return result.Length <= maxLength ? result : result.Substring(0, maxLength);
+      }
 
-		public static string Repeat(this string source, int count, string connector)
-		{
-			if (source.IsEmpty())
+      public static string Repeat(this string source, int count, string connector)
+      {
+         if (source.IsEmpty())
          {
             return string.Empty;
          }
 
          var result = new List<string>();
-			for (var i = 0; i < count; i++)
+         for (var i = 0; i < count; i++)
          {
             result.Add(source);
          }
 
          return result.Stringify(connector.ToNonNullString());
-		}
+      }
 
-		public static string Repeat(this string source, int count, int maxLength, string connector)
-		{
-			var result = source.Repeat(count, connector);
-			return result.Length <= maxLength ? result : result.Substring(0, maxLength);
-		}
+      public static string Repeat(this string source, int count, int maxLength, string connector)
+      {
+         var result = source.Repeat(count, connector);
+         return result.Length <= maxLength ? result : result.Substring(0, maxLength);
+      }
 
-		public static string[] Lines(this string source, SplitType split)
-		{
-			if (source.IsEmpty())
+      public static string[] Lines(this string source, SplitType split)
+      {
+         if (source.IsEmpty())
          {
             return new string[0];
          }
@@ -88,9 +88,9 @@ namespace Core.Strings
          }
       }
 
-		public static string Slice(this string source, int startIndex, int stopIndex)
-		{
-			if (source.IsEmpty())
+      public static string Slice(this string source, int startIndex, int stopIndex)
+      {
+         if (source.IsEmpty())
          {
             return string.Empty;
          }
@@ -106,7 +106,7 @@ namespace Core.Strings
          }
 
          var length = stopIndex - startIndex + 1;
-			if (length > 0)
+         if (length > 0)
          {
             return source.Substring(startIndex, length);
          }
@@ -116,14 +116,14 @@ namespace Core.Strings
          }
       }
 
-		public static string Slice(this string source, IMaybe<int> startIndex, IMaybe<int> stopIndex)
-		{
-			return source.Slice(startIndex.DefaultTo(() => 0), stopIndex.DefaultTo(() => source.Length - 1));
-		}
+      public static string Slice(this string source, IMaybe<int> startIndex, IMaybe<int> stopIndex)
+      {
+         return source.Slice(startIndex.DefaultTo(() => 0), stopIndex.DefaultTo(() => source.Length - 1));
+      }
 
-		public static string Truncate(this string source, int limit, bool addEllipses = true)
-		{
-			if (source.IsEmpty() || limit <= 0)
+      public static string Truncate(this string source, int limit, bool addEllipses = true)
+      {
+         if (source.IsEmpty() || limit <= 0)
          {
             return string.Empty;
          }
@@ -141,39 +141,39 @@ namespace Core.Strings
          }
       }
 
-		public static string Elliptical(this string source, int limit, char upTo, bool pad = false, string ellipses= "…")
-		{
-			if (source.IsEmpty() || limit <= 0)
+      public static string Elliptical(this string source, int limit, char upTo, bool pad = false, string ellipses = "…")
+      {
+         if (source.IsEmpty() || limit <= 0)
          {
             return string.Empty;
          }
          else if (source.Length > limit)
-			{
-				var index = source.LastIndexOf(upTo);
-				if (index == -1)
+         {
+            var index = source.LastIndexOf(upTo);
+            if (index == -1)
             {
                return source.Truncate(limit);
             }
             else
-				{
-					var ellipsesLength = ellipses.Length;
-					var suffix = source.Keep(-(source.Length - index));
-					var prefix = source.Keep(limit - (1 + suffix.Length));
-					if (!source.StartsWith(prefix))
+            {
+               var ellipsesLength = ellipses.Length;
+               var suffix = source.Keep(-(source.Length - index));
+               var prefix = source.Keep(limit - (1 + suffix.Length));
+               if (!source.StartsWith(prefix))
                {
                   prefix = $"{ellipses}{prefix.Drop(ellipsesLength)}";
                }
 
                var result = $"{prefix}{ellipses}{suffix}";
-					if (result.Length > limit)
+               if (result.Length > limit)
                {
                   result = $"{result.Keep(limit - ellipsesLength)}{ellipses}";
                }
 
                return result;
-				}
-			}
-			else if (source.Length < limit && pad)
+            }
+         }
+         else if (source.Length < limit && pad)
          {
             return source.LeftJustify(limit);
          }
@@ -183,9 +183,9 @@ namespace Core.Strings
          }
       }
 
-		static string replaceWhitespace(string source, string replacement)
-		{
-			if (source.IsEmpty())
+      static string replaceWhitespace(string source, string replacement)
+      {
+         if (source.IsEmpty())
          {
             return string.Empty;
          }
@@ -195,13 +195,13 @@ namespace Core.Strings
          }
       }
 
-		public static string NormalizeWhitespace(this string source) => replaceWhitespace(source, " ");
+      public static string NormalizeWhitespace(this string source) => replaceWhitespace(source, " ");
 
-		public static string RemoveWhitespace(this string source) => replaceWhitespace(source, string.Empty);
+      public static string RemoveWhitespace(this string source) => replaceWhitespace(source, string.Empty);
 
-		public static string ToTitleCase(this string source)
-		{
-			if (source.IsEmpty())
+      public static string ToTitleCase(this string source)
+      {
+         if (source.IsEmpty())
          {
             return string.Empty;
          }
@@ -211,9 +211,9 @@ namespace Core.Strings
          }
       }
 
-		static string upCaseFirst(string source)
-		{
-			if (source.IsEmpty())
+      static string upCaseFirst(string source)
+      {
+         if (source.IsEmpty())
          {
             return string.Empty;
          }
@@ -223,9 +223,9 @@ namespace Core.Strings
          }
       }
 
-		static bool nextIsLower(string source, int index)
-		{
-			if (source.IsEmpty())
+      static bool nextIsLower(string source, int index)
+      {
+         if (source.IsEmpty())
          {
             return false;
          }
@@ -235,9 +235,9 @@ namespace Core.Strings
          }
       }
 
-		static bool nextIsUpper(string source, int index)
-		{
-			if (source.IsEmpty())
+      static bool nextIsUpper(string source, int index)
+      {
+         if (source.IsEmpty())
          {
             return false;
          }
@@ -247,9 +247,9 @@ namespace Core.Strings
          }
       }
 
-		public static string CamelToLowerWithSeparator(this string source, string separator, string quantitative = "+")
-		{
-			if (source.IsEmpty())
+      public static string CamelToLowerWithSeparator(this string source, string separator, string quantitative = "+")
+      {
+         if (source.IsEmpty())
          {
             return string.Empty;
          }
@@ -259,27 +259,27 @@ namespace Core.Strings
             return source.ToLower();
          }
          else
-			{
-				var matches = source.Matches($"-/b /(['A-Z']{quantitative})");
-				if (matches.If(out var matcher))
-				{
-					for (var i = 0; i < matcher.MatchCount; i++)
+         {
+            var matches = source.Matches($"-/b /(['A-Z']{quantitative})");
+            if (matches.If(out var matcher))
+            {
+               for (var i = 0; i < matcher.MatchCount; i++)
                {
                   matcher[i, 1] = separator + matcher[i, 1];
                }
 
                return matcher.ToString().ToLower();
-				}
-				else
+            }
+            else
             {
                return source.ToLower();
             }
          }
-		}
+      }
 
-		public static string CamelToSnakeCase(this string source, string quantitative = "+")
-		{
-			if (source.IsEmpty())
+      public static string CamelToSnakeCase(this string source, string quantitative = "+")
+      {
+         if (source.IsEmpty())
          {
             return string.Empty;
          }
@@ -289,9 +289,9 @@ namespace Core.Strings
          }
       }
 
-		public static string CamelToObjectGraphCase(this string source, string quantitative = "+")
-		{
-			if (source.IsEmpty())
+      public static string CamelToObjectGraphCase(this string source, string quantitative = "+")
+      {
+         if (source.IsEmpty())
          {
             return string.Empty;
          }
@@ -301,65 +301,65 @@ namespace Core.Strings
          }
       }
 
-		public static string LowerToCamelCase(this string source, string separator, bool upperCase)
-		{
-			if (source.IsEmpty())
+      public static string LowerToCamelCase(this string source, string separator, bool upperCase)
+      {
+         if (source.IsEmpty())
          {
             return string.Empty;
          }
          else
-			{
-				var pattern = separator.Escape().SingleQuotify() + "/(['a-z'])";
-				var matches = source.Matches(pattern);
-				if (matches.If(out var matcher))
-				{
-					for (var i = 0; i < matcher.MatchCount; i++)
+         {
+            var pattern = separator.Escape().SingleQuotify() + "/(['a-z'])";
+            var matches = source.Matches(pattern);
+            if (matches.If(out var matcher))
+            {
+               for (var i = 0; i < matcher.MatchCount; i++)
                {
                   matcher[i] = matcher[i, 1].ToUpper();
                }
 
                return upperCase ? matcher.ToString().ToUpper1() : matcher.ToString().ToLower1();
-				}
-				else
+            }
+            else
             {
                return upperCase ? source.ToUpper1() : source.ToLower1();
             }
          }
-		}
+      }
 
-		public static string SnakeToCamelCase(this string source, bool upperCase)
-		{
-			return source.LowerToCamelCase("_", upperCase);
-		}
+      public static string SnakeToCamelCase(this string source, bool upperCase)
+      {
+         return source.LowerToCamelCase("_", upperCase);
+      }
 
-		public static string Abbreviate(this string source)
-		{
-			if (source.IsEmpty())
+      public static string Abbreviate(this string source)
+      {
+         if (source.IsEmpty())
          {
             return string.Empty;
          }
 
          var text = source;
-			if (text.Has("_"))
+         if (text.Has("_"))
          {
             text = text.SnakeToCamelCase(true);
          }
 
          var matcher = new Matcher();
-			if (matcher.IsMatch(text, "['A-Z'] ['a-z']*"))
-			{
-				var numericMatcher = new Matcher();
-				var numeric = string.Empty;
-				if (numericMatcher.IsMatch(text, "/d+ $"))
+         if (matcher.IsMatch(text, "['A-Z'] ['a-z']*"))
+         {
+            var numericMatcher = new Matcher();
+            var numeric = string.Empty;
+            if (numericMatcher.IsMatch(text, "/d+ $"))
             {
                numeric = numericMatcher[0];
             }
 
             var result = new StringBuilder();
-				var subMatcher = new Matcher();
-				for (var i = 0; i < matcher.MatchCount; i++)
-				{
-					if (subMatcher.IsMatch(matcher[i, 0], "^ /uc? /lc* [/lv 'y' /uv 'Y']+ /(/lc?) /1? ['h']? ('e' $)?"))
+            var subMatcher = new Matcher();
+            for (var i = 0; i < matcher.MatchCount; i++)
+            {
+               if (subMatcher.IsMatch(matcher[i, 0], "^ /uc? /lc* [/lv 'y' /uv 'Y']+ /(/lc?) /1? ['h']? ('e' $)?"))
                {
                   for (var j = 0; j < subMatcher.MatchCount; j++)
                   {
@@ -377,17 +377,17 @@ namespace Core.Strings
                }
             }
 
-				return result + numeric;
-			}
-			else
+            return result + numeric;
+         }
+         else
          {
             return text;
          }
       }
 
-		static string fixMatch(string match, string subMatch)
-		{
-			if (match.IsMatch("^ 'assign' /w+"))
+      static string fixMatch(string match, string subMatch)
+      {
+         if (match.IsMatch("^ 'assign' /w+"))
          {
             return "Assign";
          }
@@ -445,60 +445,60 @@ namespace Core.Strings
          }
       }
 
-		public static string Append(this string target, string text)
-		{
-			return string.IsNullOrEmpty(target) ? text : target + text;
-		}
+      public static string Append(this string target, string text)
+      {
+         return string.IsNullOrEmpty(target) ? text : target + text;
+      }
 
-		public static string Passwordify(this string source)
-		{
-			if (source.IsEmpty())
+      public static string Passwordify(this string source)
+      {
+         if (source.IsEmpty())
          {
             return string.Empty;
          }
 
          source = source.ToLower().Replace("a", "@");
-			source = source.Replace("b", "6");
-			source = source.Replace("c", "(");
-			source = source.Replace("e", "3");
-			source = source.Replace("g", "8");
-			source = source.Replace("h", "4");
-			source = source.Replace("i", "1");
-			source = source.Replace("l", "7");
-			source = source.Replace("o", "0");
-			source = source.Replace("q", "9");
-			source = source.Replace("s", "$");
-			source = source.Replace("t", "+");
-			return source.Replace("z", "2");
-		}
+         source = source.Replace("b", "6");
+         source = source.Replace("c", "(");
+         source = source.Replace("e", "3");
+         source = source.Replace("g", "8");
+         source = source.Replace("h", "4");
+         source = source.Replace("i", "1");
+         source = source.Replace("l", "7");
+         source = source.Replace("o", "0");
+         source = source.Replace("q", "9");
+         source = source.Replace("s", "$");
+         source = source.Replace("t", "+");
+         return source.Replace("z", "2");
+      }
 
-		public static string Depasswordify(this string source)
-		{
-			if (source.IsEmpty())
+      public static string Depasswordify(this string source)
+      {
+         if (source.IsEmpty())
          {
             return string.Empty;
          }
 
          source = source.Replace("@", "a");
-			source = source.Replace("6", "b");
-			source = source.Replace("(", "c");
-			source = source.Replace("3", "e");
-			source = source.Replace("8", "g");
-			source = source.Replace("4", "h");
-			source = source.Replace("1", "i");
-			source = source.Replace("7", "l");
-			source = source.Replace("0", "o");
-			source = source.Replace("9", "q");
-			source = source.Replace("$", "s");
-			source = source.Replace("+", "t");
-			return source.Replace("2", "z");
-		}
+         source = source.Replace("6", "b");
+         source = source.Replace("(", "c");
+         source = source.Replace("3", "e");
+         source = source.Replace("8", "g");
+         source = source.Replace("4", "h");
+         source = source.Replace("1", "i");
+         source = source.Replace("7", "l");
+         source = source.Replace("0", "o");
+         source = source.Replace("9", "q");
+         source = source.Replace("$", "s");
+         source = source.Replace("+", "t");
+         return source.Replace("2", "z");
+      }
 
-		public static string Copy(this string source) => string.Copy(source.IsEmpty() ? string.Empty : source);
+      public static string Copy(this string source) => string.Copy(source.IsEmpty() ? string.Empty : source);
 
-		public static string RemoveCComments(this string source)
-		{
-			if (source.IsEmpty())
+      public static string RemoveCComments(this string source)
+      {
+         if (source.IsEmpty())
          {
             return string.Empty;
          }
@@ -508,9 +508,9 @@ namespace Core.Strings
          }
       }
 
-		public static string RemoveCOneLineComments(this string source)
-		{
-			if (source.IsEmpty())
+      public static string RemoveCOneLineComments(this string source)
+      {
+         if (source.IsEmpty())
          {
             return string.Empty;
          }
@@ -520,9 +520,9 @@ namespace Core.Strings
          }
       }
 
-		public static string RemoveSQLOneLineComments(this string source)
-		{
-			if (source.IsEmpty())
+      public static string RemoveSQLOneLineComments(this string source)
+      {
+         if (source.IsEmpty())
          {
             return string.Empty;
          }
@@ -532,9 +532,9 @@ namespace Core.Strings
          }
       }
 
-		public static string AllowOnly(this string source, string allowed)
-		{
-			if (source.IsEmpty())
+      public static string AllowOnly(this string source, string allowed)
+      {
+         if (source.IsEmpty())
          {
             return string.Empty;
          }
@@ -545,41 +545,41 @@ namespace Core.Strings
          }
 
          var matcher = new Matcher();
-			if (matcher.IsMatch(source, allowed))
-			{
-				var result = new StringBuilder();
-				for (var i = 0; i < matcher.MatchCount; i++)
+         if (matcher.IsMatch(source, allowed))
+         {
+            var result = new StringBuilder();
+            for (var i = 0; i < matcher.MatchCount; i++)
             {
                result.Append(matcher[i, 0]);
             }
 
             return result.ToString();
-			}
-			else
+         }
+         else
          {
             return string.Empty;
          }
       }
 
-		public static string AllowOnly(this string source, params char[] allowed)
-		{
-			if (source.IsEmpty())
+      public static string AllowOnly(this string source, params char[] allowed)
+      {
+         if (source.IsEmpty())
          {
             return string.Empty;
          }
 
          var characters = new StringBuilder();
-			foreach (var character in allowed)
+         foreach (var character in allowed)
          {
             characters.Append(character);
          }
 
          return source.AllowOnly(characters.ToString());
-		}
+      }
 
-		public static string Quotify(this string source, string quote)
-		{
-			if (source.IsEmpty())
+      public static string Quotify(this string source, string quote)
+      {
+         if (source.IsEmpty())
          {
             return string.Empty;
          }
@@ -589,9 +589,9 @@ namespace Core.Strings
          }
       }
 
-		public static string SingleQuotify(this string source, string quote)
-		{
-			if (source.IsEmpty())
+      public static string SingleQuotify(this string source, string quote)
+      {
+         if (source.IsEmpty())
          {
             return string.Empty;
          }
@@ -601,33 +601,33 @@ namespace Core.Strings
          }
       }
 
-		public static string Quotify(this string source) => source.Quotify(@"\""");
+      public static string Quotify(this string source) => source.Quotify(@"\""");
 
-		public static string SingleQuotify(this string source) => source.SingleQuotify(@"\'");
+      public static string SingleQuotify(this string source) => source.SingleQuotify(@"\'");
 
-		public static string QuotifyIf(this string source, string escapedQuote)
-		{
-			return source.IsNumeric() || source.Same("true") || source.Same("false") ? source : source.Quotify(escapedQuote);
-		}
+      public static string QuotifyIf(this string source, string escapedQuote)
+      {
+         return source.IsNumeric() || source.Same("true") || source.Same("false") ? source : source.Quotify(escapedQuote);
+      }
 
-		public static string SingleQuotifyIf(this string source, string escapedQuote)
-		{
-			return source.IsNumeric() || source.Same("true") || source.Same("false") ? source : source.SingleQuotify(escapedQuote);
-		}
+      public static string SingleQuotifyIf(this string source, string escapedQuote)
+      {
+         return source.IsNumeric() || source.Same("true") || source.Same("false") ? source : source.SingleQuotify(escapedQuote);
+      }
 
-		public static string QuotifyIf(this string source) => source.QuotifyIf(@"\""");
+      public static string QuotifyIf(this string source) => source.QuotifyIf(@"\""");
 
-		public static string SingleQuotifyIf(this string source) => source.SingleQuotifyIf("\'");
+      public static string SingleQuotifyIf(this string source) => source.SingleQuotifyIf("\'");
 
-		public static string Unquotify(this string source)
-		{
-			if (source.IsEmpty())
+      public static string Unquotify(this string source)
+      {
+         if (source.IsEmpty())
          {
             return string.Empty;
          }
 
          var matcher = new Matcher();
-			if (matcher.IsMatch(source, "^ /dq /(.*) /dq $"))
+         if (matcher.IsMatch(source, "^ /dq /(.*) /dq $"))
          {
             return matcher[0, 1];
          }
@@ -637,15 +637,15 @@ namespace Core.Strings
          }
       }
 
-		public static string SingleUnquotify(this string source)
-		{
-			if (source.IsEmpty())
+      public static string SingleUnquotify(this string source)
+      {
+         if (source.IsEmpty())
          {
             return string.Empty;
          }
 
          var matcher = new Matcher();
-			if (matcher.IsMatch(source, "^ /sq /(.*) /sq $"))
+         if (matcher.IsMatch(source, "^ /sq /(.*) /sq $"))
          {
             return matcher[0, 1];
          }
@@ -655,9 +655,9 @@ namespace Core.Strings
          }
       }
 
-		public static string Guillemetify(this string source)
-		{
-			if (source.IsEmpty())
+      public static string Guillemetify(this string source)
+      {
+         if (source.IsEmpty())
          {
             return string.Empty;
          }
@@ -667,9 +667,9 @@ namespace Core.Strings
          }
       }
 
-		public static string VisibleWhitespace(this string source, bool spaceVisible)
-		{
-			if (source.IsEmpty())
+      public static string VisibleWhitespace(this string source, bool spaceVisible)
+      {
+         if (source.IsEmpty())
          {
             return string.Empty;
          }
@@ -680,15 +680,15 @@ namespace Core.Strings
          }
 
          source = source.Substitute("/t", "¬");
-			source = source.Substitute("/n", "¶");
-			source = source.Substitute("/r", "¤");
+         source = source.Substitute("/n", "¶");
+         source = source.Substitute("/r", "¤");
 
-			return source;
-		}
+         return source;
+      }
 
-		public static string VisibleTabs(this string source)
-		{
-			if (source.IsEmpty())
+      public static string VisibleTabs(this string source)
+      {
+         if (source.IsEmpty())
          {
             return string.Empty;
          }
@@ -698,50 +698,50 @@ namespace Core.Strings
          }
       }
 
-		public static string PadCenter(this string source, int length, char paddingCharacter = ' ')
-		{
-			if (source.IsEmpty())
+      public static string PadCenter(this string source, int length, char paddingCharacter = ' ')
+      {
+         if (source.IsEmpty())
          {
             return paddingCharacter.ToString().Repeat(length);
          }
          else
-			{
-				var sourceLength = source.Length;
-				if (sourceLength < length)
-				{
-					var difference = length - sourceLength;
-					var half = difference / 2;
-					var padLeft = half;
-					var padRight = difference.IsEven() ? half : half + 1;
-					var paddingString = paddingCharacter.ToString();
+         {
+            var sourceLength = source.Length;
+            if (sourceLength < length)
+            {
+               var difference = length - sourceLength;
+               var half = difference / 2;
+               var padLeft = half;
+               var padRight = difference.IsEven() ? half : half + 1;
+               var paddingString = paddingCharacter.ToString();
 
-					return paddingString.Repeat(padLeft) + source + paddingString.Repeat(padRight);
-				}
-				else
+               return paddingString.Repeat(padLeft) + source + paddingString.Repeat(padRight);
+            }
+            else
             {
                return source;
             }
          }
-		}
+      }
 
-		public static string Pad(this string source, PadType padType, int length, char paddingCharacter = ' ')
-		{
-			switch (padType)
-			{
-				case PadType.Center:
-					return source.PadCenter(length, paddingCharacter);
-				case PadType.Left:
-					return source.PadLeft(length, paddingCharacter);
-				case PadType.Right:
-					return source.PadRight(length, paddingCharacter);
-				default:
-					return source;
-			}
-		}
+      public static string Pad(this string source, PadType padType, int length, char paddingCharacter = ' ')
+      {
+         switch (padType)
+         {
+            case PadType.Center:
+               return source.PadCenter(length, paddingCharacter);
+            case PadType.Left:
+               return source.PadLeft(length, paddingCharacter);
+            case PadType.Right:
+               return source.PadRight(length, paddingCharacter);
+            default:
+               return source;
+         }
+      }
 
-		public static string Pad(this string source, int width, char paddingCharacter = ' ')
-		{
-			if (source.IsEmpty())
+      public static string Pad(this string source, int width, char paddingCharacter = ' ')
+      {
+         if (source.IsEmpty())
          {
             return string.Empty;
          }
@@ -751,53 +751,53 @@ namespace Core.Strings
          }
       }
 
-		public static string Justify(this string source, Justification justification, int width, char paddingCharacter = ' ')
-		{
-			if (source.IsEmpty())
+      public static string Justify(this string source, Justification justification, int width, char paddingCharacter = ' ')
+      {
+         if (source.IsEmpty())
          {
             return string.Empty;
          }
 
          PadType padType;
-			switch (justification)
-			{
-				case Justification.Left:
-					padType = PadType.Right;
-					break;
-				case Justification.Right:
-					padType = PadType.Left;
-					break;
-				case Justification.Center:
-					padType = PadType.Center;
-					break;
-				default:
-					return source;
-			}
+         switch (justification)
+         {
+            case Justification.Left:
+               padType = PadType.Right;
+               break;
+            case Justification.Right:
+               padType = PadType.Left;
+               break;
+            case Justification.Center:
+               padType = PadType.Center;
+               break;
+            default:
+               return source;
+         }
 
-			return source.Pad(padType, width, paddingCharacter);
-		}
+         return source.Pad(padType, width, paddingCharacter);
+      }
 
-		public static string LeftJustify(this string source, int width, char paddingChar = ' ')
-		{
-			return source.Justify(Justification.Left, width, paddingChar);
-		}
+      public static string LeftJustify(this string source, int width, char paddingChar = ' ')
+      {
+         return source.Justify(Justification.Left, width, paddingChar);
+      }
 
-		public static string RightJustify(this string source, int width, char paddingChar = ' ')
-		{
-			return source.Justify(Justification.Right, width, paddingChar);
-		}
+      public static string RightJustify(this string source, int width, char paddingChar = ' ')
+      {
+         return source.Justify(Justification.Right, width, paddingChar);
+      }
 
-		public static string Center(this string source, int width, char paddingChar = ' ')
-		{
-			return source.Justify(Justification.Center, width, paddingChar);
-		}
+      public static string Center(this string source, int width, char paddingChar = ' ')
+      {
+         return source.Justify(Justification.Center, width, paddingChar);
+      }
 
-		public static string Debyteify(this byte[] source)
-		{
-			var result = new StringBuilder();
-			var crLFEmitted = false;
+      public static string Debyteify(this byte[] source)
+      {
+         var result = new StringBuilder();
+         var crLFEmitted = false;
 
-			foreach (var character in source)
+         foreach (var character in source)
          {
             if (character == 0 || character.Between((byte)32).And(126))
             {
@@ -812,11 +812,11 @@ namespace Core.Strings
          }
 
          return result.ToString();
-		}
+      }
 
-		public static string Debyteify(this string source, Encoding encoding)
-		{
-			if (source.IsEmpty())
+      public static string Debyteify(this string source, Encoding encoding)
+      {
+         if (source.IsEmpty())
          {
             return string.Empty;
          }
@@ -826,38 +826,38 @@ namespace Core.Strings
          }
       }
 
-		public static string Debyteify(this string source) => source.Debyteify(Encoding.ASCII);
+      public static string Debyteify(this string source) => source.Debyteify(Encoding.ASCII);
 
-		public static string DefaultTo(this string source, string defaultValue)
-		{
-			return source.IsEmpty() ? defaultValue : source;
-		}
+      public static string DefaultTo(this string source, string defaultValue)
+      {
+         return source.IsEmpty() ? defaultValue : source;
+      }
 
-		public static string TrimLeft(this string source) => source.IsNotEmpty() ? source.TrimStart() : string.Empty;
+      public static string TrimLeft(this string source) => source.IsNotEmpty() ? source.TrimStart() : string.Empty;
 
-		public static string TrimRight(this string source) => source.IsNotEmpty() ? source.TrimEnd() : string.Empty;
+      public static string TrimRight(this string source) => source.IsNotEmpty() ? source.TrimEnd() : string.Empty;
 
-		public static string TrimAll(this string source) => source.IsNotEmpty() ? source.Trim() : string.Empty;
+      public static string TrimAll(this string source) => source.IsNotEmpty() ? source.Trim() : string.Empty;
 
-		public static string ToUpper1(this string source)
-		{
-			return source.IsNotEmpty() ? source.Keep(1).ToUpper() + source.Drop(1) : string.Empty;
-		}
+      public static string ToUpper1(this string source)
+      {
+         return source.IsNotEmpty() ? source.Keep(1).ToUpper() + source.Drop(1) : string.Empty;
+      }
 
-		public static string ToLower1(this string source)
-		{
-			return source.IsNotEmpty() ? source.Keep(1).ToLower() + source.Drop(1) : string.Empty;
-		}
+      public static string ToLower1(this string source)
+      {
+         return source.IsNotEmpty() ? source.Keep(1).ToLower() + source.Drop(1) : string.Empty;
+      }
 
-		public static string Plural(this string source, int number)
-		{
-			if (source.IsEmpty())
+      public static string Plural(this string source, int number)
+      {
+         if (source.IsEmpty())
          {
             return string.Empty;
          }
 
          var matcher = new Matcher();
-			if (matcher.IsMatch(source, "'(' /(/w+) (',' /(/w+))? ')'", true))
+         if (matcher.IsMatch(source, "'(' /(/w+) (',' /(/w+))? ')'", true))
          {
             if (number == 1)
             {
@@ -925,9 +925,9 @@ namespace Core.Strings
          }
       }
 
-		public static string Reverse(this string source)
-		{
-			if (source.IsEmpty())
+      public static string Reverse(this string source)
+      {
+         if (source.IsEmpty())
          {
             return string.Empty;
          }
@@ -937,22 +937,22 @@ namespace Core.Strings
          }
       }
 
-		public static string Succ(this string source)
-		{
-			if (source.IsNotEmpty())
-			{
-				var builder = new StringBuilder(source);
-				return succ(builder, builder.Length - 1).ToString();
-			}
-			else
+      public static string Succ(this string source)
+      {
+         if (source.IsNotEmpty())
+         {
+            var builder = new StringBuilder(source);
+            return succ(builder, builder.Length - 1).ToString();
+         }
+         else
          {
             return source;
          }
       }
 
-		static StringBuilder succ(StringBuilder builder, int index)
-		{
-			while (true)
+      static StringBuilder succ(StringBuilder builder, int index)
+      {
+         while (true)
          {
             if (builder.Length != 0)
             {
@@ -1013,22 +1013,22 @@ namespace Core.Strings
          }
       }
 
-		public static string Pred(this string source)
-		{
-			if (source.IsNotEmpty())
-			{
-				var builder = new StringBuilder(source);
-				return pred(builder, builder.Length - 1).ToString();
-			}
-			else
+      public static string Pred(this string source)
+      {
+         if (source.IsNotEmpty())
+         {
+            var builder = new StringBuilder(source);
+            return pred(builder, builder.Length - 1).ToString();
+         }
+         else
          {
             return source;
          }
       }
 
-		static StringBuilder pred(StringBuilder builder, int index)
-		{
-			while (true)
+      static StringBuilder pred(StringBuilder builder, int index)
+      {
+         while (true)
          {
             if (builder.Length != 0)
             {
@@ -1072,13 +1072,13 @@ namespace Core.Strings
          }
       }
 
-		public static bool IsNotEmpty(this string source) => !string.IsNullOrEmpty(source);
+      public static bool IsNotEmpty(this string source) => !string.IsNullOrEmpty(source);
 
-		public static bool IsEmpty(this string source) => string.IsNullOrEmpty(source);
+      public static bool IsEmpty(this string source) => string.IsNullOrEmpty(source);
 
-		public static bool Has(this string source, string substring, bool ignoreCase = false)
-		{
-			if (source.IsNotEmpty() && substring.IsNotEmpty())
+      public static bool Has(this string source, string substring, bool ignoreCase = false)
+      {
+         if (source.IsNotEmpty() && substring.IsNotEmpty())
          {
             return ignoreCase ? source.ToLower().Contains(substring.ToLower()) : source.Contains(substring);
          }
@@ -1088,11 +1088,11 @@ namespace Core.Strings
          }
       }
 
-		public static bool IsWhitespace(this string source) => source.IsEmpty() || source.IsMatch("^ /s* $");
+      public static bool IsWhitespace(this string source) => source.IsEmpty() || source.IsMatch("^ /s* $");
 
-		public static bool IsQuoted(this string source)
-		{
-			if (source.IsEmpty())
+      public static bool IsQuoted(this string source)
+      {
+         if (source.IsEmpty())
          {
             return false;
          }
@@ -1102,9 +1102,9 @@ namespace Core.Strings
          }
       }
 
-		public static bool Same(this string source, string comparison)
-		{
-			if (source.IsEmpty())
+      public static bool Same(this string source, string comparison)
+      {
+         if (source.IsEmpty())
          {
             source = source.ToNonNullString();
          }
@@ -1115,11 +1115,11 @@ namespace Core.Strings
          }
 
          return string.Compare(source, comparison, StringComparison.OrdinalIgnoreCase) == 0;
-		}
+      }
 
-		public static bool IsGUID(this string source)
-		{
-			if (source.IsEmpty())
+      public static bool IsGUID(this string source)
+      {
+         if (source.IsEmpty())
          {
             return false;
          }
@@ -1129,9 +1129,9 @@ namespace Core.Strings
          }
       }
 
-		public static bool In(this string source, params string[] comparisons)
-		{
-			if (source.IsEmpty())
+      public static bool In(this string source, params string[] comparisons)
+      {
+         if (source.IsEmpty())
          {
             return false;
          }
@@ -1141,49 +1141,49 @@ namespace Core.Strings
          }
       }
 
-		public static bool IsConvertibleTo<T>(this string source)
-		{
-			try
-			{
-				if (source.IsNotEmpty())
-				{
-					var result = Convert.ChangeType(source, typeof(T));
-					return result != null;
-				}
-				else
+      public static bool IsConvertibleTo<T>(this string source)
+      {
+         try
+         {
+            if (source.IsNotEmpty())
+            {
+               var result = Convert.ChangeType(source, typeof(T));
+               return result != null;
+            }
+            else
             {
                return false;
             }
          }
-			catch
-			{
-				return false;
-			}
-		}
+         catch
+         {
+            return false;
+         }
+      }
 
-		public static bool IsConvertibleTo(this string source, Type type)
-		{
-			try
-			{
-				if (source.IsNotEmpty())
-				{
-					var result = Convert.ChangeType(source, type);
-					return result != null;
-				}
-				else
+      public static bool IsConvertibleTo(this string source, Type type)
+      {
+         try
+         {
+            if (source.IsNotEmpty())
+            {
+               var result = Convert.ChangeType(source, type);
+               return result != null;
+            }
+            else
             {
                return false;
             }
          }
-			catch
-			{
-				return false;
-			}
-		}
+         catch
+         {
+            return false;
+         }
+      }
 
-		public static bool ToBool(this string source, bool defaultValue = false)
-		{
-			if (source.IsNotEmpty())
+      public static bool ToBool(this string source, bool defaultValue = false)
+      {
+         if (source.IsNotEmpty())
          {
             switch (source)
             {
@@ -1201,9 +1201,9 @@ namespace Core.Strings
          }
       }
 
-		public static byte ToByte(this string source, byte defaultValue = 0)
-		{
-			if (source.IsNotEmpty())
+      public static byte ToByte(this string source, byte defaultValue = 0)
+      {
+         if (source.IsNotEmpty())
          {
             return byte.TryParse(source, out var result) ? result : defaultValue;
          }
@@ -1213,9 +1213,9 @@ namespace Core.Strings
          }
       }
 
-		public static int ToInt(this string source, int defaultValue = 0)
-		{
-			if (source.IsNotEmpty())
+      public static int ToInt(this string source, int defaultValue = 0)
+      {
+         if (source.IsNotEmpty())
          {
             return int.TryParse(source, out var result) ? result : defaultValue;
          }
@@ -1225,9 +1225,9 @@ namespace Core.Strings
          }
       }
 
-		public static long ToLong(this string source, long defaultValue = 0)
-		{
-			if (source.IsNotEmpty())
+      public static long ToLong(this string source, long defaultValue = 0)
+      {
+         if (source.IsNotEmpty())
          {
             return long.TryParse(source, out var result) ? result : defaultValue;
          }
@@ -1237,9 +1237,9 @@ namespace Core.Strings
          }
       }
 
-		public static float ToFloat(this string source, float defaultValue = 0)
-		{
-			if (source.IsNotEmpty())
+      public static float ToFloat(this string source, float defaultValue = 0)
+      {
+         if (source.IsNotEmpty())
          {
             return float.TryParse(source, out var result) ? result : defaultValue;
          }
@@ -1249,9 +1249,9 @@ namespace Core.Strings
          }
       }
 
-		public static double ToDouble(this string source, double defaultValue = 0)
-		{
-			if (source.IsNotEmpty())
+      public static double ToDouble(this string source, double defaultValue = 0)
+      {
+         if (source.IsNotEmpty())
          {
             return double.TryParse(source, out var result) ? result : defaultValue;
          }
@@ -1261,9 +1261,9 @@ namespace Core.Strings
          }
       }
 
-		public static decimal ToDecimal(this string source, decimal defaultValue = 0)
-		{
-			if (source.IsNotEmpty())
+      public static decimal ToDecimal(this string source, decimal defaultValue = 0)
+      {
+         if (source.IsNotEmpty())
          {
             return decimal.TryParse(source, out var result) ? result : defaultValue;
          }
@@ -1273,9 +1273,9 @@ namespace Core.Strings
          }
       }
 
-		public static DateTime ToDateTime(this string source, DateTime defaultValue)
-		{
-			if (source.IsNotEmpty())
+      public static DateTime ToDateTime(this string source, DateTime defaultValue)
+      {
+         if (source.IsNotEmpty())
          {
             return System.DateTime.TryParse(source, out var result) ? result : defaultValue;
          }
@@ -1285,11 +1285,11 @@ namespace Core.Strings
          }
       }
 
-		public static DateTime ToDateTime(this string source) => source.ToDateTime(System.DateTime.MinValue);
+      public static DateTime ToDateTime(this string source) => source.ToDateTime(System.DateTime.MinValue);
 
-		public static Guid ToGuid(this string source)
-		{
-			if (source.IsNotEmpty())
+      public static Guid ToGuid(this string source)
+      {
+         if (source.IsNotEmpty())
          {
             return System.Guid.TryParse(source, out var guid) ? guid : System.Guid.Empty;
          }
@@ -1299,9 +1299,9 @@ namespace Core.Strings
          }
       }
 
-		public static IMaybe<bool> AsBool(this string source)
-		{
-			if (source.IsNotEmpty())
+      public static IMaybe<bool> AsBool(this string source)
+      {
+         if (source.IsNotEmpty())
          {
             return maybe(bool.TryParse(source, out var result), () => result);
          }
@@ -1311,11 +1311,11 @@ namespace Core.Strings
          }
       }
 
-		public static IResult<bool> Boolean(this string source) => tryTo(() => bool.Parse(source));
+      public static IResult<bool> Boolean(this string source) => tryTo(() => bool.Parse(source));
 
-		public static IMaybe<byte> AsByte(this string source)
-		{
-			if (source.IsNotEmpty())
+      public static IMaybe<byte> AsByte(this string source)
+      {
+         if (source.IsNotEmpty())
          {
             return maybe(byte.TryParse(source, out var result), () => result);
          }
@@ -1325,11 +1325,11 @@ namespace Core.Strings
          }
       }
 
-		public static IResult<byte> Byte(this string source) => tryTo(() => byte.Parse(source));
+      public static IResult<byte> Byte(this string source) => tryTo(() => byte.Parse(source));
 
-		public static IMaybe<int> AsInt(this string source)
-		{
-			if (source.IsNotEmpty())
+      public static IMaybe<int> AsInt(this string source)
+      {
+         if (source.IsNotEmpty())
          {
             return maybe(int.TryParse(source, out var result), () => result);
          }
@@ -1339,11 +1339,11 @@ namespace Core.Strings
          }
       }
 
-		public static IResult<int> Int32(this string source) => tryTo(() => int.Parse(source));
+      public static IResult<int> Int32(this string source) => tryTo(() => int.Parse(source));
 
-		public static IMaybe<long> AsLong(this string source)
-		{
-			if (source.IsNotEmpty())
+      public static IMaybe<long> AsLong(this string source)
+      {
+         if (source.IsNotEmpty())
          {
             return maybe(long.TryParse(source, out var result), () => result);
          }
@@ -1353,11 +1353,11 @@ namespace Core.Strings
          }
       }
 
-		public static IResult<long> Int64(this string source) => tryTo(() => long.Parse(source));
+      public static IResult<long> Int64(this string source) => tryTo(() => long.Parse(source));
 
-		public static IMaybe<float> AsFloat(this string source)
-		{
-			if (source.IsNotEmpty())
+      public static IMaybe<float> AsFloat(this string source)
+      {
+         if (source.IsNotEmpty())
          {
             return maybe(float.TryParse(source, out var result), () => result);
          }
@@ -1367,11 +1367,11 @@ namespace Core.Strings
          }
       }
 
-		public static IResult<float> Single(this string source) => tryTo(() => float.Parse(source));
+      public static IResult<float> Single(this string source) => tryTo(() => float.Parse(source));
 
-		public static IMaybe<double> AsDouble(this string source)
-		{
-			if (source.IsNotEmpty())
+      public static IMaybe<double> AsDouble(this string source)
+      {
+         if (source.IsNotEmpty())
          {
             return maybe(double.TryParse(source, out var result), () => result);
          }
@@ -1381,11 +1381,11 @@ namespace Core.Strings
          }
       }
 
-		public static IResult<double> Double(this string source) => tryTo(() => double.Parse(source));
+      public static IResult<double> Double(this string source) => tryTo(() => double.Parse(source));
 
-		public static IMaybe<decimal> AsDecimal(this string source)
-		{
-			if (source.IsNotEmpty())
+      public static IMaybe<decimal> AsDecimal(this string source)
+      {
+         if (source.IsNotEmpty())
          {
             return maybe(decimal.TryParse(source, out var result), () => result);
          }
@@ -1395,11 +1395,11 @@ namespace Core.Strings
          }
       }
 
-		public static IResult<decimal> Decimal(this string source) => tryTo(() => decimal.Parse(source));
+      public static IResult<decimal> Decimal(this string source) => tryTo(() => decimal.Parse(source));
 
-		public static IMaybe<DateTime> AsDateTime(this string source)
-		{
-			if (source.IsNotEmpty())
+      public static IMaybe<DateTime> AsDateTime(this string source)
+      {
+         if (source.IsNotEmpty())
          {
             return maybe(System.DateTime.TryParse(source, out var result), () => result);
          }
@@ -1409,11 +1409,11 @@ namespace Core.Strings
          }
       }
 
-		public static IResult<DateTime> DateTime(this string source) => tryTo(() => System.DateTime.Parse(source));
+      public static IResult<DateTime> DateTime(this string source) => tryTo(() => System.DateTime.Parse(source));
 
-		public static IMaybe<Guid> AsGuid(this string source)
-		{
-			if (source.IsNotEmpty())
+      public static IMaybe<Guid> AsGuid(this string source)
+      {
+         if (source.IsNotEmpty())
          {
             return maybe(System.Guid.TryParse(source, out var guid), () => guid);
          }
@@ -1423,63 +1423,63 @@ namespace Core.Strings
          }
       }
 
-		public static IResult<Guid> Guid(this string source) => tryTo(() => System.Guid.Parse(source));
+      public static IResult<Guid> Guid(this string source) => tryTo(() => System.Guid.Parse(source));
 
-		public static string ToBase64(this string source, Encoding encoding)
-		{
-			return Convert.ToBase64String(encoding.GetBytes(source));
-		}
+      public static string ToBase64(this string source, Encoding encoding)
+      {
+         return Convert.ToBase64String(encoding.GetBytes(source));
+      }
 
-		public static string ToBase64(this string source) => source.ToBase64(Encoding.ASCII);
+      public static string ToBase64(this string source) => source.ToBase64(Encoding.ASCII);
 
-		public static T ToEnumeration<T>(this string value, bool ignoreCase = true)
-			where T : struct => (T)Enum.Parse(typeof(T), value, ignoreCase);
+      public static T ToEnumeration<T>(this string value, bool ignoreCase = true)
+         where T : struct => (T)Enum.Parse(typeof(T), value, ignoreCase);
 
-		public static T ToEnumeration<T>(this string value, bool ignoreCase, T defaultValue)
-			where T : struct
-		{
-			try
-			{
-				return value.ToEnumeration<T>(ignoreCase);
-			}
-			catch
-			{
-				return defaultValue;
-			}
-		}
+      public static T ToEnumeration<T>(this string value, bool ignoreCase, T defaultValue)
+         where T : struct
+      {
+         try
+         {
+            return value.ToEnumeration<T>(ignoreCase);
+         }
+         catch
+         {
+            return defaultValue;
+         }
+      }
 
-		public static Enum ToBaseEnumeration(this string value, Type enumerationType, bool ignoreCase = true)
-		{
-			return (Enum)Enum.Parse(enumerationType, value, ignoreCase);
-		}
+      public static Enum ToBaseEnumeration(this string value, Type enumerationType, bool ignoreCase = true)
+      {
+         return (Enum)Enum.Parse(enumerationType, value, ignoreCase);
+      }
 
-		public static Enum ToBaseEnumeration(this string value, Type enumerationType, bool ignoreCase, Enum defaultValue)
-		{
-			try
-			{
-				return (Enum)Enum.Parse(enumerationType, value, ignoreCase);
-			}
-			catch
-			{
-				return defaultValue;
-			}
-		}
+      public static Enum ToBaseEnumeration(this string value, Type enumerationType, bool ignoreCase, Enum defaultValue)
+      {
+         try
+         {
+            return (Enum)Enum.Parse(enumerationType, value, ignoreCase);
+         }
+         catch
+         {
+            return defaultValue;
+         }
+      }
 
-		public static T ToEnumeration<T>(this string value, T defaultValue)
-			where T : struct => value.ToEnumeration(true, defaultValue);
+      public static T ToEnumeration<T>(this string value, T defaultValue)
+         where T : struct => value.ToEnumeration(true, defaultValue);
 
-		public static IMaybe<T> AsEnumeration<T>(this string value, bool ignoreCase = true)
-			where T : struct
-		{
-			try
-			{
-				return ToEnumeration<T>(value, ignoreCase).Some();
-			}
-			catch
-			{
-				return none<T>();
-			}
-		}
+      public static IMaybe<T> AsEnumeration<T>(this string value, bool ignoreCase = true)
+         where T : struct
+      {
+         try
+         {
+            return ToEnumeration<T>(value, ignoreCase).Some();
+         }
+         catch
+         {
+            return none<T>();
+         }
+      }
 
       public static IResult<object> Enumeration(this string value, Type enumerationType, bool ignoreCase = true)
       {
@@ -1499,8 +1499,8 @@ namespace Core.Strings
       }
 
       public static string ExtractFromQuotes(this string source)
-		{
-			if (source.IsEmpty())
+      {
+         if (source.IsEmpty())
          {
             return string.Empty;
          }
@@ -1510,9 +1510,9 @@ namespace Core.Strings
          }
       }
 
-		public static IMaybe<object> ToObject(this string value)
-		{
-			if (value == null)
+      public static IMaybe<object> ToObject(this string value)
+      {
+         if (value == null)
          {
             return none<object>();
          }
@@ -1521,39 +1521,39 @@ namespace Core.Strings
             return value.ExtractFromQuotes().Some<object>();
          }
          else if (value.IsIntegral())
-			{
-				var newValue = value.ToLong();
-				return (newValue >= int.MinValue && newValue <= int.MaxValue ? (object)value.ToInt() : value).Some();
-			}
+         {
+            var newValue = value.ToLong();
+            return (newValue >= int.MinValue && newValue <= int.MaxValue ? (object)value.ToInt() : value).Some();
+         }
 
-			if (value.IsSingle())
-			{
-				var matcher = new Matcher();
-				if (matcher.IsMatch(value, "^ /(.+) ['fF'] $"))
+         if (value.IsSingle())
+         {
+            var matcher = new Matcher();
+            if (matcher.IsMatch(value, "^ /(.+) ['fF'] $"))
             {
                return some<float, object>(matcher.FirstGroup.ToFloat());
             }
          }
 
-			if (value.IsDouble())
-			{
-				var matcher = new Matcher();
-				if (matcher.IsMatch(value, "^ /(.+) ['dD'] $"))
+         if (value.IsDouble())
+         {
+            var matcher = new Matcher();
+            if (matcher.IsMatch(value, "^ /(.+) ['dD'] $"))
             {
                return some<double, object>(matcher[0, 1].ToDouble());
             }
          }
 
-			if (value.IsDecimal())
-			{
-				var matcher = new Matcher();
-				if (matcher.IsMatch(value, "^ /(.+) ['mM'] $"))
+         if (value.IsDecimal())
+         {
+            var matcher = new Matcher();
+            if (matcher.IsMatch(value, "^ /(.+) ['mM'] $"))
             {
                return some<decimal, object>(matcher[0, 1].ToDecimal());
             }
          }
 
-			if (value.IsGUID())
+         if (value.IsGUID())
          {
             return some<Guid, object>(new Guid(value));
          }
@@ -1571,9 +1571,97 @@ namespace Core.Strings
          }
       }
 
+      public static IMaybe<Type> ToType(this string value)
+      {
+         if (value.IsEmpty())
+         {
+            return none<Type>();
+         }
+         else if (value.IsQuoted())
+         {
+            return typeof(string).Some();
+         }
+         else if (value.IsIntegral())
+         {
+            return typeof(int).Some();
+         }
+         else if (value.IsSingle())
+         {
+            return typeof(float).Some();
+         }
+         else if (value.IsDouble())
+         {
+            return typeof(double).Some();
+         }
+         else if (value.IsDecimal())
+         {
+            return typeof(decimal).Some();
+         }
+         else if (value.IsGUID())
+         {
+            return typeof(Guid).Some();
+         }
+         else if (value.IsDate())
+         {
+            return typeof(DateTime).Some();
+         }
+         else if (value.Same("false") || value.Same("true"))
+         {
+            return typeof(bool).Some();
+         }
+         else
+         {
+            return none<Type>();
+         }
+      }
+
+      public static IMaybe<object> ToParsed(this string value, Type type)
+      {
+         if (value.IsEmpty())
+         {
+            return none<object>();
+         }
+         else if (type  == typeof(string))
+         {
+            return value.ExtractFromQuotes().Some<object>();
+         }
+         else if (type == typeof(int))
+         {
+            return value.AsInt().AsObject();
+         }
+         else if (type == typeof(float))
+         {
+            return value.AsFloat().AsObject();
+         }
+         else if (type == typeof(double))
+         {
+            return value.AsDouble().AsObject();
+         }
+         else if (type == typeof(decimal))
+         {
+            return value.AsDecimal().AsObject();
+         }
+         else if (type == typeof(Guid))
+         {
+            return value.AsGuid().AsObject();
+         }
+         else if (type == typeof(DateTime))
+         {
+            return value.AsDateTime().AsObject();
+         }
+         else if (type == typeof(bool))
+         {
+            return value.AsBool().AsObject();
+         }
+         else
+         {
+            return none<object>();
+         }
+      }
+
       public static IResult<object> AsObject(this string value)
       {
-         if (value == null)
+         if (value.IsEmpty())
          {
             return "value is null".Failure<object>();
          }
@@ -1634,21 +1722,65 @@ namespace Core.Strings
          }
       }
 
-		public static string ToNonNullString(this object value) => value?.ToString() ?? string.Empty;
+      public static IResult<Type> Type(this string value)
+      {
+         if (value.IsEmpty())
+         {
+            return "value is null".Failure<Type>();
+         }
+         else if (value.IsQuoted())
+         {
+            return typeof(string).Success();
+         }
+         else if (value.IsIntegral())
+         {
+            return typeof(int).Success();
+         }
+         else if (value.IsSingle())
+         {
+            return typeof(float).Success();
+         }
+         else if (value.IsDouble())
+         {
+            return typeof(double).Success();
+         }
+         else if (value.IsDecimal())
+         {
+            return typeof(decimal).Success();
+         }
+         else if (value.IsGUID())
+         {
+            return typeof(Guid).Success();
+         }
+         else if (value.IsDate())
+         {
+            return typeof(DateTime).Success();
+         }
+         else if (value.Same("false") || value.Same("true"))
+         {
+            return typeof(bool).Success();
+         }
+         else
+         {
+            return $"Couldn't determine type of {value}".Failure<Type>();
+         }
+      }
 
-		public static IMaybe<string> ToIMaybeString(this object value) => maybe(value != null, value.ToString);
+      public static string ToNonNullString(this object value) => value?.ToString() ?? string.Empty;
 
-		public static string ToLiteral(this object value)
-		{
-			if (value == null)
+      public static IMaybe<string> ToIMaybeString(this object value) => maybe(value != null, value.ToString);
+
+      public static string ToLiteral(this object value)
+      {
+         if (value == null)
          {
             return string.Empty;
          }
 
          if (value.IsFloat())
-			{
-				var result = value.ToString();
-				if (!result.Has("."))
+         {
+            var result = value.ToString();
+            if (!result.Has("."))
             {
                result += ".0";
             }
@@ -1670,15 +1802,15 @@ namespace Core.Strings
                return result;
             }
          }
-			else
+         else
          {
             return value.ToString();
          }
       }
 
-		public static IMaybe<int> ExtractInt(this string source)
-		{
-			if (source.IsEmpty())
+      public static IMaybe<int> ExtractInt(this string source)
+      {
+         if (source.IsEmpty())
          {
             return none<int>();
          }
@@ -1688,9 +1820,9 @@ namespace Core.Strings
          }
       }
 
-		public static IMaybe<double> ExtractDouble(this string source)
-		{
-			if (source.IsEmpty())
+      public static IMaybe<double> ExtractDouble(this string source)
+      {
+         if (source.IsEmpty())
          {
             return none<double>();
          }
@@ -1700,16 +1832,16 @@ namespace Core.Strings
          }
       }
 
-		public static IMaybe<char> First(this string source) => maybe(source.IsNotEmpty(), () => source[0]);
+      public static IMaybe<char> First(this string source) => maybe(source.IsNotEmpty(), () => source[0]);
 
-		public static IMaybe<char> Last(this string source) => maybe(source.IsNotEmpty(), () => source[source.Length - 1]);
+      public static IMaybe<char> Last(this string source) => maybe(source.IsNotEmpty(), () => source[source.Length - 1]);
 
-		public static IMaybe<string> Left(this string source, int length)
-		{
-			if (source.IsNotEmpty())
-			{
-				var minLength = Math.Min(length, source.Length);
-				if (minLength > 0)
+      public static IMaybe<string> Left(this string source, int length)
+      {
+         if (source.IsNotEmpty())
+         {
+            var minLength = Math.Min(length, source.Length);
+            if (minLength > 0)
             {
                return source.Substring(0, minLength).Some();
             }
@@ -1718,18 +1850,18 @@ namespace Core.Strings
                return none<string>();
             }
          }
-			else
+         else
          {
             return none<string>();
          }
       }
 
-		public static IMaybe<string> Right(this string source, int length)
-		{
-			if (source.IsNotEmpty())
-			{
-				var minLength = Math.Min(length, source.Length);
-				if (minLength > 0)
+      public static IMaybe<string> Right(this string source, int length)
+      {
+         if (source.IsNotEmpty())
+         {
+            var minLength = Math.Min(length, source.Length);
+            if (minLength > 0)
             {
                return source.Substring(source.Length - minLength, minLength).Some();
             }
@@ -1738,15 +1870,15 @@ namespace Core.Strings
                return none<string>();
             }
          }
-			else
+         else
          {
             return none<string>();
          }
       }
 
-		public static IMaybe<string> Sub(this string source, int index, int length)
-		{
-			if (source.IsNotEmpty() && length > 0 && index >= 0)
+      public static IMaybe<string> Sub(this string source, int index, int length)
+      {
+         if (source.IsNotEmpty() && length > 0 && index >= 0)
          {
             return maybe(index + length - 1 < source.Length, () => source.Substring(index, length));
          }
@@ -1756,106 +1888,106 @@ namespace Core.Strings
          }
       }
 
-		public static IMaybe<string> Sub(this string source, int index)
-		{
-			return maybe(source.IsNotEmpty() && index >= 0 && index < source.Length, () => source.Substring(index));
-		}
+      public static IMaybe<string> Sub(this string source, int index)
+      {
+         return maybe(source.IsNotEmpty() && index >= 0 && index < source.Length, () => source.Substring(index));
+      }
 
-		public static bool IsDate(this string date) => System.DateTime.TryParse(date, out _);
+      public static bool IsDate(this string date) => System.DateTime.TryParse(date, out _);
 
-		public static string FromBase64(this string source, Encoding encoding)
-		{
-			return encoding.GetString(Convert.FromBase64String(source));
-		}
+      public static string FromBase64(this string source, Encoding encoding)
+      {
+         return encoding.GetString(Convert.FromBase64String(source));
+      }
 
-		public static byte[] FromBase64(this string source) => Convert.FromBase64String(source);
+      public static byte[] FromBase64(this string source) => Convert.FromBase64String(source);
 
       public static string Head(this string source) => source.Keep(1);
 
       public static string Tail(this string source) => source.Drop(1);
 
-		public static string Foot(this string source) => source.Keep(-1);
+      public static string Foot(this string source) => source.Keep(-1);
 
       public static string Front(this string source) => source.Drop(-1);
 
       public static IEnumerable<string> Enumerable(this string source) => source.Select(ch => ch.ToString());
 
       public static StringSegment Balanced(this string source, char left, int startIndex = 0)
-		{
-			if (source.IsNotEmpty() && startIndex < source.Length)
-			{
-				var destringifier = new Destringifier(source.Drop(startIndex));
+      {
+         if (source.IsNotEmpty() && startIndex < source.Length)
+         {
+            var destringifier = new Destringifier(source.Drop(startIndex));
 
-				var leftOfPairIndex = PAIRS.IndexOf(left);
-				if (leftOfPairIndex != -1 && leftOfPairIndex.IsEven())
-				{
-					var right = PAIRS[leftOfPairIndex + 1];
-					var parsed = destringifier.Parse();
-					var count = 0;
-					var escaped = false;
-					var type = StageType.LeftNotFound;
-					var index = -1;
+            var leftOfPairIndex = PAIRS.IndexOf(left);
+            if (leftOfPairIndex != -1 && leftOfPairIndex.IsEven())
+            {
+               var right = PAIRS[leftOfPairIndex + 1];
+               var parsed = destringifier.Parse();
+               var count = 0;
+               var escaped = false;
+               var type = StageType.LeftNotFound;
+               var index = -1;
 
-					for (var i = 0; i < parsed.Length; i++)
-					{
-						var ch = parsed[i];
-						switch (type)
-						{
-							case StageType.LeftNotFound:
-								if (ch == left)
-								{
-									count++;
-									if (!escaped)
-									{
-										type = StageType.LeftFound;
-										index = i;
-									}
-								}
-								else if (ch == '/')
-								{
-									escaped = true;
-									continue;
-								}
+               for (var i = 0; i < parsed.Length; i++)
+               {
+                  var ch = parsed[i];
+                  switch (type)
+                  {
+                     case StageType.LeftNotFound:
+                        if (ch == left)
+                        {
+                           count++;
+                           if (!escaped)
+                           {
+                              type = StageType.LeftFound;
+                              index = i;
+                           }
+                        }
+                        else if (ch == '/')
+                        {
+                           escaped = true;
+                           continue;
+                        }
 
-								break;
-							case StageType.LeftFound:
-								if (ch == left)
+                        break;
+                     case StageType.LeftFound:
+                        if (ch == left)
                         {
                            count++;
                         }
                         else if (ch == right)
-								{
-									count--;
-									if (count == 0)
-									{
-										var segment = parsed.Slice(index, i);
-										segment = destringifier.Restring(segment, true);
-										return new StringSegment(segment, index, i);
-									}
-								}
+                        {
+                           count--;
+                           if (count == 0)
+                           {
+                              var segment = parsed.Slice(index, i);
+                              segment = destringifier.Restring(segment, true);
+                              return new StringSegment(segment, index, i);
+                           }
+                        }
 
-								break;
-						}
+                        break;
+                  }
 
-						escaped = false;
-					}
+                  escaped = false;
+               }
 
-					return new StringSegment();
-				}
-				else
+               return new StringSegment();
+            }
+            else
             {
                return new StringSegment();
             }
          }
-			else
+         else
          {
             return new StringSegment();
          }
       }
 
-		public static string[] Words(this string source)
-		{
-			if (source.IsEmpty())
+      public static string[] Words(this string source)
+      {
+         if (source.IsEmpty())
          {
             return new string[0];
          }
@@ -1865,75 +1997,75 @@ namespace Core.Strings
          }
       }
 
-		static string formatWith(string format, Hash<string, string> pairs)
-		{
-			if (format.IsEmpty())
+      static string formatWith(string format, Hash<string, string> pairs)
+      {
+         if (format.IsEmpty())
          {
             return string.Empty;
          }
 
          var matcher = new Matcher();
-			foreach (var (key, replacement) in pairs)
-			{
-				key.Must().Not.BeNullOrEmpty().Assert("Key must have a value");
+         foreach (var (key, replacement) in pairs)
+         {
+            key.Must().Not.BeNullOrEmpty().Assert("Key must have a value");
 
-				var pattern = "-(< '//') '(" + key.Escape() + ")'";
-				if (matcher.IsMatch(format, pattern))
-				{
-					for (var j = 0; j < matcher.MatchCount; j++)
+            var pattern = "-(< '//') '(" + key.Escape() + ")'";
+            if (matcher.IsMatch(format, pattern))
+            {
+               for (var j = 0; j < matcher.MatchCount; j++)
                {
                   matcher[j] = replacement;
                }
 
                format = matcher.ToString();
-				}
-			}
+            }
+         }
 
-			return replaceEscaped(format, matcher);
-		}
+         return replaceEscaped(format, matcher);
+      }
 
-		static string replaceEscaped(string format, Matcher matcher)
-		{
-			if (format.IsEmpty())
+      static string replaceEscaped(string format, Matcher matcher)
+      {
+         if (format.IsEmpty())
          {
             return string.Empty;
          }
 
          if (matcher.IsMatch(format, "'//('"))
-			{
-				for (var i = 0; i < matcher.MatchCount; i++)
+         {
+            for (var i = 0; i < matcher.MatchCount; i++)
             {
                matcher[i] = "(";
             }
 
             format = matcher.ToString();
-			}
+         }
 
-			return format;
-		}
+         return format;
+      }
 
-		public static string Drop(this string source, int count)
-		{
-			if (source.IsEmpty())
+      public static string Drop(this string source, int count)
+      {
+         if (source.IsEmpty())
          {
             return string.Empty;
          }
 
          if (count > 0)
-			{
-				count = count.MinOf(source.Length);
-				return source.Substring(count);
-			}
-			else if (count == 0)
+         {
+            count = count.MinOf(source.Length);
+            return source.Substring(count);
+         }
+         else if (count == 0)
          {
             return source;
          }
          else
-			{
-				count = (-count).MinOf(source.Length);
-				return source.Substring(0, source.Length - count);
-			}
-		}
+         {
+            count = (-count).MinOf(source.Length);
+            return source.Substring(0, source.Length - count);
+         }
+      }
 
       public static string Drop(this string source, string pattern, bool friendly = true, bool ignoreCase = false, bool multiline = false)
       {
@@ -1954,40 +2086,40 @@ namespace Core.Strings
          }
       }
 
-		public static string DropWhile(this string source, Predicate<string> predicate)
-		{
-			if (source.IsEmpty())
+      public static string DropWhile(this string source, Predicate<string> predicate)
+      {
+         if (source.IsEmpty())
          {
             return string.Empty;
          }
 
          for (var i = 0; i < source.Length; i++)
-			{
-				var ch = source.Substring(i, 1);
-				if (!predicate(ch))
+         {
+            var ch = source.Substring(i, 1);
+            if (!predicate(ch))
             {
                return source.Slice(i, source.Length - 1);
             }
          }
 
-			return source;
-		}
+         return source;
+      }
 
-		public static string DropWhile(this string source, string searchString,
-			StringComparison comparisonType = StringComparison.CurrentCulture)
-		{
-			if (source.IsEmpty())
+      public static string DropWhile(this string source, string searchString,
+         StringComparison comparisonType = StringComparison.CurrentCulture)
+      {
+         if (source.IsEmpty())
          {
             return string.Empty;
          }
 
          var index = source.LastIndexOf(searchString, comparisonType);
-			return Drop(source, index + searchString.Length);
-		}
+         return Drop(source, index + searchString.Length);
+      }
 
-		public static string DropWhile(this string source, params char[] chars)
-		{
-			if (source.IsEmpty())
+      public static string DropWhile(this string source, params char[] chars)
+      {
+         if (source.IsEmpty())
          {
             return string.Empty;
          }
@@ -2001,42 +2133,42 @@ namespace Core.Strings
          }
 
          return source;
-		}
+      }
 
-		public static string DropUntil(this string source, Predicate<string> predicate)
-		{
-			if (source.IsEmpty())
+      public static string DropUntil(this string source, Predicate<string> predicate)
+      {
+         if (source.IsEmpty())
          {
             return string.Empty;
          }
 
          for (var i = 0; i < source.Length; i++)
-			{
-				var ch = source.Substring(i, 1);
-				if (predicate(ch))
+         {
+            var ch = source.Substring(i, 1);
+            if (predicate(ch))
             {
                return source.Slice(i, source.Length - 1);
             }
          }
 
-			return source;
-		}
+         return source;
+      }
 
-		public static string DropUntil(this string source, string searchString,
-			StringComparison comparisonType = StringComparison.CurrentCulture)
-		{
-			if (source.IsEmpty())
+      public static string DropUntil(this string source, string searchString,
+         StringComparison comparisonType = StringComparison.CurrentCulture)
+      {
+         if (source.IsEmpty())
          {
             return string.Empty;
          }
 
          var index = source.IndexOf(searchString, comparisonType);
-			return Drop(source, index);
-		}
+         return Drop(source, index);
+      }
 
-		public static string DropUntil(this string source, params char[] chars)
-		{
-			if (source.IsEmpty())
+      public static string DropUntil(this string source, params char[] chars)
+      {
+         if (source.IsEmpty())
          {
             return string.Empty;
          }
@@ -2050,30 +2182,30 @@ namespace Core.Strings
          }
 
          return source;
-		}
+      }
 
-		public static string Keep(this string source, int count)
-		{
-			if (source.IsEmpty())
+      public static string Keep(this string source, int count)
+      {
+         if (source.IsEmpty())
          {
             return string.Empty;
          }
 
          if (count > 0)
-			{
-				count = count.MinOf(source.Length);
-				return source.Substring(0, count);
-			}
-			else if (count == 0)
+         {
+            count = count.MinOf(source.Length);
+            return source.Substring(0, count);
+         }
+         else if (count == 0)
          {
             return string.Empty;
          }
          else
-			{
-				count = (-count).MinOf(source.Length);
-				return source.Substring(source.Length - count);
-			}
-		}
+         {
+            count = (-count).MinOf(source.Length);
+            return source.Substring(source.Length - count);
+         }
+      }
 
       public static string Keep(this string source, string pattern, bool friendly = true, bool ignoreCase = false, bool multiline = false)
       {
@@ -2095,39 +2227,39 @@ namespace Core.Strings
       }
 
       public static string KeepWhile(this string source, Predicate<string> predicate)
-		{
-			if (source.IsEmpty())
+      {
+         if (source.IsEmpty())
          {
             return string.Empty;
          }
 
          for (var i = 0; i < source.Length; i++)
-			{
-				var ch = source.Substring(i, 1);
-				if (!predicate(ch))
+         {
+            var ch = source.Substring(i, 1);
+            if (!predicate(ch))
             {
                return source.Slice(0, i - 1);
             }
          }
 
-			return source;
-		}
+         return source;
+      }
 
-		public static string KeepWhile(this string source, string searchString,
-			StringComparison comparisonType = StringComparison.CurrentCulture)
-		{
-			if (source.IsEmpty())
+      public static string KeepWhile(this string source, string searchString,
+         StringComparison comparisonType = StringComparison.CurrentCulture)
+      {
+         if (source.IsEmpty())
          {
             return string.Empty;
          }
 
          var index = source.LastIndexOf(searchString, comparisonType);
-			return Keep(source, index + searchString.Length);
-		}
+         return Keep(source, index + searchString.Length);
+      }
 
-		public static string KeepWhile(this string source, params char[] chars)
-		{
-			if (source.IsEmpty())
+      public static string KeepWhile(this string source, params char[] chars)
+      {
+         if (source.IsEmpty())
          {
             return string.Empty;
          }
@@ -2141,42 +2273,42 @@ namespace Core.Strings
          }
 
          return source;
-		}
+      }
 
-		public static string KeepUntil(this string source, Predicate<string> predicate)
-		{
-			if (source.IsEmpty())
+      public static string KeepUntil(this string source, Predicate<string> predicate)
+      {
+         if (source.IsEmpty())
          {
             return string.Empty;
          }
 
          for (var i = 0; i < source.Length; i++)
-			{
-				var ch = source.Substring(i, 1);
-				if (predicate(ch))
+         {
+            var ch = source.Substring(i, 1);
+            if (predicate(ch))
             {
                return source.Slice(0, i - 1);
             }
          }
 
-			return source;
-		}
+         return source;
+      }
 
-		public static string KeepUntil(this string source, string searchString,
-			StringComparison comparisonType = StringComparison.CurrentCulture)
-		{
-			if (source.IsEmpty())
+      public static string KeepUntil(this string source, string searchString,
+         StringComparison comparisonType = StringComparison.CurrentCulture)
+      {
+         if (source.IsEmpty())
          {
             return string.Empty;
          }
 
          var index = source.IndexOf(searchString, comparisonType);
-			return Keep(source, index);
-		}
+         return Keep(source, index);
+      }
 
-		public static string KeepUntil(this string source, params char[] chars)
-		{
-			if (source.IsEmpty())
+      public static string KeepUntil(this string source, params char[] chars)
+      {
+         if (source.IsEmpty())
          {
             return string.Empty;
          }
@@ -2190,62 +2322,62 @@ namespace Core.Strings
          }
 
          return source;
-		}
+      }
 
-		public static string Map(this string source, Func<string, string> func)
-		{
-			if (source.IsEmpty())
+      public static string Map(this string source, Func<string, string> func)
+      {
+         if (source.IsEmpty())
          {
             return string.Empty;
          }
 
          var builder = new StringBuilder();
-			for (var i = 0; i < source.Length; i++)
+         for (var i = 0; i < source.Length; i++)
          {
             builder.Append(func(source.Substring(i)));
          }
 
          return builder.ToString();
-		}
+      }
 
-		public static string If(this string source, Predicate<string> predicate)
-		{
-			var builder = new StringBuilder();
-			for (var i = 0; i < source.Length; i++)
-			{
-				var ch = source.Substring(i);
-				if (predicate(ch))
+      public static string If(this string source, Predicate<string> predicate)
+      {
+         var builder = new StringBuilder();
+         for (var i = 0; i < source.Length; i++)
+         {
+            var ch = source.Substring(i);
+            if (predicate(ch))
             {
                builder.Append(ch);
             }
          }
 
-			return builder.ToString();
-		}
+         return builder.ToString();
+      }
 
-		public static string Unless(this string source, Predicate<string> predicate)
-		{
-			if (source.IsEmpty())
+      public static string Unless(this string source, Predicate<string> predicate)
+      {
+         if (source.IsEmpty())
          {
             return string.Empty;
          }
 
          var builder = new StringBuilder();
-			for (var i = 0; i < source.Length; i++)
-			{
-				var ch = source.Substring(i);
-				if (!predicate(ch))
+         for (var i = 0; i < source.Length; i++)
+         {
+            var ch = source.Substring(i);
+            if (!predicate(ch))
             {
                builder.Append(ch);
             }
          }
 
-			return builder.ToString();
-		}
+         return builder.ToString();
+      }
 
-		public static IMaybe<int> FromHex(this string source)
-		{
-			if (source.IsEmpty())
+      public static IMaybe<int> FromHex(this string source)
+      {
+         if (source.IsEmpty())
          {
             return none<int>();
          }
@@ -2255,9 +2387,9 @@ namespace Core.Strings
          }
       }
 
-		public static IMaybe<string> GetSignature(this string parameterName)
-		{
-			if (parameterName.IsEmpty())
+      public static IMaybe<string> GetSignature(this string parameterName)
+      {
+         if (parameterName.IsEmpty())
          {
             return none<string>();
          }
@@ -2267,91 +2399,91 @@ namespace Core.Strings
          }
       }
 
-		public static IEnumerable<Slice> SlicesOf(this string source, string value,
-			StringComparison comparison = StringComparison.CurrentCulture)
-		{
-			if (source.IsEmpty())
+      public static IEnumerable<Slice> SlicesOf(this string source, string value,
+         StringComparison comparison = StringComparison.CurrentCulture)
+      {
+         if (source.IsEmpty())
          {
             yield break;
          }
 
          var index = 0;
-			var list = new List<int> { 0 };
+         var list = new List<int> { 0 };
 
-			while (index > -1)
-			{
-				index = source.IndexOf(value, index, comparison);
-				if (index > -1)
-				{
-					list.Add(index);
-					index += value.Length + 1;
-				}
-			}
+         while (index > -1)
+         {
+            index = source.IndexOf(value, index, comparison);
+            if (index > -1)
+            {
+               list.Add(index);
+               index += value.Length + 1;
+            }
+         }
 
-			for (var i = 0; i < list.Count; i++)
-			{
-				var start = list[i];
-				var length = i + 1 < list.Count ? list[i + 1] - start : source.Length - start;
-				var text = source.Drop(start).Keep(length);
-				yield return new Slice(start, length, text);
-			}
-		}
+         for (var i = 0; i < list.Count; i++)
+         {
+            var start = list[i];
+            var length = i + 1 < list.Count ? list[i + 1] - start : source.Length - start;
+            var text = source.Drop(start).Keep(length);
+            yield return new Slice(start, length, text);
+         }
+      }
 
-		public static string Obscure(this string source, char character) => character.Repeat(source?.Length ?? 0);
+      public static string Obscure(this string source, char character) => character.Repeat(source?.Length ?? 0);
 
-		public static string Obscure(this string source, string characters, bool random = false)
-		{
-			if (source.IsNotEmpty())
-			{
-				var length = characters.Length;
-				var str = stream();
+      public static string Obscure(this string source, string characters, bool random = false)
+      {
+         if (source.IsNotEmpty())
+         {
+            var length = characters.Length;
+            var str = stream();
 
-				if (random)
-				{
-					var rand = new Random(NowServer.Now.Millisecond);
-					for (var i = 0; i < source.Length; i++)
+            if (random)
+            {
+               var rand = new Random(NowServer.Now.Millisecond);
+               for (var i = 0; i < source.Length; i++)
                {
                   str /= characters[rand.Next(length)];
                }
             }
-				else
-				{
-					var index = 0;
-					for (var i = 0; i < source.Length; i++)
-					{
-						str /= characters[index++];
-						index %= length;
-					}
-				}
+            else
+            {
+               var index = 0;
+               for (var i = 0; i < source.Length; i++)
+               {
+                  str /= characters[index++];
+                  index %= length;
+               }
+            }
 
-				return str;
-			}
-			else
+            return str;
+         }
+         else
          {
             return string.Empty;
          }
       }
 
-		public static string Replace(this string source, params (string, string)[] replacements)
-		{
-			if (source.IsEmpty())
+      public static string Replace(this string source, params (string, string)[] replacements)
+      {
+         if (source.IsEmpty())
          {
             return string.Empty;
          }
 
          var result = source;
-			foreach (var replacement in replacements)
-			{
-				var (oldString, newString) = replacement;
-				result = result.Replace(oldString, newString);
-			}
+         foreach (var replacement in replacements)
+         {
+            var (oldString, newString) = replacement;
+            result = result.Replace(oldString, newString);
+         }
 
-			return result;
-		}
+         return result;
+      }
 
-		public static string Extend(this string source, string before = "", string after = "")
-		{
-			if (source.IsNotEmpty())
+      public static string Extend(this string source, string before = "", string after = "")
+      {
+         if (source.IsNotEmpty())
          {
             return $"{before}{source}{after}";
          }
@@ -2361,48 +2493,48 @@ namespace Core.Strings
          }
       }
 
-		public static string ReplaceAll(this string source, params (string, string)[] replacements)
-		{
-			if (source.IsEmpty())
+      public static string ReplaceAll(this string source, params (string, string)[] replacements)
+      {
+         if (source.IsEmpty())
          {
             return string.Empty;
          }
 
          var builder = new StringBuilder(source);
-			foreach (var (find, replace) in replacements)
+         foreach (var (find, replace) in replacements)
          {
             builder.Replace(find, replace);
          }
 
          return builder.ToString();
-		}
+      }
 
-		public static IResult<long> ByteSize(this string source)
-		{
-			if (source.IsEmpty())
+      public static IResult<long> ByteSize(this string source)
+      {
+         if (source.IsEmpty())
          {
             return "Source is empty".Failure<long>();
          }
          else if (source.Matches("^ /(/d+) /['kmg']? $", out var matcher))
-			{
-				var valueSource = matcher.FirstGroup;
-				var suffix = matcher.SecondGroup;
+         {
+            var valueSource = matcher.FirstGroup;
+            var suffix = matcher.SecondGroup;
 
-				if (valueSource.AsLong().If(out var value))
-				{
-					if (suffix.IsEmpty())
+            if (valueSource.AsLong().If(out var value))
+            {
+               if (suffix.IsEmpty())
                {
                   return value.Success();
                }
 
                value *= 1028;
-					if (suffix == "k")
+               if (suffix == "k")
                {
                   return value.Success();
                }
 
                value *= 1028;
-					if (suffix == "m")
+               if (suffix == "m")
                {
                   return value.Success();
                }
@@ -2411,57 +2543,57 @@ namespace Core.Strings
                   return (value * 1028).Success();
                }
             }
-				else
+            else
             {
                return $"{valueSource} can't be converted to a long".Failure<long>();
             }
          }
-			else
+         else
          {
             return "Badly formatted source".Failure<long>();
          }
       }
 
-		public static IMaybe<long> AsByteSize(this string source) => source.ByteSize().FlatMap(l => l.Some(), e => none<long>());
+      public static IMaybe<long> AsByteSize(this string source) => source.ByteSize().FlatMap(l => l.Some(), e => none<long>());
 
-		public static long ToByteSize(this string source, long defaultValue = 0)
-		{
-			return source.AsByteSize().FlatMap(l => l, () => defaultValue);
-		}
+      public static long ToByteSize(this string source, long defaultValue = 0)
+      {
+         return source.AsByteSize().FlatMap(l => l, () => defaultValue);
+      }
 
-		public static string Partition(this string source, int allowedLength, string splitPattern = @"-(< '\')','", int padding = 1)
-		{
-			if (source.IsEmpty())
+      public static string Partition(this string source, int allowedLength, string splitPattern = @"-(< '\')','", int padding = 1)
+      {
+         if (source.IsEmpty())
          {
             return string.Empty;
          }
 
          var array = source.Split(splitPattern);
-			var result = array.Select(e => $"{e}{" ".Repeat(padding)}").Stringify(string.Empty).Trim();
-			return result.Center(allowedLength).Elliptical(allowedLength, ' ');
-		}
+         var result = array.Select(e => $"{e}{" ".Repeat(padding)}").Stringify(string.Empty).Trim();
+         return result.Center(allowedLength).Elliptical(allowedLength, ' ');
+      }
 
-		public static IMaybe<int> Find(this string source, string substring, int startIndex = 0, bool ignoreCase = false)
-		{
-			if (substring.IsNotEmpty())
-			{
-				var comparison = ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
-				var index = source.IndexOf(substring, startIndex, comparison);
+      public static IMaybe<int> Find(this string source, string substring, int startIndex = 0, bool ignoreCase = false)
+      {
+         if (substring.IsNotEmpty())
+         {
+            var comparison = ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+            var index = source.IndexOf(substring, startIndex, comparison);
 
-				return maybe(index != -1, () => index);
-			}
-			else
+            return maybe(index != -1, () => index);
+         }
+         else
          {
             return none<int>();
          }
       }
 
-		public static IEnumerable<int> FindAll(this string source, string substring, bool ignoreCase = false)
-		{
-			var result = source.Find(substring, 0, ignoreCase);
-			while (true)
-			{
-				if (result.If(out var i))
+      public static IEnumerable<int> FindAll(this string source, string substring, bool ignoreCase = false)
+      {
+         var result = source.Find(substring, 0, ignoreCase);
+         while (true)
+         {
+            if (result.If(out var i))
             {
                yield return i;
             }
@@ -2471,8 +2603,8 @@ namespace Core.Strings
             }
 
             result = source.Find(substring, i + substring.Length, ignoreCase);
-			}
-		}
+         }
+      }
 
       public static string ToCamel(this string source)
       {
@@ -2536,5 +2668,5 @@ namespace Core.Strings
             }
          }
       }
-	}
+   }
 }

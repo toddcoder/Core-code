@@ -176,6 +176,8 @@ namespace Core.Monads
          }
       }
 
+      public IResult<object> AsObject() => failure<object>(exception);
+
       public bool HasValue => false;
    }
 }

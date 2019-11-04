@@ -66,6 +66,8 @@ namespace Core.Monads
 
       public bool ValueEqualTo(T otherValue) => false;
 
+      public IMaybe<object> AsObject() => none<object>();
+
       public bool HasValue => false;
    }
 }

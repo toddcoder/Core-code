@@ -177,6 +177,8 @@ namespace Core.Monads
 
       public bool EqualToValueOf(T otherValue) => false;
 
+      public ICompletion<object> AsObject() => interrupted<object>(exception);
+
       public bool HasValue => false;
    }
 }
