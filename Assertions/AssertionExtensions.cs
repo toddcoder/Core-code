@@ -51,6 +51,8 @@ namespace Core.Assertions
 
       public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this Dictionary<TKey, TValue> value) => new DictionaryAssertion<TKey, TValue>(value);
 
+      public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this Hash<TKey, TValue> value) => new DictionaryAssertion<TKey, TValue>(value);
+
       public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this IHash<TKey, TValue> value)
       {
          Dictionary<TKey, TValue> hash = value.AnyHash().ForceValue();

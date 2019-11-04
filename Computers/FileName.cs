@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using Core.Assertions;
 using Core.Enumerables;
 using Core.Monads;
 using Core.Numbers;
@@ -22,7 +23,7 @@ namespace Core.Computers
       {
          public static IResult<FileName> FromString(string file)
          {
-            return assert(IsValidFileName(file), () => new FileName(file), () => $"{file} is an invalid file name");
+            return IsValidFileName(file).Must().Be().Try().Map(_ => new FileName(file));
          }
       }
 

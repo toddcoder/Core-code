@@ -8,7 +8,6 @@ using Core.Collections;
 using Core.Monads;
 using static System.Reflection.BindingFlags;
 using static System.Reflection.MemberTypes;
-using static Core.Monads.AttemptFunctions;
 
 namespace Core.Objects
 {

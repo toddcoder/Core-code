@@ -1,6 +1,5 @@
 ﻿using Core.Assertions;
 using Core.Monads;
-using static Core.Monads.AttemptFunctions;
 
 namespace Core.Computers
 {
