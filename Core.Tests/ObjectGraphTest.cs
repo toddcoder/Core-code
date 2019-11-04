@@ -1,16 +1,17 @@
 ﻿using System;
 using Core.ObjectGraphs;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static Core.Arrays.ArrayFunctions;
 
 namespace Core.Tests
 {
-   enum TestEnum
+   internal enum TestEnum
    {
       Ignore,
       PayAttention
    }
 
-   class TestClass
+   internal class TestClass
    {
       public string Name { get; set; } = "";
 
@@ -19,6 +20,8 @@ namespace Core.Tests
       public bool IsTrue { get; set; }
 
       public TestEnum TestEnum { get; set; } = TestEnum.Ignore;
+
+      public int[] Array { get; set; } = array(1, 5, 3);
    }
 
    [TestClass]

@@ -142,7 +142,7 @@ namespace Core.ObjectGraphs
                var item = array.GetValue(i);
                var itemName = i.ToString();
                var itemType = item.GetType();
-               graph[itemName] = getGraph((Some<object>)item, itemName, itemType, exclude, signatures);
+               graph[itemName] = getGraph(item.Some(), itemName, itemType, exclude, signatures);
             }
 
             return graph;
@@ -530,8 +530,7 @@ namespace Core.ObjectGraphs
          }
       }
 
-      public virtual IResult<T> Object<T>(params object[] args)
-         where T : class => Object(typeof(T), args).Map(o => (T)o);
+      public virtual IResult<T> Object<T>(params object[] args) where T : class => Object(typeof(T), args).Map(o => (T)o);
 
       public virtual IResult<object> Object(Type objectType, params object[] args) => tryTo(() =>
       {
