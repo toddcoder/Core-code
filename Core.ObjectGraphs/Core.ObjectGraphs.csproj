@@ -76,6 +76,7 @@
     <Compile Include="Configurations\Json\JSONParser.cs" />
     <Compile Include="Configurations\Json\JSONSerializer.cs" />
     <Compile Include="Configurations\Json\JSONWriter.cs" />
+    <Compile Include="Configurations\Json\ParseValueArgs.cs" />
     <Compile Include="Configurations\Json\TokenType.cs" />
     <Compile Include="Defaulting.cs" />
     <Compile Include="FileNameExtensions.cs" />

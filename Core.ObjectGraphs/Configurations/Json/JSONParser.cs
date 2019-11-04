@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using Core.Assertions;
 using Core.Collections;
 using Core.Monads;
@@ -15,6 +16,8 @@ namespace Core.ObjectGraphs.Configurations.Json
       int index;
       StringBuilder buffer;
       JSONBuilder builder;
+
+      public event EventHandler<ParseValueArgs> ParseValue;
 
       public JSONParser(string source)
       {
@@ -35,18 +38,23 @@ namespace Core.ObjectGraphs.Configurations.Json
 
       public IResult<JSONObject> Parse() =>
          from token in getToken()
-         from members in parseMembers()
+         from members in parseMembers("")
          select builder.Root;
+
+      protected void invokeEvent(TokenType tokenType, string name, string value)
+      {
+         ParseValue?.Invoke(this, new ParseValueArgs(tokenType, name, value));
+      }
 
       IResult<Unit> parseValue(string name)
       {
-         var token = lookAhead();
-         if (token.ValueOrCast<Unit>(out var value, out var original))
+         var anyTokenType = lookAhead();
+         if (anyTokenType.ValueOrCast<Unit>(out var tokenType, out var original))
          {
-            switch (value)
+            switch (tokenType)
             {
                case TokenType.Number:
-                  if (parseNumber().ValueOrCast(out var number, out original))
+                  if (parseNumber(name).ValueOrCast(out var number, out original))
                   {
                      switch (number)
                      {
@@ -65,7 +73,7 @@ namespace Core.ObjectGraphs.Configurations.Json
                      return original;
                   }
                case TokenType.String:
-                  if (parseString().ValueOrCast(out var s, out original))
+                  if (parseString(name).ValueOrCast(out var s, out original))
                   {
                      builder.Add(name, s);
                      return Unit.Success();
@@ -81,14 +89,20 @@ namespace Core.ObjectGraphs.Configurations.Json
                case TokenType.True:
                   consumeToken();
                   builder.Add(name, true);
+                  invokeEvent(TokenType.True, name, "true");
+
                   return Unit.Success();
                case TokenType.False:
                   consumeToken();
                   builder.Add(name, false);
+                  invokeEvent(TokenType.False, name, "false");
+
                   return Unit.Success();
                case TokenType.Null:
                   consumeToken();
                   builder.Add(name);
+                  invokeEvent(TokenType.Null, name, "null");
+
                   return Unit.Success();
                default:
                   return $"Didn't understand token at {index}".Failure<Unit>();
@@ -100,7 +114,7 @@ namespace Core.ObjectGraphs.Configurations.Json
          }
       }
 
-      IResult<string> parseString()
+      IResult<string> parseString(string name)
       {
          consumeToken();
 
@@ -124,7 +138,11 @@ namespace Core.ObjectGraphs.Configurations.Json
                   buffer.Append(source, runIndex, index - runIndex - 1);
                }
 
-               return replacements.Format(buffer.ToString()).Success();
+               var str = replacements.Format(buffer.ToString());
+
+               invokeEvent(TokenType.String, name, str);
+
+               return str.Success();
             }
 
             if (c != '\\')
@@ -200,10 +218,12 @@ namespace Core.ObjectGraphs.Configurations.Json
       {
          builder.BeginObject(name);
 
-         return parseMembers();
+         invokeEvent(TokenType.ObjectOpen, name, "");
+
+         return parseMembers(name).OnSuccess(_ => invokeEvent(TokenType.ObjectClose, name, ""));
       }
 
-      IResult<Unit> parseMembers()
+      IResult<Unit> parseMembers(string name)
       {
          consumeToken();
 
@@ -216,14 +236,16 @@ namespace Core.ObjectGraphs.Configurations.Json
                {
                   case TokenType.Comma:
                      consumeToken();
+                     invokeEvent(TokenType.Comma, name, ",");
                      break;
                   case TokenType.ObjectClose:
                      consumeToken();
+                     invokeEvent(TokenType.ObjectClose, name, "}");
                      builder.End();
                      return Unit.Success();
                   default:
                      var result =
-                        from innerName in parseString()
+                        from innerName in parseString(name)
                         from next in nextToken()
                         from colon in next.Must().Equal(TokenType.Colon).Try(() => $"Expected colon at {index}").Map(t => next)
                         from value in parseValue(innerName)
@@ -249,6 +271,8 @@ namespace Core.ObjectGraphs.Configurations.Json
       {
          builder.BeginArray(name);
 
+         invokeEvent(TokenType.ArrayOpen, name, "{");
+
          consumeToken();
 
          while (true)
@@ -259,13 +283,16 @@ namespace Core.ObjectGraphs.Configurations.Json
                {
                   case TokenType.Comma:
                      consumeToken();
+                     invokeEvent(TokenType.Comma, name, ",");
                      break;
                   case TokenType.ArrayClose:
                      consumeToken();
                      builder.End();
+                     invokeEvent(TokenType.ArrayClose, name, "");
+
                      return Unit.Success();
                   default:
-                     if (parseValue("").ValueOrOriginal(out _, out var original))
+                     if (parseValue(name).ValueOrOriginal(out _, out var original))
                      {
                         break;
                      }
@@ -312,7 +339,7 @@ namespace Core.ObjectGraphs.Configurations.Json
          from p4 in parseSingleChar(c4, 0)
          select p1 + p2 + p3 + p4;
 
-      IResult<object> parseNumber()
+      IResult<object> parseNumber(string name)
       {
          consumeToken();
 
@@ -346,6 +373,9 @@ namespace Core.ObjectGraphs.Configurations.Json
          } while (true);
 
          var str = source.Drop(startIndex).Keep(index - startIndex);
+
+         invokeEvent(TokenType.Number, name, str);
+
          if (isDecimal)
          {
             return str.Double().Map(d => (object)d);
@@ -460,7 +490,7 @@ namespace Core.ObjectGraphs.Configurations.Json
             case 'f':
                if (source.Drop(index - 1).Keep(5) == "false")
                {
-                  index += 4;
+                  index += 5;
                   return TokenType.False.Success();
                }
 

@@ -7,17 +7,16 @@ namespace Core.ObjectGraphs.Configurations
 {
    public class Configuration : IHash<string, ObjectGraph>
    {
-      public static IResult<Configuration> LoadFromObjectGraph(FileName file)
+      public static IResult<Configuration> LoadFromObjectGraph(FileName file) => tryTo(() =>
       {
-         return tryTo(() =>
-         {
-            FolderName.Current = file.Folder;
-            var rootGraph= ObjectGraph.FromFile(file, out var replacer);
-            rootGraph.Replacer = replacer;
+         FolderName.Current = file.Folder;
+         var rootGraph = ObjectGraph.FromFile(file, out var replacer);
+         rootGraph.Replacer = replacer;
 
-            return new Configuration(rootGraph);
-         });
-      }
+         return new Configuration(rootGraph);
+      });
+
+      public static IResult<Configuration> LoadFromJson(FileName file) => tryTo(() => new Configuration(ObjectGraph.RootObjectGraph()));
 
       ObjectGraph rootGraph;
 
