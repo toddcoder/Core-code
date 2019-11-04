@@ -9,6 +9,7 @@
       ArrayClose,
       Colon,
       Comma,
+      Name,
       String,
       Number,
       True,

@@ -113,6 +113,29 @@ namespace Core.ObjectGraphs.Configurations.Json
          }
       }
 
+      IResult<string> parseName()
+      {
+         consumeToken();
+
+         buffer.Clear();
+
+         var length = source.Length;
+         while (index < length)
+         {
+            var c = source[index++];
+            if (char.IsLetter(c))
+            {
+               buffer.Append(c);
+            }
+            else
+            {
+               return buffer.ToString().Success();
+            }
+         }
+
+         return "Cannot end in a name".Failure<string>();
+      }
+
       IResult<string> parseString(string name)
       {
          consumeToken();
@@ -213,6 +236,19 @@ namespace Core.ObjectGraphs.Configurations.Json
          return "Open string".Failure<string>();
       }
 
+      IResult<string> parseNameOrString()
+      {
+         switch (lookAheadToken)
+         {
+            case TokenType.Name:
+               return parseName();
+            case TokenType.String:
+               return parseString("");
+            default:
+               return "Invalid token".Failure<string>();
+         }
+      }
+
       IResult<Unit> parseObject(string name)
       {
          builder.BeginObject(name);
@@ -244,7 +280,7 @@ namespace Core.ObjectGraphs.Configurations.Json
                      return Unit.Success();
                   default:
                      var result =
-                        from innerName in parseString(name)
+                        from innerName in parseNameOrString()
                         from next in nextToken()
                         from colon in next.Must().Equal(TokenType.Colon).Try(() => $"Expected colon at {index}").Map(t => next)
                         from value in parseValue(innerName)
@@ -492,24 +528,30 @@ namespace Core.ObjectGraphs.Configurations.Json
                   index += 5;
                   return TokenType.False.Success();
                }
-
-               break;
+               else
+               {
+                  return TokenType.Name.Success();
+               }
             case 't':
                if (source.Drop(index - 1).Keep(4) == "true")
                {
                   index += 4;
                   return TokenType.True.Success();
                }
-
-               break;
+               else
+               {
+                  return TokenType.Name.Success();
+               }
             case 'n':
                if (source.Drop(index - 1).Keep(4) == "null")
                {
                   index += 4;
                   return TokenType.Null.Success();
                }
-
-               break;
+               else
+               {
+                  return TokenType.Name.Success();
+               }
          }
 
          return $"Didn't understand {source.Drop(--index)}".Failure<TokenType>();

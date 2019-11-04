@@ -69,7 +69,7 @@ namespace Core.Tests
       [TestMethod]
       public void JsonToObjectGraphTest()
       {
-         var json = "{\"name\":\"foobar\",\"index\":153,\"isTrue\":true,\"array\":[111,123,153]}";
+         var json = "{name:\"foobar\",index:153,\"isTrue\":true,array:[111,123,153]}";
          var parser = new JsonToObjectGraphParser(json);
          if (parser.Parse().If(out var objectGraph, out var exception))
          {
