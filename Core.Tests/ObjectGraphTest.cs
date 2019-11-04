@@ -1,6 +1,7 @@
 ﻿using System;
 using Core.Enumerables;
 using Core.ObjectGraphs;
+using Core.ObjectGraphs.Configurations.Json;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Core.Arrays.ArrayFunctions;
 
@@ -58,6 +59,21 @@ namespace Core.Tests
             Console.WriteLine(test2.IsTrue);
             Console.WriteLine(test2.TestEnum);
             Console.WriteLine(test2.Array.Stringify());
+         }
+         else
+         {
+            Console.WriteLine($"Exception: {exception.Message}");
+         }
+      }
+
+      [TestMethod]
+      public void JsonToObjectGraphTest()
+      {
+         var json = "{\"name\":\"foobar\",\"index\":153,\"isTrue\":true,\"array\":[111,123,153]}";
+         var parser = new JsonToObjectGraphParser(json);
+         if (parser.Parse().If(out var objectGraph, out var exception))
+         {
+            Console.WriteLine(objectGraph);
          }
          else
          {

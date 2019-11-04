@@ -29,8 +29,7 @@ namespace Core.ObjectGraphs.Configurations.Json
          builder = new JSONBuilder();
       }
 
-      public JSONParser(string source, Hash<string, string> replacements)
-         : this(source)
+      public JSONParser(string source, Hash<string, string> replacements) : this(source)
       {
          this.replacements.Copy(replacements);
          this.source = source;

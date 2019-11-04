@@ -16,5 +16,12 @@ namespace Core.ObjectGraphs.Configurations.Json
       public string Name { get; }
 
       public string Value { get; }
+
+      public void Deconstruct(out TokenType tokenType, out string name, out string value)
+      {
+         tokenType = TokenType;
+         name = Name;
+         value = Value;
+      }
    }
 }
