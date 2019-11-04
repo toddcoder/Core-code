@@ -1766,6 +1766,50 @@ namespace Core.Strings
          }
       }
 
+      public static IResult<object> Parsed(this string value, Type type)
+      {
+         if (value.IsEmpty())
+         {
+            return "value is null".Failure<object>();
+         }
+         else if (type == typeof(string))
+         {
+            return value.ExtractFromQuotes().Success().AsObject();
+         }
+         else if (type == typeof(int))
+         {
+            return value.Int32().AsObject();
+         }
+         else if (type == typeof(float))
+         {
+            return value.Single().AsObject();
+         }
+         else if (type == typeof(double))
+         {
+            return value.Double().AsObject();
+         }
+         else if (type == typeof(decimal))
+         {
+            return value.Decimal().AsObject();
+         }
+         else if (type == typeof(Guid))
+         {
+            return value.Guid().AsObject();
+         }
+         else if (type == typeof(DateTime))
+         {
+            return value.DateTime().AsObject();
+         }
+         else if (type == typeof(bool))
+         {
+            return value.Boolean().AsObject();
+         }
+         else
+         {
+            return $"Couldn't determine type of {value}".Failure<object>();
+         }
+      }
+
       public static string ToNonNullString(this object value) => value?.ToString() ?? string.Empty;
 
       public static IMaybe<string> ToIMaybeString(this object value) => maybe(value != null, value.ToString);

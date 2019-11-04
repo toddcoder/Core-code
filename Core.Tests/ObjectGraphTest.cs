@@ -51,13 +51,17 @@ namespace Core.Tests
          var graph = ObjectGraph.Serialize(test);
          Console.WriteLine(graph);
 
-         if (graph.Object<TestClass>().If(out var test2))
+         if (graph.Object<TestClass>().If(out var test2, out var exception))
          {
             Console.WriteLine(test2.Name);
             Console.WriteLine(test2.Index);
             Console.WriteLine(test2.IsTrue);
             Console.WriteLine(test2.TestEnum);
             Console.WriteLine(test2.Array.Stringify());
+         }
+         else
+         {
+            Console.WriteLine($"Exception: {exception.Message}");
          }
       }
    }

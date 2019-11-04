@@ -587,7 +587,12 @@ namespace Core.ObjectGraphs
             from instance in tryTo(() => Array.CreateInstance(type, items.Length))
             from parsed in items.Select(i => i.Parsed(type)).IfAllSuccesses()
             from array in tryTo(parsed.ToArray)
-            select (object)array;
+            from copied in tryTo(() =>
+            {
+               array.CopyTo(instance, 0);
+               return (object)instance;
+            })
+            select copied;
       }
 
       IResult<object[]> getArguments(Type arrayType)
