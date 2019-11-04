@@ -867,7 +867,9 @@ namespace Core.ObjectGraphs
 
       public ObjectGraphTrying TryTo => new ObjectGraphTrying(this);
 
-      public Hash<string, string> ToHash() => Children.ToHash(g => g.name, g => g.value);
+      public Hash<string, string> ToStringHash() => Children.ToHash(g => g.name, g => g.value);
+
+      public IResult<Hash<string, ObjectGraph>> AnyHash() => Children.ToHash(g => g.name).Success();
 
       public string[] ToArray() => Children.Select(g => g.name).ToArray();
 

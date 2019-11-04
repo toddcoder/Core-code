@@ -70,6 +70,7 @@ namespace Core.Monads
          }
       }
 
+      [Obsolete("Use assertions")]
       public static IResult<T> assert<T>(bool test, Func<T> ifTrue, string messageIfFalse)
       {
          try
@@ -82,6 +83,7 @@ namespace Core.Monads
          }
       }
 
+      [Obsolete("Use assertions")]
       public static IResult<T> assert<T>(Func<bool> test, Func<T> ifTrue, string messageIfFalse)
       {
          try
@@ -94,6 +96,7 @@ namespace Core.Monads
          }
       }
 
+      [Obsolete("Use assertions")]
       public static IResult<T> assert<T>(bool test, Func<T> ifTrue, Func<string> messageIfFalse)
       {
          try
@@ -106,6 +109,7 @@ namespace Core.Monads
          }
       }
 
+      [Obsolete("Use assertions")]
       public static IResult<T> assert<T>(Func<bool> test, Func<T> ifTrue, Func<string> messageIfFalse)
       {
          try
@@ -118,6 +122,7 @@ namespace Core.Monads
          }
       }
 
+      [Obsolete("Use assertions")]
       public static IResult<T> assert<T>(bool test, Func<IResult<T>> ifTrue, string messageIfFalse)
       {
          try
@@ -130,6 +135,7 @@ namespace Core.Monads
          }
       }
 
+      [Obsolete("Use assertions")]
       public static IResult<T> assert<T>(Func<bool> test, Func<IResult<T>> ifTrue, string messageIfFalse)
       {
          try
@@ -142,6 +148,7 @@ namespace Core.Monads
          }
       }
 
+      [Obsolete("Use assertions")]
       public static IResult<T> assert<T>(bool test, Func<IResult<T>> ifTrue, Func<string> messageIfFalse)
       {
          try
@@ -154,6 +161,7 @@ namespace Core.Monads
          }
       }
 
+      [Obsolete("Use assertions")]
       public static IResult<T> assert<T>(Func<bool> test, Func<IResult<T>> ifTrue, Func<string> messageIfFalse)
       {
          try
@@ -166,6 +174,7 @@ namespace Core.Monads
          }
       }
 
+      [Obsolete("Use assertions")]
       public static IResult<T> assertNotNull<T>(T obj, Func<string> messageIfNull)
       {
          try
@@ -185,6 +194,7 @@ namespace Core.Monads
          }
       }
 
+      [Obsolete("Use assertions")]
       public static IResult<T> assertNotNull<T>(T obj, string messageIfNull)
       {
          try
@@ -204,41 +214,49 @@ namespace Core.Monads
          }
       }
 
+      [Obsolete("Use assertions")]
       public static IResult<T> reject<T>(bool test, Func<T> ifFalse, string messageIfTrue)
       {
          return assert(!test, ifFalse, messageIfTrue);
       }
 
+      [Obsolete("Use assertions")]
       public static IResult<T> reject<T>(Func<bool> test, Func<T> ifFalse, string messageIfTrue)
       {
          return tryTo(() => assert(!test(), ifFalse, messageIfTrue));
       }
 
+      [Obsolete("Use assertions")]
       public static IResult<T> reject<T>(bool test, Func<T> ifFalse, Func<string> messageIfTrue)
       {
          return assert(!test, ifFalse, messageIfTrue);
       }
 
+      [Obsolete("Use assertions")]
       public static IResult<T> reject<T>(Func<bool> test, Func<T> ifFalse, Func<string> messageIfTrue)
       {
          return tryTo(() => assert(!test(), ifFalse, messageIfTrue));
       }
 
+      [Obsolete("Use assertions")]
       public static IResult<T> reject<T>(bool test, Func<IResult<T>> ifFalse, string messageIfTrue)
       {
          return assert(!test, ifFalse, messageIfTrue);
       }
 
+      [Obsolete("Use assertions")]
       public static IResult<T> reject<T>(Func<bool> test, Func<IResult<T>> ifFalse, string messageIfTrue)
       {
          return tryTo(() => assert(!test(), ifFalse, messageIfTrue));
       }
 
+      [Obsolete("Use assertions")]
       public static IResult<T> reject<T>(bool test, Func<IResult<T>> ifFalse, Func<string> messageIfTrue)
       {
          return assert(!test, ifFalse, messageIfTrue);
       }
 
+      [Obsolete("Use assertions")]
       public static IResult<T> reject<T>(Func<bool> test, Func<IResult<T>> ifFalse, Func<string> messageIfTrue)
       {
          return tryTo(() => assert(!test(), ifFalse, messageIfTrue));
@@ -376,6 +394,7 @@ namespace Core.Monads
          }
       }
 
+      [Obsolete("Use assertions")]
       public static async Task<ICompletion<T>> assertAsync<T>(Func<bool> test, Func<T> ifTrue, string messageIfFalse, CancellationToken token)
       {
          try
@@ -399,6 +418,7 @@ namespace Core.Monads
          }
       }
 
+      [Obsolete("Use assertions")]
       public static async Task<ICompletion<T>> assertAsync<T>(bool test, Func<T> ifTrue, Func<string> messageIfFalse, CancellationToken token)
       {
          try
@@ -422,6 +442,7 @@ namespace Core.Monads
          }
       }
 
+      [Obsolete("Use assertions")]
       public static async Task<ICompletion<T>> assertAsync<T>(Func<bool> test, Func<T> ifTrue, Func<string> messageIfFalse, CancellationToken token)
       {
          try
@@ -445,6 +466,7 @@ namespace Core.Monads
          }
       }
 
+      [Obsolete("Use assertions")]
       public static async Task<ICompletion<T>> assertAsync<T>(bool test, Func<ICompletion<T>> ifTrue, string messageIfFalse, CancellationToken token)
       {
          try
@@ -468,7 +490,9 @@ namespace Core.Monads
          }
       }
 
-      public static async Task<ICompletion<T>> assertAsync<T>(bool test, Func<ICompletion<T>> ifTrue, Func<string> messageIfFalse, CancellationToken token)
+      [Obsolete("Use assertions")]
+      public static async Task<ICompletion<T>> assertAsync<T>(bool test, Func<ICompletion<T>> ifTrue, Func<string> messageIfFalse,
+         CancellationToken token)
       {
          try
          {
@@ -491,7 +515,9 @@ namespace Core.Monads
          }
       }
 
-      public static async Task<ICompletion<T>> assertAsync<T>(Func<bool> test, Func<ICompletion<T>> ifTrue, Func<string> messageIfFalse, CancellationToken token)
+      [Obsolete("Use assertions")]
+      public static async Task<ICompletion<T>> assertAsync<T>(Func<bool> test, Func<ICompletion<T>> ifTrue, Func<string> messageIfFalse,
+         CancellationToken token)
       {
          try
          {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Core.Assertions;
 using Core.Monads;
 using static Core.Monads.AttemptFunctions;
 
@@ -62,15 +63,10 @@ namespace Core.Computers
 
       public IResult<int> FileCount => tryTo(() => folderName.FileCount);
 
-      public IResult<FolderName> Exists()
-      {
-         return assert(folderName.Exists(), () => folderName, $"Folder {folderName} doesn't exist");
-      }
-
       public IResult<FolderName> this[string subfolder] => tryTo(() =>
       {
          var name = folderName[subfolder];
-         return assert(() => name.Exists(), () => name, $"Folder {name} doesn't exist");
+         return name.Must().Exist().Try();
       });
 
       public IResult<FolderName> Subfolder(string name) => tryTo(() => folderName.Subfolder(name));

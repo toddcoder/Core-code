@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
+using Core.Assertions;
 using Core.Monads;
-using static Core.Monads.AttemptFunctions;
 
 namespace Core.Objects
 {
@@ -15,7 +15,7 @@ namespace Core.Objects
       static BindingFlags setFieldBindings = baseBindings | BindingFlags.SetField;
 
       public static IResult<Invoker> From(object obj) =>
-         from nonNull in assert(obj != null, () => obj, "Object is null")
+         from nonNull in obj.Must().Not.BeNull().Try()
          from type in nonNull.GetType().Success()
          select new Invoker(nonNull, type);
 

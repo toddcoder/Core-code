@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading;
+using Core.Monads;
 
 namespace Core.Collections
 {
@@ -96,6 +97,8 @@ namespace Core.Collections
             }
          }
       }
+
+      public IResult<Hash<TKey, TValue>> AnyHash() => this.Success();
 
       public TValue Find(TKey key, Func<TKey, TValue> defaultValue, bool addIfNotFound = false)
       {

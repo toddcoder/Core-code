@@ -1,5 +1,5 @@
-﻿using Core.Monads;
-using Core.Numbers;
+﻿using Core.Assertions;
+using Core.Monads;
 
 namespace Core.Applications
 {
@@ -9,31 +9,36 @@ namespace Core.Applications
 
 		public ArgumentsTrying(Arguments arguments) => this.arguments = arguments;
 
-		public IResult<Argument> this[int index] => AttemptFunctions.assert(() => index.Between(0).Until(arguments.Count),
-			() => arguments[index], () => $"Index {index} out of range");
+		public IResult<Argument> this[int index]
+      {
+         get => index.Must().BeBetween(0).Until(arguments.Count).Try(() => $"Index {index} out of range").Map(i => arguments[i]);
+      }
 
-		public IResult<Unit> AssertCount(int exactCount)
-		{
-			return AttemptFunctions.assert(arguments.Count == exactCount, () => Unit.Value,
-				() => $"Expected exact count of {exactCount}");
-		}
+      public IResult<Unit> AssertCount(int exactCount)
+      {
+         return arguments.Count.Must().Equal(exactCount).Try(() => $"Expected exact count of {exactCount}").Unit;
+      }
 
 		public IResult<Unit> AssertCount(int minimumCount, int maximumCount)
-		{
-			return AttemptFunctions.assert(arguments.Count.Between(0).Until(arguments.Count), () => Unit.Value,
-				() => $"Count must between {minimumCount} and {maximumCount}--found {arguments.Count}");
-		}
+      {
+         return arguments.Count.Must()
+            .BeBetween(minimumCount).Until(arguments.Count)
+            .Try(() => $"Count must between {minimumCount} and {maximumCount}--found {arguments.Count}")
+            .Unit;
+      }
 
 		public IResult<Unit> AssertMinimumCount(int minimumCount)
-		{
-			return AttemptFunctions.assert(arguments.Count >= minimumCount, () => Unit.Value,
-				() => $"Count must be at least {minimumCount}--found {arguments.Count}");
-		}
+      {
+         return arguments.Count.Must().BeGreaterThanOrEqual(minimumCount)
+            .Try(() => $"Count must be at least {minimumCount}--found {arguments.Count}")
+            .Unit;
+      }
 
 		public IResult<Unit> AssertMaximumCount(int maximumCount)
-		{
-			return AttemptFunctions.assert(arguments.Count <= maximumCount, () => Unit.Value,
-				() => $"Count must be at most {maximumCount}--found {arguments.Count}");
-		}
+      {
+         return arguments.Count.Must().BeLessThanOrEqual(maximumCount)
+            .Try(() => $"Count must be at most {maximumCount}--found {arguments.Count}")
+            .Unit;
+      }
 	}
 }

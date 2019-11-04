@@ -15,7 +15,6 @@ namespace Core.Assertions.Objects
 
       public static bool operator |(ObjectAssertion x, ICanBeTrue y) => or(x, y);
 
-
       protected object obj;
       protected List<Constraint> constraints;
       protected bool not;

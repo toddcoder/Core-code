@@ -2,6 +2,7 @@
 using System.Linq;
 using Core.Collections;
 using Core.Exceptions;
+using Core.Monads;
 
 namespace Core.Objects
 {
@@ -19,6 +20,11 @@ namespace Core.Objects
 
       public bool ContainsKey(string key) => data.ContainsKey(key);
 
+      IResult<Hash<string, object>> IHash<string, object>.AnyHash()
+      {
+         return Signatures.Select(s => (key: s.Name, value: data[s.Name])).ToHash(i => i.key, i => i.value).Success();
+      }
+
       object IEvaluator.this[Signature signature]
       {
          get => data[signature.Name];
@@ -26,6 +32,11 @@ namespace Core.Objects
       }
 
       public bool ContainsKey(Signature key) => data.ContainsKey(key.Name);
+
+      IResult<Hash<Signature, object>> IHash<Signature, object>.AnyHash()
+      {
+         return Signatures.Select(s => (key: s, value: data[s.Name])).ToHash(i => i.key, i => i.value).Success();
+      }
 
       public Type Type(string signature)
       {

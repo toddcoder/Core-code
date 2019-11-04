@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Core.Arrays;
+using Core.Assertions;
 using Core.Dates.Now;
 using Core.Enumerables;
 using Core.Exceptions;
@@ -17,7 +18,6 @@ using Core.RegularExpressions;
 using Core.Strings;
 using static System.IO.Directory;
 using static Core.Computers.ComputerFunctions;
-using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Computers
@@ -28,7 +28,7 @@ namespace Core.Computers
       {
          public static IResult<FolderName> FromString(string folder)
          {
-            return assert(IsValidFolderName(folder), () => new FolderName(folder), () => $"{folder} is an invalid folder name");
+            return IsValidFolderName(folder).Must().Be().Try().Map(_ => new FolderName(folder));
          }
       }
 

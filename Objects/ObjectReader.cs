@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using Core.Assertions;
 using Core.Collections;
 using Core.Monads;
 using static System.Reflection.BindingFlags;
@@ -14,7 +15,7 @@ namespace Core.Objects
    public class ObjectReader
    {
       public static IResult<ObjectReader> ReadObject(object obj) =>
-         from nonNull in assert(obj != null, () => obj, () => "Object is null")
+         from nonNull in obj.Must().Not.BeNull().Try()
          from type in obj.GetType().Success()
          from values in getValues(obj, type)
          select new ObjectReader(values);

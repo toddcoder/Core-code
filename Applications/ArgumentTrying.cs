@@ -1,39 +1,38 @@
-﻿using Core.Computers;
+﻿using Core.Assertions;
+using Core.Computers;
 using Core.Monads;
-using static Core.Monads.AttemptFunctions;
 
 namespace Core.Applications
 {
-	public class ArgumentTrying
-	{
-		Argument argument;
+   public class ArgumentTrying
+   {
+      Argument argument;
 
-		public ArgumentTrying(Argument argument) => this.argument = argument;
+      public ArgumentTrying(Argument argument) => this.argument = argument;
 
-		public IResult<FileName> FileName
-		{
-			get
-			{
-				var text = argument.Text;
-				return
-					from valid in assert(Computers.FileName.IsValidFileName(text), () => (FileName)text,
-						() => $"{text} invalid file name")
-					from exists in valid.TryTo.MustExist()
-					select exists;
-			}
-		}
+      public IResult<FileName> FileName
+      {
+         get
+         {
+            var text = argument.Text;
+            return
+               from valid in Computers.FileName.IsValidFileName(text).Must().Be().Try(() => $"{text} invalid file name").Map(_ => (FileName)text)
+               from exists in valid.Must().Exist().Try()
+               select exists;
+         }
+      }
 
-		public IResult<FolderName> FolderName
-		{
-			get
-			{
-				var text = argument.Text;
-				return
-					from valid in assert(Computers.FolderName.IsValidFolderName(text), () => (FolderName)text,
-						() => $"{text} invalid folder name")
-					from exists in valid.TryTo.Exists()
-					select exists;
-			}
-		}
-	}
+      public IResult<FolderName> FolderName
+      {
+         get
+         {
+            var text = argument.Text;
+            return
+               from valid in Computers.FolderName.IsValidFolderName(text).Must().Be().Try(() => $"{text} invalid Folder name")
+                  .Map(_ => (FolderName)text)
+               from exists in valid.Must().Exist().Try()
+               select exists;
+         }
+      }
+   }
 }

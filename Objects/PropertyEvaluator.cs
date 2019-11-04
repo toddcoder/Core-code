@@ -92,6 +92,19 @@ namespace Core.Objects
 
       public bool ContainsKey(Signature key) => Contains(key.Name);
 
+      IResult<Hash<Signature, object>> IHash<Signature, object>.AnyHash()
+      {
+         var hash = new Hash<Signature, object>();
+         var info = obj.GetType().GetProperties();
+
+         foreach (var pInfo in info)
+         {
+            hash[new Signature(pInfo.Name)] = this[pInfo.Name];
+         }
+
+         return hash.Success();
+      }
+
       public object Object
       {
          get => obj;
@@ -167,7 +180,7 @@ namespace Core.Objects
          }
       }
 
-      public Hash<string, object> ToHash()
+      public IResult<Hash<string, object>> AnyHash()
       {
          var hash = new Hash<string, object>();
          var info = obj.GetType().GetProperties();
@@ -177,7 +190,7 @@ namespace Core.Objects
             hash[pInfo.Name] = this[pInfo.Name];
          }
 
-         return hash;
+         return hash.Success();
       }
 
       public Signature[] Signatures

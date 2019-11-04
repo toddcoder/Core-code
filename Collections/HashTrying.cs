@@ -1,6 +1,6 @@
 ﻿using System;
+using Core.Assertions;
 using Core.Monads;
-using static Core.Monads.AttemptFunctions;
 
 namespace Core.Collections
 {
@@ -10,7 +10,7 @@ namespace Core.Collections
 
       public HashTrying(Hash<TKey, TValue> hash) => this.hash = hash;
 
-      public IResult<TValue> this[TKey key] => assert(hash.ContainsKey(key), () => hash[key].Success(), () => $"Key {key} not found");
+      public IResult<TValue> this[TKey key] => hash.Must().HaveKeyOf(key).Try(() => $"Key {key} not found").Map(d => d[key].Success());
 
       public IResult<TValue> Find(TKey key, Func<TKey, IResult<TValue>> defaultValue, bool addIfNotFound = false)
       {

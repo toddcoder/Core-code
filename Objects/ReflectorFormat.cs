@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Core.Assertions;
 using Core.Collections;
 using Core.Monads;
 using Core.RegularExpressions;
@@ -57,7 +58,7 @@ namespace Core.Objects
       }
 
       internal static IResult<ReflectorFormat> GetReflector(object obj) =>
-         from nonNullObject in reject(obj == null, () => obj, "Object can't be null")
+         from nonNullObject in obj.Must().Not.BeNull().Try()
          from type in tryTo(nonNullObject.GetType)
          select new ReflectorFormat(nonNullObject, type);
 

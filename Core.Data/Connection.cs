@@ -2,6 +2,7 @@
 using Core.Collections;
 using Core.Dates;
 using Core.Dates.DateIncrements;
+using Core.Monads;
 using Core.ObjectGraphs;
 
 namespace Core.Data
@@ -31,6 +32,8 @@ namespace Core.Data
       }
 
       public bool ContainsKey(string key) => data.ContainsKey(key);
+
+      public IResult<Hash<string, string>> AnyHash() => data.Success();
 
       public string Type { get; set; }
 

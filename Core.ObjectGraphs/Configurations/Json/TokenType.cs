@@ -1,4 +1,4 @@
-﻿namespace Standard.JSON
+﻿namespace Core.ObjectGraphs.Configurations.Json
 {
    public enum TokenType
    {

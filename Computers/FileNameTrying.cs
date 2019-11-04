@@ -43,8 +43,6 @@ namespace Core.Computers
 			return tryTo(() => fileName.MoveTo(targetFolder, overwrite, unique));
 		}
 
-		public IResult<FileName> MustExist() => assert(fileName.Exists(), () => fileName, $"File {fileName} doesn't exist");
-
 		public IResult<bool> Exists() => tryTo(() => fileName.Exists());
 
 		public IResult<string> Text => tryTo(() => fileName.Text);

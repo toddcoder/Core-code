@@ -6,6 +6,7 @@ using Core.Assertions.Computers;
 using Core.Assertions.Monads;
 using Core.Assertions.Objects;
 using Core.Assertions.Strings;
+using Core.Collections;
 using Core.Computers;
 using Core.Monads;
 using Core.RegularExpressions;
@@ -50,8 +51,16 @@ namespace Core.Assertions
 
       public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this Dictionary<TKey, TValue> value) => new DictionaryAssertion<TKey, TValue>(value);
 
+      public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this IHash<TKey, TValue> value)
+      {
+         Dictionary<TKey, TValue> hash = value.AnyHash().ForceValue();
+         return hash.Must();
+      }
+
       public static TypeAssertion Must(this Type value) => new TypeAssertion(value);
 
       public static MatcherAssertion Must(this Matcher value) => new MatcherAssertion(value);
+
+      public static TypedAssertion<T> MustOfType<T>(this T value) => new TypedAssertion<T>(value);
    }
 }

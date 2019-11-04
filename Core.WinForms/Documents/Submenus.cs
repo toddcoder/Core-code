@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 using Core.Collections;
+using Core.Monads;
 
 namespace Core.WinForms.Documents
 {
@@ -18,7 +19,9 @@ namespace Core.WinForms.Documents
 
 		public bool ContainsKey(string key) => parent.DropDownItems.ContainsKey(Menus.SubmenuName(parentText, key));
 
-		ToolStripMenuItem IHash<string, ToolStripMenuItem>.this[string text]
+      public IResult<Hash<string, ToolStripMenuItem>> AnyHash() => "Not implemented".Failure<Hash<string, ToolStripMenuItem>>();
+
+      ToolStripMenuItem IHash<string, ToolStripMenuItem>.this[string text]
 		{
 			get
 			{

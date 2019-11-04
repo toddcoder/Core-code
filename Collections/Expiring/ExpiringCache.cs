@@ -124,6 +124,8 @@ namespace Core.Collections.Expiring
          }
       }
 
+      public IResult<Hash<TKey, TValue>> AnyHash() => cache.Success();
+
       public void Remove(TKey key)
       {
          lock (locker)

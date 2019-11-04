@@ -43,6 +43,8 @@ namespace Core.Data.Parameters
 
       public bool ContainsKey(string key) => parameters.ContainsKey(key);
 
+      public IResult<Hash<string, Parameter>> AnyHash() => parameters.Success();
+
       public int Count => parameters.Count;
 
       public void DeterminePropertyTypes(object entity)

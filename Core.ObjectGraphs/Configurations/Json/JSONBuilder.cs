@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Core.Collections;
 using Core.Computers;
 using Core.Dates;
@@ -300,6 +301,8 @@ namespace Core.ObjectGraphs.Configurations.Json
 
       public bool ContainsKey(string key) => content.ContainsKey(key);
 
+      public IResult<Hash<string, JSONBase>> AnyHash() => content.Success();
+
       public override void Generate(JSONWriter writer)
       {
          writeName(writer);
@@ -374,6 +377,11 @@ namespace Core.ObjectGraphs.Configurations.Json
       }
 
       public bool ContainsKey(int key) => key.Between(0).Until(content.Count);
+
+      public IResult<Hash<int, JSONBase>> AnyHash()
+      {
+         return content.Select((j, i) => (key: i, value: j)).ToHash(i => i.key, i => i.value).Success();
+      }
 
       public override void Generate(JSONWriter writer)
       {
