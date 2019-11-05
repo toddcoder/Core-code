@@ -51,7 +51,7 @@ namespace Core.ObjectGraphs.Configurations.Json
             case JsonDouble jd:
                result = jd.ToDouble();
                break;
-            case JSONArray ja:
+            case JsonArray ja:
                if (GetArray(type, ja).If(out var array, out var exception))
                {
                   result = array;
@@ -144,7 +144,7 @@ namespace Core.ObjectGraphs.Configurations.Json
          return Unit.Success();
       }
 
-      public static IResult<object> GetArray(Type type, JSONArray array)
+      public static IResult<object> GetArray(Type type, JsonArray array)
       {
          var elementType = type.GetElementType();
          var elements = array.ToArray();

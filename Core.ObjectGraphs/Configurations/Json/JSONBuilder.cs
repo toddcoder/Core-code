@@ -66,11 +66,10 @@ namespace Core.ObjectGraphs.Configurations.Json
 
       public void BeginObject(string name = "") => beginContainer(new JsonObject(name));
 
-      public void BeginArray(string name = "") => beginContainer(new JSONArray(name));
+      public void BeginArray(string name = "") => beginContainer(new JsonArray(name));
 
       protected void beginContainer(IContainer container)
       {
-         currentContainer.Add((JsonBase)container);
          containers.Push(currentContainer);
          currentContainer = container;
       }
@@ -79,7 +78,9 @@ namespace Core.ObjectGraphs.Configurations.Json
       {
          if (containers.Count > 0)
          {
-            currentContainer = containers.Pop();
+            var previousContainer = containers.Pop();
+            previousContainer.Add((JsonBase)currentContainer);
+            currentContainer = previousContainer;
          }
       }
 
@@ -92,6 +93,7 @@ namespace Core.ObjectGraphs.Configurations.Json
 
          var writer = new JsonWriter(indentString);
          root.Generate(writer);
+
          return writer.ToString();
       }
 
@@ -135,13 +137,13 @@ namespace Core.ObjectGraphs.Configurations.Json
 
       public virtual IMaybe<JsonObject> IfObject() => none<JsonObject>();
 
-      public virtual IResult<JSONArray> Array() => getFailure<JSONArray>();
+      public virtual IResult<JsonArray> Array() => getFailure<JsonArray>();
 
-      public virtual IResult<T> Array<T>(Func<JSONArray, T> map) => getFailure<T>();
+      public virtual IResult<T> Array<T>(Func<JsonArray, T> map) => getFailure<T>();
 
-      public virtual T Array<T>(Func<JSONArray, T> ifSuccess, Func<Exception, T> ifFailure) => getFailure<T>().Recover(ifFailure);
+      public virtual T Array<T>(Func<JsonArray, T> ifSuccess, Func<Exception, T> ifFailure) => getFailure<T>().Recover(ifFailure);
 
-      public virtual IMaybe<JSONArray> IfArray() => none<JSONArray>();
+      public virtual IMaybe<JsonArray> IfArray() => none<JsonArray>();
 
       public virtual IResult<JsonString> String() => getFailure<JsonString>();
 
@@ -360,13 +362,13 @@ namespace Core.ObjectGraphs.Configurations.Json
       public IResult<Unit> Fill(object obj) => FillObject(obj, this);
    }
 
-   public class JSONArray : JsonBase, IContainer, IEnumerable<JsonBase>, IHash<int, JsonBase>
+   public class JsonArray : JsonBase, IContainer, IEnumerable<JsonBase>, IHash<int, JsonBase>
    {
       protected List<JsonBase> content;
 
-      public JSONArray(string name) : base(name) => content = new List<JsonBase>();
+      public JsonArray(string name) : base(name) => content = new List<JsonBase>();
 
-      public JSONArray() : this("") { }
+      public JsonArray() : this("") { }
 
       public void Add(JsonBase item) => content.Add(item);
 
@@ -407,13 +409,13 @@ namespace Core.ObjectGraphs.Configurations.Json
 
       public JsonBase[] ToArray() => content.ToArray();
 
-      public override IResult<JSONArray> Array() => this.Success();
+      public override IResult<JsonArray> Array() => this.Success();
 
-      public override IResult<T> Array<T>(Func<JSONArray, T> map) => tryTo(() => map(this));
+      public override IResult<T> Array<T>(Func<JsonArray, T> map) => tryTo(() => map(this));
 
-      public override T Array<T>(Func<JSONArray, T> ifSuccess, Func<Exception, T> ifFailure) => ifSuccess(this);
+      public override T Array<T>(Func<JsonArray, T> ifSuccess, Func<Exception, T> ifFailure) => ifSuccess(this);
 
-      public override IMaybe<JSONArray> IfArray() => this.Some();
+      public override IMaybe<JsonArray> IfArray() => this.Some();
 
       public override bool IsContainer => true;
 

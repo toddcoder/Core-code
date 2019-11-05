@@ -37,7 +37,8 @@ namespace Core.ObjectGraphs.Configurations.Json
 
       public IResult<JsonObject> Parse() =>
          from token in getToken()
-         from members in parseMembers("")
+         from objectOpen in token.Must().Equal(TokenType.ObjectOpen).Try(() => "Must begin with an open object")
+         from member in parseObject("")
          select builder.Root;
 
       protected void invokeEvent(TokenType tokenType, string name, string value)
@@ -549,7 +550,7 @@ namespace Core.ObjectGraphs.Configurations.Json
                advanceIndex();
                return TokenType.Colon.Success();
             case 'f':
-               if (source.Drop(index - 1).Keep(5) == "false")
+               if (source.Drop(index).Keep(5) == "false")
                {
                   advanceIndex(5);
                   return TokenType.False.Success();
@@ -559,7 +560,7 @@ namespace Core.ObjectGraphs.Configurations.Json
                   return TokenType.Name.Success();
                }
             case 't':
-               if (source.Drop(index - 1).Keep(4) == "true")
+               if (source.Drop(index).Keep(4) == "true")
                {
                   advanceIndex(4);
                   return TokenType.True.Success();
@@ -569,7 +570,7 @@ namespace Core.ObjectGraphs.Configurations.Json
                   return TokenType.Name.Success();
                }
             case 'n':
-               if (source.Drop(index - 1).Keep(4) == "null")
+               if (source.Drop(index).Keep(4) == "null")
                {
                   advanceIndex(4);
                   return TokenType.Null.Success();
