@@ -7,7 +7,7 @@ using Core.Strings;
 
 namespace Core.ObjectGraphs.Configurations.Json
 {
-   public class JSONWriter
+   public class JsonWriter
    {
       StringWriter writer;
       string indentString;
@@ -16,7 +16,7 @@ namespace Core.ObjectGraphs.Configurations.Json
       bool opened;
       bool nameWritten;
 
-      public JSONWriter(string indentString = "   ", int indentLevel = 0)
+      public JsonWriter(string indentString = "   ", int indentLevel = 0)
       {
          writer = new StringWriter();
          this.indentString = indentString;

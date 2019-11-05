@@ -10,23 +10,23 @@ using Core.Strings;
 
 namespace Core.ObjectGraphs.Configurations.Json
 {
-   public class JSONSerializer
+   public class JsonSerializer
    {
-      public static IResult<JSONSerializer> New(object obj, string indentString = "   ")
+      public static IResult<JsonSerializer> New(object obj, string indentString = "   ")
       {
          return
             from nonNull in obj.Must().Not.BeNull().Try("Object to be serialized can't be null")
-            select new JSONSerializer(nonNull, indentString);
+            select new JsonSerializer(nonNull, indentString);
       }
 
       object obj;
-      JSONBuilder builder;
+      JsonBuilder builder;
       string indentString;
 
-      protected JSONSerializer(object obj, string indentString = "   ")
+      protected JsonSerializer(object obj, string indentString = "   ")
       {
          this.obj = obj;
-         builder = new JSONBuilder();
+         builder = new JsonBuilder();
          this.indentString = indentString;
       }
 

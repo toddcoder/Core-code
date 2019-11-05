@@ -8,34 +8,34 @@ using Core.Strings;
 
 namespace Core.ObjectGraphs.Configurations.Json
 {
-   public class JSONParser
+   public class JsonParser
    {
       string source;
       Hash<string, string> replacements;
       TokenType lookAheadToken;
       int index;
       StringBuilder buffer;
-      JSONBuilder builder;
+      JsonBuilder builder;
 
       public event EventHandler<ParseValueArgs> ParseValue;
 
-      public JSONParser(string source)
+      public JsonParser(string source)
       {
          this.source = source;
          lookAheadToken = TokenType.None;
          index = 0;
          buffer = new StringBuilder();
          replacements = new Hash<string, string>();
-         builder = new JSONBuilder();
+         builder = new JsonBuilder();
       }
 
-      public JSONParser(string source, Hash<string, string> replacements) : this(source)
+      public JsonParser(string source, Hash<string, string> replacements) : this(source)
       {
          this.replacements.Copy(replacements);
          this.source = source;
       }
 
-      public IResult<JSONObject> Parse() =>
+      public IResult<JsonObject> Parse() =>
          from token in getToken()
          from members in parseMembers("")
          select builder.Root;
@@ -160,7 +160,7 @@ namespace Core.ObjectGraphs.Configurations.Json
                   if (buffer.Length == 0)
                   {
                      advanceIndex();
-                     return source.Drop(runIndex).Keep(index - runIndex).Success();
+                     return source.Drop(runIndex).Keep(index - runIndex - 1).Success();
                   }
 
                   buffer.Append(source, runIndex, index - runIndex);
@@ -389,7 +389,7 @@ namespace Core.ObjectGraphs.Configurations.Json
       {
          setLookAheadTokenToNone();
 
-         var startIndex = index - 1;
+         var startIndex = index;
          var isDecimal = false;
 
          while (index < source.Length)

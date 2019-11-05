@@ -70,13 +70,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configurations\Configuration.cs" />
-    <Compile Include="Configurations\Json\JSONBuilder.cs" />
-    <Compile Include="Configurations\Json\JSONDeserializer.cs" />
-    <Compile Include="Configurations\Json\JSONExtensions.cs" />
-    <Compile Include="Configurations\Json\JSONParser.cs" />
-    <Compile Include="Configurations\Json\JSONSerializer.cs" />
+    <Compile Include="Configurations\Json\JsonBuilder.cs" />
+    <Compile Include="Configurations\Json\JsonDeserializer.cs" />
+    <Compile Include="Configurations\Json\JsonExtensions.cs" />
+    <Compile Include="Configurations\Json\JsonParser.cs" />
+    <Compile Include="Configurations\Json\JsonSerializer.cs" />
     <Compile Include="Configurations\Json\JsonToObjectGraphParser.cs" />
-    <Compile Include="Configurations\Json\JSONWriter.cs" />
+    <Compile Include="Configurations\Json\JsonWriter.cs" />
     <Compile Include="Configurations\Json\ParseValueArgs.cs" />
     <Compile Include="Configurations\Json\TokenType.cs" />
     <Compile Include="Defaulting.cs" />

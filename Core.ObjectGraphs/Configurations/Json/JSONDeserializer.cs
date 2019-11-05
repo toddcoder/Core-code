@@ -8,47 +8,47 @@ using Core.RegularExpressions;
 using Core.Strings;
 using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
-using static Core.ObjectGraphs.Configurations.Json.JSONDeserializerFunctions;
+using static Core.ObjectGraphs.Configurations.Json.JsonDeserializerFunctions;
 
 namespace Core.ObjectGraphs.Configurations.Json
 {
-   public class JSONDeserializer<T>
+   public class JsonDeserializer<T>
    {
-      public static IResult<T> Deserialize(JSONObject obj) => DeserializeObject(typeof(T), obj).Map(o => (T)o);
+      public static IResult<T> Deserialize(JsonObject obj) => DeserializeObject(typeof(T), obj).Map(o => (T)o);
 
       string json;
 
-      public JSONDeserializer(string json) => this.json = json;
+      public JsonDeserializer(string json) => this.json = json;
 
       public IResult<T> Deserialize(params object[] args) =>
          from obj in typeof(T).TryCreate(args)
-         from jsonObject in json.JSONObject()
+         from jsonObject in json.JsonObject()
          from filled in FillObject(obj, jsonObject)
          select (T)obj;
    }
 
-   public static class JSONDeserializerFunctions
+   public static class JsonDeserializerFunctions
    {
-      public static IResult<object> DeserializeObject(Type type, JSONObject jsonObject) =>
+      public static IResult<object> DeserializeObject(Type type, JsonObject jsonObject) =>
          from obj in type.TryCreate()
          from filled in FillObject(obj, jsonObject)
          select obj;
 
-      public static IResult<object> GetMember(Type type, JSONBase jsonObject)
+      public static IResult<object> GetMember(Type type, JsonBase jsonObject)
       {
          object result;
          switch (jsonObject)
          {
-            case JSONString js:
+            case JsonString js:
                result = GetFromString(type, js.ToString());
                break;
-            case JSONBoolean jb:
+            case JsonBoolean jb:
                result = jb.ToBoolean();
                break;
-            case JSONInteger ji:
+            case JsonInteger ji:
                result = ji.ToInteger();
                break;
-            case JSONDouble jd:
+            case JsonDouble jd:
                result = jd.ToDouble();
                break;
             case JSONArray ja:
@@ -62,7 +62,7 @@ namespace Core.ObjectGraphs.Configurations.Json
                }
 
                break;
-            case JSONObject jo:
+            case JsonObject jo:
                if (DeserializeObject(type, jo).If(out var obj, out exception))
                {
                   result = obj;
@@ -121,7 +121,7 @@ namespace Core.ObjectGraphs.Configurations.Json
          return (Enum)Enum.Parse(enumerationType, modifiedName);
       }
 
-      public static IResult<Unit> FillObject(object obj, JSONObject jsonObject)
+      public static IResult<Unit> FillObject(object obj, JsonObject jsonObject)
       {
          var evaluator = new PropertyEvaluator(obj);
          foreach (var member in jsonObject)

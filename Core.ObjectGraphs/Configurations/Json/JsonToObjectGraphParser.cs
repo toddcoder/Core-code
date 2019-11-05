@@ -26,7 +26,7 @@ namespace Core.ObjectGraphs.Configurations.Json
 
       public IResult<ObjectGraph> Parse()
       {
-         var jsonParser = new JSONParser(source);
+         var jsonParser = new JsonParser(source);
          jsonParser.ParseValue += (sender, e) =>
          {
             var (tokenType, name, value) = e;

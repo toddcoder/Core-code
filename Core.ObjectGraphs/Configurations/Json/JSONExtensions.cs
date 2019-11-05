@@ -5,42 +5,42 @@ using Core.Monads;
 
 namespace Core.ObjectGraphs.Configurations.Json
 {
-   public static class JSONExtensions
+   public static class JsonExtensions
    {
-      public static IResult<JSONObject> JSONObject(this string source)
+      public static IResult<JsonObject> JsonObject(this string source)
       {
-         var parser = new JSONParser(source);
+         var parser = new JsonParser(source);
          return parser.Parse();
       }
 
-      public static IResult<T> ObjectFromJSON<T>(this string source, params object[] args)
+      public static IResult<T> ObjectFromJson<T>(this string source, params object[] args)
       {
-         var deserializer = new JSONDeserializer<T>(source);
+         var deserializer = new JsonDeserializer<T>(source);
          return deserializer.Deserialize(args);
       }
 
-      public static IResult<T> ObjectFromJSON<T>(this FileName file, params object[] args)
+      public static IResult<T> ObjectFromJson<T>(this FileName file, params object[] args)
       {
-         return file.TryTo.Text.Map(text => text.ObjectFromJSON<T>(args));
+         return file.TryTo.Text.Map(text => text.ObjectFromJson<T>(args));
       }
 
-      public static IResult<JSONObject> JSONObject(this string source, Hash<string, string> replacements)
+      public static IResult<JsonObject> JsonObject(this string source, Hash<string, string> replacements)
       {
-         var parser = new JSONParser(source, replacements);
+         var parser = new JsonParser(source, replacements);
          return parser.Parse();
       }
 
-      public static IResult<JSONObject> JSONObject(this FileName file)
+      public static IResult<JsonObject> JsonObject(this FileName file)
       {
-         return file.TryTo.Text.Map(source => source.JSONObject());
+         return file.TryTo.Text.Map(source => source.JsonObject());
       }
 
-      public static IResult<JSONObject> JSONObject(this FileName file, Hash<string, string> replacements)
+      public static IResult<JsonObject> JsonObject(this FileName file, Hash<string, string> replacements)
       {
-         return file.TryTo.Text.Map(source => source.JSONObject(replacements));
+         return file.TryTo.Text.Map(source => source.JsonObject(replacements));
       }
 
-      public static IResult<Hash<string, string>> Replacements(this JSONObject obj)
+      public static IResult<Hash<string, string>> Replacements(this JsonObject obj)
       {
          var hash = new Hash<string, string>();
 
@@ -59,10 +59,10 @@ namespace Core.ObjectGraphs.Configurations.Json
          return hash.Success();
       }
 
-      public static IResult<T> Deserialize<T>(this JSONObject obj) => JSONDeserializer<T>.Deserialize(obj);
+      public static IResult<T> Deserialize<T>(this JsonObject obj) => JsonDeserializer<T>.Deserialize(obj);
 
       public static IResult<string> Serialize(this object obj) =>
-         from serializer in JSONSerializer.New(obj)
+         from serializer in JsonSerializer.New(obj)
          from result in serializer.Serialize()
          select result;
    }
