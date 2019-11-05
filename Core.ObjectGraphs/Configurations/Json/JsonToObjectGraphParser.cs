@@ -40,7 +40,15 @@ namespace Core.ObjectGraphs.Configurations.Json
       {
          if (inArray)
          {
-            arrayValues.Add(value);
+            if (tokenType == TokenType.ArrayClose)
+            {
+               objectGraph[name] = $"{name} -> [{arrayValues.Stringify()}]";
+               inArray = false;
+            }
+            else
+            {
+               arrayValues.Add(value);
+            }
          }
          else
          {
@@ -61,15 +69,11 @@ namespace Core.ObjectGraphs.Configurations.Json
                   arrayValues.Clear();
                   inArray = true;
                   break;
-               case TokenType.ArrayClose:
-                  objectGraph[name] = $"[{arrayValues.Stringify()}]";
-                  inArray = false;
-                  break;
                case TokenType.String:
                case TokenType.Number:
                case TokenType.True:
                case TokenType.False:
-                  objectGraph[name] = value;
+                  objectGraph[name] = $"{name} -> {value}";
                   break;
                case TokenType.Null:
                   break;

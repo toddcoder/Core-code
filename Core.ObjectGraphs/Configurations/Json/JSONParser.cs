@@ -134,6 +134,7 @@ namespace Core.ObjectGraphs.Configurations.Json
             {
                return buffer.ToString().Success();
             }
+
             advanceIndex();
          }
 
@@ -161,7 +162,10 @@ namespace Core.ObjectGraphs.Configurations.Json
                   if (buffer.Length == 0)
                   {
                      advanceIndex();
-                     return source.Drop(runIndex).Keep(index - runIndex - 1).Success();
+                     var value = source.Drop(runIndex).Keep(index - runIndex - 1);
+                     invokeEvent(TokenType.String, name, value);
+
+                     return value.Success();
                   }
 
                   buffer.Append(source, runIndex, index - runIndex);
