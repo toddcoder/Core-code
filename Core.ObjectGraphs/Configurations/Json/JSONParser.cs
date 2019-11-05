@@ -45,6 +45,8 @@ namespace Core.ObjectGraphs.Configurations.Json
          ParseValue?.Invoke(this, new ParseValueArgs(tokenType, name, value));
       }
 
+      void advanceIndex(int by = 1) => index += by;
+
       IResult<Unit> parseValue(string name)
       {
          var anyTokenType = lookAhead();
@@ -86,19 +88,19 @@ namespace Core.ObjectGraphs.Configurations.Json
                case TokenType.ArrayOpen:
                   return parseArray(name);
                case TokenType.True:
-                  consumeToken();
+                  setLookAheadTokenToNone();
                   builder.Add(name, true);
                   invokeEvent(TokenType.True, name, "true");
 
                   return Unit.Success();
                case TokenType.False:
-                  consumeToken();
+                  setLookAheadTokenToNone();
                   builder.Add(name, false);
                   invokeEvent(TokenType.False, name, "false");
 
                   return Unit.Success();
                case TokenType.Null:
-                  consumeToken();
+                  setLookAheadTokenToNone();
                   builder.Add(name);
                   invokeEvent(TokenType.Null, name, "null");
 
@@ -115,14 +117,14 @@ namespace Core.ObjectGraphs.Configurations.Json
 
       IResult<string> parseName()
       {
-         consumeToken();
+         setLookAheadTokenToNone();
 
          buffer.Clear();
 
          var length = source.Length;
          while (index < length)
          {
-            var c = source[index++];
+            var c = source[index];
             if (char.IsLetter(c))
             {
                buffer.Append(c);
@@ -131,6 +133,7 @@ namespace Core.ObjectGraphs.Configurations.Json
             {
                return buffer.ToString().Success();
             }
+            advanceIndex();
          }
 
          return "Cannot end in a name".Failure<string>();
@@ -138,31 +141,36 @@ namespace Core.ObjectGraphs.Configurations.Json
 
       IResult<string> parseString(string name)
       {
-         consumeToken();
+         setLookAheadTokenToNone();
 
          buffer.Clear();
+
+         advanceIndex();
 
          var runIndex = -1;
          var length = source.Length;
          var p = source;
          while (index < length)
          {
-            var c = p[index++];
+            var c = p[index];
             if (c == '"')
             {
                if (runIndex != -1)
                {
                   if (buffer.Length == 0)
                   {
-                     return source.Drop(runIndex).Keep(index - runIndex - 1).Success();
+                     advanceIndex();
+                     return source.Drop(runIndex).Keep(index - runIndex).Success();
                   }
 
-                  buffer.Append(source, runIndex, index - runIndex - 1);
+                  buffer.Append(source, runIndex, index - runIndex);
                }
 
                var str = replacements.Format(buffer.ToString());
 
                invokeEvent(TokenType.String, name, str);
+
+               advanceIndex();
 
                return str.Success();
             }
@@ -171,9 +179,10 @@ namespace Core.ObjectGraphs.Configurations.Json
             {
                if (runIndex == -1)
                {
-                  runIndex = index - 1;
+                  runIndex = index;
                }
 
+               advanceIndex();
                continue;
             }
 
@@ -184,11 +193,11 @@ namespace Core.ObjectGraphs.Configurations.Json
 
             if (runIndex != -1)
             {
-               buffer.Append(source, runIndex, index - runIndex - 1);
+               buffer.Append(source, runIndex, index - runIndex);
                runIndex = -1;
             }
 
-            switch (p[index++])
+            switch (p[index])
             {
                case '"':
                   buffer.Append('"');
@@ -223,14 +232,16 @@ namespace Core.ObjectGraphs.Configurations.Json
                   else if (parseUnicode(p[index], p[index + 1], p[index + 2], p[index + 3]).ValueOrCast<string>(out var codePoint, out var original))
                   {
                      buffer.Append((char)codePoint);
-                     index += 4;
-                     break;
+                     advanceIndex(4);
+                     continue;
                   }
                   else
                   {
                      return original;
                   }
             }
+
+            advanceIndex();
          }
 
          return "Open string".Failure<string>();
@@ -260,9 +271,7 @@ namespace Core.ObjectGraphs.Configurations.Json
 
       IResult<Unit> parseMembers(string name)
       {
-         consumeToken();
-
-         while (true)
+         while (index < source.Length)
          {
             var token = lookAhead();
             if (token.ValueOrCast<Unit>(out var type, out var asUnit))
@@ -270,11 +279,11 @@ namespace Core.ObjectGraphs.Configurations.Json
                switch (type)
                {
                   case TokenType.Comma:
-                     consumeToken();
+                     setLookAheadTokenToNone();
                      invokeEvent(TokenType.Comma, name, ",");
                      break;
                   case TokenType.ObjectClose:
-                     consumeToken();
+                     setLookAheadTokenToNone();
                      invokeEvent(TokenType.ObjectClose, name, "}");
                      builder.End();
                      return Unit.Success();
@@ -300,6 +309,8 @@ namespace Core.ObjectGraphs.Configurations.Json
                return asUnit;
             }
          }
+
+         return "Didn't understand".Failure<Unit>();
       }
 
       IResult<Unit> parseArray(string name)
@@ -308,7 +319,7 @@ namespace Core.ObjectGraphs.Configurations.Json
 
          invokeEvent(TokenType.ArrayOpen, name, "{");
 
-         consumeToken();
+         setLookAheadTokenToNone();
 
          while (true)
          {
@@ -317,11 +328,11 @@ namespace Core.ObjectGraphs.Configurations.Json
                switch (type)
                {
                   case TokenType.Comma:
-                     consumeToken();
+                     setLookAheadTokenToNone();
                      invokeEvent(TokenType.Comma, name, ",");
                      break;
                   case TokenType.ArrayClose:
-                     consumeToken();
+                     setLookAheadTokenToNone();
                      builder.End();
                      invokeEvent(TokenType.ArrayClose, name, "");
 
@@ -376,12 +387,12 @@ namespace Core.ObjectGraphs.Configurations.Json
 
       IResult<object> parseNumber(string name)
       {
-         consumeToken();
+         setLookAheadTokenToNone();
 
          var startIndex = index - 1;
          var isDecimal = false;
 
-         do
+         while (index < source.Length)
          {
             if (index == source.Length)
             {
@@ -396,16 +407,17 @@ namespace Core.ObjectGraphs.Configurations.Json
                   isDecimal = true;
                }
 
-               if (++index == source.Length)
+               if (index >= source.Length)
                {
                   return "Unexpected end of number".Failure<object>();
                }
 
+               advanceIndex();
                continue;
             }
 
             break;
-         } while (true);
+         }
 
          var str = source.Drop(startIndex).Keep(index - startIndex);
 
@@ -437,7 +449,7 @@ namespace Core.ObjectGraphs.Configurations.Json
          return token;
       }
 
-      void consumeToken() => lookAheadToken = TokenType.None;
+      void setLookAheadTokenToNone() => lookAheadToken = TokenType.None;
 
       IResult<TokenType> nextToken()
       {
@@ -455,13 +467,16 @@ namespace Core.ObjectGraphs.Configurations.Json
          }
       }
 
-      IResult<TokenType> getToken()
+      void ignoreWhitespace()
       {
-         char c;
+         if (index >= source.Length)
+         {
+            return;
+         }
 
          do
          {
-            c = source[index];
+            var c = source[index];
             if (c == '/' && source[index + 1] == '/')
             {
                index += 2;
@@ -485,24 +500,34 @@ namespace Core.ObjectGraphs.Configurations.Json
                break;
             }
          } while (++index < source.Length);
+      }
+
+      IResult<TokenType> getToken()
+      {
+         ignoreWhitespace();
 
          if (index == source.Length)
          {
             return "Open string".Failure<TokenType>();
          }
 
-         c = source[index++];
+         var c = source[index];
          switch (c)
          {
             case '{':
+               advanceIndex();
                return TokenType.ObjectOpen.Success();
             case '}':
+               advanceIndex();
                return TokenType.ObjectClose.Success();
             case '[':
+               advanceIndex();
                return TokenType.ArrayOpen.Success();
             case ']':
+               advanceIndex();
                return TokenType.ArrayClose.Success();
             case ',':
+               advanceIndex();
                return TokenType.Comma.Success();
             case '"':
                return TokenType.String.Success();
@@ -521,11 +546,12 @@ namespace Core.ObjectGraphs.Configurations.Json
             case '.':
                return TokenType.Number.Success();
             case ':':
+               advanceIndex();
                return TokenType.Colon.Success();
             case 'f':
                if (source.Drop(index - 1).Keep(5) == "false")
                {
-                  index += 5;
+                  advanceIndex(5);
                   return TokenType.False.Success();
                }
                else
@@ -535,7 +561,7 @@ namespace Core.ObjectGraphs.Configurations.Json
             case 't':
                if (source.Drop(index - 1).Keep(4) == "true")
                {
-                  index += 4;
+                  advanceIndex(4);
                   return TokenType.True.Success();
                }
                else
@@ -545,16 +571,21 @@ namespace Core.ObjectGraphs.Configurations.Json
             case 'n':
                if (source.Drop(index - 1).Keep(4) == "null")
                {
-                  index += 4;
+                  advanceIndex(4);
                   return TokenType.Null.Success();
                }
                else
                {
                   return TokenType.Name.Success();
                }
-         }
+            default:
+               if (char.IsLetter(c))
+               {
+                  return TokenType.Name.Success();
+               }
 
-         return $"Didn't understand {source.Drop(--index)}".Failure<TokenType>();
+               return $"Didn't expect character '{c}'".Failure<TokenType>();
+         }
       }
    }
 }
