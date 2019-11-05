@@ -18,13 +18,13 @@ namespace Core.ObjectGraphs.Configurations.Json
    public class JsonBuilder
    {
       protected JsonObject root;
-      protected Stack<IContainer> containers;
+      protected UserStack<IContainer> containers;
       protected IContainer currentContainer;
 
       public JsonBuilder()
       {
          root = new JsonObject();
-         containers = new Stack<IContainer>();
+         containers = new UserStack<IContainer>();
          currentContainer = root;
       }
 
@@ -76,9 +76,8 @@ namespace Core.ObjectGraphs.Configurations.Json
 
       public void End()
       {
-         if (containers.Count > 0)
+         if (containers.Pop().If(out var previousContainer))
          {
-            var previousContainer = containers.Pop();
             previousContainer.Add((JsonBase)currentContainer);
             currentContainer = previousContainer;
          }
