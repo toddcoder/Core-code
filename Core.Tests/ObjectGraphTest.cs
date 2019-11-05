@@ -71,8 +71,12 @@ namespace Core.Tests
       {
          var json = "{name:\"foobar\",index:153,\"isTrue\":true,array:[111,123,153]}";
          var parser = new JsonToObjectGraphParser(json);
-         if (parser.Parse().If(out var objectGraph, out var exception))
+         if (parser.Parse().If(out var tuple, out var exception))
          {
+            var (jsonObject, objectGraph) = tuple;
+            var writer = new JsonWriter();
+            jsonObject.Generate(writer);
+            Console.WriteLine(writer);
             Console.WriteLine(objectGraph);
          }
          else

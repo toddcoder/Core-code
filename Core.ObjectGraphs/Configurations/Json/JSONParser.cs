@@ -38,7 +38,7 @@ namespace Core.ObjectGraphs.Configurations.Json
       public IResult<JsonObject> Parse() =>
          from token in getToken()
          from objectOpen in token.Must().Equal(TokenType.ObjectOpen).Try(() => "Must begin with an open object")
-         from member in parseObject("")
+         from member in parseMembers("")
          select builder.Root;
 
       protected void invokeEvent(TokenType tokenType, string name, string value)
@@ -339,7 +339,7 @@ namespace Core.ObjectGraphs.Configurations.Json
 
                      return Unit.Success();
                   default:
-                     if (parseValue(name).ValueOrOriginal(out _, out var original))
+                     if (parseValue("").ValueOrOriginal(out _, out var original))
                      {
                         break;
                      }

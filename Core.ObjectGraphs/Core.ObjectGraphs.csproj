@@ -80,7 +80,7 @@
     <Compile Include="Configurations\Json\JsonWriter.cs" />
     <Compile Include="Configurations\Json\ParseValueArgs.cs" />
     <Compile Include="Configurations\Json\TokenType.cs" />
-    <Compile Include="Configurations\Json\UserStack.cs" />
+    <Compile Include="Configurations\Json\ContainerStack.cs" />
     <Compile Include="Defaulting.cs" />
     <Compile Include="FileNameExtensions.cs" />
     <Compile Include="Macro.cs" />

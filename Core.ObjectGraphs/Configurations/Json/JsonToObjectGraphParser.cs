@@ -24,7 +24,7 @@ namespace Core.ObjectGraphs.Configurations.Json
          inArray = false;
       }
 
-      public IResult<ObjectGraph> Parse()
+      public IResult<(JsonObject, ObjectGraph)> Parse()
       {
          var jsonParser = new JsonParser(source);
          jsonParser.ParseValue += (sender, e) =>
@@ -33,7 +33,7 @@ namespace Core.ObjectGraphs.Configurations.Json
             parseValue(tokenType, name, value);
          };
 
-         return jsonParser.Parse().Map(_ => objectGraph);
+         return jsonParser.Parse().Map(jsonObject => (jsonObject, objectGraph));
       }
 
       void parseValue(TokenType tokenType, string name, string value)

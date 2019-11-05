@@ -18,13 +18,13 @@ namespace Core.ObjectGraphs.Configurations.Json
    public class JsonBuilder
    {
       protected JsonObject root;
-      protected UserStack<IContainer> containers;
+      protected ContainerStack containers;
       protected IContainer currentContainer;
 
       public JsonBuilder()
       {
          root = new JsonObject();
-         containers = new UserStack<IContainer>();
+         containers = new ContainerStack();
          currentContainer = root;
       }
 
