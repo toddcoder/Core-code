@@ -62,7 +62,7 @@ namespace Core.ObjectGraphs
       }
 
       public const string ROOT_NAME = "$root";
-      const string REGEX_LINE = "^" + REGEX_NAME + REGEX_TYPE + "/s* ('=>' | '->') /s*" + REGEX_VALUE + "$";
+      const string REGEX_LINE = "^" + REGEX_NAME + REGEX_TYPE + "/s* '->' /s*" + REGEX_VALUE + "$";
       const string REGEX_GROUP = "^" + REGEX_NAME + REGEX_TYPE + "$";
 
       public static IMaybe<ObjectGraph> Some(string name, string value = "", string type = "")
@@ -202,16 +202,14 @@ namespace Core.ObjectGraphs
 
          using (var writer = new ObjectGraphWriter())
          {
-            foreach (var token in parsed.Split("/s* /(['{}[];']) /s*"))
+            foreach (var token in parsed.Split("/s* /(['{};']) /s*"))
             {
                switch (token)
                {
                   case "{":
-                  case "[":
                      writer.Begin();
                      break;
                   case "}":
-                  case "]":
                      writer.End();
                      break;
                   default:

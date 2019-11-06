@@ -48,7 +48,7 @@ namespace Core.ObjectGraphs.Parsers
             value = replacer.Replace(value);
             var values = value.Split("/s* ',' /s*");
             var result = new ObjectGraph(name, "", type, key);
-            for (var i = 0; i < value.Length; i++)
+            for (var i = 0; i < values.Length; i++)
             {
                var itemGraph = new ObjectGraph(i.ToString(), values[i], key: i.ToString());
                result[itemGraph.Key] = itemGraph;

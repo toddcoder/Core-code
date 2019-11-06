@@ -75,7 +75,17 @@ namespace Core.ObjectGraphs.Configurations.Json
                      return original;
                   }
                case TokenType.String:
-                  if (parseString(name).ValueOrCast(out var s, out original))
+                  if (parseString(name, '"').ValueOrCast(out var s, out original))
+                  {
+                     builder.Add(name, s);
+                     return Unit.Success();
+                  }
+                  else
+                  {
+                     return original;
+                  }
+               case TokenType.StringSingle:
+                  if (parseString(name, '\'').ValueOrCast(out s, out original))
                   {
                      builder.Add(name, s);
                      return Unit.Success();
@@ -126,7 +136,7 @@ namespace Core.ObjectGraphs.Configurations.Json
          while (index < length)
          {
             var c = source[index];
-            if (char.IsLetter(c))
+            if (char.IsLetterOrDigit(c) || c == '_')
             {
                buffer.Append(c);
             }
@@ -141,7 +151,7 @@ namespace Core.ObjectGraphs.Configurations.Json
          return "Cannot end in a name".Failure<string>();
       }
 
-      IResult<string> parseString(string name)
+      IResult<string> parseString(string name, char quote)
       {
          setLookAheadTokenToNone();
 
@@ -155,7 +165,7 @@ namespace Core.ObjectGraphs.Configurations.Json
          while (index < length)
          {
             var c = p[index];
-            if (c == '"')
+            if (c == quote)
             {
                if (runIndex != -1)
                {
@@ -206,6 +216,9 @@ namespace Core.ObjectGraphs.Configurations.Json
             {
                case '"':
                   buffer.Append('"');
+                  break;
+               case '\'':
+                  buffer.Append("'");
                   break;
                case '\\':
                   buffer.Append('\\');
@@ -259,9 +272,11 @@ namespace Core.ObjectGraphs.Configurations.Json
             case TokenType.Name:
                return parseName();
             case TokenType.String:
-               return parseString("");
+               return parseString("", '"');
+            case TokenType.StringSingle:
+               return parseString("", '\'');
             default:
-               return "Invalid token".Failure<string>();
+               return $"Invalid token @ {index}: {source.Drop(index)}".Failure<string>();
          }
       }
 
@@ -271,7 +286,9 @@ namespace Core.ObjectGraphs.Configurations.Json
 
          invokeEvent(TokenType.ObjectOpen, name, "");
 
-         return parseMembers(name).OnSuccess(_ => invokeEvent(TokenType.ObjectClose, name, ""));
+         setLookAheadTokenToNone();
+
+         return parseMembers(name);
       }
 
       IResult<Unit> parseMembers(string name)
@@ -296,7 +313,7 @@ namespace Core.ObjectGraphs.Configurations.Json
                      var result =
                         from innerName in parseNameOrString()
                         from next in nextToken()
-                        from colon in next.Must().Equal(TokenType.Colon).Try(() => $"Expected colon at {index}").Map(t => next)
+                        from colon in next.Must().Equal(TokenType.Colon).Try(() => $"Expected colon at {index}: {source.Drop(index)}").Map(t => next)
                         from value in parseValue(innerName)
                         select value;
                      if (result.ValueOrOriginal(out _, out var original))
@@ -536,6 +553,8 @@ namespace Core.ObjectGraphs.Configurations.Json
                return TokenType.Comma.Success();
             case '"':
                return TokenType.String.Success();
+            case '\'':
+               return TokenType.StringSingle.Success();
             case '0':
             case '1':
             case '2':

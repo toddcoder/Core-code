@@ -11,6 +11,7 @@
       Comma,
       Name,
       String,
+      StringSingle,
       Number,
       True,
       False,
