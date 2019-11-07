@@ -116,7 +116,7 @@ namespace Core.Collections
                   locker.EnterWriteLock();
                   Add(key, value);
                }
-               catch (ArgumentException) { }
+               catch { }
                finally
                {
                   locker.ExitWriteLock();
@@ -124,6 +124,30 @@ namespace Core.Collections
             }
 
             return value;
+         }
+      }
+
+      public bool If(TKey key, out TValue value, Func<TValue> valueToAdd)
+      {
+         if (If(key, out value))
+         {
+            return true;
+         }
+         else
+         {
+            value = valueToAdd();
+            try
+            {
+               locker.EnterWriteLock();
+               this[key] = value;
+            }
+            catch { }
+            finally
+            {
+               locker.ExitWriteLock();
+            }
+
+            return false;
          }
       }
 
