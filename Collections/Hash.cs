@@ -225,5 +225,13 @@ namespace Core.Collections
 
          return result;
       }
+
+      public IMaybe<TValue> Replace(TKey key, TValue newValue)
+      {
+         var oldValue = this.Map(key);
+         this[key] = newValue;
+
+         return oldValue;
+      }
    }
 }
