@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Core.Applications.Async;
 using Core.Dates.DateIncrements;
 using Core.Exceptions;
 using Core.Monads;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using static Core.Monads.AttemptFunctions;
 
 namespace Core.Tests
 {
@@ -22,7 +22,7 @@ namespace Core.Tests
 
       public async Task<ICompletion<long>> CountAsync(CancellationTokenSource source)
       {
-         return await runAsync(t =>
+         return await AsyncFunctions.runAsync(t =>
          {
             long result = 0;
 
@@ -104,11 +104,11 @@ namespace Core.Tests
          }
       }
 
-      static async Task<ICompletion<int>> getOne(CancellationToken token) => await runAsync(t => 1.Completed(), token);
+      static async Task<ICompletion<int>> getOne(CancellationToken token) => await AsyncFunctions.runAsync(t => 1.Completed(), token);
 
-      static async Task<ICompletion<int>> getTwo(CancellationToken token) => await runAsync(t => 2.Completed(), token);
+      static async Task<ICompletion<int>> getTwo(CancellationToken token) => await AsyncFunctions.runAsync(t => 2.Completed(), token);
 
-      static async Task<ICompletion<int>> getThree(CancellationToken token) => await runAsync(t => 3.Completed(), token);
+      static async Task<ICompletion<int>> getThree(CancellationToken token) => await AsyncFunctions.runAsync(t => 3.Completed(), token);
 
       [TestMethod]
       public void RunAsyncTest()

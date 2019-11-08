@@ -4,10 +4,10 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Core.Applications.Async;
 using Core.Enumerables;
 using Core.Exceptions;
 using Core.Monads;
-using static Core.Monads.AttemptFunctions;
 
 namespace Core.Assertions
 {
@@ -157,7 +157,7 @@ namespace Core.Assertions
          }
       }
 
-      public static async Task<ICompletion<T>> tryAsync<T>(IAssertion<T> assertion, CancellationToken token) => await runAsync(t =>
+      public static async Task<ICompletion<T>> tryAsync<T>(IAssertion<T> assertion, CancellationToken token) => await AsyncFunctions.runAsync(t =>
       {
          if (assertion.Constraints.FirstOrNone(c => !c.IsTrue()).If(out var constraint))
          {
@@ -169,7 +169,7 @@ namespace Core.Assertions
          }
       }, token);
 
-      public static async Task<ICompletion<T>> tryAsync<T>(IAssertion<T> assertion, string message, CancellationToken token) => await runAsync(t =>
+      public static async Task<ICompletion<T>> tryAsync<T>(IAssertion<T> assertion, string message, CancellationToken token) => await AsyncFunctions.runAsync(t =>
       {
          if (assertion.Constraints.Any(c => !c.IsTrue()))
          {
@@ -183,7 +183,7 @@ namespace Core.Assertions
 
       public static async Task<ICompletion<T>> tryAsync<T>(IAssertion<T> assertion, Func<string> messageFunc, CancellationToken token)
       {
-         return await runAsync(t =>
+         return await AsyncFunctions.runAsync(t =>
          {
             if (assertion.Constraints.Any(c => !c.IsTrue()))
             {

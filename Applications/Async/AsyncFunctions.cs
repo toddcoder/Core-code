@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Core.Monads;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Applications.Async
 {
@@ -13,5 +15,134 @@ namespace Core.Applications.Async
          await semaphore.WaitAsync(token).ConfigureAwait(false);
          return new ReleaseDisposable(semaphore);
       }
+
+      public static async Task<ICompletion<T>> runAsync<T>(Func<CancellationToken, ICompletion<T>> func, CancellationTokenSource source)
+      {
+         return await runAsync(func, source.Token);
+      }
+
+      public static async Task<ICompletion<T>> runAsync<T>(Func<CancellationToken, ICompletion<T>> func, CancellationToken token)
+      {
+         try
+         {
+            return await Task.Run(() => func(token), token);
+         }
+         catch (OperationCanceledException)
+         {
+            return cancelled<T>();
+         }
+         catch (Exception exception)
+         {
+            return interrupted<T>(exception);
+         }
+      }
+
+      public static async Task<ICompletion<T>> runWithSourceAsync<T>(Func<CancellationToken, ICompletion<T>> func)
+      {
+         using (var source = new CancellationTokenSource())
+         {
+            try
+            {
+               return await Task.Run(() => func(source.Token), source.Token);
+            }
+            catch (OperationCanceledException)
+            {
+               return cancelled<T>();
+            }
+            catch (Exception exception)
+            {
+               return interrupted<T>(exception);
+            }
+         }
+      }
+
+      public static async Task<ICompletion<Unit>> runAsync(Action<CancellationToken> action, CancellationTokenSource source)
+      {
+         try
+         {
+            await Task.Run(() => action(source.Token));
+            return Unit.Completed(source.Token);
+         }
+         catch (OperationCanceledException)
+         {
+            return cancelled<Unit>();
+         }
+         catch (Exception exception)
+         {
+            return interrupted<Unit>(exception);
+         }
+      }
+
+      public static async Task<ICompletion<Unit>> runAsync(Action action, CancellationToken token)
+      {
+         try
+         {
+            await Task.Run(action, token);
+            return Unit.Completed(token);
+         }
+         catch (OperationCanceledException)
+         {
+            return cancelled<Unit>();
+         }
+         catch (Exception exception)
+         {
+            return interrupted<Unit>(exception);
+         }
+      }
+
+      public static async Task<ICompletion<T>> runAsync<T>(Func<Task<ICompletion<T>>> func)
+      {
+         try
+         {
+            return await func();
+         }
+         catch (Exception exception)
+         {
+            return interrupted<T>(exception);
+         }
+      }
+
+      public static async Task<ICompletion<T>> runFromResultAsync<T>(Func<IResult<T>> func)
+      {
+         try
+         {
+            return await Task.Run(() => func().Completion());
+         }
+         catch (OperationCanceledException)
+         {
+            return cancelled<T>();
+         }
+         catch (Exception exception)
+         {
+            return interrupted<T>(exception);
+         }
+      }
+
+      public static async Task<ICompletion<T>> runFromResultAsync<T>(Func<CancellationToken, IResult<T>> func, CancellationTokenSource source)
+      {
+         return await runFromResultAsync(func, source.Token);
+      }
+
+      public static async Task<ICompletion<T>> runFromResultAsync<T>(Func<CancellationToken, IResult<T>> func, CancellationToken token)
+      {
+         try
+         {
+            return await Task.Run(() => func(token).Completion(), token);
+         }
+         catch (OperationCanceledException)
+         {
+            return cancelled<T>();
+         }
+         catch (Exception exception)
+         {
+            return interrupted<T>(exception);
+         }
+      }
+
+      public static async Task<ICompletion<T>> runInterrupted<T>(Exception exception) => await Task.Run(() => interrupted<T>(exception));
+
+      public static async Task<ICompletion<T>> runInterrupted<T>(string message) => await Task.Run(message.Interrupted<T>);
+
+      public static async Task<ICompletion<T>> runCancelled<T>() => await Task.Run(cancelled<T>);
    }
 }
