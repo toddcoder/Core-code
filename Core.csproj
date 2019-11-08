@@ -57,6 +57,7 @@
     <Compile Include="Applications\ArgumentTrying.cs" />
     <Compile Include="Applications\Async\AsyncEventExtensions.cs" />
     <Compile Include="Applications\Async\AsyncEventHandler.cs" />
+    <Compile Include="Applications\Async\AsyncExtensions.cs" />
     <Compile Include="Applications\Async\AsyncFunctions.cs" />
     <Compile Include="Applications\Async\ReleaseDisposable.cs" />
     <Compile Include="Applications\CancelAction.cs" />
