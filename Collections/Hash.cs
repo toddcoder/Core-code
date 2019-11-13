@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading;
 using Core.Monads;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Collections
 {
@@ -232,6 +233,20 @@ namespace Core.Collections
          this[key] = newValue;
 
          return oldValue;
+      }
+
+      public IMaybe<TValue> OneTime(TKey key)
+      {
+         if (ContainsKey(key))
+         {
+            var value = this[key];
+            Remove(key);
+            return value.Some();
+         }
+         else
+         {
+            return none<TValue>();
+         }
       }
    }
 }
