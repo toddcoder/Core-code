@@ -69,6 +69,6 @@ namespace Core.Data.Fields
 
       public IMaybe<Type> Type { get; set; }
 
-      public override Type PropertyType => Type.FlatMap(t => t, () => base.PropertyType);
+      public override Type PropertyType => Type.DefaultTo(() => base.PropertyType);
    }
 }

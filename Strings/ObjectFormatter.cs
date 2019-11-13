@@ -25,6 +25,6 @@ namespace Core.Strings
          }
 
          return matcher.ToString();
-      }).FlatMap(r => r, () => "");
+      }).DefaultTo(() => "");
    }
 }

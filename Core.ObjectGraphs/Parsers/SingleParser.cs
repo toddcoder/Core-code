@@ -16,7 +16,7 @@ namespace Core.ObjectGraphs.Parsers
          var type = tokens[2];
          type = replacer.Replace(type);
          var anyReference = Replacer.ResolveAsterisk(name);
-         var key = anyReference.FlatMap(r => r.Key, () => "");
+         var key = anyReference.Map(r => r.Key).DefaultTo(() => "");
          if (anyReference.If(out var reference))
          {
             name = reference.Name;

@@ -759,7 +759,7 @@ namespace Core.ObjectGraphs
 
       public IMaybe<Replacer> Replacer { get; set; }
 
-      public string Replace(string source) => Replacer.FlatMap(r => r.Replace(source), () => source);
+      public string Replace(string source) => Replacer.Map(r => r.Replace(source)).DefaultTo(() => source);
 
       public static void Visit(ObjectGraph graph, Action<ObjectGraph> action)
       {

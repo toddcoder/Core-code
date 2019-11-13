@@ -49,10 +49,9 @@ namespace Core.Monads
       }
 
       [DebuggerStepThrough]
-      public static IResult<TResult> SelectMany<T, TResult>(this IMaybe<T> maybe,
-         Func<T, IResult<TResult>> projection)
+      public static IResult<TResult> SelectMany<T, TResult>(this IMaybe<T> maybe, Func<T, IResult<TResult>> projection)
       {
-         return maybe.FlatMap(projection, () => "Value not provided".Failure<TResult>());
+         return maybe.Map(projection).DefaultTo(() => "Value not provided".Failure<TResult>());
       }
 
       public static IMaybe<T3> SelectMany<T1, T2, T3>(this IMaybe<T1> first, Func<T1, IMaybe<T2>> func,
@@ -78,7 +77,7 @@ namespace Core.Monads
 
       public static bool Assign<T>(this IMaybe<T> maybe, out T value)
       {
-         value = maybe.FlatMap(v => v, () => default);
+         value = maybe.DefaultTo(() => default);
          return maybe.IsSome;
       }
 
@@ -624,11 +623,11 @@ namespace Core.Monads
          return matched.FlatMap(v => v.Completed(token), cancelled<T>, interrupted<T>);
       }
 
-      public static ICompletion<T> Completion<T>(this IMaybe<T> maybe) => maybe.FlatMap(v => v.Completed(), cancelled<T>);
+      public static ICompletion<T> Completion<T>(this IMaybe<T> maybe) => maybe.Map(v => v.Completed()).DefaultTo(cancelled<T>);
 
       public static ICompletion<T> Completion<T>(this IMaybe<T> maybe, CancellationToken token)
       {
-         return maybe.FlatMap(v => v.Completed(token), cancelled<T>);
+         return maybe.Map(v => v.Completed(token)).DefaultTo(cancelled<T>);
       }
 
       public static async Task<ICompletion<T3>> SelectMany<T1, T2, T3>(this Task<ICompletion<T1>> source, Func<T1, Task<ICompletion<T2>>> func,

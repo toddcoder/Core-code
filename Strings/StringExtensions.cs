@@ -1506,7 +1506,7 @@ namespace Core.Strings
          }
          else
          {
-            return source.Matches("^ [quote] /(.*?) [quote] $").FlatMap(m => m[0, 1], () => source);
+            return source.Matches("^ [quote] /(.*?) [quote] $").Map(m => m.FirstGroup).DefaultTo(() => source);
          }
       }
 
@@ -2602,7 +2602,7 @@ namespace Core.Strings
 
       public static long ToByteSize(this string source, long defaultValue = 0)
       {
-         return source.AsByteSize().FlatMap(l => l, () => defaultValue);
+         return source.AsByteSize().DefaultTo(() => defaultValue);
       }
 
       public static string Partition(this string source, int allowedLength, string splitPattern = @"-(< '\')','", int padding = 1)

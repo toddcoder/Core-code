@@ -107,7 +107,7 @@ namespace Core.Data.DataSources
                var value = parameter.GetValue(entity).Required($"Parameter {parameter.Name}'s value couldn't be determined");
                if (value.IsNull() && parameter.Default.If(out var defaultValue))
                {
-                  value = parameter.Type.FlatMap(t => ChangeType(defaultValue, t), () => defaultValue);
+                  value = parameter.Type.Map(t => ChangeType(defaultValue, t)).DefaultTo(() => defaultValue);
                }
 
                var type = value?.GetType();

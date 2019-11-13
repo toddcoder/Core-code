@@ -153,8 +153,10 @@ namespace Core.WinForms.Documents
                }
             }
 
-            return m[0, 2].AsEnumeration<Keys>().FlatMap(k => (keys | k).Success(),
-               () => $"Couldn't translate {m[0, 2]} into a key".Failure<Keys>());
+            return m[0, 2]
+               .AsEnumeration<Keys>()
+               .Map(k => (keys | k).Success())
+               .DefaultTo(() => $"Couldn't translate {m[0, 2]} into a key".Failure<Keys>());
          }
          else
          {

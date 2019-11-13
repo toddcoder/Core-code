@@ -87,7 +87,7 @@ namespace Core.Computers
             return tryTo(() =>
             {
                var parent = folderName.Parent;
-               return parent.FlatMap(p => p.Success(), () => $"{folderName} doesn't have a parent".Failure<FolderName>());
+               return parent.Map(p => p.Success()).DefaultTo(() => $"{folderName} doesn't have a parent".Failure<FolderName>());
             });
          }
       }

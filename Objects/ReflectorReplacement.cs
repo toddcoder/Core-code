@@ -42,7 +42,7 @@ namespace Core.Objects
 		public void Replace(object obj, IGetter getter, Slicer slicer)
 		{
 			var value = getter.GetValue(obj);
-			slicer[index, length] = formatter.FlatMap(f => f.Format(value), () => value.ToNonNullString());
-		}
+         slicer[index, length] = formatter.Map(f => f.Format(value)).DefaultTo(() => value.ToNonNullString());
+      }
 	}
 }

@@ -10,6 +10,7 @@ namespace Core.Monads
 
       T DefaultTo(Func<T> func);
 
+      [Obsolete("Use DefaultTo")]
       TResult FlatMap<TResult>(Func<T, TResult> ifSome, Func<TResult> ifNone);
 
       IMaybe<TResult> Map<TResult>(Func<T, TResult> ifSome);
