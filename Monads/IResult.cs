@@ -20,6 +20,7 @@ namespace Core.Monads
 
       IResult<TResult> Map<TResult>(Func<T, TResult> ifSuccessful);
 
+      [Obsolete("Use Recover instead")]
       TResult FlatMap<TResult>(Func<T, TResult> ifSuccessful, Func<Exception, TResult> ifFailed);
 
       IResult<TResult> SelectMany<TResult>(Func<T, IResult<TResult>> projection);

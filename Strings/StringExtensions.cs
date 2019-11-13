@@ -2598,7 +2598,7 @@ namespace Core.Strings
          }
       }
 
-      public static IMaybe<long> AsByteSize(this string source) => source.ByteSize().FlatMap(l => l.Some(), e => none<long>());
+      public static IMaybe<long> AsByteSize(this string source) => source.ByteSize().Map(l => l.Some()).Recover(e => none<long>());
 
       public static long ToByteSize(this string source, long defaultValue = 0)
       {
