@@ -113,14 +113,12 @@ namespace Core.Tests
          }
       }
 
-
-
       [TestMethod]
       public void MultipleLocalAndParentFilesTest()
       {
          var result = defaultFolderNames().LocalAndParentFiles().Where(f => f.NameExtension == "tsqlcop.sql.format.options.xml")
             .FirstOrFail("failed");
-         Console.WriteLine(result.FlatMap(f => f.FullPath, e => e.Message));
+         Console.WriteLine(result.Map(f => f.FullPath).Recover(e => e.Message));
       }
    }
 }

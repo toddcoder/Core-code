@@ -316,7 +316,7 @@ namespace Core.Monads
          return enumerable.Map(e => e.ForAny(action, result));
       }
 
-      public static IResult<T> Flat<T>(this IResult<IResult<T>> result) => result.FlatMap(r => r, failure<T>);
+      public static IResult<T> Flat<T>(this IResult<IResult<T>> result) => result.Recover(failure<T>);
 
       public static T ThrowIfFailed<T>(this IResult<T> result)
       {
@@ -606,11 +606,11 @@ namespace Core.Monads
 
       public static ICompletion<T> Interrupted<T>(this string message) => new Interrupted<T>(new ApplicationException(message));
 
-      public static ICompletion<T> Completion<T>(this IResult<T> result) => result.FlatMap(v => v.Completed(), interrupted<T>);
+      public static ICompletion<T> Completion<T>(this IResult<T> result) => result.Map(v => v.Completed()).Recover(interrupted<T>);
 
       public static ICompletion<T> Completion<T>(this IResult<T> result, CancellationToken token)
       {
-         return result.FlatMap(v => v.Completed(token), interrupted<T>);
+         return result.Map(v => v.Completed(token)).Recover(interrupted<T>);
       }
 
       public static ICompletion<T> Completion<T>(this IMatched<T> matched)

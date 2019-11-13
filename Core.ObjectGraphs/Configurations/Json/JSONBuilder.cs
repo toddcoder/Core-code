@@ -472,7 +472,7 @@ namespace Core.ObjectGraphs.Configurations.Json
 
       public override T FileName<T>(Func<JsonFileName, T> ifSuccess, Func<Exception, T> ifFailure)
       {
-         return FileName().FlatMap(ifSuccess, ifFailure);
+         return FileName().Map(ifSuccess).Recover(ifFailure);
       }
 
       public override IResult<FileName> AsFileName() => FileName().Map(f => f.AsFileName());
@@ -491,7 +491,7 @@ namespace Core.ObjectGraphs.Configurations.Json
 
       public override T FolderName<T>(Func<JsonFolderName, T> ifSuccess, Func<Exception, T> ifFailure)
       {
-         return FolderName().FlatMap(ifSuccess, ifFailure);
+         return FolderName().Map(ifSuccess).Recover(ifFailure);
       }
 
       public override IResult<FolderName> AsFolderName() => FolderName().Map(f => f.AsFolderName());
@@ -505,7 +505,7 @@ namespace Core.ObjectGraphs.Configurations.Json
 
       public override IResult<T> Guid<T>(Func<JsonGuid, T> map) => Guid().Map(map);
 
-      public override T Guid<T>(Func<JsonGuid, T> ifSuccess, Func<Exception, T> ifFailure) => Guid().FlatMap(ifSuccess, ifFailure);
+      public override T Guid<T>(Func<JsonGuid, T> ifSuccess, Func<Exception, T> ifFailure) => Guid().Map(ifSuccess).Recover(ifFailure);
 
       public override IResult<Guid> AsGuid() => Guid().Map(g => g.AsGuid());
 
@@ -518,7 +518,7 @@ namespace Core.ObjectGraphs.Configurations.Json
 
       public override IResult<T> TimeSpan<T>(Func<JsonTimeSpan, T> map) => TimeSpan().Map(map);
 
-      public override T TimeSpan<T>(Func<JsonTimeSpan, T> ifSuccess, Func<Exception, T> ifFailure) => TimeSpan().FlatMap(ifSuccess, ifFailure);
+      public override T TimeSpan<T>(Func<JsonTimeSpan, T> ifSuccess, Func<Exception, T> ifFailure) => TimeSpan().Map(ifSuccess).Recover(ifFailure);
 
       public override IResult<TimeSpan> AsTimeSpan() => TimeSpan().Map(ts => ts.AsTimeSpan());
 

@@ -96,11 +96,7 @@ namespace Core.Monads
       }
 
       [DebuggerStepThrough]
-      public IResult<T2> SelectMany<T1, T2>(Func<T, IResult<T1>> func, Func<T, T1, T2> projection)
-      {
-         var self = this;
-         return func(value).FlatMap(t1 => projection(self.value, t1).Success(), failure<T2>);
-      }
+      public IResult<T2> SelectMany<T1, T2>(Func<T, IResult<T1>> func, Func<T, T1, T2> projection) => func(value).Map(t1 => projection(value, t1));
 
       [DebuggerStepThrough]
       public IResult<TResult> SelectMany<TResult>(Func<T, TResult> func)
