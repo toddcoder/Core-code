@@ -369,18 +369,38 @@ namespace Core.Computers
 
       public async Task<IEnumerable<FileName>> LocalAndParentFilesAsync() => await getLocalAndParentFilesAsync(fullPath);
 
+      public async Task<IEnumerable<FileName>> LocalAndParentFilesAsync(Predicate<FileName> predicate)
+      {
+         return await getLocalAndParentFilesAsync(fullPath, predicate);
+      }
+
       public async Task<IEnumerable<FileName>> LocalAndParentFilesAsync(CancellationToken token)
       {
          return await getLocalAndParentFilesAsync(fullPath, token);
+      }
+
+      public async Task<IEnumerable<FileName>> LocalAndParentFilesAsync(Predicate<FileName> predicate, CancellationToken token)
+      {
+         return await getLocalAndParentFilesAsync(fullPath, predicate, token);
       }
 
       public IEnumerable<FolderName> LocalAndParentFolders => getLocalAndParentFolders(fullPath);
 
       public async Task<IEnumerable<FolderName>> LocalAndParentFoldersAsync() => await getLocalAndParentFoldersAsync(fullPath);
 
+      public async Task<IEnumerable<FolderName>> LocalAndParentFoldersAsync(Predicate<FolderName> predicate)
+      {
+         return await getLocalAndParentFoldersAsync(fullPath, predicate);
+      }
+
       public async Task<IEnumerable<FolderName>> LocalAndParentFoldersAsync(CancellationToken token)
       {
          return await getLocalAndParentFoldersAsync(fullPath, token);
+      }
+
+      public async Task<IEnumerable<FolderName>> LocalAndParentFoldersAsync(Predicate<FolderName> predicate, CancellationToken token)
+      {
+         return await getLocalAndParentFoldersAsync(fullPath, predicate, token);
       }
 
       public int FileCount => getFileCount(fullPath);
@@ -640,9 +660,20 @@ namespace Core.Computers
          return await Task.Run(() => getLocalAndParentFiles(folder));
       }
 
+      protected static async Task<IEnumerable<FileName>> getLocalAndParentFilesAsync(string folder, Predicate<FileName> predicate)
+      {
+         return await Task.Run(() => getLocalAndParentFiles(folder).Where(f => predicate(f)));
+      }
+
       protected static async Task<IEnumerable<FileName>> getLocalAndParentFilesAsync(string folder, CancellationToken token)
       {
          return await Task.Run(() => getLocalAndParentFiles(folder), token);
+      }
+
+      protected static async Task<IEnumerable<FileName>> getLocalAndParentFilesAsync(string folder, Predicate<FileName> predicate,
+         CancellationToken token)
+      {
+         return await Task.Run(() => getLocalAndParentFiles(folder).Where(f => predicate(f)), token);
       }
 
       protected static IEnumerable<FileName> getLocalAndParentFilesParallel(string folder)
@@ -713,9 +744,19 @@ namespace Core.Computers
          return await Task.Run(() => getLocalAndParentFolders(folder));
       }
 
+      protected static async Task<IEnumerable<FolderName>> getLocalAndParentFoldersAsync(string folder, Predicate<FolderName> predicate)
+      {
+         return await Task.Run(() => getLocalAndParentFolders(folder).Where(f => predicate(f)));
+      }
+
       protected static async Task<IEnumerable<FolderName>> getLocalAndParentFoldersAsync(string folder, CancellationToken token)
       {
          return await Task.Run(() => getLocalAndParentFolders(folder), token);
+      }
+
+      protected static async Task<IEnumerable<FolderName>> getLocalAndParentFoldersAsync(string folder, Predicate<FolderName> predicate, CancellationToken token)
+      {
+         return await Task.Run(() => getLocalAndParentFolders(folder).Where(f => predicate(f)), token);
       }
 
       public static IEnumerable<FolderName> getLocalAndParentFoldersParallel(string folder)
