@@ -163,5 +163,47 @@ namespace Core.Applications.Async
       public static async Task<ICompletion<T>> runInterrupted<T>(string message) => await Task.Run(message.Interrupted<T>);
 
       public static async Task<ICompletion<T>> runCancelled<T>() => await Task.Run(cancelled<T>);
+
+      public static Task<TResult> taskFromFunction<TResult>(Func<TResult> func, CancellationToken token)
+      {
+         var taskCompletionSource = new TaskCompletionSource<TResult>();
+         token.Register(() => taskCompletionSource.TrySetCanceled());
+
+         ThreadPool.QueueUserWorkItem(_ =>
+         {
+            try
+            {
+               var result = func();
+               taskCompletionSource.SetResult(result);
+            }
+            catch (Exception exception)
+            {
+               taskCompletionSource.SetException(exception);
+            }
+         });
+
+         return taskCompletionSource.Task;
+      }
+
+      public static Task taskFromAction(Action action, CancellationToken token)
+      {
+         var taskCompletionSource = new TaskCompletionSource<Unit>();
+         token.Register(() => taskCompletionSource.TrySetCanceled());
+
+         ThreadPool.QueueUserWorkItem(_ =>
+         {
+            try
+            {
+               action();
+               taskCompletionSource.SetResult(Unit.Value);
+            }
+            catch (Exception exception)
+            {
+               taskCompletionSource.SetException(exception);
+            }
+         });
+
+         return taskCompletionSource.Task;
+      }
    }
 }
