@@ -68,6 +68,8 @@ namespace Core.Monads
 
       public IMaybe<object> AsObject() => none<object>();
 
+      public IMaybe<TResult> CastAs<TResult>() => none<TResult>();
+
       public bool HasValue => false;
    }
 }

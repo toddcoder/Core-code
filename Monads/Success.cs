@@ -203,6 +203,18 @@ namespace Core.Monads
 
       public IResult<object> AsObject() => value.Success<object>();
 
+      public IResult<TResult> CastAs<TResult>()
+      {
+         if (value is TResult result)
+         {
+            return result.Success();
+         }
+         else
+         {
+            return $"Invalid cast from {typeof(T).Name} to {typeof(TResult).Name}".Failure<TResult>();
+         }
+      }
+
       public bool HasValue => true;
    }
 }

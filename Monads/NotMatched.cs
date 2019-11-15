@@ -123,6 +123,8 @@ namespace Core.Monads
 
       public IMatched<object> AsObject() => notMatched<object>();
 
+      public IMatched<TResult> CastAs<TResult>() => notMatched<TResult>();
+
       public bool IsMatched => false;
 
       public bool IsNotMatched => true;

@@ -178,6 +178,8 @@ namespace Core.Monads
 
       public IResult<object> AsObject() => failure<object>(exception);
 
+      public IResult<TResult> CastAs<TResult>() => failure<TResult>(exception);
+
       public bool HasValue => false;
    }
 }

@@ -175,6 +175,8 @@ namespace Core.Monads
 
       public ICompletion<object> AsObject() => cancelled<object>();
 
+      public ICompletion<TResult> CastAs<TResult>() => cancelled<TResult>();
+
       public bool HasValue => false;
    }
 }

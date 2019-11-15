@@ -179,6 +179,18 @@ namespace Core.Monads
 
       public ICompletion<object> AsObject() => value.Completed<object>();
 
+      public ICompletion<TResult> CastAs<TResult>()
+      {
+         if (value is TResult result)
+         {
+            return result.Completed();
+         }
+         else
+         {
+            return $"Invalid cast from {typeof(T).Name} to {typeof(TResult).Name}".Interrupted<TResult>();
+         }
+      }
+
       public bool HasValue => true;
    }
 }

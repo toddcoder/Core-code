@@ -73,6 +73,9 @@ namespace Core.Monads
 
       IResult<T> Otherwise(Func<Exception, IResult<T>> func);
 
+      [Obsolete("Use CastAs<object>")]
       IResult<object> AsObject();
+
+      IResult<TResult> CastAs<TResult>();
    }
 }

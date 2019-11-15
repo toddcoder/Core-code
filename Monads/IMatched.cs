@@ -83,6 +83,9 @@ namespace Core.Monads
 
       bool ValueEqualTo(T otherValue);
 
+      [Obsolete("Use CastAs<object>()")]
       IMatched<object> AsObject();
+
+      IMatched<TResult> CastAs<TResult>();
    }
 }

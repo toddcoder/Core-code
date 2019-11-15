@@ -43,6 +43,9 @@ namespace Core.Monads
 
       bool ValueEqualTo(T otherValue);
 
+      [Obsolete("Use CastAs<object>()")]
       IMaybe<object> AsObject();
+
+      IMaybe<TResult> CastAs<TResult>();
    }
 }

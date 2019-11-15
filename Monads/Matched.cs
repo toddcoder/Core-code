@@ -125,6 +125,18 @@ namespace Core.Monads
 
       public IMatched<object> AsObject() => value.Matched<object>();
 
+      public IMatched<TResult> CastAs<TResult>()
+      {
+         if (value is TResult result)
+         {
+            return result.Matched();
+         }
+         else
+         {
+            return $"Invalid cast from {typeof(T).Name} to {typeof(TResult).Name}".FailedMatch<TResult>();
+         }
+      }
+
       public bool IsMatched => true;
 
       public bool IsNotMatched => false;

@@ -1627,31 +1627,31 @@ namespace Core.Strings
          }
          else if (type == typeof(int))
          {
-            return value.AsInt().AsObject();
+            return value.AsInt().CastAs<object>();
          }
          else if (type == typeof(float))
          {
-            return value.AsFloat().AsObject();
+            return value.AsFloat().CastAs<object>();
          }
          else if (type == typeof(double))
          {
-            return value.AsDouble().AsObject();
+            return value.AsDouble().CastAs<object>();
          }
          else if (type == typeof(decimal))
          {
-            return value.AsDecimal().AsObject();
+            return value.AsDecimal().CastAs<object>();
          }
          else if (type == typeof(Guid))
          {
-            return value.AsGuid().AsObject();
+            return value.AsGuid().CastAs<object>();
          }
          else if (type == typeof(DateTime))
          {
-            return value.AsDateTime().AsObject();
+            return value.AsDateTime().CastAs<object>();
          }
          else if (type == typeof(bool))
          {
-            return value.AsBool().AsObject();
+            return value.AsBool().CastAs<object>();
          }
          else
          {
@@ -1774,35 +1774,35 @@ namespace Core.Strings
          }
          else if (type == typeof(string))
          {
-            return value.ExtractFromQuotes().Success().AsObject();
+            return value.ExtractFromQuotes().Success().CastAs<object>();
          }
          else if (type == typeof(int))
          {
-            return value.Int32().AsObject();
+            return value.Int32().CastAs<object>();
          }
          else if (type == typeof(float))
          {
-            return value.Single().AsObject();
+            return value.Single().CastAs<object>();
          }
          else if (type == typeof(double))
          {
-            return value.Double().AsObject();
+            return value.Double().CastAs<object>();
          }
          else if (type == typeof(decimal))
          {
-            return value.Decimal().AsObject();
+            return value.Decimal().CastAs<object>();
          }
          else if (type == typeof(Guid))
          {
-            return value.Guid().AsObject();
+            return value.Guid().CastAs<object>();
          }
          else if (type == typeof(DateTime))
          {
-            return value.DateTime().AsObject();
+            return value.DateTime().CastAs<object>();
          }
          else if (type == typeof(bool))
          {
-            return value.Boolean().AsObject();
+            return value.Boolean().CastAs<object>();
          }
          else
          {

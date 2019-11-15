@@ -1,4 +1,5 @@
 ﻿using System;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads
 {
@@ -77,6 +78,18 @@ namespace Core.Monads
       public bool ValueEqualTo(T otherValue) => value.Equals(otherValue);
 
       public IMaybe<object> AsObject() => value.Some<object>();
+
+      public IMaybe<TResult> CastAs<TResult>()
+      {
+         if (value is TResult result)
+         {
+            return result.Some();
+         }
+         else
+         {
+            return none<TResult>();
+         }
+      }
 
       public bool HasValue => true;
    }

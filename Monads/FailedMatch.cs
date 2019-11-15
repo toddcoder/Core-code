@@ -133,6 +133,8 @@ namespace Core.Monads
 
       public IMatched<object> AsObject() => failedMatch<object>(exception);
 
+      public IMatched<TResult> CastAs<TResult>() => failedMatch<TResult>(exception);
+
       public bool IsMatched => false;
 
       public bool IsNotMatched => false;
