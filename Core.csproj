@@ -172,6 +172,7 @@
     <Compile Include="Dates\DateIncrements\DateIncrementExtensions.cs" />
     <Compile Include="Dates\DateTimeExtensions.cs" />
     <Compile Include="Dates\Day.cs" />
+    <Compile Include="Dates\ElapsedTime.cs" />
     <Compile Include="Dates\Hour.cs" />
     <Compile Include="Dates\IntervalUnit.cs" />
     <Compile Include="Dates\Millisecond.cs" />
