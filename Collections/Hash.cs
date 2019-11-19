@@ -248,5 +248,14 @@ namespace Core.Collections
             return none<TValue>();
          }
       }
+
+      public void Move(TKey oldKey, TKey newKey)
+      {
+         if (If(oldKey, out var value))
+         {
+            this[newKey] = value;
+            Remove(oldKey);
+         }
+      }
    }
 }
