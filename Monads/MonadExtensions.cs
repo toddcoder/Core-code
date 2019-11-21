@@ -632,6 +632,11 @@ namespace Core.Monads
          return maybe.Map(v => v.Completed(token)).DefaultTo(cancelled<T>);
       }
 
+      static ICompletion<T> cancelledOrInterrupted<T>(Exception exception)
+      {
+         return exception is OperationCanceledException || exception is ObjectDisposedException ? cancelled<T>() : interrupted<T>(exception);
+      }
+
       public static async Task<ICompletion<T3>> SelectMany<T1, T2, T3>(this Task<ICompletion<T1>> source, Func<T1, Task<ICompletion<T2>>> func,
          Func<T1, T2, T3> projection)
       {
@@ -645,7 +650,7 @@ namespace Core.Monads
             }
             else if (anyException.If(out var exception))
             {
-               return interrupted<T3>(exception);
+               return cancelledOrInterrupted<T3>(exception);
             }
             else
             {
@@ -654,7 +659,7 @@ namespace Core.Monads
          }
          else if (anyException.If(out var exception))
          {
-            return interrupted<T3>(exception);
+            return cancelledOrInterrupted<T3>(exception);
          }
          else
          {
