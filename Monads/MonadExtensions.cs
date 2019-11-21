@@ -634,7 +634,16 @@ namespace Core.Monads
 
       static ICompletion<T> cancelledOrInterrupted<T>(Exception exception)
       {
-         return exception is OperationCanceledException || exception is ObjectDisposedException ? cancelled<T>() : interrupted<T>(exception);
+         switch (exception)
+         {
+            case OperationCanceledException _:
+            case ObjectDisposedException _:
+               return cancelled<T>();
+            case FullStackException fullStackException when !(fullStackException.InnerException is FullStackException):
+               return cancelledOrInterrupted<T>(fullStackException.InnerException);
+            default:
+               return interrupted<T>(exception);
+         }
       }
 
       public static async Task<ICompletion<T3>> SelectMany<T1, T2, T3>(this Task<ICompletion<T1>> source, Func<T1, Task<ICompletion<T2>>> func,
