@@ -42,6 +42,8 @@ namespace Core.Assertions
 
       IResult<T> Try(Func<string> messageFunc);
 
+      IMaybe<T> Maybe();
+
       Task<ICompletion<T>> TryAsync(CancellationToken token);
 
       Task<ICompletion<T>> TryAsync(string message, CancellationToken token);

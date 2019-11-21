@@ -157,6 +157,11 @@ namespace Core.Assertions
          }
       }
 
+      public static IMaybe<T> maybe<T>(IAssertion<T> assertion)
+      {
+         return MonadFunctions.maybe(assertion.Constraints.All(c => c.IsTrue()), () => assertion.Value);
+      }
+
       public static async Task<ICompletion<T>> tryAsync<T>(IAssertion<T> assertion, CancellationToken token) => await AsyncFunctions.runAsync(t =>
       {
          if (assertion.Constraints.FirstOrNone(c => !c.IsTrue()).If(out var constraint))
@@ -169,17 +174,18 @@ namespace Core.Assertions
          }
       }, token);
 
-      public static async Task<ICompletion<T>> tryAsync<T>(IAssertion<T> assertion, string message, CancellationToken token) => await AsyncFunctions.runAsync(t =>
-      {
-         if (assertion.Constraints.Any(c => !c.IsTrue()))
+      public static async Task<ICompletion<T>> tryAsync<T>(IAssertion<T> assertion, string message, CancellationToken token) =>
+         await AsyncFunctions.runAsync(t =>
          {
-            return message.Interrupted<T>();
-         }
-         else
-         {
-            return assertion.Value.Completed(t);
-         }
-      }, token);
+            if (assertion.Constraints.Any(c => !c.IsTrue()))
+            {
+               return message.Interrupted<T>();
+            }
+            else
+            {
+               return assertion.Value.Completed(t);
+            }
+         }, token);
 
       public static async Task<ICompletion<T>> tryAsync<T>(IAssertion<T> assertion, Func<string> messageFunc, CancellationToken token)
       {

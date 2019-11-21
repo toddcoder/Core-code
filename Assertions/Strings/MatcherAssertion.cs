@@ -96,6 +96,8 @@ namespace Core.Assertions.Strings
 
       public IResult<Matcher> Try(Func<string> messageFunc) => @try(this, messageFunc);
 
+      public IMaybe<Matcher> Maybe() => maybe(this);
+
       public async Task<ICompletion<Matcher>> TryAsync(CancellationToken token) => await tryAsync(this, token);
 
       public async Task<ICompletion<Matcher>> TryAsync(string message, CancellationToken token) => await tryAsync(this, message, token);

@@ -136,6 +136,8 @@ namespace Core.Assertions.Collections
 
       public IResult<Dictionary<TKey, TValue>> Try(Func<string> messageFunc) => @try(this, messageFunc);
 
+      public IMaybe<Dictionary<TKey, TValue>> Maybe() => maybe(this);
+
       public async Task<ICompletion<Dictionary<TKey, TValue>>> TryAsync(CancellationToken token) => await tryAsync(this, token);
 
       public async Task<ICompletion<Dictionary<TKey, TValue>>> TryAsync(string message, CancellationToken token) => await tryAsync(this, message, token);

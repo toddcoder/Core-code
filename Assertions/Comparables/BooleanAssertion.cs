@@ -99,6 +99,8 @@ namespace Core.Assertions.Comparables
 
       public IResult<bool> Try(Func<string> messageFunc) => @try(this, messageFunc);
 
+      public IMaybe<bool> Maybe() => maybe(this);
+
       public async Task<ICompletion<bool>> TryAsync(CancellationToken token) => await tryAsync(this, token);
 
       public async Task<ICompletion<bool>> TryAsync(string message, CancellationToken token) => await tryAsync(this, message, token);

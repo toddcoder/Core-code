@@ -142,6 +142,8 @@ namespace Core.Assertions.Computers
 
       public IResult<FileName> Try(Func<string> messageFunc) => @try(this, messageFunc);
 
+      public IMaybe<FileName> Maybe() => maybe(this);
+
       public async Task<ICompletion<FileName>> TryAsync(CancellationToken token) => await tryAsync(this, token);
 
       public async Task<ICompletion<FileName>> TryAsync(string message, CancellationToken token) => await tryAsync(this, message, token);

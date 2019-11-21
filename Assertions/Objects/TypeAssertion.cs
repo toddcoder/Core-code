@@ -144,6 +144,8 @@ namespace Core.Assertions.Objects
 
       public IResult<Type> Try(Func<string> messageFunc) => @try(this, messageFunc);
 
+      public IMaybe<Type> Maybe() => maybe(this);
+
       public async Task<ICompletion<Type>> TryAsync(CancellationToken token) => await tryAsync(assertion: this, token);
 
       public async Task<ICompletion<Type>> TryAsync(string message, CancellationToken token) => await tryAsync(this, message, token);
