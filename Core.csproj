@@ -258,6 +258,8 @@
     <Compile Include="Objects\DataContainerExtensions.cs" />
     <Compile Include="Objects\DisposeExtensions.cs" />
     <Compile Include="Objects\Equatable.cs" />
+    <Compile Include="Objects\EquatableAttribute.cs" />
+    <Compile Include="Objects\EquatableBase.cs" />
     <Compile Include="Objects\FieldGetter.cs" />
     <Compile Include="Objects\IEvaluator.cs" />
     <Compile Include="Objects\IFormatter.cs" />

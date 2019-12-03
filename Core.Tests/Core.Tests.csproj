@@ -55,6 +55,7 @@
     <Compile Include="AssertionTests.cs" />
     <Compile Include="AsyncTests.cs" />
     <Compile Include="EnumerableExtensionTests.cs" />
+    <Compile Include="EquatableTest.cs" />
     <Compile Include="FileNameTests.cs" />
     <Compile Include="FolderNameTests.cs" />
     <Compile Include="LegacyMatcherTests.cs" />
