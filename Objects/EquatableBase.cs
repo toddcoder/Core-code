@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Core.Assertions;
@@ -9,39 +8,46 @@ namespace Core.Objects
 {
    public class EquatableBase : IEquatable<EquatableBase>
    {
-      protected string[] signatures;
+      protected MemberInfo[] equatableInfo;
 
       public EquatableBase()
       {
          var type = GetType();
          var fieldSignatures = type.GetRuntimeFields()
             .Where(fi => fi.GetCustomAttributes(typeof(EquatableAttribute), true).Length > 0)
-            .Select(fi => fi.Name);
+            .Cast<MemberInfo>();
          var propertySignatures = type.GetRuntimeProperties()
             .Where(pi => pi.GetCustomAttributes(typeof(EquatableAttribute), true).Length > 0)
-            .Select(pi => pi.Name);
-         var all = new List<string>(fieldSignatures);
-         all.AddRange(propertySignatures);
-         signatures = all.ToArray();
-         signatures.Must().Not.BeEmpty().Assert("No fields or properties has an EquatableAttribute");
+            .Cast<MemberInfo>();
+         equatableInfo = fieldSignatures.Union(propertySignatures).ToArray();
+         equatableInfo.Must().Not.BeEmpty().Assert("No fields or properties has an EquatableAttribute");
       }
 
-      protected Hash<string, object> getValues(object obj, string[] signatures)
+      protected Hash<string, object> getValues(object obj)
       {
-         var type = GetType();
-         var fieldValues = type.GetRuntimeFields()
-            .Where(fi => signatures.Contains(fi.Name))
-            .Select(fi => (signature: fi.Name, value: fi.GetValue(obj)))
-            .ToHash(t => t.signature, t => t.value);
-         var propertyValues = type.GetRuntimeProperties()
-            .Where(pi => signatures.Contains(pi.Name))
-            .Select(pi => (signature: pi.Name, value: pi.GetValue(obj)))
-            .ToHash(t => t.signature, t => t.value);
+         var hash = new Hash<string, object>();
 
-         return fieldValues.Merge(propertyValues);
+         foreach (var memberInfo in equatableInfo)
+         {
+            switch (memberInfo)
+            {
+               case FieldInfo fieldInfo:
+               {
+                  hash[fieldInfo.Name] = fieldInfo.GetValue(obj);
+               }
+                  break;
+               case PropertyInfo propertyInfo:
+               {
+                  hash[propertyInfo.Name] = propertyInfo.GetValue(obj);
+               }
+                  break;
+            }
+         }
+
+         return hash;
       }
 
-      public bool Equals(EquatableBase other) => other != null && other.GetType() == GetType() && Equals((object)other);
+      public virtual bool Equals(EquatableBase other) => other != null && other.GetType() == GetType() && Equals((object)other);
 
       public override bool Equals(object obj)
       {
@@ -55,9 +61,10 @@ namespace Core.Objects
          }
          else
          {
-            var values = getValues(this, signatures);
-            var otherValues = getValues(obj, signatures);
-            return signatures
+            var values = getValues(this);
+            var otherValues = getValues(obj);
+            return equatableInfo
+               .Select(mi => mi.Name)
                .Select(signature => values[signature].Equals(otherValues[signature]))
                .All(b => b);
          }
@@ -67,7 +74,7 @@ namespace Core.Objects
       {
          unchecked
          {
-            var values = getValues(this, signatures);
+            var values = getValues(this);
             return values.Values
                .Select(value => value?.GetHashCode() ?? 0)
                .Aggregate(397, (current, value) => current * 397 ^ value);

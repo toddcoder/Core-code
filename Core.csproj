@@ -253,6 +253,7 @@
     <Compile Include="Numbers\Comparison.cs" />
     <Compile Include="Numbers\GetHashCodeFunctions.cs" />
     <Compile Include="Numbers\NumberExtensions.cs" />
+    <Compile Include="Objects\ComparableAttribute.cs" />
     <Compile Include="Objects\DataContainer.cs" />
     <Compile Include="Objects\DataContainerEvaluator.cs" />
     <Compile Include="Objects\DataContainerExtensions.cs" />
@@ -260,6 +261,7 @@
     <Compile Include="Objects\Equatable.cs" />
     <Compile Include="Objects\EquatableAttribute.cs" />
     <Compile Include="Objects\EquatableBase.cs" />
+    <Compile Include="Objects\EquatableComparableBase.cs" />
     <Compile Include="Objects\FieldGetter.cs" />
     <Compile Include="Objects\IEvaluator.cs" />
     <Compile Include="Objects\IFormatter.cs" />
