@@ -1,6 +1,6 @@
 ﻿namespace Core.Strings.Text
 {
-   public enum DiffType
+   public enum DifferenceType
    {
       Unchanged,
       Deleted,

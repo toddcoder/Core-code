@@ -1,8 +1,8 @@
 ﻿namespace Core.Strings.Text
 {
-   internal class ModificationData
+   internal class Modification
    {
-      public ModificationData(string[] rawData)
+      public Modification(string[] rawData)
       {
          RawData = rawData;
       }

@@ -8,27 +8,27 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Strings.Text
 {
-   public class DiffItem : EquatableBase
+   public class DifferenceItem : EquatableBase
    {
-      protected List<DiffItem> subItems;
+      protected List<DifferenceItem> subItems;
 
-      public DiffItem(string text, DiffType type, IMaybe<int> position)
+      public DifferenceItem(string text, DifferenceType type, IMaybe<int> position)
       {
          Text = text;
          Type = type;
          Position = position;
-         subItems = new List<DiffItem>();
+         subItems = new List<DifferenceItem>();
       }
 
-      public DiffItem(string text, DiffType type, int position) : this(text, type, position.Some()) { }
+      public DifferenceItem(string text, DifferenceType type, int position) : this(text, type, position.Some()) { }
 
-      public DiffItem(string text, DiffType type) : this(text, type, none<int>()) { }
+      public DifferenceItem(string text, DifferenceType type) : this(text, type, none<int>()) { }
 
-      public DiffItem() : this("", DiffType.Imaginary) { }
+      public DifferenceItem() : this("", DifferenceType.Imaginary) { }
 
       protected override bool equals(object other)
       {
-         if (other is DiffItem otherDiffItem)
+         if (other is DifferenceItem otherDiffItem)
          {
             return Position.HasValue == otherDiffItem.Position.HasValue && subItemsEqual(otherDiffItem);
          }
@@ -39,16 +39,16 @@ namespace Core.Strings.Text
       }
 
       [Equatable]
-      public DiffType Type { get; set; }
+      public DifferenceType Type { get; set; }
 
       public IMaybe<int> Position { get; }
 
       [Equatable]
       public string Text { get; }
 
-      public List<DiffItem> SubItems => subItems;
+      public List<DifferenceItem> SubItems => subItems;
 
-      protected bool subItemsEqual(DiffItem otherItem)
+      protected bool subItemsEqual(DifferenceItem otherItem)
       {
          if (subItems.Count == 0)
          {

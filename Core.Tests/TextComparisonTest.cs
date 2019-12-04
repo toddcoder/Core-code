@@ -16,8 +16,8 @@ namespace Core.Tests
          var oldLines = oldFile.Lines;
          var newLines = newFile.Lines;
 
-         var diff = new TextDiff(oldLines, newLines, false, false);
-         if (diff.Build().If(out var model, out var exception))
+         var diff = new Differentiator(oldLines, newLines, false, false);
+         if (diff.BuildModel().If(out var model, out var exception))
          {
             Console.WriteLine(model);
          }

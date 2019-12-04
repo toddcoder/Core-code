@@ -1,19 +1,18 @@
 ﻿using System.Collections.Generic;
-using Core.Assertions;
 using Core.Collections;
 using Core.Monads;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Strings.Text
 {
-   internal class TextDiffer
+   internal class DifferenceBuilder
    {
-      static void buildItemHashes(Hash<string, int> itemHash, ModificationData data, bool ignoreWhiteSpace, bool ignoreCase)
+      static void buildItemHashes(Hash<string, int> itemHash, Modification modification, bool ignoreWhiteSpace, bool ignoreCase)
       {
-         var items = data.RawData;
-         data.Items = items;
-         data.HashedItems = new int[items.Length];
-         data.Modifications = new bool[items.Length];
+         var items = modification.RawData;
+         modification.Items = items;
+         modification.HashedItems = new int[items.Length];
+         modification.Modifications = new bool[items.Length];
 
          for (var i = 0; i < items.Length; i++)
          {
@@ -30,37 +29,36 @@ namespace Core.Strings.Text
 
             if (itemHash.If(item, out var value))
             {
-               data.HashedItems[i] = value;
+               modification.HashedItems[i] = value;
             }
             else
             {
-               data.HashedItems[i] = itemHash.Count;
+               modification.HashedItems[i] = itemHash.Count;
                itemHash[item] = itemHash.Count;
             }
          }
       }
 
-      static IResult<Unit> buildModificationData(ModificationData oldData, ModificationData newData)
+      IResult<Unit> buildModifications()
       {
-         var n = oldData.HashedItems.Length;
-         var m = newData.HashedItems.Length;
-         var max = m + n + 1;
-         var forwardDiagonal = new int[max + 1];
-         var reverseDiagonal = new int[max + 1];
+         var oldSize = oldModification.HashedItems.Length;
+         var newSize = newModification.HashedItems.Length;
+         var maxSize = newSize + oldSize + 1;
+         var forwardDiagonal = new int[maxSize + 1];
+         var reverseDiagonal = new int[maxSize + 1];
 
-         return buildModificationData(oldData, 0, n, newData, 0, m, forwardDiagonal, reverseDiagonal);
+         return buildModifications(0, oldSize, 0, newSize, forwardDiagonal, reverseDiagonal);
       }
 
-      static IResult<Unit> buildModificationData(ModificationData oldData, int oldStart, int oldEnd, ModificationData newData, int newStart,
-         int newEnd, int[] forwardDiagonal, int[] reverseDiagonal)
+      IResult<Unit> buildModifications(int oldStart, int oldEnd, int newStart, int newEnd, int[] forwardDiagonal, int[] reverseDiagonal)
       {
-         while (oldStart < oldEnd && newStart < newEnd && oldData.HashedItems[oldStart] == newData.HashedItems[newStart])
+         while (oldStart < oldEnd && newStart < newEnd && oldModification.HashedItems[oldStart] == newModification.HashedItems[newStart])
          {
             oldStart++;
             newStart++;
          }
 
-         while (oldStart < oldEnd && newStart < newEnd && oldData.HashedItems[oldEnd - 1] == newData.HashedItems[newEnd - 1])
+         while (oldStart < oldEnd && newStart < newEnd && oldModification.HashedItems[oldEnd - 1] == newModification.HashedItems[newEnd - 1])
          {
             oldEnd--;
             newEnd--;
@@ -70,7 +68,8 @@ namespace Core.Strings.Text
          var newLength = newEnd - newStart;
          if (oldLength > 0 && newLength > 0)
          {
-            if (calculateEditLength(oldData.HashedItems, oldStart, oldEnd, newData.HashedItems, newStart, newEnd, forwardDiagonal, reverseDiagonal)
+            if (calculateEditLength(oldModification.HashedItems, oldStart, oldEnd, newModification.HashedItems, newStart, newEnd, forwardDiagonal,
+                  reverseDiagonal)
                .If(out var result, out var exception))
             {
                if (result.EditLength <= 0)
@@ -81,24 +80,22 @@ namespace Core.Strings.Text
                switch (result.LastEdit)
                {
                   case EditType.DeleteRight when result.OldStart - 1 > oldStart:
-                     oldData.Modifications[--result.OldStart] = true;
+                     oldModification.Modifications[--result.OldStart] = true;
                      break;
                   case EditType.InsertDown when result.NewStart - 1 > newStart:
-                     newData.Modifications[--result.NewStart] = true;
+                     newModification.Modifications[--result.NewStart] = true;
                      break;
                   case EditType.DeleteLeft when result.OldEnd < oldEnd:
-                     oldData.Modifications[result.OldEnd++] = true;
+                     oldModification.Modifications[result.OldEnd++] = true;
                      break;
                   case EditType.InsertUp when result.NewEnd < newEnd:
-                     newData.Modifications[result.NewEnd++] = true;
+                     newModification.Modifications[result.NewEnd++] = true;
                      break;
                }
 
                var resultAll =
-                  from resultA in buildModificationData(oldData, oldStart, result.OldStart, newData, newStart, result.NewStart, forwardDiagonal,
-                     reverseDiagonal)
-                  from resultB in buildModificationData(oldData, result.OldEnd, oldEnd, newData, result.NewEnd, newEnd, forwardDiagonal,
-                     reverseDiagonal)
+                  from resultA in buildModifications(oldStart, result.OldStart, newStart, result.NewStart, forwardDiagonal, reverseDiagonal)
+                  from resultB in buildModifications(result.OldEnd, oldEnd, result.NewEnd, newEnd, forwardDiagonal, reverseDiagonal)
                   select resultB;
                if (resultAll.IfNot(out exception))
                {
@@ -114,14 +111,14 @@ namespace Core.Strings.Text
          {
             for (var i = oldStart; i < oldEnd; i++)
             {
-               oldData.Modifications[i] = true;
+               oldModification.Modifications[i] = true;
             }
          }
          else if (newLength > 0)
          {
             for (var i = newStart; i < newEnd; i++)
             {
-               newData.Modifications[i] = true;
+               newModification.Modifications[i] = true;
             }
          }
 
@@ -245,34 +242,46 @@ namespace Core.Strings.Text
          return "Should never get here".Failure<EditLengthResult>();
       }
 
-      public IResult<TextDiffResult> CreateDiffs(string[] oldText, string[] newText, bool ignoreWhiteSpace, bool ignoreCase)
+      string[] oldText;
+      string[] newText;
+      bool ignoreWhiteSpace;
+      bool ignoreCase;
+      Modification oldModification;
+      Modification newModification;
+
+      public DifferenceBuilder(string[] oldText, string[] newText, bool ignoreWhiteSpace, bool ignoreCase)
       {
-         oldText.Must().Not.BeNull().Assert();
-         newText.Must().Not.BeNull().Assert();
+         this.oldText = oldText;
+         this.newText = newText;
+         this.ignoreWhiteSpace = ignoreWhiteSpace;
+         this.ignoreCase = ignoreCase;
 
+         oldModification = new Modification(this.oldText);
+         newModification = new Modification(this.newText);
+      }
+
+      public IResult<DifferenceResult> Build()
+      {
          var itemHash = new Hash<string, int>();
-         var lineDiffs = new List<TextDiffBlock>();
+         var lineDiffs = new List<DifferenceBlock>();
 
-         var oldModifications = new ModificationData(oldText);
-         var newModifications = new ModificationData(newText);
+         buildItemHashes(itemHash, oldModification, ignoreWhiteSpace, ignoreCase);
+         buildItemHashes(itemHash, newModification, ignoreWhiteSpace, ignoreCase);
 
-         buildItemHashes(itemHash, oldModifications, ignoreWhiteSpace, ignoreCase);
-         buildItemHashes(itemHash, newModifications, ignoreWhiteSpace, ignoreCase);
-
-         if (buildModificationData(oldModifications, newModifications).IfNot(out var exception))
+         if (buildModifications().IfNot(out var exception))
          {
-            return failure<TextDiffResult>(exception);
+            return failure<DifferenceResult>(exception);
          }
 
-         var oldItemsLength = oldModifications.HashedItems.Length;
-         var newItemsLength = newModifications.HashedItems.Length;
+         var oldItemsLength = oldModification.HashedItems.Length;
+         var newItemsLength = newModification.HashedItems.Length;
          var oldPosition = 0;
          var newPosition = 0;
 
          do
          {
-            while (oldPosition < oldItemsLength && newPosition < newItemsLength && !oldModifications.Modifications[oldPosition] &&
-               !newModifications.Modifications[newPosition])
+            while (oldPosition < oldItemsLength && newPosition < newItemsLength && !oldModification.Modifications[oldPosition] &&
+               !newModification.Modifications[newPosition])
             {
                oldPosition++;
                newPosition++;
@@ -281,12 +290,12 @@ namespace Core.Strings.Text
             var oldBegin = oldPosition;
             var newBegin = newPosition;
 
-            while (oldPosition < oldItemsLength && oldModifications.Modifications[oldPosition])
+            while (oldPosition < oldItemsLength && oldModification.Modifications[oldPosition])
             {
                oldPosition++;
             }
 
-            while (newPosition < newItemsLength && newModifications.Modifications[newPosition])
+            while (newPosition < newItemsLength && newModification.Modifications[newPosition])
             {
                newPosition++;
             }
@@ -295,11 +304,11 @@ namespace Core.Strings.Text
             var insertCount = newPosition - newBegin;
             if (deleteCount > 0 || insertCount > 0)
             {
-               lineDiffs.Add(new TextDiffBlock(oldBegin, deleteCount, newBegin, insertCount));
+               lineDiffs.Add(new DifferenceBlock(oldBegin, deleteCount, newBegin, insertCount));
             }
          } while (oldPosition < oldItemsLength && newPosition < newItemsLength);
 
-         return new TextDiffResult(oldModifications.Items, newModifications.Items, lineDiffs).Success();
+         return new DifferenceResult(oldModification.Items, newModification.Items, lineDiffs).Success();
       }
    }
 }

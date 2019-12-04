@@ -349,16 +349,16 @@
     <Compile Include="Strings\StringStreamFunctions.cs" />
     <Compile Include="Strings\TableMaker.cs" />
     <Compile Include="Strings\TableMakerManager.cs" />
-    <Compile Include="Strings\Text\DiffItem.cs" />
-    <Compile Include="Strings\Text\DiffType.cs" />
+    <Compile Include="Strings\Text\DifferenceItem.cs" />
+    <Compile Include="Strings\Text\DifferenceType.cs" />
     <Compile Include="Strings\Text\EditLengthResult.cs" />
     <Compile Include="Strings\Text\EditType.cs" />
-    <Compile Include="Strings\Text\Model.cs" />
-    <Compile Include="Strings\Text\ModificationData.cs" />
-    <Compile Include="Strings\Text\TextDiff.cs" />
-    <Compile Include="Strings\Text\TextDiffBlock.cs" />
-    <Compile Include="Strings\Text\TextDiffer.cs" />
-    <Compile Include="Strings\Text\TextDiffResult.cs" />
+    <Compile Include="Strings\Text\DifferenceModel.cs" />
+    <Compile Include="Strings\Text\Modification.cs" />
+    <Compile Include="Strings\Text\Differentiator.cs" />
+    <Compile Include="Strings\Text\DifferenceBlock.cs" />
+    <Compile Include="Strings\Text\DifferenceBuilder.cs" />
+    <Compile Include="Strings\Text\DifferenceResult.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Core.snk" />

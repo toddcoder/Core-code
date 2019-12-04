@@ -1,8 +1,8 @@
 ﻿namespace Core.Strings.Text
 {
-   internal class TextDiffBlock
+   internal class DifferenceBlock
    {
-      public TextDiffBlock(int oldDeleteStart, int oldDeleteCount, int newInsertStart, int newInsertCount)
+      public DifferenceBlock(int oldDeleteStart, int oldDeleteCount, int newInsertStart, int newInsertCount)
       {
          OldDeleteStart = oldDeleteStart;
          OldDeleteCount = oldDeleteCount;

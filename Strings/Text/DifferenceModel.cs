@@ -3,17 +3,17 @@ using System.IO;
 
 namespace Core.Strings.Text
 {
-   public class Model
+   public class DifferenceModel
    {
-      public Model()
+      public DifferenceModel()
       {
-         OldDiffItems = new List<DiffItem>();
-         NewDiffItems = new List<DiffItem>();
+         OldDiffItems = new List<DifferenceItem>();
+         NewDiffItems = new List<DifferenceItem>();
       }
 
-      public List<DiffItem> OldDiffItems { get; }
+      public List<DifferenceItem> OldDiffItems { get; }
 
-      public List<DiffItem> NewDiffItems { get; }
+      public List<DifferenceItem> NewDiffItems { get; }
 
       public override string ToString()
       {
