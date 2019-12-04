@@ -33,7 +33,7 @@ namespace Core.Strings.Text
          {
             var model = new DifferenceModel();
             ItemBuilder itemBuilder = buildItemsNoSub;
-            buildItems(result, model.OldDiffItems, model.NewDiffItems, itemBuilder.Some());
+            buildItems(result, model.OldDifferenceItems, model.NewDifferenceItems, itemBuilder.Some());
 
             return model.Success();
          }

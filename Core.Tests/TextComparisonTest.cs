@@ -16,7 +16,7 @@ namespace Core.Tests
          var oldLines = oldFile.Lines;
          var newLines = newFile.Lines;
 
-         var diff = new Differentiator(oldLines, newLines, false, false);
+         var diff = new Differentiator(oldLines, newLines, true, false);
          if (diff.BuildModel().If(out var model, out var exception))
          {
             Console.WriteLine(model);
@@ -35,5 +35,8 @@ namespace Core.Tests
 
       [TestMethod]
       public void FormattedSqlFile() => test("udtype.sql", "udtype-formatted.sql");
+
+      [TestMethod]
+      public void UnrepairedSqlFile() => test("udtype-unrepaired.sql", "udtype.sql");
    }
 }

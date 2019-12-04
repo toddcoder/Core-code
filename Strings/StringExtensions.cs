@@ -751,9 +751,11 @@ namespace Core.Strings
          }
       }
 
-      public static string Justify(this string source, Justification justification, int width, char paddingCharacter = ' ')
+      public static string Justify(this object source, Justification justification, int width, char paddingCharacter = ' ')
       {
-         if (source.IsEmpty())
+         var asString = source.ToNonNullString();
+
+         if (asString.IsEmpty())
          {
             return string.Empty;
          }
@@ -771,18 +773,18 @@ namespace Core.Strings
                padType = PadType.Center;
                break;
             default:
-               return source;
+               return asString;
          }
 
-         return source.Pad(padType, width, paddingCharacter);
+         return asString.Pad(padType, width, paddingCharacter);
       }
 
-      public static string LeftJustify(this string source, int width, char paddingChar = ' ')
+      public static string LeftJustify(this object source, int width, char paddingChar = ' ')
       {
          return source.Justify(Justification.Left, width, paddingChar);
       }
 
-      public static string RightJustify(this string source, int width, char paddingChar = ' ')
+      public static string RightJustify(this object source, int width, char paddingChar = ' ')
       {
          return source.Justify(Justification.Right, width, paddingChar);
       }

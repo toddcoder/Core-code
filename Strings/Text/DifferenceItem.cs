@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Core.Enumerables;
+using System.IO;
 using Core.Monads;
 using Core.Objects;
 using static Core.Monads.MonadFunctions;
@@ -77,25 +75,37 @@ namespace Core.Strings.Text
 
       public override string ToString()
       {
-         var builder = new StringBuilder();
-         builder.Append(Text.Elliptical(80, ' '));
-         builder.Append('|');
-         builder.Append(Type);
-
-         if (Position.If(out var position))
+         using (var writer = new StringWriter())
          {
-            builder.Append("@");
-            builder.Append(position);
-         }
+            if (Position.If(out var position))
+            {
+               writer.Write(position.RightJustify(10));
+               writer.Write(" ");
+            }
+            else
+            {
+               writer.Write(" ".Repeat(11));
+            }
 
-         if (subItems.Count > 0)
-         {
-            builder.Append('(');
-            builder.Append(subItems.Select(i => i.ToString()).Stringify());
-            builder.Append(')');
-         }
+            writer.Write(Type.LeftJustify(10));
 
-         return builder.ToString();
+            writer.Write(" | ");
+            writer.Write(Text.Elliptical(60, ' '));
+
+            if (subItems.Count > 0)
+            {
+               writer.WriteLine();
+               writer.WriteLine("          {");
+               foreach (var subItem in subItems)
+               {
+                  writer.WriteLine($"  {subItem}");
+               }
+
+               writer.Write("          }");
+            }
+
+            return writer.ToString();
+         }
       }
    }
 }
