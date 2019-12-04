@@ -78,7 +78,7 @@ namespace Core.Strings.Text
                if (anySubItemBuilder.If(out var subItemBuilder))
                {
                   var oldWords = result.OldItems[oldPosition].Split("/s+");
-                  var newWords = result.NewItems[oldPosition].Split("/s+");
+                  var newWords = result.NewItems[newPosition].Split("/s+");
                   var differ = new TextDiffer();
 
                   if (differ.CreateDiffs(oldWords, newWords, false, false).If(out _))

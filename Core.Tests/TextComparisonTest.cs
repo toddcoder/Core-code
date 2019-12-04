@@ -8,12 +8,11 @@ namespace Core.Tests
    [TestClass]
    public class TextComparisonTest
    {
-      [TestMethod]
-      public void SmallFileTest()
+      static void test(string oldFileName, string newFileName)
       {
-         FileName oldFile = @"C:\Enterprise\Projects\Core\Core.Tests\test-data\old.txt";
-         FileName newFile = @"C:\Enterprise\Projects\Core\Core.Tests\test-data\new.txt";
-
+         FolderName folder = @"C:\Enterprise\Projects\Core\Core.Tests\test-data";
+         var oldFile = folder + oldFileName;
+         var newFile = folder + newFileName;
          var oldLines = oldFile.Lines;
          var newLines = newFile.Lines;
 
@@ -29,23 +28,12 @@ namespace Core.Tests
       }
 
       [TestMethod]
-      public void LargeFileTest()
-      {
-         FileName oldFile = @"C:\Enterprise\Projects\Core\Core.Tests\test-data\big file.bad.sql";
-         FileName newFile = @"C:\Enterprise\Projects\Core\Core.Tests\test-data\big file.sql";
+      public void SmallFileTest() => test("old.txt", "new.txt");
 
-         var oldLines = oldFile.Lines;
-         var newLines = newFile.Lines;
+      [TestMethod]
+      public void LargeFileTest() => test("big file.bad.sql", "big file.sql");
 
-         var diff = new TextDiff(oldLines, newLines, false, false);
-         if (diff.Build().If(out var model, out var exception))
-         {
-            Console.WriteLine(model);
-         }
-         else
-         {
-            Console.WriteLine($"exception: {exception.Message}");
-         }
-      }
+      [TestMethod]
+      public void FormattedSqlFile() => test("udtype.sql", "udtype-formatted.sql");
    }
 }
