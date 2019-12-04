@@ -2,7 +2,7 @@
 
 namespace Core.Strings.Text
 {
-   public class TextDiffResult
+   internal class TextDiffResult
    {
       public TextDiffResult(string[] oldItems, string[] newItems, List<TextDiffBlock> textDiffBlocks)
       {
