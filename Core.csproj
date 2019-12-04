@@ -349,6 +349,7 @@
     <Compile Include="Strings\StringStreamFunctions.cs" />
     <Compile Include="Strings\TableMaker.cs" />
     <Compile Include="Strings\TableMakerManager.cs" />
+    <Compile Include="Strings\Text\Difference.cs" />
     <Compile Include="Strings\Text\DifferenceItem.cs" />
     <Compile Include="Strings\Text\DifferenceType.cs" />
     <Compile Include="Strings\Text\EditLengthResult.cs" />

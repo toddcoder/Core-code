@@ -20,6 +20,23 @@ namespace Core.Tests
          if (diff.BuildModel().If(out var model, out var exception))
          {
             Console.WriteLine(model);
+
+            var oldDifferences = model.OldDifferences();
+            var newDifferences = model.NewDifferences();
+
+            Console.WriteLine("old differences:");
+            foreach (var difference in oldDifferences)
+            {
+               Console.WriteLine(difference);
+            }
+
+            Console.WriteLine();
+
+            Console.WriteLine("new differences:");
+            foreach (var difference in newDifferences)
+            {
+               Console.WriteLine(difference);
+            }
          }
          else
          {

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace Core.Strings.Text
 {
@@ -13,7 +14,21 @@ namespace Core.Strings.Text
 
       public List<DifferenceItem> OldDifferenceItems { get; }
 
+      public IEnumerable<Difference> OldDifferences()
+      {
+         return OldDifferenceItems
+            .Where(i => i.Type != DifferenceType.Unchanged && i.Type != DifferenceType.Imaginary)
+            .Select(Difference.FromDifferenceItem);
+      }
+
       public List<DifferenceItem> NewDifferenceItems { get; }
+
+      public IEnumerable<Difference> NewDifferences()
+      {
+         return NewDifferenceItems
+            .Where(i => i.Type != DifferenceType.Unchanged && i.Type != DifferenceType.Imaginary)
+            .Select(Difference.FromDifferenceItem);
+      }
 
       public override string ToString()
       {
