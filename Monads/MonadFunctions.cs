@@ -30,8 +30,6 @@ namespace Core.Monads
 
       public static IResult<T> failure<T>(Exception exception) => new Failure<T>(exception);
 
-      public static IResult<T> failure<T>() => new Failure<T>(new Exception("Default setting"));
-
       public static IMatched<TParent> matched<TChild, TParent>(TChild value)
          where TChild : TParent
       {

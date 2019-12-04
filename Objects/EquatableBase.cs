@@ -66,9 +66,11 @@ namespace Core.Objects
             return equatableInfo
                .Select(mi => mi.Name)
                .Select(signature => values[signature].Equals(otherValues[signature]))
-               .All(b => b);
+               .All(b => b) && equals(obj);
          }
       }
+
+      protected virtual bool equals(object other) => true;
 
       public override int GetHashCode()
       {
