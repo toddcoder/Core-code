@@ -54,7 +54,7 @@ namespace Core.Strings.Text
       static IResult<Unit> buildModificationData(ModificationData a, int startA, int endA, ModificationData b, int startB, int endB,
          int[] forwardDiagonal, int[] reverseDiagonal)
       {
-         while (startA < endA && startB < endB && a.HashedItems[startA].Equals(b.HashedItems[startB]))
+         while (startA < endA && startB < endB && a.HashedItems[startA] == b.HashedItems[startB])
          {
             startA++;
             startB++;
@@ -92,6 +92,15 @@ namespace Core.Strings.Text
                   case EditType.InsertUp when result.EndY < endB:
                      b.Modifications[result.EndY++] = true;
                      break;
+               }
+
+               var resultAll =
+                  from resultA in buildModificationData(a, startA, result.StartX, b, startB, result.StartY, forwardDiagonal, reverseDiagonal)
+                  from resultB in buildModificationData(a, result.EndX, endA, b, result.EndY, endB, forwardDiagonal, reverseDiagonal)
+                  select resultB;
+               if (resultAll.IfNot(out exception))
+               {
+                  return failure<Unit>(exception);
                }
             }
             else
@@ -197,7 +206,7 @@ namespace Core.Strings.Text
                }
             }
 
-            for (var k = 0; k <= d; k += 2)
+            for (var k = -d; k <= d; k += 2)
             {
                var kIndex = k + half;
                var x = 0;
@@ -212,7 +221,7 @@ namespace Core.Strings.Text
                   lastEdit = EditType.InsertUp;
                }
 
-               var y = x - k + delta;
+               var y = x - (k + delta);
                var endX = x;
                var endY = y;
                while (x > 0 && y > 0 && a[startA + x - 1] == b[startB + y - 1])

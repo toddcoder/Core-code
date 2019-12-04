@@ -11,20 +11,20 @@ namespace Core.Tests
       [TestMethod]
       public void BasicComparisonTest()
       {
-         FileName oldFile = @"C:\Enterprise\Working\test\big file.bad.sql";
-         FileName newFile = @"C:\Enterprise\Working\test\big file.sql";
+         FileName oldFile = @"C:\Enterprise\Projects\Core\Core.Tests\test-data\old.txt";
+         FileName newFile = @"C:\Enterprise\Projects\Core\Core.Tests\test-data\new.txt";
 
          var oldLines = oldFile.Lines;
          var newLines = newFile.Lines;
 
-         var differ = new TextDiffer();
-         if (differ.CreateDiffs(oldLines, newLines, false, false).If(out var result, out var exception))
+         var diff = new TextDiff(oldLines, newLines, false, false);
+         if (diff.Build().If(out var model, out var exception))
          {
-            Console.WriteLine(result);
+            Console.WriteLine(model);
          }
          else
          {
-            Console.WriteLine($"Exception: {exception.Message}");
+            Console.WriteLine($"exception: {exception.Message}");
          }
       }
    }
