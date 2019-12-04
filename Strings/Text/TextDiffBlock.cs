@@ -9,6 +9,7 @@
          InsertStartB = insertStartB;
          InsertCountB = insertCountB;
       }
+
       public int DeleteStartA { get; }
 
       public int DeleteCountA { get; }

@@ -52,8 +52,7 @@ namespace Core.Strings.Text
       }
 
       static IResult<Unit> buildModificationData(ModificationData a, int startA, int endA, ModificationData b, int startB, int endB,
-         int[] forwardDiagonal,
-         int[] reverseDiagonal)
+         int[] forwardDiagonal, int[] reverseDiagonal)
       {
          while (startA < endA && startB < endB && a.HashedItems[startA].Equals(b.HashedItems[startB]))
          {
@@ -61,7 +60,7 @@ namespace Core.Strings.Text
             startB++;
          }
 
-         while (startA < endA && startB < endB && a.HashedItems[startA - 1].Equals(b.HashedItems[startB - 1]))
+         while (startA < endA && startB < endB && a.HashedItems[endA - 1].Equals(b.HashedItems[endB - 1]))
          {
             endA--;
             endB--;
