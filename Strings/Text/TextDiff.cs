@@ -34,6 +34,7 @@ namespace Core.Strings.Text
             var model = new Model();
             ItemBuilder itemBuilder = buildItemsNoSub;
             buildItems(result, model.OldDiffItems, model.NewDiffItems, itemBuilder.Some());
+
             return model.Success();
          }
          else
@@ -105,6 +106,17 @@ namespace Core.Strings.Text
                   newItems.Add(new DiffItem());
 
                   oldPosition++;
+                  i++;
+               }
+            }
+            else
+            {
+               while (i<diffBlock.NewInsertCount)
+               {
+                  newItems.Add(new DiffItem(result.NewItems[i + diffBlock.NewInsertStart], DiffType.Inserted, newPosition + 1));
+                  oldItems.Add(new DiffItem());
+
+                  newPosition++;
                   i++;
                }
             }
