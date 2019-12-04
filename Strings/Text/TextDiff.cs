@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using Core.Monads;
 using Core.RegularExpressions;
+using static Core.Arrays.ArrayFunctions;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Strings.Text
 {
    public class TextDiff
    {
+      static string[] splitWords(string line) => line.Split(array(' ', '\t', '.', '(', ')', '{', '}', ',', '!'));
+
       string[] oldText;
       string[] newText;
       bool ignoreWhiteSpace;
@@ -41,8 +44,8 @@ namespace Core.Strings.Text
 
       static void buildItemsNoSub(string oldLine, string newLine, List<DiffItem> oldItems, List<DiffItem> newItems)
       {
-         var oldWords = oldLine.Split("/s+");
-         var newWords = newLine.Split("/s+");
+         var oldWords = splitWords(oldLine);
+         var newWords = splitWords(newLine);
 
          var differ = new TextDiffer();
 
@@ -54,33 +57,33 @@ namespace Core.Strings.Text
 
       static void buildItems(TextDiffResult result, List<DiffItem> oldItems, List<DiffItem> newItems, IMaybe<ItemBuilder> anySubItemBuilder)
       {
-         var aPosition = 0;
-         var bPosition = 0;
+         var oldPosition = 0;
+         var newPosition = 0;
 
          foreach (var diffBlock in result.TextDiffBlocks)
          {
-            while (bPosition < diffBlock.InsertStartB && aPosition < diffBlock.DeleteStartA)
+            while (newPosition < diffBlock.NewInsertStart && oldPosition < diffBlock.OldDeleteStart)
             {
-               oldItems.Add(new DiffItem(result.OldItems[aPosition], DiffType.Unchanged, aPosition + 1));
-               newItems.Add(new DiffItem(result.NewItems[bPosition], DiffType.Unchanged, bPosition + 1));
-               aPosition++;
-               bPosition++;
+               oldItems.Add(new DiffItem(result.OldItems[oldPosition], DiffType.Unchanged, oldPosition + 1));
+               newItems.Add(new DiffItem(result.NewItems[newPosition], DiffType.Unchanged, newPosition + 1));
+               oldPosition++;
+               newPosition++;
             }
 
             var i = 0;
-            while (i < Math.Min(diffBlock.DeleteCountA, diffBlock.InsertCountB))
+            while (i < Math.Min(diffBlock.OldDeleteCount, diffBlock.NewInsertCount))
             {
-               var oldItem = new DiffItem(result.OldItems[i + diffBlock.DeleteStartA], DiffType.Deleted, aPosition + 1);
-               var newItem = new DiffItem(result.NewItems[i + diffBlock.InsertStartB], DiffType.Inserted, bPosition + 1);
+               var oldItem = new DiffItem(result.OldItems[i + diffBlock.OldDeleteStart], DiffType.Deleted, oldPosition + 1);
+               var newItem = new DiffItem(result.NewItems[i + diffBlock.NewInsertStart], DiffType.Inserted, newPosition + 1);
                if (anySubItemBuilder.If(out var subItemBuilder))
                {
-                  var oldWords = result.OldItems[aPosition].Split("/s+");
-                  var newWords = result.NewItems[aPosition].Split("/s+");
+                  var oldWords = result.OldItems[oldPosition].Split("/s+");
+                  var newWords = result.NewItems[oldPosition].Split("/s+");
                   var differ = new TextDiffer();
 
-                  if (differ.CreateDiffs(oldWords, newWords, false, false).If(out var wordResult))
+                  if (differ.CreateDiffs(oldWords, newWords, false, false).If(out _))
                   {
-                     subItemBuilder(wordResult.OldItems[aPosition], wordResult.NewItems[bPosition], oldItem.SubItems, newItem.SubItems);
+                     subItemBuilder(result.OldItems[oldPosition], result.NewItems[newPosition], oldItem.SubItems, newItem.SubItems);
                      newItem.Type = DiffType.Modified;
                      oldItem.Type = DiffType.Modified;
                   }
@@ -89,31 +92,31 @@ namespace Core.Strings.Text
                oldItems.Add(oldItem);
                newItems.Add(newItem);
 
-               aPosition++;
-               bPosition++;
+               oldPosition++;
+               newPosition++;
                i++;
             }
 
-            if (diffBlock.DeleteCountA > diffBlock.InsertCountB)
+            if (diffBlock.OldDeleteCount > diffBlock.NewInsertCount)
             {
-               while (i < diffBlock.DeleteCountA)
+               while (i < diffBlock.OldDeleteCount)
                {
-                  oldItems.Add(new DiffItem(result.OldItems[i + diffBlock.DeleteStartA], DiffType.Deleted, aPosition + 1));
+                  oldItems.Add(new DiffItem(result.OldItems[i + diffBlock.OldDeleteStart], DiffType.Deleted, oldPosition + 1));
                   newItems.Add(new DiffItem());
 
-                  aPosition++;
+                  oldPosition++;
                   i++;
                }
             }
          }
 
-         while (bPosition < result.NewItems.Length && aPosition < result.OldItems.Length)
+         while (newPosition < result.NewItems.Length && oldPosition < result.OldItems.Length)
          {
-            oldItems.Add(new DiffItem(result.OldItems[aPosition], DiffType.Unchanged, aPosition + 1));
-            newItems.Add(new DiffItem(result.NewItems[bPosition], DiffType.Unchanged, bPosition + 1));
+            oldItems.Add(new DiffItem(result.OldItems[oldPosition], DiffType.Unchanged, oldPosition + 1));
+            newItems.Add(new DiffItem(result.NewItems[newPosition], DiffType.Unchanged, newPosition + 1));
 
-            aPosition++;
-            bPosition++;
+            oldPosition++;
+            newPosition++;
          }
       }
    }

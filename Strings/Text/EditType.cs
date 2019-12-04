@@ -1,6 +1,6 @@
 ﻿namespace Core.Strings.Text
 {
-   public enum EditType
+   internal enum EditType
    {
       None,
       DeleteRight,

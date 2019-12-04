@@ -9,10 +9,30 @@ namespace Core.Tests
    public class TextComparisonTest
    {
       [TestMethod]
-      public void BasicComparisonTest()
+      public void SmallFileTest()
       {
          FileName oldFile = @"C:\Enterprise\Projects\Core\Core.Tests\test-data\old.txt";
          FileName newFile = @"C:\Enterprise\Projects\Core\Core.Tests\test-data\new.txt";
+
+         var oldLines = oldFile.Lines;
+         var newLines = newFile.Lines;
+
+         var diff = new TextDiff(oldLines, newLines, false, false);
+         if (diff.Build().If(out var model, out var exception))
+         {
+            Console.WriteLine(model);
+         }
+         else
+         {
+            Console.WriteLine($"exception: {exception.Message}");
+         }
+      }
+
+      [TestMethod]
+      public void LargeFileTest()
+      {
+         FileName oldFile = @"C:\Enterprise\Projects\Core\Core.Tests\test-data\big file.bad.sql";
+         FileName newFile = @"C:\Enterprise\Projects\Core\Core.Tests\test-data\big file.sql";
 
          var oldLines = oldFile.Lines;
          var newLines = newFile.Lines;

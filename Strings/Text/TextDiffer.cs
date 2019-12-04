@@ -6,7 +6,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Strings.Text
 {
-   public class TextDiffer
+   internal class TextDiffer
    {
       static void buildItemHashes(Hash<string, int> itemHash, ModificationData data, bool ignoreWhiteSpace, bool ignoreCase)
       {
@@ -40,37 +40,37 @@ namespace Core.Strings.Text
          }
       }
 
-      static IResult<Unit> buildModificationData(ModificationData a, ModificationData b)
+      static IResult<Unit> buildModificationData(ModificationData oldData, ModificationData newData)
       {
-         var n = a.HashedItems.Length;
-         var m = b.HashedItems.Length;
+         var n = oldData.HashedItems.Length;
+         var m = newData.HashedItems.Length;
          var max = m + n + 1;
          var forwardDiagonal = new int[max + 1];
          var reverseDiagonal = new int[max + 1];
 
-         return buildModificationData(a, 0, n, b, 0, m, forwardDiagonal, reverseDiagonal);
+         return buildModificationData(oldData, 0, n, newData, 0, m, forwardDiagonal, reverseDiagonal);
       }
 
-      static IResult<Unit> buildModificationData(ModificationData a, int startA, int endA, ModificationData b, int startB, int endB,
-         int[] forwardDiagonal, int[] reverseDiagonal)
+      static IResult<Unit> buildModificationData(ModificationData oldData, int oldStart, int oldEnd, ModificationData newData, int newStart,
+         int newEnd, int[] forwardDiagonal, int[] reverseDiagonal)
       {
-         while (startA < endA && startB < endB && a.HashedItems[startA] == b.HashedItems[startB])
+         while (oldStart < oldEnd && newStart < newEnd && oldData.HashedItems[oldStart] == newData.HashedItems[newStart])
          {
-            startA++;
-            startB++;
+            oldStart++;
+            newStart++;
          }
 
-         while (startA < endA && startB < endB && a.HashedItems[endA - 1].Equals(b.HashedItems[endB - 1]))
+         while (oldStart < oldEnd && newStart < newEnd && oldData.HashedItems[oldEnd - 1] == newData.HashedItems[newEnd - 1])
          {
-            endA--;
-            endB--;
+            oldEnd--;
+            newEnd--;
          }
 
-         var aLength = endA - startA;
-         var bLength = endB - startB;
-         if (aLength > 0 && bLength > 0)
+         var oldLength = oldEnd - oldStart;
+         var newLength = newEnd - newStart;
+         if (oldLength > 0 && newLength > 0)
          {
-            if (calculateEditLength(a.HashedItems, startA, endA, b.HashedItems, startB, endB, forwardDiagonal, reverseDiagonal)
+            if (calculateEditLength(oldData.HashedItems, oldStart, oldEnd, newData.HashedItems, newStart, newEnd, forwardDiagonal, reverseDiagonal)
                .If(out var result, out var exception))
             {
                if (result.EditLength <= 0)
@@ -80,23 +80,25 @@ namespace Core.Strings.Text
 
                switch (result.LastEdit)
                {
-                  case EditType.DeleteRight when result.StartX - 1 > startA:
-                     a.Modifications[--result.StartX] = true;
+                  case EditType.DeleteRight when result.OldStart - 1 > oldStart:
+                     oldData.Modifications[--result.OldStart] = true;
                      break;
-                  case EditType.InsertDown when result.StartY - 1 > startB:
-                     b.Modifications[--result.StartY] = true;
+                  case EditType.InsertDown when result.NewStart - 1 > newStart:
+                     newData.Modifications[--result.NewStart] = true;
                      break;
-                  case EditType.DeleteLeft when result.EndX < endA:
-                     a.Modifications[result.EndX++] = true;
+                  case EditType.DeleteLeft when result.OldEnd < oldEnd:
+                     oldData.Modifications[result.OldEnd++] = true;
                      break;
-                  case EditType.InsertUp when result.EndY < endB:
-                     b.Modifications[result.EndY++] = true;
+                  case EditType.InsertUp when result.NewEnd < newEnd:
+                     newData.Modifications[result.NewEnd++] = true;
                      break;
                }
 
                var resultAll =
-                  from resultA in buildModificationData(a, startA, result.StartX, b, startB, result.StartY, forwardDiagonal, reverseDiagonal)
-                  from resultB in buildModificationData(a, result.EndX, endA, b, result.EndY, endB, forwardDiagonal, reverseDiagonal)
+                  from resultA in buildModificationData(oldData, oldStart, result.OldStart, newData, newStart, result.NewStart, forwardDiagonal,
+                     reverseDiagonal)
+                  from resultB in buildModificationData(oldData, result.OldEnd, oldEnd, newData, result.NewEnd, newEnd, forwardDiagonal,
+                     reverseDiagonal)
                   select resultB;
                if (resultAll.IfNot(out exception))
                {
@@ -108,53 +110,41 @@ namespace Core.Strings.Text
                return failure<Unit>(exception);
             }
          }
-         else if (aLength > 0)
+         else if (oldLength > 0)
          {
-            for (var i = startA; i < endA; i++)
+            for (var i = oldStart; i < oldEnd; i++)
             {
-               a.Modifications[i] = true;
+               oldData.Modifications[i] = true;
             }
          }
-         else if (bLength > 0)
+         else if (newLength > 0)
          {
-            for (var i = startB; i < endB; i++)
+            for (var i = newStart; i < newEnd; i++)
             {
-               b.Modifications[i] = true;
+               newData.Modifications[i] = true;
             }
          }
 
          return Unit.Success();
       }
 
-      static IResult<EditLengthResult> calculateEditLength(int[] a, int startA, int endA, int[] b, int startB, int endB)
+      static IResult<EditLengthResult> calculateEditLength(int[] oldItems, int oldStart, int oldEnd, int[] newItems, int newStart, int newEnd,
+         int[] forwardDiagonal, int[] reverseDiagonal)
       {
-         var n = endA - startA;
-         var m = endB - startB;
-         var max = m + n + 1;
-
-         var forwardDiagonal = new int[max + 1];
-         var reverseDiagonal = new int[max + 1];
-
-         return calculateEditLength(a, startA, endA, b, startB, endB, forwardDiagonal, reverseDiagonal);
-      }
-
-      static IResult<EditLengthResult> calculateEditLength(int[] a, int startA, int endA, int[] b, int startB, int endB, int[] forwardDiagonal,
-         int[] reverseDiagonal)
-      {
-         if (a.Length == 0 && b.Length == 0)
+         if (oldItems.Length == 0 && newItems.Length == 0)
          {
             return new EditLengthResult().Success();
          }
 
-         var n = endA - startA;
-         var m = endB - startB;
-         var max = m + n + 1;
-         var half = max / 2;
-         var delta = n - m;
+         var oldSize = oldEnd - oldStart;
+         var newSize = newEnd - newStart;
+         var maxSize = newSize + oldSize + 1;
+         var half = maxSize / 2;
+         var delta = oldSize - newSize;
          var deltaEven = delta % 2 == 0;
 
          forwardDiagonal[half + 1] = 0;
-         reverseDiagonal[half + 1] = n + 1;
+         reverseDiagonal[half + 1] = oldSize + 1;
 
          for (var d = 0; d <= half; d++)
          {
@@ -163,43 +153,43 @@ namespace Core.Strings.Text
             for (var k = -d; k <= d; k += 2)
             {
                var kIndex = k + half;
-               var x = 0;
+               var oldIndex = 0;
                if (k == -d || k != d && forwardDiagonal[kIndex - 1] < forwardDiagonal[kIndex + 1])
                {
-                  x = forwardDiagonal[kIndex + 1];
+                  oldIndex = forwardDiagonal[kIndex + 1];
                   lastEdit = EditType.InsertDown;
                }
                else
                {
-                  x = forwardDiagonal[kIndex - 1] + 1;
+                  oldIndex = forwardDiagonal[kIndex - 1] + 1;
                   lastEdit = EditType.DeleteRight;
                }
 
-               var y = x - k;
-               var startX = x;
-               var startY = y;
-               while (x < n && y < m && a[x + startA] == b[y + startB])
+               var newIndex = oldIndex - k;
+               var oldStartIndex = oldIndex;
+               var newStartIndex = newIndex;
+               while (oldIndex < oldSize && newIndex < newSize && oldItems[oldIndex + oldStart] == newItems[newIndex + newStart])
                {
-                  x++;
-                  y++;
+                  oldIndex++;
+                  newIndex++;
                }
 
-               forwardDiagonal[kIndex] = x;
+               forwardDiagonal[kIndex] = oldIndex;
 
                if (!deltaEven && k - delta >= -d + 1 && k - delta <= d - 1)
                {
                   var revKIndex = k - delta + half;
-                  var revX = reverseDiagonal[revKIndex];
-                  var revY = revX - k;
-                  if (revX <= x && revY <= y)
+                  var oldRevIndex = reverseDiagonal[revKIndex];
+                  var newRevIndex = oldRevIndex - k;
+                  if (oldRevIndex <= oldIndex && newRevIndex <= newIndex)
                   {
                      return new EditLengthResult
                      {
                         EditLength = 2 * d - 1,
-                        StartX = startX + startA,
-                        StartY = startY + startB,
-                        EndX = x + startA,
-                        EndY = y + startB,
+                        OldStart = oldStartIndex + oldStart,
+                        NewStart = newStartIndex + newStart,
+                        OldEnd = oldIndex + oldStart,
+                        NewEnd = newIndex + newStart,
                         LastEdit = lastEdit
                      }.Success();
                   }
@@ -209,42 +199,42 @@ namespace Core.Strings.Text
             for (var k = -d; k <= d; k += 2)
             {
                var kIndex = k + half;
-               var x = 0;
+               var oldIndex = 0;
                if (k == -d || k != d && reverseDiagonal[kIndex + 1] <= reverseDiagonal[kIndex - 1])
                {
-                  x = reverseDiagonal[kIndex + 1] - 1;
+                  oldIndex = reverseDiagonal[kIndex + 1] - 1;
                   lastEdit = EditType.DeleteLeft;
                }
                else
                {
-                  x = reverseDiagonal[kIndex - 1];
+                  oldIndex = reverseDiagonal[kIndex - 1];
                   lastEdit = EditType.InsertUp;
                }
 
-               var y = x - (k + delta);
-               var endX = x;
-               var endY = y;
-               while (x > 0 && y > 0 && a[startA + x - 1] == b[startB + y - 1])
+               var newIndex = oldIndex - (k + delta);
+               var oldEndIndex = oldIndex;
+               var newEndIndex = newIndex;
+               while (oldIndex > 0 && newIndex > 0 && oldItems[oldStart + oldIndex - 1] == newItems[newStart + newIndex - 1])
                {
-                  x--;
-                  y--;
+                  oldIndex--;
+                  newIndex--;
                }
 
-               reverseDiagonal[kIndex] = x;
+               reverseDiagonal[kIndex] = oldIndex;
                if (deltaEven && k + delta >= -d && k + delta <= d)
                {
                   var forIndex = k + delta + half;
-                  var forX = forwardDiagonal[forIndex];
-                  var forY = forX - (k + delta);
-                  if (forX >= x && forY >= y)
+                  var oldForIndex = forwardDiagonal[forIndex];
+                  var newForIndex = oldForIndex - (k + delta);
+                  if (oldForIndex >= oldIndex && newForIndex >= newIndex)
                   {
                      return new EditLengthResult
                      {
                         EditLength = 2 * d,
-                        StartX = x + startA,
-                        StartY = y + startB,
-                        EndX = endX + startA,
-                        EndY = endY + startB,
+                        OldStart = oldIndex + oldStart,
+                        NewStart = newIndex + newStart,
+                        OldEnd = oldEndIndex + oldStart,
+                        NewEnd = newEndIndex + newStart,
                         LastEdit = lastEdit
                      }.Success();
                   }
@@ -274,40 +264,40 @@ namespace Core.Strings.Text
             return failure<TextDiffResult>(exception);
          }
 
-         var itemsALength = oldModifications.HashedItems.Length;
-         var itemsBLength = newModifications.HashedItems.Length;
-         var positionA = 0;
-         var positionB = 0;
+         var oldItemsLength = oldModifications.HashedItems.Length;
+         var newItemsLength = newModifications.HashedItems.Length;
+         var oldPosition = 0;
+         var newPosition = 0;
 
          do
          {
-            while (positionA < itemsALength && positionB < itemsBLength && !oldModifications.Modifications[positionA] &&
-               !newModifications.Modifications[positionB])
+            while (oldPosition < oldItemsLength && newPosition < newItemsLength && !oldModifications.Modifications[oldPosition] &&
+               !newModifications.Modifications[newPosition])
             {
-               positionA++;
-               positionB++;
+               oldPosition++;
+               newPosition++;
             }
 
-            var beginA = positionA;
-            var beginB = positionB;
+            var oldBegin = oldPosition;
+            var newBegin = newPosition;
 
-            while (positionA < itemsALength && oldModifications.Modifications[positionA])
+            while (oldPosition < oldItemsLength && oldModifications.Modifications[oldPosition])
             {
-               positionA++;
+               oldPosition++;
             }
 
-            while (positionB < itemsBLength && newModifications.Modifications[positionB])
+            while (newPosition < newItemsLength && newModifications.Modifications[newPosition])
             {
-               positionB++;
+               newPosition++;
             }
 
-            var deleteCount = positionA - beginA;
-            var insertCount = positionB - beginB;
+            var deleteCount = oldPosition - oldBegin;
+            var insertCount = newPosition - newBegin;
             if (deleteCount > 0 || insertCount > 0)
             {
-               lineDiffs.Add(new TextDiffBlock(beginA, deleteCount, beginB, insertCount));
+               lineDiffs.Add(new TextDiffBlock(oldBegin, deleteCount, newBegin, insertCount));
             }
-         } while (positionA < itemsALength && positionB < itemsBLength);
+         } while (oldPosition < oldItemsLength && newPosition < newItemsLength);
 
          return new TextDiffResult(oldModifications.Items, newModifications.Items, lineDiffs).Success();
       }

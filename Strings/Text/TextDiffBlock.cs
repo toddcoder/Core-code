@@ -1,21 +1,21 @@
 ﻿namespace Core.Strings.Text
 {
-   public class TextDiffBlock
+   internal class TextDiffBlock
    {
-      public TextDiffBlock(int deleteStartA, int deleteCountA, int insertStartB, int insertCountB)
+      public TextDiffBlock(int oldDeleteStart, int oldDeleteCount, int newInsertStart, int newInsertCount)
       {
-         DeleteStartA = deleteStartA;
-         DeleteCountA = deleteCountA;
-         InsertStartB = insertStartB;
-         InsertCountB = insertCountB;
+         OldDeleteStart = oldDeleteStart;
+         OldDeleteCount = oldDeleteCount;
+         NewInsertStart = newInsertStart;
+         NewInsertCount = newInsertCount;
       }
 
-      public int DeleteStartA { get; }
+      public int OldDeleteStart { get; }
 
-      public int DeleteCountA { get; }
+      public int OldDeleteCount { get; }
 
-      public int InsertStartB { get; }
+      public int NewInsertStart { get; }
 
-      public int InsertCountB { get; }
+      public int NewInsertCount { get; }
    }
 }

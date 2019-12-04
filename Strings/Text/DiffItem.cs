@@ -10,7 +10,7 @@ namespace Core.Strings.Text
 {
    public class DiffItem : EquatableBase
    {
-      List<DiffItem> subItems;
+      protected List<DiffItem> subItems;
 
       public DiffItem(string text, DiffType type, IMaybe<int> position)
       {
