@@ -8,6 +8,10 @@ namespace Core.Objects
 {
    public class EquatableBase : IEquatable<EquatableBase>
    {
+      public static bool operator ==(EquatableBase lhs, EquatableBase rhs) => lhs.Equals(rhs);
+
+      public static bool operator !=(EquatableBase lhs, EquatableBase rhs) => !lhs.Equals(rhs);
+
       protected MemberInfo[] equatableInfo;
 
       public EquatableBase()
