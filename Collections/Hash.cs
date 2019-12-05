@@ -99,6 +99,17 @@ namespace Core.Collections
          }
       }
 
+      public IEnumerable<TValue> ValuesFromKeys(IEnumerable<TKey> keys)
+      {
+         foreach (var key in keys)
+         {
+            if (If(key, out var value))
+            {
+               yield return value;
+            }
+         }
+      }
+
       public IResult<Hash<TKey, TValue>> AnyHash() => this.Success();
 
       public TValue Find(TKey key, Func<TKey, TValue> defaultValue, bool addIfNotFound = false)
