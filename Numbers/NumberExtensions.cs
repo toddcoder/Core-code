@@ -253,5 +253,32 @@ namespace Core.Numbers
 
          return builder.ToString();
       }
+
+      public static string ByteCount(this long bytes, bool si)
+      {
+         var unit = si ? 1000 : 1024;
+         var absBytes = bytes == long.MinValue ? long.MaxValue : Abs(bytes);
+         if (absBytes < unit)
+         {
+            return $"{bytes} B";
+         }
+
+         var exp = (int)(Log(absBytes) / Log(unit));
+         var th = (long)(Pow(unit, exp) * (unit - 0.05));
+         if (exp < 6 && absBytes >= th - ((th & 0xfff) == 0xd00 ? 52 : 0))
+         {
+            exp++;
+         }
+
+         var suffix = si ? "kMGTPE"[exp - 1].ToString() : "KMGTPE"[exp - 1] + "i";
+
+         if (exp > 4)
+         {
+            bytes /= unit;
+            exp -= 1;
+         }
+
+         return $"{bytes / Pow(unit, exp):F1} {suffix}";
+      }
    }
 }
