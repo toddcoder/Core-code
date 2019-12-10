@@ -14,10 +14,12 @@ namespace Core.Objects
          var fieldValues = typeof(T).GetRuntimeFields()
             .Where(fi => signatures.Contains(fi.Name))
             .Select(fi => (signature: fi.Name, value: fi.GetValue(obj)))
+            .Where(t => t.value.IsNotNull())
             .ToHash(t => t.signature, t => t.value);
          var propertyValues = typeof(T).GetRuntimeProperties()
             .Where(pi => signatures.Contains(pi.Name))
             .Select(pi => (signature: pi.Name, value: pi.GetValue(obj)))
+            .Where(t => t.value.IsNotNull())
             .ToHash(t => t.signature, t => t.value);
 
          var hash = fieldValues.Merge(propertyValues);
@@ -47,14 +49,6 @@ namespace Core.Objects
          if (other.IsNull())
          {
             return false;
-         }
-         else if (ReferenceEquals(null, other))
-         {
-            return false;
-         }
-         else if (ReferenceEquals(obj, other))
-         {
-            return true;
          }
          else
          {

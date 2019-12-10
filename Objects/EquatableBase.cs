@@ -37,12 +37,20 @@ namespace Core.Objects
             {
                case FieldInfo fieldInfo:
                {
-                  hash[fieldInfo.Name] = fieldInfo.GetValue(obj);
+                  var value = fieldInfo.GetValue(obj);
+                  if (value.IsNotNull())
+                  {
+                     hash[fieldInfo.Name] = value;
+                  }
                }
                   break;
                case PropertyInfo propertyInfo:
                {
-                  hash[propertyInfo.Name] = propertyInfo.GetValue(obj);
+                  var value = propertyInfo.GetValue(obj);
+                  if (value.IsNotNull())
+                  {
+                     hash[propertyInfo.Name] = value;
+                  }
                }
                   break;
             }
@@ -58,14 +66,6 @@ namespace Core.Objects
          if (obj.IsNull())
          {
             return false;
-         }
-         else if (ReferenceEquals(null, this))
-         {
-            return false;
-         }
-         else if (ReferenceEquals(this, obj))
-         {
-            return true;
          }
          else
          {
