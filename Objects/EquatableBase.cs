@@ -55,7 +55,11 @@ namespace Core.Objects
 
       public override bool Equals(object obj)
       {
-         if (ReferenceEquals(null, this))
+         if (obj.IsNull())
+         {
+            return false;
+         }
+         else if (ReferenceEquals(null, this))
          {
             return false;
          }

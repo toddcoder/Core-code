@@ -44,7 +44,11 @@ namespace Core.Objects
 
       public bool Equals(T other)
       {
-         if (ReferenceEquals(null, other))
+         if (other.IsNull())
+         {
+            return false;
+         }
+         else if (ReferenceEquals(null, other))
          {
             return false;
          }
