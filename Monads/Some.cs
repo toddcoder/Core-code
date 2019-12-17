@@ -91,6 +91,8 @@ namespace Core.Monads
          }
       }
 
+      public IMaybe<T> Where(Predicate<T> predicate) => predicate(value) ? this : none<T>();
+
       public bool HasValue => true;
    }
 }

@@ -180,6 +180,10 @@ namespace Core.Monads
 
       public IResult<TResult> CastAs<TResult>() => failure<TResult>(exception);
 
+      public IResult<T> Where(Predicate<T> predicate, string exceptionMessage) => this;
+
+      public IResult<T> Where(Predicate<T> predicate, Func<string> exceptionMessage) => this;
+
       public bool HasValue => false;
    }
 }

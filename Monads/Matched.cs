@@ -137,6 +137,12 @@ namespace Core.Monads
          }
       }
 
+      public IMatched<T> Where(Predicate<T> predicate) => predicate(value) ? this : notMatched<T>();
+
+      public IMatched<T> Where(Predicate<T> predicate, string exceptionMessage) => predicate(value) ? this : exceptionMessage.FailedMatch<T>();
+
+      public IMatched<T> Where(Predicate<T> predicate, Func<string> exceptionMessage) => predicate(value) ? this : exceptionMessage().FailedMatch<T>();
+
       public bool IsMatched => true;
 
       public bool IsNotMatched => false;

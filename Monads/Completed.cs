@@ -191,6 +191,15 @@ namespace Core.Monads
          }
       }
 
+      public ICompletion<T> Where(Predicate<T> predicate) => predicate(value) ? this : cancelled<T>();
+
+      public ICompletion<T> Where(Predicate<T> predicate, string exceptionMessage) => predicate(value) ? this : exceptionMessage.Interrupted<T>();
+
+      public ICompletion<T> Where(Predicate<T> predicate, Func<string> exceptionMessage)
+      {
+         return predicate(value) ? this : exceptionMessage().Interrupted<T>();
+      }
+
       public bool HasValue => true;
    }
 }

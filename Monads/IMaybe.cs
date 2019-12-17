@@ -47,5 +47,7 @@ namespace Core.Monads
       IMaybe<object> AsObject();
 
       IMaybe<TResult> CastAs<TResult>();
+
+      IMaybe<T> Where(Predicate<T> predicate);
    }
 }

@@ -77,5 +77,9 @@ namespace Core.Monads
       IResult<object> AsObject();
 
       IResult<TResult> CastAs<TResult>();
+
+      IResult<T> Where(Predicate<T> predicate, string exceptionMessage);
+
+      IResult<T> Where(Predicate<T> predicate, Func<string> exceptionMessage);
    }
 }

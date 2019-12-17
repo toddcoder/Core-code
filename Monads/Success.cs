@@ -215,6 +215,10 @@ namespace Core.Monads
          }
       }
 
+      public IResult<T> Where(Predicate<T> predicate, string exceptionMessage) => predicate(value) ? this : exceptionMessage.Failure<T>();
+
+      public IResult<T> Where(Predicate<T> predicate, Func<string> exceptionMessage) => predicate(value) ? this : exceptionMessage().Failure<T>();
+
       public bool HasValue => true;
    }
 }

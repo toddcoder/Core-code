@@ -125,6 +125,12 @@ namespace Core.Monads
 
       public IMatched<TResult> CastAs<TResult>() => notMatched<TResult>();
 
+      public IMatched<T> Where(Predicate<T> predicate) => this;
+
+      public IMatched<T> Where(Predicate<T> predicate, string exceptionMessage) => this;
+
+      public IMatched<T> Where(Predicate<T> predicate, Func<string> exceptionMessage) => this;
+
       public bool IsMatched => false;
 
       public bool IsNotMatched => true;

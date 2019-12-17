@@ -181,6 +181,12 @@ namespace Core.Monads
 
       public ICompletion<TResult> CastAs<TResult>() => interrupted<TResult>(exception);
 
+      public ICompletion<T> Where(Predicate<T> predicate) => this;
+
+      public ICompletion<T> Where(Predicate<T> predicate, string exceptionMessage) => this;
+
+      public ICompletion<T> Where(Predicate<T> predicate, Func<string> exceptionMessage) => this;
+
       public bool HasValue => false;
    }
 }

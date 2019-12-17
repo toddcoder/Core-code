@@ -91,5 +91,11 @@ namespace Core.Monads
       ICompletion<object> AsObject();
 
       ICompletion<TResult> CastAs<TResult>();
+
+      ICompletion<T> Where(Predicate<T> predicate);
+
+      ICompletion<T> Where(Predicate<T> predicate, string exceptionMessage);
+
+      ICompletion<T> Where(Predicate<T> predicate, Func<string> exceptionMessage);
    }
 }

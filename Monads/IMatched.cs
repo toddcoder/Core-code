@@ -87,5 +87,11 @@ namespace Core.Monads
       IMatched<object> AsObject();
 
       IMatched<TResult> CastAs<TResult>();
+
+      IMatched<T> Where(Predicate<T> predicate);
+
+      IMatched<T> Where(Predicate<T> predicate, string exceptionMessage);
+
+      IMatched<T> Where(Predicate<T> predicate, Func<string> exceptionMessage);
    }
 }

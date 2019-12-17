@@ -242,8 +242,6 @@ namespace Core.Strings.Text
          return "Should never get here".Failure<EditLengthResult>();
       }
 
-      string[] oldText;
-      string[] newText;
       bool ignoreWhiteSpace;
       bool ignoreCase;
       Modification oldModification;
@@ -251,13 +249,11 @@ namespace Core.Strings.Text
 
       public DifferenceBuilder(string[] oldText, string[] newText, bool ignoreWhiteSpace, bool ignoreCase)
       {
-         this.oldText = oldText;
-         this.newText = newText;
          this.ignoreWhiteSpace = ignoreWhiteSpace;
          this.ignoreCase = ignoreCase;
 
-         oldModification = new Modification(this.oldText);
-         newModification = new Modification(this.newText);
+         oldModification = new Modification(oldText);
+         newModification = new Modification(newText);
       }
 
       public IResult<DifferenceResult> Build()

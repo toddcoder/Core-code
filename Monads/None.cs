@@ -70,6 +70,8 @@ namespace Core.Monads
 
       public IMaybe<TResult> CastAs<TResult>() => none<TResult>();
 
+      public IMaybe<T> Where(Predicate<T> predicate) => this;
+
       public bool HasValue => false;
    }
 }
