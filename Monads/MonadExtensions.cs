@@ -691,5 +691,167 @@ namespace Core.Monads
             return "Cancelled".Failure<T>();
          }
       }
+
+      public static IMaybe<T> MaxOrNone<T>(this IEnumerable<T> enumerable)
+      {
+         var array = enumerable.ToArray();
+         if (array.Length == 0)
+         {
+            return none<T>();
+         }
+         else
+         {
+            return array.Max().Some();
+         }
+      }
+
+      public static IMaybe<T> MaxOrNone<T, TMax>(this IEnumerable<T> enumerable, Func<T, TMax> maxOnFunc)
+      {
+         var array = enumerable.ToArray();
+         if (array.Length == 0)
+         {
+            return none<T>();
+         }
+         else
+         {
+            var max = array.Select((v, i) => (v: maxOnFunc(v), i)).Max();
+            return array[max.i].Some();
+         }
+      }
+
+      public static IMaybe<T> MinOrNone<T>(this IEnumerable<T> enumerable)
+      {
+         var array = enumerable.ToArray();
+         if (array.Length == 0)
+         {
+            return none<T>();
+         }
+         else
+         {
+            return array.Min().Some();
+         }
+      }
+
+      public static IMaybe<T> MinOrNone<T, TMin>(this IEnumerable<T> enumerable, Func<T, TMin> minOnFunc)
+      {
+         var array = enumerable.ToArray();
+         if (array.Length == 0)
+         {
+            return none<T>();
+         }
+         else
+         {
+            var min = array.Select((v, i) => (v: minOnFunc(v), i)).Min();
+            return array[min.i].Some();
+         }
+      }
+
+      public static IResult<T> MaxOrFail<T>(this IEnumerable<T> enumerable, Func<string> exceptionMessage)
+      {
+         var array = enumerable.ToArray();
+         if (array.Length == 0)
+         {
+            return exceptionMessage().Failure<T>();
+         }
+         else
+         {
+            return array.Max().Success();
+         }
+      }
+
+      public static IResult<T> MaxOrFail<T, TMax>(this IEnumerable<T> enumerable, Func<T, TMax> maxOnFunc, Func<string> exceptionMessage)
+      {
+         var array = enumerable.ToArray();
+         if (array.Length == 0)
+         {
+            return exceptionMessage().Failure<T>();
+         }
+         else
+         {
+            var max = array.Select((v, i) => (v: maxOnFunc(v), i)).Max();
+            return array[max.i].Success();
+         }
+      }
+
+      public static IResult<T> MinOrFail<T>(this IEnumerable<T> enumerable, Func<string> exceptionMessage)
+      {
+         var array = enumerable.ToArray();
+         if (array.Length == 0)
+         {
+            return exceptionMessage().Failure<T>();
+         }
+         else
+         {
+            return array.Min().Success();
+         }
+      }
+
+      public static IResult<T> MinOrFail<T, TMin>(this IEnumerable<T> enumerable, Func<T, TMin> minOnFunc, Func<string> exceptionMessage)
+      {
+         var array = enumerable.ToArray();
+         if (array.Length == 0)
+         {
+            return exceptionMessage().Failure<T>();
+         }
+         else
+         {
+            var min = array.Select((v, i) => (v: minOnFunc(v), i)).Min();
+            return array[min.i].Success();
+         }
+      }
+      //----
+      public static IMatched<T> MaxOrNotMatched<T>(this IEnumerable<T> enumerable)
+      {
+         var array = enumerable.ToArray();
+         if (array.Length == 0)
+         {
+            return notMatched<T>();
+         }
+         else
+         {
+            return array.Max().Matched();
+         }
+      }
+
+      public static IMatched<T> maxOrNotMatched<T, TMax>(this IEnumerable<T> enumerable, Func<T, TMax> maxOnFunc)
+      {
+         var array = enumerable.ToArray();
+         if (array.Length == 0)
+         {
+            return notMatched<T>();
+         }
+         else
+         {
+            var max = array.Select((v, i) => (v: maxOnFunc(v), i)).Max();
+            return array[max.i].Matched();
+         }
+      }
+
+      public static IMatched<T> minOrNotMatched<T>(this IEnumerable<T> enumerable)
+      {
+         var array = enumerable.ToArray();
+         if (array.Length == 0)
+         {
+            return notMatched<T>();
+         }
+         else
+         {
+            return array.Min().Matched();
+         }
+      }
+
+      public static IMatched<T> minOrNotMatched<T, TMin>(this IEnumerable<T> enumerable, Func<T, TMin> minOnFunc)
+      {
+         var array = enumerable.ToArray();
+         if (array.Length == 0)
+         {
+            return notMatched<T>();
+         }
+         else
+         {
+            var min = array.Select((v, i) => (v: minOnFunc(v), i)).Min();
+            return array[min.i].Matched();
+         }
+      }
    }
 }

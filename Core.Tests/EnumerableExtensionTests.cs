@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Core.Collections;
 using Core.Enumerables;
+using Core.Monads;
 using Core.Numbers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Core.Arrays.ArrayFunctions;
@@ -129,6 +130,23 @@ namespace Core.Tests
          else
          {
             Console.WriteLine("empty");
+         }
+      }
+
+      [TestMethod]
+      public void MonadMinMaxTest()
+      {
+         var strings = array("foobar", "foo", "a", "bar");
+         var anyMax = strings.MaxOrNone();
+         if (anyMax.If(out var max))
+         {
+            Console.WriteLine($"Max value: {max}");
+         }
+
+         anyMax = strings.MaxOrNone(s => s.Length);
+         if (anyMax.If(out max))
+         {
+            Console.WriteLine($"Max length: {max}");
          }
       }
    }
