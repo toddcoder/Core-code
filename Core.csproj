@@ -269,6 +269,8 @@
     <Compile Include="Objects\Instance.cs" />
     <Compile Include="Objects\Invoker.cs" />
     <Compile Include="Objects\InvokerTrying.cs" />
+    <Compile Include="Objects\ITryAsync.cs" />
+    <Compile Include="Objects\LateLazy.cs" />
     <Compile Include="Objects\NewFormatter.cs" />
     <Compile Include="Objects\ObjectExtensions.cs" />
     <Compile Include="Objects\ObjectFunctions.cs" />

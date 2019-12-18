@@ -32,6 +32,15 @@ namespace Core.Assertions.Monads
 
       public IEnumerable<Constraint> Constraints => constraints;
 
+      public MaybeAssertion<T> Not
+      {
+         get
+         {
+            not = true;
+            return this;
+         }
+      }
+
       protected MaybeAssertion<T> add(object obj, Func<T, bool> constraintFunction, string message)
       {
          switch (obj)

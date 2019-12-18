@@ -89,6 +89,11 @@ namespace Core.Assertions.Computers
          return add(() => folder == otherFolder, $"{folder} must $not equal {otherFolder}");
       }
 
+      public FolderNameAssertion BeNull()
+      {
+         return add(() => folder != null, "folder must $not be null");
+      }
+
       public void Assert() => assert(this);
 
       public void Assert(string message) => assert(this, message);
