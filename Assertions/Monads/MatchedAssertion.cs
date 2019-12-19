@@ -18,12 +18,14 @@ namespace Core.Assertions.Monads
       protected IMatched<T> matched;
       protected List<Constraint> constraints;
       protected bool not;
+      protected string name;
 
       public MatchedAssertion(IMatched<T> matched)
       {
          this.matched = matched;
          constraints = new List<Constraint>();
          not = false;
+         name = "Match";
       }
 
       public bool BeTrue() => beTrue(this);
@@ -34,26 +36,32 @@ namespace Core.Assertions.Monads
 
       protected MatchedAssertion<T> add(Func<bool> constraintFunction, string message)
       {
-         constraints.Add(new Constraint(constraintFunction, message, not));
+         constraints.Add(new Constraint(constraintFunction, message, not, name));
          not = false;
 
          return this;
       }
 
-      public MatchedAssertion<T> BeMatched() => add(() => matched.IsMatched, "Must be $not matched");
+      public MatchedAssertion<T> BeMatched() => add(() => matched.IsMatched, "$name must be $not matched");
 
-      public MatchedAssertion<T> BeUnmatched() => add(() => matched.IsNotMatched, "Must be $not unmatched");
+      public MatchedAssertion<T> BeUnmatched() => add(() => matched.IsNotMatched, "$name must be $not unmatched");
 
-      public MatchedAssertion<T> BeFailedMatch() => add(() => matched.IsFailedMatch, "Must be $not a failed match");
+      public MatchedAssertion<T> BeFailedMatch() => add(() => matched.IsFailedMatch, "$name must be $not a failed match");
 
       public MatchedAssertion<T> EqualToValueOf(IMatched<T> otherMatched)
       {
-         return add(() => matched.EqualToValueOf(otherMatched), $"Value of match must $not equal value of {otherMatched}");
+         return add(() => matched.EqualToValueOf(otherMatched), $"Value of $name must $not equal value of {otherMatched}");
       }
 
       public MatchedAssertion<T> ValueEqualTo(T otherValue)
       {
-         return add(() => matched.ValueEqualTo(otherValue), $"Value of match must $not equal {otherValue}");
+         return add(() => matched.ValueEqualTo(otherValue), $"Value of $name must $not equal {otherValue}");
+      }
+
+      public IAssertion<T> Named(string name)
+      {
+         this.name = name;
+         return this;
       }
 
       public void Assert() => assert(this);

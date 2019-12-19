@@ -41,7 +41,7 @@ namespace Core.WinForms.Consoles
          console.Focus();
          console.IOStatus = IOStatusType.Reading;
 
-			console.Suspended.Must().BeZero().Assert("Console must be updating");
+         console.Suspended.MustAs(nameof(console.Suspended)).BeZero().Assert("Console must be updating");
 
          while (console.IOStatus == IOStatusType.Reading)
          {

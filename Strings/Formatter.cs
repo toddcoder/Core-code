@@ -50,8 +50,8 @@ namespace Core.Strings
 		}
 
 		static string format(string source, bool addStandard, bool includeFolders, params string[] args)
-		{
-			args.Length.IsEven().Must().Be().Assert("The number of items in the arguments must be even");
+      {
+         args.Length.MustAs("args length").BeEven().Assert();
 
 			var formatter = addStandard ? WithStandard(includeFolders) : new Formatter();
 			for (var i = 0; i < args.Length; i += 2)

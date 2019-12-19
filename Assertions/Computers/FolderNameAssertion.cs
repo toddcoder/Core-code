@@ -20,12 +20,14 @@ namespace Core.Assertions.Computers
       protected FolderName folder;
       protected List<Constraint> constraints;
       protected bool not;
+      protected string name;
 
       public FolderNameAssertion(FolderName folder)
       {
          this.folder = folder;
          constraints = new List<Constraint>();
          not = false;
+         name = "Folder";
       }
 
       public bool BeTrue() => beTrue(this);
@@ -45,53 +47,59 @@ namespace Core.Assertions.Computers
 
       protected FolderNameAssertion add(Func<bool> constraintFunction, string message)
       {
-         constraints.Add(new Constraint(constraintFunction, message, not));
+         constraints.Add(new Constraint(constraintFunction, message, not, name));
          not = false;
 
          return this;
       }
 
-      public FolderNameAssertion Exist() => add(() => folder.Exists(), $"{folder} must $not exist");
+      public FolderNameAssertion Exist() => add(() => folder.Exists(), "$name must $not exist");
 
       public FolderNameAssertion CreationTimeOf(DateTime dateTime)
       {
-         return add(() => folder.CreationTime >= dateTime, $"{folder} must $not have a creation time of at least {dateTime:G}");
+         return add(() => folder.CreationTime >= dateTime, $"$name must $not have a creation time of at least {dateTime:G}");
       }
 
       public FolderNameAssertion LastAccessTimeOf(DateTime dateTime)
       {
-         return add(() => folder.LastAccessTime >= dateTime, $"{folder} must $not have a last access time of at least {dateTime:G}");
+         return add(() => folder.LastAccessTime >= dateTime, $"$name must $not have a last access time of at least {dateTime:G}");
       }
 
       public FolderNameAssertion LastWriteTimeOf(DateTime dateTime)
       {
-         return add(() => folder.LastWriteTime >= dateTime, $"{folder} must $not have a last write time of at least {dateTime:G}");
+         return add(() => folder.LastWriteTime >= dateTime, $"$name must $not have a last write time of at least {dateTime:G}");
       }
 
       public FolderNameAssertion ContainFile(FileName file)
       {
-         return add(() => folder.Files.Any(f => file == f), $"{folder} must $not contain file {file}");
+         return add(() => folder.Files.Any(f => file == f), $"$name must $not contain file {file}");
       }
 
       public FolderNameAssertion ContainFolder(FolderName otherFolder)
       {
-         return add(() => folder.Folders.Any(f => otherFolder == f), $"{folder} must $not contain folder {otherFolder}");
+         return add(() => folder.Folders.Any(f => otherFolder == f), $"$name must $not contain folder {otherFolder}");
       }
 
       public FolderNameAssertion ChildOf(FolderName otherFolder)
       {
-         var message = $"{folder} must $not be child of {otherFolder}";
+         var message = $"$name must $not be child of {otherFolder}";
          return add(() => folder.Parent.Map(parent => parent == otherFolder).DefaultTo(() => false), message);
       }
 
       public FolderNameAssertion Equal(FolderName otherFolder)
       {
-         return add(() => folder == otherFolder, $"{folder} must $not equal {otherFolder}");
+         return add(() => folder == otherFolder, $"$name must $not equal {otherFolder}");
       }
 
       public FolderNameAssertion BeNull()
       {
-         return add(() => folder == null, "folder must $not be null");
+         return add(() => folder == null, "$name must $not be null");
+      }
+
+      public IAssertion<FolderName> Named(string name)
+      {
+         this.name = name;
+         return this;
       }
 
       public void Assert() => assert(this);

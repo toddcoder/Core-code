@@ -18,12 +18,14 @@ namespace Core.Assertions.Monads
       protected IMaybe<T> maybe;
       protected List<Constraint> constraints;
       protected bool not;
+      protected string name;
 
       public MaybeAssertion(IMaybe<T> maybe)
       {
          this.maybe = maybe;
          constraints = new List<Constraint>();
          not = false;
+         name = "Optional";
       }
 
       public bool BeTrue() => beTrue(this);
@@ -46,24 +48,24 @@ namespace Core.Assertions.Monads
          switch (obj)
          {
             case null:
-               constraints.Add(Constraint.Failing("RHS must be non-null"));
+               constraints.Add(Constraint.Failing("$name must be non-null", name));
                break;
             case T otherT:
-               constraints.Add(new Constraint(() => constraintFunction(otherT), message, not));
+               constraints.Add(new Constraint(() => constraintFunction(otherT), message, not, name));
                break;
             case IMaybe<T> anyValue:
                if (anyValue.If(out var value))
                {
-                  constraints.Add(new Constraint(() => constraintFunction(value), message, not));
+                  constraints.Add(new Constraint(() => constraintFunction(value), message, not, name));
                }
                else
                {
-                  constraints.Add(Constraint.Failing("Value not available"));
+                  constraints.Add(Constraint.Failing("$name not available", name));
                }
 
                break;
             default:
-               constraints.Add(Constraint.Failing($"{obj} must be of type {typeof(T)}"));
+               constraints.Add(Constraint.Failing($"$name must be of type {typeof(T)}", name));
                break;
          }
 
@@ -73,22 +75,28 @@ namespace Core.Assertions.Monads
 
       protected MaybeAssertion<T> add(Func<bool> constraintFunction, string message)
       {
-         constraints.Add(new Constraint(constraintFunction, message, not));
+         constraints.Add(new Constraint(constraintFunction, message, not, name));
          not = false;
 
          return this;
       }
 
-      public MaybeAssertion<T> HaveValue() => add(() => maybe.IsSome, "Maybe must $not have a value");
+      public MaybeAssertion<T> HaveValue() => add(() => maybe.IsSome, "$name must $not have a value");
 
       public MaybeAssertion<T> EqualToValueOf(IMaybe<T> otherMaybe)
       {
-         return add(() => maybe.EqualToValueOf(otherMaybe), $"Value of maybe must $not equal to value of {otherMaybe}");
+         return add(() => maybe.EqualToValueOf(otherMaybe), $"Value of $name must $not equal to value of {otherMaybe}");
       }
 
       public MaybeAssertion<T> ValueEqualTo(T otherValue)
       {
-         return add(() => maybe.ValueEqualTo(otherValue), $"Value of maybe must $not equal to {otherValue}");
+         return add(() => maybe.ValueEqualTo(otherValue), $"Value of $name must $not equal to {otherValue}");
+      }
+
+      public IAssertion<T> Named(string name)
+      {
+         this.name = name;
+         return this;
       }
 
       public void Assert() => assert(this);

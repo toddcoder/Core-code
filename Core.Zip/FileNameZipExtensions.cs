@@ -13,12 +13,12 @@ namespace Core.Zip
    {
       public static FolderName Unzip(this FileName file, string folderName)
       {
-         file.Must().Not.BeNull().Assert($"{nameof(file)} must not be null");
-         file.Must().Exist().Assert($"{nameof(file)} must exist");
-         folderName.Must().Not.BeNullOrEmpty().Assert($"{nameof(folderName)} must not be null or empty");
+         file.MustAs(nameof(file)).Not.BeNull().Assert();
+         file.MustAs(nameof(file)).Exist().Assert();
+         folderName.MustAs(nameof(folderName)).Not.BeNullOrEmpty().Assert();
 
          var folder = file.Folder[folderName];
-         folder.Must().Not.Exist().Assert($"{nameof(folder)} must not exist");
+         folder.MustAs(nameof(folder)).Not.Exist().Assert();
 
          ZipFile.ExtractToDirectory(file.FullPath, folder.FullPath);
 

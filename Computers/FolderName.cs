@@ -28,7 +28,7 @@ namespace Core.Computers
       {
          public static IResult<FolderName> FromString(string folder)
          {
-            return IsValidFolderName(folder).Must().Be().Try().Map(_ => new FolderName(folder));
+            return IsValidFolderName(folder).MustAs(nameof(IsValidFolderName)).Be().Try().Map(_ => new FolderName(folder));
          }
       }
 

@@ -17,7 +17,7 @@ namespace Core.Strings
          set => maximumLengths[index] = value;
       }
 
-      int withinBounds(int index) => index.Must().BeBetween(0).Until(maximumLengths.Length).Ensure("{index} out of range");
+      int withinBounds(int index) => index.MustAs(nameof(index)).BeBetween(0).Until(maximumLengths.Length).Ensure();
 
       public int MaximumLengths(int index) => maximumLengths[withinBounds(index)];
 

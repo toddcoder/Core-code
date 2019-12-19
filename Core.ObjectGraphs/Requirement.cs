@@ -14,7 +14,7 @@ namespace Core.ObjectGraphs
       {
          get
          {
-            graphName.Must().Not.BeEmpty().Assert("Graph name must not be empty");
+            graphName.MustAs(nameof(graphName)).Not.BeNullOrEmpty().Assert();
 
             if (objectGraph.If(graphName, out var foundGraph))
             {

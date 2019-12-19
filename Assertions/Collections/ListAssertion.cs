@@ -36,14 +36,14 @@ namespace Core.Assertions.Collections
       protected List<T> list;
       protected List<Constraint> constraints;
       protected bool not;
-      protected string image;
+      protected string name;
 
       public ListAssertion(List<T> list)
       {
          this.list = list;
          constraints = new List<Constraint>();
          not = false;
-         image = listImage(this.list);
+         name = "List";
       }
 
       public List<T> List => list;
@@ -59,7 +59,7 @@ namespace Core.Assertions.Collections
 
       protected ListAssertion<T> add(Func<bool> constraintFunction, string message)
       {
-         constraints.Add(new Constraint(constraintFunction, message, not));
+         constraints.Add(new Constraint(constraintFunction, message, not, name));
          not = false;
 
          return this;
@@ -67,32 +67,32 @@ namespace Core.Assertions.Collections
 
       public ListAssertion<T> Equal(List<T> otherList)
       {
-         return add(() => list.Equals(otherList), $"{image} must $not equal {listImage(otherList)}");
+         return add(() => list.Equals(otherList), $"$name must $not equal {listImage(otherList)}");
       }
 
       public ListAssertion<T> BeNull()
       {
-         return add(() => list == null, $"{image} must $not be null");
+         return add(() => list == null, "$name must $not be null");
       }
 
       public ListAssertion<T> BeEmpty()
       {
-         return add(() => list.Count == 0, $"{image} must $not be empty");
+         return add(() => list.Count == 0, "$name must $not be empty");
       }
 
       public ListAssertion<T> BeNullOrEmpty()
       {
-         return add(() => list == null || list.Count == 0, $"{image} must $not be null or empty");
+         return add(() => list == null || list.Count == 0, "$name must $not be null or empty");
       }
 
       public ListAssertion<T> HaveIndexOf(int index)
       {
-         return add(() => index > 0 && index < list.Count, $"{image} must $not have an index of {index}");
+         return add(() => index > 0 && index < list.Count, $"$name must $not have an index of {index}");
       }
 
       public ListAssertion<T> HaveCountOf(int minimumCount)
       {
-         return add(() => list.Count >= minimumCount, $"{image} must $not have a count of at least {minimumCount}");
+         return add(() => list.Count >= minimumCount, $"$name must $not have a count of at least {minimumCount}");
       }
 
       public List<T> Value => list;
@@ -100,6 +100,12 @@ namespace Core.Assertions.Collections
       public IEnumerable<Constraint> Constraints => constraints;
 
       public bool BeTrue() => beTrue(this);
+
+      public IAssertion<List<T>> Named(string name)
+      {
+         this.name = name;
+         return this;
+      }
 
       public void Assert() => assert(this);
 

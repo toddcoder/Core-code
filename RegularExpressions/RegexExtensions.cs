@@ -42,14 +42,14 @@ namespace Core.RegularExpressions
       public static void RequiredMatch(this string input, string pattern, string message, RegexOptions options,
          bool friendly = true)
       {
-         input.IsMatch(pattern, options, friendly).Must().Be().Assert(message);
+         input.IsMatch(pattern, options, friendly).MustAs(nameof(input)).Be().Assert(message);
 
       }
 
       public static void RequiredMatch(this string input, string pattern, string message, bool ignoreCase = false,
          bool multiline = false, bool friendly = true)
       {
-         input.IsMatch(pattern, ignoreCase, multiline, friendly).Must().Be().Assert(message);
+         input.IsMatch(pattern, ignoreCase, multiline, friendly).MustAs(input).Be().Assert(message);
       }
 
       public static string Substitute(this string input, string pattern, string replacement, RegexOptions options,

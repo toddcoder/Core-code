@@ -18,12 +18,14 @@ namespace Core.Assertions.Objects
       protected object obj;
       protected List<Constraint> constraints;
       protected bool not;
+      protected string name;
 
       public ObjectAssertion(object obj)
       {
          this.obj = obj;
          constraints = new List<Constraint>();
          not = false;
+         name = "Object";
       }
 
       public ObjectAssertion Not
@@ -37,7 +39,7 @@ namespace Core.Assertions.Objects
 
       protected ObjectAssertion add(Func<bool> constraintFunction, string message)
       {
-         constraints.Add(new Constraint(constraintFunction, message, not));
+         constraints.Add(new Constraint(constraintFunction, message, not, name));
          not = false;
 
          return this;
@@ -45,17 +47,17 @@ namespace Core.Assertions.Objects
 
       public ObjectAssertion Equal(object other)
       {
-         return add(() => obj.Equals(other), $"{obj} must $not equal {other}");
+         return add(() => obj.Equals(other), $"$name must $not equal {other}");
       }
 
       public ObjectAssertion BeNull()
       {
-         return add(() => obj == null, "This value must $not be null");
+         return add(() => obj == null, "$name must $not be null");
       }
 
       public ObjectAssertion BeOfType(Type type)
       {
-         return add(() => obj.GetType() == type, $"{obj} must $not be of type {type}");
+         return add(() => obj.GetType() == type, $"$name must $not be of type {type}");
       }
 
       public object Value => obj;
@@ -63,6 +65,12 @@ namespace Core.Assertions.Objects
       public IEnumerable<Constraint> Constraints => constraints;
 
       public bool BeTrue() => beTrue(this);
+
+      public IAssertion<object> Named(string name)
+      {
+         this.name = name;
+         return this;
+      }
 
       public void Assert() => assert(this);
 

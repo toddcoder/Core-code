@@ -40,12 +40,14 @@ namespace Core.Assertions.Comparables
       protected IComparable comparable;
       protected List<Constraint> constraints;
       protected bool not;
+      protected string name;
 
       public ComparableAssertion(IComparable comparable)
       {
          this.comparable = comparable;
          constraints = new List<Constraint>();
          not = false;
+         name = "Comparable";
       }
 
       public T Comparable => (T)comparable;
@@ -66,13 +68,13 @@ namespace Core.Assertions.Comparables
          switch (obj)
          {
             case null:
-               constraints.Add(Constraint.Failing("RHS must be non-null"));
+               constraints.Add(Constraint.Failing("$name must be non-null", name));
                break;
             case IComparable otherComparable:
-               constraints.Add(new Constraint(() => constraintFunction(otherComparable), message, not));
+               constraints.Add(new Constraint(() => constraintFunction(otherComparable), message, not, name));
                break;
             default:
-               constraints.Add(Constraint.Failing($"{obj} must be comparable"));
+               constraints.Add(Constraint.Failing("$name must be comparable", name));
                break;
          }
 
@@ -82,7 +84,7 @@ namespace Core.Assertions.Comparables
 
       protected ComparableAssertion<T> add(Func<bool> constraintFunction, string message)
       {
-         constraints.Add(new Constraint(constraintFunction, message, not));
+         constraints.Add(new Constraint(constraintFunction, message, not, name));
          not = false;
 
          return this;
@@ -90,53 +92,53 @@ namespace Core.Assertions.Comparables
 
       public ComparableAssertion<T> Equal(object obj)
       {
-         return add(obj, c => comparable.CompareTo(c) == 0, $"{comparable} must $not equal {obj}");
+         return add(obj, c => comparable.CompareTo(c) == 0, $"$name must $not equal {obj}");
       }
 
       public ComparableAssertion<T> BeGreaterThan(object obj)
       {
-         return add(obj, c => comparable.CompareTo(c) > 0, $"{comparable} must $not be > {obj}");
+         return add(obj, c => comparable.CompareTo(c) > 0, $"$name must $not be > {obj}");
       }
 
       public ComparableAssertion<T> BeGreaterThanOrEqual(object obj)
       {
-         return add(obj, c => comparable.CompareTo(c) >= 0, $"{comparable} must $not be >= {obj}");
+         return add(obj, c => comparable.CompareTo(c) >= 0, $"$name must $not be >= {obj}");
       }
 
       public ComparableAssertion<T> BeLessThan(object obj)
       {
-         return add(obj, c => comparable.CompareTo(c) < 0, $"{comparable} must $not be < {obj}");
+         return add(obj, c => comparable.CompareTo(c) < 0, $"$name must $not be < {obj}");
       }
 
       public ComparableAssertion<T> BeLessThanOrEqual(object obj)
       {
-         return add(obj, c => comparable.CompareTo(c) <= 0, $"{comparable} must $not be <= {obj}");
+         return add(obj, c => comparable.CompareTo(c) <= 0, $"$name must $not be <= {obj}");
       }
 
       public ComparableAssertion<T> BeZero()
       {
-         return add(() => comparable.CompareTo(0) == 0, $"{comparable} must $not be zero");
+         return add(() => comparable.CompareTo(0) == 0, "$name must $not be zero");
       }
 
       public ComparableAssertion<T> BePositive()
       {
-         return add(() => comparable.CompareTo(0) > 0, $"{comparable} must $not be positive");
+         return add(() => comparable.CompareTo(0) > 0, "$name must $not be positive");
       }
 
       public ComparableAssertion<T> BeNegative()
       {
-         return add(() => comparable.CompareTo(0) < 0, $"{comparable} must $not be negative");
+         return add(() => comparable.CompareTo(0) < 0, "$name must $not be negative");
       }
 
       public ComparableAssertion<T> BeIn(params object[] objects)
       {
          var objectsString = objects.Select(o => o == null ? "null" : objects.ToString()).Stringify();
-         return add(objects, c => inList(comparable, objects), $"{comparable} must $not be in {objectsString}");
+         return add(objects, c => inList(comparable, objects), $"$name must $not be in {objectsString}");
       }
 
       public ComparableAssertion<T> BeOfType(Type type)
       {
-         return add(0, c => comparable.GetType() == type, $"{comparable} must $not be of type {type}");
+         return add(0, c => comparable.GetType() == type, $"$name must $not be of type {type}");
       }
 
       protected bool betweenAnd(T original, T comparable1, T comparable2)
@@ -151,13 +153,13 @@ namespace Core.Assertions.Comparables
 
       public ComparableAssertion<T> And(T comparable2)
       {
-         var message = $"{comparable} must $not be between {Comparable1} and {comparable2}";
+         var message = $"$name must $not be between {Comparable1} and {comparable2}";
          return add(comparable2, c => betweenAnd(Comparable, Comparable1, comparable2), message);
       }
 
       public ComparableAssertion<T> Until(T comparable2)
       {
-         var message = $"{comparable} must $not be between {Comparable1} and {comparable2} exclusively";
+         var message = $"$name must $not be between {Comparable1} and {comparable2} exclusively";
          return add(comparable2, c => betweenUntil(Comparable, Comparable1, comparable2), message);
       }
 
@@ -167,11 +169,22 @@ namespace Core.Assertions.Comparables
          return this;
       }
 
+      internal ComparableAssertion<T> IfTrue(Func<T, bool> isTrue, string message)
+      {
+         return add(() => isTrue(Value), message);
+      }
+
       public T Value => Comparable;
 
       public IEnumerable<Constraint> Constraints => constraints;
 
       public bool BeTrue() => beTrue(this);
+
+      public IAssertion<T> Named(string name)
+      {
+         this.name = name;
+         return this;
+      }
 
       public void Assert() => assert(this);
 

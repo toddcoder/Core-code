@@ -32,14 +32,14 @@ namespace Core.Assertions.Collections
       protected Dictionary<TKey, TValue> dictionary;
       protected List<Constraint> constraints;
       protected bool not;
-      protected string image;
+      protected string name;
 
       public DictionaryAssertion(Dictionary<TKey, TValue> dictionary)
       {
          this.dictionary = dictionary;
          constraints = new List<Constraint>();
          not = false;
-         image = hashImage(this.dictionary);
+         name = "Dictionary";
       }
 
       public bool BeTrue() => beTrue(this);
@@ -59,7 +59,7 @@ namespace Core.Assertions.Collections
 
       protected DictionaryAssertion<TKey, TValue> add(Func<bool> constraintFunction, string message)
       {
-         constraints.Add(new Constraint(constraintFunction, message, not));
+         constraints.Add(new Constraint(constraintFunction, message, not, name));
          not = false;
 
          return this;
@@ -67,37 +67,43 @@ namespace Core.Assertions.Collections
 
       public DictionaryAssertion<TKey, TValue> Equal(Dictionary<TKey, TValue> otherHash)
       {
-         return add(() => dictionary.Equals(otherHash), $"{image} must $not equal {hashImage(otherHash)}");
+         return add(() => dictionary.Equals(otherHash), $"$name must $not equal {hashImage(otherHash)}");
       }
 
       public DictionaryAssertion<TKey, TValue> BeNull()
       {
-         return add(() => dictionary == null, $"{image} must $not be null");
+         return add(() => dictionary == null, "$name must $not be null");
       }
 
       public DictionaryAssertion<TKey, TValue> BeEmpty()
       {
-         return add(() => dictionary.Count == 0, $"{image} must $not be empty");
+         return add(() => dictionary.Count == 0, "$name must $not be empty");
       }
 
       public DictionaryAssertion<TKey, TValue> BeNullOrEmpty()
       {
-         return add(() => dictionary == null || dictionary.Count == 0, $"{image} must $not be null or empty");
+         return add(() => dictionary == null || dictionary.Count == 0, "$name must $not be null or empty");
       }
 
       public DictionaryAssertion<TKey, TValue> HaveKeyOf(TKey key)
       {
-         return add(() => dictionary.ContainsKey(key), $"{image} must $not have key of {key}");
+         return add(() => dictionary.ContainsKey(key), $"$name must $not have key of {key}");
       }
 
       public DictionaryAssertion<TKey, TValue> HaveValueOf(TValue value)
       {
-         return add(() => dictionary.ContainsValue(value), $"{image} must $not have value of {value}");
+         return add(() => dictionary.ContainsValue(value), $"$name must $not have value of {value}");
       }
 
       public DictionaryAssertion<TKey, TValue> HaveCountOf(int minimumCount)
       {
-         return add(() => dictionary.Count >= minimumCount, $"{image} must $not have a count of at least {minimumCount}");
+         return add(() => dictionary.Count >= minimumCount, $"$name must $not have a count of at least {minimumCount}");
+      }
+
+      public IAssertion<Dictionary<TKey, TValue>> Named(string name)
+      {
+         this.name = name;
+         return this;
       }
 
       public void Assert() => assert(this);

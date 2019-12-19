@@ -186,7 +186,7 @@ namespace Core.Data.DataSources
 
       internal void BeginReading(object entity, string command, Parameters.Parameters parameters, Fields.Fields inFields)
       {
-         inFields.Count.Must().BePositive().Assert("You must have at least one field defined");
+         inFields.Count.MustAs("inFields count").BePositive().Assert("You must have at least one field defined");
 
          activeObject = entity.IfCast<IActive>();
          fields = inFields;
@@ -344,7 +344,7 @@ namespace Core.Data.DataSources
 
             if (!field.Optional)
             {
-               field.Ordinal.Must().Not.BeNegative().Assert($"Couldn't find {field.Name} field");
+               field.Ordinal.MustAs("field ordinal").Not.BeNegative().Assert($"Couldn't find {field.Name} field");
             }
          }
       }

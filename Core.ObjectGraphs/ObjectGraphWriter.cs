@@ -20,7 +20,7 @@ namespace Core.ObjectGraphs
 
       public void Begin() => indent++;
 
-      public void End() => (--indent).Must().BeGreaterThan(-1).Assert("Too many unindents");
+      public void End() => (--indent).MustAs(nameof(indent)).BeGreaterThan(-1).Assert("Too many unindents");
 
       public void Write(string name, string value = "", string type = "", bool quote = false)
       {

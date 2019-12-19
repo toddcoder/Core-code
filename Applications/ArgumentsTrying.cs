@@ -11,33 +11,33 @@ namespace Core.Applications
 
 		public IResult<Argument> this[int index]
       {
-         get => index.Must().BeBetween(0).Until(arguments.Count).Try(() => $"Index {index} out of range").Map(i => arguments[i]);
+         get => index.MustAs(nameof(index)).BeBetween(0).Until(arguments.Count).Try(() => "Index $name out of range").Map(i => arguments[i]);
       }
 
       public IResult<Unit> AssertCount(int exactCount)
       {
-         return arguments.Count.Must().Equal(exactCount).Try(() => $"Expected exact count of {exactCount}").Unit;
+         return arguments.Count.MustAs("arguments count").Equal(exactCount).Try(() => $"Expected exact $name of {exactCount}").Unit;
       }
 
 		public IResult<Unit> AssertCount(int minimumCount, int maximumCount)
       {
-         return arguments.Count.Must()
+         return arguments.Count.MustAs("arguments count")
             .BeBetween(minimumCount).Until(arguments.Count)
-            .Try(() => $"Count must between {minimumCount} and {maximumCount}--found {arguments.Count}")
+            .Try(() => $"$name must between {minimumCount} and {maximumCount}--found {arguments.Count}")
             .Unit;
       }
 
 		public IResult<Unit> AssertMinimumCount(int minimumCount)
       {
-         return arguments.Count.Must().BeGreaterThanOrEqual(minimumCount)
-            .Try(() => $"Count must be at least {minimumCount}--found {arguments.Count}")
+         return arguments.Count.MustAs("arguments count").BeGreaterThanOrEqual(minimumCount)
+            .Try(() => $"$name must be at least {minimumCount}--found {arguments.Count}")
             .Unit;
       }
 
 		public IResult<Unit> AssertMaximumCount(int maximumCount)
       {
-         return arguments.Count.Must().BeLessThanOrEqual(maximumCount)
-            .Try(() => $"Count must be at most {maximumCount}--found {arguments.Count}")
+         return arguments.Count.MustAs("arguments count").BeLessThanOrEqual(maximumCount)
+            .Try(() => $"$name must be at most {maximumCount}--found {arguments.Count}")
             .Unit;
       }
 	}

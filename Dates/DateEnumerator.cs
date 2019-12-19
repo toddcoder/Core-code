@@ -15,7 +15,7 @@ namespace Core.Dates
 
       public DateEnumerator(DateTime begin, DateTime end, TimeSpan increment)
       {
-         begin.Must().BeLessThan(end).Assert("Begin date must be less than or equal to the end date");
+         begin.MustAs(nameof(begin)).BeLessThan(end).Assert();
 
          this.begin = begin;
          this.end = end;

@@ -14,12 +14,14 @@ namespace Core.Assertions.Objects
       protected Type type;
       protected List<Constraint> constraints;
       protected bool not;
+      protected string name;
 
       public TypeAssertion(Type type)
       {
          this.type = type;
          constraints = new List<Constraint>();
          not = false;
+         name = "Type";
       }
 
       public TypeAssertion Not
@@ -33,7 +35,7 @@ namespace Core.Assertions.Objects
 
       protected TypeAssertion add(Func<bool> constraintFunction, string message)
       {
-         constraints.Add(new Constraint(constraintFunction, message, not));
+         constraints.Add(new Constraint(constraintFunction, message, not, name));
          not = false;
 
          return this;
@@ -41,68 +43,68 @@ namespace Core.Assertions.Objects
 
       public TypeAssertion Equal(Type otherType)
       {
-         return add(() => type == otherType, $"{type} must $not equal {otherType}");
+         return add(() => type == otherType, $"$name must $not equal {otherType}");
       }
 
       public TypeAssertion EqualToTypeOf(object obj)
       {
-         return add(() => type == obj.GetType(), $"{type} must $not equal {obj.GetType()}");
+         return add(() => type == obj.GetType(), $"$name must $not equal {obj.GetType()}");
       }
 
       public TypeAssertion BeNull()
       {
-         return add(() => type == null, "This value must $not be null");
+         return add(() => type == null, "$name must $not be null");
       }
 
       public TypeAssertion BeAssignableFrom(Type otherType)
       {
-         return add(() => type.IsAssignableFrom(otherType), $"{type} must $not be assignable from {otherType}");
+         return add(() => type.IsAssignableFrom(otherType), $"$name must $not be assignable from {otherType}");
       }
 
       public TypeAssertion BeAssignableTo(Type otherType)
       {
-         return add(() => otherType.IsAssignableFrom(type), $"{type} must $not be assignable to {otherType}");
+         return add(() => otherType.IsAssignableFrom(type), $"$name must $not be assignable to {otherType}");
       }
 
       public TypeAssertion BeConvertibleFrom(Type otherType)
       {
-         return add(() => TypeDescriptor.GetConverter(type).CanConvertFrom(otherType), $"{type} must $not be convertible from {otherType}");
+         return add(() => TypeDescriptor.GetConverter(type).CanConvertFrom(otherType), $"$name must $not be convertible from {otherType}");
       }
 
       public TypeAssertion BeConvertibleTo(Type otherType)
       {
-         return add(() => TypeDescriptor.GetConverter(type).CanConvertTo(otherType), $"{type} must $not be convertible to {otherType}");
+         return add(() => TypeDescriptor.GetConverter(type).CanConvertTo(otherType), $"$name must $not be convertible to {otherType}");
       }
 
       public TypeAssertion BeClass()
       {
-         return add(() => type.IsClass, $"{type} must $not be a class");
+         return add(() => type.IsClass, "$name must $not be a class");
       }
 
       public TypeAssertion BeValue()
       {
-         return add(() => type.IsValueType, $"{type} must $not be a value");
+         return add(() => type.IsValueType, "$name must $not be a value");
       }
 
       public TypeAssertion BeEnumeration()
       {
-         return add(() => type.IsEnum, $"{type} must $not be an enumeration");
+         return add(() => type.IsEnum, "$name must $not be an enumeration");
       }
 
       public TypeAssertion BeGeneric()
       {
-         return add(() => type.IsGenericType, $"{type} must $not be a generic");
+         return add(() => type.IsGenericType, "$name must $not be a generic");
       }
 
       public TypeAssertion ContainGenericArgument(Type otherType)
       {
-         var message = $"{type} must $not contain generic argument {otherType}";
+         var message = $"$name must $not contain generic argument {otherType}";
          return add(() => type.IsGenericType && type.GetGenericArguments().Contains(otherType), message);
       }
 
       public TypeAssertion BeConstructedGeneric()
       {
-         return add(() => type.IsConstructedGenericType, $"{type} must $not be a constructed generic");
+         return add(() => type.IsConstructedGenericType, "$name must $not be a constructed generic");
       }
 
       public bool BeTrue() => beTrue(this);
@@ -110,6 +112,12 @@ namespace Core.Assertions.Objects
       public Type Value => type;
 
       public IEnumerable<Constraint> Constraints => constraints;
+
+      public IAssertion<Type> Named(string name)
+      {
+         this.name = name;
+         return this;
+      }
 
       public void Assert() => assert(this);
 

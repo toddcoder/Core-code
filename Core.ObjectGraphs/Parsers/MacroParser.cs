@@ -16,8 +16,8 @@ namespace Core.ObjectGraphs.Parsers
          var macro = new Macro(macroName, value);
          foreach (var parameter in parameters)
          {
-            parameter.Must().MatchFriendly(REGEX_NAME)
-               .Assert(() => AssertionMessage(Source, position, $"{parameter} isn't a properly formed name"));
+            parameter.MustAs(nameof(parameter)).MatchFriendly(REGEX_NAME)
+               .Assert(() => AssertionMessage(Source, position, "$name isn't a properly formed name"));
             macro.AddParameter(parameter);
          }
 

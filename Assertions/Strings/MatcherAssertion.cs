@@ -15,11 +15,14 @@ namespace Core.Assertions.Strings
       protected Matcher matcher;
       protected List<Constraint> constraints;
       protected bool not;
+      protected string name;
+
       public MatcherAssertion(Matcher matcher)
       {
          this.matcher = matcher;
          constraints = new List<Constraint>();
          not = false;
+         name = "Matcher";
       }
 
       public MatcherAssertion Not
@@ -39,7 +42,7 @@ namespace Core.Assertions.Strings
 
       protected MatcherAssertion add(Func<bool> constraintFunction, string message)
       {
-         constraints.Add(new Constraint(constraintFunction, message, not));
+         constraints.Add(new Constraint(constraintFunction, message, not, name));
          not = false;
 
          return this;
@@ -47,23 +50,29 @@ namespace Core.Assertions.Strings
 
       public MatcherAssertion Match(string input, string pattern, bool ignoreCase, bool multiline)
       {
-         return add(() => matcher.IsMatch(input, pattern, ignoreCase, multiline), $"\"{input}\" must $not match \"{pattern}\"");
+         return add(() => matcher.IsMatch(input, pattern, ignoreCase, multiline), $"$name must $not match \"{pattern}\"");
       }
 
       public MatcherAssertion Match(string input, string pattern, RegexOptions options)
       {
-         return add(() => matcher.IsMatch(input, pattern, options), $"\"{input}\" must $not match \"{pattern}\"");
+         return add(() => matcher.IsMatch(input, pattern, options), $"$name must $not match \"{pattern}\"");
       }
 
       public MatcherAssertion HaveMatchCountOf(int matchCount)
       {
-         return add(() => matcher.MatchCount >= matchCount, $"Matcher must $not have a match count of at least {matchCount}");
+         return add(() => matcher.MatchCount >= matchCount, $"$name must $not have a match count of at least {matchCount}");
       }
 
       public MatcherAssertion HaveGroupCountOf(int groupCount)
       {
          return HaveMatchCountOf(1)
-            .add(() => matcher.GroupCount(0) >= groupCount, $"Matcher must $not have a group count of at least {groupCount}");
+            .add(() => matcher.GroupCount(0) >= groupCount, $"$name must $not have a group count of at least {groupCount}");
+      }
+
+      public IAssertion<Matcher> Named(string name)
+      {
+         this.name = name;
+         return this;
       }
 
       public void Assert() => assert(this);

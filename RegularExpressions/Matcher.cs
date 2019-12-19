@@ -360,10 +360,10 @@ namespace Core.RegularExpressions
 
       public Group GetGroup(int matchIndex, int groupIndex) => getGroup(getMatch(matchIndex), groupIndex);
 
-      static Group getGroup(Match match, int index)
+      static Group getGroup(Match match, int groupIndex)
       {
-			index.Must().BeBetween(0).Until(match.Groups.Length).Assert($"Group index {index} out of range");
-         return match.Groups[index];
+			groupIndex.MustAs(nameof(groupIndex)).BeBetween(0).Until(match.Groups.Length).Assert();
+         return match.Groups[groupIndex];
       }
 
       static IMaybe<Group> getGroupMaybe(IMaybe<Match> match, int index)
@@ -371,10 +371,10 @@ namespace Core.RegularExpressions
          return match.Map(m => maybe(index.Between(0).Until(m.Groups.Length), () => m.Groups[index]));
       }
 
-      Match getMatch(int index)
+      Match getMatch(int matchIndex)
       {
-			index.Must().BeBetween(0).Until(matches.Length).Assert($"Match index {index} out of range");
-         return matches[index];
+			matchIndex.MustAs(nameof(matchIndex)).BeBetween(0).Until(matches.Length).Assert();
+         return matches[matchIndex];
       }
 
       IMaybe<Match> getMatchMaybe(int index) => maybe(index.Between(0).Until(matches.Length), () => matches[index]);

@@ -215,7 +215,7 @@ namespace Core.Data.DataSources
       public void Copy<T>(Adapter<T> sourceAdapter)
          where T : class
       {
-         TableName.Must().Not.BeEmpty().Assert("Table name is not set");
+         TableName.MustAs(nameof(TableName)).Not.BeEmpty().Assert();
 
          recordCount = 0;
 
@@ -233,7 +233,7 @@ namespace Core.Data.DataSources
 
       public void Copy(IDataReader reader, TimeSpan timeout)
       {
-         TableName.Must().Not.BeEmpty().Assert("Table name is not set");
+         TableName.MustAs(nameof(TableName)).Not.BeEmpty().Assert();
 
          recordCount = 0;
 

@@ -23,12 +23,14 @@ namespace Core.Assertions.Strings
       protected string subject;
       protected List<Constraint> constraints;
       protected bool not;
+      protected string name;
 
       public StringAssertion(string subject)
       {
          this.subject = subject;
          constraints = new List<Constraint>();
          not = false;
+         name = "String";
       }
 
       public string Subject => subject;
@@ -44,7 +46,7 @@ namespace Core.Assertions.Strings
 
       protected StringAssertion add(Func<bool> constraintFunction, string message)
       {
-         constraints.Add(new Constraint(constraintFunction, message, not));
+         constraints.Add(new Constraint(constraintFunction, message, not, name));
          not = false;
 
          return this;
@@ -52,77 +54,77 @@ namespace Core.Assertions.Strings
 
       public StringAssertion Equal(string obj)
       {
-         return add(() => subject.CompareTo(obj) == 0, $"{subject} must $not equal \"{obj}\"");
+         return add(() => subject.CompareTo(obj) == 0, $"$name must $not equal \"{obj}\"");
       }
 
       public StringAssertion BeGreaterThan(string obj)
       {
-         return add(() => subject.CompareTo(obj) > 0, $"{subject} must $not be > \"{obj}\"");
+         return add(() => subject.CompareTo(obj) > 0, $"$name must $not be > \"{obj}\"");
       }
 
       public StringAssertion BeGreaterThanOrEqual(string obj)
       {
-         return add(() => subject.CompareTo(obj) >= 0, $"{subject} must $not be >= \"{obj}\"");
+         return add(() => subject.CompareTo(obj) >= 0, $"$name must $not be >= \"{obj}\"");
       }
 
       public StringAssertion BeLessThan(string obj)
       {
-         return add(() => subject.CompareTo(obj) < 0, $"{subject} must $not be < \"{obj}\"");
+         return add(() => subject.CompareTo(obj) < 0, $"$name must $not be < \"{obj}\"");
       }
 
       public StringAssertion BeLessThanOrEqual(string obj)
       {
-         return add(() => subject.CompareTo(obj) <= 0, $"{subject} must $not be <= \"{obj}\"");
+         return add(() => subject.CompareTo(obj) <= 0, $"$name must $not be <= \"{obj}\"");
       }
 
       public StringAssertion BeNull()
       {
-         return add(() => subject == null, "This value must $not be null");
+         return add(() => subject == null, "$name must $not be null");
       }
 
       public StringAssertion BeEmpty()
       {
-         return add(() => subject == string.Empty, "This value must $not be empty");
+         return add(() => subject == string.Empty, "$name must $not be empty");
       }
 
       public StringAssertion BeNullOrEmpty()
       {
-         return add(() => string.IsNullOrEmpty(subject), "This value must $not be null or empty");
+         return add(() => string.IsNullOrEmpty(subject), "$name must $not be null or empty");
       }
 
       public StringAssertion BeNullOrWhiteSpace()
       {
-         return add(() => string.IsNullOrWhiteSpace(subject), "This value must $not be null or white-space");
+         return add(() => string.IsNullOrWhiteSpace(subject), "$name must $not be null or white-space");
       }
 
       public StringAssertion HaveLengthOf(int length)
       {
-         return add(() => subject.Length >= length, $"This value must $not have a length >= {length}");
+         return add(() => subject.Length >= length, $"$name must $not have a length >= {length}");
       }
 
       public StringAssertion BeIn(params string[] strings)
       {
-         return add(() => inList(subject, strings), $"This value must $not be in {enumerableImage(strings)}");
+         return add(() => inList(subject, strings), $"$name must $not be in {enumerableImage(strings)}");
       }
 
       public StringAssertion StartWith(string substring)
       {
-         return add(() => subject.StartsWith(substring), $"This string must start with \"{substring}\"");
+         return add(() => subject.StartsWith(substring), $"$name must start with \"{substring}\"");
       }
 
       public StringAssertion EndWith(string substring)
       {
-         return add(() => subject.EndsWith(substring), $"This string must end with \"{substring}\"");
+         return add(() => subject.EndsWith(substring), $"$name must end with \"{substring}\"");
       }
 
       public StringAssertion Match(string pattern, bool ignoreCase = false, bool multiline = false)
       {
-         return add(() => subject.IsMatch(pattern, ignoreCase, multiline, false), $"{subject} must $not match regex {pattern}");
+         return add(() => subject.IsMatch(pattern, ignoreCase, multiline, false), $"$name must $not match regex {pattern}");
       }
 
       public StringAssertion MatchFriendly(string pattern, bool ignoreCase = false, bool multiline = false)
       {
-         return add(() => subject.IsMatch(pattern, ignoreCase, multiline), $"{subject} must $not match regex {pattern} friendly");
+         return add(() => subject.IsMatch(pattern, ignoreCase, multiline), $"$name must $not match regex {pattern} friendly");
       }
 
       public string Value => subject;
@@ -130,6 +132,12 @@ namespace Core.Assertions.Strings
       public IEnumerable<Constraint> Constraints => constraints;
 
       public bool BeTrue() => beTrue(this);
+
+      public IAssertion<string> Named(string name)
+      {
+         this.name = name;
+         return this;
+      }
 
       public void Assert() => assert(this);
 

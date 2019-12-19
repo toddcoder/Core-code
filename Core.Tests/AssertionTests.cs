@@ -39,9 +39,9 @@ namespace Core.Tests
 
          var value = 153;
          var result =
-            from positive in value.Must().BePositive().Try()
-            from greater in value.Must().BeGreaterThan(100).Try()
-            from less in value.Must().BeLessThanOrEqual(200).Try()
+            from positive in value.MustAs(nameof(value)).BePositive().Try()
+            from greater in value.MustAs(nameof(value)).BeGreaterThan(100).Try()
+            from less in value.MustAs(nameof(value)).BeLessThanOrEqual(200).Try()
             select less;
          if (result.If(out var integer, out var exception))
          {

@@ -12,6 +12,8 @@ namespace Core.Assertions
 
       IEnumerable<Constraint> Constraints { get; }
 
+      IAssertion<T> Named(string name);
+
       void Assert();
 
       void Assert(string message);

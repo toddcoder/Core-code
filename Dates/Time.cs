@@ -16,14 +16,14 @@ namespace Core.Dates
 	{
 		const int HOURS_IN_MILLISECONDS = 86400000;
 
-		static (int, int, int, int) deriveFromMilliseconds(long value)
+		static (int, int, int, int) deriveFromMilliseconds(long millisecondsAsLong)
 		{
-         value.Must().BePositive().Assert("Milliseconds must be positive");
+         millisecondsAsLong.MustAs(nameof(millisecondsAsLong)).BePositive().Assert();
 
 			var milliseconds = 0;
 			var seconds = 0;
 			var minutes = 0;
-			var dividend = (double)value;
+			var dividend = (double)millisecondsAsLong;
 			var factor = 3600000d;
 
 			var (division, remainder) = dividend.DivRem(factor);
@@ -336,7 +336,7 @@ namespace Core.Dates
 			}
 			set
 			{
-            value.Must().BeLessThan(HOURS_IN_MILLISECONDS).Assert("Milliseconds must be under 24 hours");
+            value.MustAs(nameof(millisecond)).BeLessThan(HOURS_IN_MILLISECONDS).Assert();
 
 				(hour, minute, second, millisecond) = deriveFromMilliseconds(value);
 			}
@@ -344,22 +344,22 @@ namespace Core.Dates
 
 		void setHour(int newHour)
 		{
-			hour = newHour.Must().BeBetween(0).And(23).Ensure($"The value of hour ({newHour}) is invalid");
+			hour = newHour.MustAs(nameof(hour)).BeBetween(0).And(23).Ensure();
 		}
 
 		void setMinute(int newMinute)
 		{
-			minute = newMinute.Must().BeBetween(0).And(59).Ensure($"The value of minute ({newMinute}) is invalid");
+			minute = newMinute.MustAs(nameof(minute)).BeBetween(0).And(59).Ensure();
       }
 
 		void setSecond(int newSecond)
 		{
-         second = newSecond.Must().BeBetween(0).And(59).Ensure($"The value of second ({newSecond}) is invalid");
+         second = newSecond.MustAs(nameof(second)).BeBetween(0).And(59).Ensure();
       }
 
 		void setMillisecond(int newMillisecond)
 		{
-         millisecond = newMillisecond.Must().BeBetween(0).And(999).Ensure($"The value of millisecond ({newMillisecond}) is invalid");
+         millisecond = newMillisecond.MustAs(nameof(millisecond)).BeBetween(0).And(999).Ensure();
       }
 
 		public override string ToString() => $"{hour:00}:{minute:00}:{second:00}.{millisecond:000}";

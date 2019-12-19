@@ -206,7 +206,7 @@ namespace Core.Numbers
 
       public static (double division, double remainder) DivRem(this double dividend, double divisor)
       {
-         divisor.Must().Not.NearlyEqual(0.0).Assert("Can't divide by 0");
+         divisor.MustAs(nameof(divisor)).Not.NearlyEqual(0.0).Assert();
 
          var result = dividend / divisor;
          var floor = Floor(result);
@@ -217,7 +217,7 @@ namespace Core.Numbers
 
       public static (int division, int remainder) DivRem(this int dividend, int divisor)
       {
-         divisor.Must().Not.BeZero().Assert("Can't divide by 0");
+         divisor.MustAs(nameof(divisor)).Not.BeZero().Assert();
          return (dividend / divisor, dividend % divisor);
       }
 

@@ -35,13 +35,13 @@ namespace Core.Regex
 
 		public static void RequiredMatch(this string input, string pattern, string message, RegexOptions options)
 		{
-			input.IsMatch(pattern, options).Must().Be().Assert(message);
-		}
+			input.IsMatch(pattern, options).MustAs(nameof(input)).Be().Assert(message);
+      }
 
 		public static void RequiredMatch(this string input, string pattern, string message, bool ignoreCase = false,
 			bool multiline = false)
 		{
-			input.IsMatch(pattern, ignoreCase, multiline).Must().Be().Assert(message);
+			input.IsMatch(pattern, ignoreCase, multiline).MustAs(nameof(input)).Be().Assert(message);
 		}
 
 		public static string Substitute(this string input, string pattern, string replacement, RegexOptions options)

@@ -18,12 +18,14 @@ namespace Core.Assertions.Monads
       protected IResult<T> result;
       protected List<Constraint> constraints;
       protected bool not;
+      protected string name;
 
       public ResultAssertion(IResult<T> result)
       {
          this.result = result;
          constraints = new List<Constraint>();
          not = false;
+         name = "Result";
       }
 
       public bool BeTrue() => beTrue(this);
@@ -37,24 +39,24 @@ namespace Core.Assertions.Monads
          switch (obj)
          {
             case null:
-               constraints.Add(Constraint.Failing("RHS must be non-null"));
+               constraints.Add(Constraint.Failing("$name must be non-null", name));
                break;
             case T otherT:
-               constraints.Add(new Constraint(() => constraintFunction(otherT), message, not));
+               constraints.Add(new Constraint(() => constraintFunction(otherT), message, not, name));
                break;
             case IResult<T> anyValue:
                if (anyValue.If(out var value, out var exception))
                {
-                  constraints.Add(new Constraint(() => constraintFunction(value), message, not));
+                  constraints.Add(new Constraint(() => constraintFunction(value), message, not, name));
                }
                else
                {
-                  constraints.Add(Constraint.Failing(exception.Message));
+                  constraints.Add(Constraint.Failing(exception.Message, name));
                }
 
                break;
             default:
-               constraints.Add(Constraint.Failing($"{obj} must be of type {typeof(T)}"));
+               constraints.Add(Constraint.Failing($"$name must be of type {typeof(T)}", name));
                break;
          }
 
@@ -64,24 +66,30 @@ namespace Core.Assertions.Monads
 
       protected ResultAssertion<T> add(Func<bool> constraintFunction, string message)
       {
-         constraints.Add(new Constraint(constraintFunction, message, not));
+         constraints.Add(new Constraint(constraintFunction, message, not, name));
          not = false;
 
          return this;
       }
 
-      public ResultAssertion<T> BeSuccessful() => add(() => result.IsSuccessful, "Result must $not be successful");
+      public ResultAssertion<T> BeSuccessful() => add(() => result.IsSuccessful, "$name must $not be successful");
 
-      public ResultAssertion<T> BeFailed() => add(() => result.IsFailed, "Result be $not be failed");
+      public ResultAssertion<T> BeFailed() => add(() => result.IsFailed, "$name be $not be failed");
 
       public ResultAssertion<T> EqualToValueOf(IResult<T> otherResult)
       {
-         return add(() => result.EqualToValueOf(otherResult), $"Value of result must $not equal to value of {otherResult}");
+         return add(() => result.EqualToValueOf(otherResult), $"Value of $name must $not equal to value of {otherResult}");
       }
 
       public ResultAssertion<T> ValueEqualTo(T otherValue)
       {
-         return add(() => result.ValueEqualTo(otherValue), $"Value of result must $not equal to {otherValue}");
+         return add(() => result.ValueEqualTo(otherValue), $"Value of $name must $not equal to {otherValue}");
+      }
+
+      public IAssertion<T> Named(string name)
+      {
+         this.name = name;
+         return this;
       }
 
       public void Assert() => assert(this);

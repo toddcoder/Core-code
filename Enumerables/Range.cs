@@ -95,7 +95,7 @@ namespace Core.Enumerables
 
       public Range By(int newIncrement)
       {
-         increment = newIncrement.Must().Not.BeZero().Ensure("Increment can't be 0");
+         increment = newIncrement.MustAs(nameof(increment)).Not.BeZero().Ensure();
          if (increment < 0)
          {
             endingPredicate = inclusive ? ((Func<int, int, bool>)((x, y) => x >= y)).Some() :

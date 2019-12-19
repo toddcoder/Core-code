@@ -126,10 +126,10 @@ namespace Core.Arrays
 		}
 
 		public static T[] RangeOf<T>(this T[] array, int start, int stop)
-		{
-			start.Must().BeLessThanOrEqual(stop).Assert("start must be less than or equal to stop");
-			start.Must().BeBetween(0).Until(array.Length).Assert("start value out of range");
-			stop.Must().BeBetween(0).Until(array.Length).Assert("stop value out of range");
+      {
+         start.MustAs(nameof(start)).BeLessThanOrEqual(stop).Assert($"$name must be less than or equal to {nameof(stop)}");
+			start.MustAs(nameof(start)).BeBetween(0).Until(array.Length).Assert("$name out of range");
+			stop.MustAs(nameof(stop)).BeBetween(0).Until(array.Length).Assert("$name out of range");
 
 			var result = new T[stop - start + 1];
 			var index = 0;

@@ -13,12 +13,14 @@ namespace Core.Assertions.Collections
       protected T obj;
       protected List<Constraint> constraints;
       protected bool not;
+      protected string name;
 
       public TypedAssertion(T obj)
       {
          this.obj = obj;
          constraints = new List<Constraint>();
          not = false;
+         name = "Typed value";
       }
 
       public TypedAssertion<T> Not
@@ -32,7 +34,7 @@ namespace Core.Assertions.Collections
 
       protected TypedAssertion<T> add(Func<bool> constraintFunction, string message)
       {
-         constraints.Add(new Constraint(constraintFunction, message, not));
+         constraints.Add(new Constraint(constraintFunction, message, not, name));
          not = false;
 
          return this;
@@ -40,12 +42,12 @@ namespace Core.Assertions.Collections
 
       public TypedAssertion<T> Equal(T other)
       {
-         return add(() => obj.Equals(other), $"{obj} must $not equal {other}");
+         return add(() => obj.Equals(other), $"$name must $not equal {other}");
       }
 
       public TypedAssertion<T> BeNull()
       {
-         return add(() => obj == null, "This value must $not be null");
+         return add(() => obj == null, "$name must $not be null");
       }
 
       public bool BeTrue() => beTrue(this);
@@ -53,6 +55,12 @@ namespace Core.Assertions.Collections
       public T Value => obj;
 
       public IEnumerable<Constraint> Constraints => constraints;
+
+      public IAssertion<T> Named(string name)
+      {
+         this.name = name;
+         return this;
+      }
 
       public void Assert() => assert(this);
 

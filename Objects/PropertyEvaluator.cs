@@ -69,9 +69,9 @@ namespace Core.Objects
 
                foreach (var info in new SignatureCollection(signature).Select(s => new ObjectInfo(current, s)))
                {
-                  current.Must().Not.BeNull().Assert($"Object at signature {signature} is null; can't continue the chain");
+                  current.MustAs(nameof(current)).Not.BeNull().Assert("$name is null; can't continue the chain");
                   var infoValue = info.Value.Required($"Signature {signature} doesn't exist");
-                  info.PropertyType.IsSome.Must().Be().Assert($"Couldn't determine object at {signature}");
+                  info.PropertyType.MustAs(signature).HaveValue().Assert("Couldn't determine object at $signature");
                   current = infoValue;
                   lastInfo = info.Some();
                }

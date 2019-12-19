@@ -1675,7 +1675,7 @@ namespace Core.Strings
          {
             return
                from newValue in value.Int64()
-               from assertion in newValue.Must().BeBetween(int.MinValue).And(int.MaxValue).Try("Out of range for int32")
+               from assertion in newValue.MustAs(nameof(newValue)).BeBetween(int.MinValue).And(int.MaxValue).Try()
                select (object)(int)assertion;
          }
 
@@ -2053,7 +2053,7 @@ namespace Core.Strings
          var matcher = new Matcher();
          foreach (var (key, replacement) in pairs)
          {
-            key.Must().Not.BeNullOrEmpty().Assert("Key must have a value");
+            key.MustAs(nameof(key)).Not.BeNullOrEmpty().Assert();
 
             var pattern = "-(< '//') '(" + key.Escape() + ")'";
             if (matcher.IsMatch(format, pattern))

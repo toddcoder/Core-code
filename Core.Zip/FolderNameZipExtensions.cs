@@ -16,9 +16,9 @@ namespace Core.Zip
       public static FileName Zip(this FolderName folder, string zipName, Predicate<FileName> include, bool recursive = true,
          CompressionLevel compressionLevel = CompressionLevel.Optimal)
       {
-         folder.Must().Not.BeNull().Assert($"{nameof(folder)} must not be null");
-         zipName.Must().Not.BeNullOrEmpty().Assert($"{nameof(zipName)} must not be null or empty");
-         include.Must().Not.BeNull().Assert($"{nameof(include)} must not be null");
+         folder.MustAs(nameof(folder)).Not.BeNull().Assert();
+         zipName.MustAs(nameof(zipName)).Not.BeNullOrEmpty().Assert();
+         include.MustAs(nameof(include)).Not.BeNull().Assert();
 
          var zipFolder = folder.Parent.DefaultTo(() => @"C:\");
          var zipFile = zipFolder.UniqueFileName(zipName, ".zip");

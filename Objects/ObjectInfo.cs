@@ -88,7 +88,7 @@ namespace Core.Objects
                {
                   if (parameters.Length == 0)
                   {
-                     setValue(value).Must().Be().Assert("Value couldn't be set");
+                     setValue(value).MustAs(nameof(value)).Be().Assert("$name couldn't be set");
                   }
                   else
                   {
@@ -97,7 +97,7 @@ namespace Core.Objects
                }
                else
                {
-                  parameters.Must().BeEmpty().Assert("Index parameters not specified");
+                  parameters.MustAs(nameof(parameters)).BeEmpty().Assert();
                   inf.SetValue(obj, val, null);
                }
             }

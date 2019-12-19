@@ -84,9 +84,9 @@ namespace Core.Strings
 
 		public string Parse()
 		{
-			BeginComment.Must().HaveLengthOf(2).Assert("BeginComment must be at least 2 characters");
-			EndComment.Must().HaveLengthOf(2).Assert("EndComment must be at least 2 characters");
-			SingleComment.Must().HaveLengthOf(1).Assert("SingleComment must be at least 1 character");
+			BeginComment.MustAs(nameof(BeginComment)).HaveLengthOf(2).Assert();
+			EndComment.MustAs(nameof(EndComment)).HaveLengthOf(2).Assert();
+			SingleComment.MustAs(nameof(SingleComment)).HaveLengthOf(1).Assert();
 
 			var outerBuilder = new StringBuilder();
 			var innerBuilder = new StringBuilder();
@@ -288,9 +288,9 @@ namespace Core.Strings
 				var maximum = stringItems.Length;
 				for (var i = 0; i < matcher.MatchCount; i++)
 				{
-					var anIndex = matcher[i, 1];
-					var index = anIndex.AsInt().Required($"Didn't understand {anIndex} as an integer");
-					index.Must().BeBetween(0).Until(maximum).Assert("String index out of range");
+					var indexAsString = matcher[i, 1];
+					var index = indexAsString.AsInt().Required($"Didn't understand {indexAsString} as an integer");
+					index.MustAs(nameof(index)).BeBetween(0).Until(maximum).Assert();
 					matcher[i, 0] = stringItems[index].Restringed(withQuotes, Escape);
 				}
 

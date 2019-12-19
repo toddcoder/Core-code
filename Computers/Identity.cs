@@ -134,9 +134,9 @@ namespace Core.Computers
 
 		void impersonate()
 		{
-         UserName.Must().Not.BeNullOrEmpty().Assert("User name not set");
-         Domain.Must().Not.BeNullOrEmpty().Assert("Domain not set");
-         Password.Must().Not.BeNullOrEmpty().Assert("Password not set");
+         UserName.MustAs(nameof(UserName)).Not.BeNullOrEmpty().Assert();
+         Domain.MustAs(nameof(Domain)).Not.BeNullOrEmpty().Assert();
+         Password.MustAs(nameof(Password)).Not.BeNullOrEmpty().Assert();
 
 			if (LogonUser(UserName, Domain, Password, (int)Type, (int)Provider, out tokenHandle) != 0)
          {

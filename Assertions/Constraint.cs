@@ -4,12 +4,12 @@ namespace Core.Assertions
 {
    public class Constraint
    {
-      public static Constraint Failing(string message) => new Constraint(() => false, message, false);
+      public static Constraint Failing(string message, string name) => new Constraint(() => false, message, false, name);
 
-      public Constraint(Func<bool> condition, string message, bool not)
+      public Constraint(Func<bool> condition, string message, bool not, string name)
       {
          Condition = condition;
-         Message = message.Replace("$not ", not ? "not " : "");
+         Message = message.Replace("$not ", not ? "not " : "").Replace("$name", name);
          Not = not;
       }
 

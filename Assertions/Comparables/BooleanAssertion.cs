@@ -18,12 +18,14 @@ namespace Core.Assertions.Comparables
       protected bool boolean;
       protected List<Constraint> constraints;
       protected bool not;
+      protected string name;
 
       public BooleanAssertion(bool boolean)
       {
          this.boolean = boolean;
          constraints = new List<Constraint>();
          not = false;
+         name = "Boolean";
       }
 
       public bool Boolean => boolean;
@@ -39,7 +41,7 @@ namespace Core.Assertions.Comparables
 
       protected BooleanAssertion add(Func<bool> constraintFunction, string message)
       {
-         constraints.Add(new Constraint(constraintFunction, message, not));
+         constraints.Add(new Constraint(constraintFunction, message, not, name));
          not = false;
 
          return this;
@@ -47,17 +49,17 @@ namespace Core.Assertions.Comparables
 
       public BooleanAssertion Be()
       {
-         return add(() => boolean, $"{boolean} must $not be true");
+         return add(() => boolean, "$name must $not be true");
       }
 
       public BooleanAssertion And(bool test)
       {
-         return add(() => boolean && test, $"{boolean} and $not {test}");
+         return add(() => boolean && test, $"$name and $not {test}");
       }
 
       public BooleanAssertion Or(bool test)
       {
-         return add(() => boolean || test, $"{boolean} or $not {test}");
+         return add(() => boolean || test, $"$name or $not {test}");
       }
 
       public bool Value => boolean;
@@ -65,6 +67,12 @@ namespace Core.Assertions.Comparables
       public IEnumerable<Constraint> Constraints => constraints;
 
       public bool BeTrue() => beTrue(this);
+
+      public IAssertion<bool> Named(string name)
+      {
+         this.name = name;
+         return this;
+      }
 
       public void Assert() => assert(this);
 

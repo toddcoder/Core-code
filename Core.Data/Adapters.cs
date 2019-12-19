@@ -190,7 +190,7 @@ namespace Core.Data
 
       public void Add(string adapterName)
       {
-         adapterName.Must().Not.BeEmpty().Assert($"Adapter name added to Adapters<{typeof(T).Name}> is empty");
+         adapterName.MustAs(nameof(adapterName)).Not.BeNullOrEmpty().Assert();
 
          validAdapters.Add(adapterName);
       }
