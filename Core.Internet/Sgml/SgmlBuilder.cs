@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Text;
+using Core.Assertions;
 using Core.Computers;
-using Core.Monads;
-using static Core.Monads.MonadFunctions;
 using static Core.Strings.StringFunctions;
 
 namespace Core.Internet.Sgml
@@ -20,13 +19,12 @@ namespace Core.Internet.Sgml
       public static SgmlBuilder AsHtml(bool includeHead)
       {
          var builder = new SgmlBuilder("html") { IsHtml = true, IncludeHeader = false, Tidy = false };
-         var html = builder.Root.Required("Root was not set");
          if (includeHead)
          {
-            html.Children.Add("head");
+            builder.Root.Children.Add("head");
          }
 
-         html.Children.Add("body");
+         builder.Root.Children.Add("body");
 
          return builder;
       }
@@ -35,17 +33,19 @@ namespace Core.Internet.Sgml
       Encoding encoding;
       bool includeHeader;
       QuoteType quote;
-      IMaybe<Element> root;
+      Element root;
       bool isHtml;
       DocType docType;
 
       public SgmlBuilder(string rootName)
       {
+         rootName.MustAs(nameof(rootName)).Not.BeNullOrEmpty().Assert();
+
          tidy = true;
          encoding = Encoding.UTF8;
          includeHeader = false;
          quote = QuoteType.Double;
-         root = new Element { Name = rootName }.Some();
+         root = new Element { Name = rootName };
          isHtml = false;
          docType = DocType.None;
       }
@@ -80,7 +80,7 @@ namespace Core.Internet.Sgml
          set => docType = value;
       }
 
-      public IMaybe<Element> Root => root;
+      public Element Root => root;
 
       public bool IsHtml
       {
@@ -88,15 +88,12 @@ namespace Core.Internet.Sgml
          set
          {
             isHtml = value;
-            var setRoot = root.Required("Root must be set");
-            setRoot.Children.IsHtml = value;
-            setRoot.Siblings.IsHtml = value;
+            root.Children.IsHtml = value;
+            root.Siblings.IsHtml = value;
          }
       }
 
       public char QuoteChar => quote == QuoteType.Double ? '"' : '\'';
-
-      public void Clear() => root = none<Element>();
 
       void addDocType(StringBuilder result)
       {
@@ -112,23 +109,16 @@ namespace Core.Internet.Sgml
 
       public string ToStringRendering(Func<Element, bool> callback)
       {
-         if (root.If(out var r))
+         var result = new StringBuilder();
+         addDocType(result);
+         result.Append(root.ToStringRendering(callback));
+         if (tidy)
          {
-            var result = new StringBuilder();
-            addDocType(result);
-            result.Append(r.ToStringRendering(callback));
-            if (tidy)
-            {
-               return result.ToString().Tidy(encoding, includeHeader, QuoteChar);
-            }
-            else
-            {
-               return result.ToString();
-            }
+            return result.ToString().Tidy(encoding, includeHeader, QuoteChar);
          }
          else
          {
-            return "";
+            return result.ToString();
          }
       }
 
@@ -146,19 +136,12 @@ namespace Core.Internet.Sgml
          var newDocType = new StringBuilder();
          addDocType(newDocType);
 
-         if (root.If(out var r))
+         if (docType != DocType.None)
          {
-            if (docType != DocType.None)
-            {
-               tempFile.Append(newDocType.ToString());
-            }
+            tempFile.Append(newDocType.ToString());
+         }
 
-            r.RenderToFile(tempFile, callback);
-         }
-         else
-         {
-            tempFile.Text = "";
-         }
+         root.RenderToFile(tempFile, callback);
 
          tempFile.Flush();
 

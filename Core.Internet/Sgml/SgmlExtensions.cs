@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Text;
 using System.Xml;
+using Core.Assertions;
 using Core.Monads;
 using Core.RegularExpressions;
 using static Core.Monads.AttemptFunctions;
@@ -24,6 +25,9 @@ namespace Core.Internet.Sgml
 
       public static string Tidy(this string sgml, Encoding encoding, bool includeHeader = true, char quoteChar = '"')
       {
+         sgml.MustAs(nameof(sgml)).Not.BeNullOrEmpty().Assert();
+         encoding.MustAs(nameof(encoding)).Not.BeNull().Assert();
+
          var document = new XmlDocument();
          document.LoadXml(sgml);
          document.LoadXml(document.OuterXml.Substitute(REGEX_EMPTY_ELEMENT, TEXT_EMPTY_ELEMENT));
@@ -52,6 +56,8 @@ namespace Core.Internet.Sgml
 
       public static string Sgmlify(this string text)
       {
+         text.MustAs(nameof(text)).Not.BeNullOrEmpty().Assert();
+
          text = text.Substitute("'&' -(> ('amp' | 'lt' | 'gt' | 'quot' | 'apos') ';')", "&amp;");
          text = text.Substitute("'<'", "&lt;");
          text = text.Substitute("'>'", "&gt;");
@@ -63,6 +69,8 @@ namespace Core.Internet.Sgml
 
       public static string UnSgmlify(this string text)
       {
+         text.MustAs(nameof(text)).Not.BeNullOrEmpty().Assert();
+
          text = text.Substitute("'&apos;'", "'");
          text = text.Substitute("'&quot;'", "\"");
          text = text.Substitute("'&gt;'", ">");
@@ -74,6 +82,8 @@ namespace Core.Internet.Sgml
 
       public static string Simplify(this string sgml)
       {
+         sgml.MustAs(nameof(sgml)).Not.BeNullOrEmpty().Assert();
+
          return sgml
             .Substitute("/s+ /w+ ':' /w '=' [dquote] -[dquote]+ [dquote]", "")
             .Substitute("/s+ 'xmlns=' [dquote] -[dquote]+ [dquote]", "");

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Core.Assertions;
 using Core.Computers;
 using Core.Enumerables;
 
@@ -52,6 +53,8 @@ namespace Core.Internet.Sgml
 
       public Element Add(Element element)
       {
+         element.MustAs(nameof(element)).Not.BeNull().Assert();
+
          elements.Add(element);
          ElementAdded?.Invoke(this, new ElementEventArgs(element));
 

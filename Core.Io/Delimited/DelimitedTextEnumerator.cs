@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Core.Assertions;
 
 namespace Core.Io.Delimited
 {
@@ -10,7 +11,7 @@ namespace Core.Io.Delimited
 
       public DelimitedTextEnumerator(DelimitedTextReader reader)
       {
-         this.reader = reader;
+         this.reader = reader.MustAs(nameof(reader)).Not.BeNull().Ensure<DelimitedTextReader>();
          current = new string[reader.FieldCount];
       }
 
