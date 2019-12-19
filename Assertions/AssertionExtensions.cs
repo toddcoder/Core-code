@@ -23,12 +23,6 @@ namespace Core.Assertions
          return (ComparableAssertion<int>)assertion.Named($"Integer {name}");
       }
 
-      [Obsolete("Use MustAs")]
-      public static ComparableAssertion<int> NamedAs(this ComparableAssertion<int> assertion, string name)
-      {
-         return (ComparableAssertion<int>)assertion.Named($"Comparable {name}");
-      }
-
       public static ComparableAssertion<int> BeEven(this ComparableAssertion<int> assertion)
       {
          return assertion.IfTrue(i => i % 2 == 0, "$name must $not be even");
@@ -44,12 +38,6 @@ namespace Core.Assertions
       public static ComparableAssertion<long> MustAs(this long value, string name)
       {
          var assertion = value.Must();
-         return (ComparableAssertion<long>)assertion.Named($"Long {name}");
-      }
-
-      [Obsolete("Use MustAs")]
-      public static ComparableAssertion<long> NamedAs(this ComparableAssertion<long> assertion, string name)
-      {
          return (ComparableAssertion<long>)assertion.Named($"Long {name}");
       }
 
@@ -71,12 +59,6 @@ namespace Core.Assertions
          return (ComparableAssertion<byte>)assertion.Named($"Byte {name}");
       }
 
-      [Obsolete("Use MustAs")]
-      public static ComparableAssertion<byte> NamedAs(this ComparableAssertion<byte> assertion, string name)
-      {
-         return (ComparableAssertion<byte>)assertion.Named($"Byte {name}");
-      }
-
       public static ComparableAssertion<byte> BeEven(this ComparableAssertion<byte> assertion)
       {
          return assertion.IfTrue(i => i % 2 == 0, "$name must $not be even");
@@ -95,23 +77,11 @@ namespace Core.Assertions
          return (FloatAssertion)assertion.Named($"Float {name}");
       }
 
-      [Obsolete("Use MustAs")]
-      public static FloatAssertion NamedAs(this FloatAssertion assertion, string name)
-      {
-         return (FloatAssertion)assertion.Named($"Float {name}");
-      }
-
       public static DoubleAssertion Must(this double value) => new DoubleAssertion(value);
 
       public static DoubleAssertion MustAs(this double value, string name)
       {
          var assertion = value.Must();
-         return (DoubleAssertion)assertion.Named($"Double {name}");
-      }
-
-      [Obsolete("Use MustAs")]
-      public static DoubleAssertion NamedAs(this DoubleAssertion assertion, string name)
-      {
          return (DoubleAssertion)assertion.Named($"Double {name}");
       }
 
@@ -123,23 +93,11 @@ namespace Core.Assertions
          return (ComparableAssertion<DateTime>)assertion.Named($"Date/time {name}");
       }
 
-      [Obsolete("Use MustAs")]
-      public static ComparableAssertion<DateTime> NamedAs(this ComparableAssertion<DateTime> assertion, string name)
-      {
-         return (ComparableAssertion<DateTime>)assertion.Named($"Date/time {name}");
-      }
-
       public static BooleanAssertion Must(this bool value) => new BooleanAssertion(value);
 
       public static BooleanAssertion MustAs(this bool value, string name)
       {
          var assertion = value.Must();
-         return (BooleanAssertion)assertion.Named($"Boolean {name}");
-      }
-
-      [Obsolete("Use MustAs")]
-      public static BooleanAssertion NamedAs(this BooleanAssertion assertion, string name)
-      {
          return (BooleanAssertion)assertion.Named($"Boolean {name}");
       }
 
@@ -151,23 +109,11 @@ namespace Core.Assertions
          return (StringAssertion)assertion.Named($"String {name}");
       }
 
-      [Obsolete("Use MustAs")]
-      public static StringAssertion NamedAs(this StringAssertion assertion, string name)
-      {
-         return (StringAssertion)assertion.Named($"String {name}");
-      }
-
       public static ArrayAssertion<T> Must<T>(this T[] value) => new ArrayAssertion<T>(value);
 
       public static ArrayAssertion<T> MustAs<T>(this T[] value, string name)
       {
          var assertion = value.Must();
-         return (ArrayAssertion<T>)assertion.Named($"Array {name}");
-      }
-
-      [Obsolete("Use MustAs")]
-      public static ArrayAssertion<T> NamedAs<T>(this ArrayAssertion<T> assertion, string name)
-      {
          return (ArrayAssertion<T>)assertion.Named($"Array {name}");
       }
 
@@ -187,23 +133,11 @@ namespace Core.Assertions
          return (ObjectAssertion)assertion.Named($"Object {name}");
       }
 
-      [Obsolete("Use MustAs")]
-      public static ObjectAssertion NamedAs(this ObjectAssertion assertion, string name)
-      {
-         return (ObjectAssertion)assertion.Named(name);
-      }
-
       public static MaybeAssertion<T> Must<T>(this IMaybe<T> value) => new MaybeAssertion<T>(value);
 
       public static MaybeAssertion<T> MustAs<T>(this IMaybe<T> value, string name)
       {
          var assertion = value.Must();
-         return (MaybeAssertion<T>)assertion.Named($"Optional {name}");
-      }
-
-      [Obsolete("Use MustAs")]
-      public static MaybeAssertion<T> NamedAs<T>(this MaybeAssertion<T> assertion, string name)
-      {
          return (MaybeAssertion<T>)assertion.Named($"Optional {name}");
       }
 
@@ -215,23 +149,11 @@ namespace Core.Assertions
          return (ResultAssertion<T>)assertion.Named($"Result {name}");
       }
 
-      [Obsolete("Use MustAs")]
-      public static ResultAssertion<T> NamedAs<T>(this ResultAssertion<T> assertion, string name)
-      {
-         return (ResultAssertion<T>)assertion.Named($"Result {name}");
-      }
-
       public static MatchedAssertion<T> Must<T>(this IMatched<T> value) => new MatchedAssertion<T>(value);
 
       public static MatchedAssertion<T> MustAs<T>(this IMatched<T> value, string name)
       {
          var assertion = value.Must();
-         return (MatchedAssertion<T>)assertion.Named($"Match {name}");
-      }
-
-      [Obsolete("Use MustAs")]
-      public static MatchedAssertion<T> NamedAs<T>(this MatchedAssertion<T> assertion, string name)
-      {
          return (MatchedAssertion<T>)assertion.Named($"Match {name}");
       }
 
@@ -244,12 +166,6 @@ namespace Core.Assertions
       }
 
       public static FileNameAssertion Must(this FileName value) => new FileNameAssertion(value);
-
-      [Obsolete("Use MustAs")]
-      public static FileNameAssertion NamedAs(this FileNameAssertion assertion, string name)
-      {
-         return (FileNameAssertion)assertion.Named($"File {name}");
-      }
 
       public static FolderNameAssertion Must(this FolderName value) => new FolderNameAssertion(value);
 
@@ -265,12 +181,6 @@ namespace Core.Assertions
          return (FolderNameAssertion)assertion.Named($"Folder {name}");
       }
 
-      [Obsolete("Use MustAs")]
-      public static FolderNameAssertion NamedAs(this FolderNameAssertion assertion, string name)
-      {
-         return (FolderNameAssertion)assertion.Named($"Folder {name}");
-      }
-
       public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this Dictionary<TKey, TValue> value)
       {
          return new DictionaryAssertion<TKey, TValue>(value);
@@ -280,12 +190,6 @@ namespace Core.Assertions
       {
          var assertion = value.Must();
          return (DictionaryAssertion<TKey,TValue>)assertion.Named($"Dictionary {name}");
-      }
-
-      [Obsolete("Use MustAs")]
-      public static DictionaryAssertion<TKey, TValue> NamedAs<TKey, TValue>(this DictionaryAssertion<TKey, TValue> assertion, string name)
-      {
-         return (DictionaryAssertion<TKey, TValue>)assertion.Named($"Dictionary {name}");
       }
 
       public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this Hash<TKey, TValue> value)
@@ -319,23 +223,11 @@ namespace Core.Assertions
          return (TypeAssertion)assertion.Named($"Type {name}");
       }
 
-      [Obsolete("Use MustAs")]
-      public static TypeAssertion NamedAs(this TypeAssertion assertion, string name)
-      {
-         return (TypeAssertion)assertion.Named($"Type {name}");
-      }
-
       public static MatcherAssertion Must(this Matcher value) => new MatcherAssertion(value);
 
       public static MatcherAssertion MustAs(this Matcher value, string name)
       {
          var assertion = value.Must();
-         return (MatcherAssertion)assertion.Named($"Matcher {name}");
-      }
-
-      [Obsolete("Use MustAs")]
-      public static MatcherAssertion NamedAs(this MatcherAssertion assertion, string name)
-      {
          return (MatcherAssertion)assertion.Named($"Matcher {name}");
       }
 

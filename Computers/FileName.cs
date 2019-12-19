@@ -23,7 +23,7 @@ namespace Core.Computers
       {
          public static IResult<FileName> FromString(string file)
          {
-            return IsValidFileName(file).Must().NamedAs(nameof(IsValidFileName)).Be().Try().Map(_ => new FileName(file));
+            return IsValidFileName(file).MustAs(nameof(IsValidFileName)).Be().Try().Map(_ => new FileName(file));
          }
       }
 
