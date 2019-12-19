@@ -10,7 +10,10 @@ namespace Core.Collections
 
       public HashTrying(Hash<TKey, TValue> hash) => this.hash = hash;
 
-      public IResult<TValue> this[TKey key] => hash.Must().HaveKeyOf(key).Try(() => $"Key {key} not found").Map(d => d[key].Success());
+      public IResult<TValue> this[TKey key]
+      {
+         get => hash.MustAs(nameof(hash)).HaveKeyOf(key).Try().Map(d => d[key].Success());
+      }
 
       public IResult<TValue> Find(TKey key, Func<TKey, IResult<TValue>> defaultValue, bool addIfNotFound = false)
       {

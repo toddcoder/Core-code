@@ -47,7 +47,7 @@ namespace Core.Collections
 
       public AutoHash(Func<TKey, TValue> defaultLambda, bool autoAddDefault = false)
       {
-         defaultLambda.Must().Not.BeNull().Assert();
+         defaultLambda.MustAs(nameof(defaultLambda)).Not.BeNull().Assert();
 
          Default = DefaultType.Lambda;
          this.defaultLambda = defaultLambda;
@@ -56,8 +56,8 @@ namespace Core.Collections
 
       public AutoHash(Func<TKey, TValue> defaultLambda, bool autoAddDefault, IEqualityComparer<TKey> comparer) : this(comparer)
       {
-         defaultLambda.Must().Not.BeNull().Assert();
-         comparer.Must().Not.BeNull().Assert();
+         defaultLambda.MustAs(nameof(defaultLambda)).Not.BeNull().Assert();
+         comparer.MustAs(nameof(comparer)).Not.BeNull().Assert();
 
          Default = DefaultType.Lambda;
          this.defaultLambda = defaultLambda;
@@ -75,7 +75,7 @@ namespace Core.Collections
 
       public AutoHash(TValue defaultValue, bool autoAddDefault, IEqualityComparer<TKey> comparer) : this(comparer)
       {
-         comparer.Must().Not.BeNull().Assert();
+         comparer.MustAs(nameof(comparer)).Not.BeNull().Assert();
 
          Default = DefaultType.Value;
          DefaultValue = defaultValue;
@@ -93,7 +93,7 @@ namespace Core.Collections
          get => defaultLambda;
          set
          {
-            value.Must().Not.BeNull().Assert();
+            value.MustAs(nameof(DefaultLambda)).Not.BeNull().Assert();
             defaultLambda = value;
          }
       }
@@ -104,7 +104,7 @@ namespace Core.Collections
       {
          get
          {
-            key.Must().Not.BeNull().Assert();
+            key.MustAs(nameof(key)).Not.BeNull().Assert();
 
             TValue result;
             switch (Default)

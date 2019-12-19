@@ -7,14 +7,14 @@ namespace Core.Computers
 	{
 		public static IResult<FileName> File(this string fileName)
 		{
-			FileName result = fileName;
-         return result.Must().Exist().Try();
+			FileName file = fileName;
+         return file.MustAs(nameof(file)).Exist().Try();
       }
 
 		public static IResult<FolderName> Folder(this string folderName)
 		{
-			FolderName result = folderName;
-         return result.Must().Exist().Try();
+			FolderName folder = folderName;
+         return folder.MustAs(nameof(folder)).Exist().Try();
       }
 	}
 }

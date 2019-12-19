@@ -30,7 +30,7 @@ namespace Core.Assertions.Monads
 
       public bool BeTrue() => beTrue(this);
 
-      public T Value => maybe.Required("Value not available");
+      public T Value => maybe.Required($"{name} value not available");
 
       public IEnumerable<Constraint> Constraints => constraints;
 

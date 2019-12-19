@@ -40,7 +40,7 @@ namespace Core.Tests
             {
                if (zipFile.TryToUnzip().If(out var folder, out exception))
                {
-                  folder.Must().Exist().Assert($"{nameof(folder)} must exist");
+                  folder.MustAs(nameof(folder)).Exist().Assert();
                   Console.WriteLine(folder.FullPath);
                }
                else

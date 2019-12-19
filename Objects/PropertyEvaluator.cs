@@ -29,7 +29,7 @@ namespace Core.Objects
 
       public PropertyEvaluator(object obj)
       {
-         this.obj = obj.Must().Not.BeNull().Ensure<ArgumentNullException, object>("Object set to evaluator can't be null.");
+         this.obj = obj.MustAs(nameof(obj)).Not.BeNull().Ensure<ArgumentNullException, object>();
          type = this.obj.GetType();
       }
 
@@ -119,7 +119,7 @@ namespace Core.Objects
 
          foreach (var singleSignature in signatures)
          {
-            result.Must().Not.BeNull().Assert($"Null value returned by {singleSignature}");
+            result.MustAs(singleSignature.Name).Not.BeNull().Assert();
 
             info = new ObjectInfo(result, singleSignature);
             var value = info.Value;
@@ -128,7 +128,7 @@ namespace Core.Objects
 
          var propertyType = info.PropertyType.Required($"Signature {signature} not found");
 
-         return propertyType.Must().Not.BeNull().Ensure();
+         return propertyType.MustAs(nameof(propertyType)).Not.BeNull().Ensure();
       }
 
       public Type Type(Signature signature) => Type(signature.ToString());

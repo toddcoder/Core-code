@@ -82,8 +82,8 @@ namespace Core.Tests
       public void DictionaryAssertionTest()
       {
          var hash = new Hash<char, string> { ['a'] = "alfa", ['b'] = "bravo", ['c'] = "charlie" };
-         hash.Must().Not.BeNullOrEmpty().Assert();
-         hash.Must().HaveKeyOf('b').Assert();
+         hash.MustAs(nameof(hash)).Not.BeNullOrEmpty().Assert();
+         hash.MustAs(nameof(hash)).HaveKeyOf('b').Assert();
       }
 
       [TestMethod]

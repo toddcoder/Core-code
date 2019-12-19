@@ -34,7 +34,7 @@ namespace Core.ObjectGraphs.Parsers
             value = replacer.Replace(value);
             FileName file = value;
 
-            file.Must().Exist().Assert();
+            file.MustAs(nameof(file)).Exist().Assert();
 
             var graph = ObjectGraph.FromFile(file);
             graph.SetName(name);

@@ -58,7 +58,7 @@ namespace Core.Objects
       }
 
       internal static IResult<ReflectorFormat> GetReflector(object obj) =>
-         from nonNullObject in obj.Must().Not.BeNull().Try()
+         from nonNullObject in obj.MustAs(nameof(obj)).Not.BeNull().Try()
          from type in tryTo(nonNullObject.GetType)
          select new ReflectorFormat(nonNullObject, type);
 

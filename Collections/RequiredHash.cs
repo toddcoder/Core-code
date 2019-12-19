@@ -9,9 +9,9 @@ namespace Core.Collections
 
       internal RequiredHash(IHash<TKey, TValue> hash)
       {
-         this.hash = hash.Must().Ensure<IHash<TKey, TValue>>();
+         this.hash = hash.MustAs(nameof(hash)).Ensure<IHash<TKey, TValue>>();
       }
 
-      public IResult<TValue> this[TKey key] => hash.Must().HaveKeyOf(key).Try(() => $"Key {key} not found").Map(d => d[key]);
+      public IResult<TValue> this[TKey key] => hash.MustAs(nameof(hash)).HaveKeyOf(key).Try().Map(d => d[key]);
    }
 }

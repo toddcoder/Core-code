@@ -93,7 +93,7 @@ namespace Core.ObjectGraphs
 
       public static ObjectGraph Serialize(object obj, Predicate<string> exclude, StringHash signatures)
       {
-         obj.Must().Not.BeNull().Assert("Object serialized can't be null");
+         obj.MustAs(nameof(obj)).Not.BeNull().Assert();
 
          var graph = RootObjectGraph();
          var type = obj.GetType();
@@ -130,8 +130,7 @@ namespace Core.ObjectGraphs
 
       static ObjectGraph getGraph(IMaybe<object> anyObject, string childName, Type childType, Predicate<string> exclude, StringHash signatures)
       {
-         anyObject.Must().HaveValue().Assert("Object value not initialized");
-         var obj = anyObject.Must().Value;
+         var obj = anyObject.MustAs(nameof(anyObject)).HaveValue().Value;
 
          if (childType.IsArray)
          {
@@ -335,7 +334,8 @@ namespace Core.ObjectGraphs
 
       ObjectGraph getChildValue(string graphName)
       {
-         children.Value.Must().HaveKeyOf(graphName).Assert($"'{graphName}' graph is not found under <{Path}> @ {LineNumber}: {LineSource}");
+         children.Value.MustAs(nameof(children)).HaveKeyOf(graphName)
+            .Assert($"$name doesn't have '{graphName}' graph under <{Path}> @ {LineNumber}: {LineSource}");
          var childValue = children.Value[graphName];
          childValue.Replacer = Replacer;
 

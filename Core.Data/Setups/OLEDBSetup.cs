@@ -69,7 +69,7 @@ namespace Core.Data.Setups
       {
          get
          {
-            ConnectionString.Must().Not.BeNull().Assert("ConnectionString property not set");
+            ConnectionString.MustAs(nameof(ConnectionString)).Not.BeNull().Assert();
             return new OLEDBDataSource(ConnectionString.ConnectionString, file);
          }
       }

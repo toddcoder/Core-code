@@ -17,21 +17,21 @@ namespace Core.Objects
          activator = none<Func<T>>();
       }
 
-      public void ActivateWith(Func<T> localActivator)
+      public void ActivateWith(Func<T> activator)
       {
-         localActivator.Must().Not.BeNull().Assert("Activator can't be null");
+         activator.MustAs(nameof(activator)).Not.BeNull().Assert();
 
-         if (!activator.HasValue)
+         if (!this.activator.HasValue)
          {
-            activator = localActivator.Some();
+            this.activator = activator.Some();
          }
       }
 
-      public void OverrideWith(Func<T> localActivator)
+      public void OverrideWith(Func<T> activator)
       {
-         localActivator.Must().Not.BeNull().Assert("Activator can't be null");
+         activator.MustAs(nameof(activator)).Not.BeNull().Assert();
 
-         activator = localActivator.Some();
+         this.activator = activator.Some();
       }
 
       public T Value
@@ -46,7 +46,7 @@ namespace Core.Objects
             {
                var returnValue = f();
 
-               returnValue.Must().Not.BeNull().Assert("Activator can't return a null value");
+               returnValue.MustAs(nameof(value)).Not.BeNull().Assert();
 
                value = returnValue.Some();
 

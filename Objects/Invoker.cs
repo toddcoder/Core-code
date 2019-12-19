@@ -15,7 +15,7 @@ namespace Core.Objects
       static BindingFlags setFieldBindings = baseBindings | BindingFlags.SetField;
 
       public static IResult<Invoker> From(object obj) =>
-         from nonNull in obj.Must().Not.BeNull().Try()
+         from nonNull in obj.MustAs(nameof(obj)).Not.BeNull().Try()
          from type in nonNull.GetType().Success()
          select new Invoker(nonNull, type);
 

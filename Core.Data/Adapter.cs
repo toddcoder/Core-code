@@ -28,7 +28,7 @@ namespace Core.Data
          Parameters = new Parameters.Parameters(setup.Parameters);
          Fields = new Fields.Fields(setup.Fields);
 
-         this.entity = entity.Must().Not.BeNull().Ensure<T>("Entity must be non-null");
+         this.entity = entity.MustAs(nameof(entity)).Not.BeNull().Ensure<T>();
          setEntityType();
 
          newFunc = () => entity;
@@ -51,7 +51,7 @@ namespace Core.Data
          get => entity;
          set
          {
-            entity = value.Must().Not.BeNull().Ensure<T>("Entity must be non-null");
+            entity = value.MustAs(nameof(entity)).Not.BeNull().Ensure<T>();
             setEntityType();
          }
       }

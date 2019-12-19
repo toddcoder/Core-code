@@ -14,7 +14,7 @@ namespace Core.ObjectGraphs
 
       public IResult<ObjectGraph> this[string name]
       {
-         get => graph.Must().HaveKeyOf(name).Try(() => $"Child {name} not found").Map(d => d[name]);
+         get => graph.MustAs(nameof(graph)).HaveKeyOf(name).Try().Map(d => d[name]);
       }
 
       public IResult<object> Fill(object obj) => tryTo(() =>

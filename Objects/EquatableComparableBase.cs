@@ -74,7 +74,7 @@ namespace Core.Objects
 
       public virtual int CompareTo(object obj)
       {
-         obj.Must().BeOfType(GetType()).Assert();
+         obj.MustAs(nameof(obj)).BeOfType(GetType()).Assert();
 
          foreach (var memberInfo in comparableInfo)
          {

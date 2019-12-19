@@ -167,13 +167,13 @@ namespace Core.Assertions
 
       public static FileNameAssertion Must(this FileName value) => new FileNameAssertion(value);
 
-      public static FolderNameAssertion Must(this FolderName value) => new FolderNameAssertion(value);
-
       public static FileNameAssertion MustAs(this FileName value, string name)
       {
          var assertion = value.Must();
          return (FileNameAssertion)assertion.Named($"File {name}");
       }
+
+      public static FolderNameAssertion Must(this FolderName value) => new FolderNameAssertion(value);
 
       public static FolderNameAssertion MustAs(this FolderName value, string name)
       {

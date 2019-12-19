@@ -15,7 +15,7 @@ namespace Core.ObjectGraphs.Configurations.Json
       public static IResult<JsonSerializer> New(object obj, string indentString = "   ")
       {
          return
-            from nonNull in obj.Must().Not.BeNull().Try("Object to be serialized can't be null")
+            from nonNull in obj.MustAs(nameof(obj)).Not.BeNull().Try()
             select new JsonSerializer(nonNull, indentString);
       }
 

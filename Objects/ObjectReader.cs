@@ -14,7 +14,7 @@ namespace Core.Objects
    public class ObjectReader
    {
       public static IResult<ObjectReader> ReadObject(object obj) =>
-         from nonNull in obj.Must().Not.BeNull().Try()
+         from nonNull in obj.MustAs(nameof(obj)).Not.BeNull().Try()
          from type in obj.GetType().Success()
          from values in getValues(obj, type)
          select new ObjectReader(values);

@@ -82,7 +82,7 @@ namespace Core.ObjectGraphs.Parsers
                var indent = matcher[0, 1];
                FileName file = replacer.ReplaceVariables(matcher[0, 2]);
 
-               file.Must().Exist().Assert($"Included file {file} doesn't exist");
+               file.MustAs(nameof(file)).Exist().Assert();
 
                var innerLines = preprocess(file.Text, replacer);
                indentLines(innerLines, indent);

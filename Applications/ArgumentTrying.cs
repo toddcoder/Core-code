@@ -16,7 +16,7 @@ namespace Core.Applications
          {
             var text = argument.Text;
             return
-               from valid in Computers.FileName.IsValidFileName(text).Must().Be().Try(() => $"{text} invalid file name").Map(_ => (FileName)text)
+               from valid in text.MustAs(nameof(text)).BeAValidFileName().Try().Map(_ => (FileName)text)
                from exists in valid.Must().Exist().Try()
                select exists;
          }
@@ -28,8 +28,7 @@ namespace Core.Applications
          {
             var text = argument.Text;
             return
-               from valid in Computers.FolderName.IsValidFolderName(text).Must().Be().Try(() => $"{text} invalid Folder name")
-                  .Map(_ => (FolderName)text)
+               from valid in text.MustAs(nameof(text)).BeAValidFolderName().Try().Map(_ => (FolderName)text)
                from exists in valid.Must().Exist().Try()
                select exists;
          }

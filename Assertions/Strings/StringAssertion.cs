@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Core.Computers;
 using Core.Exceptions;
 using Core.Monads;
 using Core.RegularExpressions;
@@ -125,6 +126,16 @@ namespace Core.Assertions.Strings
       public StringAssertion MatchFriendly(string pattern, bool ignoreCase = false, bool multiline = false)
       {
          return add(() => subject.IsMatch(pattern, ignoreCase, multiline), $"$name must $not match regex {pattern} friendly");
+      }
+
+      public StringAssertion BeAValidFileName()
+      {
+         return add(() => FileName.IsValidFileName(subject), "$name must $not be a valid file name");
+      }
+
+      public StringAssertion BeAValidFolderName()
+      {
+         return add(() => FolderName.IsValidFolderName(subject), "$name must $not be a valid folder name");
       }
 
       public string Value => subject;

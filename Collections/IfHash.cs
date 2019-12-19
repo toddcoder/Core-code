@@ -8,7 +8,7 @@ namespace Core.Collections
 	{
 		IHash<TKey, TValue> hash;
 
-      internal IfHash(IHash<TKey, TValue> hash) => this.hash = hash.Must().Not.BeNull().Ensure<IHash<TKey, TValue>>();
+      internal IfHash(IHash<TKey, TValue> hash) => this.hash = hash.MustAs(nameof(hash)).Not.BeNull().Ensure<IHash<TKey, TValue>>();
 
 		public IMaybe<TValue> this[TKey key] => maybe(hash.ContainsKey(key), () => hash[key]);
 	}

@@ -66,7 +66,7 @@ namespace Core.Computers
       public IResult<FolderName> this[string subfolder] => tryTo(() =>
       {
          var name = folderName[subfolder];
-         return name.Must().Exist().Try();
+         return name.MustAs(nameof(name)).Exist().Try();
       });
 
       public IResult<FolderName> Subfolder(string name) => tryTo(() => folderName.Subfolder(name));
