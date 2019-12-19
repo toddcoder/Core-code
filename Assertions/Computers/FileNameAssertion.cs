@@ -111,7 +111,7 @@ namespace Core.Assertions.Computers
 
       public FileNameAssertion BeNull()
       {
-         return add(() => file != null, "file must $not be null");
+         return add(() => file == null, "file must $not be null");
       }
 
       public void Assert() => assert(this);

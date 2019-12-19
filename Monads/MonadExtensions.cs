@@ -746,7 +746,7 @@ namespace Core.Monads
          }
       }
 
-      public static IResult<T> MaxOrFail<T>(this IEnumerable<T> enumerable, Func<string> exceptionMessage)
+      public static IResult<T> MaxOrFail<T>(this IEnumerable<T> enumerable, Func<string> exceptionMessage) => tryTo(() =>
       {
          var array = enumerable.ToArray();
          if (array.Length == 0)
@@ -757,23 +757,26 @@ namespace Core.Monads
          {
             return array.Max().Success();
          }
-      }
+      });
 
       public static IResult<T> MaxOrFail<T, TMax>(this IEnumerable<T> enumerable, Func<T, TMax> maxOnFunc, Func<string> exceptionMessage)
       {
-         var array = enumerable.ToArray();
-         if (array.Length == 0)
+         return tryTo(() =>
          {
-            return exceptionMessage().Failure<T>();
-         }
-         else
-         {
-            var max = array.Select((v, i) => (v: maxOnFunc(v), i)).Max();
-            return array[max.i].Success();
-         }
+            var array = enumerable.ToArray();
+            if (array.Length == 0)
+            {
+               return exceptionMessage().Failure<T>();
+            }
+            else
+            {
+               var max = array.Select((v, i) => (v: maxOnFunc(v), i)).Max();
+               return array[max.i].Success();
+            }
+         });
       }
 
-      public static IResult<T> MinOrFail<T>(this IEnumerable<T> enumerable, Func<string> exceptionMessage)
+      public static IResult<T> MinOrFail<T>(this IEnumerable<T> enumerable, Func<string> exceptionMessage) => tryTo(() =>
       {
          var array = enumerable.ToArray();
          if (array.Length == 0)
@@ -784,22 +787,26 @@ namespace Core.Monads
          {
             return array.Min().Success();
          }
-      }
+      });
 
       public static IResult<T> MinOrFail<T, TMin>(this IEnumerable<T> enumerable, Func<T, TMin> minOnFunc, Func<string> exceptionMessage)
       {
-         var array = enumerable.ToArray();
-         if (array.Length == 0)
+         return tryTo(() =>
          {
-            return exceptionMessage().Failure<T>();
-         }
-         else
-         {
-            var min = array.Select((v, i) => (v: minOnFunc(v), i)).Min();
-            return array[min.i].Success();
-         }
+            var array = enumerable.ToArray();
+            if (array.Length == 0)
+            {
+               return exceptionMessage().Failure<T>();
+            }
+            else
+            {
+               var min = array.Select((v, i) => (v: minOnFunc(v), i)).Min();
+               return array[min.i].Success();
+            }
+
+         });
       }
-      //----
+
       public static IMatched<T> MaxOrNotMatched<T>(this IEnumerable<T> enumerable)
       {
          var array = enumerable.ToArray();

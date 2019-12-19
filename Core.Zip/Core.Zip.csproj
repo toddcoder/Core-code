@@ -43,13 +43,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ZipContinue.cs" />
-    <Compile Include="ZipEventArgs.cs" />
-    <Compile Include="ZipEventCancel.cs" />
-    <Compile Include="Zipper.cs" />
+    <Compile Include="FileNameZipExtensions.cs" />
+    <Compile Include="FolderNameZipExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ZipperAsync.cs" />
-    <Compile Include="ZipperTrying.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core.csproj">

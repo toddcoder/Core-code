@@ -77,6 +77,10 @@
       <Project>{d832ee86-c29e-48c6-9704-73486d3b089c}</Project>
       <Name>Core.ObjectGraphs</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Core.Zip\Core.Zip.csproj">
+      <Project>{5fe6a366-b033-4072-b041-12255f83d139}</Project>
+      <Name>Core.Zip</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
