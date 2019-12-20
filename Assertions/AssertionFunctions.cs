@@ -2,12 +2,16 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Core.Applications.Async;
+using Core.Collections;
 using Core.Enumerables;
 using Core.Exceptions;
 using Core.Monads;
+using Core.RegularExpressions;
+using Core.Strings;
 
 namespace Core.Assertions
 {
@@ -27,6 +31,75 @@ namespace Core.Assertions
          }
 
          return list.Stringify();
+      }
+
+      public static string dictionaryImage<TKey, TValue>(Dictionary<TKey, TValue> dictionary)
+      {
+         IEnumerable<TKey> keys;
+         if (dictionary.Count > 10)
+         {
+            keys = dictionary.Keys.Take(10);
+         }
+         else
+         {
+            keys = dictionary.Keys;
+         }
+
+         return keys.Select(k => $"[{k}] = {dictionary[k]}").Stringify();
+      }
+
+      public static string hashImage<TKey, TValue>(IHash<TKey, TValue> hash)
+      {
+         if (hash.AnyHash().If(out var h))
+         {
+            return dictionaryImage(h);
+         }
+         else
+         {
+            return hash.ToString();
+         }
+      }
+
+      public static string maybeImage<T>(IMaybe<T> maybe)
+      {
+         return maybe.Map(v => v.ToNonNullString()).DefaultTo(() => $"none<{typeof(T).Name}>");
+      }
+
+      public static string resultImage<T>(IResult<T> result)
+      {
+         return result.Map(v => v.ToNonNullString()).Recover(e => $"failure<{typeof(T).Name}>({e.Message})");
+      }
+
+      public static string matchedImage<T>(IMatched<T> matched)
+      {
+         if (matched.If(out var value, out var anyException))
+         {
+            return value.ToNonNullString();
+         }
+         else if (anyException.If(out var exception))
+         {
+            return $"failedMatch<{typeof(T).Name}>({exception.Message})";
+         }
+         else
+         {
+            return $"notMatched<{typeof(T).Name}>";
+         }
+      }
+
+      public static string completionImage<T>(ICompletion<T> completion)
+      {
+         if (completion.If(out var value, out var anyException))
+         {
+            return value.ToNonNullString();
+         }
+         else if (anyException.If(out var exception))
+         {
+            return $"interrupted<{typeof(T).Name}>({exception.Message})";
+         }
+         else
+         {
+            return $"cancelled<{typeof(T).Name}>";
+         }
       }
 
       public static bool and(ICanBeTrue x, ICanBeTrue y) => x.BeTrue() && y.BeTrue();
@@ -200,6 +273,28 @@ namespace Core.Assertions
                return assertion.Value.Completed(t);
             }
          }, token);
+      }
+
+      public static Expression<Func<T>> assert<T>(Expression<Func<T>> func) => func;
+
+      public static (string name, T value) resolve<T>(Expression<Func<T>> expression)
+      {
+         var expressionBody = expression.Body;
+         var name = expressionBody.ToString();
+
+         var matcher = new Matcher();
+         if (matcher.IsMatch(name, "'value(' .+ ').' /(.+) $"))
+         {
+            name = matcher.FirstGroup;
+         }
+
+         var value = expression.Compile()();
+         if (name.IsEmpty())
+         {
+            name = value.ToNonNullString();
+         }
+
+         return (name, value);
       }
    }
 }

@@ -4,6 +4,7 @@ using Core.Assertions;
 using Core.Collections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Core.Arrays.ArrayFunctions;
+using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Tests
 {
@@ -96,6 +97,53 @@ namespace Core.Tests
          typeof(DayOfWeek).Must().BeEnumeration().Assert();
          var listType = new List<string>().GetType();
          listType.Must().BeGeneric().ContainGenericArgument(typeof(string)).Assert();
+      }
+
+      static int getX() => 3;
+
+      class XClass
+      {
+         int x;
+
+         public XClass(int x)
+         {
+            this.x = x;
+         }
+
+         public int X => x;
+      }
+
+      [TestMethod]
+      public void NamelessAssertionTest1()
+      {
+         var x = 1;
+         assert(() => x).Must().Equal(2).Assert();
+      }
+
+      [TestMethod]
+      public void NamelessAssertionTest2()
+      {
+         assert(() => getX()).Must().Equal(2).Assert();
+      }
+
+      [TestMethod]
+      public void NamelessAssertionTest3()
+      {
+         var xObject = new XClass(10);
+         assert(() => xObject.X).Must().Equal(2).Assert();
+      }
+
+      [TestMethod]
+      public void NamelessAssertionTest4()
+      {
+         var text = "";
+         assert(() => text).Must().Not.BeNullOrEmpty().Assert();
+      }
+
+      [TestMethod]
+      public void NamelessAssertionTest5()
+      {
+         assert(() => 10).Must().Equal(2).Assert();
       }
    }
 }
