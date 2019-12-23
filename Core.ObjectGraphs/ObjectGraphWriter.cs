@@ -4,6 +4,7 @@ using Core.Assertions;
 using Core.ObjectGraphs.Parsers;
 using Core.RegularExpressions;
 using Core.Strings;
+using static Core.Assertions.AssertionFunctions;
 
 namespace Core.ObjectGraphs
 {
@@ -20,7 +21,11 @@ namespace Core.ObjectGraphs
 
       public void Begin() => indent++;
 
-      public void End() => (--indent).MustAs(nameof(indent)).BeGreaterThan(-1).Assert("Too many unindents");
+      public void End()
+      {
+         indent--;
+         assert(() => indent).Must().BeGreaterThan(-1).OrThrow("Too many unindents");
+      }
 
       public void Write(string name, string value = "", string type = "", bool quote = false)
       {

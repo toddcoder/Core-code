@@ -2,6 +2,7 @@
 using System.Reflection;
 using Core.Assertions;
 using Core.Monads;
+using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Objects
 {
@@ -15,7 +16,7 @@ namespace Core.Objects
       static BindingFlags setFieldBindings = baseBindings | BindingFlags.SetField;
 
       public static IResult<Invoker> From(object obj) =>
-         from nonNull in obj.MustAs(nameof(obj)).Not.BeNull().Try()
+         from nonNull in assert(() => obj).Must().Not.BeNull().OrFailure()
          from type in nonNull.GetType().Success()
          select new Invoker(nonNull, type);
 

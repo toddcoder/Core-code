@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Text.RegularExpressions;
-using Core.Assertions;
 using Core.Monads;
 using static System.Text.RegularExpressions.RegexOptions;
 using static Core.Monads.MonadFunctions;
@@ -31,17 +30,6 @@ namespace Core.Regex
 		public static bool IsMatch(this string input, string pattern, bool ignoreCase = false, bool multiline = false)
 		{
 			return input.IsMatch(pattern, GetOptions(ignoreCase, multiline));
-		}
-
-		public static void RequiredMatch(this string input, string pattern, string message, RegexOptions options)
-		{
-			input.IsMatch(pattern, options).MustAs(nameof(input)).Be().Assert(message);
-      }
-
-		public static void RequiredMatch(this string input, string pattern, string message, bool ignoreCase = false,
-			bool multiline = false)
-		{
-			input.IsMatch(pattern, ignoreCase, multiline).MustAs(nameof(input)).Be().Assert(message);
 		}
 
 		public static string Substitute(this string input, string pattern, string replacement, RegexOptions options)

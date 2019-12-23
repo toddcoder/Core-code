@@ -8,13 +8,14 @@ using Core.Collections;
 using Core.Monads;
 using static System.Reflection.BindingFlags;
 using static System.Reflection.MemberTypes;
+using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Objects
 {
    public class ObjectReader
    {
       public static IResult<ObjectReader> ReadObject(object obj) =>
-         from nonNull in obj.MustAs(nameof(obj)).Not.BeNull().Try()
+         from nonNull in assert(() => obj).Must().Not.BeNull().OrFailure()
          from type in obj.GetType().Success()
          from values in getValues(obj, type)
          select new ObjectReader(values);

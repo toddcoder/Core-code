@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Core.Assertions;
+using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Io.Delimited
 {
@@ -11,7 +12,7 @@ namespace Core.Io.Delimited
 
       public DelimitedTextEnumerator(DelimitedTextReader reader)
       {
-         this.reader = reader.MustAs(nameof(reader)).Not.BeNull().Ensure<DelimitedTextReader>();
+         this.reader = assert(() => reader).Must().Not.BeNull().Force<DelimitedTextReader>();
          current = new string[reader.FieldCount];
       }
 

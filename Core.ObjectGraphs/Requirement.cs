@@ -1,6 +1,7 @@
 ﻿using Core.Assertions;
 using Core.Collections;
 using Core.Exceptions;
+using static Core.Assertions.AssertionFunctions;
 
 namespace Core.ObjectGraphs
 {
@@ -14,7 +15,7 @@ namespace Core.ObjectGraphs
       {
          get
          {
-            graphName.MustAs(nameof(graphName)).Not.BeNullOrEmpty().Assert();
+            assert(() => graphName).Must().Not.BeNullOrEmpty().OrThrow();
 
             if (objectGraph.If(graphName, out var foundGraph))
             {

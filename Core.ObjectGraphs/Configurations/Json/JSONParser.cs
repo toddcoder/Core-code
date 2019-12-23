@@ -37,7 +37,7 @@ namespace Core.ObjectGraphs.Configurations.Json
 
       public IResult<JsonObject> Parse() =>
          from token in getToken()
-         from objectOpen in token.Must().Equal(TokenType.ObjectOpen).Try(() => "Must begin with an open object")
+         from objectOpen in token.Must().Equal(TokenType.ObjectOpen).OrFailure(() => "Must begin with an open object")
          from member in parseMembers("")
          select builder.Root;
 
@@ -313,7 +313,7 @@ namespace Core.ObjectGraphs.Configurations.Json
                      var result =
                         from innerName in parseNameOrString()
                         from next in nextToken()
-                        from colon in next.Must().Equal(TokenType.Colon).Try(() => $"Expected colon at {index}: {source.Drop(index)}").Map(t => next)
+                        from colon in next.Must().Equal(TokenType.Colon).OrFailure(() => $"Expected colon at {index}: {source.Drop(index)}").Map(t => next)
                         from value in parseValue(innerName)
                         select value;
                      if (result.ValueOrOriginal(out _, out var original))

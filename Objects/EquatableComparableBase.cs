@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using Core.Assertions;
 using Core.Exceptions;
+using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Objects
 {
@@ -34,7 +35,7 @@ namespace Core.Objects
             .Select(t => t.info)
             .Cast<MemberInfo>();
          comparableInfo = fieldSignatures.Union(propertySignatures).ToArray();
-         comparableInfo.Must().Not.BeEmpty().Assert("No fields or properties has a ComparableAttribute");
+         comparableInfo.Must().Not.BeEmpty().OrThrow("No fields or properties has a ComparableAttribute");
       }
 
       static int compareField(object left, object right, MemberInfo memberInfo)
@@ -74,7 +75,7 @@ namespace Core.Objects
 
       public virtual int CompareTo(object obj)
       {
-         obj.MustAs(nameof(obj)).BeOfType(GetType()).Assert();
+         assert(() => obj).Must().BeOfType(GetType()).OrThrow();
 
          foreach (var memberInfo in comparableInfo)
          {

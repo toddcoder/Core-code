@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Text;
 using Core.Assertions;
+using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Io.Delimited
 {
@@ -19,8 +20,8 @@ namespace Core.Io.Delimited
 
       public Buffer(TextReader reader, int bufferSize, char delimiter)
       {
-         this.reader = reader.MustAs(nameof(reader)).Not.BeNull().Ensure<TextReader>();
-         this.bufferSize = bufferSize.Must().BeGreaterThan(0).Ensure();
+         this.reader = assert(() => reader).Must().Not.BeNull().Force<TextReader>();
+         this.bufferSize = bufferSize.Must().BeGreaterThan(0).Force();
          this.delimiter = delimiter;
          buffer = new char[this.bufferSize];
          length = -1;

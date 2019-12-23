@@ -5,6 +5,7 @@ using System.Text;
 using Core.Assertions;
 using Core.Computers;
 using Core.Enumerables;
+using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Internet.Sgml
 {
@@ -53,7 +54,7 @@ namespace Core.Internet.Sgml
 
       public Element Add(Element element)
       {
-         element.MustAs(nameof(element)).Not.BeNull().Assert();
+         assert(() => element).Must().Not.BeNull().OrThrow();
 
          elements.Add(element);
          ElementAdded?.Invoke(this, new ElementEventArgs(element));

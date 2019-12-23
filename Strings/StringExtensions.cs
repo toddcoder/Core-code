@@ -10,6 +10,7 @@ using Core.Enumerables;
 using Core.Monads;
 using Core.Numbers;
 using Core.RegularExpressions;
+using static Core.Assertions.AssertionFunctions;
 using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
 using static Core.Strings.StringFunctions;
@@ -1623,7 +1624,7 @@ namespace Core.Strings
          {
             return none<object>();
          }
-         else if (type  == typeof(string))
+         else if (type == typeof(string))
          {
             return value.ExtractFromQuotes().Some<object>();
          }
@@ -1675,7 +1676,7 @@ namespace Core.Strings
          {
             return
                from newValue in value.Int64()
-               from assertion in newValue.MustAs(nameof(newValue)).BeBetween(int.MinValue).And(int.MaxValue).Try()
+               from assertion in assert(() => newValue).Must().BeBetween(int.MinValue).And(int.MaxValue).OrFailure()
                select (object)(int)assertion;
          }
 
@@ -1683,7 +1684,7 @@ namespace Core.Strings
          {
             var matcher = new Matcher();
             return
-               from attempt in matcher.IsMatch(value, "^ /(.+) ['fF'] $").Must().Be().Try("Single in invalid format")
+               from attempt in matcher.IsMatch(value, "^ /(.+) ['fF'] $").Must().Be().OrFailure("Single in invalid format")
                from floated in matcher.FirstGroup.Single()
                select (object)floated;
          }
@@ -1692,7 +1693,7 @@ namespace Core.Strings
          {
             var matcher = new Matcher();
             return
-               from attempt in matcher.IsMatch(value, "^ /(.+) ['dD'] $").Must().Be().Try("Double in invalid format")
+               from attempt in matcher.IsMatch(value, "^ /(.+) ['dD'] $").Must().Be().OrFailure("Double in invalid format")
                from doubled in matcher.FirstGroup.Double()
                select (object)doubled;
          }
@@ -1701,7 +1702,7 @@ namespace Core.Strings
          {
             var matcher = new Matcher();
             return
-               from attempt in matcher.IsMatch(value, "^ /(.+) ['mM'] $").Must().Be().Try("Decimal in invalid format")
+               from attempt in matcher.IsMatch(value, "^ /(.+) ['mM'] $").Must().Be().OrFailure("Decimal in invalid format")
                from result in matcher.FirstGroup.Decimal()
                select (object)result;
          }
@@ -2053,7 +2054,7 @@ namespace Core.Strings
          var matcher = new Matcher();
          foreach (var (key, replacement) in pairs)
          {
-            key.MustAs(nameof(key)).Not.BeNullOrEmpty().Assert();
+            assert(() => key).Must().Not.BeNullOrEmpty().OrThrow();
 
             var pattern = "-(< '//') '(" + key.Escape() + ")'";
             if (matcher.IsMatch(format, pattern))

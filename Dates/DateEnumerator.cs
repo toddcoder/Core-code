@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Core.Assertions;
 using Core.Dates.DateIncrements;
+using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Dates
 {
@@ -15,9 +16,7 @@ namespace Core.Dates
 
       public DateEnumerator(DateTime begin, DateTime end, TimeSpan increment)
       {
-         begin.MustAs(nameof(begin)).BeLessThan(end).Assert();
-
-         this.begin = begin;
+         this.begin = assert(() => begin).Must().BeLessThan(end).Force();
          this.end = end;
          this.increment = increment;
          current = this.begin - increment;

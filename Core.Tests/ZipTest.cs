@@ -5,6 +5,7 @@ using Core.Computers;
 using Core.Monads;
 using Core.Zip;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Tests
 {
@@ -40,7 +41,7 @@ namespace Core.Tests
             {
                if (zipFile.TryToUnzip().If(out var folder, out exception))
                {
-                  folder.MustAs(nameof(folder)).Exist().Assert();
+                  assert(() => folder).Must().Exist().OrThrow();
                   Console.WriteLine(folder.FullPath);
                }
                else

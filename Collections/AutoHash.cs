@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using Core.Assertions;
+using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Collections
 {
@@ -47,7 +48,7 @@ namespace Core.Collections
 
       public AutoHash(Func<TKey, TValue> defaultLambda, bool autoAddDefault = false)
       {
-         defaultLambda.MustAs(nameof(defaultLambda)).Not.BeNull().Assert();
+         assert(() => defaultLambda).Must().Not.BeNull().OrThrow();
 
          Default = DefaultType.Lambda;
          this.defaultLambda = defaultLambda;
@@ -56,8 +57,8 @@ namespace Core.Collections
 
       public AutoHash(Func<TKey, TValue> defaultLambda, bool autoAddDefault, IEqualityComparer<TKey> comparer) : this(comparer)
       {
-         defaultLambda.MustAs(nameof(defaultLambda)).Not.BeNull().Assert();
-         comparer.MustAs(nameof(comparer)).Not.BeNull().Assert();
+         assert(() => defaultLambda).Must().Not.BeNull().OrThrow();
+         assert(() => comparer).Must().Not.BeNull().OrThrow();
 
          Default = DefaultType.Lambda;
          this.defaultLambda = defaultLambda;
@@ -75,7 +76,7 @@ namespace Core.Collections
 
       public AutoHash(TValue defaultValue, bool autoAddDefault, IEqualityComparer<TKey> comparer) : this(comparer)
       {
-         comparer.MustAs(nameof(comparer)).Not.BeNull().Assert();
+         assert(() => comparer).Must().Not.BeNull().OrThrow();
 
          Default = DefaultType.Value;
          DefaultValue = defaultValue;
@@ -93,7 +94,7 @@ namespace Core.Collections
          get => defaultLambda;
          set
          {
-            value.MustAs(nameof(DefaultLambda)).Not.BeNull().Assert();
+            assert(() => value).Must().Not.BeNull().OrThrow();
             defaultLambda = value;
          }
       }
@@ -104,7 +105,7 @@ namespace Core.Collections
       {
          get
          {
-            key.MustAs(nameof(key)).Not.BeNull().Assert();
+            assert(() => key).Must().Not.BeNull().OrThrow();
 
             TValue result;
             switch (Default)

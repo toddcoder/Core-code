@@ -2,6 +2,7 @@
 using System.Text;
 using Core.Assertions;
 using Core.Computers;
+using static Core.Assertions.AssertionFunctions;
 using static Core.Strings.StringFunctions;
 
 namespace Core.Internet.Sgml
@@ -39,7 +40,7 @@ namespace Core.Internet.Sgml
 
       public SgmlBuilder(string rootName)
       {
-         rootName.MustAs(nameof(rootName)).Not.BeNullOrEmpty().Assert();
+         assert(() => rootName).Must().Not.BeNullOrEmpty().OrThrow();
 
          tidy = true;
          encoding = Encoding.UTF8;

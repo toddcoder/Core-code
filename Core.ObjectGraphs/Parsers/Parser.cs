@@ -4,6 +4,7 @@ using Core.Computers;
 using Core.Monads;
 using Core.RegularExpressions;
 using Core.Strings;
+using static Core.Assertions.AssertionFunctions;
 using static Core.Monads.MonadFunctions;
 using static Core.ObjectGraphs.Replacer;
 
@@ -82,7 +83,7 @@ namespace Core.ObjectGraphs.Parsers
                var indent = matcher[0, 1];
                FileName file = replacer.ReplaceVariables(matcher[0, 2]);
 
-               file.MustAs(nameof(file)).Exist().Assert();
+               assert(() => file).Must().Exist().OrThrow();
 
                var innerLines = preprocess(file.Text, replacer);
                indentLines(innerLines, indent);

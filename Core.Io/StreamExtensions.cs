@@ -3,6 +3,7 @@ using System.IO;
 using System.Text;
 using Core.Assertions;
 using Core.Monads;
+using static Core.Assertions.AssertionFunctions;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Io
@@ -13,7 +14,7 @@ namespace Core.Io
       {
          try
          {
-            stream.MustAs(nameof(stream)).Not.BeNull().Assert();
+            assert(() => stream).Must().Not.BeNull().OrThrow();
 
             stream.Position = 0;
 

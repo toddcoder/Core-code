@@ -6,6 +6,7 @@ using Core.Enumerables;
 using Core.RegularExpressions;
 using Core.Strings;
 using static System.Math;
+using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Numbers
 {
@@ -206,7 +207,7 @@ namespace Core.Numbers
 
       public static (double division, double remainder) DivRem(this double dividend, double divisor)
       {
-         divisor.MustAs(nameof(divisor)).Not.NearlyEqual(0.0).Assert();
+         assert(()=> divisor).Must().Not.BeNearlyEqual(0.0).OrThrow();
 
          var result = dividend / divisor;
          var floor = Floor(result);
@@ -217,7 +218,7 @@ namespace Core.Numbers
 
       public static (int division, int remainder) DivRem(this int dividend, int divisor)
       {
-         divisor.MustAs(nameof(divisor)).Not.BeZero().Assert();
+         assert(() => divisor).Must().Not.BeZero().OrThrow();
          return (dividend / divisor, dividend % divisor);
       }
 

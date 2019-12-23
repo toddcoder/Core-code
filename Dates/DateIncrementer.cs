@@ -2,6 +2,7 @@
 using Core.Assertions;
 using Core.Dates.Now;
 using Core.Monads;
+using static Core.Assertions.AssertionFunctions;
 using static Core.Monads.AttemptFunctions;
 
 namespace Core.Dates
@@ -62,7 +63,7 @@ namespace Core.Dates
 
       public IResult<DateTime> SetMonth(int month)
       {
-         var newDate = month.MustAs(nameof(month)).BeBetween(1).And(12).Try().Map(m => new Month(date, m).Date);
+         var newDate = assert(() => month).Must().BeBetween(1).And(12).OrFailure().Map(m => new Month(date, m).Date);
          return newDate.OnSuccess(d => date = d);
       }
 
@@ -74,7 +75,7 @@ namespace Core.Dates
 
       public IResult<DateTime> SetDay(int day)
       {
-         var newDate = day.MustAs(nameof(day)).BeBetween(1).And(date.LastOfMonth().Day).Try().Map(d => new Day(date, d).Date);
+         var newDate = assert(() => day).Must().BeBetween(1).And(date.LastOfMonth().Day).OrFailure().Map(d => new Day(date, d).Date);
          return newDate.OnSuccess(d => date = d);
       }
 
@@ -88,7 +89,7 @@ namespace Core.Dates
 
       public IResult<DateTime> SetHour(int hour)
       {
-         var newDate = hour.MustAs(nameof(hour)).BeBetween(0).Until(24).Try().Map(h => new Hour(date, h).Date);
+         var newDate = assert(() => hour).Must().BeBetween(0).Until(24).OrFailure().Map(h => new Hour(date, h).Date);
          return newDate.OnSuccess(d => date = d);
       }
 
@@ -100,7 +101,7 @@ namespace Core.Dates
 
       public IResult<DateTime> SetMinute(int minute)
       {
-         var newDate = minute.MustAs(nameof(minute)).BeBetween(0).Until(60).Try().Map(m => new Minute(date, m).Date);
+         var newDate = assert(() => minute).Must().BeBetween(0).Until(60).OrFailure().Map(m => new Minute(date, m).Date);
          return newDate.OnSuccess(d => date = d);
       }
 
@@ -112,7 +113,7 @@ namespace Core.Dates
 
       public IResult<DateTime> SetSecond(int second)
       {
-         var newDate = second.MustAs(nameof(second)).BeBetween(0).Until(60).Try().Map(s => new Second(date, s).Date);
+         var newDate = assert(() => second).Must().BeBetween(0).Until(60).OrFailure().Map(s => new Second(date, s).Date);
          return newDate.OnSuccess(d => date = d);
       }
 
@@ -124,7 +125,7 @@ namespace Core.Dates
 
       public IResult<DateTime> SetMillisecond(int millisecond)
       {
-         var newDate = millisecond.MustAs(nameof(millisecond)).BeBetween(0).Until(1000).Try().Map(m => new Millisecond(date, m).Date);
+         var newDate = assert(() => millisecond).Must().BeBetween(0).Until(1000).OrFailure().Map(m => new Millisecond(date, m).Date);
          return newDate.OnSuccess(d => date = d);
       }
 

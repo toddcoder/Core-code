@@ -9,6 +9,7 @@ using Core.Numbers;
 using Core.RegularExpressions;
 using Core.Strings;
 using static System.Math;
+using static Core.Assertions.AssertionFunctions;
 using static Core.Monads.MonadFunctions;
 using static Core.Objects.ObjectFunctions;
 
@@ -46,7 +47,7 @@ namespace Core.Arrays
          }
          else
 			{
-				newLength.Must().BeGreaterThan(length).Assert("New length must be greater than the source array's length");
+				newLength.Must().BeGreaterThan(length).OrThrow("New length must be greater than the source array's length");
 
 				var newArray = new T[newLength];
 				Array.Copy(array, newArray, length);
@@ -127,9 +128,9 @@ namespace Core.Arrays
 
 		public static T[] RangeOf<T>(this T[] array, int start, int stop)
       {
-         start.MustAs(nameof(start)).BeLessThanOrEqual(stop).Assert($"$name must be less than or equal to {nameof(stop)}");
-			start.MustAs(nameof(start)).BeBetween(0).Until(array.Length).Assert("$name out of range");
-			stop.MustAs(nameof(stop)).BeBetween(0).Until(array.Length).Assert("$name out of range");
+         assert(()=> start).Must().BeLessThanOrEqual(stop).OrThrow();
+			assert(()=> start).Must().BeBetween(0).Until(array.Length).OrThrow();
+			assert(()=> stop).Must().BeBetween(0).Until(array.Length).OrThrow();
 
 			var result = new T[stop - start + 1];
 			var index = 0;

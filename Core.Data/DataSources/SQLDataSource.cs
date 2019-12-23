@@ -11,6 +11,7 @@ using Core.Monads;
 using Core.Objects;
 using Core.Strings;
 using static System.Convert;
+using static Core.Assertions.AssertionFunctions;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Data.DataSources
@@ -215,7 +216,7 @@ namespace Core.Data.DataSources
       public void Copy<T>(Adapter<T> sourceAdapter)
          where T : class
       {
-         TableName.MustAs(nameof(TableName)).Not.BeEmpty().Assert();
+         assert(() => TableName).Must().Not.BeEmpty().OrThrow();
 
          recordCount = 0;
 
@@ -233,7 +234,7 @@ namespace Core.Data.DataSources
 
       public void Copy(IDataReader reader, TimeSpan timeout)
       {
-         TableName.MustAs(nameof(TableName)).Not.BeEmpty().Assert();
+         assert(() => TableName).Must().Not.BeEmpty().OrThrow();
 
          recordCount = 0;
 

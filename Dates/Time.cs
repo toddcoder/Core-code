@@ -8,6 +8,7 @@ using Core.Numbers;
 using Core.RegularExpressions;
 using Core.Strings;
 using static System.Math;
+using static Core.Assertions.AssertionFunctions;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Dates
@@ -18,7 +19,7 @@ namespace Core.Dates
 
 		static (int, int, int, int) deriveFromMilliseconds(long millisecondsAsLong)
 		{
-         millisecondsAsLong.MustAs(nameof(millisecondsAsLong)).BePositive().Assert();
+         assert(()=> millisecondsAsLong).Must().BePositive().OrThrow();
 
 			var milliseconds = 0;
 			var seconds = 0;
@@ -335,31 +336,31 @@ namespace Core.Dates
 				return result;
 			}
 			set
-			{
-            value.MustAs(nameof(millisecond)).BeLessThan(HOURS_IN_MILLISECONDS).Assert();
+         {
+            assert(() => value).Must().BeLessThan(HOURS_IN_MILLISECONDS).OrThrow();
 
 				(hour, minute, second, millisecond) = deriveFromMilliseconds(value);
 			}
 		}
 
 		void setHour(int newHour)
-		{
-			hour = newHour.MustAs(nameof(hour)).BeBetween(0).And(23).Ensure();
-		}
+      {
+         hour = assert(() => newHour).Must().BeBetween(0).And(23).Force();
+      }
 
 		void setMinute(int newMinute)
-		{
-			minute = newMinute.MustAs(nameof(minute)).BeBetween(0).And(59).Ensure();
+      {
+         minute = assert(() => newMinute).Must().BeBetween(0).And(59).Force();
       }
 
 		void setSecond(int newSecond)
-		{
-         second = newSecond.MustAs(nameof(second)).BeBetween(0).And(59).Ensure();
+      {
+         second = assert(() => newSecond).Must().BeBetween(0).And(59).Force();
       }
 
 		void setMillisecond(int newMillisecond)
-		{
-         millisecond = newMillisecond.MustAs(nameof(millisecond)).BeBetween(0).And(999).Ensure();
+      {
+         millisecond = assert(() => newMillisecond).Must().BeBetween(0).And(999).Force();
       }
 
 		public override string ToString() => $"{hour:00}:{minute:00}:{second:00}.{millisecond:000}";

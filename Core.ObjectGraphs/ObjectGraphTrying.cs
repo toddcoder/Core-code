@@ -1,5 +1,5 @@
-﻿using Core.Assertions;
-using Core.Monads;
+﻿using Core.Monads;
+using static Core.Assertions.AssertionFunctions;
 using static Core.Monads.AttemptFunctions;
 
 namespace Core.ObjectGraphs
@@ -14,7 +14,7 @@ namespace Core.ObjectGraphs
 
       public IResult<ObjectGraph> this[string name]
       {
-         get => graph.MustAs(nameof(graph)).HaveKeyOf(name).Try().Map(d => d[name]);
+         get => assert(() => graph).Must().HaveKeyOf(name).OrFailure().Map(d => d[name]);
       }
 
       public IResult<object> Fill(object obj) => tryTo(() =>

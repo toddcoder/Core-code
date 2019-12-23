@@ -10,6 +10,7 @@ using Core.Monads;
 using Core.Numbers;
 using Core.RegularExpressions.Parsers;
 using Core.Strings;
+using static Core.Assertions.AssertionFunctions;
 using static Core.Monads.MonadFunctions;
 using static Core.RegularExpressions.RegexExtensions;
 using RMatch = System.Text.RegularExpressions.Match;
@@ -286,12 +287,12 @@ namespace Core.RegularExpressions
       public virtual void RequiredMatch(string input, string pattern, string message, bool ignoreCase = false,
          bool multiline = false)
       {
-         IsMatch(input, pattern, ignoreCase, multiline).Must().Be().Assert(message);
+         IsMatch(input, pattern, ignoreCase, multiline).Must().Be().OrThrow(message);
       }
 
       public virtual void RequiredMatch(string input, string pattern, string message, RegexOptions options)
       {
-         IsMatch(input, pattern, options).Must().Be().Assert(message);
+         IsMatch(input, pattern, options).Must().Be().OrThrow(message);
       }
 
       public virtual void Evaluate(string input, string pattern, RegexOptions options) => IsMatch(input, pattern, options);
@@ -362,7 +363,7 @@ namespace Core.RegularExpressions
 
       static Group getGroup(Match match, int groupIndex)
       {
-			groupIndex.MustAs(nameof(groupIndex)).BeBetween(0).Until(match.Groups.Length).Assert();
+			assert(()=> groupIndex).Must().BeBetween(0).Until(match.Groups.Length).OrThrow();
          return match.Groups[groupIndex];
       }
 
@@ -373,7 +374,7 @@ namespace Core.RegularExpressions
 
       Match getMatch(int matchIndex)
       {
-			matchIndex.MustAs(nameof(matchIndex)).BeBetween(0).Until(matches.Length).Assert();
+         assert(() => matchIndex).Must().BeBetween(0).Until(matches.Length).OrThrow();
          return matches[matchIndex];
       }
 

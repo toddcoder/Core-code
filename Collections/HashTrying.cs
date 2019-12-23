@@ -1,6 +1,7 @@
 ﻿using System;
 using Core.Assertions;
 using Core.Monads;
+using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Collections
 {
@@ -12,7 +13,7 @@ namespace Core.Collections
 
       public IResult<TValue> this[TKey key]
       {
-         get => hash.MustAs(nameof(hash)).HaveKeyOf(key).Try().Map(d => d[key].Success());
+         get => assert(() => hash).Must().HaveKeyOf(key).OrFailure().Map(d => d[key].Success());
       }
 
       public IResult<TValue> Find(TKey key, Func<TKey, IResult<TValue>> defaultValue, bool addIfNotFound = false)

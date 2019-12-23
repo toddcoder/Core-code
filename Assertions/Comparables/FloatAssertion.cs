@@ -32,7 +32,7 @@ namespace Core.Assertions.Comparables
          }
       }
 
-      public FloatAssertion NearlyEqual(object obj, float epsilon = 0.00001f)
+      public FloatAssertion BeNearlyEqual(object obj, float epsilon = 0.00001f)
       {
          return (FloatAssertion)add(obj, c => nearlyEqual(Comparable, obj, epsilon), $"{obj} must $not nearly be equal {comparable}");
       }

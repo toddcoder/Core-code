@@ -1,4 +1,5 @@
 ﻿using Core.Assertions;
+using static Core.Assertions.AssertionFunctions;
 using static Core.Internet.Sgml.SgmlTextHolder;
 
 namespace Core.Internet.Sgml
@@ -11,9 +12,9 @@ namespace Core.Internet.Sgml
 
       public Attribute(string name, string text, QuoteType quote)
       {
-         text.MustAs(nameof(text)).Not.BeNull().Assert();
+         assert(() => text).Must().Not.BeNull().OrThrow();
 
-         this.name = name.MustAs(nameof(name)).Not.BeNullOrEmpty().Ensure();
+         this.name = assert(() => name).Must().Not.BeNullOrEmpty().Force();
          this.text = Sgmlify(text, quote);
          this.quote = quote;
       }

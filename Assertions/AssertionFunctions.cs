@@ -5,13 +5,14 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
-using Core.Applications.Async;
 using Core.Collections;
 using Core.Enumerables;
 using Core.Exceptions;
 using Core.Monads;
 using Core.RegularExpressions;
 using Core.Strings;
+using static Core.Applications.Async.AsyncFunctions;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Assertions
 {
@@ -108,7 +109,7 @@ namespace Core.Assertions
 
       public static bool beTrue<T>(IAssertion<T> assertion) => assertion.Constraints.All(c => c.IsTrue());
 
-      public static void assert<T>(IAssertion<T> assertion)
+      public static void orThrow<T>(IAssertion<T> assertion)
       {
          if (assertion.Constraints.FirstOrNone(c => !c.IsTrue()).If(out var constraint))
          {
@@ -116,7 +117,7 @@ namespace Core.Assertions
          }
       }
 
-      public static void assert<T>(IAssertion<T> assertion, string message)
+      public static void orThrow<T>(IAssertion<T> assertion, string message)
       {
          if (assertion.Constraints.Any(c => !c.IsTrue()))
          {
@@ -124,7 +125,7 @@ namespace Core.Assertions
          }
       }
 
-      public static void assert<T>(IAssertion<T> assertion, Func<string> messageFunc)
+      public static void orThrow<T>(IAssertion<T> assertion, Func<string> messageFunc)
       {
          if (assertion.Constraints.Any(c => !c.IsTrue()))
          {
@@ -132,7 +133,7 @@ namespace Core.Assertions
          }
       }
 
-      public static void assert<TException, T>(IAssertion<T> assertion, params object[] args) where TException : Exception
+      public static void orThrow<TException, T>(IAssertion<T> assertion, params object[] args) where TException : Exception
       {
          if (assertion.Constraints.Any(c => !c.IsTrue()))
          {
@@ -140,27 +141,27 @@ namespace Core.Assertions
          }
       }
 
-      public static T ensure<T>(IAssertion<T> assertion)
+      public static T force<T>(IAssertion<T> assertion)
       {
-         assert(assertion);
+         orThrow(assertion);
          return assertion.Value;
       }
 
-      public static T ensure<T>(IAssertion<T> assertion, string message)
+      public static T force<T>(IAssertion<T> assertion, string message)
       {
-         assert(assertion, message);
+         orThrow(assertion, message);
          return assertion.Value;
       }
 
-      public static T ensure<T>(IAssertion<T> assertion, Func<string> messageFunc)
+      public static T force<T>(IAssertion<T> assertion, Func<string> messageFunc)
       {
-         assert(assertion, messageFunc);
+         orThrow(assertion, messageFunc);
          return assertion.Value;
       }
 
-      public static T ensure<TException, T>(IAssertion<T> assertion, params object[] args) where TException : Exception
+      public static T force<TException, T>(IAssertion<T> assertion, params object[] args) where TException : Exception
       {
-         assert<TException, T>(assertion, args);
+         orThrow<TException, T>(assertion, args);
          return assertion.Value;
       }
 
@@ -170,31 +171,31 @@ namespace Core.Assertions
          return (TResult)converter.ConvertTo(assertion.Value, typeof(TResult));
       }
 
-      public static TResult ensureConvert<T, TResult>(IAssertion<T> assertion)
+      public static TResult forceConvert<T, TResult>(IAssertion<T> assertion)
       {
-         assert(assertion);
+         orThrow(assertion);
          return convert<T, TResult>(assertion);
       }
 
-      public static TResult ensureConvert<T, TResult>(IAssertion<T> assertion, string message)
+      public static TResult forceConvert<T, TResult>(IAssertion<T> assertion, string message)
       {
-         assert(assertion, message);
+         orThrow(assertion, message);
          return convert<T, TResult>(assertion);
       }
 
-      public static TResult ensureConvert<T, TResult>(IAssertion<T> assertion, Func<string> messageFunc)
+      public static TResult forceConvert<T, TResult>(IAssertion<T> assertion, Func<string> messageFunc)
       {
-         assert(assertion, messageFunc);
+         orThrow(assertion, messageFunc);
          return convert<T, TResult>(assertion);
       }
 
-      public static TResult ensureConvert<T, TException, TResult>(IAssertion<T> assertion, params object[] args) where TException : Exception
+      public static TResult forceConvert<T, TException, TResult>(IAssertion<T> assertion, params object[] args) where TException : Exception
       {
-         assert<TException, T>(assertion, args);
+         orThrow<TException, T>(assertion, args);
          return convert<T, TResult>(assertion);
       }
 
-      public static IResult<T> @try<T>(IAssertion<T> assertion)
+      public static IResult<T> orFailure<T>(IAssertion<T> assertion)
       {
          if (assertion.Constraints.FirstOrNone(c => !c.IsTrue()).If(out var constraint))
          {
@@ -206,7 +207,7 @@ namespace Core.Assertions
          }
       }
 
-      public static IResult<T> @try<T>(IAssertion<T> assertion, string message)
+      public static IResult<T> orFailure<T>(IAssertion<T> assertion, string message)
       {
          if (assertion.Constraints.Any(c => !c.IsTrue()))
          {
@@ -218,7 +219,7 @@ namespace Core.Assertions
          }
       }
 
-      public static IResult<T> @try<T>(IAssertion<T> assertion, Func<string> messageFunc)
+      public static IResult<T> orFailure<T>(IAssertion<T> assertion, Func<string> messageFunc)
       {
          if (assertion.Constraints.Any(c => !c.IsTrue()))
          {
@@ -230,12 +231,12 @@ namespace Core.Assertions
          }
       }
 
-      public static IMaybe<T> maybe<T>(IAssertion<T> assertion)
+      public static IMaybe<T> orNone<T>(IAssertion<T> assertion)
       {
-         return MonadFunctions.maybe(assertion.Constraints.All(c => c.IsTrue()), () => assertion.Value);
+         return maybe(assertion.Constraints.All(c => c.IsTrue()), () => assertion.Value);
       }
 
-      public static async Task<ICompletion<T>> tryAsync<T>(IAssertion<T> assertion, CancellationToken token) => await AsyncFunctions.runAsync(t =>
+      public static async Task<ICompletion<T>> orFailureAsync<T>(IAssertion<T> assertion, CancellationToken token) => await runAsync(t =>
       {
          if (assertion.Constraints.FirstOrNone(c => !c.IsTrue()).If(out var constraint))
          {
@@ -247,8 +248,8 @@ namespace Core.Assertions
          }
       }, token);
 
-      public static async Task<ICompletion<T>> tryAsync<T>(IAssertion<T> assertion, string message, CancellationToken token) =>
-         await AsyncFunctions.runAsync(t =>
+      public static async Task<ICompletion<T>> orFailureAsync<T>(IAssertion<T> assertion, string message, CancellationToken token) =>
+         await runAsync(t =>
          {
             if (assertion.Constraints.Any(c => !c.IsTrue()))
             {
@@ -260,9 +261,9 @@ namespace Core.Assertions
             }
          }, token);
 
-      public static async Task<ICompletion<T>> tryAsync<T>(IAssertion<T> assertion, Func<string> messageFunc, CancellationToken token)
+      public static async Task<ICompletion<T>> orFailureAsync<T>(IAssertion<T> assertion, Func<string> messageFunc, CancellationToken token)
       {
-         return await AsyncFunctions.runAsync(t =>
+         return await runAsync(t =>
          {
             if (assertion.Constraints.Any(c => !c.IsTrue()))
             {

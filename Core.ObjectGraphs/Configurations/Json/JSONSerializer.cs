@@ -7,6 +7,7 @@ using Core.Computers;
 using Core.Monads;
 using Core.Objects;
 using Core.Strings;
+using static Core.Assertions.AssertionFunctions;
 
 namespace Core.ObjectGraphs.Configurations.Json
 {
@@ -15,7 +16,7 @@ namespace Core.ObjectGraphs.Configurations.Json
       public static IResult<JsonSerializer> New(object obj, string indentString = "   ")
       {
          return
-            from nonNull in obj.MustAs(nameof(obj)).Not.BeNull().Try()
+            from nonNull in assert(() => obj).Must().Not.BeNull().OrFailure()
             select new JsonSerializer(nonNull, indentString);
       }
 

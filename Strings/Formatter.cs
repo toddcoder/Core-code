@@ -5,6 +5,7 @@ using Core.Assertions;
 using Core.Collections;
 using Core.Numbers;
 using Core.RegularExpressions;
+using static Core.Assertions.AssertionFunctions;
 using static Core.Strings.StringFunctions;
 
 namespace Core.Strings
@@ -51,7 +52,7 @@ namespace Core.Strings
 
 		static string format(string source, bool addStandard, bool includeFolders, params string[] args)
       {
-         args.Length.MustAs("args length").BeEven().Assert();
+         assert(() => args.Length).Must().BeEven().OrThrow();
 
 			var formatter = addStandard ? WithStandard(includeFolders) : new Formatter();
 			for (var i = 0; i < args.Length; i += 2)

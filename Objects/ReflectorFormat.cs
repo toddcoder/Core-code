@@ -9,6 +9,7 @@ using Core.RegularExpressions;
 using Core.Strings;
 using static System.Reflection.BindingFlags;
 using static System.Reflection.MemberTypes;
+using static Core.Assertions.AssertionFunctions;
 using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
 
@@ -58,7 +59,7 @@ namespace Core.Objects
       }
 
       internal static IResult<ReflectorFormat> GetReflector(object obj) =>
-         from nonNullObject in obj.MustAs(nameof(obj)).Not.BeNull().Try()
+         from nonNullObject in assert(() => obj).Must().Not.BeNull().OrFailure()
          from type in tryTo(nonNullObject.GetType)
          select new ReflectorFormat(nonNullObject, type);
 

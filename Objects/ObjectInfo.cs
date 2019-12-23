@@ -3,6 +3,7 @@ using System.Collections;
 using System.Reflection;
 using Core.Assertions;
 using Core.Monads;
+using static Core.Assertions.AssertionFunctions;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Objects
@@ -88,7 +89,8 @@ namespace Core.Objects
                {
                   if (parameters.Length == 0)
                   {
-                     setValue(value).MustAs(nameof(value)).Be().Assert("$name couldn't be set");
+                     var valueWasSet = setValue(value);
+                     assert(() => valueWasSet).Must().Be().OrThrow("$name couldn't be set");
                   }
                   else
                   {
@@ -97,7 +99,7 @@ namespace Core.Objects
                }
                else
                {
-                  parameters.MustAs(nameof(parameters)).BeEmpty().Assert();
+                  assert(() => parameters).Must().BeEmpty().OrThrow();
                   inf.SetValue(obj, val, null);
                }
             }

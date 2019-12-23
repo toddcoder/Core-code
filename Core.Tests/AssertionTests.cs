@@ -40,9 +40,9 @@ namespace Core.Tests
 
          var value = 153;
          var result =
-            from positive in value.MustAs(nameof(value)).BePositive().Try()
-            from greater in value.MustAs(nameof(value)).BeGreaterThan(100).Try()
-            from less in value.MustAs(nameof(value)).BeLessThanOrEqual(200).Try()
+            from positive in assert(() => value).Must().BePositive().OrFailure()
+            from greater in assert(() => value).Must().BeGreaterThan(100).OrFailure()
+            from less in assert(() => value).Must().BeLessThanOrEqual(200).OrFailure()
             select less;
          if (result.If(out var integer, out var exception))
          {
@@ -83,20 +83,20 @@ namespace Core.Tests
       public void DictionaryAssertionTest()
       {
          var hash = new Hash<char, string> { ['a'] = "alfa", ['b'] = "bravo", ['c'] = "charlie" };
-         hash.MustAs(nameof(hash)).Not.BeNullOrEmpty().Assert();
-         hash.MustAs(nameof(hash)).HaveKeyOf('b').Assert();
+         assert(() => hash).Must().Not.BeNullOrEmpty().OrThrow();
+         assert(() => hash).Must().HaveKeyOf('b').OrThrow();
       }
 
       [TestMethod]
       public void TypeAssertionTest()
       {
-         0.GetType().Must().EqualToTypeOf(1).Assert();
-         0.GetType().Must().BeConvertibleTo(1L.GetType()).Assert();
-         0.GetType().Must().BeValue().Assert();
-         "".GetType().Must().BeClass().Assert();
-         typeof(DayOfWeek).Must().BeEnumeration().Assert();
+         0.GetType().Must().EqualToTypeOf(1).OrThrow();
+         0.GetType().Must().BeConvertibleTo(1L.GetType()).OrThrow();
+         0.GetType().Must().BeValue().OrThrow();
+         "".GetType().Must().BeClass().OrThrow();
+         typeof(DayOfWeek).Must().BeEnumeration().OrThrow();
          var listType = new List<string>().GetType();
-         listType.Must().BeGeneric().ContainGenericArgument(typeof(string)).Assert();
+         listType.Must().BeGeneric().ContainGenericArgument(typeof(string)).OrThrow();
       }
 
       static int getX() => 3;
@@ -117,33 +117,33 @@ namespace Core.Tests
       public void NamelessAssertionTest1()
       {
          var x = 1;
-         assert(() => x).Must().Equal(2).Assert();
+         assert(() => x).Must().Equal(2).OrThrow();
       }
 
       [TestMethod]
       public void NamelessAssertionTest2()
       {
-         assert(() => getX()).Must().Equal(2).Assert();
+         assert(() => getX()).Must().Equal(2).OrThrow();
       }
 
       [TestMethod]
       public void NamelessAssertionTest3()
       {
          var xObject = new XClass(10);
-         assert(() => xObject.X).Must().Equal(2).Assert();
+         assert(() => xObject.X).Must().Equal(2).OrThrow();
       }
 
       [TestMethod]
       public void NamelessAssertionTest4()
       {
          var text = "";
-         assert(() => text).Must().Not.BeNullOrEmpty().Assert();
+         assert(() => text).Must().Not.BeNullOrEmpty().OrThrow();
       }
 
       [TestMethod]
       public void NamelessAssertionTest5()
       {
-         assert(() => 10).Must().Equal(2).Assert();
+         assert(() => 10).Must().Equal(2).OrThrow();
       }
    }
 }

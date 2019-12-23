@@ -14,42 +14,42 @@ namespace Core.Assertions
 
       IAssertion<T> Named(string name);
 
-      void Assert();
+      void OrThrow();
 
-      void Assert(string message);
+      void OrThrow(string message);
 
-      void Assert(Func<string> messageFunc);
+      void OrThrow(Func<string> messageFunc);
 
-      void Assert<TException>(params object[] args) where TException : Exception;
+      void OrThrow<TException>(params object[] args) where TException : Exception;
 
-      T Ensure();
+      T Force();
 
-      T Ensure(string message);
+      T Force(string message);
 
-      T Ensure(Func<string> messageFunc);
+      T Force(Func<string> messageFunc);
 
-      T Ensure<TException>(params object[] args) where TException : Exception;
+      T Force<TException>(params object[] args) where TException : Exception;
 
-      TResult Ensure<TResult>();
+      TResult Force<TResult>();
 
-      TResult Ensure<TResult>(string message);
+      TResult Force<TResult>(string message);
 
-      TResult Ensure<TResult>(Func<string> messageFunc);
+      TResult Force<TResult>(Func<string> messageFunc);
 
-      TResult Ensure<TException, TResult>(params object[] args) where TException : Exception;
+      TResult Force<TException, TResult>(params object[] args) where TException : Exception;
 
-      IResult<T> Try();
+      IResult<T> OrFailure();
 
-      IResult<T> Try(string message);
+      IResult<T> OrFailure(string message);
 
-      IResult<T> Try(Func<string> messageFunc);
+      IResult<T> OrFailure(Func<string> messageFunc);
 
-      IMaybe<T> Maybe();
+      IMaybe<T> OrNone();
 
-      Task<ICompletion<T>> TryAsync(CancellationToken token);
+      Task<ICompletion<T>> OrFailureAsync(CancellationToken token);
 
-      Task<ICompletion<T>> TryAsync(string message, CancellationToken token);
+      Task<ICompletion<T>> OrFailureAsync(string message, CancellationToken token);
 
-      Task<ICompletion<T>> TryAsync(Func<string> messageFunc, CancellationToken token);
+      Task<ICompletion<T>> OrFailureAsync(Func<string> messageFunc, CancellationToken token);
    }
 }

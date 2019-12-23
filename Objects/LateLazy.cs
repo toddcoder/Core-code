@@ -2,6 +2,7 @@
 using Core.Assertions;
 using Core.Exceptions;
 using Core.Monads;
+using static Core.Assertions.AssertionFunctions;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Objects
@@ -19,7 +20,7 @@ namespace Core.Objects
 
       public void ActivateWith(Func<T> activator)
       {
-         activator.MustAs(nameof(activator)).Not.BeNull().Assert();
+         assert(() => activator).Must().Not.BeNull().OrThrow();
 
          if (!this.activator.HasValue)
          {
@@ -29,7 +30,7 @@ namespace Core.Objects
 
       public void OverrideWith(Func<T> activator)
       {
-         activator.MustAs(nameof(activator)).Not.BeNull().Assert();
+         assert(() => activator).Must().Not.BeNull().OrThrow();
 
          this.activator = activator.Some();
       }
@@ -46,7 +47,7 @@ namespace Core.Objects
             {
                var returnValue = f();
 
-               returnValue.MustAs(nameof(value)).Not.BeNull().Assert();
+               assert(() => returnValue).Must().Not.BeNull().OrThrow();
 
                value = returnValue.Some();
 

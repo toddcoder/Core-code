@@ -7,6 +7,7 @@ using Core.Assertions;
 using Core.Computers;
 using Core.Monads;
 using static Core.Applications.Async.AsyncFunctions;
+using static Core.Assertions.AssertionFunctions;
 using static Core.Monads.AttemptFunctions;
 
 namespace Core.Zip
@@ -16,9 +17,9 @@ namespace Core.Zip
       public static FileName Zip(this FolderName folder, string zipName, Predicate<FileName> include, bool recursive = true,
          CompressionLevel compressionLevel = CompressionLevel.Optimal)
       {
-         folder.MustAs(nameof(folder)).Not.BeNull().Assert();
-         zipName.MustAs(nameof(zipName)).Not.BeNullOrEmpty().Assert();
-         include.MustAs(nameof(include)).Not.BeNull().Assert();
+         assert(() => folder).Must().Not.BeNull().OrThrow();
+         assert(() => zipName).Must().Not.BeNullOrEmpty().OrThrow();
+         assert(() => include).Must().Not.BeNull().OrThrow();
 
          var zipFolder = folder.Parent.DefaultTo(() => @"C:\");
          var zipFile = zipFolder.UniqueFileName(zipName, ".zip");

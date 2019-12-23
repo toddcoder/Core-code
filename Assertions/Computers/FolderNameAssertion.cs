@@ -102,48 +102,48 @@ namespace Core.Assertions.Computers
          return this;
       }
 
-      public void Assert() => assert(this);
+      public void OrThrow() => orThrow(this);
 
-      public void Assert(string message) => assert(this, message);
+      public void OrThrow(string message) => orThrow(this, message);
 
-      public void Assert(Func<string> messageFunc) => assert(this, messageFunc);
+      public void OrThrow(Func<string> messageFunc) => orThrow(this, messageFunc);
 
-      public void Assert<TException>(params object[] args) where TException : Exception => assert<TException, FolderName>(this, args);
+      public void OrThrow<TException>(params object[] args) where TException : Exception => orThrow<TException, FolderName>(this, args);
 
-      public FolderName Ensure() => ensure(this);
+      public FolderName Force() => force(this);
 
-      public FolderName Ensure(string message) => ensure(this, message);
+      public FolderName Force(string message) => force(this, message);
 
-      public FolderName Ensure(Func<string> messageFunc) => ensure(this, messageFunc);
+      public FolderName Force(Func<string> messageFunc) => force(this, messageFunc);
 
-      public FolderName Ensure<TException>(params object[] args) where TException : Exception => ensure<TException, FolderName>(this, args);
+      public FolderName Force<TException>(params object[] args) where TException : Exception => force<TException, FolderName>(this, args);
 
-      public TResult Ensure<TResult>() => ensureConvert<FolderName, TResult>(this);
+      public TResult Force<TResult>() => forceConvert<FolderName, TResult>(this);
 
-      public TResult Ensure<TResult>(string message) => ensureConvert<FolderName, TResult>(this, message);
+      public TResult Force<TResult>(string message) => forceConvert<FolderName, TResult>(this, message);
 
-      public TResult Ensure<TResult>(Func<string> messageFunc) => ensureConvert<FolderName, TResult>(this, messageFunc);
+      public TResult Force<TResult>(Func<string> messageFunc) => forceConvert<FolderName, TResult>(this, messageFunc);
 
-      public TResult Ensure<TException, TResult>(params object[] args) where TException : Exception
+      public TResult Force<TException, TResult>(params object[] args) where TException : Exception
       {
-         return ensureConvert<FolderName, TException, TResult>(this, args);
+         return forceConvert<FolderName, TException, TResult>(this, args);
       }
 
-      public IResult<FolderName> Try() => @try(this);
+      public IResult<FolderName> OrFailure() => orFailure(this);
 
-      public IResult<FolderName> Try(string message) => @try(this, message);
+      public IResult<FolderName> OrFailure(string message) => orFailure(this, message);
 
-      public IResult<FolderName> Try(Func<string> messageFunc) => @try(this, messageFunc);
+      public IResult<FolderName> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
 
-      public IMaybe<FolderName> Maybe() => maybe(this);
+      public IMaybe<FolderName> OrNone() => orNone(this);
 
-      public async Task<ICompletion<FolderName>> TryAsync(CancellationToken token) => await tryAsync(this, token);
+      public async Task<ICompletion<FolderName>> OrFailureAsync(CancellationToken token) => await orFailureAsync(this, token);
 
-      public async Task<ICompletion<FolderName>> TryAsync(string message, CancellationToken token) => await tryAsync(this, message, token);
+      public async Task<ICompletion<FolderName>> OrFailureAsync(string message, CancellationToken token) => await orFailureAsync(this, message, token);
 
-      public async Task<ICompletion<FolderName>> TryAsync(Func<string> messageFunc, CancellationToken token)
+      public async Task<ICompletion<FolderName>> OrFailureAsync(Func<string> messageFunc, CancellationToken token)
       {
-         return await tryAsync(this, messageFunc, token);
+         return await orFailureAsync(this, messageFunc, token);
       }
    }
 }

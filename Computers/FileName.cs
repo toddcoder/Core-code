@@ -11,6 +11,7 @@ using Core.Numbers;
 using Core.Objects;
 using Core.RegularExpressions;
 using Core.Strings;
+using static Core.Assertions.AssertionFunctions;
 using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
 using static Core.Strings.StringFunctions;
@@ -23,7 +24,7 @@ namespace Core.Computers
       {
          public static IResult<FileName> FromString(string file)
          {
-            return IsValidFileName(file).MustAs(nameof(IsValidFileName)).Be().Try().Map(_ => new FileName(file));
+            return assert(() => file).Must().BeAValidFileName().OrFailure().Map(f => (FileName)f);
          }
       }
 

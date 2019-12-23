@@ -7,6 +7,7 @@ using Core.Data.DataSources;
 using Core.Data.Setups;
 using Core.Exceptions;
 using Core.Objects;
+using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Data
 {
@@ -28,7 +29,7 @@ namespace Core.Data
          Parameters = new Parameters.Parameters(setup.Parameters);
          Fields = new Fields.Fields(setup.Fields);
 
-         this.entity = entity.MustAs(nameof(entity)).Not.BeNull().Ensure<T>();
+         this.entity = assert(() => entity).Must().Not.BeNull().Force<T>();
          setEntityType();
 
          newFunc = () => entity;
@@ -51,7 +52,7 @@ namespace Core.Data
          get => entity;
          set
          {
-            entity = value.MustAs(nameof(entity)).Not.BeNull().Ensure<T>();
+            entity = assert(() => value).Must().Not.BeNull().Force<T>();
             setEntityType();
          }
       }

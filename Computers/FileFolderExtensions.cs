@@ -1,20 +1,21 @@
 ﻿using Core.Assertions;
 using Core.Monads;
+using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Computers
 {
-	public static class FileFolderExtensions
-	{
-		public static IResult<FileName> File(this string fileName)
-		{
-			FileName file = fileName;
-         return file.MustAs(nameof(file)).Exist().Try();
+   public static class FileFolderExtensions
+   {
+      public static IResult<FileName> File(this string fileName)
+      {
+         FileName file = fileName;
+         return assert(() => file).Must().Exist().OrFailure();
       }
 
-		public static IResult<FolderName> Folder(this string folderName)
-		{
-			FolderName folder = folderName;
-         return folder.MustAs(nameof(folder)).Exist().Try();
+      public static IResult<FolderName> Folder(this string folderName)
+      {
+         FolderName folder = folderName;
+         return assert(() => folder).Must().Exist().OrFailure();
       }
-	}
+   }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 using Core.Assertions;
+using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Objects
 {
@@ -15,7 +16,7 @@ namespace Core.Objects
 
       public static string memberName<T>(Expression<Func<T>> memberExpression)
       {
-         memberExpression.MustAs(nameof(memberExpression)).Not.BeNull().Assert();
+         assert(() => memberExpression).Must().Not.BeNull().OrThrow();
 
          var expressionBody = (MemberExpression)memberExpression.Body;
          return expressionBody.Member.Name;

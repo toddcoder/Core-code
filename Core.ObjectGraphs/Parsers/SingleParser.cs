@@ -2,6 +2,7 @@
 using Core.Computers;
 using Core.RegularExpressions;
 using Core.Strings;
+using static Core.Assertions.AssertionFunctions;
 
 namespace Core.ObjectGraphs.Parsers
 {
@@ -34,7 +35,7 @@ namespace Core.ObjectGraphs.Parsers
             value = replacer.Replace(value);
             FileName file = value;
 
-            file.MustAs(nameof(file)).Exist().Assert();
+            assert(() => file).Must().Exist().OrThrow();
 
             var graph = ObjectGraph.FromFile(file);
             graph.SetName(name);

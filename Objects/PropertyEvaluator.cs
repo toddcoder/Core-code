@@ -7,6 +7,7 @@ using Core.Collections;
 using Core.Enumerables;
 using Core.Monads;
 using Core.RegularExpressions;
+using static Core.Assertions.AssertionFunctions;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Objects
@@ -29,7 +30,7 @@ namespace Core.Objects
 
       public PropertyEvaluator(object obj)
       {
-         this.obj = obj.MustAs(nameof(obj)).Not.BeNull().Ensure<ArgumentNullException, object>();
+         this.obj = assert(() => obj).Must().Not.BeNull().Force<ArgumentNullException, object>();
          type = this.obj.GetType();
       }
 
@@ -69,9 +70,9 @@ namespace Core.Objects
 
                foreach (var info in new SignatureCollection(signature).Select(s => new ObjectInfo(current, s)))
                {
-                  current.MustAs(nameof(current)).Not.BeNull().Assert("$name is null; can't continue the chain");
+                  assert(() => current).Must().Not.BeNull().OrThrow("$name is null; can't continue the chain");
                   var infoValue = info.Value.Required($"Signature {signature} doesn't exist");
-                  info.PropertyType.MustAs(signature).HaveValue().Assert("Couldn't determine object at $signature");
+                  assert(() => info.PropertyType).Must().HaveValue().OrThrow("Couldn't determine object at $signature");
                   current = infoValue;
                   lastInfo = info.Some();
                }
@@ -119,7 +120,7 @@ namespace Core.Objects
 
          foreach (var singleSignature in signatures)
          {
-            result.MustAs(singleSignature.Name).Not.BeNull().Assert();
+            assert(()=> result).Must().Not.BeNull().OrThrow();
 
             info = new ObjectInfo(result, singleSignature);
             var value = info.Value;
@@ -128,7 +129,7 @@ namespace Core.Objects
 
          var propertyType = info.PropertyType.Required($"Signature {signature} not found");
 
-         return propertyType.MustAs(nameof(propertyType)).Not.BeNull().Ensure();
+         return assert(() => propertyType).Must().Not.BeNull().Force();
       }
 
       public Type Type(Signature signature) => Type(signature.ToString());

@@ -6,6 +6,7 @@ using Core.Data.Configurations;
 using Core.Data.ConnectionStrings;
 using Core.Data.DataSources;
 using Core.Monads;
+using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Data.Setups
 {
@@ -69,7 +70,7 @@ namespace Core.Data.Setups
       {
          get
          {
-            ConnectionString.MustAs(nameof(ConnectionString)).Not.BeNull().Assert();
+            assert(() => ConnectionString).Must().Not.BeNull().OrThrow();
             return new OLEDBDataSource(ConnectionString.ConnectionString, file);
          }
       }

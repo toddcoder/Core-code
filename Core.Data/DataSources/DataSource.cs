@@ -10,6 +10,7 @@ using Core.Monads;
 using Core.Objects;
 using Core.RegularExpressions;
 using Core.Strings;
+using static Core.Assertions.AssertionFunctions;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Data.DataSources
@@ -186,7 +187,7 @@ namespace Core.Data.DataSources
 
       internal void BeginReading(object entity, string command, Parameters.Parameters parameters, Fields.Fields inFields)
       {
-         inFields.Count.MustAs("inFields count").BePositive().Assert("You must have at least one field defined");
+         assert(() => inFields.Count).Must().BePositive().OrThrow("You must have at least one field defined");
 
          activeObject = entity.IfCast<IActive>();
          fields = inFields;
@@ -344,7 +345,7 @@ namespace Core.Data.DataSources
 
             if (!field.Optional)
             {
-               field.Ordinal.MustAs("field ordinal").Not.BeNegative().Assert($"Couldn't find {field.Name} field");
+               assert(()=> field.Ordinal).Must().Not.BeNegative().OrThrow($"Couldn't find {field.Name} field");
             }
          }
       }

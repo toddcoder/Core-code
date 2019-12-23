@@ -17,6 +17,7 @@ using Core.Objects;
 using Core.RegularExpressions;
 using Core.Strings;
 using static System.IO.Directory;
+using static Core.Assertions.AssertionFunctions;
 using static Core.Computers.ComputerFunctions;
 using static Core.Monads.MonadFunctions;
 
@@ -28,7 +29,7 @@ namespace Core.Computers
       {
          public static IResult<FolderName> FromString(string folder)
          {
-            return IsValidFolderName(folder).MustAs(nameof(IsValidFolderName)).Be().Try().Map(_ => new FolderName(folder));
+            return assert(() => folder).Must().BeAValidFolderName().OrFailure().Map(f => (FolderName)f);
          }
       }
 

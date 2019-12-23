@@ -2,6 +2,7 @@
 using System.Linq;
 using Core.Assertions;
 using Core.Monads;
+using static Core.Assertions.AssertionFunctions;
 using static Core.Monads.AttemptFunctions;
 
 namespace Core.Computers
@@ -66,7 +67,7 @@ namespace Core.Computers
       public IResult<FolderName> this[string subfolder] => tryTo(() =>
       {
          var name = folderName[subfolder];
-         return name.MustAs(nameof(name)).Exist().Try();
+         return assert(() => name).Must().Exist().OrFailure();
       });
 
       public IResult<FolderName> Subfolder(string name) => tryTo(() => folderName.Subfolder(name));

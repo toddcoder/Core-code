@@ -1,5 +1,6 @@
 ﻿using Core.Assertions;
 using Core.Monads;
+using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Collections
 {
@@ -9,9 +10,9 @@ namespace Core.Collections
 
       internal RequiredHash(IHash<TKey, TValue> hash)
       {
-         this.hash = hash.MustAs(nameof(hash)).Ensure<IHash<TKey, TValue>>();
+         this.hash = assert(() => hash).Must().Force<IHash<TKey, TValue>>();
       }
 
-      public IResult<TValue> this[TKey key] => hash.MustAs(nameof(hash)).HaveKeyOf(key).Try().Map(d => d[key]);
+      public IResult<TValue> this[TKey key] => assert(() => hash).Must().HaveKeyOf(key).OrFailure().Map(d => d[key]);
    }
 }

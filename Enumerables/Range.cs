@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Core.Assertions;
 using Core.Exceptions;
 using Core.Monads;
+using static Core.Assertions.AssertionFunctions;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Enumerables
@@ -95,7 +96,7 @@ namespace Core.Enumerables
 
       public Range By(int newIncrement)
       {
-         increment = newIncrement.MustAs(nameof(increment)).Not.BeZero().Ensure();
+         increment = assert(() => newIncrement).Must().Not.BeZero().Force();
          if (increment < 0)
          {
             endingPredicate = inclusive ? ((Func<int, int, bool>)((x, y) => x >= y)).Some() :
@@ -112,8 +113,8 @@ namespace Core.Enumerables
 
       public IEnumerator<int> GetEnumerator()
       {
-         var s = stop.Required("Stop value hasn't been set");
-         var p = endingPredicate.Required("Ending predicate hasn't been set");
+         var s = assert(() => stop).Must().Force("Stop value hasn't been set");
+         var p = assert(() => endingPredicate).Must().Force("Ending predicate hasn't been set");
 
          return new RangeEnumerator(start, s, increment, p);
       }

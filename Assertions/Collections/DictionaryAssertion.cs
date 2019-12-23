@@ -106,51 +106,51 @@ namespace Core.Assertions.Collections
          return this;
       }
 
-      public void Assert() => assert(this);
+      public void OrThrow() => orThrow(this);
 
-      public void Assert(string message) => assert(this, message);
+      public void OrThrow(string message) => orThrow(this, message);
 
-      public void Assert(Func<string> messageFunc) => assert(this, messageFunc);
+      public void OrThrow(Func<string> messageFunc) => orThrow(this, messageFunc);
 
-      public void Assert<TException>(params object[] args) where TException : Exception => assert<TException, Dictionary<TKey, TValue>>(this, args);
+      public void OrThrow<TException>(params object[] args) where TException : Exception => orThrow<TException, Dictionary<TKey, TValue>>(this, args);
 
-      public Dictionary<TKey, TValue> Ensure() => ensure(this);
+      public Dictionary<TKey, TValue> Force() => force(this);
 
-      public Dictionary<TKey, TValue> Ensure(string message) => ensure(this, message);
+      public Dictionary<TKey, TValue> Force(string message) => force(this, message);
 
-      public Dictionary<TKey, TValue> Ensure(Func<string> messageFunc) => ensure(this, messageFunc);
+      public Dictionary<TKey, TValue> Force(Func<string> messageFunc) => force(this, messageFunc);
 
-      public Dictionary<TKey, TValue> Ensure<TException>(params object[] args) where TException : Exception
+      public Dictionary<TKey, TValue> Force<TException>(params object[] args) where TException : Exception
       {
-         return ensure<TException, Dictionary<TKey, TValue>>(this, args);
+         return force<TException, Dictionary<TKey, TValue>>(this, args);
       }
 
-      public TResult Ensure<TResult>() => ensureConvert<Dictionary<TKey, TValue>, TResult>(this);
+      public TResult Force<TResult>() => forceConvert<Dictionary<TKey, TValue>, TResult>(this);
 
-      public TResult Ensure<TResult>(string message) => ensureConvert<Dictionary<TKey, TValue>, TResult>(this, message);
+      public TResult Force<TResult>(string message) => forceConvert<Dictionary<TKey, TValue>, TResult>(this, message);
 
-      public TResult Ensure<TResult>(Func<string> messageFunc) => ensureConvert<Dictionary<TKey, TValue>, TResult>(this, messageFunc);
+      public TResult Force<TResult>(Func<string> messageFunc) => forceConvert<Dictionary<TKey, TValue>, TResult>(this, messageFunc);
 
-      public TResult Ensure<TException, TResult>(params object[] args) where TException : Exception
+      public TResult Force<TException, TResult>(params object[] args) where TException : Exception
       {
-         return ensureConvert<Dictionary<TKey, TValue>, TException, TResult>(this, args);
+         return forceConvert<Dictionary<TKey, TValue>, TException, TResult>(this, args);
       }
 
-      public IResult<Dictionary<TKey, TValue>> Try() => @try(this);
+      public IResult<Dictionary<TKey, TValue>> OrFailure() => orFailure(this);
 
-      public IResult<Dictionary<TKey, TValue>> Try(string message) => @try(this, message);
+      public IResult<Dictionary<TKey, TValue>> OrFailure(string message) => orFailure(this, message);
 
-      public IResult<Dictionary<TKey, TValue>> Try(Func<string> messageFunc) => @try(this, messageFunc);
+      public IResult<Dictionary<TKey, TValue>> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
 
-      public IMaybe<Dictionary<TKey, TValue>> Maybe() => maybe(this);
+      public IMaybe<Dictionary<TKey, TValue>> OrNone() => orNone(this);
 
-      public async Task<ICompletion<Dictionary<TKey, TValue>>> TryAsync(CancellationToken token) => await tryAsync(this, token);
+      public async Task<ICompletion<Dictionary<TKey, TValue>>> OrFailureAsync(CancellationToken token) => await orFailureAsync(this, token);
 
-      public async Task<ICompletion<Dictionary<TKey, TValue>>> TryAsync(string message, CancellationToken token) => await tryAsync(this, message, token);
+      public async Task<ICompletion<Dictionary<TKey, TValue>>> OrFailureAsync(string message, CancellationToken token) => await orFailureAsync(this, message, token);
 
-      public async Task<ICompletion<Dictionary<TKey, TValue>>> TryAsync(Func<string> messageFunc, CancellationToken token)
+      public async Task<ICompletion<Dictionary<TKey, TValue>>> OrFailureAsync(Func<string> messageFunc, CancellationToken token)
       {
-         return await tryAsync(this, messageFunc, token);
+         return await orFailureAsync(this, messageFunc, token);
       }
    }
 }

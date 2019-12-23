@@ -150,42 +150,42 @@ namespace Core.Assertions.Strings
          return this;
       }
 
-      public void Assert() => assert(this);
+      public void OrThrow() => orThrow(this);
 
-      public void Assert(string message) => assert(this, message);
+      public void OrThrow(string message) => orThrow(this, message);
 
-      public void Assert(Func<string> messageFunc) => assert(this, messageFunc);
+      public void OrThrow(Func<string> messageFunc) => orThrow(this, messageFunc);
 
-      public void Assert<TException>(params object[] args) where TException : Exception => assert<TException, string>(this, args);
+      public void OrThrow<TException>(params object[] args) where TException : Exception => orThrow<TException, string>(this, args);
 
-      public string Ensure() => ensure(this);
+      public string Force() => force(this);
 
-      public string Ensure(string message) => ensure(this, message);
+      public string Force(string message) => force(this, message);
 
-      public string Ensure(Func<string> messageFunc) => ensure(this, messageFunc);
+      public string Force(Func<string> messageFunc) => force(this, messageFunc);
 
-      public string Ensure<TException>(params object[] args) where TException : Exception => ensure<TException, string>(this, args);
+      public string Force<TException>(params object[] args) where TException : Exception => force<TException, string>(this, args);
 
-      public TResult Ensure<TResult>() => throw "Can't convert string to another type".Throws();
+      public TResult Force<TResult>() => throw "Can't convert string to another type".Throws();
 
-      public TResult Ensure<TResult>(string message) => Ensure<TResult>();
+      public TResult Force<TResult>(string message) => Force<TResult>();
 
-      public TResult Ensure<TResult>(Func<string> messageFunc) => Ensure<TResult>();
+      public TResult Force<TResult>(Func<string> messageFunc) => Force<TResult>();
 
-      public TResult Ensure<TException, TResult>(params object[] args) where TException : Exception => Ensure<TResult>();
+      public TResult Force<TException, TResult>(params object[] args) where TException : Exception => Force<TResult>();
 
-      public IResult<string> Try() => @try(this);
+      public IResult<string> OrFailure() => orFailure(this);
 
-      public IResult<string> Try(string message) => @try(this, message);
+      public IResult<string> OrFailure(string message) => orFailure(this, message);
 
-      public IResult<string> Try(Func<string> messageFunc) => @try(this, messageFunc);
+      public IResult<string> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
 
-      public IMaybe<string> Maybe() => maybe(this);
+      public IMaybe<string> OrNone() => orNone(this);
 
-      public async Task<ICompletion<string>> TryAsync(CancellationToken token) => await tryAsync(this, token);
+      public async Task<ICompletion<string>> OrFailureAsync(CancellationToken token) => await orFailureAsync(this, token);
 
-      public async Task<ICompletion<string>> TryAsync(string message, CancellationToken token) => await tryAsync(this, message, token);
+      public async Task<ICompletion<string>> OrFailureAsync(string message, CancellationToken token) => await orFailureAsync(this, message, token);
 
-      public async Task<ICompletion<string>> TryAsync(Func<string> messageFunc, CancellationToken token) => await tryAsync(this, messageFunc, token);
+      public async Task<ICompletion<string>> OrFailureAsync(Func<string> messageFunc, CancellationToken token) => await orFailureAsync(this, messageFunc, token);
    }
 }

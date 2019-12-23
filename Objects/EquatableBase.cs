@@ -24,7 +24,7 @@ namespace Core.Objects
             .Where(pi => pi.GetCustomAttributes(typeof(EquatableAttribute), true).Length > 0)
             .Cast<MemberInfo>();
          equatableInfo = fieldSignatures.Union(propertySignatures).ToArray();
-         equatableInfo.Must().Not.BeEmpty().Assert("No fields or properties has an EquatableAttribute");
+         equatableInfo.Must().Not.BeEmpty().OrThrow("No fields or properties has an EquatableAttribute");
       }
 
       protected Hash<string, object> getValues(object obj)

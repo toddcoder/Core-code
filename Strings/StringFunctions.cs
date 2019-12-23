@@ -41,7 +41,7 @@ namespace Core.Strings
 
       public static string randomString(int length, bool alpha, bool numeric)
       {
-			alpha.Must().Or(numeric).Assert("You must specify Alpha and/or Numeric");
+			alpha.Must().Or(numeric).OrThrow("You must specify Alpha and/or Numeric");
 
          var source = "";
          if (alpha)

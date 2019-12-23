@@ -1,5 +1,6 @@
 ﻿using Core.Assertions;
 using Core.RegularExpressions;
+using static Core.Assertions.AssertionFunctions;
 
 namespace Core.ObjectGraphs.Parsers
 {
@@ -16,8 +17,8 @@ namespace Core.ObjectGraphs.Parsers
          var macro = new Macro(macroName, value);
          foreach (var parameter in parameters)
          {
-            parameter.MustAs(nameof(parameter)).MatchFriendly(REGEX_NAME)
-               .Assert(() => AssertionMessage(Source, position, "$name isn't a properly formed name"));
+            assert(() => parameter).Must().MatchFriendly(REGEX_NAME)
+               .OrThrow(() => AssertionMessage(Source, position, "$name isn't a properly formed name"));
             macro.AddParameter(parameter);
          }
 

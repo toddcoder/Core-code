@@ -16,6 +16,7 @@ using Core.Objects;
 using Core.RegularExpressions;
 using Core.Strings;
 using static System.Activator;
+using static Core.Assertions.AssertionFunctions;
 using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
 using static Core.Strings.StringFunctions;
@@ -93,7 +94,7 @@ namespace Core.ObjectGraphs
 
       public static ObjectGraph Serialize(object obj, Predicate<string> exclude, StringHash signatures)
       {
-         obj.MustAs(nameof(obj)).Not.BeNull().Assert();
+         assert(() => obj).Must().Not.BeNull().OrThrow();
 
          var graph = RootObjectGraph();
          var type = obj.GetType();
@@ -130,7 +131,7 @@ namespace Core.ObjectGraphs
 
       static ObjectGraph getGraph(IMaybe<object> anyObject, string childName, Type childType, Predicate<string> exclude, StringHash signatures)
       {
-         var obj = anyObject.MustAs(nameof(anyObject)).HaveValue().Value;
+         var obj = assert(() => anyObject).Must().HaveValue().Value;
 
          if (childType.IsArray)
          {
@@ -334,8 +335,8 @@ namespace Core.ObjectGraphs
 
       ObjectGraph getChildValue(string graphName)
       {
-         children.Value.MustAs(nameof(children)).HaveKeyOf(graphName)
-            .Assert($"$name doesn't have '{graphName}' graph under <{Path}> @ {LineNumber}: {LineSource}");
+         assert(() => children.Value).Must().HaveKeyOf(graphName)
+            .OrThrow($"$name doesn't have '{graphName}' graph under <{Path}> @ {LineNumber}: {LineSource}");
          var childValue = children.Value[graphName];
          childValue.Replacer = Replacer;
 
@@ -351,7 +352,7 @@ namespace Core.ObjectGraphs
       {
          get
          {
-            HasChildren.Must().Be().Assert($"{key} has no children");
+            HasChildren.Must().Be().OrThrow($"{key} has no children");
             if (graphName.IsMatch("'//'"))
             {
                var childName = graphName.KeepUntil("/");
@@ -580,7 +581,7 @@ namespace Core.ObjectGraphs
          var items = source.Split("/s* ',' /s*");
 
          return
-            from notEmpty in items.Must().HaveLengthOf(1).Try("Array can't be empty")
+            from notEmpty in items.Must().HaveLengthOf(1).OrFailure("Array can't be empty")
             from type in items[0].Type()
             from instance in tryTo(() => Array.CreateInstance(type, items.Length))
             from parsed in items.Select(i => i.Parsed(type)).IfAllSuccesses()

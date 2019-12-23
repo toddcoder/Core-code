@@ -64,6 +64,7 @@
     <Compile Include="FileNameExtensions.cs" />
     <Compile Include="Macro.cs" />
     <Compile Include="ObjectGraph.cs" />
+    <Compile Include="ObjectGraphExtensions.cs" />
     <Compile Include="ObjectGraphReference.cs" />
     <Compile Include="ObjectGraphTrying.cs" />
     <Compile Include="ObjectGraphWriter.cs" />
