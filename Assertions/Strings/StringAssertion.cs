@@ -189,6 +189,9 @@ namespace Core.Assertions.Strings
 
       public async Task<ICompletion<string>> OrFailureAsync(string message, CancellationToken token) => await orFailureAsync(this, message, token);
 
-      public async Task<ICompletion<string>> OrFailureAsync(Func<string> messageFunc, CancellationToken token) => await orFailureAsync(this, messageFunc, token);
+      public async Task<ICompletion<string>> OrFailureAsync(Func<string> messageFunc, CancellationToken token)
+      {
+         return await orFailureAsync(this, messageFunc, token);
+      }
    }
 }

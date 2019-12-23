@@ -139,7 +139,8 @@ namespace Core.Assertions.Computers
 
       public async Task<ICompletion<FolderName>> OrFailureAsync(CancellationToken token) => await orFailureAsync(this, token);
 
-      public async Task<ICompletion<FolderName>> OrFailureAsync(string message, CancellationToken token) => await orFailureAsync(this, message, token);
+      public async Task<ICompletion<FolderName>> OrFailureAsync(string message, CancellationToken token) =>
+         await orFailureAsync(this, message, token);
 
       public async Task<ICompletion<FolderName>> OrFailureAsync(Func<string> messageFunc, CancellationToken token)
       {

@@ -36,7 +36,7 @@ namespace Core.Assertions.Monads
 
       protected MatchedAssertion<T> add(Func<bool> constraintFunction, string message)
       {
-         constraints.Add(new Constraint(constraintFunction, message, not, name, Value));
+         constraints.Add(new Constraint(constraintFunction, message, not, name, matchedImage(matched)));
          not = false;
 
          return this;
@@ -50,7 +50,7 @@ namespace Core.Assertions.Monads
 
       public MatchedAssertion<T> EqualToValueOf(IMatched<T> otherMatched)
       {
-         return add(() => matched.EqualToValueOf(otherMatched), $"Value of $name must $not equal value of {otherMatched}");
+         return add(() => matched.EqualToValueOf(otherMatched), $"Value of $name must $not equal value of {matchedImage(otherMatched)}");
       }
 
       public MatchedAssertion<T> ValueEqualTo(T otherValue)
@@ -103,6 +103,9 @@ namespace Core.Assertions.Monads
 
       public async Task<ICompletion<T>> OrFailureAsync(string message, CancellationToken token) => await orFailureAsync(this, message, token);
 
-      public async Task<ICompletion<T>> OrFailureAsync(Func<string> messageFunc, CancellationToken token) => await orFailureAsync(this, messageFunc, token);
+      public async Task<ICompletion<T>> OrFailureAsync(Func<string> messageFunc, CancellationToken token)
+      {
+         return await orFailureAsync(this, messageFunc, token);
+      }
    }
 }

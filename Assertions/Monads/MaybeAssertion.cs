@@ -51,12 +51,12 @@ namespace Core.Assertions.Monads
                constraints.Add(Constraint.Failing("$name must be non-null", name));
                break;
             case T otherT:
-               constraints.Add(new Constraint(() => constraintFunction(otherT), message, not, name, Value));
+               constraints.Add(new Constraint(() => constraintFunction(otherT), message, not, name, maybeImage(maybe)));
                break;
             case IMaybe<T> anyValue:
                if (anyValue.If(out var value))
                {
-                  constraints.Add(new Constraint(() => constraintFunction(value), message, not, name, Value));
+                  constraints.Add(new Constraint(() => constraintFunction(value), message, not, name, maybeImage(maybe)));
                }
                else
                {
@@ -75,7 +75,7 @@ namespace Core.Assertions.Monads
 
       protected MaybeAssertion<T> add(Func<bool> constraintFunction, string message)
       {
-         constraints.Add(new Constraint(constraintFunction, message, not, name, Value));
+         constraints.Add(new Constraint(constraintFunction, message, not, name, maybeImage(maybe)));
          not = false;
 
          return this;
@@ -85,7 +85,7 @@ namespace Core.Assertions.Monads
 
       public MaybeAssertion<T> EqualToValueOf(IMaybe<T> otherMaybe)
       {
-         return add(() => maybe.EqualToValueOf(otherMaybe), $"Value of $name must $not equal to value of {otherMaybe}");
+         return add(() => maybe.EqualToValueOf(otherMaybe), $"Value of $name must $not equal to value of {maybeImage(otherMaybe)}");
       }
 
       public MaybeAssertion<T> ValueEqualTo(T otherValue)
@@ -138,6 +138,9 @@ namespace Core.Assertions.Monads
 
       public async Task<ICompletion<T>> OrFailureAsync(string message, CancellationToken token) => await orFailureAsync(this, message, token);
 
-      public async Task<ICompletion<T>> OrFailureAsync(Func<string> messageFunc, CancellationToken token) => await orFailureAsync(this, messageFunc, token);
+      public async Task<ICompletion<T>> OrFailureAsync(Func<string> messageFunc, CancellationToken token)
+      {
+         return await orFailureAsync(this, messageFunc, token);
+      }
    }
 }

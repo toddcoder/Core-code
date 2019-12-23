@@ -36,7 +36,7 @@ namespace Core.Assertions.Monads
 
       protected CompletionAssertion<T> add(Func<bool> constraintFunction, string message)
       {
-         constraints.Add(new Constraint(constraintFunction, message, not, name, Value));
+         constraints.Add(new Constraint(constraintFunction, message, not, name, completionImage(completion)));
          not = false;
 
          return this;
@@ -50,7 +50,7 @@ namespace Core.Assertions.Monads
 
       public CompletionAssertion<T> ValueEqualTo(ICompletion<T> otherCompletion)
       {
-         return add(() => completion.ValueEqualTo(otherCompletion), $"Value of $name must $not equal value of {otherCompletion}");
+         return add(() => completion.ValueEqualTo(otherCompletion), $"Value of $name must $not equal value of {completionImage(otherCompletion)}");
       }
 
       public CompletionAssertion<T> EqualToValueOf(T otherValue)
@@ -103,6 +103,9 @@ namespace Core.Assertions.Monads
 
       public async Task<ICompletion<T>> OrFailureAsync(string message, CancellationToken token) => await orFailureAsync(this, message, token);
 
-      public async Task<ICompletion<T>> OrFailureAsync(Func<string> messageFunc, CancellationToken token) => await orFailureAsync(this, messageFunc, token);
+      public async Task<ICompletion<T>> OrFailureAsync(Func<string> messageFunc, CancellationToken token)
+      {
+         return await orFailureAsync(this, messageFunc, token);
+      }
    }
 }
