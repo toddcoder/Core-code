@@ -11,7 +11,6 @@ using Core.Collections;
 using Core.Computers;
 using Core.Monads;
 using Core.RegularExpressions;
-using Core.Strings;
 using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Assertions
@@ -25,7 +24,7 @@ namespace Core.Assertions
          var (name, value) = resolve(expression);
          var assertion = value.Must();
 
-         return (ComparableAssertion<int>)assertion.Named($"Integer {name} -> {value}");
+         return (ComparableAssertion<int>)assertion.Named($"Integer {name}");
       }
 
       public static ComparableAssertion<int> BeEven(this ComparableAssertion<int> assertion)
@@ -45,7 +44,7 @@ namespace Core.Assertions
          var (name, value) = resolve(expression);
          var assertion = value.Must();
 
-         return (ComparableAssertion<long>)assertion.Named($"Long {name} -> {value}");
+         return (ComparableAssertion<long>)assertion.Named($"Long {name}");
       }
 
       public static ComparableAssertion<long> BeEven(this ComparableAssertion<long> assertion)
@@ -65,7 +64,7 @@ namespace Core.Assertions
          var (name, value) = resolve(expression);
          var assertion = value.Must();
 
-         return (ComparableAssertion<byte>)assertion.Named($"Byte {name} -> {value}");
+         return (ComparableAssertion<byte>)assertion.Named($"Byte {name}");
       }
 
       public static ComparableAssertion<byte> BeEven(this ComparableAssertion<byte> assertion)
@@ -85,7 +84,7 @@ namespace Core.Assertions
          var (name, value) = resolve(expression);
          var assertion = value.Must();
 
-         return (FloatAssertion)assertion.Named($"Float {name} -> {value}");
+         return (FloatAssertion)assertion.Named($"Float {name}");
       }
 
       public static DoubleAssertion Must(this double value) => new DoubleAssertion(value);
@@ -95,7 +94,7 @@ namespace Core.Assertions
          var (name, value) = resolve(expression);
          var assertion = value.Must();
 
-         return (DoubleAssertion)assertion.Named($"Double {name} -> {value}");
+         return (DoubleAssertion)assertion.Named($"Double {name}");
       }
 
       public static ComparableAssertion<DateTime> Must(this DateTime value) => new ComparableAssertion<DateTime>(value);
@@ -105,7 +104,7 @@ namespace Core.Assertions
          var (name, value) = resolve(expression);
          var assertion = value.Must();
 
-         return (ComparableAssertion<DateTime>)assertion.Named($"Date/time {name} -> {value}");
+         return (ComparableAssertion<DateTime>)assertion.Named($"Date/time {name}");
       }
 
       public static BooleanAssertion Must(this bool value) => new BooleanAssertion(value);
@@ -115,7 +114,7 @@ namespace Core.Assertions
          var (name, value) = resolve(expression);
          var assertion = value.Must();
 
-         return (BooleanAssertion)assertion.Named($"Boolean {name} -> {value}");
+         return (BooleanAssertion)assertion.Named($"Boolean {name}");
       }
 
       public static StringAssertion Must(this string value) => new StringAssertion(value);
@@ -125,7 +124,7 @@ namespace Core.Assertions
          var (name, value) = resolve(expression);
          var assertion = value.Must();
 
-         return (StringAssertion)assertion.Named($"String {name} -> \"{value.Elliptical(80, ' ')}\"");
+         return (StringAssertion)assertion.Named($"String {name}");
       }
 
       public static ArrayAssertion<T> Must<T>(this T[] value) => new ArrayAssertion<T>(value);
@@ -135,7 +134,7 @@ namespace Core.Assertions
          var (name, value) = resolve(expression);
          var assertion = value.Must();
 
-         return (ArrayAssertion<T>)assertion.Named($"Array {name} -> {enumerableImage(value)}");
+         return (ArrayAssertion<T>)assertion.Named($"Array {name}");
       }
 
       public static ListAssertion<T> Must<T>(this List<T> value) => new ListAssertion<T>(value);
@@ -145,7 +144,7 @@ namespace Core.Assertions
          var (name, value) = resolve(expression);
          var assertion = value.Must();
 
-         return (ListAssertion<T>)assertion.Named($"List {name} -> {enumerableImage(value)}");
+         return (ListAssertion<T>)assertion.Named($"List {name}");
       }
 
       public static ObjectAssertion Must(this object value) => new ObjectAssertion(value);
@@ -155,7 +154,7 @@ namespace Core.Assertions
          var (name, value) = resolve(expression);
          var assertion = value.Must();
 
-         return (ObjectAssertion)assertion.Named($"{(value == null ? "Object" : value.GetType().Name)} {name} -> {value}");
+         return (ObjectAssertion)assertion.Named($"{(value == null ? "Object" : value.GetType().Name)} {name}");
       }
 
       public static MaybeAssertion<T> Must<T>(this IMaybe<T> value) => new MaybeAssertion<T>(value);
@@ -165,7 +164,7 @@ namespace Core.Assertions
          var (name, value) = resolve(expression);
          var assertion = value.Must();
 
-         return (MaybeAssertion<T>)assertion.Named($"Optional of {typeof(T).Name} {name} -> {maybeImage(value)}");
+         return (MaybeAssertion<T>)assertion.Named($"Optional of {typeof(T).Name} {name}");
       }
 
       public static ResultAssertion<T> Must<T>(this IResult<T> value) => new ResultAssertion<T>(value);
@@ -175,7 +174,7 @@ namespace Core.Assertions
          var (name, value) = resolve(expression);
          var assertion = value.Must();
 
-         return (ResultAssertion<T>)assertion.Named($"Result of {typeof(T).Name} {name} -> {resultImage(value)}");
+         return (ResultAssertion<T>)assertion.Named($"Result of {typeof(T).Name} {name}");
       }
 
       public static MatchedAssertion<T> Must<T>(this IMatched<T> value) => new MatchedAssertion<T>(value);
@@ -185,7 +184,7 @@ namespace Core.Assertions
          var (name, value) = resolve(expression);
          var assertion = value.Must();
 
-         return (MatchedAssertion<T>)assertion.Named($"Match of {typeof(T).Name} {name} -> {matchedImage(value)}");
+         return (MatchedAssertion<T>)assertion.Named($"Match of {typeof(T).Name} {name}");
       }
 
       public static CompletionAssertion<T> Must<T>(this ICompletion<T> value) => new CompletionAssertion<T>(value);
@@ -195,7 +194,7 @@ namespace Core.Assertions
          var (name, value) = resolve(expression);
          var assertion = value.Must();
 
-         return (CompletionAssertion<T>)assertion.Named($"Async Result of {typeof(T).Name} {name} -> {completionImage(value)}");
+         return (CompletionAssertion<T>)assertion.Named($"Async Result of {typeof(T).Name} {name}");
       }
 
       public static FileNameAssertion Must(this FileName value) => new FileNameAssertion(value);
@@ -205,7 +204,7 @@ namespace Core.Assertions
          var (name, value) = resolve(expression);
          var assertion = value.Must();
 
-         return (FileNameAssertion)assertion.Named($"File {name} -> {value.TruncateBySubfolder(1)}");
+         return (FileNameAssertion)assertion.Named($"File {name}");
       }
 
       public static FolderNameAssertion Must(this FolderName value) => new FolderNameAssertion(value);
@@ -215,7 +214,7 @@ namespace Core.Assertions
          var (name, value) = resolve(expression);
          var assertion = value.Must();
 
-         return (FolderNameAssertion)assertion.Named($"Folder {name} -> {value}");
+         return (FolderNameAssertion)assertion.Named($"Folder {name}");
       }
 
       public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this Dictionary<TKey, TValue> value)
@@ -228,7 +227,7 @@ namespace Core.Assertions
          var (name, value) = resolve(expression);
          var assertion = value.Must();
 
-         return (DictionaryAssertion<TKey, TValue>)assertion.Named($"Dictionary {name} -> {dictionaryImage(value)}");
+         return (DictionaryAssertion<TKey, TValue>)assertion.Named($"Dictionary {name}");
       }
 
       public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this Hash<TKey, TValue> value)
@@ -241,7 +240,7 @@ namespace Core.Assertions
          var (name, value) = resolve(expression);
          var assertion = value.Must();
 
-         return (DictionaryAssertion<TKey, TValue>)assertion.Named($"Dictionary {name} -> {dictionaryImage(value)}");
+         return (DictionaryAssertion<TKey, TValue>)assertion.Named($"Dictionary {name}");
       }
 
       public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this IHash<TKey, TValue> value)
@@ -255,7 +254,7 @@ namespace Core.Assertions
          var (name, value) = resolve(expression);
          var assertion = value.Must();
 
-         return (DictionaryAssertion<TKey, TValue>)assertion.Named($"Dictionary {name} -> {hashImage(value)}");
+         return (DictionaryAssertion<TKey, TValue>)assertion.Named($"Dictionary {name}");
       }
 
       public static TypeAssertion Must(this Type value) => new TypeAssertion(value);
@@ -265,7 +264,7 @@ namespace Core.Assertions
          var (name, value) = resolve(expression);
          var assertion = value.Must();
 
-         return (TypeAssertion)assertion.Named($"Type {value.Name} {name} -> {value.FullName}");
+         return (TypeAssertion)assertion.Named($"Type {value.Name} {name}");
       }
 
       public static MatcherAssertion Must(this Matcher value) => new MatcherAssertion(value);
@@ -275,7 +274,7 @@ namespace Core.Assertions
          var (name, value) = resolve(expression);
          var assertion = value.Must();
 
-         return (MatcherAssertion)assertion.Named($"Matcher {name} -> {value}");
+         return (MatcherAssertion)assertion.Named($"Matcher {name}");
       }
 
       public static TypedAssertion<T> MustOfType<T>(this T value) => new TypedAssertion<T>(value);
@@ -285,7 +284,7 @@ namespace Core.Assertions
          var (name, value) = resolve(expression);
          var assertion = value.Must();
 
-         return (TypedAssertion<T>)assertion.Named($"Object typed {typeof(T).Name} {name} -> {value}");
+         return (TypedAssertion<T>)assertion.Named($"Object typed {typeof(T).Name} {name}");
       }
    }
 }

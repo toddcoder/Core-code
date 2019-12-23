@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Core.Enumerables;
 using Core.Monads;
 using static Core.Assertions.AssertionFunctions;
 
@@ -16,22 +14,6 @@ namespace Core.Assertions.Collections
       public static bool operator &(ListAssertion<T> x, ICanBeTrue y) => and(x, y);
 
       public static bool operator |(ListAssertion<T> x, ICanBeTrue y) => or(x, y);
-
-      static string listImage(List<T> list)
-      {
-         if (list == null)
-         {
-            return "(null)";
-         }
-         else if (list.Count > 10)
-         {
-            return $"{{{list.Take(10).Stringify()}...}}";
-         }
-         else
-         {
-            return $"{{{list.Stringify()}}}";
-         }
-      }
 
       protected List<T> list;
       protected List<Constraint> constraints;
@@ -59,7 +41,7 @@ namespace Core.Assertions.Collections
 
       protected ListAssertion<T> add(Func<bool> constraintFunction, string message)
       {
-         constraints.Add(new Constraint(constraintFunction, message, not, name));
+         constraints.Add(Constraint.Formatted(constraintFunction, message, not, name, Value, enumerableImage));
          not = false;
 
          return this;
@@ -67,7 +49,7 @@ namespace Core.Assertions.Collections
 
       public ListAssertion<T> Equal(List<T> otherList)
       {
-         return add(() => list.Equals(otherList), $"$name must $not equal {listImage(otherList)}");
+         return add(() => list.Equals(otherList), $"$name must $not equal {enumerableImage(otherList)}");
       }
 
       public ListAssertion<T> BeNull()

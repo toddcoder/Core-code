@@ -33,9 +33,11 @@ namespace Core.Assertions.Objects
          }
       }
 
+      static string format(Type type) => type.FullName;
+
       protected TypeAssertion add(Func<bool> constraintFunction, string message)
       {
-         constraints.Add(new Constraint(constraintFunction, message, not, name));
+         constraints.Add(Constraint.Formatted(constraintFunction, message, not, name, Value, format));
          not = false;
 
          return this;
@@ -43,12 +45,12 @@ namespace Core.Assertions.Objects
 
       public TypeAssertion Equal(Type otherType)
       {
-         return add(() => type == otherType, $"$name must $not equal {otherType}");
+         return add(() => type == otherType, $"$name must $not equal {format(otherType)}");
       }
 
       public TypeAssertion EqualToTypeOf(object obj)
       {
-         return add(() => type == obj.GetType(), $"$name must $not equal {obj.GetType()}");
+         return add(() => type == obj.GetType(), $"$name must $not equal {format(obj.GetType())}");
       }
 
       public TypeAssertion BeNull()
@@ -58,22 +60,22 @@ namespace Core.Assertions.Objects
 
       public TypeAssertion BeAssignableFrom(Type otherType)
       {
-         return add(() => type.IsAssignableFrom(otherType), $"$name must $not be assignable from {otherType}");
+         return add(() => type.IsAssignableFrom(otherType), $"$name must $not be assignable from {format(otherType)}");
       }
 
       public TypeAssertion BeAssignableTo(Type otherType)
       {
-         return add(() => otherType.IsAssignableFrom(type), $"$name must $not be assignable to {otherType}");
+         return add(() => otherType.IsAssignableFrom(type), $"$name must $not be assignable to {format(otherType)}");
       }
 
       public TypeAssertion BeConvertibleFrom(Type otherType)
       {
-         return add(() => TypeDescriptor.GetConverter(type).CanConvertFrom(otherType), $"$name must $not be convertible from {otherType}");
+         return add(() => TypeDescriptor.GetConverter(type).CanConvertFrom(otherType), $"$name must $not be convertible from {format(otherType)}");
       }
 
       public TypeAssertion BeConvertibleTo(Type otherType)
       {
-         return add(() => TypeDescriptor.GetConverter(type).CanConvertTo(otherType), $"$name must $not be convertible to {otherType}");
+         return add(() => TypeDescriptor.GetConverter(type).CanConvertTo(otherType), $"$name must $not be convertible to {format(otherType)}");
       }
 
       public TypeAssertion BeClass()
@@ -98,7 +100,7 @@ namespace Core.Assertions.Objects
 
       public TypeAssertion ContainGenericArgument(Type otherType)
       {
-         var message = $"$name must $not contain generic argument {otherType}";
+         var message = $"$name must $not contain generic argument {format(otherType)}";
          return add(() => type.IsGenericType && type.GetGenericArguments().Contains(otherType), message);
       }
 
@@ -158,6 +160,9 @@ namespace Core.Assertions.Objects
 
       public async Task<ICompletion<Type>> OrFailureAsync(string message, CancellationToken token) => await orFailureAsync(this, message, token);
 
-      public async Task<ICompletion<Type>> OrFailureAsync(Func<string> messageFunc, CancellationToken token) => await orFailureAsync(this, messageFunc, token);
+      public async Task<ICompletion<Type>> OrFailureAsync(Func<string> messageFunc, CancellationToken token)
+      {
+         return await orFailureAsync(this, messageFunc, token);
+      }
    }
 }

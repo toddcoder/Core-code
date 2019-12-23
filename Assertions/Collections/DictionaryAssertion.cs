@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Core.Enumerables;
 using Core.Monads;
 using static Core.Assertions.AssertionFunctions;
 
@@ -12,22 +10,6 @@ namespace Core.Assertions.Collections
    public class DictionaryAssertion<TKey, TValue> : IAssertion<Dictionary<TKey, TValue>>
    {
       static string keyValueImage(KeyValuePair<TKey, TValue> item) => $"[{item.Key}] => {item.Value}";
-
-      static string hashImage(Dictionary<TKey, TValue> hash)
-      {
-         if (hash == null)
-         {
-            return "(null)";
-         }
-         else if (hash.Count > 10)
-         {
-            return $"{{{hash.Take(10).Select(keyValueImage).Stringify()}}}";
-         }
-         else
-         {
-            return $"{{{hash.Select(keyValueImage).Stringify()}}}";
-         }
-      }
 
       protected Dictionary<TKey, TValue> dictionary;
       protected List<Constraint> constraints;
@@ -59,7 +41,7 @@ namespace Core.Assertions.Collections
 
       protected DictionaryAssertion<TKey, TValue> add(Func<bool> constraintFunction, string message)
       {
-         constraints.Add(new Constraint(constraintFunction, message, not, name));
+         constraints.Add(Constraint.Formatted(constraintFunction, message, not, name, Value, dictionaryImage));
          not = false;
 
          return this;
@@ -67,7 +49,7 @@ namespace Core.Assertions.Collections
 
       public DictionaryAssertion<TKey, TValue> Equal(Dictionary<TKey, TValue> otherHash)
       {
-         return add(() => dictionary.Equals(otherHash), $"$name must $not equal {hashImage(otherHash)}");
+         return add(() => dictionary.Equals(otherHash), $"$name must $not equal {dictionaryImage(otherHash)}");
       }
 
       public DictionaryAssertion<TKey, TValue> BeNull()

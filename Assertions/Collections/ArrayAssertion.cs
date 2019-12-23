@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Core.Enumerables;
 using Core.Monads;
 using static Core.Assertions.AssertionFunctions;
 
@@ -43,31 +41,15 @@ namespace Core.Assertions.Collections
 
       protected ArrayAssertion<T> add(Func<bool> constraintFunction, string message)
       {
-         constraints.Add(new Constraint(constraintFunction, message, not, name));
+         constraints.Add(Constraint.Formatted(constraintFunction, message, not, name, Value, enumerableImage));
          not = false;
 
          return this;
       }
 
-      static string arrayImage(T[] array)
-      {
-         if (array == null)
-         {
-            return "(null)";
-         }
-         else if (array.Length > 10)
-         {
-            return $"{{{array.Take(10).Stringify()}...}}";
-         }
-         else
-         {
-            return $"{{{array.Stringify()}}}";
-         }
-      }
-
       public ArrayAssertion<T> Equal(T[] otherArray)
       {
-         return add(() => array.Equals(otherArray), $"$name must $not equal {arrayImage(otherArray)}");
+         return add(() => array.Equals(otherArray), $"$name must $not equal {enumerableImage(otherArray)}");
       }
 
       public ArrayAssertion<T> BeNull()

@@ -44,9 +44,11 @@ namespace Core.Assertions.Computers
          }
       }
 
+      static string format(FileName file) => file.TruncateBySubfolder(1);
+
       protected FileNameAssertion add(Func<bool> constraintFunction, string message)
       {
-         constraints.Add(new Constraint(constraintFunction, message, not, name));
+         constraints.Add(Constraint.Formatted(constraintFunction, message, not, name, Value, format));
          not = false;
 
          return this;
@@ -78,7 +80,7 @@ namespace Core.Assertions.Computers
 
       public FileNameAssertion HaveSameExtensionAs(FileName otherFile)
       {
-         return add(() => file.Extension == otherFile.Extension, $"$name must $not have same extension as {otherFile}");
+         return add(() => file.Extension == otherFile.Extension, $"$name must $not have same extension as {format(otherFile)}");
       }
 
       public FileNameAssertion BeInFolder(FolderName folder)
@@ -93,7 +95,7 @@ namespace Core.Assertions.Computers
 
       public FileNameAssertion HaveSameNameAs(FileName otherFile)
       {
-         return add(() => file.Name == otherFile.Name, $"$name must $not have same name as {otherFile}");
+         return add(() => file.Name == otherFile.Name, $"$name must $not have same name as {format(otherFile)}");
       }
 
       public FileNameAssertion HaveNameExtensionOf(string nameExtension)
@@ -103,12 +105,12 @@ namespace Core.Assertions.Computers
 
       public FileNameAssertion HaveSameNameExtensionAs(FileName otherFile)
       {
-         return add(() => file.NameExtension == otherFile.NameExtension, $"$name must $not have same name + extension as {otherFile}");
+         return add(() => file.NameExtension == otherFile.NameExtension, $"$name must $not have same name + extension as {format(otherFile)}");
       }
 
       public FileNameAssertion Equal(FileName otherFile)
       {
-         return add(() => file == otherFile, $"$name must $not equal {otherFile}");
+         return add(() => file == otherFile, $"$name must $not equal {format(otherFile)}");
       }
 
       public FileNameAssertion BeNull()

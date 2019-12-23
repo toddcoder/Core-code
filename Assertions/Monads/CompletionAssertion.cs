@@ -36,7 +36,7 @@ namespace Core.Assertions.Monads
 
       protected CompletionAssertion<T> add(Func<bool> constraintFunction, string message)
       {
-         constraints.Add(new Constraint(constraintFunction, message, not, name));
+         constraints.Add(new Constraint(constraintFunction, message, not, name, Value));
          not = false;
 
          return this;

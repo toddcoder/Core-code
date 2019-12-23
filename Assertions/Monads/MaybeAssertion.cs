@@ -51,12 +51,12 @@ namespace Core.Assertions.Monads
                constraints.Add(Constraint.Failing("$name must be non-null", name));
                break;
             case T otherT:
-               constraints.Add(new Constraint(() => constraintFunction(otherT), message, not, name));
+               constraints.Add(new Constraint(() => constraintFunction(otherT), message, not, name, Value));
                break;
             case IMaybe<T> anyValue:
                if (anyValue.If(out var value))
                {
-                  constraints.Add(new Constraint(() => constraintFunction(value), message, not, name));
+                  constraints.Add(new Constraint(() => constraintFunction(value), message, not, name, Value));
                }
                else
                {
@@ -75,7 +75,7 @@ namespace Core.Assertions.Monads
 
       protected MaybeAssertion<T> add(Func<bool> constraintFunction, string message)
       {
-         constraints.Add(new Constraint(constraintFunction, message, not, name));
+         constraints.Add(new Constraint(constraintFunction, message, not, name, Value));
          not = false;
 
          return this;

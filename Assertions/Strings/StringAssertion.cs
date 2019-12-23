@@ -7,6 +7,7 @@ using Core.Computers;
 using Core.Exceptions;
 using Core.Monads;
 using Core.RegularExpressions;
+using Core.Strings;
 using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Assertions.Strings
@@ -45,9 +46,11 @@ namespace Core.Assertions.Strings
          }
       }
 
+      static string format(string s) => $"\"{s.Elliptical(80, ' ')}\"";
+
       protected StringAssertion add(Func<bool> constraintFunction, string message)
       {
-         constraints.Add(new Constraint(constraintFunction, message, not, name));
+         constraints.Add(Constraint.Formatted(constraintFunction, message, not, name, subject, format));
          not = false;
 
          return this;
@@ -55,27 +58,27 @@ namespace Core.Assertions.Strings
 
       public StringAssertion Equal(string obj)
       {
-         return add(() => subject.CompareTo(obj) == 0, $"$name must $not equal \"{obj}\"");
+         return add(() => subject.CompareTo(obj) == 0, $"$name must $not equal {format(obj)}");
       }
 
       public StringAssertion BeGreaterThan(string obj)
       {
-         return add(() => subject.CompareTo(obj) > 0, $"$name must $not be > \"{obj}\"");
+         return add(() => subject.CompareTo(obj) > 0, $"$name must $not be > {format(obj)}");
       }
 
       public StringAssertion BeGreaterThanOrEqual(string obj)
       {
-         return add(() => subject.CompareTo(obj) >= 0, $"$name must $not be >= \"{obj}\"");
+         return add(() => subject.CompareTo(obj) >= 0, $"$name must $not be >= {format(obj)}");
       }
 
       public StringAssertion BeLessThan(string obj)
       {
-         return add(() => subject.CompareTo(obj) < 0, $"$name must $not be < \"{obj}\"");
+         return add(() => subject.CompareTo(obj) < 0, $"$name must $not be < {format(obj)}");
       }
 
       public StringAssertion BeLessThanOrEqual(string obj)
       {
-         return add(() => subject.CompareTo(obj) <= 0, $"$name must $not be <= \"{obj}\"");
+         return add(() => subject.CompareTo(obj) <= 0, $"$name must $not be <= {format(obj)}");
       }
 
       public StringAssertion BeNull()
@@ -110,22 +113,22 @@ namespace Core.Assertions.Strings
 
       public StringAssertion StartWith(string substring)
       {
-         return add(() => subject.StartsWith(substring), $"$name must start with \"{substring}\"");
+         return add(() => subject.StartsWith(substring), $"$name must start with {format(substring)}");
       }
 
       public StringAssertion EndWith(string substring)
       {
-         return add(() => subject.EndsWith(substring), $"$name must end with \"{substring}\"");
+         return add(() => subject.EndsWith(substring), $"$name must end with {format(substring)}");
       }
 
       public StringAssertion Match(string pattern, bool ignoreCase = false, bool multiline = false)
       {
-         return add(() => subject.IsMatch(pattern, ignoreCase, multiline, false), $"$name must $not match regex {pattern}");
+         return add(() => subject.IsMatch(pattern, ignoreCase, multiline, false), $"$name must $not match regex {format(pattern)}");
       }
 
       public StringAssertion MatchFriendly(string pattern, bool ignoreCase = false, bool multiline = false)
       {
-         return add(() => subject.IsMatch(pattern, ignoreCase, multiline), $"$name must $not match regex {pattern} friendly");
+         return add(() => subject.IsMatch(pattern, ignoreCase, multiline), $"$name must $not match regex {format(pattern)} friendly");
       }
 
       public StringAssertion BeAValidFileName()
