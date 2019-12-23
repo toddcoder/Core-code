@@ -59,8 +59,8 @@ namespace Core.Dates
 			var matcher = new Matcher();
 			text = text.RemoveWhitespace();
 
-			matcher.RequiredMatch(text, "^ /(/d1%2) ( ':' /(/d1%2))? ( ':' /(/d1%2))? ( '.' /(/d1%3))? $",
-				"Couldn't determine parts of time to parse");
+         matcher.Evaluate(text, "^ /(/d1%2) ( ':' /(/d1%2))? ( ':' /(/d1%2))? ( '.' /(/d1%3))? $");
+         matcher.Must().HaveMatchCountOf(1).OrThrow("Couldn't determine parts of time to parse");
 
 			var (hour, minute, second, millisecond) = matcher;
 			return (hour.ToInt(), minute.ToInt(), second.ToInt(), millisecond.ToInt());

@@ -4,13 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Core.Arrays;
-using Core.Assertions;
 using Core.Collections;
+using Core.Exceptions;
 using Core.Monads;
 using Core.Numbers;
 using Core.RegularExpressions.Parsers;
 using Core.Strings;
-using static Core.Assertions.AssertionFunctions;
 using static Core.Monads.MonadFunctions;
 using static Core.RegularExpressions.RegexExtensions;
 using RMatch = System.Text.RegularExpressions.Match;
@@ -284,17 +283,6 @@ namespace Core.RegularExpressions
          return IsMatch(input, pattern, GetOptions(ignoreCase, multiline));
       }
 
-      public virtual void RequiredMatch(string input, string pattern, string message, bool ignoreCase = false,
-         bool multiline = false)
-      {
-         IsMatch(input, pattern, ignoreCase, multiline).Must().Be().OrThrow(message);
-      }
-
-      public virtual void RequiredMatch(string input, string pattern, string message, RegexOptions options)
-      {
-         IsMatch(input, pattern, options).Must().Be().OrThrow(message);
-      }
-
       public virtual void Evaluate(string input, string pattern, RegexOptions options) => IsMatch(input, pattern, options);
 
       public virtual void Evaluate(string input, string pattern, bool ignoreCase = false, bool multiline = false)
@@ -363,8 +351,15 @@ namespace Core.RegularExpressions
 
       static Group getGroup(Match match, int groupIndex)
       {
-			assert(()=> groupIndex).Must().BeBetween(0).Until(match.Groups.Length).OrThrow();
-         return match.Groups[groupIndex];
+			//assert(()=> groupIndex).Must().BeBetween(0).Until(match.Groups.Length).OrThrow();
+         if (groupIndex.Between(0).Until(match.Groups.Length))
+         {
+            return match.Groups[groupIndex];
+         }
+         else
+         {
+            throw $"groupIndex must be >= 0 and < {match.Groups.Length}; found value {groupIndex}".Throws();
+         }
       }
 
       static IMaybe<Group> getGroupMaybe(IMaybe<Match> match, int index)
@@ -374,8 +369,15 @@ namespace Core.RegularExpressions
 
       Match getMatch(int matchIndex)
       {
-         assert(() => matchIndex).Must().BeBetween(0).Until(matches.Length).OrThrow();
-         return matches[matchIndex];
+         //assert(() => matchIndex).Must().BeBetween(0).Until(matches.Length).OrThrow();
+         if (matchIndex.Between(0).Until(matches.Length))
+         {
+            return matches[matchIndex];
+         }
+         else
+         {
+            throw $"matchIndex must be >= 0 and < {matches.Length}; found value {matchIndex}".Throws();
+         }
       }
 
       IMaybe<Match> getMatchMaybe(int index) => maybe(index.Between(0).Until(matches.Length), () => matches[index]);

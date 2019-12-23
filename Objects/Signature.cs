@@ -1,4 +1,5 @@
-﻿using Core.Monads;
+﻿using Core.Assertions;
+using Core.Monads;
 using Core.RegularExpressions;
 using Core.Strings;
 
@@ -11,8 +12,8 @@ namespace Core.Objects
       public Signature(string signature)
       {
          var matcher = new Matcher();
-
-         matcher.RequiredMatch(signature, REGEX_FORMAT, $"Couldn't determine elements of signature \"{signature}\"");
+         matcher.Evaluate(signature, REGEX_FORMAT);
+         matcher.Must().HaveMatchCountOf(1).OrThrow($"Couldn't determine elements of signature \"{signature}\"");
 
          Name = matcher.FirstGroup;
          Index = matcher.SecondGroup.AsInt();

@@ -210,7 +210,8 @@ namespace Core.Computers
          set
          {
             var matcher = new Matcher();
-            matcher.RequiredMatch(value, "^ /(.+) '.' /(-['.']+) $", $"Couldn't extract name and extension from {value}");
+            matcher.Evaluate(value, "^ /(.+) '.' /(-['.']+) $");
+            matcher.Must().HaveMatchCountOf(1).OrThrow($"Couldn't extract name and extension from {value}");
 
             var fileName = matcher.FirstGroup;
             var fileExtension = matcher.SecondGroup;
