@@ -121,7 +121,7 @@ namespace Core.Enumerables
                return first.Some();
             }
          }
-         catch
+         catch (InvalidOperationException)
          {
             return none<T>();
          }
@@ -146,131 +146,123 @@ namespace Core.Enumerables
                return last.Some();
             }
          }
-         catch
+         catch (InvalidOperationException)
          {
             return none<T>();
          }
       }
 
-      public static IResult<T> FirstOrFail<T>(this IEnumerable<T> enumerable, string failureMessage = "Default value") => tryTo(() =>
+      public static IResult<T> FirstOrFail<T>(this IEnumerable<T> enumerable, string failureMessage = "Default value")
       {
          try
          {
             return enumerable.First().Success();
          }
-         catch
+         catch (InvalidOperationException)
          {
             return failureMessage.Failure<T>();
-         }
-      });
-
-      public static IResult<T> FirstOrFail<T>(this IEnumerable<T> enumerable, Predicate<T> predicate, string failureMessage = "Default value")
-      {
-         return tryTo(() =>
-         {
-            try
-            {
-               return enumerable.First(i => predicate(i)).Success();
-            }
-            catch
-            {
-               return failureMessage.Failure<T>();
-            }
-         });
-      }
-
-      public static IResult<T> FirstOrFail<T>(this IEnumerable<T> enumerable, Func<string> failureMessage) => tryTo(() =>
-      {
-         try
-         {
-            return enumerable.First().Success();
-         }
-         catch
-         {
-            return failureMessage().Failure<T>();
-         }
-      });
-
-      public static IResult<T> FirstOrFail<T>(this IEnumerable<T> enumerable, Predicate<T> predicate, Func<string> failureMessage)
-      {
-         return tryTo(() =>
-         {
-            try
-            {
-               return enumerable.First(i => predicate(i)).Success();
-            }
-            catch
-            {
-               return failureMessage().Failure<T>();
-            }
-         });
-      }
-
-      public static IResult<T> FirstOrFail<T>(this IEnumerable<T> enumerable, Func<Exception, string> failureMessage) => tryTo(() =>
-      {
-         try
-         {
-            return enumerable.First().Success();
          }
          catch (Exception exception)
          {
-            return failureMessage(exception).Failure<T>();
+            return failure<T>(exception);
          }
-      });
-
-      public static IResult<T> FirstOrFail<T>(this IEnumerable<T> enumerable, Predicate<T> predicate, Func<Exception, string> failureMessage)
-      {
-         return tryTo(() =>
-         {
-            try
-            {
-               return enumerable.First(i => predicate(i)).Success();
-            }
-            catch (Exception exception)
-            {
-               return failureMessage(exception).Failure<T>();
-            }
-         });
       }
 
-      public static IResult<T> LastOrFail<T>(this IEnumerable<T> enumerable, string failureMessage = "Default value") => tryTo(() =>
+      public static IResult<T> FirstOrFail<T>(this IEnumerable<T> enumerable, Predicate<T> predicate, string failureMessage = "Default value")
       {
          try
          {
-            return enumerable.Last().Success();
+            return enumerable.First(i => predicate(i)).Success();
          }
-         catch
+         catch (InvalidOperationException)
          {
             return failureMessage.Failure<T>();
          }
-      });
-
-      public static IResult<T> LastOrFail<T>(this IEnumerable<T> enumerable, Predicate<T> predicate, string failureMessage = "Default value")
-      {
-         return tryTo(() =>
+         catch (Exception exception)
          {
-            try
-            {
-               return enumerable.Last(i => predicate(i)).Success();
-            }
-            catch
-            {
-               return failureMessage.Failure<T>();
-            }
-         });
+            return failure<T>(exception);
+         }
       }
 
-      public static IResult<T> LastOrFail<T>(this IEnumerable<T> enumerable, Func<string> failureMessage) => tryTo(() =>
+      public static IResult<T> FirstOrFail<T>(this IEnumerable<T> enumerable, Func<string> failureMessage)
+      {
+         try
+         {
+            return enumerable.First().Success();
+         }
+         catch (InvalidOperationException)
+         {
+            return failureMessage().Failure<T>();
+         }
+         catch (Exception exception)
+         {
+            return failure<T>(exception);
+         }
+      }
+
+      public static IResult<T> FirstOrFail<T>(this IEnumerable<T> enumerable, Predicate<T> predicate, Func<string> failureMessage)
+      {
+         try
+         {
+            return enumerable.First(i => predicate(i)).Success();
+         }
+         catch (InvalidOperationException)
+         {
+            return failureMessage().Failure<T>();
+         }
+         catch (Exception exception)
+         {
+            return failure<T>(exception);
+         }
+      }
+
+      public static IResult<T> LastOrFail<T>(this IEnumerable<T> enumerable, string failureMessage = "Default value")
       {
          try
          {
             return enumerable.Last().Success();
          }
-         catch
+         catch (InvalidOperationException)
+         {
+            return failureMessage.Failure<T>();
+         }
+         catch (Exception exception)
+         {
+            return failure<T>(exception);
+         }
+      }
+
+      public static IResult<T> LastOrFail<T>(this IEnumerable<T> enumerable, Predicate<T> predicate, string failureMessage = "Default value")
+      {
+         try
+         {
+            return enumerable.Last(i => predicate(i)).Success();
+         }
+         catch (InvalidOperationException)
+         {
+            return failureMessage.Failure<T>();
+         }
+         catch (Exception exception)
+         {
+            return failure<T>(exception);
+         }
+      }
+
+      public static IResult<T> LastOrFail<T>(this IEnumerable<T> enumerable, Func<string> failureMessage)
+      {
+         try
+         {
+            return enumerable.Last().Success();
+         }
+         catch (InvalidOperationException)
          {
             return failureMessage().Failure<T>();
          }
-      });
+         catch (Exception exception)
+         {
+            return failure<T>(exception);
+         }
+      }
 
       public static IResult<T> LastOrFail<T>(this IEnumerable<T> enumerable, Predicate<T> predicate, Func<string> failureMessage)
       {
@@ -287,66 +279,53 @@ namespace Core.Enumerables
          });
       }
 
-      public static IResult<T> LastOrFail<T>(this IEnumerable<T> enumerable, Func<Exception, string> failureMessage) => tryTo(() =>
+      public static IMaybe<T> FirstOrNone<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate)
       {
          try
          {
-            return enumerable.Last().Success();
-         }
-         catch (Exception exception)
-         {
-            return failureMessage(exception).Failure<T>();
-         }
-      });
+            var first = enumerable.First(predicate);
 
-      public static IResult<T> LastOrFail<T>(this IEnumerable<T> enumerable, Predicate<T> predicate, Func<Exception, string> failureMessage)
-      {
-         return tryTo(() =>
-         {
-            try
+            if (first.IsNull())
             {
-               return enumerable.Last(i => predicate(i)).Success();
+               return none<T>();
             }
-            catch (Exception exception)
+            else if (first.Equals(default))
             {
-               return failureMessage(exception).Failure<T>();
+               return none<T>();
             }
-         });
-      }
-
-      public static IMaybe<T> FirstOrNone<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate)
-      {
-         var first = enumerable.First(predicate);
-
-         if (first.IsNull())
+            else
+            {
+               return first.Some();
+            }
+         }
+         catch (InvalidOperationException)
          {
             return none<T>();
-         }
-         else if (first.Equals(default))
-         {
-            return none<T>();
-         }
-         else
-         {
-            return first.Some();
          }
       }
 
       public static IMaybe<T> LastOrNone<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate)
       {
-         var last = enumerable.Last(predicate);
+         try
+         {
+            var last = enumerable.Last(predicate);
 
-         if (last.IsNull())
+            if (last.IsNull())
+            {
+               return none<T>();
+            }
+            else if (last.Equals(default))
+            {
+               return none<T>();
+            }
+            else
+            {
+               return last.Some();
+            }
+         }
+         catch (InvalidOperationException)
          {
             return none<T>();
-         }
-         else if (last.Equals(default))
-         {
-            return none<T>();
-         }
-         else
-         {
-            return last.Some();
          }
       }
 
@@ -368,6 +347,10 @@ namespace Core.Enumerables
             {
                return first.Matched();
             }
+         }
+         catch (InvalidOperationException)
+         {
+            return notMatched<T>();
          }
          catch (Exception exception)
          {
@@ -394,6 +377,10 @@ namespace Core.Enumerables
                return last.Matched();
             }
          }
+         catch (InvalidOperationException)
+         {
+            return notMatched<T>();
+         }
          catch (Exception exception)
          {
             return failedMatch<T>(exception);
@@ -419,6 +406,10 @@ namespace Core.Enumerables
                return first.Matched();
             }
          }
+         catch (InvalidOperationException)
+         {
+            return notMatched<T>();
+         }
          catch (Exception exception)
          {
             return failedMatch<T>(exception);
@@ -443,6 +434,10 @@ namespace Core.Enumerables
             {
                return last.Matched();
             }
+         }
+         catch (InvalidOperationException)
+         {
+            return notMatched<T>();
          }
          catch (Exception exception)
          {
