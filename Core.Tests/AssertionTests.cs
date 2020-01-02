@@ -145,5 +145,17 @@ namespace Core.Tests
       {
          assert(() => 10).Must().Equal(2).OrThrow();
       }
+
+      [TestMethod]
+      public void CastAssertionTest1()
+      {
+         assert(() => (object)10).Must().Equal(2).OrThrow();
+      }
+
+      [TestMethod]
+      public void CastAssertionTest2()
+      {
+         assert(() => (double)10).Must().Equal(2.0).OrThrow();
+      }
    }
 }

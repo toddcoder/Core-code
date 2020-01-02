@@ -284,7 +284,7 @@ namespace Core.Assertions
          var name = expressionBody.ToString();
 
          var matcher = new Matcher();
-         if (matcher.IsMatch(name, "'value(' .+ ').' /(.+) $"))
+         if (matcher.IsMatch(name, "'value(' .+ ').' /(.+?) ')'* $"))
          {
             name = matcher.FirstGroup;
          }
