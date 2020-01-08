@@ -104,6 +104,7 @@
     <Compile Include="Assertions\Comparables\BooleanAssertion.cs" />
     <Compile Include="Assertions\Comparables\ComparableAssertion.cs" />
     <Compile Include="Assertions\Comparables\DoubleAssertion.cs" />
+    <Compile Include="Assertions\Comparables\EnumAssertion.cs" />
     <Compile Include="Assertions\Comparables\FloatAssertion.cs" />
     <Compile Include="Assertions\Computers\FileNameAssertion.cs" />
     <Compile Include="Assertions\Computers\FolderNameAssertion.cs" />

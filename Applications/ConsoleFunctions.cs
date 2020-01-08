@@ -52,7 +52,7 @@ namespace Core.Applications
             }
          }
 
-         Console.Write($"] {percent:##0}");
+         Console.Write($"] {percent:##0}%");
       }
 
       public static void writeProgress(int progress, bool update = false)

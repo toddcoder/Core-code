@@ -286,5 +286,15 @@ namespace Core.Assertions
 
          return (TypedAssertion<T>)assertion.Named($"Object typed {typeof(T).Name} {name}");
       }
+
+      public static EnumAssertion Must(this Enum value) => new EnumAssertion(value);
+
+      public static EnumAssertion Must(this Expression<Func<Enum>> expression)
+      {
+         var (name, value) = resolve(expression);
+         var assertion = value.Must();
+
+         return (EnumAssertion)assertion.Named($"{value.GetType().Name} {name}");
+      }
    }
 }

@@ -218,6 +218,60 @@ namespace Core.RegularExpressions
          set => this[0] = value;
       }
 
+      public string SecondMatch
+      {
+         get => this[1];
+         set => this[1] = value;
+      }
+
+      public string ThirdMatch
+      {
+         get => this[2];
+         set => this[2] = value;
+      }
+
+      public string FourthMatch
+      {
+         get => this[3];
+         set => this[3] = value;
+      }
+
+      public string FifthMatch
+      {
+         get => this[4];
+         set => this[4] = value;
+      }
+
+      public string SixthMatch
+      {
+         get => this[5];
+         set => this[5] = value;
+      }
+
+      public string SeventhMatch
+      {
+         get => this[6];
+         set => this[6] = value;
+      }
+
+      public string EighthMatch
+      {
+         get => this[7];
+         set => this[7] = value;
+      }
+
+      public string NinthMatch
+      {
+         get => this[8];
+         set => this[8] = value;
+      }
+
+      public string TenthMatch
+      {
+         get => this[9];
+         set => this[9] = value;
+      }
+
       public string FirstGroup
       {
          get => this[0, 1];
@@ -351,7 +405,6 @@ namespace Core.RegularExpressions
 
       static Group getGroup(Match match, int groupIndex)
       {
-			//assert(()=> groupIndex).Must().BeBetween(0).Until(match.Groups.Length).OrThrow();
          if (groupIndex.Between(0).Until(match.Groups.Length))
          {
             return match.Groups[groupIndex];
@@ -369,7 +422,6 @@ namespace Core.RegularExpressions
 
       Match getMatch(int matchIndex)
       {
-         //assert(() => matchIndex).Must().BeBetween(0).Until(matches.Length).OrThrow();
          if (matchIndex.Between(0).Until(matches.Length))
          {
             return matches[matchIndex];
