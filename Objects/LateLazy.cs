@@ -18,21 +18,14 @@ namespace Core.Objects
          activator = none<Func<T>>();
       }
 
-      public void ActivateWith(Func<T> activator)
+      public void ActivateWith(Func<T> activator, bool overriding = false)
       {
          assert(() => activator).Must().Not.BeNull().OrThrow();
 
-         if (!this.activator.HasValue)
+         if (!this.activator.HasValue || overriding)
          {
             this.activator = activator.Some();
          }
-      }
-
-      public void OverrideWith(Func<T> activator)
-      {
-         assert(() => activator).Must().Not.BeNull().OrThrow();
-
-         this.activator = activator.Some();
       }
 
       public T Value

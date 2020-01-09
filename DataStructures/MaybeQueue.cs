@@ -1,44 +1,59 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Core.Assertions;
 using Core.Monads;
+using static Core.Assertions.AssertionFunctions;
+using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.DataStructures
 {
-	public class MaybeQueue<T> : IEnumerable<T>
-	{
-		protected Queue<T> queue;
+   public class MaybeQueue<T> : IEnumerable<T>
+   {
+      protected Queue<T> queue;
 
-		public MaybeQueue() => queue = new Queue<T>();
+      public MaybeQueue() => queue = new Queue<T>();
 
-		public MaybeQueue(IEnumerable<T> collection) => queue = new Queue<T>(collection);
+      public MaybeQueue(IEnumerable<T> collection) => queue = new Queue<T>(collection);
 
-		public MaybeQueue(int capacity) => queue = new Queue<T>(capacity);
+      public MaybeQueue(int capacity) => queue = new Queue<T>(capacity);
 
-		public int Count => queue.Count;
+      public int Count => queue.Count;
 
-		public void Clear() => queue.Clear();
+      public void Clear() => queue.Clear();
 
-		public bool Contains(T item) => queue.Contains(item);
+      public bool Contains(T item) => queue.Contains(item);
 
-		public void CopyTo(T[] array, int arrayIndex) => queue.CopyTo(array, arrayIndex);
+      public IResult<T[]> ToArray(int arrayIndex = 0)
+      {
+         return
+            from assertion in assert(() => arrayIndex).Must().BeBetween(0).Until(Count).OrFailure()
+            from array in tryTo(() =>
+            {
+               var result = new T[Count];
+               queue.CopyTo(result, arrayIndex);
 
-		public IMaybe<T> Dequeue() => maybe(queue.Count > 0, () => queue.Dequeue());
+               return result;
+            })
+            select array;
+      }
 
-		public void Enqueue(T item) => queue.Enqueue(item);
+      public IMaybe<T> Dequeue() => maybe(queue.Count > 0, () => queue.Dequeue());
 
-		public IEnumerator<T> GetEnumerator() => queue.GetEnumerator();
+      public void Enqueue(T item) => queue.Enqueue(item);
 
-		public override bool Equals(object obj) => obj is MaybeQueue<T> q && q == this;
+      public IEnumerator<T> GetEnumerator() => queue.GetEnumerator();
 
-		public override int GetHashCode() => queue.GetHashCode();
+      public override bool Equals(object obj) => obj is MaybeQueue<T> q && q == this;
 
-		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+      public override int GetHashCode() => queue.GetHashCode();
 
-		public IMaybe<T> Peek() => maybe(queue.Count > 0, () => queue.Peek());
+      IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-		public T[] ToArray() => queue.ToArray();
+      public IMaybe<T> Peek() => maybe(queue.Count > 0, () => queue.Peek());
 
-		public void TrimExcess() => queue.TrimExcess();
-	}
+      public T[] ToArray() => queue.ToArray();
+
+      public void TrimExcess() => queue.TrimExcess();
+   }
 }
