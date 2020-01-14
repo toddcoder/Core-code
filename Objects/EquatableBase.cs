@@ -73,7 +73,7 @@ namespace Core.Objects
             var otherValues = getValues(obj);
             return equatableInfo
                .Select(mi => mi.Name)
-               .Select(signature => values[signature].Equals(otherValues[signature]))
+               .Select(signature => values[signature]?.Equals(otherValues[signature]) ?? false)
                .All(b => b) && equals(obj);
          }
       }
