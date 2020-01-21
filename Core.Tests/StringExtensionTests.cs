@@ -30,6 +30,10 @@ namespace Core.Tests
          var name = "SetSQL_nameForUser_ID";
          Console.WriteLine(name.ToCamel());
          Console.WriteLine(name.ToPascal());
+
+         name = "TARGET";
+         Console.WriteLine(name.ToCamel());
+         Console.WriteLine(name.ToPascal());
       }
 
       [TestMethod]

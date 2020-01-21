@@ -2698,18 +2698,36 @@ namespace Core.Strings
 
       public static string ToCamel(this string source)
       {
-         var result = new StringBuilder(source.Keep(1).ToLower());
-         lowerAll(source.Drop(1), result);
+         if (source.All(char.IsUpper))
+         {
+            return source.ToLower();
+         }
+         else if (source.All(char.IsLower))
+         {
+            return source;
+         }
+         else
+         {
+            var result = new StringBuilder(source.Keep(1).ToLower());
+            lowerAll(source.Drop(1), result);
 
-         return result.ToString();
+            return result.ToString();
+         }
       }
 
       public static string ToPascal(this string source)
       {
-         var result = new StringBuilder(source.Keep(1).ToUpper());
-         lowerAll(source.Drop(1), result);
+         if (source.All(char.IsUpper) || source.All(char.IsLower))
+         {
+            return source.Keep(1).ToUpper() + source.Drop(1).ToLower();
+         }
+         else
+         {
+            var result = new StringBuilder(source.Keep(1).ToUpper());
+            lowerAll(source.Drop(1), result);
 
-         return result.ToString();
+            return result.ToString();
+         }
       }
 
       static void lowerAll(string source, StringBuilder result)
