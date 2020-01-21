@@ -184,6 +184,49 @@ namespace Core.Strings
          }
       }
 
+      public static string Elliptical(this string source, int limit, string upTo, bool pad = false, string ellipses = "…")
+      {
+         var upToChars = upTo.ToArray();
+         if (source.IsEmpty() || limit <= 0)
+         {
+            return string.Empty;
+         }
+         else if (source.Length > limit)
+         {
+            var index = source.LastIndexOfAny(upToChars);
+            if (index == -1)
+            {
+               return source.Truncate(limit);
+            }
+            else
+            {
+               var ellipsesLength = ellipses.Length;
+               var suffix = source.Keep(-(source.Length - index));
+               var prefix = source.Keep(limit - (1 + suffix.Length));
+               if (!source.StartsWith(prefix))
+               {
+                  prefix = $"{ellipses}{prefix.Drop(ellipsesLength)}";
+               }
+
+               var result = $"{prefix}{ellipses}{suffix}";
+               if (result.Length > limit)
+               {
+                  result = $"{result.Keep(limit - ellipsesLength)}{ellipses}";
+               }
+
+               return result;
+            }
+         }
+         else if (source.Length < limit && pad)
+         {
+            return source.LeftJustify(limit);
+         }
+         else
+         {
+            return source;
+         }
+      }
+
       static string replaceWhitespace(string source, string replacement)
       {
          if (source.IsEmpty())

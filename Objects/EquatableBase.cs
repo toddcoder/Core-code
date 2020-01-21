@@ -8,7 +8,21 @@ namespace Core.Objects
 {
    public class EquatableBase : IEquatable<EquatableBase>
    {
-      public static bool operator ==(EquatableBase lhs, EquatableBase rhs) => lhs.Equals(rhs);
+      public static bool operator ==(EquatableBase lhs, EquatableBase rhs)
+      {
+         if (ReferenceEquals(lhs, null))
+         {
+            return ReferenceEquals(rhs, null);
+         }
+         else if (ReferenceEquals(rhs, null))
+         {
+            return false;
+         }
+         else
+         {
+            return lhs.Equals(rhs);
+         }
+      }
 
       public static bool operator !=(EquatableBase lhs, EquatableBase rhs) => !lhs.Equals(rhs);
 
@@ -59,7 +73,7 @@ namespace Core.Objects
          return hash;
       }
 
-      public virtual bool Equals(EquatableBase other) => other != null && other.GetType() == GetType() && Equals((object)other);
+      public virtual bool Equals(EquatableBase other) => !ReferenceEquals(other, null) && other.GetType() == GetType() && Equals((object)other);
 
       public override bool Equals(object obj)
       {

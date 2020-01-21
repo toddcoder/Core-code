@@ -42,6 +42,16 @@ namespace Core.Tests
             Console.WriteLine(text.Elliptical(limit, ' '));
             Console.WriteLine();
          }
+
+         Console.WriteLine();
+
+         text = "Now Is The Time For All Good Men To Come To The Aid Of Their Party";
+         foreach (var limit in 80.DownTo(-10, -10))
+         {
+            Console.WriteLine(limit);
+            Console.WriteLine(text.Elliptical(limit, " ABCDEFGHIJKLMNOPQRSTUVWXYZ"));
+            Console.WriteLine();
+         }
       }
 
       [TestMethod]
