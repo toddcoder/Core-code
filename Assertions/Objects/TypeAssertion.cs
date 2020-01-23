@@ -164,5 +164,7 @@ namespace Core.Assertions.Objects
       {
          return await orFailureAsync(this, messageFunc, token);
       }
+
+      public bool OrReturn() => orReturn(this);
    }
 }

@@ -107,5 +107,7 @@ namespace Core.Assertions.Monads
       {
          return await orFailureAsync(this, messageFunc, token);
       }
+
+      public bool OrReturn() => orReturn(this);
    }
 }

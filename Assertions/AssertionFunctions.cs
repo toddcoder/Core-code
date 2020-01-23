@@ -276,6 +276,8 @@ namespace Core.Assertions
          }, token);
       }
 
+      public static bool orReturn<T>(IAssertion<T> assertion) => !assertion.BeTrue();
+
       public static Expression<Func<T>> assert<T>(Expression<Func<T>> func) => func;
 
       public static (string name, T value) resolve<T>(Expression<Func<T>> expression)

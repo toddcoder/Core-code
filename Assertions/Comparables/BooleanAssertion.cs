@@ -117,5 +117,7 @@ namespace Core.Assertions.Comparables
       {
          return await orFailureAsync(this, messageFunc, token);
       }
+
+      public bool OrReturn() => orReturn(this);
    }
 }

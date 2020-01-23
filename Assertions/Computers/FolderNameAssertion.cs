@@ -146,5 +146,7 @@ namespace Core.Assertions.Computers
       {
          return await orFailureAsync(this, messageFunc, token);
       }
+
+      public bool OrReturn() => orReturn(this);
    }
 }

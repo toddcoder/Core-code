@@ -51,5 +51,7 @@ namespace Core.Assertions
       Task<ICompletion<T>> OrFailureAsync(string message, CancellationToken token);
 
       Task<ICompletion<T>> OrFailureAsync(Func<string> messageFunc, CancellationToken token);
+
+      bool OrReturn();
    }
 }
