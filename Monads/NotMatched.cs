@@ -4,7 +4,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads
 {
-   public class NotMatched<T> : IMatched<T>
+   public class NotMatched<T> : IMatched<T>, IEquatable<NotMatched<T>>
    {
       public static implicit operator bool(NotMatched<T> _) => false;
 
@@ -177,5 +177,11 @@ namespace Core.Monads
       public IMatched<T> Else(Action<Exception> action) => this;
 
       public bool HasValue => false;
+
+      public bool Equals(NotMatched<T> other) => true;
+
+      public override bool Equals(object obj) => obj is NotMatched<T>;
+
+      public override int GetHashCode() => false.GetHashCode();
    }
 }

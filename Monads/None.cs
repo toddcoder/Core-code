@@ -4,7 +4,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads
 {
-	public class None<T> : IMaybe<T>
+	public class None<T> : IMaybe<T>, IEquatable<None<T>>
 	{
       public static implicit operator bool(None<T> _) => false;
 
@@ -73,5 +73,11 @@ namespace Core.Monads
       public IMaybe<T> Where(Predicate<T> predicate) => this;
 
       public bool HasValue => false;
+
+      public bool Equals(None<T> other) => true;
+
+      public override bool Equals(object obj) => obj is None<T>;
+
+      public override int GetHashCode() => false.GetHashCode();
    }
 }

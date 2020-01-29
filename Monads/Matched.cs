@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using Core.Exceptions;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads
 {
-   public class Matched<T> : IMatched<T>
+   public class Matched<T> : IMatched<T>, IEquatable<Matched<T>>
    {
       public static implicit operator bool(Matched<T> _) => true;
 
@@ -189,5 +190,24 @@ namespace Core.Monads
       public IMatched<T> Else(Action<Exception> action) => this;
 
       public bool HasValue => true;
+
+      public bool Equals(Matched<T> other)
+      {
+         if (ReferenceEquals(null, other))
+         {
+            return false;
+         }
+
+         if (ReferenceEquals(this, other))
+         {
+            return true;
+         }
+
+         return EqualityComparer<T>.Default.Equals(value, other.value);
+      }
+
+      public override bool Equals(object obj) => obj is Matched<T> other && Equals(other);
+
+      public override int GetHashCode() => value.GetHashCode();
    }
 }

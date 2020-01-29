@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Core.Exceptions;
 using static Core.Monads.AttemptFunctions;
@@ -6,7 +7,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads
 {
-   public class Success<T> : IResult<T>
+   public class Success<T> : IResult<T>, IEquatable<Success<T>>
    {
       public static implicit operator bool(Success<T> _) => true;
 
@@ -220,5 +221,24 @@ namespace Core.Monads
       public IResult<T> Where(Predicate<T> predicate, Func<string> exceptionMessage) => predicate(value) ? this : exceptionMessage().Failure<T>();
 
       public bool HasValue => true;
+
+      public bool Equals(Success<T> other)
+      {
+         if (ReferenceEquals(null, other))
+         {
+            return false;
+         }
+
+         if (ReferenceEquals(this, other))
+         {
+            return true;
+         }
+
+         return EqualityComparer<T>.Default.Equals(value, other.value);
+      }
+
+      public override bool Equals(object obj) => obj is Success<T> other && Equals(other);
+
+      public override int GetHashCode() => value.GetHashCode();
    }
 }

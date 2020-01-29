@@ -3,7 +3,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads
 {
-   public class FailedMatch<T> : IMatched<T>
+   public class FailedMatch<T> : IMatched<T>, IEquatable<FailedMatch<T>>
    {
       public static implicit operator bool(FailedMatch<T> _) => false;
 
@@ -187,5 +187,24 @@ namespace Core.Monads
       }
 
       public bool HasValue => false;
+
+      public bool Equals(FailedMatch<T> other)
+      {
+         if (ReferenceEquals(null, other))
+         {
+            return false;
+         }
+
+         if (ReferenceEquals(this, other))
+         {
+            return true;
+         }
+
+         return Equals(exception, other.exception);
+      }
+
+      public override bool Equals(object obj) => obj is FailedMatch<T> other && Equals(other);
+
+      public override int GetHashCode() => exception?.GetHashCode() ?? 0;
    }
 }

@@ -5,7 +5,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads
 {
-   public class Failure<T> : IResult<T>
+   public class Failure<T> : IResult<T>, IEquatable<Failure<T>>
    {
       public static implicit operator bool(Failure<T> _) => false;
 
@@ -185,5 +185,24 @@ namespace Core.Monads
       public IResult<T> Where(Predicate<T> predicate, Func<string> exceptionMessage) => this;
 
       public bool HasValue => false;
+
+      public bool Equals(Failure<T> other)
+      {
+         if (ReferenceEquals(null, other))
+         {
+            return false;
+         }
+
+         if (ReferenceEquals(this, other))
+         {
+            return true;
+         }
+
+         return Equals(exception, other.exception);
+      }
+
+      public override bool Equals(object obj) => obj is Failure<T> other && Equals(other);
+
+      public override int GetHashCode() => exception?.GetHashCode() ?? 0;
    }
 }

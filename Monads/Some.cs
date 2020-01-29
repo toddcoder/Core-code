@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads
 {
-   public class Some<T> : IMaybe<T>
+   public class Some<T> : IMaybe<T>, IEquatable<Some<T>>
    {
       public static implicit operator bool(Some<T> _) => true;
 
@@ -94,5 +95,24 @@ namespace Core.Monads
       public IMaybe<T> Where(Predicate<T> predicate) => predicate(value) ? this : none<T>();
 
       public bool HasValue => true;
+
+      public bool Equals(Some<T> other)
+      {
+         if (ReferenceEquals(null, other))
+         {
+            return false;
+         }
+
+         if (ReferenceEquals(this, other))
+         {
+            return true;
+         }
+
+         return EqualityComparer<T>.Default.Equals(value, other.value);
+      }
+
+      public override bool Equals(object obj) => obj is Some<T> other && Equals(other);
+
+      public override int GetHashCode() => value.GetHashCode();
    }
 }

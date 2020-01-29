@@ -35,6 +35,14 @@ namespace Core.Objects
          }
       }
 
+      public static int HashCode(params object[] values)
+      {
+         unchecked
+         {
+            return values.Select(value => value?.GetHashCode() ?? 0).Aggregate(397, (current, value) => current * 397 ^ value);
+         }
+      }
+
       T obj;
       string[] signatures;
 

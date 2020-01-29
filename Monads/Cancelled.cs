@@ -4,7 +4,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads
 {
-   public class Cancelled<T> : ICompletion<T>
+   public class Cancelled<T> : ICompletion<T>, IEquatable<Cancelled<T>>
    {
       public static implicit operator bool(Cancelled<T> _) => false;
 
@@ -184,5 +184,11 @@ namespace Core.Monads
       public ICompletion<T> Where(Predicate<T> predicate, Func<string> exceptionMessage) => this;
 
       public bool HasValue => false;
+
+      public bool Equals(Cancelled<T> other) => true;
+
+      public override bool Equals(object obj) => obj is Cancelled<T> other && Equals(other);
+
+      public override int GetHashCode() => false.GetHashCode();
    }
 }

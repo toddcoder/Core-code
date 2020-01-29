@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using Core.Exceptions;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads
 {
-   public class Completed<T> : ICompletion<T>
+   public class Completed<T> : ICompletion<T>, IEquatable<Completed<T>>
    {
       public static implicit operator bool(Completed<T> _) => true;
 
@@ -201,5 +202,24 @@ namespace Core.Monads
       }
 
       public bool HasValue => true;
+
+      public bool Equals(Completed<T> other)
+      {
+         if (ReferenceEquals(null, other))
+         {
+            return false;
+         }
+
+         if (ReferenceEquals(this, other))
+         {
+            return true;
+         }
+
+         return EqualityComparer<T>.Default.Equals(value, other.value);
+      }
+
+      public override bool Equals(object obj) => obj is Completed<T> other && Equals(other);
+
+      public override int GetHashCode() => value.GetHashCode();
    }
 }

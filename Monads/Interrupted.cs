@@ -3,7 +3,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads
 {
-   public class Interrupted<T> : ICompletion<T>
+   public class Interrupted<T> : ICompletion<T>, IEquatable<Interrupted<T>>
    {
       public static implicit operator bool(Interrupted<T> _) => false;
 
@@ -188,5 +188,24 @@ namespace Core.Monads
       public ICompletion<T> Where(Predicate<T> predicate, Func<string> exceptionMessage) => this;
 
       public bool HasValue => false;
+
+      public bool Equals(Interrupted<T> other)
+      {
+         if (ReferenceEquals(null, other))
+         {
+            return false;
+         }
+
+         if (ReferenceEquals(this, other))
+         {
+            return true;
+         }
+
+         return Equals(exception, other.exception);
+      }
+
+      public override bool Equals(object obj) => obj is Interrupted<T> other && Equals(other);
+
+      public override int GetHashCode() => exception?.GetHashCode() ?? 0;
    }
 }
