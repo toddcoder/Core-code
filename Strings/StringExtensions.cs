@@ -2698,83 +2698,73 @@ namespace Core.Strings
 
       public static string ToCamel(this string source)
       {
-         if (source.All(char.IsUpper))
-         {
-            return source.ToLower();
-         }
-         else if (source.All(char.IsLower))
-         {
-            return source;
-         }
-         else
-         {
-            var result = new StringBuilder(source.Keep(1).ToLower());
-            lowerAll(source.Drop(1), result);
-
-            return result.ToString();
-         }
+         var pascal = source.ToPascal();
+         return pascal.Keep(1).ToLower() + pascal.Drop(1);
       }
 
       public static string ToPascal(this string source)
       {
-         if (source.All(char.IsUpper) || source.All(char.IsLower))
-         {
-            return source.Keep(1).ToUpper() + source.Drop(1).ToLower();
-         }
-         else
-         {
-            var result = new StringBuilder(source.Keep(1).ToUpper());
-            lowerAll(source.Drop(1), result);
+         string allPascalCase(string word) => word.Keep(1).ToUpper() + word.Drop(1).ToLower();
 
-            return result.ToString();
-         }
-      }
-
-      static void lowerAll(string source, StringBuilder result)
-      {
-         var doLower = false;
-         var doUpper = false;
-         foreach (var ch in source)
+         IEnumerable<string> split(string whole)
          {
-            if (ch == '_')
+            if (whole.IsMatch("^ ['A-Z']+ $"))
             {
-               doUpper = true;
-               continue;
+               whole = allPascalCase(whole);
+            }
+            else if (whole.IsMatch("'_'"))
+            {
+               whole = whole.Split("'_'+").Select(s => s.ToUpper1()).Stringify("");
             }
 
-            if (doUpper)
+            var part = new StringBuilder();
+            foreach (var ch in whole)
             {
-               result.Append(char.ToUpper(ch));
-               doUpper = false;
-               doLower = true;
-               continue;
-            }
-
-            if (doLower)
-            {
-               if (char.IsUpper(ch))
+               if (ch == '_')
                {
-                  result.Append(char.ToLower(ch));
+                  if (part.Length > 0)
+                  {
+                     yield return allPascalCase(part.ToString());
+                  }
+
+                  part.Clear();
+               }
+               else if (char.IsUpper(ch) || char.IsDigit(ch))
+               {
+                  if (part.Length > 0)
+                  {
+                     yield return part.ToString();
+                  }
+
+                  part.Clear();
+                  part.Append(ch);
+               }
+               else if (part.Length == 0)
+               {
+                  part.Append(char.ToUpper(ch));
                }
                else
                {
-                  doLower = false;
-                  result.Append(ch);
+                  part.Append(char.ToLower(ch));
                }
             }
-            else
+
+            if (part.Length > 0)
             {
-               if (char.IsUpper(ch))
-               {
-                  result.Append(ch);
-                  doLower = true;
-               }
-               else
-               {
-                  result.Append(ch);
-               }
+               yield return part.ToString();
             }
          }
+
+         if (source.IsEmpty())
+         {
+            return string.Empty;
+         }
+         else if (source.IsMatch("^ ['0-9']+ $"))
+         {
+            return source;
+         }
+
+         return split(source).ToArray().Stringify("");
       }
    }
 }

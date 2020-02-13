@@ -1,7 +1,9 @@
 ﻿using System;
+using Core.Assertions;
 using Core.Enumerables;
 using Core.Strings;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Tests
 {
@@ -28,12 +30,22 @@ namespace Core.Tests
       public void CamelAndPascalCaseTest()
       {
          var name = "SetSQL_nameForUser_ID";
-         Console.WriteLine(name.ToCamel());
-         Console.WriteLine(name.ToPascal());
+         var camel = name.ToCamel();
+         var pascal = name.ToPascal();
+
+         Console.WriteLine($"camel:  {camel}");
+         Console.WriteLine($"pascal: {pascal}");
+         assert(() => camel).Must().Equal("setSQLNameForUserID").OrThrow();
+         assert(() => pascal).Must().Equal("SetSQLNameForUserID").OrThrow();
 
          name = "TARGET";
-         Console.WriteLine(name.ToCamel());
-         Console.WriteLine(name.ToPascal());
+         camel = name.ToCamel();
+         pascal = name.ToPascal();
+
+         Console.WriteLine($"camel:  {camel}");
+         Console.WriteLine($"pascal: {pascal}");
+         assert(() => camel).Must().Equal("target").OrThrow();
+         assert(() => pascal).Must().Equal("Target").OrThrow();
       }
 
       [TestMethod]

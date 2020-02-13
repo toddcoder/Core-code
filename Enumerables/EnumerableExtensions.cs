@@ -676,5 +676,13 @@ namespace Core.Enumerables
 
          return index;
       }
+
+      public static IEnumerable<T> Reversed<T>(this IEnumerable<T> enumerable)
+      {
+         var list = enumerable.ToList();
+         list.Reverse();
+
+         return list;
+      }
    }
 }
