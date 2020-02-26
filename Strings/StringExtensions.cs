@@ -2714,7 +2714,7 @@ namespace Core.Strings
             }
             else if (whole.IsMatch("'_'"))
             {
-               whole = whole.Split("'_'+").Select(s => s.ToUpper1()).Stringify("");
+               whole = whole.Split("'_'+").Select(s => s.ToPascal()).Stringify("");
             }
 
             var part = new StringBuilder();

@@ -35,8 +35,8 @@ namespace Core.Tests
 
          Console.WriteLine($"camel:  {camel}");
          Console.WriteLine($"pascal: {pascal}");
-         assert(() => camel).Must().Equal("setSQLNameForUserID").OrThrow();
-         assert(() => pascal).Must().Equal("SetSQLNameForUserID").OrThrow();
+         assert(() => camel).Must().Equal("setSQLNameForUserId").OrThrow();
+         assert(() => pascal).Must().Equal("SetSQLNameForUserId").OrThrow();
 
          name = "TARGET";
          camel = name.ToCamel();
@@ -46,6 +46,15 @@ namespace Core.Tests
          Console.WriteLine($"pascal: {pascal}");
          assert(() => camel).Must().Equal("target").OrThrow();
          assert(() => pascal).Must().Equal("Target").OrThrow();
+
+         name = "TARGET_REPORT";
+         camel = name.ToCamel();
+         pascal = name.ToPascal();
+
+         Console.WriteLine($"camel:  {camel}");
+         Console.WriteLine($"pascal: {pascal}");
+         assert(() => camel).Must().Equal("targetReport").OrThrow();
+         assert(() => pascal).Must().Equal("TargetReport").OrThrow();
       }
 
       [TestMethod]
