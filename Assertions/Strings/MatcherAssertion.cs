@@ -34,7 +34,7 @@ namespace Core.Assertions.Strings
          }
       }
 
-      public bool BeTrue() => beTrue(this);
+      public bool BeEquivalentToTrue() => beEquivalentToTrue(this);
 
       public Matcher Value => matcher;
 

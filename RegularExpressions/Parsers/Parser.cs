@@ -62,7 +62,7 @@ namespace Core.RegularExpressions.Parsers
                break;
             }
 
-				added.Must().Be().OrThrow($"Didn't recognize {source.Substring(index)}");
+				added.Must().BeTrue().OrThrow($"Didn't recognize {source.Substring(index)}");
          }
 
          return content.ToString();

@@ -9,7 +9,7 @@ namespace Core.Assertions.Monads
 {
    public class MaybeAssertion<T> : IAssertion<T>
    {
-      public static implicit operator bool(MaybeAssertion<T> assertion) => assertion.BeTrue();
+      public static implicit operator bool(MaybeAssertion<T> assertion) => assertion.BeEquivalentToTrue();
 
       public static bool operator &(MaybeAssertion<T> x, ICanBeTrue y) => and(x, y);
 
@@ -28,7 +28,7 @@ namespace Core.Assertions.Monads
          name = "Optional";
       }
 
-      public bool BeTrue() => beTrue(this);
+      public bool BeEquivalentToTrue() => beEquivalentToTrue(this);
 
       public T Value => maybe.Required($"{name} value not available");
 

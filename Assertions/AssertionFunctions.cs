@@ -103,11 +103,11 @@ namespace Core.Assertions
          }
       }
 
-      public static bool and(ICanBeTrue x, ICanBeTrue y) => x.BeTrue() && y.BeTrue();
+      public static bool and(ICanBeTrue x, ICanBeTrue y) => x.BeEquivalentToTrue() && y.BeEquivalentToTrue();
 
-      public static bool or(ICanBeTrue x, ICanBeTrue y) => x.BeTrue() || y.BeTrue();
+      public static bool or(ICanBeTrue x, ICanBeTrue y) => x.BeEquivalentToTrue() || y.BeEquivalentToTrue();
 
-      public static bool beTrue<T>(IAssertion<T> assertion) => assertion.Constraints.All(c => c.IsTrue());
+      public static bool beEquivalentToTrue<T>(IAssertion<T> assertion) => assertion.Constraints.All(c => c.IsTrue());
 
       public static void orThrow<T>(IAssertion<T> assertion)
       {
@@ -276,7 +276,7 @@ namespace Core.Assertions
          }, token);
       }
 
-      public static bool orReturn<T>(IAssertion<T> assertion) => !assertion.BeTrue();
+      public static bool orReturn<T>(IAssertion<T> assertion) => !assertion.BeEquivalentToTrue();
 
       public static Expression<Func<T>> assert<T>(Expression<Func<T>> func) => func;
 

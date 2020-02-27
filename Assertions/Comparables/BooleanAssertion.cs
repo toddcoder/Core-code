@@ -9,7 +9,7 @@ namespace Core.Assertions.Comparables
 {
    public class BooleanAssertion : IAssertion<bool>
    {
-      public static implicit operator bool(BooleanAssertion assertion) => assertion.BeTrue();
+      public static implicit operator bool(BooleanAssertion assertion) => assertion.BeEquivalentToTrue();
 
       public static bool operator &(BooleanAssertion x, ICanBeTrue y) => and(x, y);
 
@@ -47,7 +47,7 @@ namespace Core.Assertions.Comparables
          return this;
       }
 
-      public BooleanAssertion Be()
+      public BooleanAssertion BeTrue()
       {
          return add(() => boolean, "$name must $not be true");
       }
@@ -66,7 +66,7 @@ namespace Core.Assertions.Comparables
 
       public IEnumerable<Constraint> Constraints => constraints;
 
-      public bool BeTrue() => beTrue(this);
+      public bool BeEquivalentToTrue() => beEquivalentToTrue(this);
 
       public IAssertion<bool> Named(string name)
       {

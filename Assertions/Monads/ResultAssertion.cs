@@ -9,7 +9,7 @@ namespace Core.Assertions.Monads
 {
    public class ResultAssertion<T> : IAssertion<T>
    {
-      public static implicit operator bool(ResultAssertion<T> assertion) => assertion.BeTrue();
+      public static implicit operator bool(ResultAssertion<T> assertion) => assertion.BeEquivalentToTrue();
 
       public static bool operator &(ResultAssertion<T> x, ICanBeTrue y) => and(x, y);
 
@@ -28,7 +28,7 @@ namespace Core.Assertions.Monads
          name = "Result";
       }
 
-      public bool BeTrue() => beTrue(this);
+      public bool BeEquivalentToTrue() => beEquivalentToTrue(this);
 
       public T Value => result.ForceValue();
 

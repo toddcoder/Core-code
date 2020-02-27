@@ -10,7 +10,7 @@ namespace Core.Assertions.Computers
 {
    public class FileNameAssertion : IAssertion<FileName>
    {
-      public static implicit operator bool(FileNameAssertion assertion) => assertion.BeTrue();
+      public static implicit operator bool(FileNameAssertion assertion) => assertion.BeEquivalentToTrue();
 
       public static bool operator &(FileNameAssertion x, ICanBeTrue y) => and(x, y);
 
@@ -29,7 +29,7 @@ namespace Core.Assertions.Computers
          name = "File";
       }
 
-      public bool BeTrue() => beTrue(this);
+      public bool BeEquivalentToTrue() => beEquivalentToTrue(this);
 
       public FileName Value => file;
 

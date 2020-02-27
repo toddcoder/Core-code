@@ -1727,7 +1727,7 @@ namespace Core.Strings
          {
             var matcher = new Matcher();
             return
-               from attempt in matcher.IsMatch(value, "^ /(.+) ['fF'] $").Must().Be().OrFailure("Single in invalid format")
+               from attempt in matcher.IsMatch(value, "^ /(.+) ['fF'] $").Must().BeTrue().OrFailure("Single in invalid format")
                from floated in matcher.FirstGroup.Single()
                select (object)floated;
          }
@@ -1736,7 +1736,7 @@ namespace Core.Strings
          {
             var matcher = new Matcher();
             return
-               from attempt in matcher.IsMatch(value, "^ /(.+) ['dD'] $").Must().Be().OrFailure("Double in invalid format")
+               from attempt in matcher.IsMatch(value, "^ /(.+) ['dD'] $").Must().BeTrue().OrFailure("Double in invalid format")
                from doubled in matcher.FirstGroup.Double()
                select (object)doubled;
          }
@@ -1745,7 +1745,7 @@ namespace Core.Strings
          {
             var matcher = new Matcher();
             return
-               from attempt in matcher.IsMatch(value, "^ /(.+) ['mM'] $").Must().Be().OrFailure("Decimal in invalid format")
+               from attempt in matcher.IsMatch(value, "^ /(.+) ['mM'] $").Must().BeTrue().OrFailure("Decimal in invalid format")
                from result in matcher.FirstGroup.Decimal()
                select (object)result;
          }

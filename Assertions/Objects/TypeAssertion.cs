@@ -109,7 +109,7 @@ namespace Core.Assertions.Objects
          return add(() => type.IsConstructedGenericType, "$name must $not be a constructed generic");
       }
 
-      public bool BeTrue() => beTrue(this);
+      public bool BeEquivalentToTrue() => beEquivalentToTrue(this);
 
       public Type Value => type;
 

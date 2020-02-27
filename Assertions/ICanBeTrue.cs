@@ -2,6 +2,6 @@
 {
    public interface ICanBeTrue
    {
-      bool BeTrue();
+      bool BeEquivalentToTrue();
    }
 }

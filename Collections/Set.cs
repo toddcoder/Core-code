@@ -1,6 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Core.Enumerables;
+using Core.Monads;
 
 namespace Core.Collections
 {
@@ -73,6 +76,10 @@ namespace Core.Collections
       public virtual void Clear() => content.Clear();
 
       public virtual bool Contains(T item) => content.Contains(item);
+
+      public virtual IMaybe<T> Find(Predicate<T> predicate) => content.FirstOrNone(i => predicate(i));
+
+      public virtual IEnumerable<T> FindAll(Predicate<T> predicate) => content.Where(i => predicate(i));
 
       public int IndexOf(T item) => content.IndexOf(item);
 

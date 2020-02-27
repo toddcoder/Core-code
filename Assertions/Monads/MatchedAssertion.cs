@@ -9,7 +9,7 @@ namespace Core.Assertions.Monads
 {
    public class MatchedAssertion<T> : IAssertion<T>
    {
-      public static implicit operator bool(MatchedAssertion<T> assertion) => assertion.BeTrue();
+      public static implicit operator bool(MatchedAssertion<T> assertion) => assertion.BeEquivalentToTrue();
 
       public static bool operator &(MatchedAssertion<T> x, ICanBeTrue y) => and(x, y);
 
@@ -28,7 +28,7 @@ namespace Core.Assertions.Monads
          name = "Match";
       }
 
-      public bool BeTrue() => beTrue(this);
+      public bool BeEquivalentToTrue() => beEquivalentToTrue(this);
 
       public T Value => matched.ForceValue();
 

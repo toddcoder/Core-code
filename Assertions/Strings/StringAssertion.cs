@@ -14,7 +14,7 @@ namespace Core.Assertions.Strings
 {
    public class StringAssertion : IAssertion<string>
    {
-      public static implicit operator bool(StringAssertion assertion) => assertion.BeTrue();
+      public static implicit operator bool(StringAssertion assertion) => assertion.BeEquivalentToTrue();
 
       public static bool operator &(StringAssertion x, ICanBeTrue y) => and(x, y);
 
@@ -145,7 +145,7 @@ namespace Core.Assertions.Strings
 
       public IEnumerable<Constraint> Constraints => constraints;
 
-      public bool BeTrue() => beTrue(this);
+      public bool BeEquivalentToTrue() => beEquivalentToTrue(this);
 
       public IAssertion<string> Named(string name)
       {

@@ -24,7 +24,7 @@ namespace Core.Assertions.Collections
          name = "Dictionary";
       }
 
-      public bool BeTrue() => beTrue(this);
+      public bool BeEquivalentToTrue() => beEquivalentToTrue(this);
 
       public Dictionary<TKey, TValue> Value => dictionary;
 

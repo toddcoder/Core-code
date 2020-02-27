@@ -11,7 +11,7 @@ namespace Core.Assertions.Comparables
 {
    public class ComparableAssertion<T> : IAssertion<T> where T : struct, IComparable
    {
-      public static implicit operator bool(ComparableAssertion<T> assertion) => assertion.BeTrue();
+      public static implicit operator bool(ComparableAssertion<T> assertion) => assertion.BeEquivalentToTrue();
 
       public static bool operator &(ComparableAssertion<T> x, ICanBeTrue y) => and(x, y);
 
@@ -178,7 +178,7 @@ namespace Core.Assertions.Comparables
 
       public IEnumerable<Constraint> Constraints => constraints;
 
-      public bool BeTrue() => beTrue(this);
+      public bool BeEquivalentToTrue() => beEquivalentToTrue(this);
 
       public IAssertion<T> Named(string name)
       {

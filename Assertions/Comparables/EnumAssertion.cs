@@ -74,7 +74,7 @@ namespace Core.Assertions.Comparables
          return add(() => Enum.IsDefined(value.GetType(), intValue), $"$name must $not == {intValue}");
       }
 
-      public bool BeTrue() => beTrue(this);
+      public bool BeEquivalentToTrue() => beEquivalentToTrue(this);
 
       public Enum Value => value;
 

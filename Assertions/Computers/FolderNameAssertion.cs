@@ -11,7 +11,7 @@ namespace Core.Assertions.Computers
 {
    public class FolderNameAssertion : IAssertion<FolderName>
    {
-      public static implicit operator bool(FolderNameAssertion assertion) => assertion.BeTrue();
+      public static implicit operator bool(FolderNameAssertion assertion) => assertion.BeEquivalentToTrue();
 
       public static bool operator &(FolderNameAssertion x, ICanBeTrue y) => and(x, y);
 
@@ -30,7 +30,7 @@ namespace Core.Assertions.Computers
          name = "Folder";
       }
 
-      public bool BeTrue() => beTrue(this);
+      public bool BeEquivalentToTrue() => beEquivalentToTrue(this);
 
       public FolderName Value => folder;
 

@@ -352,7 +352,7 @@ namespace Core.ObjectGraphs
       {
          get
          {
-            HasChildren.Must().Be().OrThrow($"{key} has no children");
+            HasChildren.Must().BeTrue().OrThrow($"{key} has no children");
             if (graphName.IsMatch("'//'"))
             {
                var childName = graphName.KeepUntil("/");

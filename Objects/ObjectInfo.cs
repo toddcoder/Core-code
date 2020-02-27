@@ -90,7 +90,7 @@ namespace Core.Objects
                   if (parameters.Length == 0)
                   {
                      var valueWasSet = setValue(value);
-                     assert(() => valueWasSet).Must().Be().OrThrow("$name couldn't be set");
+                     assert(() => valueWasSet).Must().BeTrue().OrThrow("$name couldn't be set");
                   }
                   else
                   {

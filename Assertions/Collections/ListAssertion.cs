@@ -9,7 +9,7 @@ namespace Core.Assertions.Collections
 {
    public class ListAssertion<T> : IAssertion<List<T>>
    {
-      public static implicit operator bool(ListAssertion<T> assertion) => assertion.BeTrue();
+      public static implicit operator bool(ListAssertion<T> assertion) => assertion.BeEquivalentToTrue();
 
       public static bool operator &(ListAssertion<T> x, ICanBeTrue y) => and(x, y);
 
@@ -81,7 +81,7 @@ namespace Core.Assertions.Collections
 
       public IEnumerable<Constraint> Constraints => constraints;
 
-      public bool BeTrue() => beTrue(this);
+      public bool BeEquivalentToTrue() => beEquivalentToTrue(this);
 
       public IAssertion<List<T>> Named(string name)
       {

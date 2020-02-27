@@ -40,8 +40,8 @@ namespace Core.Tests
          var greaterThan = new StringIntKey("foo", 153);
          var lessThan = new StringIntKey("bar", 123);
 
-         (starting<=greaterThan).Must().Be().OrThrow();
-         (starting>=lessThan).Must().Be().OrThrow();
+         (starting<=greaterThan).Must().BeTrue().OrThrow();
+         (starting>=lessThan).Must().BeTrue().OrThrow();
       }
    }
 }

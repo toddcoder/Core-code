@@ -50,7 +50,7 @@ namespace Core.Assertions.Collections
          return add(() => obj == null, "$name must $not be null");
       }
 
-      public bool BeTrue() => beTrue(this);
+      public bool BeEquivalentToTrue() => beEquivalentToTrue(this);
 
       public T Value => obj;
 

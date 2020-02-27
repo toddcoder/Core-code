@@ -9,7 +9,7 @@ namespace Core.Assertions.Objects
 {
    public class ObjectAssertion : IAssertion<object>
    {
-      public static implicit operator bool(ObjectAssertion assertion) => assertion.BeTrue();
+      public static implicit operator bool(ObjectAssertion assertion) => assertion.BeEquivalentToTrue();
 
       public static bool operator &(ObjectAssertion x, ICanBeTrue y) => and(x, y);
 
@@ -64,7 +64,7 @@ namespace Core.Assertions.Objects
 
       public IEnumerable<Constraint> Constraints => constraints;
 
-      public bool BeTrue() => beTrue(this);
+      public bool BeEquivalentToTrue() => beEquivalentToTrue(this);
 
       public IAssertion<object> Named(string name)
       {

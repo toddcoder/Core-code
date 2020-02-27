@@ -9,7 +9,7 @@ namespace Core.Assertions.Monads
 {
    public class CompletionAssertion<T> : IAssertion<T>
    {
-      public static implicit operator bool(CompletionAssertion<T> assertion) => assertion.BeTrue();
+      public static implicit operator bool(CompletionAssertion<T> assertion) => assertion.BeEquivalentToTrue();
 
       public static bool operator &(CompletionAssertion<T> x, ICanBeTrue y) => and(x, y);
 
@@ -28,7 +28,7 @@ namespace Core.Assertions.Monads
          name = "Async result";
       }
 
-      public bool BeTrue() => beTrue(this);
+      public bool BeEquivalentToTrue() => beEquivalentToTrue(this);
 
       public T Value => completion.ForceValue();
 
