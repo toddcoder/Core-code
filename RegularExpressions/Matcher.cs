@@ -21,13 +21,15 @@ namespace Core.RegularExpressions
    {
       public class Group
       {
-         public static Group Empty => new Group { Index = -1, Length = 0, Text = "" };
+         public static Group Empty => new Group { Index = -1, Length = 0, Text = "", Which = -1};
 
          public int Index { get; set; }
 
          public int Length { get; set; }
 
          public string Text { get; set; }
+
+         public int Which { get; set; }
 
          internal string GetSlice(Slicer slicer) => slicer[Index, Length];
 
@@ -136,14 +138,15 @@ namespace Core.RegularExpressions
          var regex = new System.Text.RegularExpressions.Regex(pattern, options);
          var newMatches = regex.Matches(input)
             .Cast<RMatch>()
-            .Select(m => new Match
+            .Select((m, i) => new Match
             {
                Index = m.Index,
                Length = m.Length,
                Text = m.Value,
                Groups = m.Groups.Cast<RGroup>()
-                  .Select(g => new Group { Index = g.Index, Length = g.Length, Text = g.Value })
-                  .ToArray()
+                  .Select((g, j) => new Group { Index = g.Index, Length = g.Length, Text = g.Value, Which = j })
+                  .ToArray(),
+               Which = i
             });
          matches = newMatches.ToArray();
          slicer = new Slicer(input);

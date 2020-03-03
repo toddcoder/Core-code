@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using Core.Arrays;
 using Core.Collections;
+using Core.Enumerables;
 using Core.Exceptions;
 
 namespace Core.Objects
@@ -80,5 +81,7 @@ namespace Core.Objects
                .Aggregate(397, (current, value) => current * 397 ^ value);
          }
       }
+
+      public string Keys => getValues(obj, signatures).Select(i => $"{i.Key}=>{(i.Value.IsNull() ? "null" : i.Value)}").Stringify();
    }
 }

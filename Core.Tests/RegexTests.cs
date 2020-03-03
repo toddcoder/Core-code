@@ -1,11 +1,13 @@
 ﻿using System;
+using Core.Assertions;
 using Core.Regex;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Tests
 {
    [TestClass]
-   public class LegacyMatcherTests
+   public class RegexTests
    {
       [TestMethod]
       public void MatcherTest()
@@ -19,7 +21,16 @@ namespace Core.Tests
             }
 
             Console.WriteLine(matcher);
+            assert(() => matcher.ToString()).Must().Equal("tstylecop.style.format.options.xml").OrThrow();
          }
+      }
+
+      [TestMethod]
+      public void MatchOnlySubstitutions()
+      {
+         var result = "This is the full sentence with sql1 in it".Substitute(@"\w{3}(\d\si\w\si\w)", "$1 is it", matchOnly: true);
+         Console.WriteLine(result);
+         assert(() => result).Must().Equal("sq1 in it is it").OrThrow();
       }
    }
 }

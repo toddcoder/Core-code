@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using Core.Assertions;
 using Core.Collections;
+using Core.Enumerables;
 
 namespace Core.Objects
 {
@@ -104,5 +105,7 @@ namespace Core.Objects
                .Aggregate(397, (current, value) => current * 397 ^ value);
          }
       }
+
+      public string Keys => getValues(this).Select(i => $"{i.Key}=>{(i.Value.IsNull() ? "null" : i.Value)}").Stringify();
    }
 }

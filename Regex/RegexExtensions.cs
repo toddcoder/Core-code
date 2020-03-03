@@ -32,28 +32,42 @@ namespace Core.Regex
 			return input.IsMatch(pattern, GetOptions(ignoreCase, multiline));
 		}
 
-		public static string Substitute(this string input, string pattern, string replacement, RegexOptions options)
+		public static string Substitute(this string input, string pattern, string replacement, RegexOptions options, bool matchOnly = false)
 		{
-			return System.Text.RegularExpressions.Regex.Replace(input, pattern, replacement, options);
+         if (matchOnly)
+         {
+            return RegularExpressions.RegexExtensions.substituteMatchOnly(input, pattern, replacement, options, false, -1);
+         }
+         else
+         {
+            return System.Text.RegularExpressions.Regex.Replace(input, pattern, replacement, options);
+         }
 		}
 
-		public static string Substitute(this string input, string pattern, string replacement, RegexOptions options, int count)
+		public static string Substitute(this string input, string pattern, string replacement, RegexOptions options, int count, bool matchOnly = false)
 		{
-			var regex = new System.Text.RegularExpressions.Regex(pattern, options);
-			return regex.Replace(input, replacement, count);
+         if (matchOnly)
+         {
+            return RegularExpressions.RegexExtensions.substituteMatchOnly(input, pattern, replacement, options, false, count);
+         }
+         else
+         {
+            var regex = new System.Text.RegularExpressions.Regex(pattern, options);
+            return regex.Replace(input, replacement, count);
+         }
 		}
 
 		public static string Substitute(this string input, string pattern, string replacement, bool ignoreCase = false,
-			bool multiline = false)
+			bool multiline = false, bool matchOnly = false)
 		{
-			return input.Substitute(pattern, replacement, GetOptions(ignoreCase, multiline));
+			return input.Substitute(pattern, replacement, GetOptions(ignoreCase, multiline), matchOnly);
 		}
 
 		public static string Substitute(this string input, string pattern, string replacement, int count,
-			bool ignoreCase = false, bool multiline = false)
-		{
-			return input.Substitute(pattern, replacement, GetOptions(ignoreCase, multiline), count);
-		}
+			bool ignoreCase = false, bool multiline = false, bool matchOnly = false)
+      {
+         return input.Substitute(pattern, replacement, GetOptions(ignoreCase, multiline), count, matchOnly);
+      }
 
 		public static string Replace(this string input, string pattern, Action<Matcher> replacer, RegexOptions options)
 		{

@@ -59,7 +59,7 @@
     <Compile Include="FileNameTests.cs" />
     <Compile Include="FolderNameTests.cs" />
     <Compile Include="HashTest.cs" />
-    <Compile Include="LegacyMatcherTests.cs" />
+    <Compile Include="RegexTests.cs" />
     <Compile Include="MonadTests.cs" />
     <Compile Include="ObjectGraphTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -69,6 +69,18 @@ namespace Core.Strings
 
       public int Length => text.Length;
 
+      public Slicer Drop(int count)
+      {
+         replacements.Add(new Replacement(0, count, ""));
+         return this;
+      }
+
+      public Slicer Keep(int count)
+      {
+         replacements.Add(new Replacement(count, Length - count, ""));
+         return this;
+      }
+
       public IEnumerator<(int index, int length, string text)> GetEnumerator()
       {
          var offset = 0;

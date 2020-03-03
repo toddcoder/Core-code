@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Linq;
 using System.Text.RegularExpressions;
 using Core.Monads;
+using Core.Strings;
 using static System.Text.RegularExpressions.RegexOptions;
 using static Core.Monads.MonadFunctions;
 
@@ -38,28 +40,92 @@ namespace Core.RegularExpressions
          return input.IsMatch(pattern, GetOptions(ignoreCase, multiline), friendly);
       }
 
-      public static string Substitute(this string input, string pattern, string replacement, RegexOptions options,
-         bool friendly = true)
+      internal static Matcher.Match[] getGroups(string replacement)
+      {
+         var matcher = new Matcher();
+         if (matcher.IsMatch(replacement, @"-(<'\') /('$' /d+)"))
+         {
+            return matcher.ToArray();
+         }
+         else
+         {
+            return new Matcher.Match[0];
+         }
+      }
+
+      internal static string substituteMatchOnly(string input, string pattern, string replacement, RegexOptions options, bool friendly, int count)
       {
          if (friendly)
          {
             pattern = Matcher.getPattern(pattern);
          }
 
-         return System.Text.RegularExpressions.Regex.Replace(input, pattern, replacement, options);
+         var matcher = new Matcher(false);
+         if (matcher.IsMatch(input, pattern, options))
+         {
+            var slicer = new Slicer(input);
+            var groups = getGroups(replacement);
+
+            if (count == -1)
+            {
+               foreach (var match in groups)
+               {
+                  slicer[match.Index, match.Length] = matcher[0, match.Which];
+               }
+            }
+            else
+            {
+               foreach (var match in groups.Take(count))
+               {
+                  slicer[match.Index, match.Length] = matcher[0, match.Which];
+               }
+            }
+
+            var (_, index, length) = matcher.GetMatch(0);
+            return slicer.Drop(index).Keep(length).ToString();
+         }
+         else
+         {
+            return input;
+         }
       }
 
       public static string Substitute(this string input, string pattern, string replacement, RegexOptions options,
-         int count, bool friendly = true)
+         bool friendly = true, bool matchOnly = false)
       {
-         if (friendly)
+         if (matchOnly)
          {
-            pattern = Matcher.getPattern(pattern);
+            return substituteMatchOnly(input, pattern, replacement, options, friendly, -1);
          }
+         else
+         {
+            if (friendly)
+            {
+               pattern = Matcher.getPattern(pattern);
+            }
 
-         var regex = new System.Text.RegularExpressions.Regex(pattern, options);
+            return System.Text.RegularExpressions.Regex.Replace(input, pattern, replacement, options);
+         }
+      }
 
-         return regex.Replace(input, replacement, count);
+      public static string Substitute(this string input, string pattern, string replacement, RegexOptions options,
+         int count, bool friendly = true, bool matchOnly = false)
+      {
+         if (matchOnly)
+         {
+            return substituteMatchOnly(input, pattern, replacement, options, friendly, count);
+         }
+         else
+         {
+            if (friendly)
+            {
+               pattern = Matcher.getPattern(pattern);
+            }
+
+            var regex = new System.Text.RegularExpressions.Regex(pattern, options);
+
+            return regex.Replace(input, replacement, count);
+         }
       }
 
       public static string Substitute(this string input, string pattern, string replacement, bool ignoreCase = false,
