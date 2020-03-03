@@ -25,6 +25,7 @@ namespace Core.Objects
          if (!this.activator.HasValue || overriding)
          {
             this.activator = activator.Some();
+            value = none<T>();
          }
       }
 
