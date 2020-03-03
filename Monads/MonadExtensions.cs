@@ -639,7 +639,8 @@ namespace Core.Monads
             case OperationCanceledException _:
             case ObjectDisposedException _:
                return cancelled<T>();
-            case FullStackException fullStackException when !(fullStackException.InnerException is FullStackException):
+            case FullStackException fullStackException
+               when fullStackException.InnerException != null && !(fullStackException.InnerException is FullStackException):
                return cancelledOrInterrupted<T>(fullStackException.InnerException);
             default:
                return interrupted<T>(exception);
@@ -803,7 +804,6 @@ namespace Core.Monads
                var min = array.Select((v, i) => (v: minOnFunc(v), i)).Min();
                return array[min.i].Success();
             }
-
          });
       }
 
