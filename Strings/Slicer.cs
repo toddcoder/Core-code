@@ -67,19 +67,13 @@ namespace Core.Strings
          set => this[index, 1] = value.ToString();
       }
 
+      public void Keep(int index, int length)
+      {
+         replacements.Add(new Replacement(0, index, ""));
+         replacements.Add(new Replacement(length, -1, ""));
+      }
+
       public int Length => text.Length;
-
-      public Slicer Drop(int count)
-      {
-         replacements.Add(new Replacement(0, count, ""));
-         return this;
-      }
-
-      public Slicer Keep(int count)
-      {
-         replacements.Add(new Replacement(count, Length - count, ""));
-         return this;
-      }
 
       public IEnumerator<(int index, int length, string text)> GetEnumerator()
       {

@@ -28,9 +28,9 @@ namespace Core.Tests
       [TestMethod]
       public void MatchOnlySubstitutions()
       {
-         var result = "This is the full sentence with sql1 in it".Substitute(@"\w{3}(\d\si\w\si\w)", "$1 is it", matchOnly: true);
+         var result = "This is the full sentence with sql1 in it".Substitute(@"\w{3}(\d)", "-$1", matchOnly: true);
          Console.WriteLine(result);
-         assert(() => result).Must().Equal("sq1 in it is it").OrThrow();
+         assert(() => result).Must().Equal("sql-1").OrThrow();
       }
    }
 }
