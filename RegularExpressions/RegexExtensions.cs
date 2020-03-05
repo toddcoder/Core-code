@@ -64,11 +64,6 @@ namespace Core.RegularExpressions
          if (matcher.IsMatch(input, pattern, options))
          {
             var slicer = new Slicer(input);
-            var (_, index, length) = matcher.GetMatch(0);
-            slicer[0, index] = "";
-            var index2 = index + length;
-            slicer[index2, input.Length - index2] = "";
-
             var groups = getGroups(replacement);
 
             if (count == -1)
@@ -86,6 +81,10 @@ namespace Core.RegularExpressions
                }
             }
 
+            var (_, index, length) = matcher.GetMatch(0);
+            slicer[0, index] = "";
+            var index2 = index + length;
+            slicer[index2, input.Length - index2] = "";
             return slicer.ToString();
          }
          else
