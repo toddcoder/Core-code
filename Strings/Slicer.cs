@@ -136,6 +136,9 @@ namespace Core.Strings
                   offset -= replacementLength;
                }
             }
+
+            OffsetIndex = offsetIndex;
+            OffsetLength = replacementLength;
          }
 
          return builder.ToString();
@@ -143,6 +146,15 @@ namespace Core.Strings
 
       IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-      public void Reset() => replacements.Clear();
+      public void Reset()
+      {
+         replacements.Clear();
+         OffsetIndex = 0;
+         OffsetLength = 0;
+      }
+
+      public int OffsetIndex { get; set; }
+
+      public int OffsetLength { get; set; }
    }
 }
