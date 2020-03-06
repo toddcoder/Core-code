@@ -316,7 +316,7 @@
     <Compile Include="RegularExpressions\Parsers\OutsideRangeParser.cs" />
     <Compile Include="RegularExpressions\Parsers\OverrideParser.cs" />
     <Compile Include="RegularExpressions\Parsers\Parser.cs" />
-    <Compile Include="RegularExpressions\Parsers\ParserHelpers.cs" />
+    <Compile Include="RegularExpressions\Parsers\ParserExtensions.cs" />
     <Compile Include="RegularExpressions\Parsers\RemainderParser.cs" />
     <Compile Include="RegularExpressions\Parsers\SlashClassParser.cs" />
     <Compile Include="RegularExpressions\Parsers\SpanBreakParser.cs" />
