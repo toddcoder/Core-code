@@ -2766,5 +2766,9 @@ namespace Core.Strings
 
          return split(source).ToArray().Stringify("");
       }
+
+      public static bool CaseDiffers(this string left, string right) => left != right && left.Same(right);
+
+      public static StringDifference DiffersFrom(this string left, string right) => new StringDifference(left.Same(right), left.CaseDiffers(right));
    }
 }

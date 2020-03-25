@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Core.Enumerables;
+using Core.Strings;
 
 namespace Core.Collections
 {
@@ -42,6 +44,13 @@ namespace Core.Collections
          {
             return content.Any(i => i == null);
          }
+      }
+
+      public StringDifference DiffersFrom(string target)
+      {
+         return content.FirstOrNone(i => i.Same(target) || i.CaseDiffers(target))
+            .Map(s => s.DiffersFrom(target))
+            .DefaultTo(() => new StringDifference(false, false));
       }
    }
 }
