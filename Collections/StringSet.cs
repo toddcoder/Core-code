@@ -48,9 +48,10 @@ namespace Core.Collections
 
       public StringDifference DiffersFrom(string target)
       {
-         return content.FirstOrNone(i => i.Same(target) || i.CaseDiffers(target))
+         return content
+            .FirstOrNone(i => i == target || i.Same(target) || i.CaseDiffers(target))
             .Map(s => s.DiffersFrom(target))
-            .DefaultTo(() => new StringDifference(false, false));
+            .DefaultTo(() => StringDifference.Empty);
       }
    }
 }
