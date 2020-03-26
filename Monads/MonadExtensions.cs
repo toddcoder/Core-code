@@ -18,7 +18,7 @@ namespace Core.Monads
 
       public static IMaybe<T> SomeIfNotNull<T>(this T obj) => obj.SomeIf(o => !o.IsNull());
 
-      public static IMaybe<T> Some<T>(this T obj) => new Some<T>(obj);
+      public static IMaybe<T> Some<T>(this T obj) => obj.IsNull() ? none<T>() : new Some<T>(obj);
 
       public static IMaybe<Type> UnderlyingType(this object obj)
       {
@@ -83,13 +83,13 @@ namespace Core.Monads
          return maybe.IsSome;
       }
 
-      public static IResult<T> Success<T>(this T value) => new Success<T>(value);
+      public static IResult<T> Success<T>(this T value) => value.IsNull() ? "Value cannot be null".Failure<T>() : new Success<T>(value);
 
       public static IResult<T> Failure<T>(this string message) => failure<T>(new Exception(message));
 
-      public static IMatched<T> Matched<T>(this T matches) => new Matched<T>(matches);
+      public static IMatched<T> Matched<T>(this T matches) => matches.IsNull() ? "Matches cannot be null".FailedMatch<T>() : new Matched<T>(matches);
 
-      public static IMatched<T> MatchedUnlessNull<T>(this T obj) => obj.IsNull() ? new NotMatched<T>() : obj.Matched();
+      public static IMatched<T> MatchedUnlessNull<T>(this T obj) => obj.IsNull() ? notMatched<T>() : obj.Matched();
 
       public static IMatched<T> FailedMatch<T>(this string message)
       {
@@ -592,7 +592,7 @@ namespace Core.Monads
          }
       }
 
-      public static ICompletion<T> Completed<T>(this T value) => new Completed<T>(value);
+      public static ICompletion<T> Completed<T>(this T value) => value.IsNull() ? "value cannot be null".Interrupted<T>() : new Completed<T>(value);
 
       public static ICompletion<T> Completed<T>(this T value, CancellationToken token)
       {
