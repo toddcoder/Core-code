@@ -493,7 +493,7 @@ namespace Core.Computers
             do
             {
                result = join(parts, index);
-               index = -1;
+               index -= 1;
             } while (index >= 0 && result.Length > limit);
 
             if (result.Length <= limit)

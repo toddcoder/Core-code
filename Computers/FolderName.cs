@@ -445,6 +445,7 @@ namespace Core.Computers
          root = newRoot;
          subfolders = newSubfolders;
          setFullPath();
+         equatable = new Equatable<FolderName>(this, "fullPath");
       }
 
       void initialize(string newRoot) => initialize(newRoot, new string[0]);
