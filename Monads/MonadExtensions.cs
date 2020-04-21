@@ -87,6 +87,14 @@ namespace Core.Monads
 
       public static IResult<T> Failure<T>(this string message) => failure<T>(new Exception(message));
 
+      public static IResult<T> Failure<T, TException>(this object firstItem, params object[] args) where TException : Exception
+      {
+         var list = new List<object> { firstItem };
+         list.AddRange(args);
+
+         return failure<T>((TException)typeof(TException).Create(list.ToArray()));
+      }
+
       public static IMatched<T> Matched<T>(this T matches) => matches.IsNull() ? "Matches cannot be null".FailedMatch<T>() : new Matched<T>(matches);
 
       public static IMatched<T> MatchedUnlessNull<T>(this T obj) => obj.IsNull() ? notMatched<T>() : obj.Matched();
@@ -94,6 +102,14 @@ namespace Core.Monads
       public static IMatched<T> FailedMatch<T>(this string message)
       {
          return new FailedMatch<T>(new ApplicationException(message));
+      }
+
+      public static IMatched<T> FailedMatch<T, TException>(this object firstItem, params object[] args) where TException : Exception
+      {
+         var list = new List<object> { firstItem };
+         list.AddRange(args);
+
+         return failedMatch<T>((TException)typeof(TException).Create(list.ToArray()));
       }
 
       public static IResult<T> Result<T>(this bool test, Func<T> ifFunc, string exceptionMessage)
@@ -607,6 +623,14 @@ namespace Core.Monads
       }
 
       public static ICompletion<T> Interrupted<T>(this string message) => new Interrupted<T>(new ApplicationException(message));
+
+      public static ICompletion<T> Interrupted<T, TException>(this object firstItem, params object[] args) where TException : Exception
+      {
+         var list = new List<object> { firstItem };
+         list.AddRange(args);
+
+         return interrupted<T>((TException)typeof(TException).Create(list.ToArray()));
+      }
 
       public static ICompletion<T> Completion<T>(this IResult<T> result) => result.Map(v => v.Completed()).Recover(interrupted<T>);
 
