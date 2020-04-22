@@ -482,9 +482,48 @@ namespace Core.Monads
          }
       }
 
+      public static bool If<T1, T2>(this IResult<(T1, T2)> result, out T1 v1, out T2 v2, out Exception exception)
+      {
+         if (result.If(out var value, out exception))
+         {
+            v1 = value.Item1;
+            v2 = value.Item2;
+            exception = default;
+
+            return true;
+         }
+         else
+         {
+            v1 = default;
+            v2 = default;
+
+            return false;
+         }
+      }
+
       public static bool If<T1, T2, T3>(this IResult<(T1, T2, T3)> result, out T1 v1, out T2 v2, out T3 v3)
       {
          if (result.If(out var value))
+         {
+            v1 = value.Item1;
+            v2 = value.Item2;
+            v3 = value.Item3;
+
+            return true;
+         }
+         else
+         {
+            v1 = default;
+            v2 = default;
+            v3 = default;
+
+            return false;
+         }
+      }
+
+      public static bool If<T1, T2, T3>(this IResult<(T1, T2, T3)> result, out T1 v1, out T2 v2, out T3 v3, out Exception exception)
+      {
+         if (result.If(out var value, out exception))
          {
             v1 = value.Item1;
             v2 = value.Item2;
@@ -525,9 +564,50 @@ namespace Core.Monads
          }
       }
 
+      public static bool If<T1, T2, T3, T4>(this IResult<(T1, T2, T3, T4)> result, out T1 v1, out T2 v2, out T3 v3,
+         out T4 v4, out Exception exception)
+      {
+         if (result.If(out var value, out exception))
+         {
+            v1 = value.Item1;
+            v2 = value.Item2;
+            v3 = value.Item3;
+            v4 = value.Item4;
+
+            return true;
+         }
+         else
+         {
+            v1 = default;
+            v2 = default;
+            v3 = default;
+            v4 = default;
+
+            return false;
+         }
+      }
+
       public static bool If<T1, T2>(this IMatched<(T1, T2)> matched, out T1 v1, out T2 v2)
       {
          if (matched.If(out var value))
+         {
+            v1 = value.Item1;
+            v2 = value.Item2;
+
+            return true;
+         }
+         else
+         {
+            v1 = default;
+            v2 = default;
+
+            return false;
+         }
+      }
+
+      public static bool If<T1, T2>(this IMatched<(T1, T2)> matched, out T1 v1, out T2 v2, out IMaybe<Exception> anyException)
+      {
+         if (matched.If(out var value, out anyException))
          {
             v1 = value.Item1;
             v2 = value.Item2;
@@ -563,10 +643,175 @@ namespace Core.Monads
          }
       }
 
+      public static bool If<T1, T2, T3>(this IMatched<(T1, T2, T3)> matched, out T1 v1, out T2 v2, out T3 v3, out IMaybe<Exception> anyException)
+      {
+         if (matched.If(out var value, out anyException))
+         {
+            v1 = value.Item1;
+            v2 = value.Item2;
+            v3 = value.Item3;
+
+            return true;
+         }
+         else
+         {
+            v1 = default;
+            v2 = default;
+            v3 = default;
+
+            return false;
+         }
+      }
+
       public static bool If<T1, T2, T3, T4>(this IMatched<(T1, T2, T3, T4)> matched, out T1 v1, out T2 v2, out T3 v3,
          out T4 v4)
       {
          if (matched.If(out var value))
+         {
+            v1 = value.Item1;
+            v2 = value.Item2;
+            v3 = value.Item3;
+            v4 = value.Item4;
+
+            return true;
+         }
+         else
+         {
+            v1 = default;
+            v2 = default;
+            v3 = default;
+            v4 = default;
+
+            return false;
+         }
+      }
+
+      public static bool If<T1, T2, T3, T4>(this IMatched<(T1, T2, T3, T4)> matched, out T1 v1, out T2 v2, out T3 v3,
+         out T4 v4, out IMaybe<Exception> anyException)
+      {
+         if (matched.If(out var value, out anyException))
+         {
+            v1 = value.Item1;
+            v2 = value.Item2;
+            v3 = value.Item3;
+            v4 = value.Item4;
+
+            return true;
+         }
+         else
+         {
+            v1 = default;
+            v2 = default;
+            v3 = default;
+            v4 = default;
+
+            return false;
+         }
+      }
+
+      public static bool If<T1, T2>(this ICompletion<(T1, T2)> completion, out T1 v1, out T2 v2)
+      {
+         if (completion.If(out var value))
+         {
+            v1 = value.Item1;
+            v2 = value.Item2;
+
+            return true;
+         }
+         else
+         {
+            v1 = default;
+            v2 = default;
+
+            return false;
+         }
+      }
+
+      public static bool If<T1, T2>(this ICompletion<(T1, T2)> completion, out T1 v1, out T2 v2, out IMaybe<Exception> anyException)
+      {
+         if (completion.If(out var value, out anyException))
+         {
+            v1 = value.Item1;
+            v2 = value.Item2;
+
+            return true;
+         }
+         else
+         {
+            v1 = default;
+            v2 = default;
+
+            return false;
+         }
+      }
+
+      public static bool If<T1, T2, T3>(this ICompletion<(T1, T2, T3)> completion, out T1 v1, out T2 v2, out T3 v3)
+      {
+         if (completion.If(out var value))
+         {
+            v1 = value.Item1;
+            v2 = value.Item2;
+            v3 = value.Item3;
+
+            return true;
+         }
+         else
+         {
+            v1 = default;
+            v2 = default;
+            v3 = default;
+
+            return false;
+         }
+      }
+
+      public static bool If<T1, T2, T3>(this ICompletion<(T1, T2, T3)> completion, out T1 v1, out T2 v2, out T3 v3,
+         out IMaybe<Exception> anyException)
+      {
+         if (completion.If(out var value, out anyException))
+         {
+            v1 = value.Item1;
+            v2 = value.Item2;
+            v3 = value.Item3;
+
+            return true;
+         }
+         else
+         {
+            v1 = default;
+            v2 = default;
+            v3 = default;
+
+            return false;
+         }
+      }
+
+      public static bool If<T1, T2, T3, T4>(this ICompletion<(T1, T2, T3, T4)> completion, out T1 v1, out T2 v2, out T3 v3, out T4 v4)
+      {
+         if (completion.If(out var value))
+         {
+            v1 = value.Item1;
+            v2 = value.Item2;
+            v3 = value.Item3;
+            v4 = value.Item4;
+
+            return true;
+         }
+         else
+         {
+            v1 = default;
+            v2 = default;
+            v3 = default;
+            v4 = default;
+
+            return false;
+         }
+      }
+
+      public static bool If<T1, T2, T3, T4>(this ICompletion<(T1, T2, T3, T4)> completion, out T1 v1, out T2 v2, out T3 v3, out T4 v4,
+         out IMaybe<Exception> anyException)
+      {
+         if (completion.If(out var value, out anyException))
          {
             v1 = value.Item1;
             v2 = value.Item2;
