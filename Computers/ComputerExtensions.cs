@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Core.Applications.Async;
 using Core.Enumerables;
 using Core.Monads;
+using static Core.Applications.Async.AsyncFunctions;
 
 namespace Core.Computers
 {
@@ -41,13 +41,13 @@ namespace Core.Computers
 
       public static async Task<ICompletion<FileName>> LocalAndParentFilesAsync(this IEnumerable<FolderName> folders, Predicate<FileName> predicate)
       {
-         return await AsyncFunctions.runFromResultAsync(() => folders.LocalAndParentFiles(predicate));
+         return await runFromResultAsync(() => folders.LocalAndParentFiles(predicate));
       }
 
       public static async Task<ICompletion<FileName>> LocalAndParentFilesAsync(this IEnumerable<FolderName> folders, Predicate<FileName> predicate,
          CancellationToken token)
       {
-         return await AsyncFunctions.runFromResultAsync(t => folders.LocalAndParentFiles(predicate), token);
+         return await runFromResultAsync(t => folders.LocalAndParentFiles(predicate), token);
       }
 
       public static IEnumerable<FolderName> LocalAndParentFolders(this IEnumerable<FolderName> folders)
@@ -77,12 +77,12 @@ namespace Core.Computers
       public static async Task<ICompletion<FolderName>> LocalAndParentFoldersAsync(this IEnumerable<FolderName> folders,
          Predicate<FolderName> predicate)
       {
-         return await AsyncFunctions.runFromResultAsync(() => folders.LocalAndParentFolders(predicate));
+         return await runFromResultAsync(() => folders.LocalAndParentFolders(predicate));
       }
       public static async Task<ICompletion<FolderName>> LocalAndParentFoldersAsync(this IEnumerable<FolderName> folders,
          Predicate<FolderName> predicate, CancellationToken token)
       {
-         return await AsyncFunctions.runFromResultAsync(t => folders.LocalAndParentFolders(predicate), token);
+         return await runFromResultAsync(t => folders.LocalAndParentFolders(predicate), token);
       }
    }
 }
