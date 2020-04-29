@@ -1,18 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Core.Assertions;
 using Core.Collections;
 using Core.Enumerables;
 using Core.Monads;
 using Core.Numbers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Core.Arrays.ArrayFunctions;
+using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Tests
 {
    [TestClass]
    public class EnumerableExtensionTests
    {
+      [TestMethod]
+      public void FirstOrNoneTest()
+      {
+         var testArray = 'f'.DownTo('a');
+         if (testArray.FirstOrNone().If(out var ch))
+         {
+            assert(() => ch.ToString()).Must().Equal("f").OrThrow();
+            Console.WriteLine($"{ch} == 'f'");
+         }
+      }
+
       [TestMethod]
       public void FirstOrFailTest()
       {

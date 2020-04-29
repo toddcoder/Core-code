@@ -54,9 +54,25 @@ namespace Core.Enumerables
          }
       }
 
+      public static IEnumerable<char> UpTo(this char from, char to, int by = 1)
+      {
+         for (var i = from; i <= to; i = (char)(i + by))
+         {
+            yield return i;
+         }
+      }
+
       public static IEnumerable<int> UpUntil(this int from, int to, int by = 1)
       {
          for (var i = from; i < to; i += by)
+         {
+            yield return i;
+         }
+      }
+
+      public static IEnumerable<char> UpUntil(this char from, char to, int by = 1)
+      {
+         for (var i = from; i < to; i = (char)(i + by))
          {
             yield return i;
          }
@@ -70,9 +86,25 @@ namespace Core.Enumerables
          }
       }
 
+      public static IEnumerable<char> DownTo(this char from, char to, int by = -1)
+      {
+         for (var i = from; i >= to; i = (char)(i + by))
+         {
+            yield return i;
+         }
+      }
+
       public static IEnumerable<int> DownUntil(this int from, int to, int by = -1)
       {
          for (var i = from; i > to; i += by)
+         {
+            yield return i;
+         }
+      }
+
+      public static IEnumerable<char> DownUntil(this char from, char to, int by = -1)
+      {
+         for (var i = from; i > to; i = (char)(i + by))
          {
             yield return i;
          }
@@ -104,51 +136,37 @@ namespace Core.Enumerables
 
       public static IMaybe<T> FirstOrNone<T>(this IEnumerable<T> enumerable)
       {
-         try
-         {
-            var first = enumerable.First();
+         var first = enumerable.FirstOrDefault();
 
-            if (first.IsNull())
-            {
-               return none<T>();
-            }
-            else if (first.Equals(default))
-            {
-               return none<T>();
-            }
-            else
-            {
-               return first.Some();
-            }
-         }
-         catch (InvalidOperationException)
+         if (first.IsNull())
          {
             return none<T>();
+         }
+         else if (first.Equals(default))
+         {
+            return none<T>();
+         }
+         else
+         {
+            return first.Some();
          }
       }
 
       public static IMaybe<T> LastOrNone<T>(this IEnumerable<T> enumerable)
       {
-         try
-         {
-            var last = enumerable.Last();
+         var last = enumerable.LastOrDefault();
 
-            if (last.IsNull())
-            {
-               return none<T>();
-            }
-            else if (last.Equals(default))
-            {
-               return none<T>();
-            }
-            else
-            {
-               return last.Some();
-            }
-         }
-         catch (InvalidOperationException)
+         if (last.IsNull())
          {
             return none<T>();
+         }
+         else if (last.Equals(default))
+         {
+            return none<T>();
+         }
+         else
+         {
+            return last.Some();
          }
       }
 
@@ -281,51 +299,37 @@ namespace Core.Enumerables
 
       public static IMaybe<T> FirstOrNone<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate)
       {
-         try
-         {
-            var first = enumerable.First(predicate);
+         var first = enumerable.FirstOrDefault(predicate);
 
-            if (first.IsNull())
-            {
-               return none<T>();
-            }
-            else if (first.Equals(default))
-            {
-               return none<T>();
-            }
-            else
-            {
-               return first.Some();
-            }
-         }
-         catch (InvalidOperationException)
+         if (first.IsNull())
          {
             return none<T>();
+         }
+         else if (first.Equals(default))
+         {
+            return none<T>();
+         }
+         else
+         {
+            return first.Some();
          }
       }
 
       public static IMaybe<T> LastOrNone<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate)
       {
-         try
-         {
-            var last = enumerable.Last(predicate);
+         var last = enumerable.LastOrDefault(predicate);
 
-            if (last.IsNull())
-            {
-               return none<T>();
-            }
-            else if (last.Equals(default))
-            {
-               return none<T>();
-            }
-            else
-            {
-               return last.Some();
-            }
-         }
-         catch (InvalidOperationException)
+         if (last.IsNull())
          {
             return none<T>();
+         }
+         else if (last.Equals(default))
+         {
+            return none<T>();
+         }
+         else
+         {
+            return last.Some();
          }
       }
 
