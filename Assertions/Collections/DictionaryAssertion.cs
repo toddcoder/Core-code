@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Core.Assertions.Objects;
+using Core.Assertions.Monads;
 using Core.Monads;
 using static Core.Assertions.AssertionFunctions;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Assertions.Collections
 {
@@ -83,7 +84,29 @@ namespace Core.Assertions.Collections
          return add(() => dictionary.Count >= minimumCount, $"$name must $not have a count of at least {minimumCount}");
       }
 
-      public ObjectAssertion HaveValueAt(TKey key) => dictionary[key].Must();
+      public MaybeAssertion<TValue> HaveValueAt(TKey key)
+      {
+         if (dictionary.ContainsKey(key))
+         {
+            return dictionary[key].Some().Must();
+         }
+         else
+         {
+            return none<TValue>().Must();
+         }
+      }
+
+      public ResultAssertion<TValue> HaveValueAt(TKey key, Func<string> failureMessage)
+      {
+         if (dictionary.ContainsKey(key))
+         {
+            return dictionary[key].Success().Must();
+         }
+         else
+         {
+            return failureMessage().Failure<TValue>().Must();
+         }
+      }
 
       public IAssertion<Dictionary<TKey, TValue>> Named(string name)
       {
