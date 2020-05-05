@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Core.Assertions.Objects;
 using Core.Monads;
 using static Core.Assertions.AssertionFunctions;
 
@@ -81,6 +82,8 @@ namespace Core.Assertions.Collections
       {
          return add(() => dictionary.Count >= minimumCount, $"$name must $not have a count of at least {minimumCount}");
       }
+
+      public ObjectAssertion HaveValueAt(TKey key) => dictionary[key].Must();
 
       public IAssertion<Dictionary<TKey, TValue>> Named(string name)
       {
