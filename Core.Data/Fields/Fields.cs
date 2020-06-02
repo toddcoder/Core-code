@@ -13,7 +13,7 @@ namespace Core.Data.Fields
       Hash<string, Field> fields;
       List<string> ordered;
 
-      public static IResult<Fields> New(IMaybe<ObjectGraph> fieldsGraph) => tryTo(() => new Fields(fieldsGraph));
+      public static IResult<Fields> FromObjectGraph(IMaybe<ObjectGraph> fieldsGraph) => tryTo(() => new Fields(fieldsGraph));
 
       public Fields()
       {
@@ -29,11 +29,11 @@ namespace Core.Data.Fields
          }
       }
 
-      public Fields(IMaybe<ObjectGraph> fieldsGraph) : this()
+      public Fields(IMaybe<ObjectGraph> anyFieldsGraph) : this()
       {
-         if (fieldsGraph.If(out var fg))
+         if (anyFieldsGraph.If(out var fieldsGraph))
          {
-            foreach (var field in fg.Children.Select(Field.Parse))
+            foreach (var field in fieldsGraph.Children.Select(Field.Parse))
             {
                Add(field);
             }

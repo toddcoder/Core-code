@@ -6,6 +6,7 @@ using Core.Data.ConnectionStrings;
 using Core.Data.DataSources;
 using Core.Monads;
 using Core.ObjectGraphs;
+using Core.ObjectGraphs.Configurations;
 using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
 
@@ -13,7 +14,7 @@ namespace Core.Data.Setups
 {
    public class SQLSetup : ISetup, ISetupWithInfo
    {
-      public static IResult<SQLSetup> New(DataGraphs dataGraphs, string adapterName)
+      public static IResult<SQLSetup> FromDataGraphs(DataGraphs dataGraphs, string adapterName)
       {
          var connectionsGraph = dataGraphs.ConnectionsGraph;
          var commandsGraph = dataGraphs.CommandsGraph;
@@ -26,10 +27,10 @@ namespace Core.Data.Setups
             from connectionGraph in connectionsGraph.TryTo[connectionName]
             from commandGraph in commandsGraph.TryTo[commandName]
             from connection in tryTo(() => new Connection(connectionGraph))
-            from connectionString in SQLConnectionString.New(connection)
-            from command in Command.New(commandGraph)
-            from parameters in Data.Parameters.Parameters.New(adapterGraph.Map("parameters"))
-            from fields in Data.Fields.Fields.New(adaptersGraph.Map("fields"))
+            from connectionString in SQLConnectionString.FromConnection(connection)
+            from command in Command.FromObjectGraph(commandGraph)
+            from parameters in Data.Parameters.Parameters.FromObjectGraph(adapterGraph.Map("parameters"))
+            from fields in Data.Fields.Fields.FromObjectGraph(adapterGraph.Map("fields"))
             select new SQLSetup(dataGraphs)
             {
                CommandText = command.Text,
@@ -38,6 +39,14 @@ namespace Core.Data.Setups
                Parameters = parameters,
                Fields = fields
             };
+      }
+
+      public static IResult<SQLSetup> FromConfiguration(Configuration configuration, string adapterName)
+      {
+         return
+            from dataGraphs in configuration.DataGraphs().Result("Data graphs unavailable")
+            from setup in FromDataGraphs(dataGraphs, adapterName)
+            select setup;
       }
 
       Hash<string, string> attributes;

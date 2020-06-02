@@ -10,7 +10,7 @@ namespace Core.Data
 {
    public class Command
    {
-      public static IResult<Command> New(ObjectGraph commandGraph)
+      public static IResult<Command> FromObjectGraph(ObjectGraph commandGraph)
       {
          var name = commandGraph.Name;
          return

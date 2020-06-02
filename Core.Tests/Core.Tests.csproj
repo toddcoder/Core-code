@@ -54,6 +54,7 @@
     <Compile Include="ArrayExtensionTests.cs" />
     <Compile Include="AssertionTests.cs" />
     <Compile Include="AsyncTests.cs" />
+    <Compile Include="DataTests.cs" />
     <Compile Include="EnumerableExtensionTests.cs" />
     <Compile Include="EquatableTest.cs" />
     <Compile Include="FileNameTests.cs" />
@@ -73,6 +74,10 @@
     <ProjectReference Include="..\Core.csproj">
       <Project>{fe997a92-d183-4c85-9a1a-fb032311ef62}</Project>
       <Name>Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Core.Data\Core.Data.csproj">
+      <Project>{5d564fef-44e1-47a1-ad5c-b0f3ca6be2c5}</Project>
+      <Name>Core.Data</Name>
     </ProjectReference>
     <ProjectReference Include="..\Core.ObjectGraphs\Core.ObjectGraphs.csproj">
       <Project>{d832ee86-c29e-48c6-9704-73486d3b089c}</Project>

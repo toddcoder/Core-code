@@ -10,7 +10,7 @@ namespace Core.Data.Parameters
 {
    public class Parameters : IEnumerable<Parameter>, IHash<string, Parameter>
    {
-      public static IResult<Parameters> New(IMaybe<ObjectGraph> parametersGraph) => tryTo(() => new Parameters(parametersGraph));
+      public static IResult<Parameters> FromObjectGraph(IMaybe<ObjectGraph> parametersGraph) => tryTo(() => new Parameters(parametersGraph));
 
       Hash<string, Parameter> parameters;
 

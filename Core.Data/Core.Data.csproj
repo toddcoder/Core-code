@@ -46,6 +46,7 @@
     <Compile Include="Adapters.cs" />
     <Compile Include="AdapterTrying.cs" />
     <Compile Include="Command.cs" />
+    <Compile Include="Configurations\ConfigurationExtensions.cs" />
     <Compile Include="Configurations\DataGraphs.cs" />
     <Compile Include="Connection.cs" />
     <Compile Include="ConnectionStrings\AccessConnectionString.cs" />

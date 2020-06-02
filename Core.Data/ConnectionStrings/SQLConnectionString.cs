@@ -13,7 +13,7 @@ namespace Core.Data.ConnectionStrings
       const string CONNECTION_INTEGRATED_SECURITY = CONNECTION_BASE + "Integrated Security=SSPI;";
       const string CONNECTION_LOGIN = CONNECTION_BASE + "User ID={2}; Password={3}";
 
-      public static IResult<SQLConnectionString> New(Connection connection) =>
+      public static IResult<SQLConnectionString> FromConnection(Connection connection) =>
          from server in connection.Require("server")
          from database in connection.Require("database")
          select new SQLConnectionString(server, database, connection);

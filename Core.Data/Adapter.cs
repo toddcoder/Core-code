@@ -6,14 +6,18 @@ using Core.Assertions;
 using Core.Data.DataSources;
 using Core.Data.Setups;
 using Core.Exceptions;
+using Core.Monads;
 using Core.Objects;
 using static Core.Assertions.AssertionFunctions;
+using static Core.Monads.AttemptFunctions;
 
 namespace Core.Data
 {
    public class Adapter<T> : IEnumerable<T>
       where T : class
    {
+      public static IResult<Adapter<T>> FromSetup(ISetup setup, T entity) => tryTo(() => new Adapter<T>(entity, setup));
+
       protected T entity;
       protected Func<T> newFunc;
 
@@ -29,7 +33,7 @@ namespace Core.Data
          Parameters = new Parameters.Parameters(setup.Parameters);
          Fields = new Fields.Fields(setup.Fields);
 
-         this.entity = assert(() => entity).Must().Not.BeNull().Force<T>();
+         this.entity = assert(() => (object)entity).Must().Not.BeNull().Force<T>();
          setEntityType();
 
          newFunc = () => entity;

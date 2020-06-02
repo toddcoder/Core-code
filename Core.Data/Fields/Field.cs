@@ -19,7 +19,7 @@ namespace Core.Data.Fields
          var signature = "";
          if (fieldGraph.HasChildren)
          {
-            string ifNone() => name.SnakeToCamelCase(true);
+            string ifNone() => name;
             signature = fieldGraph.FlatMap("signature", o => o.Value, ifNone);
             optional = fieldGraph.FlatMap("optional", o => o.Value == "true", false);
             if (fieldGraph.Type.IsEmpty())
@@ -33,7 +33,7 @@ namespace Core.Data.Fields
          }
          else
          {
-            signature = GetSignature(name).Required("Couldn't determine signature");
+            signature = name;
          }
 
          if (name.StartsWith("."))
@@ -43,8 +43,6 @@ namespace Core.Data.Fields
 
          return new Field(name, signature, optional) { Type = type };
       }
-
-      public static IMaybe<string> GetSignature(string fieldName) => fieldName.SnakeToCamelCase(true).Some();
 
       static IMaybe<Type> getType(string typeName)
       {
