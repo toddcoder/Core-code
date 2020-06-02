@@ -2,12 +2,23 @@ connections
 	local
 		server -> .
 		database -> local_tebennett
+	local2
+		connection -> DUMMY
 commands
 	all
+		file -> C:\Enterprise\Projects\TSqlCop\TSqlCop.Ssms\Queries\ColumnNames.sql
+	all2
 		file -> C:\Enterprise\Projects\TSqlCop\TSqlCop.Ssms\Queries\ColumnNames.sql
 adapters
 	all
 		connection -> local
+		fields
+			ObjectName.
+			ColumnName.
+			TypeName.
+	all2
+		connection -> local2
+		command -> all
 		fields
 			ObjectName.
 			ColumnName.

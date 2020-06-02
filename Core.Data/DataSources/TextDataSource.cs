@@ -28,5 +28,7 @@ namespace Core.Data.DataSources
       }
 
       public override void ClearAllPools() { }
+
+      public override DataSource WithNewConnectionString(string newConnectionString) => new TextDataSource(newConnectionString, commandTimeout);
    }
 }

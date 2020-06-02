@@ -258,5 +258,7 @@ namespace Core.Data.DataSources
             Message += handler;
          }
       }
+
+      public override DataSource WithNewConnectionString(string newConnectionString) => new SQLDataSource(newConnectionString, CommandTimeout);
    }
 }

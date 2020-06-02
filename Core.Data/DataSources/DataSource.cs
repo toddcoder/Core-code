@@ -45,10 +45,10 @@ namespace Core.Data.DataSources
          }
       }
 
-      protected IMaybe<IDbConnection> connection;
+      protected IMaybe<IDbConnection> anyConnection;
       protected TimeSpan commandTimeout;
       protected Fields.Fields fields;
-      protected IMaybe<IActive> activeObject;
+      protected IMaybe<IActive> anyActiveObject;
 
       public event EventHandler<CancelEventArgs> NextRow;
 
@@ -58,7 +58,7 @@ namespace Core.Data.DataSources
          this.commandTimeout = commandTimeout;
          ResultIndex = 0;
          Command = none<IDbCommand>();
-         connection = none<IDbConnection>();
+         anyConnection = none<IDbConnection>();
          Reader = none<IDataReader>();
       }
 
@@ -102,7 +102,7 @@ namespace Core.Data.DataSources
 
       internal int Execute(object entity, string command, Parameters.Parameters parameters, Fields.Fields inFields)
       {
-         activeObject = entity.IfCast<IActive>();
+         anyActiveObject = entity.IfCast<IActive>();
 
          fields = inFields;
 
@@ -116,7 +116,7 @@ namespace Core.Data.DataSources
 
          try
          {
-            if (Command.If(out var com) & connection.If(out var con))
+            if (Command.If(out var com) & anyConnection.If(out var con))
             {
                com.Connection = con;
             }
@@ -141,9 +141,9 @@ namespace Core.Data.DataSources
 
                FillOrdinals(reader, inFields);
 
-               if (activeObject.If(out var ao))
+               if (anyActiveObject.If(out var activeObject))
                {
-                  ao.BeforeExecute();
+                  activeObject.BeforeExecute();
                }
 
                while (!cancel && reader.Read())
@@ -153,24 +153,24 @@ namespace Core.Data.DataSources
                   cancel = new CancelEventArgs().Cancel;
                }
 
-               if (activeObject.If(out ao))
+               if (anyActiveObject.If(out activeObject))
                {
-                  ao.AfterExecute();
+                  activeObject.AfterExecute();
                }
             }
             else
             {
-               if (activeObject.If(out var ao))
+               if (anyActiveObject.If(out var activeObject))
                {
-                  ao.BeforeExecute();
+                  activeObject.BeforeExecute();
                }
 
                recordsAffected = com.ExecuteNonQuery();
                FillOutput(entity, com.Parameters, parameters);
 
-               if (activeObject.If(out ao))
+               if (anyActiveObject.If(out activeObject))
                {
-                  ao.AfterExecute();
+                  activeObject.AfterExecute();
                }
             }
 
@@ -189,7 +189,7 @@ namespace Core.Data.DataSources
       {
          assert(() => inFields.Count).Must().BePositive().OrThrow("You must have at least one field defined");
 
-         activeObject = entity.IfCast<IActive>();
+         anyActiveObject = entity.IfCast<IActive>();
          fields = inFields;
 
          IDataReader reader = null;
@@ -202,27 +202,27 @@ namespace Core.Data.DataSources
             AddParameters(entity, parameters);
 
             setCommand(entity, command);
-            if (Command.If(out var com) & connection.If(out var con))
+            if (Command.If(out var dbCommand) & anyConnection.If(out var connection))
             {
-               com.Connection = con;
+               dbCommand.Connection = connection;
             }
             else
             {
                throw "Command and connection not properly initialized".Throws();
             }
 
-            reader = com.ExecuteReader();
+            reader = dbCommand.ExecuteReader();
             for (var i = 1; i <= ResultIndex; i++)
             {
                reader.NextResult();
             }
 
-            FillOutput(entity, com.Parameters, parameters);
+            FillOutput(entity, dbCommand.Parameters, parameters);
             FillOrdinals(reader, inFields);
 
-            if (activeObject.If(out var ao))
+            if (anyActiveObject.If(out var activeObject))
             {
-               ao.BeforeExecute();
+               activeObject.BeforeExecute();
             }
 
             Reader = reader.Some();
@@ -266,9 +266,9 @@ namespace Core.Data.DataSources
       {
          if (Reader.If(out var reader))
          {
-            if (activeObject.If(out var ao))
+            if (anyActiveObject.If(out var activeObject))
             {
-               ao.AfterExecute();
+               activeObject.AfterExecute();
             }
 
             if (!reader.IsClosed)
@@ -374,9 +374,9 @@ namespace Core.Data.DataSources
          if (Command.IsNone)
          {
             var command = GetCommand();
-            if (connection.If(out var c))
+            if (anyConnection.If(out var connection))
             {
-               command.Connection = c;
+               command.Connection = connection;
             }
             else
             {
@@ -391,16 +391,16 @@ namespace Core.Data.DataSources
 
       void allocateConnection()
       {
-         if (connection.If(out var c))
+         if (anyConnection.If(out var connection))
          {
-            if (c.State == ConnectionState.Closed)
+            if (connection.State == ConnectionState.Closed)
             {
-               c.Open();
+               connection.Open();
             }
          }
          else
          {
-            connection = GetConnection().Some();
+            anyConnection = GetConnection().Some();
          }
       }
 
@@ -417,10 +417,10 @@ namespace Core.Data.DataSources
 
       protected void disposeConnection()
       {
-         if (connection.If(out var conn))
+         if (anyConnection.If(out var connection))
          {
-            conn.Dispose();
-            connection = none<IDbConnection>();
+            connection.Dispose();
+            anyConnection = none<IDbConnection>();
          }
       }
 
@@ -463,5 +463,7 @@ namespace Core.Data.DataSources
       public abstract void ClearAllPools();
 
       public virtual void SetMessageHandler(SqlInfoMessageEventHandler handler) { }
+
+      public abstract DataSource WithNewConnectionString(string newConnectionString);
    }
 }

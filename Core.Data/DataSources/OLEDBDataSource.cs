@@ -46,10 +46,13 @@ namespace Core.Data.DataSources
          }
       }
 
+      protected IMaybe<FileName> associatedFile;
+
       public OLEDBDataSource(string connectionString, IMaybe<FileName> associatedFile) : base(connectionString,
          "30 seconds".ToTimeSpan())
       {
          ConnectionString = getFileConnectionString(associatedFile);
+         this.associatedFile = associatedFile;
       }
 
       public override IDbConnection GetConnection()
@@ -132,5 +135,7 @@ namespace Core.Data.DataSources
       }
 
       public override void ClearAllPools() => OleDbConnection.ReleaseObjectPool();
+
+      public override DataSource WithNewConnectionString(string newConnectionString) => new OLEDBDataSource(newConnectionString, associatedFile);
    }
 }

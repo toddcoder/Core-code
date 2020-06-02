@@ -77,6 +77,12 @@ namespace Core.Data
 
       public int RecordsAffected { get; set; }
 
+      public string ConnectionString
+      {
+         get => DataSource.ConnectionString;
+         set => DataSource.ConnectionString = value;
+      }
+
       protected void setEntityType()
       {
          Parameters.DeterminePropertyTypes(entity);

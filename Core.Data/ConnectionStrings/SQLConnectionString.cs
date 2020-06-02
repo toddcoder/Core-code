@@ -13,13 +13,29 @@ namespace Core.Data.ConnectionStrings
       const string CONNECTION_INTEGRATED_SECURITY = CONNECTION_BASE + "Integrated Security=SSPI;";
       const string CONNECTION_LOGIN = CONNECTION_BASE + "User ID={2}; Password={3}";
 
-      public static IResult<SQLConnectionString> FromConnection(Connection connection) =>
-         from server in connection.Require("server")
-         from database in connection.Require("database")
-         select new SQLConnectionString(server, database, connection);
+      public static IResult<SQLConnectionString> FromConnection(Connection connection)
+      {
+         if (connection.If("connection", out var connectionString))
+         {
+            return new SQLConnectionString(connectionString, connection.Timeout).Success();
+         }
+         else
+         {
+            return
+               from server in connection.Require("server")
+               from database in connection.Require("database")
+               select new SQLConnectionString(server, database, connection);
+         }
+      }
 
       string connectionString;
       TimeSpan connectionTimeout;
+
+      internal SQLConnectionString(string connectionString, TimeSpan connectionTimeout)
+      {
+         this.connectionString = connectionString;
+         this.connectionTimeout = connectionTimeout;
+      }
 
       internal SQLConnectionString(string server, string database, Connection connection)
       {
