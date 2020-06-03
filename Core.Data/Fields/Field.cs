@@ -59,7 +59,13 @@ namespace Core.Data.Fields
 
       public Field(string name, string signature, bool optional) : base(name, signature) => Optional = optional;
 
-      public Field() : base("", "") { }
+      public Field(string name, Type type, bool optional = false) : base(name, name)
+      {
+         Optional = optional;
+         Type = type.Some();
+      }
+
+      public Field() : base("", "") => Type = none<Type>();
 
       public int Ordinal { get; set; }
 

@@ -9,9 +9,29 @@ namespace Core.Data.ConnectionStrings
 {
    public class SQLConnectionString : IConnectionString
    {
-      const string CONNECTION_BASE = "Data Source={0};Initial Catalog={1};";
-      const string CONNECTION_INTEGRATED_SECURITY = CONNECTION_BASE + "Integrated Security=SSPI;";
-      const string CONNECTION_LOGIN = CONNECTION_BASE + "User ID={2}; Password={3}";
+      public static string GetConnectionString(string server, string database, bool integratedSecurity = true)
+      {
+         var baseValue = $"Data Source={server};Initial Catalog={database};";
+         return integratedSecurity ? $"{baseValue}Integrated Security=SSPI;" : baseValue;
+      }
+
+      public static string GetConnectionString(string server, string database, string user, string password)
+      {
+         var baseValue = GetConnectionString(server, database, false);
+         return user.IsNotEmpty() && password.IsNotEmpty() ? $"{baseValue}User ID={user}; Password={password}" : baseValue;
+      }
+
+      public static string GetConnectionString(string server, string database, IMaybe<string> anyUser, IMaybe<string> anyPassword)
+      {
+         if (anyUser.If(out var user) && anyPassword.If(out var password))
+         {
+            return GetConnectionString(server, database, user, password);
+         }
+         else
+         {
+            return GetConnectionString(server, database);
+         }
+      }
 
       public static IResult<SQLConnectionString> FromConnection(Connection connection)
       {
@@ -41,49 +61,8 @@ namespace Core.Data.ConnectionStrings
       {
          var user = connection.Map("user");
          var password = connection.Map("password");
-         connectionString = getString(server, database, user, password);
+         connectionString = GetConnectionString(server, database, user, password);
          connectionTimeout = connection.Timeout;
-      }
-
-      static string getString(string server, string database, IMaybe<string> user, IMaybe<string> password)
-      {
-         if (user.IsNone || password.IsNone)
-         {
-            return integratedSecurity(server, database);
-         }
-         else
-         {
-            return login(server, database, user, password);
-         }
-      }
-
-      static string getString(string server, string database, string user, string password)
-      {
-         if (user.IsEmpty() || password.IsEmpty())
-         {
-            return integratedSecurity(server, database);
-         }
-         else
-         {
-            return login(server, database, user.Some(), password.Some());
-         }
-      }
-
-      static string login(string server, string database, IMaybe<string> user, IMaybe<string> password)
-      {
-         if (user.If(out var u) && password.If(out var p))
-         {
-            return string.Format(CONNECTION_LOGIN, server, database, u, p);
-         }
-         else
-         {
-            return integratedSecurity(server, database);
-         }
-      }
-
-      static string integratedSecurity(string server, string database)
-      {
-         return string.Format(CONNECTION_INTEGRATED_SECURITY, server, database);
       }
 
       public SQLConnectionString(Connection connection)
@@ -92,13 +71,13 @@ namespace Core.Data.ConnectionStrings
          var database = connection.Value("database");
          var user = connection.Map("user");
          var password = connection.Map("password");
-         connectionString = getString(server, database, user, password);
+         connectionString = GetConnectionString(server, database, user, password);
          connectionTimeout = connection.Timeout;
       }
 
       public SQLConnectionString(string server, string database, string user = "", string password = "", string timeout = "")
       {
-         connectionString = getString(server, database, user, password);
+         connectionString = GetConnectionString(server, database, user, password);
          connectionTimeout = timeout.IsEmpty() ? 30.Seconds() : timeout.ToTimeSpan();
       }
 

@@ -18,6 +18,21 @@ namespace Core.Data
    {
       public static IResult<Adapter<T>> FromSetup(ISetup setup, T entity) => tryTo(() => new Adapter<T>(entity, setup));
 
+      public static IResult<Adapter<T>> FromSetupObject(T entity)
+      {
+         if (entity is ISetupObject setupObject)
+         {
+            return
+               from setup in tryTo(() => setupObject.Setup())
+               from adapter in FromSetup(setup, entity)
+               select adapter;
+         }
+         else
+         {
+            return "Entity must support ISetupObject interface".Failure<Adapter<T>>();
+         }
+      }
+
       protected T entity;
       protected Func<T> newFunc;
 

@@ -1,12 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Core.Collections;
 using Core.Data;
+using Core.Data.ConnectionStrings;
+using Core.Data.Fields;
+using Core.Data.Parameters;
 using Core.Data.Setups;
+using Core.Dates.DateIncrements;
 using Core.ObjectGraphs.Configurations;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Core.Tests
 {
-   internal class ColumnData
+   internal class ColumnData : ISetupObject
    {
       public string ObjectName { get; set; } = "";
 
@@ -15,6 +22,27 @@ namespace Core.Tests
       public string TypeName { get; set; } = "";
 
       public override string ToString() => $"{ObjectName}.{ColumnName} {TypeName}";
+
+      public string ConnectionString => SQLConnectionString.GetConnectionString(".", "local_tebennett");
+
+      public CommandSourceType CommandSourceType => CommandSourceType.File;
+
+      public string Command => @"C:\Enterprise\Projects\TSqlCop\TSqlCop.Ssms\Queries\ColumnNames.sql";
+
+      public TimeSpan CommandTimeout => 30.Seconds();
+
+      public IEnumerable<Parameter> Parameters() => Enumerable.Empty<Parameter>();
+
+      public IEnumerable<Field> Fields()
+      {
+         yield return new Field(nameof(ObjectName), typeof(string));
+         yield return new Field(nameof(ColumnName), typeof(string));
+         yield return new Field(nameof(TypeName), typeof(string));
+      }
+
+      public IHash<string, string> Attributes => new Hash<string, string>();
+
+      public ISetup Setup() => new SQLSetup(this);
    }
 
    [TestClass]
@@ -51,6 +79,25 @@ namespace Core.Tests
             from setup in SQLSetup.FromConfiguration(configuration, "all2")
             from adapter in Adapter<ColumnData>.FromSetup(setup, new ColumnData())
             select adapter;
+         if (anyAdapter.If(out var allColumnData, out var exception))
+         {
+            allColumnData.ConnectionString = TRUE_CONNECTION_STRING;
+            foreach (var columnData in allColumnData)
+            {
+               Console.WriteLine(columnData);
+            }
+         }
+         else
+         {
+            Console.WriteLine($"Exception: {exception.Message}");
+         }
+      }
+
+      [TestMethod]
+      public void FromSetupObject()
+      {
+         var entity = new ColumnData();
+         var anyAdapter = Adapter<ColumnData>.FromSetupObject(entity);
          if (anyAdapter.If(out var allColumnData, out var exception))
          {
             allColumnData.ConnectionString = TRUE_CONNECTION_STRING;

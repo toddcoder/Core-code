@@ -83,6 +83,15 @@ namespace Core.Data.Parameters
       public Parameter(string name, string signature)
          : base(name, signature) { }
 
+      public Parameter(string name, string signature, Type type) : base(name, signature)
+      {
+         Type = type.Some();
+         Size = none<int>();
+         Output = false;
+         Value = none<string>();
+         Default = none<string>();
+      }
+
       public IMaybe<Type> Type { get; set; }
 
       public IMaybe<int> Size { get; set; }

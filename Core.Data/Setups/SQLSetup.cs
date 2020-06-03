@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Data.SqlClient;
 using Core.Collections;
+using Core.Computers;
 using Core.Data.Configurations;
 using Core.Data.ConnectionStrings;
 using Core.Data.DataSources;
+using Core.Dates.DateIncrements;
 using Core.Monads;
 using Core.ObjectGraphs;
 using Core.ObjectGraphs.Configurations;
@@ -103,6 +105,26 @@ namespace Core.Data.Setups
          loadAttributes(setupGraph.Map("attributes"));
       }
 
+      public SQLSetup(ISetupObject setupObject)
+      {
+         ConnectionString = new SQLConnectionString(setupObject.ConnectionString, 30.Seconds());
+         switch (setupObject.CommandSourceType)
+         {
+            case CommandSourceType.File:
+               CommandText = ((FileName)setupObject.Command).Text;
+               break;
+            default:
+               CommandText = setupObject.Command;
+               break;
+         }
+         CommandTimeout = setupObject.CommandTimeout;
+         Parameters = new Parameters.Parameters(setupObject.Parameters());
+         Fields = new Fields.Fields(setupObject.Fields());
+
+         attributes = new Hash<string, string>();
+         loadAttributes(setupObject.Attributes);
+      }
+
       internal SQLSetup(DataGraphs dataGraphs)
       {
          attributes = new Hash<string, string>();
@@ -116,6 +138,17 @@ namespace Core.Data.Setups
             foreach (var childGraph in ag.Children)
             {
                attributes[childGraph.Name] = childGraph.Value;
+            }
+         }
+      }
+
+      void loadAttributes(IHash<string, string> hash)
+      {
+         if (hash.AnyHash().If(out var actualHash))
+         {
+            foreach (var (key, value) in actualHash)
+            {
+               attributes[key] = value;
             }
          }
       }
