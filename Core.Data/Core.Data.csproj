@@ -73,6 +73,7 @@
     <Compile Include="Setups\CommandSourceType.cs" />
     <Compile Include="Setups\ISetup.cs" />
     <Compile Include="Setups\ISetupObject.cs" />
+    <Compile Include="Setups\ISetupObjectUpdating.cs" />
     <Compile Include="Setups\ISetupWithInfo.cs" />
     <Compile Include="Setups\OLEDBSetup.cs" />
     <Compile Include="Setups\OLEDBSetupInfo.cs" />
