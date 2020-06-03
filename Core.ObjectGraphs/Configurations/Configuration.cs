@@ -16,6 +16,14 @@ namespace Core.ObjectGraphs.Configurations
          return new Configuration(rootGraph);
       });
 
+      public static IResult<Configuration> FromString(string source) => tryTo(() =>
+      {
+         var rootGraph = ObjectGraph.FromString(source, FolderName.Current, out var replacer);
+         rootGraph.Replacer = replacer;
+
+         return new Configuration(rootGraph);
+      });
+
       public static IResult<Configuration> LoadFromJson(FileName file) => tryTo(() => new Configuration(ObjectGraph.RootObjectGraph()));
 
       ObjectGraph rootGraph;
