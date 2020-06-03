@@ -1,6 +1,6 @@
 ﻿namespace Core.Data.Setups
 {
-   public interface ISetupObjectUpdating
+   public interface ISetupObjectWithSetters
    {
       string ConnectionString { set; }
 
