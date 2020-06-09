@@ -51,8 +51,7 @@ namespace Core.Data
 
          this.entity = assert(() => (object)entity).Must().Not.BeNull().Force<T>();
          setEntityType();
-
-         newFunc = () => entity;
+         setNewFunc();
       }
 
       internal Adapter(Adapter<T> other, string command)
@@ -62,8 +61,13 @@ namespace Core.Data
          Parameters = other.Parameters;
          Fields = other.Fields;
          entity = other.entity;
-         setEntityType();
 
+         setEntityType();
+         setNewFunc();
+      }
+
+      void setNewFunc()
+      {
          var entityType = entity.GetType();
          if (entityType.GetConstructors().Any(c => c.GetParameters().Length == 0))
          {

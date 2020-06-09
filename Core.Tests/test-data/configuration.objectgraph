@@ -12,6 +12,8 @@ commands
 adapters
 	all
 		connection -> local
+		parameters
+			@lSchemaName: $string -> SchemaName
 		fields
 			ObjectName.
 			ColumnName.

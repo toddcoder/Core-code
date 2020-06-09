@@ -15,6 +15,8 @@ namespace Core.Tests
 {
    internal class ColumnData : ISetupObject
    {
+      public string SchemaName { get; set; } = "";
+
       public string ObjectName { get; set; } = "";
 
       public string ColumnName { get; set; } = "";
@@ -31,10 +33,14 @@ namespace Core.Tests
 
       public TimeSpan CommandTimeout => 30.Seconds();
 
-      public IEnumerable<Parameter> Parameters() => Enumerable.Empty<Parameter>();
+      public IEnumerable<Parameter> Parameters()
+      {
+         yield return new Parameter("@lSchemaName", nameof(SchemaName), typeof(string));
+      }
 
       public IEnumerable<Field> Fields()
       {
+         yield return new Field(nameof(SchemaName), typeof(string));
          yield return new Field(nameof(ObjectName), typeof(string));
          yield return new Field(nameof(ColumnName), typeof(string));
          yield return new Field(nameof(TypeName), typeof(string));
@@ -53,14 +59,16 @@ namespace Core.Tests
       [TestMethod]
       public void FromConfigurationTest()
       {
+         var entity = new ColumnData { SchemaName = "PreFlow" };
          var anyAdapter =
             from configuration in Configuration.LoadFromObjectGraph(@"C:\Enterprise\Projects\Core\Core.Tests\test-data\configuration.objectgraph")
             from setup in SQLSetup.FromConfiguration(configuration, "all")
-            from adapter in Adapter<ColumnData>.FromSetup(setup, new ColumnData())
+            from adapter in Adapter<ColumnData>.FromSetup(setup, entity)
             select adapter;
          if (anyAdapter.If(out var allColumnData, out var exception))
          {
-            foreach (var columnData in allColumnData)
+            var data = allColumnData.ToArray();
+            foreach (var columnData in data)
             {
                Console.WriteLine(columnData);
             }
@@ -96,12 +104,13 @@ namespace Core.Tests
       [TestMethod]
       public void FromSetupObject()
       {
-         var entity = new ColumnData();
+         var entity = new ColumnData { SchemaName = "PreFlow" };
          var anyAdapter = Adapter<ColumnData>.FromSetupObject(entity);
          if (anyAdapter.If(out var allColumnData, out var exception))
          {
             allColumnData.ConnectionString = TRUE_CONNECTION_STRING;
-            foreach (var columnData in allColumnData)
+            var data = allColumnData.ToArray();
+            foreach (var columnData in data)
             {
                Console.WriteLine(columnData);
             }
