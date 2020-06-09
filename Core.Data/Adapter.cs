@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using Core.Assertions;
 using Core.Data.DataSources;
 using Core.Data.Setups;
@@ -63,7 +64,15 @@ namespace Core.Data
          entity = other.entity;
          setEntityType();
 
-         newFunc = () => entity;
+         var entityType = entity.GetType();
+         if (entityType.GetConstructors().Any(c => c.GetParameters().Length == 0))
+         {
+            newFunc = () => (T)Activator.CreateInstance(entityType);
+         }
+         else
+         {
+            newFunc = () => entity;
+         }
       }
 
       public T Entity
