@@ -19,18 +19,25 @@ namespace Core.Collections
       public IResult<TValue> Find(TKey key, Func<TKey, IResult<TValue>> defaultValue, bool addIfNotFound = false)
       {
          var result = this[key];
-         if (result.IsSuccessful)
+         if (result.HasValue)
          {
             return result;
          }
          else
          {
-            if (defaultValue(key).If(out var value) && addIfNotFound)
+            if (defaultValue(key).ValueOrOriginal(out var value, out var original))
             {
-               hash.Add(key, value);
-            }
+               if (addIfNotFound)
+               {
+                  hash.Add(key, value);
+               }
 
-            return defaultValue(key);
+               return value.Success();
+            }
+            else
+            {
+               return original;
+            }
          }
       }
    }
