@@ -37,6 +37,12 @@ namespace Core.Tests
             {
                Console.WriteLine(difference);
             }
+
+            Console.WriteLine("merged differences:");
+            foreach (var line in model.MergedDifferences())
+            {
+               Console.WriteLine(line);
+            }
          }
          else
          {

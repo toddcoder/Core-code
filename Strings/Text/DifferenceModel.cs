@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
+using Core.Collections;
 
 namespace Core.Strings.Text
 {
@@ -28,6 +30,35 @@ namespace Core.Strings.Text
          return NewDifferenceItems
             .Where(i => i.Type != DifferenceType.Unchanged && i.Type != DifferenceType.Imaginary)
             .Select(Difference.FromDifferenceItem);
+      }
+
+      public IEnumerable<string> MergedDifferences()
+      {
+         var oldHash = OldDifferenceItems.ToHash(d => d.Position.DefaultTo(() => -1), d => d.ToString());
+         var newHash = NewDifferenceItems.ToHash(d => d.Position.DefaultTo(() => -1), d => d.ToString());
+         var keys = new Set<int>();
+         keys.AddRange(oldHash.Keys.Where(k => k > -1));
+         keys.AddRange(newHash.Keys.Where(k => k > -1));
+
+         var builder = new StringBuilder();
+
+         foreach (var key in keys.OrderBy(k => k))
+         {
+            if (oldHash.ContainsKey(key))
+            {
+               builder.Append(oldHash[key]);
+            }
+
+            if (newHash.ContainsKey(key))
+            {
+               builder.Append(" <=> ");
+               builder.Append(newHash[key]);
+            }
+
+            yield return builder.ToString();
+
+            builder.Clear();
+         }
       }
 
       public override string ToString()
