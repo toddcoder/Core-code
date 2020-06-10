@@ -34,8 +34,8 @@ namespace Core.Strings.Text
 
       public IEnumerable<string> MergedDifferences()
       {
-         var oldHash = OldDifferenceItems.ToHash(d => d.Position.DefaultTo(() => -1), d => d.ToString());
-         var newHash = NewDifferenceItems.ToHash(d => d.Position.DefaultTo(() => -1), d => d.ToString());
+         var oldHash = OldDifferences().ToHash(d => d.Position, d => d.ToString());
+         var newHash = NewDifferences().ToHash(d => d.Position, d => d.ToString());
          var keys = new Set<int>();
          keys.AddRange(oldHash.Keys.Where(k => k > -1));
          keys.AddRange(newHash.Keys.Where(k => k > -1));
