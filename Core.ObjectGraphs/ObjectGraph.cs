@@ -558,6 +558,14 @@ namespace Core.ObjectGraphs
          {
             return getArray(Value);
          }
+         else if (conversionType == typeof(FileName))
+         {
+            return new FileName(Value).Success<object>();
+         }
+         else if (conversionType == typeof(FolderName))
+         {
+            return new FolderName(Value).Success<object>();
+         }
          else
          {
             return Value.AsObject().Otherwise(e => System.Convert.ChangeType(Value, conversionType));
