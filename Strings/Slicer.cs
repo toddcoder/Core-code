@@ -36,14 +36,45 @@ namespace Core.Strings
 
       string text;
       List<Replacement> replacements;
+      int offset;
+      int currentLength;
 
       public Slicer(string text)
       {
          this.text = text;
          replacements = new List<Replacement>();
+         offset = 0;
+         currentLength = 0;
       }
 
       public bool IsEmpty => text.Length == 0;
+
+      void updateOffsets(int index, int length, string replacementText)
+      {
+         offset = index + offset;
+         var replacementLength = length;
+         if (offset >= 0)
+         {
+            if (replacementLength + offset > currentLength)
+            {
+               replacementLength = currentLength - offset;
+            }
+
+            currentLength -= replacementLength;
+            if (replacementText.IsNotEmpty())
+            {
+               currentLength += replacementText.Length;
+               offset += replacementText.Length - replacementLength;
+            }
+            else
+            {
+               offset -= replacementLength;
+            }
+         }
+
+         OffsetIndex = offset;
+         OffsetLength = replacementLength;
+      }
 
       public string this[int index, int length]
       {
@@ -53,6 +84,7 @@ namespace Core.Strings
             if (!IsEmpty)
             {
                replacements.Add(new Replacement(index, length, value));
+               updateOffsets(index, length, value);
             }
          }
       }
@@ -77,8 +109,8 @@ namespace Core.Strings
 
       public IEnumerator<(int index, int length, string text)> GetEnumerator()
       {
-         var offset = 0;
-         var currentLength = text.Length;
+         offset = 0;
+         currentLength = text.Length;
 
          foreach (var (index, length, replacementText) in replacements.OrderBy(r => r.Index))
          {
@@ -111,7 +143,7 @@ namespace Core.Strings
 
       public override string ToString()
       {
-         var offset = 0;
+         offset = 0;
          var builder = new StringBuilder(text);
 
          foreach (var (index, length, replacementText) in replacements.OrderBy(r => r.Index))
