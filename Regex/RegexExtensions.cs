@@ -84,6 +84,78 @@ namespace Core.Regex
          return input.Split(pattern, GetOptions(ignoreCase, multiline));
       }
 
+      public static (string, string) Split2(this string input, string pattern, bool ignoreCase = false, bool multiline = false)
+      {
+         var result = input.Split(pattern, ignoreCase, multiline);
+         return result.Length == 1 ? (result[0], "") : (result[0], result[1]);
+      }
+
+      public static (string, string) Split2(this string input, string pattern, RegexOptions options)
+      {
+         var result = input.Split(pattern, options);
+         return result.Length == 1 ? (result[0], "") : (result[0], result[1]);
+      }
+
+      public static (string, string, string) Split3(this string input, string pattern, bool ignoreCase = false, bool multiline = false)
+      {
+         var result = input.Split(pattern, ignoreCase, multiline);
+         switch (result.Length)
+         {
+            case 1:
+               return (result[0], "", "");
+            case 2:
+               return (result[0], result[1], "");
+            default:
+               return (result[0], result[1], result[2]);
+         }
+      }
+
+      public static (string, string, string) Split3(this string input, string pattern, RegexOptions options)
+      {
+         var result = input.Split(pattern, options);
+         switch (result.Length)
+         {
+            case 1:
+               return (result[0], "", "");
+            case 2:
+               return (result[0], result[1], "");
+            default:
+               return (result[0], result[1], result[2]);
+         }
+      }
+
+      public static (string, string, string, string) Split4(this string input, string pattern, bool ignoreCase = false, bool multiline = false)
+      {
+         var result = input.Split(pattern, ignoreCase, multiline);
+         switch (result.Length)
+         {
+            case 1:
+               return (result[0], "", "", "");
+            case 2:
+               return (result[0], result[1], "", "");
+            case 3:
+               return (result[0], result[1], result[2], "");
+            default:
+               return (result[0], result[1], result[2], result[3]);
+         }
+      }
+
+      public static (string, string, string, string) Split4(this string input, string pattern, RegexOptions options)
+      {
+         var result = input.Split(pattern, options);
+         switch (result.Length)
+         {
+            case 1:
+               return (result[0], "", "", "");
+            case 2:
+               return (result[0], result[1], "", "");
+            case 3:
+               return (result[0], result[1], result[2], "");
+            default:
+               return (result[0], result[1], result[2], result[3]);
+         }
+      }
+
       public static IMaybe<Matcher> Matches(this string input, string pattern, bool ignoreCase = false, bool multiline = false)
       {
          var matcher = new Matcher();

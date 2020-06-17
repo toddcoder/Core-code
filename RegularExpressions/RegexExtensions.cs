@@ -123,6 +123,81 @@ namespace Core.RegularExpressions
          return input.Split(pattern, GetOptions(ignoreCase, multiline), friendly);
       }
 
+      public static (string, string) Split2(this string input, string pattern, bool ignoreCase = false, bool multiline = false,
+         bool friendly = true)
+      {
+         var result = input.Split(pattern, ignoreCase, multiline, friendly);
+         return result.Length == 1 ? (result[0], "") : (result[0], result[1]);
+      }
+
+      public static (string, string) Split2(this string input, string pattern, RegexOptions options, bool friendly = true)
+      {
+         var result = input.Split(pattern, options, friendly);
+         return result.Length == 1 ? (result[0], "") : (result[0], result[1]);
+      }
+
+      public static (string, string, string) Split3(this string input, string pattern, bool ignoreCase = false, bool multiline = false,
+         bool friendly = true)
+      {
+         var result = input.Split(pattern, ignoreCase, multiline, friendly);
+         switch (result.Length)
+         {
+            case 1:
+               return (result[0], "", "");
+            case 2:
+               return (result[0], result[1], "");
+            default:
+               return (result[0], result[1], result[2]);
+         }
+      }
+
+      public static (string, string, string) Split3(this string input, string pattern, RegexOptions options, bool friendly = true)
+      {
+         var result = input.Split(pattern, options, friendly);
+         switch (result.Length)
+         {
+            case 1:
+               return (result[0], "", "");
+            case 2:
+               return (result[0], result[1], "");
+            default:
+               return (result[0], result[1], result[2]);
+         }
+      }
+
+      public static (string, string, string, string) Split4(this string input, string pattern, bool ignoreCase = false, bool multiline = false,
+         bool friendly = true)
+      {
+         var result = input.Split(pattern, ignoreCase, multiline, friendly);
+         switch (result.Length)
+         {
+            case 1:
+               return (result[0], "", "", "");
+            case 2:
+               return (result[0], result[1], "", "");
+            case 3:
+               return (result[0], result[1], result[2], "");
+            default:
+               return (result[0], result[1], result[2], result[3]);
+         }
+      }
+
+      public static (string, string, string, string) Split4(this string input, string pattern, RegexOptions options, bool friendly = true)
+      {
+         var result = input.Split(pattern, options, friendly);
+         switch (result.Length)
+         {
+            case 1:
+               return (result[0], "", "", "");
+            case 2:
+               return (result[0], result[1], "", "");
+            case 3:
+               return (result[0], result[1], result[2], "");
+            default:
+               return (result[0], result[1], result[2], result[3]);
+         }
+      }
+
       public static string Escape(this string input, bool friendly = true)
       {
          return friendly ? input.Replace("/", "//") : System.Text.RegularExpressions.Regex.Escape(input).Replace("]", @"\]");
