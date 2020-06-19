@@ -133,5 +133,20 @@ namespace Core.Tests
             Console.WriteLine("Cancelled");
          }
       }
+
+      [TestMethod]
+      public void ExtensionsTest()
+      {
+         var result = (1, "foo").Success();
+         if (result.ValueOrCast<int, string, Unit>(out var i, out var s, out var asUnit))
+         {
+            Console.WriteLine(i);
+            Console.WriteLine(s);
+         }
+         else
+         {
+            Console.WriteLine(asUnit);
+         }
+      }
    }
 }
