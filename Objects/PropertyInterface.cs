@@ -11,10 +11,6 @@ namespace Core.Objects
          return obj is DataContainer dc ? (IEvaluator)new DataContainerEvaluator(dc) : new PropertyEvaluator(obj);
       }
 
-      static IEvaluator data(DataContainer container) => new DataContainerEvaluator(container);
-
-      static IEvaluator property(object obj) => new PropertyEvaluator(obj);
-
       protected IEvaluator evaluator;
       protected bool isConvertible;
 
@@ -37,12 +33,6 @@ namespace Core.Objects
          evaluator = GetEvaluator(entity);
          PropertyType = evaluator.Contains(Signature) ? evaluator.Type(Signature) : typeof(string);
          isConvertible = getIsConvertible(PropertyType);
-      }
-
-      public bool SignatureContainedIn(object entity)
-      {
-         evaluator = GetEvaluator(entity);
-         return evaluator.Contains(Signature);
       }
 
       public IMaybe<object> GetValue(object entity)

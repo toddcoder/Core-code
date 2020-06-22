@@ -65,6 +65,12 @@ namespace Core.Data.Fields
          Type = type.Some();
       }
 
+      public Field(string name, string signature, Type type, bool optional = false) : base(name, signature)
+      {
+         Optional = optional;
+         Type = type.Some();
+      }
+
       public Field() : base("", "") => Type = none<Type>();
 
       public int Ordinal { get; set; }
