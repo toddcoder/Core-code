@@ -38,7 +38,7 @@ namespace Core.DataStructures
             select array;
       }
 
-      public IMaybe<T> Dequeue() => maybe(queue.Count > 0, () => queue.Dequeue());
+      public IMaybe<T> Dequeue() => maybe(IsNotEmpty, () => queue.Dequeue());
 
       public void Enqueue(T item) => queue.Enqueue(item);
 
@@ -50,10 +50,14 @@ namespace Core.DataStructures
 
       IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-      public IMaybe<T> Peek() => maybe(queue.Count > 0, () => queue.Peek());
+      public IMaybe<T> Peek() => maybe(IsNotEmpty, () => queue.Peek());
 
       public T[] ToArray() => queue.ToArray();
 
       public void TrimExcess() => queue.TrimExcess();
+
+      public bool IsEmpty => queue.Count == 0;
+
+      public bool IsNotEmpty => queue.Count > 0;
    }
 }

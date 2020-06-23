@@ -39,9 +39,9 @@ namespace Core.DataStructures
             select array;
       }
 
-      public IMaybe<T> Peek() => maybe(stack.Count > 0, () => stack.Peek());
+      public IMaybe<T> Peek() => maybe(IsNotEmpty, () => stack.Peek());
 
-      public IMaybe<T> Pop() => maybe(stack.Count > 0, () => stack.Pop());
+      public IMaybe<T> Pop() => maybe(IsNotEmpty, () => stack.Pop());
 
       public void Push(T item) => stack.Push(item);
 
@@ -54,5 +54,9 @@ namespace Core.DataStructures
       IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
       public void TrimExcess() => stack.TrimExcess();
+
+      public bool IsEmpty => stack.Count == 0;
+
+      public bool IsNotEmpty => stack.Count > 0;
    }
 }
