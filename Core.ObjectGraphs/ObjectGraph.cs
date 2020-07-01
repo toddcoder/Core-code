@@ -129,7 +129,8 @@ namespace Core.ObjectGraphs
          return graph;
       }
 
-      static ObjectGraph getGraph(IMaybe<object> anyObject, string childName, Type childType, Predicate<string> exclude, StringHash signatures)
+      static ObjectGraph getGraph(IMaybe<object> anyObject, string childName, Type childType, Predicate<string> exclude,
+         StringHash signatures)
       {
          var obj = assert(() => anyObject).Must().HaveValue().Value;
 
