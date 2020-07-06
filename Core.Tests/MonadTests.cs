@@ -148,5 +148,23 @@ namespace Core.Tests
             Console.WriteLine(asUnit);
          }
       }
+
+      [TestMethod]
+      public void MappingExtensionsTest()
+      {
+         var result = (1, "foobar").Some();
+         var result1 = result.Map((i, s) => i + s);
+         if (result1.If(out var aString))
+         {
+            Console.WriteLine(aString);
+         }
+
+         var result2 = result.Map((i, s) => (s, i));
+         if (result2.If(out aString, out var anInt))
+         {
+            Console.WriteLine(aString);
+            Console.WriteLine(anInt);
+         }
+      }
    }
 }
