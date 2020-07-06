@@ -31,9 +31,13 @@ namespace Core.Applications
       public Stream Stream(string name)
       {
          var fullName = nameSpace + name;
-         assert(() => Contains(name)).Must().BeTrue().OrThrow($"Resource {fullName} does not exist");
+         var message = $"Resource {fullName} does not exist";
+         assert(() => Contains(name)).Must().BeTrue().OrThrow(message);
 
-         return type.Assembly.GetManifestResourceStream(fullName);
+         var stream = type.Assembly.GetManifestResourceStream(fullName);
+         assert(() => (object)stream).Must().Not.BeNull().OrThrow(message);
+
+         return stream;
       }
 
       public bool Contains(string name) => names.Contains(nameSpace + name);

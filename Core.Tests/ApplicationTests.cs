@@ -197,5 +197,13 @@ namespace Core.Tests
          thisProgram.Run("alias std show --code 153 --amount 153.69 --attribute-targets all --text 'foo' --recursive", "--", " ");
          thisProgram.Run("std", "--", " ");
       }
+
+      [TestMethod]
+      public void ResourceTest()
+      {
+         var resources = new Resources<ApplicationTests>();
+         var result = resources.String("Tests.Foobar.txt");
+         Console.WriteLine(result);
+      }
    }
 }
