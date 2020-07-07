@@ -145,6 +145,10 @@ namespace Core.ObjectGraphs
 
             return new ObjectGraph(childName, $"[{list.Stringify()}]");
          }
+         else if (obj is FileName || obj is FolderName)
+         {
+            return new ObjectGraph(childName, obj.ToString());
+         }
          else if (!(obj is IConvertible))
          {
             return Serialize(obj, exclude, signatures);
