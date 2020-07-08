@@ -191,6 +191,14 @@ namespace Core.Collections
 
       public KeyValuePair<TKey, TValue>[] ItemsArray() => this.ToArray();
 
+      public IEnumerable<(TKey, TValue)> Tuples()
+      {
+         foreach (var (key, value) in this)
+         {
+            yield return (key, value);
+         }
+      }
+
       public void Copy(Hash<TKey, TValue> other)
       {
          foreach (var (key, value) in other)
