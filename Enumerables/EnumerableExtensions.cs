@@ -202,6 +202,57 @@ namespace Core.Enumerables
          }
       }
 
+      public static IResult<(T1, T2)> FirstOrFail<T1, T2>(this IEnumerable<(T1, T2)> enumerable, Func<T1, T2, bool> predicate,
+         string failureMessage = "Default value")
+      {
+         try
+         {
+            return enumerable.First(i => predicate(i.Item1, i.Item2)).Success();
+         }
+         catch (InvalidOperationException)
+         {
+            return failureMessage.Failure<(T1, T2)>();
+         }
+         catch (Exception exception)
+         {
+            return failure<(T1, T2)>(exception);
+         }
+      }
+
+      public static IResult<(T1, T2, T3)> FirstOrFail<T1, T2, T3>(this IEnumerable<(T1, T2, T3)> enumerable, Func<T1, T2, T3, bool> predicate,
+         string failureMessage = "Default value")
+      {
+         try
+         {
+            return enumerable.First(i => predicate(i.Item1, i.Item2, i.Item3)).Success();
+         }
+         catch (InvalidOperationException)
+         {
+            return failureMessage.Failure<(T1, T2, T3)>();
+         }
+         catch (Exception exception)
+         {
+            return failure<(T1, T2, T3)>(exception);
+         }
+      }
+
+      public static IResult<(T1, T2, T3, T4)> FirstOrFail<T1, T2, T3, T4>(this IEnumerable<(T1, T2, T3, T4)> enumerable,
+         Func<T1, T2, T3, T4, bool> predicate, string failureMessage = "Default value")
+      {
+         try
+         {
+            return enumerable.First(i => predicate(i.Item1, i.Item2, i.Item3, i.Item4)).Success();
+         }
+         catch (InvalidOperationException)
+         {
+            return failureMessage.Failure<(T1, T2, T3, T4)>();
+         }
+         catch (Exception exception)
+         {
+            return failure<(T1, T2, T3, T4)>(exception);
+         }
+      }
+
       public static IResult<T> FirstOrFail<T>(this IEnumerable<T> enumerable, Func<string> failureMessage)
       {
          try
@@ -231,6 +282,57 @@ namespace Core.Enumerables
          catch (Exception exception)
          {
             return failure<T>(exception);
+         }
+      }
+
+      public static IResult<(T1, T2)> FirstOrFail<T1, T2>(this IEnumerable<(T1, T2)> enumerable, Func<T1, T2, bool> predicate,
+         Func<string> failureMessage)
+      {
+         try
+         {
+            return enumerable.First(i => predicate(i.Item1, i.Item2)).Success();
+         }
+         catch (InvalidOperationException)
+         {
+            return failureMessage().Failure<(T1, T2)>();
+         }
+         catch (Exception exception)
+         {
+            return failure<(T1, T2)>(exception);
+         }
+      }
+
+      public static IResult<(T1, T2, T3)> FirstOrFail<T1, T2, T3>(this IEnumerable<(T1, T2, T3)> enumerable, Func<T1, T2, T3, bool> predicate,
+         Func<string> failureMessage)
+      {
+         try
+         {
+            return enumerable.First(i => predicate(i.Item1, i.Item2, i.Item3)).Success();
+         }
+         catch (InvalidOperationException)
+         {
+            return failureMessage().Failure<(T1, T2, T3)>();
+         }
+         catch (Exception exception)
+         {
+            return failure<(T1, T2, T3)>(exception);
+         }
+      }
+
+      public static IResult<(T1, T2, T3, T4)> FirstOrFail<T1, T2, T3, T4>(this IEnumerable<(T1, T2, T3, T4)> enumerable,
+         Func<T1, T2, T3, T4, bool> predicate, Func<string> failureMessage)
+      {
+         try
+         {
+            return enumerable.First(i => predicate(i.Item1, i.Item2, i.Item3, i.Item4)).Success();
+         }
+         catch (InvalidOperationException)
+         {
+            return failureMessage().Failure<(T1, T2, T3, T4)>();
+         }
+         catch (Exception exception)
+         {
+            return failure<(T1, T2, T3, T4)>(exception);
          }
       }
 
@@ -266,6 +368,40 @@ namespace Core.Enumerables
          }
       }
 
+      public static IResult<(T1, T2)> LastOrFail<T1, T2>(this IEnumerable<(T1, T2)> enumerable, Func<T1, T2, bool> predicate,
+         string failureMessage = "Default value")
+      {
+         try
+         {
+            return enumerable.Last(i => predicate(i.Item1, i.Item2)).Success();
+         }
+         catch (InvalidOperationException)
+         {
+            return failureMessage.Failure<(T1, T2)>();
+         }
+         catch (Exception exception)
+         {
+            return failure<(T1, T2)>(exception);
+         }
+      }
+
+      public static IResult<(T1, T2, T3)> LastOrFail<T1, T2, T3>(this IEnumerable<(T1, T2, T3)> enumerable, Func<T1, T2, T3, bool> predicate,
+         string failureMessage = "Default value")
+      {
+         try
+         {
+            return enumerable.Last(i => predicate(i.Item1, i.Item2, i.Item3)).Success();
+         }
+         catch (InvalidOperationException)
+         {
+            return failureMessage.Failure<(T1, T2, T3)>();
+         }
+         catch (Exception exception)
+         {
+            return failure<(T1, T2, T3)>(exception);
+         }
+      }
+
       public static IResult<T> LastOrFail<T>(this IEnumerable<T> enumerable, Func<string> failureMessage)
       {
          try
@@ -297,6 +433,54 @@ namespace Core.Enumerables
          });
       }
 
+      public static IResult<(T1, T2)> LastOrFail<T1, T2>(this IEnumerable<(T1, T2)> enumerable, Func<T1, T2, bool> predicate,
+         Func<string> failureMessage)
+      {
+         return tryTo(() =>
+         {
+            try
+            {
+               return enumerable.Last(i => predicate(i.Item1, i.Item2)).Success();
+            }
+            catch
+            {
+               return failureMessage().Failure<(T1, T2)>();
+            }
+         });
+      }
+
+      public static IResult<(T1, T2, T3)> LastOrFail<T1, T2, T3>(this IEnumerable<(T1, T2, T3)> enumerable, Func<T1, T2, T3, bool> predicate,
+         Func<string> failureMessage)
+      {
+         return tryTo(() =>
+         {
+            try
+            {
+               return enumerable.Last(i => predicate(i.Item1, i.Item2, i.Item3)).Success();
+            }
+            catch
+            {
+               return failureMessage().Failure<(T1, T2, T3)>();
+            }
+         });
+      }
+
+      public static IResult<(T1, T2, T3, T4)> LastOrFail<T1, T2, T3, T4>(this IEnumerable<(T1, T2, T3, T4)> enumerable,
+         Func<T1, T2, T3, T4, bool> predicate, Func<string> failureMessage)
+      {
+         return tryTo(() =>
+         {
+            try
+            {
+               return enumerable.Last(i => predicate(i.Item1, i.Item2, i.Item3, i.Item4)).Success();
+            }
+            catch
+            {
+               return failureMessage().Failure<(T1, T2, T3, T4)>();
+            }
+         });
+      }
+
       public static IMaybe<T> FirstOrNone<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate)
       {
          var first = enumerable.FirstOrDefault(predicate);
@@ -315,6 +499,61 @@ namespace Core.Enumerables
          }
       }
 
+      public static IMaybe<(T1, T2)> FirstOrNone<T1, T2>(this IEnumerable<(T1, T2)> enumerable, Func<T1, T2, bool> predicate)
+      {
+         var first = enumerable.FirstOrDefault(i => predicate(i.Item1, i.Item2));
+
+         if (first.IsNull())
+         {
+            return none<(T1, T2)>();
+         }
+         else if (first.Equals(default))
+         {
+            return none<(T1, T2)>();
+         }
+         else
+         {
+            return first.Some();
+         }
+      }
+
+      public static IMaybe<(T1, T2, T3)> FirstOrNone<T1, T2, T3>(this IEnumerable<(T1, T2, T3)> enumerable, Func<T1, T2, T3, bool> predicate)
+      {
+         var first = enumerable.FirstOrDefault(i => predicate(i.Item1, i.Item2, i.Item3));
+
+         if (first.IsNull())
+         {
+            return none<(T1, T2, T3)>();
+         }
+         else if (first.Equals(default))
+         {
+            return none<(T1, T2, T3)>();
+         }
+         else
+         {
+            return first.Some();
+         }
+      }
+
+      public static IMaybe<(T1, T2, T3, T4)> FirstOrNone<T1, T2, T3, T4>(this IEnumerable<(T1, T2, T3, T4)> enumerable,
+         Func<T1, T2, T3, T4, bool> predicate)
+      {
+         var first = enumerable.FirstOrDefault(i => predicate(i.Item1, i.Item2, i.Item3, i.Item4));
+
+         if (first.IsNull())
+         {
+            return none<(T1, T2, T3, T4)>();
+         }
+         else if (first.Equals(default))
+         {
+            return none<(T1, T2, T3, T4)>();
+         }
+         else
+         {
+            return first.Some();
+         }
+      }
+
       public static IMaybe<T> LastOrNone<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate)
       {
          var last = enumerable.LastOrDefault(predicate);
@@ -326,6 +565,61 @@ namespace Core.Enumerables
          else if (last.Equals(default))
          {
             return none<T>();
+         }
+         else
+         {
+            return last.Some();
+         }
+      }
+
+      public static IMaybe<(T1, T2)> LastOrNone<T1, T2>(this IEnumerable<(T1, T2)> enumerable, Func<T1, T2, bool> predicate)
+      {
+         var last = enumerable.LastOrDefault(i => predicate(i.Item1, i.Item2));
+
+         if (last.IsNull())
+         {
+            return none<(T1, T2)>();
+         }
+         else if (last.Equals(default))
+         {
+            return none<(T1, T2)>();
+         }
+         else
+         {
+            return last.Some();
+         }
+      }
+
+      public static IMaybe<(T1, T2, T3)> LastOrNone<T1, T2, T3>(this IEnumerable<(T1, T2, T3)> enumerable, Func<T1, T2, T3, bool> predicate)
+      {
+         var last = enumerable.LastOrDefault(i => predicate(i.Item1, i.Item2, i.Item3));
+
+         if (last.IsNull())
+         {
+            return none<(T1, T2, T3)>();
+         }
+         else if (last.Equals(default))
+         {
+            return none<(T1, T2, T3)>();
+         }
+         else
+         {
+            return last.Some();
+         }
+      }
+
+      public static IMaybe<(T1, T2, T3, T4)> LastOrNone<T1, T2, T3, T4>(this IEnumerable<(T1, T2, T3, T4)> enumerable,
+         Func<T1, T2, T3, T4, bool> predicate)
+      {
+         var last = enumerable.LastOrDefault(i => predicate(i.Item1, i.Item2, i.Item3, i.Item4));
+
+         if (last.IsNull())
+         {
+            return none<(T1, T2, T3, T4)>();
+         }
+         else if (last.Equals(default))
+         {
+            return none<(T1, T2, T3, T4)>();
          }
          else
          {
@@ -362,6 +656,94 @@ namespace Core.Enumerables
          }
       }
 
+      public static IMatched<(T1, T2)> FirstOrNotMatched<T1, T2>(this IEnumerable<(T1, T2)> enumerable, Func<T1, T2, bool> predicate)
+      {
+         try
+         {
+            var first = enumerable.First(i => predicate(i.Item1, i.Item2));
+
+            if (first.IsNull())
+            {
+               return notMatched<(T1, T2)>();
+            }
+            else if (first.Equals(default))
+            {
+               return notMatched<(T1, T2)>();
+            }
+            else
+            {
+               return first.Matched();
+            }
+         }
+         catch (InvalidOperationException)
+         {
+            return notMatched<(T1, T2)>();
+         }
+         catch (Exception exception)
+         {
+            return failedMatch<(T1, T2)>(exception);
+         }
+      }
+
+      public static IMatched<(T1, T2, T3)> FirstOrNotMatched<T1, T2, T3>(this IEnumerable<(T1, T2, T3)> enumerable, Func<T1, T2, T3, bool> predicate)
+      {
+         try
+         {
+            var first = enumerable.First(i => predicate(i.Item1, i.Item2, i.Item3));
+
+            if (first.IsNull())
+            {
+               return notMatched<(T1, T2, T3)>();
+            }
+            else if (first.Equals(default))
+            {
+               return notMatched<(T1, T2, T3)>();
+            }
+            else
+            {
+               return first.Matched();
+            }
+         }
+         catch (InvalidOperationException)
+         {
+            return notMatched<(T1, T2, T3)>();
+         }
+         catch (Exception exception)
+         {
+            return failedMatch<(T1, T2, T3)>(exception);
+         }
+      }
+
+      public static IMatched<(T1, T2, T3, T4)> FirstOrNotMatched<T1, T2, T3, T4>(this IEnumerable<(T1, T2, T3, T4)> enumerable,
+         Func<T1, T2, T3, T4, bool> predicate)
+      {
+         try
+         {
+            var first = enumerable.First(i => predicate(i.Item1, i.Item2, i.Item3, i.Item4));
+
+            if (first.IsNull())
+            {
+               return notMatched<(T1, T2, T3, T4)>();
+            }
+            else if (first.Equals(default))
+            {
+               return notMatched<(T1, T2, T3, T4)>();
+            }
+            else
+            {
+               return first.Matched();
+            }
+         }
+         catch (InvalidOperationException)
+         {
+            return notMatched<(T1, T2, T3, T4)>();
+         }
+         catch (Exception exception)
+         {
+            return failedMatch<(T1, T2, T3, T4)>(exception);
+         }
+      }
+
       public static IMatched<T> LastOrNotMatched<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate)
       {
          try
@@ -388,6 +770,94 @@ namespace Core.Enumerables
          catch (Exception exception)
          {
             return failedMatch<T>(exception);
+         }
+      }
+
+      public static IMatched<(T1, T2)> LastOrNotMatched<T1, T2>(this IEnumerable<(T1, T2)> enumerable, Func<T1, T2, bool> predicate)
+      {
+         try
+         {
+            var last = enumerable.Last(i => predicate(i.Item1, i.Item2));
+
+            if (last.IsNull())
+            {
+               return notMatched<(T1, T2)>();
+            }
+            else if (last.Equals(default))
+            {
+               return notMatched<(T1, T2)>();
+            }
+            else
+            {
+               return last.Matched();
+            }
+         }
+         catch (InvalidOperationException)
+         {
+            return notMatched<(T1, T2)>();
+         }
+         catch (Exception exception)
+         {
+            return failedMatch<(T1, T2)>(exception);
+         }
+      }
+
+      public static IMatched<(T1, T2, T3)> LastOrNotMatched<T1, T2, T3>(this IEnumerable<(T1, T2, T3)> enumerable, Func<T1, T2, T3, bool> predicate)
+      {
+         try
+         {
+            var last = enumerable.Last(i => predicate(i.Item1, i.Item2, i.Item3));
+
+            if (last.IsNull())
+            {
+               return notMatched<(T1, T2, T3)>();
+            }
+            else if (last.Equals(default))
+            {
+               return notMatched<(T1, T2, T3)>();
+            }
+            else
+            {
+               return last.Matched();
+            }
+         }
+         catch (InvalidOperationException)
+         {
+            return notMatched<(T1, T2, T3)>();
+         }
+         catch (Exception exception)
+         {
+            return failedMatch<(T1, T2, T3)>(exception);
+         }
+      }
+
+      public static IMatched<(T1, T2, T3, T4)> LastOrNotMatched<T1, T2, T3, T4>(this IEnumerable<(T1, T2, T3, T4)> enumerable,
+         Func<T1, T2, T3, T4, bool> predicate)
+      {
+         try
+         {
+            var last = enumerable.Last(i => predicate(i.Item1, i.Item2, i.Item3, i.Item4));
+
+            if (last.IsNull())
+            {
+               return notMatched<(T1, T2, T3, T4)>();
+            }
+            else if (last.Equals(default))
+            {
+               return notMatched<(T1, T2, T3, T4)>();
+            }
+            else
+            {
+               return last.Matched();
+            }
+         }
+         catch (InvalidOperationException)
+         {
+            return notMatched<(T1, T2, T3, T4)>();
+         }
+         catch (Exception exception)
+         {
+            return failedMatch<(T1, T2, T3, T4)>(exception);
          }
       }
 

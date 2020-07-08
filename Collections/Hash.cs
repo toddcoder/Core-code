@@ -191,7 +191,7 @@ namespace Core.Collections
 
       public KeyValuePair<TKey, TValue>[] ItemsArray() => this.ToArray();
 
-      public IEnumerable<(TKey, TValue)> Tuples()
+      public IEnumerable<(TKey key, TValue value)> Tuples()
       {
          foreach (var (key, value) in this)
          {
