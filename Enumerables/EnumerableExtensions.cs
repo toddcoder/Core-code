@@ -1158,5 +1158,20 @@ namespace Core.Enumerables
 
          return list;
       }
+
+      public static IMaybe<TResult> FirstOrNoneAs<T, TResult>(this IEnumerable<T> enumerable)
+      {
+         return enumerable.FirstOrNone(i => i is TResult).CastAs<TResult>();
+      }
+
+      public static IResult<TResult> FirstOrFailAs<T, TResult>(this IEnumerable<T> enumerable)
+      {
+         return enumerable.FirstOrFail(i => i is TResult).CastAs<TResult>();
+      }
+
+      public static IMatched<TResult> FirstOrNotMatchedAs<T, TResult>(this IEnumerable<T> enumerable)
+      {
+         return enumerable.FirstOrNotMatched(i => i is TResult).CastAs<TResult>();
+      }
    }
 }
