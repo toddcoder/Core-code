@@ -12,6 +12,9 @@ namespace Core.Collections
    {
       protected ReaderWriterLockSlim locker;
 
+      public event EventHandler<HashArgs<TKey, TValue>> Updated;
+      public event EventHandler<HashArgs<TKey, TValue>> Removed;
+
       public Hash()
       {
          locker = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
@@ -57,6 +60,28 @@ namespace Core.Collections
          locker = new ReaderWriterLockSlim();
       }
 
+      public new void Add(TKey key, TValue value)
+      {
+         base.Add(key, value);
+         Updated?.Invoke(this, new HashArgs<TKey, TValue>(key, value));
+      }
+
+      public new bool Remove(TKey key)
+      {
+         if (ContainsKey(key))
+         {
+            var value = this[key];
+            var result = base.Remove(key);
+            Removed?.Invoke(this, new HashArgs<TKey, TValue>(key, value));
+
+            return result;
+         }
+         else
+         {
+            return false;
+         }
+      }
+
       public new TValue this[TKey key]
       {
          get
@@ -86,6 +111,7 @@ namespace Core.Collections
                if (ContainsKey(key))
                {
                   base[key] = value;
+                  Updated?.Invoke(this, new HashArgs<TKey, TValue>(key, value));
                }
                else
                {

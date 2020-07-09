@@ -131,6 +131,7 @@
     <Compile Include="Collections\Expiring\PolicyExpiration.cs" />
     <Compile Include="Collections\Expiring\SlidingExpiration.cs" />
     <Compile Include="Collections\Hash.cs" />
+    <Compile Include="Collections\HashArgs.cs" />
     <Compile Include="Collections\HashExtensions.cs" />
     <Compile Include="Collections\HashTrying.cs" />
     <Compile Include="Collections\IfHash.cs" />
