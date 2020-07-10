@@ -346,7 +346,6 @@
     <Compile Include="Strings\Slice.cs" />
     <Compile Include="Strings\Slicer.cs" />
     <Compile Include="Strings\SplitType.cs" />
-    <Compile Include="Strings\StringDifference.cs" />
     <Compile Include="Strings\StringExtensions.cs" />
     <Compile Include="Strings\StringFunctions.cs" />
     <Compile Include="Strings\StringSegment.cs" />

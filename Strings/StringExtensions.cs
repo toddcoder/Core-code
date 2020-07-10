@@ -2767,8 +2767,20 @@ namespace Core.Strings
          return split(source).ToArray().Stringify("");
       }
 
-      public static bool CaseDiffers(this string left, string right) => left != right && left.Same(right);
-
-      public static StringDifference DiffersFrom(this string left, string right) => new StringDifference(left, right);
+      public static IMaybe<bool> IsExactlyEqualTo(this string left, string right)
+      {
+         if (left == right)
+         {
+            return true.Some();
+         }
+         else if (left.Same(right))
+         {
+            return false.Some();
+         }
+         else
+         {
+            return none<bool>();
+         }
+      }
    }
 }

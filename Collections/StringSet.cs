@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Core.Enumerables;
+using Core.Monads;
 using Core.Strings;
 
 namespace Core.Collections
@@ -46,12 +47,9 @@ namespace Core.Collections
          }
       }
 
-      public StringDifference DiffersFrom(string target)
+      public IMaybe<bool> IsExactlyEqualTo(string target)
       {
-         return content
-            .FirstOrNone(i => i == target || i.CaseDiffers(target))
-            .Map(s => s.DiffersFrom(target))
-            .DefaultTo(() => StringDifference.Empty);
+         return content.FirstOrNone(i => i.IsExactlyEqualTo(target).HasValue).Map(r => r.IsExactlyEqualTo(target));
       }
    }
 }
