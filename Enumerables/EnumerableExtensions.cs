@@ -924,6 +924,11 @@ namespace Core.Enumerables
          return enumerable.ToHash(kv => kv.Key, kv => kv.Value);
       }
 
+      public static Hash<TKey, TValue> ToHash<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> enumerable, IEqualityComparer<TKey> comparer)
+      {
+         return enumerable.ToHash(kv => kv.Key, kv => kv.Value, comparer);
+      }
+
       public static IEnumerable<TResult> Map<TSource, TResult>(this IEnumerable<TSource> enumerable, Func<TSource, TResult> mapFunc)
       {
          return enumerable.Select(mapFunc);
