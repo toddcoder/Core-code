@@ -377,7 +377,10 @@ namespace Core.WinForms.Controls
             for (var i = firstVisibleLine; i <= lastVisibleLine; i++)
             {
                var position = PositionFrom(i);
-               yield return (i, Lines[i], position);
+               if (i.Between(0).Until(Lines.Length))
+               {
+                  yield return (i, Lines[i], position);
+               }
             }
          }
       }
