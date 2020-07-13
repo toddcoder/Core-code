@@ -9,16 +9,18 @@ namespace Core.Objects
 {
    public class LateLazy<T>
    {
-      IMaybe<T> value;
-      IMaybe<Func<T>> activator;
+      protected bool overriding;
+      protected IMaybe<T> value;
+      protected IMaybe<Func<T>> activator;
 
-      public LateLazy()
+      public LateLazy(bool overriding = false)
       {
+         this.overriding = overriding;
          value = none<T>();
          activator = none<Func<T>>();
       }
 
-      public void ActivateWith(Func<T> activator, bool overriding = false)
+      public void ActivateWith(Func<T> activator)
       {
          assert(() => activator).Must().Not.BeNull().OrThrow();
 
@@ -53,5 +55,7 @@ namespace Core.Objects
             }
          }
       }
+
+      public LateLazyTrying<T> TryTo => new LateLazyTrying<T>(this);
    }
 }

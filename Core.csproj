@@ -273,6 +273,7 @@
     <Compile Include="Objects\InvokerTrying.cs" />
     <Compile Include="Objects\ITryAsync.cs" />
     <Compile Include="Objects\LateLazy.cs" />
+    <Compile Include="Objects\LateLazyTrying.cs" />
     <Compile Include="Objects\NewFormatter.cs" />
     <Compile Include="Objects\ObjectExtensions.cs" />
     <Compile Include="Objects\ObjectFunctions.cs" />
