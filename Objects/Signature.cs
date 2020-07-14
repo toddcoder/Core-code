@@ -1,7 +1,6 @@
-﻿using Core.Assertions;
-using Core.Monads;
-using Core.RegularExpressions;
+﻿using Core.Monads;
 using Core.Strings;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Objects
 {
@@ -11,12 +10,16 @@ namespace Core.Objects
 
       public Signature(string signature)
       {
-         var matcher = new Matcher();
-         matcher.Evaluate(signature, REGEX_FORMAT);
-         matcher.Must().HaveMatchCountOf(1).OrThrow($"Couldn't determine elements of signature \"{signature}\"");
-
-         Name = matcher.FirstGroup;
-         Index = matcher.SecondGroup.AsInt();
+         if (signature.Find("[").If(out var openIndex))
+         {
+            Name = signature.Keep(openIndex);
+            Index = signature.Drop(openIndex + 1).KeepUntil("]").AsInt();
+         }
+         else
+         {
+            Name = signature;
+            Index = none<int>();
+         }
       }
 
       public string Name { get; set; }

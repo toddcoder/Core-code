@@ -9,6 +9,7 @@ using Core.Data.Parameters;
 using Core.Data.Setups;
 using Core.Dates.DateIncrements;
 using Core.ObjectGraphs.Configurations;
+using Core.Objects;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Core.Tests
@@ -119,6 +120,16 @@ namespace Core.Tests
          {
             Console.WriteLine($"Exception: {exception.Message}");
          }
+      }
+
+      [TestMethod]
+      public void SignatureTest()
+      {
+         var signature = new Signature("Foobar");
+         Console.WriteLine(signature);
+
+         signature = new Signature("Foobar[153]");
+         Console.WriteLine(signature);
       }
    }
 }
