@@ -26,5 +26,11 @@ namespace Core.Objects
       {
          return await runAsync(t => ActivateWith(activator).Completion(t), token);
       }
+
+      public IResult<T> Value => tryTo(() => lateLazy.Value);
+
+      public bool IsActivated => lateLazy.IsActivated;
+
+      public IMaybe<T> AnyValue => lateLazy.AnyValue;
    }
 }

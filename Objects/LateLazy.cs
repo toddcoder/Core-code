@@ -56,6 +56,10 @@ namespace Core.Objects
          }
       }
 
+      public bool IsActivated => value.HasValue;
+
+      public IMaybe<T> AnyValue => value;
+
       public LateLazyTrying<T> TryTo => new LateLazyTrying<T>(this);
    }
 }
