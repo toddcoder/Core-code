@@ -6,6 +6,7 @@ using System.Windows.Forms;
 
 namespace Core.WinForms.Controls
 {
+   [Obsolete("Use WebProgress")]
    public partial class CircularProgress : UserControl
    {
       const float MAX_ANGLE = 360.0f;
