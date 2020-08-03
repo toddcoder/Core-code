@@ -70,6 +70,8 @@ namespace Core.Data.DataSources
 
       public string ConnectionString { get; set; }
 
+      public bool HasRows { get; set; }
+
       public abstract IDbConnection GetConnection();
 
       public abstract IDbCommand GetCommand();
@@ -113,12 +115,13 @@ namespace Core.Data.DataSources
 
          setCommand(entity, command);
          IDataReader reader = null;
+         HasRows = false;
 
          try
          {
-            if (Command.If(out var com) & anyConnection.If(out var con))
+            if (Command.If(out var dbCommand) & anyConnection.If(out var dbConnection))
             {
-               com.Connection = con;
+               dbCommand.Connection = dbConnection;
             }
             else
             {
@@ -128,14 +131,14 @@ namespace Core.Data.DataSources
             int recordsAffected;
             if (inFields.Count > 0)
             {
-               reader = com.ExecuteReader();
+               reader = dbCommand.ExecuteReader();
                for (var i = 1; i <= ResultIndex; i++)
                {
                   reader.NextResult();
                }
 
                recordsAffected = reader.RecordsAffected;
-               FillOutput(entity, com.Parameters, parameters);
+               FillOutput(entity, dbCommand.Parameters, parameters);
 
                var cancel = false;
 
@@ -148,6 +151,7 @@ namespace Core.Data.DataSources
 
                while (!cancel && reader.Read())
                {
+                  HasRows = true;
                   fill(entity, reader);
                   NextRow?.Invoke(this, new CancelEventArgs());
                   cancel = new CancelEventArgs().Cancel;
@@ -165,8 +169,8 @@ namespace Core.Data.DataSources
                   activeObject.BeforeExecute();
                }
 
-               recordsAffected = com.ExecuteNonQuery();
-               FillOutput(entity, com.Parameters, parameters);
+               recordsAffected = dbCommand.ExecuteNonQuery();
+               FillOutput(entity, dbCommand.Parameters, parameters);
 
                if (anyActiveObject.If(out activeObject))
                {
@@ -253,6 +257,7 @@ namespace Core.Data.DataSources
       {
          if (Reader.If(out var reader) && reader.Read())
          {
+            HasRows = true;
             fill(entity, reader);
             return entity.Some();
          }
@@ -323,35 +328,25 @@ namespace Core.Data.DataSources
 
       public static void FillOrdinals(IDataReader reader, Fields.Fields fields)
       {
-         var matcher = new Matcher();
-
          foreach (var field in fields)
          {
-            if (matcher.IsMatch(field.Name, "^ 'field' /(/d+) $"))
+            try
             {
-               field.Ordinal = matcher[0, 1].ToInt(-1);
+               field.Ordinal = reader.GetOrdinal(field.Name);
             }
-            else
+            catch (IndexOutOfRangeException)
             {
-               try
-               {
-                  field.Ordinal = reader.GetOrdinal(field.Name);
-               }
-               catch (IndexOutOfRangeException)
-               {
-                  field.Ordinal = -1;
-               }
+               field.Ordinal = -1;
             }
 
             if (!field.Optional)
             {
-               assert(()=> field.Ordinal).Must().Not.BeNegative().OrThrow($"Couldn't find {field.Name} field");
+               assert(() => field.Ordinal).Must().Not.BeNegative().OrThrow($"Couldn't find {field.Name} field");
             }
          }
       }
 
-      public static void FillOutput(object entity, IDataParameterCollection dataParameters,
-         Parameters.Parameters parameters)
+      public static void FillOutput(object entity, IDataParameterCollection dataParameters, Parameters.Parameters parameters)
       {
          foreach (var dataParameter in dataParameters)
          {

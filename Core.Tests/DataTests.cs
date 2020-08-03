@@ -131,5 +131,59 @@ namespace Core.Tests
          signature = new Signature("Foobar[153]");
          Console.WriteLine(signature);
       }
+
+      class Object : ISetupObject
+      {
+         public string ObjectName { get; set; } = "";
+
+         public int ObjectId { get; set; }
+
+         public string ConnectionString => SQLConnectionString.GetConnectionString(".", "local_tebennett");
+
+         public CommandSourceType CommandSourceType => CommandSourceType.SQL;
+
+         public string Command => "SELECT name as ObjectName, object_id as ObjectId FROM sys.objects WHERE name = @lObjectName";
+
+         public TimeSpan CommandTimeout => 30.Seconds();
+
+         public IEnumerable<Parameter> Parameters()
+         {
+            yield return new Parameter("@lObjectName", nameof(ObjectName), typeof(string));
+         }
+
+         public IEnumerable<Field> Fields()
+         {
+            yield return new Field(nameof(ObjectName), typeof(string));
+            yield return new Field(nameof(ObjectId), typeof(int));
+         }
+
+         public IHash<string, string> Attributes => new Hash<string, string>();
+
+         public ISetup Setup() => new SQLSetup(this);
+      }
+
+      [TestMethod]
+      public void HasRowsTest()
+      {
+         var obj = new Object { ObjectName = "Foobar" };
+         if (obj.SqlAdapter().ExecuteMaybe().HasValue)
+         {
+            Console.WriteLine("Foobar exists");
+         }
+         else
+         {
+            Console.WriteLine("Foobar doesn't exist");
+         }
+
+         obj.ObjectName = "PaperTicketStorageAssignment";
+         if (obj.SqlAdapter().ExecuteMaybe().HasValue)
+         {
+            Console.WriteLine($"{obj.ObjectName} exists");
+         }
+         else
+         {
+            Console.WriteLine($"{obj.ObjectName} doesn't exist");
+         }
+      }
    }
 }

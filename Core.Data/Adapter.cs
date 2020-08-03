@@ -112,6 +112,8 @@ namespace Core.Data
          set => DataSource.ConnectionString = value;
       }
 
+      public bool HasRows { get; set; }
+
       protected void setEntityType()
       {
          Parameters.DeterminePropertyTypes(entity);
@@ -121,6 +123,8 @@ namespace Core.Data
       public T Execute()
       {
          RecordsAffected = DataSource.Execute(entity, Command, Parameters, Fields);
+         HasRows = DataSource.HasRows;
+
          return entity;
       }
 
@@ -129,7 +133,9 @@ namespace Core.Data
          try
          {
             RecordsAffected = DataSource.Execute(entity, Command, Parameters, Fields);
-            return RecordsAffected > 0 ? entity.Matched() : notMatched<T>();
+            HasRows = DataSource.HasRows;
+
+            return HasRows ? entity.Matched() : notMatched<T>();
          }
          catch (Exception exception)
          {
@@ -142,7 +148,9 @@ namespace Core.Data
          try
          {
             RecordsAffected = DataSource.Execute(entity, Command, Parameters, Fields);
-            return maybe(RecordsAffected > 0, () => entity);
+            HasRows = DataSource.HasRows;
+
+            return maybe(HasRows, () => entity);
          }
          catch
          {
