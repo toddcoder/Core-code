@@ -83,6 +83,8 @@
     <Compile Include="Applications\RetryArgs.cs" />
     <Compile Include="Applications\SpecialFirst.cs" />
     <Compile Include="Applications\User32.cs" />
+    <Compile Include="Applications\VirtualKey.cs" />
+    <Compile Include="Applications\WindowsFunctions.cs" />
     <Compile Include="Applications\Writers\ActionWriter.cs" />
     <Compile Include="Applications\Writers\BaseWriter.cs" />
     <Compile Include="Applications\Writers\ConsoleWriter.cs" />
