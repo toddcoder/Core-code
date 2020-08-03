@@ -11,6 +11,7 @@ using Core.Monads;
 using Core.Objects;
 using static Core.Assertions.AssertionFunctions;
 using static Core.Monads.AttemptFunctions;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Data
 {
@@ -123,10 +124,35 @@ namespace Core.Data
          return entity;
       }
 
+      public IMatched<T> ExecuteMatched()
+      {
+         try
+         {
+            RecordsAffected = DataSource.Execute(entity, Command, Parameters, Fields);
+            return RecordsAffected != 0 ? entity.Matched() : notMatched<T>();
+         }
+         catch (Exception exception)
+         {
+            return failedMatch<T>(exception);
+         }
+      }
+
+      public IMaybe<T> ExecuteMaybe()
+      {
+         try
+         {
+            RecordsAffected = DataSource.Execute(entity, Command, Parameters, Fields);
+            return maybe(RecordsAffected != 0, () => entity);
+         }
+         catch
+         {
+            return none<T>();
+         }
+      }
+
       public IDataReader ExecuteReader() => DataSource.ExecuteReader(entity, Command, Parameters);
 
-      public IBulkCopyTarget BulkCopy<TSource>(Adapter<TSource> sourceAdapter)
-         where TSource : class
+      public IBulkCopyTarget BulkCopy<TSource>(Adapter<TSource> sourceAdapter) where TSource : class
       {
          if (DataSource is IBulkCopyTarget bulkCopy)
          {
