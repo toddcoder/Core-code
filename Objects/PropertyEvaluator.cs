@@ -253,5 +253,9 @@ namespace Core.Objects
       }
 
       public PropertyEvaluatorTrying TryTo => new PropertyEvaluatorTrying(this);
+
+      public PropertyEvaluator Evaluator(Signature signature) => new PropertyEvaluator(this[signature]);
+
+      public PropertyEvaluator Evaluator(string signature) => new PropertyEvaluator(this[signature]);
    }
 }
