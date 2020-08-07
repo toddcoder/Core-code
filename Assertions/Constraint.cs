@@ -13,16 +13,29 @@ namespace Core.Assertions
          return new Constraint(condition, message, not, name, newValue);
       }
 
+      public static Constraint Formatted(Func<bool> condition, string message, bool not, string name)
+      {
+         return new Constraint(condition, message, not, name);
+      }
+
       public Constraint(Func<bool> condition, string message, bool not, string name, object value)
       {
          Condition = condition;
          var valueImage = value.ToNonNullString();
          var newMessage = message.ReplaceAll(("$not ", not ? "not " : ""), ("$name", name), ("$value", valueImage));
+         Message = newMessage;
+         Not = not;
+
          if (value != null)
          {
             newMessage = $"{newMessage}; found value {valueImage}";
          }
-         Message = newMessage;
+      }
+
+      public Constraint(Func<bool> condition, string message, bool not, string name)
+      {
+         Condition = condition;
+         Message = message.ReplaceAll(("$not ", not ? "not " : ""), ("$name", name));
          Not = not;
       }
 

@@ -49,29 +49,37 @@ namespace Core.Assertions.Collections
          return this;
       }
 
+      protected DictionaryAssertion<TKey, TValue> addWithoutValue(Func<bool> constraintFunction, string message)
+      {
+         constraints.Add(Constraint.Formatted(constraintFunction, message, not, name));
+         not = false;
+
+         return this;
+      }
+
       public DictionaryAssertion<TKey, TValue> Equal(Dictionary<TKey, TValue> otherHash)
       {
-         return add(() => dictionary.Equals(otherHash), $"$name must $not equal {dictionaryImage(otherHash)}");
+         return addWithoutValue(() => dictionary.Equals(otherHash), $"$name must $not equal {dictionaryImage(otherHash)}");
       }
 
       public DictionaryAssertion<TKey, TValue> BeNull()
       {
-         return add(() => dictionary == null, "$name must $not be null");
+         return addWithoutValue(() => dictionary == null, "$name must $not be null");
       }
 
       public DictionaryAssertion<TKey, TValue> BeEmpty()
       {
-         return add(() => dictionary.Count == 0, "$name must $not be empty");
+         return addWithoutValue(() => dictionary.Count == 0, "$name must $not be empty");
       }
 
       public DictionaryAssertion<TKey, TValue> BeNullOrEmpty()
       {
-         return add(() => dictionary == null || dictionary.Count == 0, "$name must $not be null or empty");
+         return addWithoutValue(() => dictionary == null || dictionary.Count == 0, "$name must $not be null or empty");
       }
 
       public DictionaryAssertion<TKey, TValue> HaveKeyOf(TKey key)
       {
-         return add(() => dictionary.ContainsKey(key), $"$name must $not have key of {key}");
+         return addWithoutValue(() => dictionary.ContainsKey(key), $"$name must $not have key of {key}");
       }
 
       public DictionaryAssertion<TKey, TValue> HaveValueOf(TValue value)
@@ -81,7 +89,7 @@ namespace Core.Assertions.Collections
 
       public DictionaryAssertion<TKey, TValue> HaveCountOf(int minimumCount)
       {
-         return add(() => dictionary.Count >= minimumCount, $"$name must $not have a count of at least {minimumCount}");
+         return addWithoutValue(() => dictionary.Count >= minimumCount, $"$name must $not have a count of at least {minimumCount}");
       }
 
       public MaybeAssertion<TValue> HaveValueAt(TKey key)
