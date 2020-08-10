@@ -40,5 +40,29 @@ namespace Core.Collections
             }
          }
       }
+
+      public IResult<TValue> Map(TKey key, string notFoundMessage)
+      {
+         if (hash.If(key, out var value))
+         {
+            return value.Success();
+         }
+         else
+         {
+            return notFoundMessage.Failure<TValue>();
+         }
+      }
+
+      public IResult<TValue> Map(TKey key, Func<string> notFoundMessage)
+      {
+         if (hash.If(key, out var value))
+         {
+            return value.Success();
+         }
+         else
+         {
+            return notFoundMessage().Failure<TValue>();
+         }
+      }
    }
 }
