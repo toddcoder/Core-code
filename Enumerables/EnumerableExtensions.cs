@@ -1178,5 +1178,9 @@ namespace Core.Enumerables
       {
          return enumerable.FirstOrNotMatched(i => i is TResult).CastAs<TResult>();
       }
+
+      public static bool AtLeastOne<T>(this IEnumerable<T> enumerable) => enumerable.FirstOrNone().HasValue;
+
+      public static bool AtLeastOne<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate) => enumerable.FirstOrNone(predicate).HasValue;
    }
 }
