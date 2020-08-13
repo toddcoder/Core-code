@@ -75,7 +75,7 @@ namespace Core.Tests
          var sum = source.FoldLeft((a, v) => a + v);
          writeScalar("FoldLeft (no init)", sum);
 
-         var enumerable = 1.UpTo(10);
+         var enumerable = 1.UpTo(10).ToArray();
          sum = enumerable.FoldLeft(1, (a, v) => a * 2 * v);
          writeScalar("FoldLeft", sum);
 

@@ -143,5 +143,7 @@ namespace Core.Collections
       IEnumerator<T> IEnumerable<T>.GetEnumerator() => ((IEnumerable<T>)content).GetEnumerator();
 
       IEnumerator IEnumerable.GetEnumerator() => content.GetEnumerator();
+
+      public IEnumerator<T> GetEnumerator() => ((IEnumerable<T>)content).GetEnumerator();
    }
 }

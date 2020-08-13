@@ -166,9 +166,10 @@ namespace Core.Enumerables
          return toContiguousSequences(sequence, this);
       }
 
-      public IEnumerable<string> ToRangeString(IEnumerable<TSource> source)
+      public IEnumerable<string> ToRangeString(IEnumerable<TSource> source) => toContiguousSequences(source, this).Select(seq =>
       {
-         return toContiguousSequences(source, this).Select(seq => rangeString(seq.First(), seq.Last()));
-      }
+         var seqArray = seq.ToArray();
+         return rangeString(seqArray.First(), seqArray.Last());
+      });
    }
 }

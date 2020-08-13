@@ -33,27 +33,31 @@ namespace Core.Enumerables
 
       public static (IEnumerable<T1>, IEnumerable<T2>) Split<T1, T2>(this IEnumerable<(T1, T2)> enumerable)
       {
-         var enumerable1 = enumerable.Select(t => t.Item1);
-         var enumerable2 = enumerable.Select(t => t.Item2);
+         var array = enumerable.ToArray();
+         var enumerable1 = array.Select(t => t.Item1);
+         var enumerable2 = array.Select(t => t.Item2);
 
          return (enumerable1, enumerable2);
       }
 
       public static (IEnumerable<T1>, IEnumerable<T2>, IEnumerable<T3>) Split<T1, T2, T3>(this IEnumerable<(T1, T2, T3)> enumerable)
       {
-         var enumerable1 = enumerable.Select(t => t.Item1);
-         var enumerable2 = enumerable.Select(t => t.Item2);
-         var enumerable3 = enumerable.Select(t => t.Item3);
+         var array = enumerable.ToArray();
+         var enumerable1 = array.Select(t => t.Item1);
+         var enumerable2 = array.Select(t => t.Item2);
+         var enumerable3 = array.Select(t => t.Item3);
 
          return (enumerable1, enumerable2, enumerable3);
       }
 
-      public static (IEnumerable<T1>, IEnumerable<T2>, IEnumerable<T3>, IEnumerable<T4>) Split<T1, T2, T3, T4>(this IEnumerable<(T1, T2, T3, T4)> enumerable)
+      public static (IEnumerable<T1>, IEnumerable<T2>, IEnumerable<T3>, IEnumerable<T4>) Split<T1, T2, T3, T4>(
+         this IEnumerable<(T1, T2, T3, T4)> enumerable)
       {
-         var enumerable1 = enumerable.Select(t => t.Item1);
-         var enumerable2 = enumerable.Select(t => t.Item2);
-         var enumerable3 = enumerable.Select(t => t.Item3);
-         var enumerable4 = enumerable.Select(t => t.Item4);
+         var array = enumerable.ToArray();
+         var enumerable1 = array.Select(t => t.Item1);
+         var enumerable2 = array.Select(t => t.Item2);
+         var enumerable3 = array.Select(t => t.Item3);
+         var enumerable4 = array.Select(t => t.Item4);
 
          return (enumerable1, enumerable2, enumerable3, enumerable4);
       }
