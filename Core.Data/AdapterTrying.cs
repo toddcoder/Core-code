@@ -15,7 +15,11 @@ namespace Core.Data
 
       public AdapterTrying(Adapter<T> adapter) => this.adapter = adapter;
 
-      public IResult<T> Execute() => tryTo(() => adapter.Execute());
+      public IResult<T> Execute() => tryTo(() =>
+      {
+         var result = adapter.Execute();
+         return adapter.HasRows ? result.Success() : "No rows".Failure<T>();
+      });
 
       public IResult<IBulkCopyTarget> BulkCopy<TSource>(Adapter<TSource> sourceAdapter)
          where TSource : class
