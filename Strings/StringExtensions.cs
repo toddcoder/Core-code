@@ -2204,7 +2204,7 @@ namespace Core.Strings
          }
 
          var index = source.LastIndexOf(searchString, comparisonType);
-         return Drop(source, index + searchString.Length);
+         return index > -1 ? Drop(source, index + searchString.Length) : source;
       }
 
       public static string DropWhile(this string source, params char[] chars)
@@ -2244,8 +2244,7 @@ namespace Core.Strings
          return source;
       }
 
-      public static string DropUntil(this string source, string searchString,
-         StringComparison comparisonType = StringComparison.CurrentCulture)
+      public static string DropUntil(this string source, string searchString, StringComparison comparisonType = StringComparison.CurrentCulture)
       {
          if (source.IsEmpty())
          {
@@ -2253,7 +2252,7 @@ namespace Core.Strings
          }
 
          var index = source.IndexOf(searchString, comparisonType);
-         return Drop(source, index);
+         return index > -1 ? Drop(source, index) : "";
       }
 
       public static string DropUntil(this string source, params char[] chars)
@@ -2335,8 +2334,7 @@ namespace Core.Strings
          return source;
       }
 
-      public static string KeepWhile(this string source, string searchString,
-         StringComparison comparisonType = StringComparison.CurrentCulture)
+      public static string KeepWhile(this string source, string searchString, StringComparison comparisonType = StringComparison.CurrentCulture)
       {
          if (source.IsEmpty())
          {
@@ -2344,7 +2342,7 @@ namespace Core.Strings
          }
 
          var index = source.LastIndexOf(searchString, comparisonType);
-         return Keep(source, index + searchString.Length);
+         return index > -1 ? Keep(source, index + searchString.Length) : "";
       }
 
       public static string KeepWhile(this string source, params char[] chars)
@@ -2384,8 +2382,7 @@ namespace Core.Strings
          return source;
       }
 
-      public static string KeepUntil(this string source, string searchString,
-         StringComparison comparisonType = StringComparison.CurrentCulture)
+      public static string KeepUntil(this string source, string searchString, StringComparison comparisonType = StringComparison.CurrentCulture)
       {
          if (source.IsEmpty())
          {
@@ -2393,7 +2390,7 @@ namespace Core.Strings
          }
 
          var index = source.IndexOf(searchString, comparisonType);
-         return Keep(source, index);
+         return index > -1 ? Keep(source, index) : source;
       }
 
       public static string KeepUntil(this string source, params char[] chars)
