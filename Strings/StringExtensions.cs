@@ -2195,8 +2195,7 @@ namespace Core.Strings
          return source;
       }
 
-      public static string DropWhile(this string source, string searchString,
-         StringComparison comparisonType = StringComparison.CurrentCulture)
+      public static string DropWhile(this string source, string searchString, StringComparison comparisonType = StringComparison.CurrentCulture)
       {
          if (source.IsEmpty())
          {
