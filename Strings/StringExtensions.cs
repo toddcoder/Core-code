@@ -2674,6 +2674,21 @@ namespace Core.Strings
          }
       }
 
+      public static IMaybe<Slice> FindByRegex(this string source, string pattern, bool ignoreCase = false, bool multiline = false,
+         bool friendly = true)
+      {
+         var matcher = new Matcher(friendly);
+         if (matcher.IsMatch(source, pattern, ignoreCase, multiline))
+         {
+            var (text, index, length) = matcher.GetMatch(0);
+            return new Slice(index, length, text).Some();
+         }
+         else
+         {
+            return none<Slice>();
+         }
+      }
+
       public static IEnumerable<int> FindAll(this string source, string substring, bool ignoreCase = false)
       {
          var result = source.Find(substring, 0, ignoreCase);
@@ -2689,6 +2704,20 @@ namespace Core.Strings
             }
 
             result = source.Find(substring, i + substring.Length, ignoreCase);
+         }
+      }
+
+      public static IEnumerable<Slice> FindAllByRegex(this string source, string pattern, bool ignoreCase = false, bool multiline = false,
+         bool friendly = true)
+      {
+         var matcher = new Matcher(friendly);
+         if (matcher.IsMatch(source, pattern, ignoreCase, multiline))
+         {
+            for (var i = 0; i < matcher.MatchCount; i++)
+            {
+               var (text, index, length) = matcher.GetMatch(i);
+               yield return new Slice(index, length, text);
+            }
          }
       }
 
