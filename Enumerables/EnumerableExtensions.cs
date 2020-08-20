@@ -1182,5 +1182,42 @@ namespace Core.Enumerables
       public static bool AtLeastOne<T>(this IEnumerable<T> enumerable) => enumerable.FirstOrNone().HasValue;
 
       public static bool AtLeastOne<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate) => enumerable.FirstOrNone(predicate).HasValue;
+
+      public static IEnumerable<T> Do<T>(this IEnumerable<T> enumerable, Action<T> action)
+      {
+         foreach (var value in enumerable)
+         {
+            action(value);
+            yield return value;
+         }
+      }
+
+      public static IEnumerable<T> DoIf<T>(this IEnumerable<T> enumerable, Predicate<T> predicate, Action<T> action)
+      {
+         foreach (var value in enumerable)
+         {
+            if (predicate(value))
+            {
+               action(value);
+            }
+            yield return value;
+         }
+      }
+
+      public static IEnumerable<T> DoIfElse<T>(this IEnumerable<T> enumerable, Predicate<T> predicate, Action<T> ifTrue, Action<T> ifFalse)
+      {
+         foreach (var value in enumerable)
+         {
+            if (predicate(value))
+            {
+               ifTrue(value);
+            }
+            else
+            {
+               ifFalse(value);
+            }
+            yield return value;
+         }
+      }
    }
 }
