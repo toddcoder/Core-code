@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Http\HttpClientExtensions.cs" />
     <Compile Include="Sgml\Attributes.cs" />
     <Compile Include="Sgml\Element.cs" />
     <Compile Include="Sgml\Elements.cs" />
@@ -60,5 +61,6 @@
       <Name>Core</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
