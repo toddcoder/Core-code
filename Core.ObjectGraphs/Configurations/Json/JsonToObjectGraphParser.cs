@@ -59,13 +59,14 @@ namespace Core.ObjectGraphs.Configurations.Json
                   parent[objectGraph.Name] = objectGraph;
                   objectGraph = parent;
                }
+
                break;
             case TokenType.ArrayOpen:
                arrayValues.Clear();
                inArray = true;
                break;
             case TokenType.ArrayClose:
-               objectGraph[name] = $"{name} -> [{arrayValues.Stringify()}]";
+               objectGraph[name] = $"{name} -> [{arrayValues.ToString(", ")}]";
                inArray = false;
                break;
             case TokenType.String:

@@ -55,7 +55,7 @@ namespace Core.Exceptions
 
       public void CopyTo(Exception[] array, int arrayIndex) => exceptions.CopyTo(array, arrayIndex);
 
-      public override string Message => exceptions.Select(e => e.Message).Stringify("\r\n");
+      public override string Message => exceptions.Select(e => e.Message).ToString("\r\n");
 
       public IEnumerable<TException> Exceptions<TException>() where TException : Exception
       {

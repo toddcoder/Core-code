@@ -82,6 +82,9 @@ namespace Core.Objects
          }
       }
 
-      public string Keys => getValues(obj, signatures).Select(i => $"{i.Key}=>{(i.Value.IsNull() ? "null" : i.Value)}").Stringify();
+      public string Keys
+      {
+         get => getValues(obj, signatures).Select(i => $"{i.Key}=>{(i.Value.IsNull() ? "null" : i.Value)}").ToString(", ");
+      }
    }
 }

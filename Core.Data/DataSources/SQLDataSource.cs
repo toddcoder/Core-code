@@ -167,7 +167,7 @@ namespace Core.Data.DataSources
          var connectionString = ConnectionString;
          if (attributes.Count > 0)
          {
-            connectionString += attributes.Select(i => $"{i.Key} = {i.Value}").Stringify("; ");
+            connectionString += attributes.Select(i => $"{i.Key} = {i.Value}").ToString("; ");
          }
 
          var sqlConnection = new SqlConnection(connectionString);

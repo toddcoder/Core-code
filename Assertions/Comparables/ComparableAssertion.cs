@@ -132,7 +132,7 @@ namespace Core.Assertions.Comparables
 
       public ComparableAssertion<T> BeIn(params object[] objects)
       {
-         var objectsString = objects.Select(o => o == null ? "null" : objects.ToString()).Stringify();
+         var objectsString = objects.Select(o => o == null ? "null" : objects.ToString()).ToString(", ");
          return add(objects, c => inList(comparable, objects), $"$name must $not be in {objectsString}");
       }
 

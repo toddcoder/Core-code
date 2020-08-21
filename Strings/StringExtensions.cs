@@ -68,7 +68,7 @@ namespace Core.Strings
             result.Add(source);
          }
 
-         return result.Stringify(connector.ToNonNullString());
+         return result.ToString(connector.ToNonNullString());
       }
 
       public static string Repeat(this string source, int count, int maxLength, string connector)
@@ -2655,7 +2655,7 @@ namespace Core.Strings
          }
 
          var array = source.Split(splitPattern);
-         var result = array.Select(e => $"{e}{" ".Repeat(padding)}").Stringify(string.Empty).Trim();
+         var result = array.Select(e => $"{e}{" ".Repeat(padding)}").ToString(string.Empty).Trim();
          return result.Center(allowedLength).Elliptical(allowedLength, ' ');
       }
 
@@ -2739,7 +2739,7 @@ namespace Core.Strings
             }
             else if (whole.IsMatch("'_'"))
             {
-               whole = whole.Split("'_'+").Select(s => s.ToPascal()).Stringify("");
+               whole = whole.Split("'_'+").Select(s => s.ToPascal()).ToString("");
             }
 
             var part = new StringBuilder();
@@ -2789,7 +2789,7 @@ namespace Core.Strings
             return source;
          }
 
-         return split(source).ToArray().Stringify("");
+         return split(source).ToArray().ToString("");
       }
 
       public static IMaybe<bool> IsExactlyEqualTo(this string left, string right)

@@ -64,6 +64,6 @@ namespace Core.Numbers
 
       IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-      public override string ToString() => this.Stringify(" | ");
+      public override string ToString() => this.ToString(" | ");
    }
 }

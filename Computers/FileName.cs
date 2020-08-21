@@ -520,7 +520,7 @@ namespace Core.Computers
          }
 
          {
-            var selectedSubfolders = subfolders.Skip(skipCount).ToArray().Stringify(@"\");
+            var selectedSubfolders = subfolders.Skip(skipCount).ToArray().ToString(@"\");
             return $@"{selectedSubfolders}\{NameExtension}";
          }
       }

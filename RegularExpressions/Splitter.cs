@@ -19,7 +19,7 @@ namespace Core.RegularExpressions
             pattern = "";
          }
 
-         return items.Select(getSubPattern).Stringify(pattern);
+         return items.Select(getSubPattern).ToString(pattern);
 		}
 
 		protected string getSubPattern(string item)

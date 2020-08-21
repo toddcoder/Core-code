@@ -80,10 +80,7 @@ namespace Core.Strings
 
       public IEnumerable<string> Lines(string columnSeparator, params PadType[] padTypes)
       {
-         foreach (var row in rows)
-         {
-            yield return row.Columns(lengths, padTypes).Stringify(columnSeparator);
-         }
+         return rows.Select(row => row.Columns(lengths, padTypes).ToString(columnSeparator));
       }
 
       static PadType[] getPadTypes(string source) => source.ToCharArray().Select(c =>
@@ -106,10 +103,7 @@ namespace Core.Strings
 
       public IEnumerable<string> Lines(string columnSeparator, string padTypes)
       {
-         foreach (var row in rows)
-         {
-            yield return row.Columns(lengths, getPadTypes(padTypes)).Stringify(columnSeparator);
-         }
+         return rows.Select(row => row.Columns(lengths, getPadTypes(padTypes)).ToString(columnSeparator));
       }
    }
 }

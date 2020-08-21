@@ -61,7 +61,7 @@ namespace Core.Strings
 
       public void WriteRecord()
       {
-         records.Add(fields.Stringify(FieldDelimiter));
+         records.Add(fields.ToString(FieldDelimiter));
          fields.Clear();
       }
 
@@ -78,7 +78,7 @@ namespace Core.Strings
             WriteRecord();
          }
 
-         return records.Stringify(RecordDelimiter);
+         return records.ToString(RecordDelimiter);
       }
 
       void fromString(string value)

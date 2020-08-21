@@ -88,8 +88,10 @@ namespace Core.Strings
             lines = lines.Select(columns => columns.Pad(sizesLength, "")).ToArray();
 
             return lines
-               .Select(columns => columns.Select((column, i) => column.Pad(paddedPadTypes[i], sizes[i])).Stringify(columnSeparator))
-               .Stringify("\r\n");
+               .Select(columns => columns
+                  .Select((column, i) => column.Pad(paddedPadTypes[i], sizes[i]))
+                  .ToString(columnSeparator))
+               .ToString("\r\n");
          }
          else
          {
@@ -113,7 +115,7 @@ namespace Core.Strings
          else
          {
             var newHeaders = headers.LimitTo(sizes.Length, "");
-            return newHeaders.Zip(sizes, (header, size) => header.PadCenter(size)).Stringify(columnSeparator);
+            return newHeaders.Zip(sizes, (header, size) => header.PadCenter(size)).ToString(columnSeparator);
          }
       }
    }

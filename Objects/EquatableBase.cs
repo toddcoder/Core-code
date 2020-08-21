@@ -106,6 +106,9 @@ namespace Core.Objects
          }
       }
 
-      public string Keys => getValues(this).Select(i => $"{i.Key}=>{(i.Value.IsNull() ? "null" : i.Value)}").Stringify();
+      public string Keys
+      {
+         get => getValues(this).Select(i => $"{i.Key}=>{(i.Value.IsNull() ? "null" : i.Value)}").ToString(", ");
+      }
    }
 }

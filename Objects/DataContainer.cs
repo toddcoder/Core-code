@@ -92,7 +92,7 @@ namespace Core.Objects
 		{
 			if (Format.IsEmpty())
          {
-            return KeyArray().Select(key => $"{key} = {this[key]}").Stringify();
+            return KeyArray().Select(key => $"{key} = {this[key]}").ToString(", ");
          }
          else
 			{

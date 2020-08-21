@@ -49,7 +49,7 @@ namespace Core.DataStructures
 
       public IEnumerator<T> GetEnumerator() => stack.GetEnumerator();
 
-      public override string ToString() => stack.Stringify();
+      public override string ToString() => stack.ToString(", ");
 
       IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 

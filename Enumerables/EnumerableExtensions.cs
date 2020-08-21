@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using Core.Arrays;
+using Core.Assertions;
 using Core.Collections;
 using Core.Exceptions;
 using Core.Monads;
 using Core.Numbers;
 using Core.Objects;
+using Core.Strings;
+using static Core.Assertions.AssertionFunctions;
 using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
 
@@ -14,9 +17,18 @@ namespace Core.Enumerables
 {
    public static class EnumerableExtensions
    {
+      [Obsolete("Use .ToString(connector)")]
       public static string Stringify<T>(this IEnumerable<T> enumerable, string connector = ", ")
       {
          return string.Join(connector ?? "", enumerable);
+      }
+
+      public static string ToString<T>(this IEnumerable<T> enumerable, string connector)
+      {
+         assert(() => enumerable).Must().Not.BeNull().OrThrow();
+         assert(() => connector).Must().Not.BeNull().OrThrow();
+
+         return string.Join(connector, enumerable.Select(i => i.ToNonNullString()));
       }
 
       public static IEnumerable<IEnumerable<T>> Pivot<T>(this IEnumerable<IEnumerable<T>> source, Func<T> defaultValue)
@@ -1200,6 +1212,7 @@ namespace Core.Enumerables
             {
                action(value);
             }
+
             yield return value;
          }
       }
@@ -1216,6 +1229,7 @@ namespace Core.Enumerables
             {
                ifFalse(value);
             }
+
             yield return value;
          }
       }

@@ -24,7 +24,7 @@ namespace Core.Exceptions
 
          public new string StackTrace { get; }
 
-         public override string ToString() => $"{Key}: {Set.Stringify()} [{StackTrace}]";
+         public override string ToString() => $"{Key}: {Set.ToString(", ")} [{StackTrace}]";
       }
 
       Hash<string, Set<T>> data;

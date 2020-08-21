@@ -33,11 +33,7 @@ namespace Core.Strings
 
       public string Text
       {
-         get
-         {
-            return list.Stringify(separator);
-
-         }
+         get => list.ToString(separator);
          set
          {
             var contains = list.Contains(value);

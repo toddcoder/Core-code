@@ -71,7 +71,7 @@ namespace Core.Strings
 
          public string Render(ColumnHeader[] columnHeaders, string columnSeparator)
          {
-            return columns.Zip(columnHeaders, (c, ch) => c.Render(ch)).Stringify(columnSeparator);
+            return columns.Zip(columnHeaders, (c, ch) => c.Render(ch)).ToString(columnSeparator);
          }
       }
 
@@ -170,7 +170,7 @@ namespace Core.Strings
 
          if (hasHeaders)
          {
-            var header = columnHeaders.Select(ch => ch.Render()).Stringify(ColumnSeparator);
+            var header = columnHeaders.Select(ch => ch.Render()).ToString(ColumnSeparator);
             headerWidth = header.Length;
             builder.AppendLine(header);
             if (HeaderFoot.If(out var headerFoot))

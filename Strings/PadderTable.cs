@@ -161,7 +161,7 @@ namespace Core.Strings
          }
 
          var result = data.Select(line => string.Format(Format, line.Select(l => (object)l).ToArray()));
-         return result.Stringify("\r\n");
+         return result.ToString("\r\n");
       }
    }
 }

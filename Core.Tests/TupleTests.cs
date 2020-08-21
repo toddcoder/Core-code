@@ -15,8 +15,8 @@ namespace Core.Tests
       {
          var enumerable = array(("alpha", 1), ("bravo", 2), ("charlie", 3));
          var (enumerable1, enumerable2) = enumerable.Split();
-         var text1 = enumerable1.Stringify();
-         var text2 = enumerable2.Stringify();
+         var text1 = enumerable1.ToString(", ");
+         var text2 = enumerable2.ToString(", ");
 
          assert(() => text1).Must().Equal("alpha, bravo, charlie").OrThrow();
          Console.WriteLine($"First enumerable = {text1}");

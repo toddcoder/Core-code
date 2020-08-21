@@ -50,7 +50,7 @@ namespace Core.Strings
 
          public bool FieldExists(int index) => index > -1 && index < fields.Count;
 
-         public override string ToString() => fields.Select(field => field.Has(",") ? "\"" + field + "\"" : field).Stringify(",");
+         public override string ToString() => fields.Select(field => field.Has(",") ? "\"" + field + "\"" : field).ToString(",");
 
          public IEnumerator<string> GetEnumerator() => fields.GetEnumerator();
 
@@ -102,7 +102,7 @@ namespace Core.Strings
 
       protected static Record getNewRecord(string record, Destringifier destringifier) => new Record(record, destringifier);
 
-      public override string ToString() => records.Select(record => record.ToString()).Stringify("\r\n");
+      public override string ToString() => records.Select(record => record.ToString()).ToString("\r\n");
 
       public IEnumerator<IEnumerable<string>> GetEnumerator() => records.Select(record => (IEnumerable<string>)record).GetEnumerator();
 

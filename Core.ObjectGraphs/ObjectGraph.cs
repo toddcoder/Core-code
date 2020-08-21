@@ -143,7 +143,7 @@ namespace Core.ObjectGraphs
                list.Add(array.GetValue(i).ToNonNullString());
             }
 
-            return new ObjectGraph(childName, $"[{list.Stringify()}]");
+            return new ObjectGraph(childName, $"[{list.ToString(", ")}]");
          }
          else if (obj is FileName || obj is FolderName)
          {

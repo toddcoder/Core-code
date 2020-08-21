@@ -86,7 +86,7 @@ namespace Core.Data.DataSources
          foreach (var signature in evaluator.Signatures)
          {
             var name = signature.Name;
-            var pattern = "'{" + name + "}'";
+            var pattern = $"'{{{name}}}'";
             var value = evaluator[signature].ToNonNullString().Replace("'", "''");
             if (matcher.IsMatch(text, pattern))
             {
@@ -369,15 +369,7 @@ namespace Core.Data.DataSources
          if (Command.IsNone)
          {
             var command = GetCommand();
-            if (anyConnection.If(out var connection))
-            {
-               command.Connection = connection;
-            }
-            else
-            {
-               throw "Connection not properly initialized".Throws();
-            }
-
+            command.Connection = anyConnection.Required("Connection not properly initialized");
             command.CommandTimeout = (int)commandTimeout.TotalSeconds;
 
             Command = command.Some();

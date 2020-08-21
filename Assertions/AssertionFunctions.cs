@@ -31,34 +31,18 @@ namespace Core.Assertions
             list = list.Take(10).ToList();
          }
 
-         return list.Stringify();
+         return list.ToString(", ");
       }
 
       public static string dictionaryImage<TKey, TValue>(Dictionary<TKey, TValue> dictionary)
       {
-         IEnumerable<TKey> keys;
-         if (dictionary.Count > 10)
-         {
-            keys = dictionary.Keys.Take(10);
-         }
-         else
-         {
-            keys = dictionary.Keys;
-         }
-
-         return keys.Select(k => $"[{k}] = {dictionary[k]}").Stringify();
+         var keys = dictionary.Count > 10 ? dictionary.Keys.Take(10) : dictionary.Keys;
+         return keys.Select(k => $"[{k}] = {dictionary[k]}").ToString(", ");
       }
 
       public static string hashImage<TKey, TValue>(IHash<TKey, TValue> hash)
       {
-         if (hash.AnyHash().If(out var h))
-         {
-            return dictionaryImage(h);
-         }
-         else
-         {
-            return hash.ToString();
-         }
+         return hash.AnyHash().If(out var h) ? dictionaryImage(h) : hash.ToString();
       }
 
       public static string maybeImage<T>(IMaybe<T> maybe)
@@ -197,38 +181,17 @@ namespace Core.Assertions
 
       public static IResult<T> orFailure<T>(IAssertion<T> assertion)
       {
-         if (assertion.Constraints.FirstOrNone(c => !c.IsTrue()).If(out var constraint))
-         {
-            return constraint.Message.Failure<T>();
-         }
-         else
-         {
-            return assertion.Value.Success();
-         }
+         return assertion.Constraints.FirstOrNone(c => !c.IsTrue()).Map(c => c.Message.Failure<T>()).DefaultTo(() => assertion.Value.Success());
       }
 
       public static IResult<T> orFailure<T>(IAssertion<T> assertion, string message)
       {
-         if (assertion.Constraints.Any(c => !c.IsTrue()))
-         {
-            return message.Failure<T>();
-         }
-         else
-         {
-            return assertion.Value.Success();
-         }
+         return assertion.Constraints.Any(c => !c.IsTrue()) ? message.Failure<T>() : assertion.Value.Success();
       }
 
       public static IResult<T> orFailure<T>(IAssertion<T> assertion, Func<string> messageFunc)
       {
-         if (assertion.Constraints.Any(c => !c.IsTrue()))
-         {
-            return messageFunc().Failure<T>();
-         }
-         else
-         {
-            return assertion.Value.Success();
-         }
+         return assertion.Constraints.Any(c => !c.IsTrue()) ? messageFunc().Failure<T>() : assertion.Value.Success();
       }
 
       public static IMaybe<T> orNone<T>(IAssertion<T> assertion)
@@ -238,41 +201,23 @@ namespace Core.Assertions
 
       public static async Task<ICompletion<T>> orFailureAsync<T>(IAssertion<T> assertion, CancellationToken token) => await runAsync(t =>
       {
-         if (assertion.Constraints.FirstOrNone(c => !c.IsTrue()).If(out var constraint))
-         {
-            return constraint.Message.Interrupted<T>();
-         }
-         else
-         {
-            return assertion.Value.Completed(t);
-         }
+         return assertion.Constraints
+            .FirstOrNone(c => !c.IsTrue())
+            .Map(c => c.Message.Interrupted<T>())
+            .DefaultTo(() => assertion.Value.Completed(t));
       }, token);
 
       public static async Task<ICompletion<T>> orFailureAsync<T>(IAssertion<T> assertion, string message, CancellationToken token) =>
          await runAsync(t =>
          {
-            if (assertion.Constraints.Any(c => !c.IsTrue()))
-            {
-               return message.Interrupted<T>();
-            }
-            else
-            {
-               return assertion.Value.Completed(t);
-            }
+            return assertion.Constraints.Any(c => !c.IsTrue()) ? message.Interrupted<T>() : assertion.Value.Completed(t);
          }, token);
 
       public static async Task<ICompletion<T>> orFailureAsync<T>(IAssertion<T> assertion, Func<string> messageFunc, CancellationToken token)
       {
          return await runAsync(t =>
          {
-            if (assertion.Constraints.Any(c => !c.IsTrue()))
-            {
-               return messageFunc().Interrupted<T>();
-            }
-            else
-            {
-               return assertion.Value.Completed(t);
-            }
+            return assertion.Constraints.Any(c => !c.IsTrue()) ? messageFunc().Interrupted<T>() : assertion.Value.Completed(t);
          }, token);
       }
 

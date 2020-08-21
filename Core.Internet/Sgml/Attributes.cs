@@ -34,14 +34,7 @@ namespace Core.Internet.Sgml
 
       public override string ToString()
       {
-         if (attributes.Count != 0)
-         {
-            return $" {attributes.Select(i => i.Value.ToString()).Stringify(" ")}";
-         }
-         else
-         {
-            return "";
-         }
+         return attributes.Count != 0 ? $" {attributes.Select(i => i.Value.ToString()).ToString(" ")}" : "";
       }
 
       IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

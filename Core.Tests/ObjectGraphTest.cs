@@ -58,7 +58,7 @@ namespace Core.Tests
             Console.WriteLine(test2.Index);
             Console.WriteLine(test2.IsTrue);
             Console.WriteLine(test2.TestEnum);
-            Console.WriteLine(test2.Array.Stringify());
+            Console.WriteLine(test2.Array.ToString(", "));
          }
          else
          {
@@ -69,7 +69,8 @@ namespace Core.Tests
       [TestMethod]
       public void JsonToObjectGraphTest()
       {
-         var json = "{name:\"foobar\",index:153,\"isTrue\":true,array:[111,123,153],obj:{id:0,name:\"name1\",array2:[111, 222, 333]}, foo_bar: 'xxx'}";
+         var json = "{name:\"foobar\",index:153,\"isTrue\":true,array:[111,123,153]," +
+            "obj:{id:0,name:\"name1\",array2:[111, 222, 333]}, foo_bar: 'xxx'}";
          var parser = new JsonToObjectGraphParser(json);
          if (parser.ParseBoth().If(out var tuple, out var exception))
          {
