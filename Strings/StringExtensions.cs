@@ -2661,10 +2661,29 @@ namespace Core.Strings
 
       public static IMaybe<int> Find(this string source, string substring, int startIndex = 0, bool ignoreCase = false)
       {
-         if (substring.IsNotEmpty())
+         if (source.IsNotEmpty() && substring.IsNotEmpty())
          {
             var comparison = ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
             var index = source.IndexOf(substring, startIndex, comparison);
+
+            return maybe(index != -1, () => index);
+         }
+         else
+         {
+            return none<int>();
+         }
+      }
+
+      public static IMaybe<int> FindBackward(this string source, string substring, int startIndex = -1, bool ignoreCase = false)
+      {
+         if (source.IsNotEmpty() && substring.IsNotEmpty())
+         {
+            if (startIndex == -1)
+            {
+               startIndex = source.Length - 1;
+            }
+            var comparison = ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+            var index = source.LastIndexOf(substring, startIndex, comparison);
 
             return maybe(index != -1, () => index);
          }
