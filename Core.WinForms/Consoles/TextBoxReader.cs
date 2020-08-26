@@ -38,7 +38,7 @@ namespace Core.WinForms.Consoles
       public override int Read(byte[] buffer, int offset, int count)
       {
          console.ReadOnly = false;
-         anyPreviouslyFocused = form.ActiveControl.SomeIfNotNull();
+         anyPreviouslyFocused = form.ActiveControl.Some();
          console.Focus();
          console.IOStatus = IOStatusType.Reading;
 

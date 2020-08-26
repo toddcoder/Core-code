@@ -10,12 +10,11 @@ namespace Core.Monads
       IMaybe<Action<T>> success;
       IMaybe<Action<Exception>> failure;
 
-      public ResultIterator(IEnumerable<IResult<T>> enumerable, Action<T> ifSuccess = null,
-         Action<Exception> ifFailure = null)
+      public ResultIterator(IEnumerable<IResult<T>> enumerable, Action<T> ifSuccess = null, Action<Exception> ifFailure = null)
       {
          this.enumerable = enumerable;
-         success = ifSuccess.SomeIfNotNull();
-         failure = ifFailure.SomeIfNotNull();
+         success = ifSuccess.Some();
+         failure = ifFailure.Some();
       }
 
       void handle(IResult<T> result)

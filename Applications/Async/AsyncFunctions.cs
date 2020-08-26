@@ -37,6 +37,27 @@ namespace Core.Applications.Async
          }
       }
 
+      public static async Task<ICompletion<T>> runAsync<T>(Func<CancellationToken, T> func, CancellationTokenSource source)
+      {
+         return await runAsync(func, source.Token);
+      }
+
+      public static async Task<ICompletion<T>> runAsync<T>(Func<CancellationToken, T> func, CancellationToken token)
+      {
+         try
+         {
+            return await Task.Run(() => func(token).Completed(token), token);
+         }
+         catch (OperationCanceledException)
+         {
+            return cancelled<T>();
+         }
+         catch (Exception exception)
+         {
+            return interrupted<T>(exception);
+         }
+      }
+
       public static async Task<ICompletion<T>> runWithSourceAsync<T>(Func<CancellationToken, ICompletion<T>> func)
       {
          using (var source = new CancellationTokenSource())

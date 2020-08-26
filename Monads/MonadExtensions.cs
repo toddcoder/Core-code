@@ -14,8 +14,10 @@ namespace Core.Monads
 {
    public static class MonadExtensions
    {
+      [Obsolete("Use Some()")]
       public static IMaybe<T> SomeIf<T>(this T obj, Predicate<T> predicate) => maybe(predicate(obj), () => obj);
 
+      [Obsolete("Use Some()")]
       public static IMaybe<T> SomeIfNotNull<T>(this T obj) => obj.SomeIf(o => !o.IsNull());
 
       public static IMaybe<T> Some<T>(this T obj) => obj.IsNull() ? none<T>() : new Some<T>(obj);
@@ -1615,6 +1617,26 @@ namespace Core.Monads
       public static ICompletion<TResult> Map<T1, T2, T3, T4, TResult>(this ICompletion<(T1, T2, T3, T4)> completion, Func<T1, T2, T3, T4, ICompletion<TResult>> func)
       {
          return completion.Map(t => func(t.Item1, t.Item2, t.Item3, t.Item4));
+      }
+
+      public static IMaybe<T> SomeIf<T>(this Func<bool> boolExpression, Func<T> value)
+      {
+         return boolExpression() ? value().Some() : none<T>();
+      }
+
+      public static IMaybe<T> SomeIf<T>(this Func<bool> boolExpression, Func<IMaybe<T>> value)
+      {
+         return boolExpression() ? value() : none<T>();
+      }
+
+      public static IMaybe<T> SomeIf<T>(this bool boolExpression, Func<T> value)
+      {
+         return boolExpression ? value().Some() : none<T>();
+      }
+
+      public static IMaybe<T> SomeIf<T>(this bool boolExpression, Func<IMaybe<T>> value)
+      {
+         return boolExpression ? value() : none<T>();
       }
    }
 }

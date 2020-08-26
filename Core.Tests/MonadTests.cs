@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Core.Applications.Async;
 using Core.Dates.DateIncrements;
 using Core.Exceptions;
 using Core.Monads;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static Core.Applications.Async.AsyncFunctions;
+using static Core.Lambdas.LambdaFunctions;
 
 namespace Core.Tests
 {
@@ -22,7 +23,7 @@ namespace Core.Tests
 
       public async Task<ICompletion<long>> CountAsync(CancellationTokenSource source)
       {
-         return await AsyncFunctions.runAsync(t =>
+         return await runAsync(t =>
          {
             long result = 0;
 
@@ -104,11 +105,11 @@ namespace Core.Tests
          }
       }
 
-      static async Task<ICompletion<int>> getOne(CancellationToken token) => await AsyncFunctions.runAsync(t => 1.Completed(), token);
+      static async Task<ICompletion<int>> getOne(CancellationToken token) => await runAsync(t => 1.Completed(), token);
 
-      static async Task<ICompletion<int>> getTwo(CancellationToken token) => await AsyncFunctions.runAsync(t => 2.Completed(), token);
+      static async Task<ICompletion<int>> getTwo(CancellationToken token) => await runAsync(t => 2.Completed(), token);
 
-      static async Task<ICompletion<int>> getThree(CancellationToken token) => await AsyncFunctions.runAsync(t => 3.Completed(), token);
+      static async Task<ICompletion<int>> getThree(CancellationToken token) => await runAsync(t => 3.Completed(), token);
 
       [TestMethod]
       public void RunAsyncTest()
@@ -164,6 +165,20 @@ namespace Core.Tests
          {
             Console.WriteLine(aString);
             Console.WriteLine(anInt);
+         }
+      }
+
+      [TestMethod]
+      public void SomeIfTest()
+      {
+         if ((1 > 0).SomeIf(() => "foobar").If(out var text))
+         {
+            Console.WriteLine(text);
+         }
+
+         if (func(() => 1 > 0).SomeIf(() => "foobar").If(out text))
+         {
+            Console.WriteLine(text);
          }
       }
    }

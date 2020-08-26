@@ -53,7 +53,7 @@ namespace Core.Data.Fields
          else
          {
             var fullName = typeName.Substitute("^ '$'", "System.");
-            return System.Type.GetType(fullName, false, true).SomeIfNotNull();
+            return System.Type.GetType(fullName, false, true).Some();
          }
       }
 
