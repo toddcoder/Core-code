@@ -1233,5 +1233,27 @@ namespace Core.Enumerables
             yield return value;
          }
       }
+
+      public static bool AllMatch<T1, T2>(this IEnumerable<T1> leftEnumerable, IEnumerable<T2> rightEnumerable, Func<T1, T2, bool> matcher,
+         bool mustBeSameLength = true)
+      {
+         var left = leftEnumerable.ToArray();
+         var right = rightEnumerable.ToArray();
+
+         if (mustBeSameLength && left.Length != right.Length)
+         {
+            return false;
+         }
+
+         foreach (var leftItem in left)
+         {
+            if (!right.AtLeastOne(r => matcher(leftItem, r)))
+            {
+               return false;
+            }
+         }
+
+         return true;
+      }
    }
 }
