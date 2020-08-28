@@ -134,5 +134,16 @@ namespace Core.Tests
             Console.WriteLine($"Max length: {max}");
          }
       }
+
+      [TestMethod]
+      public void AllMatchTest()
+      {
+         var left = array("foobar", "foo", "a", "bar");
+         var right = array(6, 3, 1, 3);
+         assert(() => left.AllMatch(right, (s, i) => s.Length == i, true)).Must().BeTrue().OrThrow();
+
+         var right2 = array(5, 3, 1, 3);
+         assert(() => left.AllMatch(right2, (s, i) => s.Length == i, true)).Must().BeTrue().OrThrow();
+      }
    }
 }

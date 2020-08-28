@@ -1255,5 +1255,15 @@ namespace Core.Enumerables
 
          return true;
       }
+
+      public static IEnumerable<(T1, IMaybe<T2>)> AllMatched<T1, T2>(this IEnumerable<T1> leftEnumerable, IEnumerable<T2> rightEnumerable,
+         Func<T1, T2, bool> matcher)
+      {
+         var rightArray = rightEnumerable.ToArray();
+         foreach (var left in leftEnumerable)
+         {
+            yield return (left, rightArray.FirstOrNone(r => matcher(left, r)));
+         }
+      }
    }
 }
