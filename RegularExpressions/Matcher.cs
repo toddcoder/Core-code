@@ -184,6 +184,26 @@ namespace Core.RegularExpressions
          return MatchAll(input, pattern, GetOptions(ignoreCase, multiline));
       }
 
+      public IMaybe<Match[]> MatchMaybe(string input, string pattern, RegexOptions options)
+      {
+         return IsMatch(input, pattern, options) ? matches.Some() : none<Match[]>();
+      }
+
+      public IMaybe<Match[]> MatchMaybe(string input, string pattern, bool ignoreCase = false, bool multiline = false)
+      {
+         return MatchMaybe(input, pattern, GetOptions(ignoreCase, multiline));
+      }
+
+      public IMaybe<Match> MatchOneMaybe(string input, string pattern, RegexOptions options)
+      {
+         return IsMatch(input, pattern, options) ? matches[0].Some() : none<Match>();
+      }
+
+      public IMaybe<Match> MatchOneMaybe(string input, string pattern, bool ignoreCase = false, bool multiline = false)
+      {
+         return MatchOneMaybe(input, pattern, GetOptions(ignoreCase, multiline));
+      }
+
       public IMatched<Match> MatchOne(string input, string pattern, RegexOptions options)
       {
          try
