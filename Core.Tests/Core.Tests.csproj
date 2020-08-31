@@ -60,6 +60,7 @@
     <Compile Include="FileNameTests.cs" />
     <Compile Include="FolderNameTests.cs" />
     <Compile Include="HashTest.cs" />
+    <Compile Include="InOutsideTests.cs" />
     <Compile Include="RegexTests.cs" />
     <Compile Include="MonadTests.cs" />
     <Compile Include="ObjectGraphTest.cs" />
