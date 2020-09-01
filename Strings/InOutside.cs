@@ -35,7 +35,7 @@ namespace Core.Strings
       public InOutside(string beginPattern, string endPattern, string exceptPattern, bool ignoreCase = false, bool multiline = false,
          bool friendly = true) : this(beginPattern, endPattern, exceptPattern, none<string>(), ignoreCase, multiline, friendly) { }
 
-      public IEnumerable<(string segment, int index, InOutsideStatus status)> Enumerable(string source)
+      public IEnumerable<(string text, int index, InOutsideStatus status)> Enumerable(string source)
       {
          var builder = new StringBuilder();
          var inside = false;
@@ -59,7 +59,7 @@ namespace Core.Strings
                }
                else if (matcher.IsMatch(current, endPattern, ignoreCase, multiline))
                {
-                  yield return (builder.ToString(), insideStart, InOutsideStatus.Outside);
+                  yield return (builder.ToString(), insideStart, InOutsideStatus.Inside);
                   yield return (matcher[0], i, InOutsideStatus.EndDelimiter);
 
                   builder.Clear();
@@ -77,7 +77,7 @@ namespace Core.Strings
             {
                if (matcher.IsMatch(current, beginPattern, ignoreCase, multiline))
                {
-                  yield return (builder.ToString(), outsideStart, InOutsideStatus.Inside);
+                  yield return (builder.ToString(), outsideStart, InOutsideStatus.Outside);
                   yield return (matcher[0], i, InOutsideStatus.BeginDelimiter);
 
                   builder.Clear();
@@ -100,11 +100,11 @@ namespace Core.Strings
             var rest = builder.ToString();
             if (inside)
             {
-               yield return (rest, insideStart, InOutsideStatus.Outside);
+               yield return (rest, insideStart, InOutsideStatus.Inside);
             }
             else
             {
-               yield return (rest, outsideStart, InOutsideStatus.Inside);
+               yield return (rest, outsideStart, InOutsideStatus.Outside);
             }
          }
       }
