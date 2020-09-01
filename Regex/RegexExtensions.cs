@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using Core.Monads;
+using Core.Strings;
 using static System.Text.RegularExpressions.RegexOptions;
 using static Core.Monads.MonadFunctions;
 
@@ -82,6 +85,46 @@ namespace Core.Regex
       public static string[] Split(this string input, string pattern, bool ignoreCase = false, bool multiline = false)
       {
          return input.Split(pattern, GetOptions(ignoreCase, multiline));
+      }
+
+      static IEnumerable<Slice> sliceSplit(string input, string pattern, RegexOptions regexOptions)
+      {
+         var includeSeparator = pattern.StartsWith("(");
+         var startIndex = 0;
+         var matcher = new Matcher();
+         if (matcher.IsMatch(input, pattern, regexOptions))
+         {
+            for (var i = 0; i < matcher.MatchCount; i++)
+            {
+               var (matchText, index, length) = matcher.GetMatch(i);
+               var text = input.Drop(startIndex).Keep(index - startIndex);
+               yield return new Slice { Text = text, Index = startIndex, Length = text.Length };
+
+               if (includeSeparator)
+               {
+                  yield return new Slice { Text = matchText, Index = index, Length = length };
+               }
+
+               startIndex = index + length;
+            }
+
+            var rest = input.Drop(startIndex);
+            yield return new Slice { Text = rest, Index = startIndex, Length = rest.Length };
+         }
+         else
+         {
+            yield return new Slice { Text = input, Index = 0, Length = input.Length };
+         }
+      }
+
+      public static Slice[] SliceSplit(this string input, string pattern, RegexOptions regexOptions)
+      {
+         return sliceSplit(input, pattern, regexOptions).ToArray();
+      }
+
+      public static Slice[] SliceSplit(this string input, string pattern, bool ignoreCase = false, bool multiline = false)
+      {
+         return sliceSplit(input, pattern, GetOptions(ignoreCase, multiline)).ToArray();
       }
 
       public static (string, string) Split2(this string input, string pattern, bool ignoreCase = false, bool multiline = false)

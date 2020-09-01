@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Core.Monads;
+using Core.Strings;
 using static System.Text.RegularExpressions.RegexOptions;
 using static Core.Monads.MonadFunctions;
 
@@ -121,6 +123,40 @@ namespace Core.RegularExpressions
          bool friendly = true)
       {
          return input.Split(pattern, GetOptions(ignoreCase, multiline), friendly);
+      }
+
+      public static Slice[] SliceSplit(this string input, string pattern, RegexOptions regexOptions, bool friendly = true)
+      {
+         IEnumerable<Slice> sliceSplit()
+         {
+            var split = input.Split(pattern, regexOptions, friendly);
+            var index = 0;
+            foreach (var segment in split)
+            {
+               yield return new Slice { Index = index, Length = segment.Length, Text = segment };
+
+               index += segment.Length;
+            }
+         }
+
+         return sliceSplit().ToArray();
+      }
+
+      public static Slice[] SliceSplit(this string input, string pattern, bool ignoreCase = false, bool multiline = false, bool friendly = true)
+      {
+         IEnumerable<Slice> sliceSplit()
+         {
+            var split = input.Split(pattern, ignoreCase, multiline, friendly);
+            var index = 0;
+            foreach (var segment in split)
+            {
+               yield return new Slice { Index = index, Length = segment.Length, Text = segment };
+
+               index += segment.Length;
+            }
+         }
+
+         return sliceSplit().ToArray();
       }
 
       public static (string, string) Split2(this string input, string pattern, bool ignoreCase = false, bool multiline = false,

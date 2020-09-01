@@ -370,6 +370,7 @@
     <Compile Include="Strings\Text\DifferenceBlock.cs" />
     <Compile Include="Strings\Text\DifferenceBuilder.cs" />
     <Compile Include="Strings\Text\DifferenceResult.cs" />
+    <Compile Include="Strings\Transformer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Core.snk" />

@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Linq;
+using Core.Enumerables;
+using Core.Monads;
 using Core.Strings;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static Core.Lambdas.LambdaFunctions;
+using static Core.RegularExpressions.RegexExtensions;
 
 namespace Core.Tests
 {
@@ -67,10 +71,42 @@ namespace Core.Tests
       {
          var inOutside = new InOutside("'", "'", "''", "'", friendly: false);
          var source = "'a', '', 'b'";
-         foreach (var (text, _, _)  in inOutside.Enumerable(source).Where(t=>t.status==InOutsideStatus.Inside))
+         foreach (var (text, _, _) in inOutside.Enumerable(source).Where(t => t.status == InOutsideStatus.Inside))
          {
             Console.WriteLine($"<<{text}>>");
          }
+      }
+
+      [TestMethod]
+      public void Transformer1Test()
+      {
+         var transformer = new Transformer("'", "'", "''", friendly: false);
+         var result = transformer.Transform("a BETWEEN 0 AND 100", "$0 BETWEEN $1 AND $2", "$0 >= $1 AND $0 <= $2");
+         Console.WriteLine(result);
+      }
+
+      [TestMethod]
+      public void Transformer2Test()
+      {
+         var transformer = new Transformer("'", "'", "''", friendly: false);
+         var result = transformer.Transform("'9/1/2020' BETWEEN '1/1/2020' AND '12/31/2020'", "$0 BETWEEN $1 AND $2", "$0 >= $1 AND $0 <= $2");
+         Console.WriteLine(result);
+      }
+
+      [TestMethod]
+      public void Transformer3Test()
+      {
+         var transformer = new Transformer("'", "'", "''", friendly: false);
+         var result = transformer.Transform("(111 + 123       - 153) / 3", "($0+$1-$2) / 3", "sum('$0', '$1', '$2') / n('$0', '$1', '$2')");
+         Console.WriteLine(result);
+
+         transformer.Map = func<string, string>(s => s.Trim()).Some();
+         result = transformer.Transform("(111 + 123       - 153) / 3", "($0+$1-$2) / 3", "sum('$0', '$1', '$2') / n('$0', '$1', '$2')");
+         Console.WriteLine(result);
+
+         transformer.Map = func<string, string>(s1 => s1.Split("/s* '+' /s*").Select(s2 => s2.Trim().Quotify()).ToString(", ")).Some();
+         result = transformer.Transform("(111 + 123       + 153) / 3", "($0) / 3", "sum($0) / n($0)");
+         Console.WriteLine(result);
       }
    }
 }
