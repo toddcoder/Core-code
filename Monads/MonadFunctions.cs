@@ -4,8 +4,7 @@ namespace Core.Monads
 {
    public static class MonadFunctions
    {
-      public static IMaybe<TParent> some<TChild, TParent>(TChild value)
-         where TChild : TParent
+      public static IMaybe<TParent> some<TChild, TParent>(TChild value) where TChild : TParent
       {
          return new Some<TParent>(value);
       }
@@ -30,8 +29,7 @@ namespace Core.Monads
 
       public static IResult<T> failure<T>(Exception exception) => new Failure<T>(exception);
 
-      public static IMatched<TParent> matched<TChild, TParent>(TChild value)
-         where TChild : TParent
+      public static IMatched<TParent> matched<TChild, TParent>(TChild value) where TChild : TParent
       {
          return new Matched<TParent>(value);
       }
@@ -63,12 +61,7 @@ namespace Core.Monads
       {
          try
          {
-            if (test)
-            {
-               return result();
-            }
-
-            return notMatched<T>();
+            return test ? result() : notMatched<T>();
          }
          catch (Exception exception)
          {
@@ -83,5 +76,29 @@ namespace Core.Monads
       public static ICompletion<T> cancelled<T>() => new Cancelled<T>();
 
       public static ICompletion<T> interrupted<T>(Exception exception) => new Interrupted<T>(exception);
+
+      public static IResult<T> assert<T>(bool test, Func<T> ifTrue, Func<string> ifFalse)
+      {
+         try
+         {
+            return test ? ifTrue().Success() : ifFalse().Failure<T>();
+         }
+         catch (Exception exception)
+         {
+            return failure<T>(exception);
+         }
+      }
+
+      public static IResult<T> assert<T>(bool test, Func<IResult<T>> ifTrue, Func<string> ifFalse)
+      {
+         try
+         {
+            return test ? ifTrue() : ifFalse().Failure<T>();
+         }
+         catch (Exception exception)
+         {
+            return failure<T>(exception);
+         }
+      }
    }
 }
