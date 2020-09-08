@@ -100,5 +100,17 @@ namespace Core.Monads
             return failure<T>(exception);
          }
       }
+
+      public static IResult<Unit> assert(bool test, Func<string> ifFalse)
+      {
+         try
+         {
+            return test ? Unit.Success() : ifFalse().Failure<Unit>();
+         }
+         catch (Exception exception)
+         {
+            return failure<Unit>(exception);
+         }
+      }
    }
 }
