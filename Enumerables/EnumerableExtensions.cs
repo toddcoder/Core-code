@@ -17,12 +17,6 @@ namespace Core.Enumerables
 {
    public static class EnumerableExtensions
    {
-      [Obsolete("Use .ToString(connector)")]
-      public static string Stringify<T>(this IEnumerable<T> enumerable, string connector = ", ")
-      {
-         return string.Join(connector ?? "", enumerable);
-      }
-
       public static string ToString<T>(this IEnumerable<T> enumerable, string connector)
       {
          assert(() => enumerable).Must().Not.BeNull().OrThrow();

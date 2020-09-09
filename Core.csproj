@@ -214,6 +214,7 @@
     <Compile Include="Enumerables\AllButLast.cs" />
     <Compile Include="Enumerables\DateTimeRange.cs" />
     <Compile Include="Enumerables\EnumerableExtensions.cs" />
+    <Compile Include="Enumerables\EnumerableFunctions.cs" />
     <Compile Include="Enumerables\Int32Range.cs" />
     <Compile Include="Enumerables\IntIterator.cs" />
     <Compile Include="Enumerables\Iterator.cs" />
