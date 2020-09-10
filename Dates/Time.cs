@@ -68,68 +68,33 @@ namespace Core.Dates
 
       static int absoluteDifference(int value1, int value2) => Sign(value1 - value2);
 
-      public static string ToLongString(int days, int hours, int minutes, int seconds, IMaybe<int> milliseconds)
+      public static string ToLongString(int days, int hours, int minutes, int seconds, IMaybe<int> _milliseconds)
       {
          var builder = new List<string>();
 
          if (days > 0)
          {
-            if (days == 1)
-            {
-               builder.Add("1 day");
-            }
-            else
-            {
-               builder.Add($"{days} days");
-            }
+            builder.Add(days == 1 ? "1 day" : $"{days} days");
          }
 
          if (hours > 0)
          {
-            if (hours == 1)
-            {
-               builder.Add("1 hour");
-            }
-            else
-            {
-               builder.Add($"{hours} hours");
-            }
+            builder.Add(hours == 1 ? "1 hour" : $"{hours} hours");
          }
 
          if (minutes > 0)
          {
-            if (minutes == 1)
-            {
-               builder.Add("1 minute");
-            }
-            else
-            {
-               builder.Add($"{minutes} minutes");
-            }
+            builder.Add(minutes == 1 ? "1 minute" : $"{minutes} minutes");
          }
 
          if (seconds > 0)
          {
-            if (seconds == 1)
-            {
-               builder.Add("1 second");
-            }
-            else
-            {
-               builder.Add($"{seconds} seconds");
-            }
+            builder.Add(seconds == 1 ? "1 second" : $"{seconds} seconds");
          }
 
-         if (milliseconds.If(out var ms) && ms > 0)
+         if (_milliseconds.If(out var milliseconds) && milliseconds > 0)
          {
-            if (ms == 1)
-            {
-               builder.Add("1 millisecond");
-            }
-            else
-            {
-               builder.Add($"{ms} milliseconds");
-            }
+            builder.Add(milliseconds == 1 ? "1 millisecond" : $"{milliseconds} milliseconds");
          }
 
          return builder.ToArray().Andify();
@@ -147,7 +112,7 @@ namespace Core.Dates
             timeSpan.Minutes, timeSpan.Seconds, maybe(includeMilliseconds, () => timeSpan.Milliseconds));
       }
 
-      public static string ToShortString(int days, int hours, int minutes, int seconds, IMaybe<int> milliseconds)
+      public static string ToShortString(int days, int hours, int minutes, int seconds, IMaybe<int> _milliseconds)
       {
          var list = new List<string>();
 
@@ -171,9 +136,9 @@ namespace Core.Dates
             list.Add("sec(s)".Plural(seconds));
          }
 
-         if (milliseconds.If(out var ms) && ms > 0)
+         if (_milliseconds.If(out var milliseconds) && milliseconds > 0)
          {
-            list.Add("msec(s)".Plural(ms));
+            list.Add("msec(s)".Plural(milliseconds));
          }
 
          if (list.Count == 0)

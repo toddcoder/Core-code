@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using Core.Arrays;
 using Core.Dates.DateIncrements;
 using Core.Exceptions;
 using Core.Monads;
@@ -16,6 +18,41 @@ namespace Core.Dates
          "'h' ('ou')? 'r' 's'? | 'days'?)";
 
       public static string ToLongString(this TimeSpan span, bool includeMilliseconds) => Time.ToLongString(span, includeMilliseconds);
+
+      public static string ToString(this TimeSpan span, bool includeMilliseconds)
+      {
+         var list = new List<string>();
+
+         if (span.Days > 0)
+         {
+            list.Add(span.Days == 1 ? "1 day" : $"{span.Days} days");
+         }
+
+         if (span.Hours > 0)
+         {
+            list.Add(span.Hours == 1 ? "1 hour" : $"{span.Hours} hours");
+         }
+
+         if (span.Minutes > 0)
+         {
+            list.Add(span.Minutes == 1 ? "1 minute" : $"{span.Minutes} minutes");
+         }
+
+         if (span.Seconds > 0)
+         {
+            if (includeMilliseconds && span.Milliseconds > 0)
+            {
+               list.Add($"{span.Seconds}.{span.Milliseconds:D3} seconds");
+            }
+            else
+            {
+               list.Add(span.Seconds == 1 ? "1 second" : $"{span.Seconds} seconds");
+            }
+         }
+
+
+         return list.ToArray().Andify();
+      }
 
       public static string ToShortString(this TimeSpan span, bool includeMilliseconds)
       {
@@ -68,10 +105,13 @@ namespace Core.Dates
          return newSpan.Success();
       }
 
-      static IResult<TimeSpan> getSpan(string source) =>
-         from matcher in source.Matches(REGEX_TIMER_INTERVAL).Result($"Can't match {source}")
-         from span in getSpan(matcher)
-         select span;
+      static IResult<TimeSpan> getSpan(string source)
+      {
+         return
+            from matcher in source.Matches(REGEX_TIMER_INTERVAL).Result($"Can't match {source}")
+            from span in getSpan(matcher)
+            select span;
+      }
 
       static IResult<TimeSpan> getSpan(Matcher matcher)
       {

@@ -68,6 +68,7 @@
     <Compile Include="StringClassTests.cs" />
     <Compile Include="StringExtensionTests.cs" />
     <Compile Include="TextComparisonTest.cs" />
+    <Compile Include="TimeSpanTests.cs" />
     <Compile Include="TupleTests.cs" />
     <Compile Include="ZipTest.cs" />
   </ItemGroup>
