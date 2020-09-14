@@ -2426,6 +2426,8 @@ namespace Core.Strings
          return builder.ToString();
       }
 
+      public static string Map(this string source, Func<string> func) => source.IsNotEmpty() ? func() : "";
+
       public static string If(this string source, Predicate<string> predicate)
       {
          var builder = new StringBuilder();
