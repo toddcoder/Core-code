@@ -2426,7 +2426,9 @@ namespace Core.Strings
          return builder.ToString();
       }
 
-      public static string Map(this string source, Func<string> func) => source.IsNotEmpty() ? func() : "";
+      public static string Map(this string source, Func<string> func) => source.IsNotEmpty() ? func() : string.Empty;
+
+      public static string Map(this string source, string replacement) => source.IsNotEmpty() ? replacement : string.Empty;
 
       public static string If(this string source, Predicate<string> predicate)
       {
@@ -2465,30 +2467,20 @@ namespace Core.Strings
 
       public static IMaybe<int> FromHex(this string source)
       {
-         if (source.IsEmpty())
+         IMaybe<int> matches()
          {
-            return none<int>();
+            return source.Matches("^ '0x' /(['0-9a-fA-F']+) $").Map(m => int.Parse(m.FirstGroup, NumberStyles.HexNumber));
          }
-         else
-         {
-            return source.Matches("^ '0x' /(['0-9a-fA-F']+) $").Map(matcher => int.Parse(matcher.FirstGroup, NumberStyles.HexNumber));
-         }
+
+         return maybe(source.IsNotEmpty(), matches);
       }
 
       public static IMaybe<string> GetSignature(this string parameterName)
       {
-         if (parameterName.IsEmpty())
-         {
-            return none<string>();
-         }
-         else
-         {
-            return parameterName.Matches("^ '@' /(.*) $").Map(m => m.FirstGroup.SnakeToCamelCase(true));
-         }
+         return maybe(parameterName.IsNotEmpty(), () => parameterName.Matches("^ '@' /(.*) $").Map(m => m.FirstGroup.SnakeToCamelCase(true)));
       }
 
-      public static IEnumerable<Slice> SlicesOf(this string source, string value,
-         StringComparison comparison = StringComparison.CurrentCulture)
+      public static IEnumerable<Slice> SlicesOf(this string source, string value, StringComparison comparison = StringComparison.CurrentCulture)
       {
          if (source.IsEmpty())
          {
@@ -2569,16 +2561,10 @@ namespace Core.Strings
          return result;
       }
 
+      [Obsolete("Use map")]
       public static string Extend(this string source, string before = "", string after = "")
       {
-         if (source.IsNotEmpty())
-         {
-            return $"{before}{source}{after}";
-         }
-         else
-         {
-            return string.Empty;
-         }
+         return source.Map($"{before}{source}{after}");
       }
 
       public static string ReplaceAll(this string source, params (string, string)[] replacements)
@@ -2622,14 +2608,7 @@ namespace Core.Strings
                }
 
                value *= 1028;
-               if (suffix == "m")
-               {
-                  return value.Success();
-               }
-               else
-               {
-                  return (value * 1028).Success();
-               }
+               return suffix == "m" ? value.Success() : (value * 1028).Success();
             }
             else
             {
@@ -2684,6 +2663,7 @@ namespace Core.Strings
             {
                startIndex = source.Length - 1;
             }
+
             var comparison = ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
             var index = source.LastIndexOf(substring, startIndex, comparison);
 
