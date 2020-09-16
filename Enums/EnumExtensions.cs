@@ -7,7 +7,7 @@ namespace Core.Enums
 {
    public static class EnumExtensions
    {
-      public static bool In<TEnum>(this TEnum @enum, params TEnum[] args) where TEnum : struct, Enum
+      public static bool Any<TEnum>(this TEnum @enum, params TEnum[] args) where TEnum : struct, Enum
       {
          if (typeof(TEnum).IsDefined(typeof(FlagsAttribute)))
          {
@@ -17,6 +17,19 @@ namespace Core.Enums
          else
          {
             return args.Any(e => e.Equals(@enum));
+         }
+      }
+
+      public static bool All<TEnum>(this TEnum @enum, params TEnum[] args) where TEnum : struct, Enum
+      {
+         if (typeof(TEnum).IsDefined(typeof(FlagsAttribute)))
+         {
+            Bits32<TEnum> bits = @enum;
+            return args.All(e => bits[e]);
+         }
+         else
+         {
+            return false;
          }
       }
    }

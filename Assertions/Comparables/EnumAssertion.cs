@@ -76,9 +76,14 @@ namespace Core.Assertions.Comparables
          return add(() => Enum.IsDefined(value.GetType(), intValue), $"$name must $not == {intValue}");
       }
 
-      public EnumAssertion<TEnum> BeIn(params TEnum[] args)
+      public EnumAssertion<TEnum> HaveAnyOf(params TEnum[] args)
       {
-         return add(() => value.In(args), $"$name must $not be in {args.ToString(", ")}");
+         return add(() => value.Any(args), $"$name must $not have any of {args.ToString(" | ")}");
+      }
+
+      public EnumAssertion<TEnum> HaveAllOf(params TEnum[] args)
+      {
+         return add(() => value.All(args), $"$name must $not have all of {args.ToString(" | ")}");
       }
 
       public bool BeEquivalentToTrue() => beEquivalentToTrue(this);
