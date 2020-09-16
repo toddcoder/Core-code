@@ -214,13 +214,14 @@
     <Compile Include="Enumerables\AllButLast.cs" />
     <Compile Include="Enumerables\DateTimeRange.cs" />
     <Compile Include="Enumerables\EnumerableExtensions.cs" />
-    <Compile Include="Enumerables\EnumerableFunctions.cs" />
     <Compile Include="Enumerables\Int32Range.cs" />
     <Compile Include="Enumerables\IntIterator.cs" />
     <Compile Include="Enumerables\Iterator.cs" />
     <Compile Include="Enumerables\Range.cs" />
     <Compile Include="Enumerables\TupleExtensions.cs" />
     <Compile Include="Enumerables\XRange.cs" />
+    <Compile Include="Enums\EnumExtensions.cs" />
+    <Compile Include="Enums\EnumFunctions.cs" />
     <Compile Include="Exceptions\Deep.cs" />
     <Compile Include="Exceptions\GroupedExceptions.cs" />
     <Compile Include="Exceptions\MultiExceptions.cs" />

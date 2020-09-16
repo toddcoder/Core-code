@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using Core.Assertions;
 using static Core.Assertions.AssertionFunctions;
 
-namespace Core.Enumerables
+namespace Core.Enums
 {
-   public static class EnumerableFunctions
+   public static class EnumFunctions
    {
       public static IEnumerable<T> enumEnumerable<T>() where T : Enum
       {

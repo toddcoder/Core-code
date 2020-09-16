@@ -30,8 +30,7 @@ namespace Core.Tests
       public void FirstOrFailTest()
       {
          var testArray = 0.UpUntil(10).ToArray();
-         var anyFirst = testArray.FirstOrFail("Not found");
-         if (anyFirst.If(out var first, out var exception))
+         if (testArray.FirstOrFail("Not found").If(out var first, out var exception))
          {
             Console.WriteLine(first);
          }
@@ -41,8 +40,7 @@ namespace Core.Tests
          }
 
          testArray = array<int>();
-         anyFirst = testArray.FirstOrFail("Not found");
-         if (anyFirst.If(out first, out exception))
+         if (testArray.FirstOrFail("Not found").If(out first, out exception))
          {
             Console.WriteLine(first);
          }
@@ -122,14 +120,12 @@ namespace Core.Tests
       public void MonadMinMaxTest()
       {
          var strings = array("foobar", "foo", "a", "bar");
-         var anyMax = strings.MaxOrNone();
-         if (anyMax.If(out var max))
+         if (strings.MaxOrNone().If(out var max))
          {
             Console.WriteLine($"Max value: {max}");
          }
 
-         anyMax = strings.MaxOrNone(s => s.Length);
-         if (anyMax.If(out max))
+         if (strings.MaxOrNone(s => s.Length).If(out max))
          {
             Console.WriteLine($"Max length: {max}");
          }
