@@ -49,7 +49,14 @@ namespace Core.Dates
                list.Add(span.Seconds == 1 ? "1 second" : $"{span.Seconds} seconds");
             }
          }
-
+         else if (includeMilliseconds && span.Milliseconds > 0)
+         {
+            list.Add($"0.{span.Milliseconds:D3} seconds");
+         }
+         else
+         {
+            list.Add("0 seconds");
+         }
 
          return list.ToArray().Andify();
       }
