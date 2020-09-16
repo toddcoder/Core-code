@@ -20,7 +20,7 @@ namespace Core.Io.Delimited
 
       public Buffer(TextReader reader, int bufferSize, char delimiter)
       {
-         this.reader = assert(() => reader).Must().Not.BeNull().Force<TextReader>();
+         this.reader = assert(() => (object)reader).Must().Not.BeNull().Force<TextReader>();
          this.bufferSize = bufferSize.Must().BeGreaterThan(0).Force();
          this.delimiter = delimiter;
          buffer = new char[this.bufferSize];

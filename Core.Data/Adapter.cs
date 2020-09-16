@@ -85,7 +85,7 @@ namespace Core.Data
          get => entity;
          set
          {
-            entity = assert(() => value).Must().Not.BeNull().Force<T>();
+            entity = assert(() => value).MustOfType().Not.BeNull().Force<T>();
             setEntityType();
          }
       }

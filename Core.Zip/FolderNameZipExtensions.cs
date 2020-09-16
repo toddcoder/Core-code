@@ -19,7 +19,7 @@ namespace Core.Zip
       {
          assert(() => folder).Must().Not.BeNull().OrThrow();
          assert(() => zipName).Must().Not.BeNullOrEmpty().OrThrow();
-         assert(() => include).Must().Not.BeNull().OrThrow();
+         assert(() => (object)include).Must().Not.BeNull().OrThrow();
 
          var zipFolder = folder.Parent.DefaultTo(() => @"C:\");
          var zipFile = zipFolder.UniqueFileName(zipName, ".zip");

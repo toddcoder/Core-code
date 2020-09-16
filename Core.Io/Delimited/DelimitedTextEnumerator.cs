@@ -12,7 +12,7 @@ namespace Core.Io.Delimited
 
       public DelimitedTextEnumerator(DelimitedTextReader reader)
       {
-         this.reader = assert(() => reader).Must().Not.BeNull().Force<DelimitedTextReader>();
+         this.reader = assert(() => (object)reader).Must().Not.BeNull().Force<DelimitedTextReader>();
          current = new string[reader.FieldCount];
       }
 

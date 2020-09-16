@@ -70,7 +70,7 @@ namespace Core.Data.Setups
       {
          get
          {
-            assert(() => ConnectionString).Must().Not.BeNull().OrThrow();
+            assert(() => (object)ConnectionString).Must().Not.BeNull().OrThrow();
             return new OLEDBDataSource(ConnectionString.ConnectionString, file);
          }
       }

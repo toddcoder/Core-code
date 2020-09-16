@@ -14,7 +14,7 @@ namespace Core.Io
       {
          try
          {
-            assert(() => stream).Must().Not.BeNull().OrThrow();
+            assert(() => (object)stream).Must().Not.BeNull().OrThrow();
 
             stream.Position = 0;
 

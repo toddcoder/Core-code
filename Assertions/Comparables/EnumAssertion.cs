@@ -2,19 +2,21 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Core.Enumerables;
+using Core.Enums;
 using Core.Monads;
 using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Assertions.Comparables
 {
-   public class EnumAssertion : IAssertion<Enum>
+   public class EnumAssertion<TEnum> : IAssertion<TEnum> where TEnum : struct, Enum
    {
-      protected Enum value;
+      protected TEnum value;
       protected List<Constraint> constraints;
       protected bool not;
       protected string name;
 
-      public EnumAssertion(Enum value)
+      public EnumAssertion(TEnum value)
       {
          this.value = value;
          constraints = new List<Constraint>();
@@ -22,7 +24,7 @@ namespace Core.Assertions.Comparables
          name = "Enum";
       }
 
-      public EnumAssertion Not
+      public EnumAssertion<TEnum> Not
       {
          get
          {
@@ -31,7 +33,7 @@ namespace Core.Assertions.Comparables
          }
       }
 
-      protected EnumAssertion add(Func<bool> constraintFunction, string message)
+      protected EnumAssertion<TEnum> add(Func<bool> constraintFunction, string message)
       {
          constraints.Add(new Constraint(constraintFunction, message, not, name, value));
          not = false;
@@ -39,48 +41,53 @@ namespace Core.Assertions.Comparables
          return this;
       }
 
-      public EnumAssertion BeOfType<TEnum>(TEnum otherEnum) where TEnum : Enum
+      public EnumAssertion<TEnum> BeOfType<TOtherEnum>(TOtherEnum otherEnum) where TOtherEnum : struct, Enum
       {
          return add(() => value.GetType() == otherEnum.GetType(), $"$name must $not be same type as {otherEnum}");
       }
 
-      public EnumAssertion Equal(Enum otherValue)
+      public EnumAssertion<TEnum> Equal(TEnum otherValue)
       {
          return add(() => value.Equals(otherValue), $"$name must $not equal {otherValue}");
       }
 
-      public EnumAssertion BeGreaterThan(Enum otherValue)
+      public EnumAssertion<TEnum> BeGreaterThan(TEnum otherValue)
       {
          return add(() => value.CompareTo(otherValue) > 0, $"$name must $not be > {otherValue}");
       }
 
-      public EnumAssertion BeGreaterThanOrEqual(Enum otherValue)
+      public EnumAssertion<TEnum> BeGreaterThanOrEqual(TEnum otherValue)
       {
          return add(() => value.CompareTo(otherValue) >= 0, $"$name must $not be >= {otherValue}");
       }
 
-      public EnumAssertion BeLessThan(Enum otherValue)
+      public EnumAssertion<TEnum> BeLessThan(TEnum otherValue)
       {
          return add(() => value.CompareTo(otherValue) < 0, $"$name must $not be < {otherValue}");
       }
 
-      public EnumAssertion BeLessThanOrEqual(Enum otherValue)
+      public EnumAssertion<TEnum> BeLessThanOrEqual(Enum otherValue)
       {
          return add(() => value.CompareTo(otherValue) <= 0, $"$name must $not be <= {otherValue}");
       }
 
-      public EnumAssertion EqualInteger(int intValue)
+      public EnumAssertion<TEnum> EqualInteger(int intValue)
       {
          return add(() => Enum.IsDefined(value.GetType(), intValue), $"$name must $not == {intValue}");
       }
 
+      public EnumAssertion<TEnum> BeIn(params TEnum[] args)
+      {
+         return add(() => value.In(args), $"$name must $not be in {args.ToString(", ")}");
+      }
+
       public bool BeEquivalentToTrue() => beEquivalentToTrue(this);
 
-      public Enum Value => value;
+      public TEnum Value => value;
 
       public IEnumerable<Constraint> Constraints => constraints;
 
-      public IAssertion<Enum> Named(string name)
+      public IAssertion<TEnum> Named(string name)
       {
          this.name = name;
          return this;
@@ -92,40 +99,40 @@ namespace Core.Assertions.Comparables
 
       public void OrThrow(Func<string> messageFunc) => orThrow(this, messageFunc);
 
-      public void OrThrow<TException>(params object[] args) where TException : Exception => orThrow<TException, Enum>(this, args);
+      public void OrThrow<TException>(params object[] args) where TException : Exception => orThrow<TException, TEnum>(this, args);
 
-      public Enum Force() => force(this);
+      public TEnum Force() => force(this);
 
-      public Enum Force(string message) => force(this, message);
+      public TEnum Force(string message) => force(this, message);
 
-      public Enum Force(Func<string> messageFunc) => force(this, messageFunc);
+      public TEnum Force(Func<string> messageFunc) => force(this, messageFunc);
 
-      public Enum Force<TException>(params object[] args) where TException : Exception => force<TException, Enum>(this, args);
+      public TEnum Force<TException>(params object[] args) where TException : Exception => force<TException, TEnum>(this, args);
 
-      public TResult Force<TResult>() => forceConvert<Enum, TResult>(this);
+      public TResult Force<TResult>() => forceConvert<TEnum, TResult>(this);
 
-      public TResult Force<TResult>(string message) => forceConvert<Enum, TResult>(this, message);
+      public TResult Force<TResult>(string message) => forceConvert<TEnum, TResult>(this, message);
 
-      public TResult Force<TResult>(Func<string> messageFunc) => forceConvert<Enum, TResult>(this, messageFunc);
+      public TResult Force<TResult>(Func<string> messageFunc) => forceConvert<TEnum, TResult>(this, messageFunc);
 
       public TResult Force<TException, TResult>(params object[] args) where TException : Exception
       {
-         return forceConvert<Enum, TException, TResult>(this);
+         return forceConvert<TEnum, TException, TResult>(this);
       }
 
-      public IResult<Enum> OrFailure() => orFailure(this);
+      public IResult<TEnum> OrFailure() => orFailure(this);
 
-      public IResult<Enum> OrFailure(string message) => orFailure(this, message);
+      public IResult<TEnum> OrFailure(string message) => orFailure(this, message);
 
-      public IResult<Enum> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
+      public IResult<TEnum> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
 
-      public IMaybe<Enum> OrNone() => orNone(this);
+      public IMaybe<TEnum> OrNone() => orNone(this);
 
-      public async Task<ICompletion<Enum>> OrFailureAsync(CancellationToken token) => await orFailureAsync(this, token);
+      public async Task<ICompletion<TEnum>> OrFailureAsync(CancellationToken token) => await orFailureAsync(this, token);
 
-      public async Task<ICompletion<Enum>> OrFailureAsync(string message, CancellationToken token) => await orFailureAsync(this, message, token);
+      public async Task<ICompletion<TEnum>> OrFailureAsync(string message, CancellationToken token) => await orFailureAsync(this, message, token);
 
-      public async Task<ICompletion<Enum>> OrFailureAsync(Func<string> messageFunc, CancellationToken token)
+      public async Task<ICompletion<TEnum>> OrFailureAsync(Func<string> messageFunc, CancellationToken token)
       {
          return await orFailureAsync(this, messageFunc, token);
       }

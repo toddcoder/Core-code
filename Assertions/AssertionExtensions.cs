@@ -297,14 +297,14 @@ namespace Core.Assertions
          return (TypedAssertion<T>)assertion.Named($"Object typed {typeof(T).Name} {name}");
       }
 
-      public static EnumAssertion Must(this Enum value) => new EnumAssertion(value);
+      public static EnumAssertion<TEnum> Must<TEnum>(this TEnum value) where TEnum : struct, Enum => new EnumAssertion<TEnum>(value);
 
-      public static EnumAssertion Must(this Expression<Func<Enum>> expression)
+      public static EnumAssertion<TEnum> Must<TEnum>(this Expression<Func<TEnum>> expression) where TEnum : struct, Enum
       {
          var (name, value) = resolve(expression);
          var assertion = value.Must();
 
-         return (EnumAssertion)assertion.Named($"{value.GetType().Name} {name}");
+         return (EnumAssertion<TEnum>)assertion.Named($"{value.GetType().Name} {name}");
       }
    }
 }
