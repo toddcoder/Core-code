@@ -79,5 +79,7 @@ namespace Core.Monads
       public override bool Equals(object obj) => obj is None<T>;
 
       public override int GetHashCode() => false.GetHashCode();
+
+      public override string ToString() => $"none<{typeof(T).Name}>";
    }
 }

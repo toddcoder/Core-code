@@ -54,6 +54,7 @@
     <Compile Include="ArrayExtensionTests.cs" />
     <Compile Include="AssertionTests.cs" />
     <Compile Include="AsyncTests.cs" />
+    <Compile Include="CollectionTest.cs" />
     <Compile Include="DataTests.cs" />
     <Compile Include="EnumerableExtensionTests.cs" />
     <Compile Include="EnumTests.cs" />

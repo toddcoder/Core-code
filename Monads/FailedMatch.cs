@@ -1,4 +1,5 @@
 ﻿using System;
+using Core.Strings;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads
@@ -206,5 +207,7 @@ namespace Core.Monads
       public override bool Equals(object obj) => obj is FailedMatch<T> other && Equals(other);
 
       public override int GetHashCode() => exception?.GetHashCode() ?? 0;
+
+      public override string ToString() => $"FailedMatch({exception.Message.Elliptical(60, ' ')})";
    }
 }

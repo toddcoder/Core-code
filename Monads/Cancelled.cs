@@ -190,5 +190,7 @@ namespace Core.Monads
       public override bool Equals(object obj) => obj is Cancelled<T> other && Equals(other);
 
       public override int GetHashCode() => false.GetHashCode();
+
+      public override string ToString() => $"cancelled<{typeof(T).Name}>";
    }
 }

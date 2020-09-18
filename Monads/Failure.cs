@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using Core.Strings;
 using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
 
@@ -204,5 +205,7 @@ namespace Core.Monads
       public override bool Equals(object obj) => obj is Failure<T> other && Equals(other);
 
       public override int GetHashCode() => exception?.GetHashCode() ?? 0;
+
+      public override string ToString() => $"Failure({exception.Message.Elliptical(60, ' ')})";
    }
 }

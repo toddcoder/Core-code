@@ -183,5 +183,7 @@ namespace Core.Monads
       public override bool Equals(object obj) => obj is NotMatched<T>;
 
       public override int GetHashCode() => false.GetHashCode();
+
+      public override string ToString() => $"notMatched<{typeof(T).Name}>";
    }
 }

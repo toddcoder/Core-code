@@ -114,5 +114,7 @@ namespace Core.Monads
       public override bool Equals(object obj) => obj is Some<T> other && Equals(other);
 
       public override int GetHashCode() => value.GetHashCode();
+
+      public override string ToString() => $"Some({value})";
    }
 }

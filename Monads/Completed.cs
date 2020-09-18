@@ -221,5 +221,7 @@ namespace Core.Monads
       public override bool Equals(object obj) => obj is Completed<T> other && Equals(other);
 
       public override int GetHashCode() => value.GetHashCode();
+
+      public override string ToString() => $"Completed({value})";
    }
 }

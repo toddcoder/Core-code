@@ -240,5 +240,7 @@ namespace Core.Monads
       public override bool Equals(object obj) => obj is Success<T> other && Equals(other);
 
       public override int GetHashCode() => value.GetHashCode();
+
+      public override string ToString() => $"Success({value})";
    }
 }
