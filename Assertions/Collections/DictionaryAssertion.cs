@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Core.Assertions.Monads;
 using Core.Monads;
 using static Core.Assertions.AssertionFunctions;
-using static Core.Monads.MonadFunctions;
 
 namespace Core.Assertions.Collections
 {
@@ -92,17 +91,12 @@ namespace Core.Assertions.Collections
          return addWithoutValue(() => dictionary.Count >= minimumCount, $"$name must $not have a count of at least {minimumCount}");
       }
 
-      public MaybeAssertion<TValue> HaveValueAt(TKey key)
+      public DictionaryAssertion<TKey, TValue> HaveCountOfExactly(int count)
       {
-         if (dictionary.ContainsKey(key))
-         {
-            return dictionary[key].Some().Must();
-         }
-         else
-         {
-            return none<TValue>().Must();
-         }
+         return add(() => dictionary.Count == count, $"$name must $not have a count of exactly {count}");
       }
+
+      public MaybeAssertion<TValue> HaveValueAt(TKey key) => dictionary[key].Some().Must();
 
       public ResultAssertion<TValue> HaveValueAt(TKey key, Func<string> failureMessage)
       {

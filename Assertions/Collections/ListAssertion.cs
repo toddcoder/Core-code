@@ -77,6 +77,11 @@ namespace Core.Assertions.Collections
          return add(() => list.Count >= minimumCount, $"$name must $not have a count of at least {minimumCount}");
       }
 
+      public ListAssertion<T> HaveCountOfExactly(int count)
+      {
+         return add(() => list.Count == count, $"$name must $not have a count of exactly {count}");
+      }
+
       public List<T> Value => list;
 
       public IEnumerable<Constraint> Constraints => constraints;

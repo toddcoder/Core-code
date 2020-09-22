@@ -59,5 +59,15 @@ namespace Core.Tests
          listString.Text = "alpha";
          Console.WriteLine(listString);
       }
+
+      [TestMethod]
+      public void DestringifyAsSqlTest()
+      {
+         var source = "SELECT 'I can''t do this' from foobar --yes you can\r\nprint ''";
+         var destringifier = Destringifier.AsSql(source);
+         var parsed = destringifier.Parse();
+         Console.WriteLine(parsed);
+         Console.WriteLine(destringifier.Restring(parsed, true));
+      }
    }
 }

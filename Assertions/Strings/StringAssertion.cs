@@ -106,6 +106,11 @@ namespace Core.Assertions.Strings
          return add(() => subject.Length >= length, $"$name must $not have a length >= {length}");
       }
 
+      public StringAssertion HaveLengthOfExactly(int length)
+      {
+         return add(() => subject.Length == length, $"$name must $not have a length of exactly {length}");
+      }
+
       public StringAssertion BeIn(params string[] strings)
       {
          return add(() => inList(subject, strings), $"$name must $not be in {enumerableImage(strings)}");

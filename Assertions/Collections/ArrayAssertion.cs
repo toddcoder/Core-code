@@ -77,6 +77,11 @@ namespace Core.Assertions.Collections
          return add(() => array.Length >= minimumLength, $"$name must $not have a length of at least {minimumLength}");
       }
 
+      public ArrayAssertion<T> HaveLengthOfExactly(int length)
+      {
+         return add(() => array.Length == length, $"$name must $not have a length of exactly {length}");
+      }
+
       public T[] Value => array;
 
       public IEnumerable<Constraint> Constraints => constraints;
