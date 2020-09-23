@@ -1,8 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using Core.Assertions;
 using Core.Monads;
 using Core.Objects;
 using Core.RegularExpressions;
+using static Core.Assertions.AssertionFunctions;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Strings
@@ -21,10 +25,10 @@ namespace Core.Strings
       protected InOutside(string beginPattern, string endPattern, string exceptPattern, IMaybe<string> exceptReplacement, bool ignoreCase = false,
          bool multiline = false, bool friendly = true)
       {
-         this.beginPattern = $"^{beginPattern}";
-         this.endPattern = $"^{endPattern}";
-         this.exceptPattern = $"^{exceptPattern}";
-         this.exceptReplacement = exceptReplacement;
+         BeginPattern = beginPattern;
+         EndPattern = endPattern;
+         ExceptPattern = exceptPattern;
+         ExceptReplacement = exceptReplacement;
          this.ignoreCase = ignoreCase;
          this.multiline = multiline;
          this.friendly = friendly;
@@ -39,8 +43,64 @@ namespace Core.Strings
       public InOutside(string beginPattern, string endPattern, string exceptPattern, bool ignoreCase = false, bool multiline = false,
          bool friendly = true) : this(beginPattern, endPattern, exceptPattern, none<string>(), ignoreCase, multiline, friendly) { }
 
+      public string BeginPattern
+      {
+         get => beginPattern;
+         set
+         {
+            assert(() => value).Must().Not.BeNullOrEmpty().OrThrow();
+            beginPattern = value.StartsWith("^") ? value : $"^{value}";
+         }
+      }
+
+      public string EndPattern
+      {
+         get => endPattern;
+         set
+         {
+            assert(() => value).Must().Not.BeNullOrEmpty().OrThrow();
+            endPattern = value.StartsWith("^") ? value : $"^{value}";
+         }
+      }
+
+      public string ExceptPattern
+      {
+         get => exceptPattern;
+         set
+         {
+            assert(() => value).Must().Not.BeNullOrEmpty().OrThrow();
+            exceptPattern = value.StartsWith("^") ? value : $"^{value}";
+         }
+      }
+
+      public IMaybe<string> ExceptReplacement
+      {
+         get => exceptReplacement;
+         set => exceptReplacement = value;
+      }
+
+      public bool IgnoreCase
+      {
+         get => ignoreCase;
+         set => ignoreCase = value;
+      }
+
+      public bool Multiline
+      {
+         get => multiline;
+         set => multiline = value;
+      }
+
+      public bool Friendly
+      {
+         get => friendly;
+         set => friendly = value;
+      }
+
       public IEnumerable<(string text, int index, InOutsideStatus status)> Enumerable(string source)
       {
+         assert(() => source).Must().Not.BeNullOrEmpty().OrThrow();
+
          slicer.ActivateWith(() => new Slicer(source));
 
          var builder = new StringBuilder();
@@ -117,13 +177,83 @@ namespace Core.Strings
 
       public string this[int index, int length]
       {
-         get
-         {
-            return slicer.Value[index, length];
-         }
+         get => slicer.Value[index, length];
          set
          {
+            assert(() => value).Must().Not.BeNull().OrThrow();
             slicer.Value[index, length] = value;
+         }
+      }
+
+      public char this[int index]
+      {
+         get => slicer.Value[index];
+         set => slicer.Value[index] = value;
+      }
+
+      public string Drop(int index) => slicer.Value.Text.Drop(index);
+
+      public string Keep(int index) => slicer.Value.Text.Keep(index);
+
+      public int Length => slicer.Value.Length;
+
+      public IEnumerable<Slice> Split(string source, string pattern, bool includeDelimiter = false)
+      {
+         assert(() => source).Must().Not.BeNullOrEmpty().OrThrow();
+         assert(() => pattern).Must().Not.BeNullOrEmpty().OrThrow();
+
+         var lastIndex = 0;
+
+         foreach (var (outerText, outerIndex, _) in Enumerable(source).Where(t => t.status == InOutsideStatus.Outside))
+         {
+            foreach (var (sliceText, sliceIndex, length) in outerText.FindAllByRegex(pattern, ignoreCase, multiline, friendly))
+            {
+               var index = outerIndex + sliceIndex;
+               var text = source.Drop(lastIndex).Keep(index - lastIndex);
+               yield return new Slice(text, index, text.Length);
+
+               if (includeDelimiter)
+               {
+                  yield return new Slice(sliceText, index, length);
+               }
+
+               lastIndex = index + length;
+            }
+         }
+
+         var rest = source.Drop(lastIndex);
+         yield return new Slice(rest, lastIndex, rest.Length);
+      }
+
+      public void Replace(string source, string pattern, string replacement, int count = 0)
+      {
+         assert(() => replacement).Must().Not.BeNull().OrThrow();
+
+         Replace(source, pattern, _ => replacement, count);
+      }
+
+      public void Replace(string source, string pattern, Func<Slice, string> map, int count = 0)
+      {
+         assert(() => source).Must().Not.BeNullOrEmpty().OrThrow();
+         assert(() => pattern).Must().Not.BeNullOrEmpty().OrThrow();
+         assert(() => (object)map).Must().Not.BeNull().OrThrow();
+         assert(() => count).Must().BeGreaterThan(-1).OrThrow();
+
+         var replaced = 0;
+
+         foreach (var (text, outerIndex, _) in Enumerable(source))
+         {
+            foreach (var slice in text.FindAllByRegex(pattern, ignoreCase, multiline, friendly))
+            {
+               var (_, sliceIndex, length) = slice;
+               var index = outerIndex + sliceIndex;
+               slicer.Value[index, length] = map(slice);
+               replaced++;
+               if (count > 0 && replaced == count)
+               {
+                  break;
+               }
+            }
          }
       }
 

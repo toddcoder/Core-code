@@ -126,5 +126,30 @@ namespace Core.Tests
 
          Console.WriteLine(inOutside);
       }
+
+      [TestMethod]
+      public void SplitTest()
+      {
+         var source = "'foobar' AND 'foobaz' OR 'foo' AND 'bar'";
+         var inOutside = new InOutside("'", "'", "''", true, friendly: false);
+         var slices = inOutside.Split(source, @"\s+OR\s+").ToArray();
+         foreach (var slice in slices)
+         {
+            Console.WriteLine($"<{slice.Text}>");
+         }
+
+         var withParentheses = slices.Select(s => $"({s.Text})").ToString(" OR ");
+         Console.WriteLine("---");
+         Console.WriteLine(withParentheses);
+      }
+
+      [TestMethod]
+      public void ReplacementTest()
+      {
+         var source = "'foobar' AND 'foobaz' OR 'foo' AND 'bar'";
+         var inOutside = new InOutside("'", "'", "''", true, friendly: false);
+         inOutside.Replace(source, @"\bAND|OR\b", slice => slice.Text.Same("AND") ? "OR" : "AND");
+         Console.WriteLine(inOutside);
+      }
    }
 }

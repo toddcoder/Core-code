@@ -105,6 +105,8 @@ namespace Core.Strings
          replacements.Add(new Replacement(length, -1, ""));
       }
 
+      public string Text => text;
+
       public int Length => text.Length;
 
       public IEnumerator<(int index, int length, string text)> GetEnumerator()
