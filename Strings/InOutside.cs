@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 using Core.Monads;
+using Core.Objects;
 using Core.RegularExpressions;
 using static Core.Monads.MonadFunctions;
 
@@ -15,6 +16,7 @@ namespace Core.Strings
       protected bool ignoreCase;
       protected bool multiline;
       protected bool friendly;
+      protected LateLazy<Slicer> slicer;
 
       protected InOutside(string beginPattern, string endPattern, string exceptPattern, IMaybe<string> exceptReplacement, bool ignoreCase = false,
          bool multiline = false, bool friendly = true)
@@ -26,6 +28,8 @@ namespace Core.Strings
          this.ignoreCase = ignoreCase;
          this.multiline = multiline;
          this.friendly = friendly;
+
+         slicer = new LateLazy<Slicer>(true, "You must call Enumerable() before accessing this member");
       }
 
       public InOutside(string beginPattern, string endPattern, string exceptPattern, string exceptReplacement, bool ignoreCase = false,
@@ -37,6 +41,8 @@ namespace Core.Strings
 
       public IEnumerable<(string text, int index, InOutsideStatus status)> Enumerable(string source)
       {
+         slicer.ActivateWith(() => new Slicer(source));
+
          var builder = new StringBuilder();
          var inside = false;
          var current = source;
@@ -108,5 +114,19 @@ namespace Core.Strings
             }
          }
       }
+
+      public string this[int index, int length]
+      {
+         get
+         {
+            return slicer.Value[index, length];
+         }
+         set
+         {
+            slicer.Value[index, length] = value;
+         }
+      }
+
+      public override string ToString() => slicer.IsActivated ? slicer.Value.ToString() : "";
    }
 }

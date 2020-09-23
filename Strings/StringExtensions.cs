@@ -2505,7 +2505,7 @@ namespace Core.Strings
             var start = list[i];
             var length = i + 1 < list.Count ? list[i + 1] - start : source.Length - start;
             var text = source.Drop(start).Keep(length);
-            yield return new Slice(start, length, text);
+            yield return new Slice(text, start, length);
          }
       }
 
@@ -2682,7 +2682,7 @@ namespace Core.Strings
          if (matcher.IsMatch(source, pattern, ignoreCase, multiline))
          {
             var (text, index, length) = matcher.GetMatch(0);
-            return new Slice(index, length, text).Some();
+            return new Slice(text, index, length).Some();
          }
          else
          {
@@ -2717,7 +2717,7 @@ namespace Core.Strings
             for (var i = 0; i < matcher.MatchCount; i++)
             {
                var (text, index, length) = matcher.GetMatch(i);
-               yield return new Slice(index, length, text);
+               yield return new Slice(text, index, length);
             }
          }
       }

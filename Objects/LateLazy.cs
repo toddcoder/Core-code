@@ -9,13 +9,18 @@ namespace Core.Objects
 {
    public class LateLazy<T>
    {
+      const string DEFAULT_ERROR_MESSAGE = "Activator has not been set";
+
       protected bool overriding;
+      protected string errorMessage;
       protected IMaybe<T> value;
       protected IMaybe<Func<T>> activator;
 
-      public LateLazy(bool overriding = false)
+      public LateLazy(bool overriding = false, string errorMessage = DEFAULT_ERROR_MESSAGE)
       {
          this.overriding = overriding;
+         this.errorMessage = errorMessage;
+
          value = none<T>();
          activator = none<Func<T>>();
       }
@@ -51,7 +56,7 @@ namespace Core.Objects
             }
             else
             {
-               throw "Activator has not been set".Throws();
+               throw errorMessage.Throws();
             }
          }
       }
@@ -61,5 +66,11 @@ namespace Core.Objects
       public IMaybe<T> AnyValue => value;
 
       public LateLazyTrying<T> TryTo => new LateLazyTrying<T>(this);
+
+      public string ErrorMessage
+      {
+         get => errorMessage;
+         set => errorMessage = value;
+      }
    }
 }

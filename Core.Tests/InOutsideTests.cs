@@ -108,5 +108,23 @@ namespace Core.Tests
          result = transformer.Transform("(111 + 123       + 153) / 3", "($0) / 3", "sum($0) / n($0)");
          Console.WriteLine(result);
       }
+
+      [TestMethod]
+      public void SlicerTest()
+      {
+         var source = "'foobar' ELSE-1 'foobaz'";
+         var inOutside = new InOutside("'", "'", "''", friendly: false);
+
+         foreach (var (text, index, _) in inOutside.Enumerable(source).Where(t => t.status == InOutsideStatus.Outside))
+         {
+            foreach (var (_, sliceIndex, length) in text.FindAllByRegex(@"\bELSE[-+]", friendly: false))
+            {
+               var fullIndex = index + sliceIndex;
+               inOutside[fullIndex, length] = "ELSE -";
+            }
+         }
+
+         Console.WriteLine(inOutside);
+      }
    }
 }
