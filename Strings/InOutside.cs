@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Core.Assertions;
 using Core.Monads;
+using Core.Numbers;
 using Core.Objects;
 using Core.RegularExpressions;
 using static Core.Assertions.AssertionFunctions;
@@ -21,6 +22,7 @@ namespace Core.Strings
       protected bool multiline;
       protected bool friendly;
       protected LateLazy<Slicer> slicer;
+      protected Bits32<InOutsideStatus> status;
 
       protected InOutside(string beginPattern, string endPattern, string exceptPattern, IMaybe<string> exceptReplacement, bool ignoreCase = false,
          bool multiline = false, bool friendly = true)
@@ -34,6 +36,7 @@ namespace Core.Strings
          this.friendly = friendly;
 
          slicer = new LateLazy<Slicer>(true, "You must call Enumerable() before accessing this member");
+         status = InOutsideStatus.Outside;
       }
 
       public InOutside(string beginPattern, string endPattern, string exceptPattern, string exceptReplacement, bool ignoreCase = false,
@@ -95,6 +98,12 @@ namespace Core.Strings
       {
          get => friendly;
          set => friendly = value;
+      }
+
+      public Bits32<InOutsideStatus> Status
+      {
+         get => status;
+         set => status = value;
       }
 
       public IEnumerable<(string text, int index, InOutsideStatus status)> Enumerable(string source)
@@ -199,12 +208,11 @@ namespace Core.Strings
 
       public IEnumerable<Slice> Split(string source, string pattern, bool includeDelimiter = false)
       {
-         assert(() => source).Must().Not.BeNullOrEmpty().OrThrow();
          assert(() => pattern).Must().Not.BeNullOrEmpty().OrThrow();
 
          var lastIndex = 0;
 
-         foreach (var (outerText, outerIndex, _) in Enumerable(source).Where(t => t.status == InOutsideStatus.Outside))
+         foreach (var (outerText, outerIndex, _) in Enumerable(source).Where(t => status[t.status]))
          {
             foreach (var (sliceText, sliceIndex, length) in outerText.FindAllByRegex(pattern, ignoreCase, multiline, friendly))
             {
@@ -234,22 +242,21 @@ namespace Core.Strings
 
       public void Replace(string source, string pattern, Func<Slice, string> map, int count = 0)
       {
-         assert(() => source).Must().Not.BeNullOrEmpty().OrThrow();
          assert(() => pattern).Must().Not.BeNullOrEmpty().OrThrow();
          assert(() => (object)map).Must().Not.BeNull().OrThrow();
          assert(() => count).Must().BeGreaterThan(-1).OrThrow();
 
+         var limited = count > 0;
          var replaced = 0;
 
-         foreach (var (text, outerIndex, _) in Enumerable(source))
+         foreach (var (text, outerIndex, _) in Enumerable(source).Where(t => status[t.status]))
          {
             foreach (var slice in text.FindAllByRegex(pattern, ignoreCase, multiline, friendly))
             {
                var (_, sliceIndex, length) = slice;
                var index = outerIndex + sliceIndex;
                slicer.Value[index, length] = map(slice);
-               replaced++;
-               if (count > 0 && replaced == count)
+               if (limited && ++replaced == count)
                {
                   break;
                }
@@ -257,6 +264,6 @@ namespace Core.Strings
          }
       }
 
-      public override string ToString() => slicer.IsActivated ? slicer.Value.ToString() : "";
+      public override string ToString() => slicer.Value.ToString();
    }
 }

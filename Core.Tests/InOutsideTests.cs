@@ -112,12 +112,12 @@ namespace Core.Tests
       [TestMethod]
       public void SlicerTest()
       {
-         var source = "'foobar' ELSE-1 'foobaz'";
-         var inOutside = new InOutside("'", "'", "''", friendly: false);
+         var source = "'foobar' ELSE-1 'ELSE-1'";
+         var inOutside = new InOutside("[squote]", "[squote]", "[squote]%2");
 
          foreach (var (text, index, _) in inOutside.Enumerable(source).Where(t => t.status == InOutsideStatus.Outside))
          {
-            foreach (var (_, sliceIndex, length) in text.FindAllByRegex(@"\bELSE[-+]", friendly: false))
+            foreach (var (_, sliceIndex, length) in text.FindAllByRegex("/b 'ELSE' ['-+']"))
             {
                var fullIndex = index + sliceIndex;
                inOutside[fullIndex, length] = "ELSE -";
@@ -125,14 +125,18 @@ namespace Core.Tests
          }
 
          Console.WriteLine(inOutside);
+
+         inOutside.Status[InOutsideStatus.Inside] = true;
+         inOutside.Replace(source, "/b 'ELSE' ['-+'] /d+", "?");
+         Console.WriteLine(inOutside);
       }
 
       [TestMethod]
       public void SplitTest()
       {
          var source = "'foobar' AND 'foobaz' OR 'foo' AND 'bar'";
-         var inOutside = new InOutside("'", "'", "''", true, friendly: false);
-         var slices = inOutside.Split(source, @"\s+OR\s+").ToArray();
+         var inOutside = new InOutside("[squote]", "[squote]", "[squote]%2", true);
+         var slices = inOutside.Split(source, "/s+ 'OR' /s+").ToArray();
          foreach (var slice in slices)
          {
             Console.WriteLine($"<{slice.Text}>");
@@ -147,8 +151,24 @@ namespace Core.Tests
       public void ReplacementTest()
       {
          var source = "'foobar' AND 'foobaz' OR 'foo' AND 'bar'";
-         var inOutside = new InOutside("'", "'", "''", true, friendly: false);
-         inOutside.Replace(source, @"\bAND|OR\b", slice => slice.Text.Same("AND") ? "OR" : "AND");
+         var inOutside = new InOutside("[squote]", "[squote]", "[squote]%2", true);
+         inOutside.Replace(source, "/b 'AND' | 'OR' /b", slice => slice.Text.Same("AND") ? "OR" : "AND");
+         Console.WriteLine(inOutside);
+
+         source = "'foobar' && 'foobaz' || 'foo' && 'bar'";
+         inOutside.Replace(source, "/b 'AND' | 'OR' /b", slice => slice.Text.Same("AND") ? "OR" : "AND");
+         Console.WriteLine(inOutside);
+
+         inOutside.Replace(source, "'&&' | '||'", slice => slice.Text == "&&" ? "||" : "&&");
+         Console.WriteLine(inOutside);
+
+         Console.WriteLine("---");
+
+         inOutside.Status = InOutsideStatus.Inside;
+         inOutside.Replace(source, "/w+", slice => slice.Text.ToUpper());
+         Console.WriteLine(inOutside);
+
+         inOutside.Replace(source, "/w+", "?");
          Console.WriteLine(inOutside);
       }
    }

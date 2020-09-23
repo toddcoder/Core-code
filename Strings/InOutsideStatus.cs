@@ -1,10 +1,13 @@
-﻿namespace Core.Strings
+﻿using System;
+
+namespace Core.Strings
 {
+   [Flags]
    public enum InOutsideStatus
    {
-      Outside,
-      Inside,
-      BeginDelimiter,
-      EndDelimiter
+      Outside = 1,
+      Inside = 2,
+      BeginDelimiter = 4,
+      EndDelimiter = 8
    }
 }
