@@ -346,7 +346,6 @@
     <Compile Include="Strings\Justification.cs" />
     <Compile Include="Strings\ListString.cs" />
     <Compile Include="Strings\ObjectFormatter.cs" />
-    <Compile Include="Strings\OffsetTracker.cs" />
     <Compile Include="Strings\InOutside.cs" />
     <Compile Include="Strings\Padder.cs" />
     <Compile Include="Strings\PadderArray.cs" />
@@ -354,7 +353,6 @@
     <Compile Include="Strings\PadderTable.cs" />
     <Compile Include="Strings\Padding.cs" />
     <Compile Include="Strings\PadType.cs" />
-    <Compile Include="Strings\SegmentArgs.cs" />
     <Compile Include="Strings\Slice.cs" />
     <Compile Include="Strings\Slicer.cs" />
     <Compile Include="Strings\SplitType.cs" />

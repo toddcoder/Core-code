@@ -327,7 +327,6 @@ namespace Core.Strings
                   }
                   else
                   {
-                     outerBuilder.Append(singleComment1);
                      type = LocationType.Outside;
                      goto case LocationType.Outside;
                   }

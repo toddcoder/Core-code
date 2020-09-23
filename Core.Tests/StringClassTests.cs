@@ -68,6 +68,28 @@ namespace Core.Tests
          var parsed = destringifier.Parse();
          Console.WriteLine(parsed);
          Console.WriteLine(destringifier.Restring(parsed, true));
+
+         var inOutside = new InOutside("'", "'", "''", friendly: false);
+         foreach (var (text, _, _) in inOutside.Enumerable(source))
+         {
+            Console.WriteLine($"<{text}>");
+         }
+      }
+
+      [TestMethod]
+      public void DestringifyAsSqlTest2()
+      {
+         var source = "UPDATE Foobar SET A = -A, B = 'This is a test' /*a test*/;";
+         var destringifier = Destringifier.AsSql(source);
+         var parsed = destringifier.Parse();
+         Console.WriteLine(parsed);
+         Console.WriteLine(destringifier.Restring(parsed, true));
+
+         var inOutside = new InOutside("'", "'", "''", friendly: false);
+         foreach (var (text, _, _) in inOutside.Enumerable(source))
+         {
+            Console.WriteLine($"<{text}>");
+         }
       }
    }
 }
