@@ -184,6 +184,29 @@ namespace Core.Strings
          }
       }
 
+      public IEnumerable<(int index, InOutsideStatus status)> Substrings(string source, string substring, bool ignoreCase = false)
+      {
+         foreach (var (text, index, inOutsideStatus) in Enumerable(source).Where(t => Status[t.status]))
+         {
+            foreach (var foundIndex in text.FindAll(substring, ignoreCase))
+            {
+               yield return (index + foundIndex, inOutsideStatus);
+            }
+         }
+      }
+
+      public IEnumerable<(string text, int index, InOutsideStatus status)> Matches(string source, string pattern, bool ignoreCase = false,
+         bool multiline = false, bool friendly = true)
+      {
+         foreach (var (text, index, inOutsideStatus) in Enumerable(source).Where(t => Status[t.status]))
+         {
+            foreach (var (sliceText, sliceIndex, _) in text.FindAllByRegex(pattern, ignoreCase, multiline, friendly))
+            {
+               yield return (sliceText, index + sliceIndex, inOutsideStatus);
+            }
+         }
+      }
+
       public string this[int index, int length]
       {
          get => slicer.Value[index, length];

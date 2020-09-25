@@ -16,12 +16,14 @@ namespace Core.Strings
          bool multiline = false, bool friendly = true)
       {
          inOutside = new InOutside(beginPattern, endPattern, exceptPattern, exceptReplacement, ignoreCase, multiline, friendly);
+         Map = none<Func<string, string>>();
       }
 
       public Transformer(string beginPattern, string endPattern, string exceptPattern, bool ignoreCase = false, bool multiline = false,
          bool friendly = true)
       {
          inOutside = new InOutside(beginPattern, endPattern, exceptPattern, ignoreCase, multiline, friendly);
+         Map = none<Func<string, string>>();
       }
 
       public string Transform(string source, string pattern, string replacement, bool ignoreCase = false)
@@ -45,18 +47,18 @@ namespace Core.Strings
          var slices = pattern.SliceSplit(@"\$\d+");
          var values = new List<string>();
 
-         foreach (var slice in slices.Where(s => s.Length > 0))
+         foreach (var (text, sliceIndex, length) in slices.Where(s => s.Length > 0))
          {
-            if (slice.Index == 0)
+            if (sliceIndex == 0)
             {
-               startIndex = slice.Index + slice.Length;
+               startIndex = sliceIndex + length;
             }
-            else if (findInOutside(slice.Text).If(out var index))
+            else if (findInOutside(text).If(out var index))
             {
                var item = source.Drop(startIndex).Keep(index - startIndex);
                item = Map.Map(m => m(item)).DefaultTo(() => item);
                values.Add(item);
-               startIndex = index + slice.Length;
+               startIndex = index + length;
             }
             else
             {
@@ -81,6 +83,6 @@ namespace Core.Strings
          return builder.ToString();
       }
 
-      public IMaybe<Func<string, string>> Map { get; set; } = none<Func<string, string>>();
+      public IMaybe<Func<string, string>> Map { get; set; }
    }
 }

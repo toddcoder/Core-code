@@ -171,5 +171,61 @@ namespace Core.Tests
          inOutside.Replace(source, "/w+", "?");
          Console.WriteLine(inOutside);
       }
+
+      [TestMethod]
+      public void EnumerationTest()
+      {
+         var source = "'foobar' AND 'foobaz' OR 'foo' AND 'bar'";
+         var inOutside = new InOutside("[squote]", "[squote]", "[squote]%2", true);
+         foreach (var (index, _) in inOutside.Substrings(source, "AND"))
+         {
+            inOutside[index, 3] = "&&";
+         }
+
+         source = inOutside.ToString();
+         inOutside.Status[InOutsideStatus.Outside] = false;
+         inOutside.Status[InOutsideStatus.BeginDelimiter] = true;
+         inOutside.Status[InOutsideStatus.EndDelimiter] = true;
+
+         foreach (var (index, status) in inOutside.Substrings(source, "'"))
+         {
+            switch (status)
+            {
+               case InOutsideStatus.BeginDelimiter:
+                  inOutside[index, 1] = "<<";
+                  break;
+               case InOutsideStatus.EndDelimiter:
+                  inOutside[index, 1] = ">>";
+                  break;
+            }
+         }
+
+         Console.WriteLine(inOutside);
+
+         source = inOutside.ToString();
+         inOutside.BeginPattern = "'<<'";
+         inOutside.EndPattern = "'>>'";
+         inOutside.Status[InOutsideStatus.Outside] = true;
+         inOutside.Status[InOutsideStatus.Inside] = true;
+
+         foreach (var (text, index, status) in inOutside.Matches(source, "'&&' | '<<' | '>>' | 'foo'"))
+         {
+            switch (status)
+            {
+               case InOutsideStatus.Outside:
+                  inOutside[index, text.Length] = "AND";
+                  break;
+               case InOutsideStatus.Inside:
+                  inOutside[index, text.Length] = "???";
+                  break;
+               case InOutsideStatus.BeginDelimiter:
+               case InOutsideStatus.EndDelimiter:
+                  inOutside[index, text.Length] = "\"";
+                  break;
+            }
+         }
+
+         Console.WriteLine(inOutside);
+      }
    }
 }
