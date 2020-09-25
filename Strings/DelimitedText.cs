@@ -27,7 +27,7 @@ namespace Core.Strings
       {
          var beginPattern = friendly ? "[squote]" : "'";
          var endPattern = friendly ? "[squote]" : "'";
-         var exceptPattern = friendly ? "[squote]%2" : "''";
+         var exceptPattern = friendly ? "[squote]2" : "''";
 
          return new DelimitedText(beginPattern, endPattern, exceptPattern, ignoreCase, multiline, friendly);
       }
@@ -36,7 +36,7 @@ namespace Core.Strings
       {
          var beginPattern = friendly ? "[dquote]" : "[\"]";
          var endPattern = friendly ? "[dquote]" : "[\"]";
-         var exceptPattern = friendly ? "[dquote]%2" : "[\"]{2}";
+         var exceptPattern = friendly ? "[dquote]2" : "[\"]{2}";
 
          return new DelimitedText(beginPattern, endPattern, exceptPattern, ignoreCase, multiline, friendly);
       }

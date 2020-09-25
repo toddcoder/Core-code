@@ -64,10 +64,10 @@ namespace Core.Tests
       public void DestringifyAsSqlTest()
       {
          var source = "SELECT 'I can''t do this' from foobar --yes you can\r\nprint ''";
-         var destringifier = DelimitedText.AsSql();
-         var parsed = destringifier.Destringify(source);
+         var delimitedText = DelimitedText.AsSql();
+         var parsed = delimitedText.Destringify(source);
          Console.WriteLine(parsed);
-         Console.WriteLine(destringifier.Restringify(parsed, RestringifyQuotes.SingleQuote));
+         Console.WriteLine(delimitedText.Restringify(parsed, RestringifyQuotes.SingleQuote));
       }
 
       [TestMethod]
