@@ -3,7 +3,7 @@
 namespace Core.Strings
 {
    [Flags]
-   public enum InOutsideStatus
+   public enum DelimitedTextStatus
    {
       Outside = 1,
       Inside = 2,

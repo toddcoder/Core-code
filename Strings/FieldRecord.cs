@@ -85,14 +85,14 @@ namespace Core.Strings
       {
          Clear();
 
-         var destringifier = new Destringifier(value);
+         var delimitedText = Quote == DoubleQuote ? DelimitedText.AsCLike() : DelimitedText.AsSql();
          var recordDelimiterEscaped = RecordDelimiter.Escape();
          var fieldDelimiterEscaped = FieldDelimiter.Escape();
-         var isDoubleQuote = Quote == DoubleQuote;
+         var restringifyQuotes = Quote == DoubleQuote ? RestringifyQuotes.DoubleQuote : RestringifyQuotes.SingleQuote;
 
          foreach (var field in value.Split(recordDelimiterEscaped).SelectMany(line => line.Split(fieldDelimiterEscaped)))
          {
-            WriteField(destringifier.Restring(field, isDoubleQuote));
+            WriteField(delimitedText.Restringify(field, restringifyQuotes));
          }
 
          WriteRecord();

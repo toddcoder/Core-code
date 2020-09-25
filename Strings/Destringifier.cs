@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Core.Assertions;
@@ -9,6 +10,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Strings
 {
+   [Obsolete("Use DelimitedText")]
    public class Destringifier
    {
       enum QuoteType

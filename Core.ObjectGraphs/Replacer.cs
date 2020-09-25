@@ -23,13 +23,15 @@ namespace Core.ObjectGraphs
          return new Replacer(source);
       }
 
-      Destringifier destringifier;
+      string source;
+      DelimitedText delimitedText;
       Formatter formatter;
       List<Macro> macros;
 
       public Replacer(string source)
       {
-         destringifier = new Destringifier(source);
+         this.source = source;
+         delimitedText = DelimitedText.BothQuotes();
          formatter = new Formatter();
          macros = new List<Macro>();
       }
@@ -45,7 +47,7 @@ namespace Core.ObjectGraphs
       public string Replace(string text)
       {
          text = TextFromFile(text);
-         text = destringifier.Restring(text, !text.IsMatch("^ '//(' /d+ ')' $"));
+         text = delimitedText.Restringify(text, RestringifyQuotes.None);
          text = formatter.Format(text);
 
          return macros.Aggregate(text, (current, macro) => macro.Invoke(current));
@@ -68,7 +70,7 @@ namespace Core.ObjectGraphs
          {
             for (var i = 0; i < matcher.MatchCount; i++)
             {
-               FileName file = destringifier.Restring(matcher[i, 1], false);
+               FileName file = delimitedText.Restringify(matcher[i, 1], RestringifyQuotes.None);
                matcher[i] = file.Exists() ? file.Text : "";
             }
          }
@@ -76,7 +78,7 @@ namespace Core.ObjectGraphs
          return matcher.ToString();
       }
 
-      public string Parse() => destringifier.Parse();
+      public string Parse() => delimitedText.Destringify(source);
 
       public void Copy(Replacer replacer)
       {

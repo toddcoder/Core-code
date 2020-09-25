@@ -24,8 +24,8 @@ namespace Core.ObjectGraphs
       public string Invoke(string sourceText)
       {
          var matcher = new Matcher();
-         var destringifier = new Destringifier(sourceText);
-         var source = destringifier.Parse();
+         var delimitedText = DelimitedText.BothQuotes();
+         var source = delimitedText.Destringify(sourceText, true);
          if (matcher.IsMatch(source, pattern))
          {
             for (var i = 0; i < matcher.MatchCount; i++)
@@ -33,13 +33,13 @@ namespace Core.ObjectGraphs
                var arguments = matcher[i, 1].Split("/s* ',' /s*");
                for (var j = 0; j < arguments.Length; j++)
                {
-                  arguments[j] = destringifier.Restring(arguments[j], false);
+                  arguments[j] = delimitedText.Restringify(arguments[j], RestringifyQuotes.None);
                }
 
                matcher[i] = Invoke(arguments);
             }
 
-            return destringifier.Restring(matcher.ToString(), true);
+            return delimitedText.Restringify(matcher.ToString(), RestringifyQuotes.None);
          }
 
          return sourceText;

@@ -1259,5 +1259,14 @@ namespace Core.Enumerables
             yield return (left, rightArray.FirstOrNone(r => matcher(left, r)));
          }
       }
+
+      public static IEnumerable<(int index, T item)> IndexedEnumerable<T>(this IEnumerable<T> enumerable)
+      {
+         var index = 0;
+         foreach (var item in enumerable)
+         {
+            yield return (index++, item);
+         }
+      }
    }
 }

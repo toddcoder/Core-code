@@ -200,8 +200,8 @@ namespace Core.ObjectGraphs
 
       public static ObjectGraph FromSingleLine(string singleLine)
       {
-         var destringifier = new Destringifier(singleLine);
-         var parsed = destringifier.Parse();
+         var delimitedText = DelimitedText.BothQuotes();
+         var parsed = delimitedText.Destringify(singleLine);
 
          var matcher = new Matcher();
 
@@ -223,7 +223,7 @@ namespace Core.ObjectGraphs
                         var name = matcher[0, 1];
                         var type = matcher[0, 2];
                         var value = matcher[0, 3];
-                        value = destringifier.Restring(value, false);
+                        value = delimitedText.Restringify(value, RestringifyQuotes.None);
                         writer.Write(name, value, type);
                      }
                      else if (matcher.IsMatch(token, REGEX_GROUP))

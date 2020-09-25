@@ -64,16 +64,10 @@ namespace Core.Tests
       public void DestringifyAsSqlTest()
       {
          var source = "SELECT 'I can''t do this' from foobar --yes you can\r\nprint ''";
-         var destringifier = Destringifier.AsSql(source);
-         var parsed = destringifier.Parse();
+         var destringifier = DelimitedText.AsSql();
+         var parsed = destringifier.Destringify(source);
          Console.WriteLine(parsed);
-         Console.WriteLine(destringifier.Restring(parsed, true));
-
-         var inOutside = new InOutside("'", "'", "''", friendly: false);
-         foreach (var (text, _, _) in inOutside.Enumerable(source))
-         {
-            Console.WriteLine($"<{text}>");
-         }
+         Console.WriteLine(destringifier.Restringify(parsed, RestringifyQuotes.SingleQuote));
       }
 
       [TestMethod]
@@ -85,7 +79,7 @@ namespace Core.Tests
          Console.WriteLine(parsed);
          Console.WriteLine(destringifier.Restring(parsed, true));
 
-         var inOutside = new InOutside("'", "'", "''", friendly: false);
+         var inOutside = new DelimitedText("'", "'", "''", friendly: false);
          foreach (var (text, _, _) in inOutside.Enumerable(source))
          {
             Console.WriteLine($"<{text}>");

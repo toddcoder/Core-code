@@ -2006,13 +2006,13 @@ namespace Core.Strings
       {
          if (source.IsNotEmpty() && startIndex < source.Length)
          {
-            var destringifier = new Destringifier(source.Drop(startIndex));
+            var delimitedText = DelimitedText.BothQuotes();
 
             var leftOfPairIndex = PAIRS.IndexOf(left);
             if (leftOfPairIndex != -1 && leftOfPairIndex.IsEven())
             {
                var right = PAIRS[leftOfPairIndex + 1];
-               var parsed = destringifier.Parse();
+               var parsed = delimitedText.Destringify(source.Drop(startIndex), true);
                var count = 0;
                var escaped = false;
                var type = StageType.LeftNotFound;
@@ -2051,7 +2051,7 @@ namespace Core.Strings
                            if (count == 0)
                            {
                               var segment = parsed.Slice(index, i);
-                              segment = destringifier.Restring(segment, true);
+                              segment = delimitedText.Restringify(segment, RestringifyQuotes.None);
                               return new StringSegment(segment, index, i);
                            }
                         }
@@ -2075,17 +2075,7 @@ namespace Core.Strings
          }
       }
 
-      public static string[] Words(this string source)
-      {
-         if (source.IsEmpty())
-         {
-            return new string[0];
-         }
-         else
-         {
-            return source.Split("/s+");
-         }
-      }
+      public static string[] Words(this string source) => source.IsEmpty() ? new string[0] : source.Split("/s+");
 
       static string formatWith(string format, Hash<string, string> pairs)
       {

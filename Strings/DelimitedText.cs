@@ -12,8 +12,44 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Strings
 {
-   public class InOutside
+   public class DelimitedText
    {
+      public static DelimitedText AsCLike(bool ignoreCase = false, bool multiline = false, bool friendly = true)
+      {
+         var beginPattern = friendly ? "[dquote]" : "[\"]";
+         var endPattern = friendly ? "[dquote]" : "[\"]";
+         var exceptPattern = friendly ? @"'\' [dquote]" : "\\[\"]";
+
+         return new DelimitedText(beginPattern, endPattern, exceptPattern, ignoreCase, multiline, friendly);
+      }
+
+      public static DelimitedText AsSql(bool ignoreCase = false, bool multiline = false, bool friendly = true)
+      {
+         var beginPattern = friendly ? "[squote]" : "'";
+         var endPattern = friendly ? "[squote]" : "'";
+         var exceptPattern = friendly ? "[squote]%2" : "''";
+
+         return new DelimitedText(beginPattern, endPattern, exceptPattern, ignoreCase, multiline, friendly);
+      }
+
+      public static DelimitedText AsBasic(bool ignoreCase = false, bool multiline = false, bool friendly = true)
+      {
+         var beginPattern = friendly ? "[dquote]" : "[\"]";
+         var endPattern = friendly ? "[dquote]" : "[\"]";
+         var exceptPattern = friendly ? "[dquote]%2" : "[\"]{2}";
+
+         return new DelimitedText(beginPattern, endPattern, exceptPattern, ignoreCase, multiline, friendly);
+      }
+
+      public static DelimitedText BothQuotes(bool ignoreCase = false, bool multiline = false, bool friendly = true)
+      {
+         var beginPattern = friendly ? "[dquote squote]" : "[\"']";
+         var endPattern = friendly ? "[dquote squote]" : "[\"']";
+         var exceptPattern = friendly ? @"'\' [dquote squote]" : "\\[\"']";
+
+         return new DelimitedText(beginPattern, endPattern, exceptPattern, ignoreCase, multiline, friendly);
+      }
+
       protected string beginPattern;
       protected string endPattern;
       protected string exceptPattern;
@@ -22,9 +58,10 @@ namespace Core.Strings
       protected bool multiline;
       protected bool friendly;
       protected LateLazy<Slicer> slicer;
-      protected Bits32<InOutsideStatus> status;
+      protected Bits32<DelimitedTextStatus> status;
+      protected List<string> strings;
 
-      protected InOutside(string beginPattern, string endPattern, string exceptPattern, IMaybe<string> exceptReplacement, bool ignoreCase = false,
+      protected DelimitedText(string beginPattern, string endPattern, string exceptPattern, IMaybe<string> exceptReplacement, bool ignoreCase = false,
          bool multiline = false, bool friendly = true)
       {
          BeginPattern = beginPattern;
@@ -36,14 +73,16 @@ namespace Core.Strings
          this.friendly = friendly;
 
          slicer = new LateLazy<Slicer>(true, "You must call Enumerable() before accessing this member");
-         status = InOutsideStatus.Outside;
+         status = DelimitedTextStatus.Outside;
+         TransformingMap = none<Func<string, string>>();
+         strings = new List<string>();
       }
 
-      public InOutside(string beginPattern, string endPattern, string exceptPattern, string exceptReplacement, bool ignoreCase = false,
+      public DelimitedText(string beginPattern, string endPattern, string exceptPattern, string exceptReplacement, bool ignoreCase = false,
          bool multiline = false, bool friendly = true) :
          this(beginPattern, endPattern, exceptPattern, exceptReplacement.Some(), ignoreCase, multiline, friendly) { }
 
-      public InOutside(string beginPattern, string endPattern, string exceptPattern, bool ignoreCase = false, bool multiline = false,
+      public DelimitedText(string beginPattern, string endPattern, string exceptPattern, bool ignoreCase = false, bool multiline = false,
          bool friendly = true) : this(beginPattern, endPattern, exceptPattern, none<string>(), ignoreCase, multiline, friendly) { }
 
       public string BeginPattern
@@ -100,13 +139,15 @@ namespace Core.Strings
          set => friendly = value;
       }
 
-      public Bits32<InOutsideStatus> Status
+      public Bits32<DelimitedTextStatus> Status
       {
          get => status;
          set => status = value;
       }
 
-      public IEnumerable<(string text, int index, InOutsideStatus status)> Enumerable(string source)
+      public IMaybe<Func<string, string>> TransformingMap { get; set; }
+
+      public IEnumerable<(string text, int index, DelimitedTextStatus status)> Enumerable(string source)
       {
          assert(() => source).Must().Not.BeNullOrEmpty().OrThrow();
 
@@ -134,8 +175,8 @@ namespace Core.Strings
                }
                else if (matcher.IsMatch(current, endPattern, ignoreCase, multiline))
                {
-                  yield return (builder.ToString(), insideStart, InOutsideStatus.Inside);
-                  yield return (matcher[0], i, InOutsideStatus.EndDelimiter);
+                  yield return (builder.ToString(), insideStart, DelimitedTextStatus.Inside);
+                  yield return (matcher[0], i, DelimitedTextStatus.EndDelimiter);
 
                   builder.Clear();
                   inside = false;
@@ -152,8 +193,8 @@ namespace Core.Strings
             {
                if (matcher.IsMatch(current, beginPattern, ignoreCase, multiline))
                {
-                  yield return (builder.ToString(), outsideStart, InOutsideStatus.Outside);
-                  yield return (matcher[0], i, InOutsideStatus.BeginDelimiter);
+                  yield return (builder.ToString(), outsideStart, DelimitedTextStatus.Outside);
+                  yield return (matcher[0], i, DelimitedTextStatus.BeginDelimiter);
 
                   builder.Clear();
                   inside = true;
@@ -175,16 +216,16 @@ namespace Core.Strings
             var rest = builder.ToString();
             if (inside)
             {
-               yield return (rest, insideStart, InOutsideStatus.Inside);
+               yield return (rest, insideStart, DelimitedTextStatus.Inside);
             }
             else
             {
-               yield return (rest, outsideStart, InOutsideStatus.Outside);
+               yield return (rest, outsideStart, DelimitedTextStatus.Outside);
             }
          }
       }
 
-      public IEnumerable<(int index, InOutsideStatus status)> Substrings(string source, string substring, bool ignoreCase = false)
+      public IEnumerable<(int index, DelimitedTextStatus status)> Substrings(string source, string substring, bool ignoreCase = false)
       {
          foreach (var (text, index, inOutsideStatus) in Enumerable(source).Where(t => Status[t.status]))
          {
@@ -195,7 +236,7 @@ namespace Core.Strings
          }
       }
 
-      public IEnumerable<(string text, int index, InOutsideStatus status)> Matches(string source, string pattern, bool ignoreCase = false,
+      public IEnumerable<(string text, int index, DelimitedTextStatus status)> Matches(string source, string pattern, bool ignoreCase = false,
          bool multiline = false, bool friendly = true)
       {
          foreach (var (text, index, inOutsideStatus) in Enumerable(source).Where(t => Status[t.status]))
@@ -228,6 +269,8 @@ namespace Core.Strings
       public string Keep(int index) => slicer.Value.Text.Keep(index);
 
       public int Length => slicer.Value.Length;
+
+      public IEnumerable<string> Strings => strings;
 
       public IEnumerable<Slice> Split(string source, string pattern, bool includeDelimiter = false)
       {
@@ -285,6 +328,117 @@ namespace Core.Strings
                }
             }
          }
+      }
+
+      public string Transform(string source, string pattern, string replacement, bool ignoreCase = false)
+      {
+         assert(() => pattern).Must().Not.BeNullOrEmpty().OrThrow();
+
+         var startIndex = 0;
+         Status = DelimitedTextStatus.Outside;
+         var values = new List<string>();
+
+         foreach (var (text, sliceIndex, length) in pattern.SliceSplit("'$' /d+").Where(s => s.Length > 0))
+         {
+            if (sliceIndex == 0)
+            {
+               startIndex = sliceIndex + length;
+            }
+            else
+            {
+               foreach (var (index, _) in Substrings(source, text, ignoreCase))
+               {
+                  var item = source.Drop(startIndex).Keep(index - startIndex);
+                  item = TransformingMap.Map(m => m(item)).DefaultTo(() => item);
+                  values.Add(item);
+                  startIndex = index + text.Length;
+               }
+            }
+         }
+
+         var rest = source.Drop(startIndex);
+         if (rest.Length > 0)
+         {
+            rest = TransformingMap.Map(m => m(rest)).DefaultTo(() => rest);
+            values.Add(rest);
+         }
+
+         var builder = new StringBuilder(replacement);
+         for (var i = 0; i < values.Count; i++)
+         {
+            builder.Replace($"${i}", values[i]);
+         }
+
+         return builder.ToString();
+      }
+
+      public IEnumerable<(string text, int index)> StringsOnly(string source)
+      {
+         return Enumerable(source).Where(t => t.status == DelimitedTextStatus.Inside).Select(t => (t.text, t.index));
+      }
+
+      public string Destringify(string source, bool includeDelimiters = false)
+      {
+         var builder = new StringBuilder();
+         strings.Clear();
+
+         foreach (var (text, _, delimitedTextStatus) in Enumerable(source))
+         {
+            switch (delimitedTextStatus)
+            {
+               case DelimitedTextStatus.Outside:
+                  builder.Append(text);
+                  break;
+               case DelimitedTextStatus.Inside:
+                  builder.Append($"/({strings.Count})");
+                  strings.Add(text);
+                  break;
+               case DelimitedTextStatus.BeginDelimiter:
+               case DelimitedTextStatus.EndDelimiter:
+                  if (includeDelimiters)
+                  {
+                     builder.Append(text);
+                  }
+
+                  break;
+            }
+         }
+
+         return builder.ToString();
+      }
+
+      public string Restringify(string source, RestringifyQuotes restringifyQuotes)
+      {
+         assert(() => source).Must().Not.BeNull().OrThrow();
+
+         string quote;
+         switch (restringifyQuotes)
+         {
+            case RestringifyQuotes.None:
+               quote = "";
+               break;
+            case RestringifyQuotes.DoubleQuote:
+               quote = "\"";
+               break;
+            case RestringifyQuotes.SingleQuote:
+               quote = "'";
+               break;
+            default:
+               throw new ArgumentOutOfRangeException(nameof(restringifyQuotes), restringifyQuotes, null);
+         }
+
+         Slicer restringified = source;
+         for (var i = 0; i < strings.Count; i++)
+         {
+            var substring = $"/({i})";
+            var replacement = $"{quote}{strings[i]}{quote}";
+            foreach (var index in source.FindAll(substring))
+            {
+               restringified[index, substring.Length] = replacement;
+            }
+         }
+
+         return restringified.ToString();
       }
 
       public override string ToString() => slicer.Value.ToString();

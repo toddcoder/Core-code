@@ -8,27 +8,28 @@ using static Core.Regex.RegexExtensions;
 
 namespace Core.Strings
 {
+   [Obsolete("Use Transform method of DelimitedText")]
    public class Transformer
    {
-      protected InOutside inOutside;
+      protected DelimitedText delimitedText;
 
       public Transformer(string beginPattern, string endPattern, string exceptPattern, string exceptReplacement, bool ignoreCase = false,
          bool multiline = false, bool friendly = true)
       {
-         inOutside = new InOutside(beginPattern, endPattern, exceptPattern, exceptReplacement, ignoreCase, multiline, friendly);
+         delimitedText = new DelimitedText(beginPattern, endPattern, exceptPattern, exceptReplacement, ignoreCase, multiline, friendly);
          Map = none<Func<string, string>>();
       }
 
       public Transformer(string beginPattern, string endPattern, string exceptPattern, bool ignoreCase = false, bool multiline = false,
          bool friendly = true)
       {
-         inOutside = new InOutside(beginPattern, endPattern, exceptPattern, ignoreCase, multiline, friendly);
+         delimitedText = new DelimitedText(beginPattern, endPattern, exceptPattern, ignoreCase, multiline, friendly);
          Map = none<Func<string, string>>();
       }
 
       public string Transform(string source, string pattern, string replacement, bool ignoreCase = false)
       {
-         var outside = inOutside.Enumerable(source).Where(t => t.status == InOutsideStatus.Outside).ToArray();
+         var outside = delimitedText.Enumerable(source).Where(t => t.status == DelimitedTextStatus.Outside).ToArray();
          var startIndex = 0;
 
          IMaybe<int> findInOutside(string target)

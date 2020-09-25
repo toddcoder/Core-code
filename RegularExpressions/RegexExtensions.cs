@@ -44,14 +44,7 @@ namespace Core.RegularExpressions
       internal static Matcher.Match[] getMatches(string replacement)
       {
          var matcher = new Matcher();
-         if (matcher.IsMatch(replacement, @"-(<'\') /('$' /d+)"))
-         {
-            return matcher.ToArray();
-         }
-         else
-         {
-            return new Matcher.Match[0];
-         }
+         return matcher.IsMatch(replacement, @"-(<'\') /('$' /d+)") ? matcher.ToArray() : new Matcher.Match[0];
       }
 
       public static string Substitute(this string input, string pattern, string replacement, RegexOptions options, bool friendly = true)
@@ -142,21 +135,27 @@ namespace Core.RegularExpressions
          return sliceSplit().ToArray();
       }
 
-      public static Slice[] SliceSplit(this string input, string pattern, bool ignoreCase = false, bool multiline = false, bool friendly = true)
+      public static IEnumerable<Slice> SliceSplit(this string input, string pattern, bool ignoreCase = false, bool multiline = false, bool friendly = true)
       {
-         IEnumerable<Slice> sliceSplit()
+         var matcher = new Matcher(friendly);
+         if (matcher.IsMatch(input, pattern, ignoreCase, multiline))
          {
-            var split = input.Split(pattern, ignoreCase, multiline, friendly);
             var index = 0;
-            foreach (var segment in split)
+            int length;
+            string text;
+            foreach (var (_, matchIndex, matchLength) in matcher)
             {
-               yield return new Slice { Index = index, Length = segment.Length, Text = segment };
+               length = matchIndex - index;
+               text = input.Drop(index).Keep(length);
+               yield return new Slice { Index = index, Text = text, Length = length };
 
-               index += segment.Length;
+               index = matchIndex + matchLength;
             }
-         }
 
-         return sliceSplit().ToArray();
+            length = input.Length - index;
+            text = input.Drop(index);
+            yield return new Slice { Index = index, Text = text, Length = length };
+         }
       }
 
       public static (string, string) Split2(this string input, string pattern, bool ignoreCase = false, bool multiline = false,
