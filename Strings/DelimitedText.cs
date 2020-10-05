@@ -149,7 +149,7 @@ namespace Core.Strings
 
       public IEnumerable<(string text, int index, DelimitedTextStatus status)> Enumerable(string source)
       {
-         assert(() => source).Must().Not.BeNullOrEmpty().OrThrow();
+         assert(() => source).Must().Not.BeNull().OrThrow();
 
          slicer.ActivateWith(() => new Slicer(source));
 

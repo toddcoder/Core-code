@@ -1,28 +1,36 @@
-﻿using Core.RegularExpressions;
+﻿using Core.Assertions;
+using Core.RegularExpressions;
 using Core.Strings;
+using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Collections
 {
-	public class StringHash : Hash<string, string>
-	{
-		public static implicit operator StringHash(string keyValues)
-		{
-			var destringifier = new Destringifier(keyValues);
-			var parsed = destringifier.Parse();
-			var hash = new StringHash();
+   public class StringHash : Hash<string, string>
+   {
+      public static implicit operator StringHash(string keyValues)
+      {
+         assert(() => keyValues).Must().Not.BeNull().OrThrow();
+         if (keyValues.IsEmpty())
+         {
+            return new StringHash();
+         }
 
-			foreach (var keyValue in parsed.Split("/s* ',' /s*"))
-			{
-				var elements = keyValue.Split("/s* '->' /s*");
-				if (elements.Length == 2)
-				{
-					var key = destringifier.Restring(elements[0], false);
-					var value = destringifier.Restring(elements[1], false);
-				   hash[key] = value;
-				}
-			}
+         var destringifier = DelimitedText.BothQuotes();
+         var parsed = destringifier.Destringify(keyValues);
+         var hash = new StringHash();
 
-			return hash;
-		}
-	}
+         foreach (var keyValue in parsed.Split("/s* ',' /s*"))
+         {
+            var elements = keyValue.Split("/s* '->' /s*");
+            if (elements.Length == 2)
+            {
+               var key = destringifier.Restringify(elements[0], RestringifyQuotes.None);
+               var value = destringifier.Restringify(elements[1], RestringifyQuotes.None);
+               hash[key] = value;
+            }
+         }
+
+         return hash;
+      }
+   }
 }

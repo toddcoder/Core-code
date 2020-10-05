@@ -4,6 +4,7 @@ using Core.ObjectGraphs;
 using Core.ObjectGraphs.Configurations.Json;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Core.Arrays.ArrayFunctions;
+using static Core.Monads.MonadExtensions;
 
 namespace Core.Tests
 {
@@ -15,15 +16,22 @@ namespace Core.Tests
 
    internal class TestClass
    {
-      public string Name { get; set; } = "";
+      public TestClass()
+      {
+         Array = array(1, 5, 3);
+         TestEnum = TestEnum.Ignore;
+         Name = "";
+      }
+
+      public string Name { get; set; }
 
       public int Index { get; set; }
 
       public bool IsTrue { get; set; }
 
-      public TestEnum TestEnum { get; set; } = TestEnum.Ignore;
+      public TestEnum TestEnum { get; set; }
 
-      public int[] Array { get; set; } = array(1, 5, 3);
+      public int[] Array { get; set; }
    }
 
    [TestClass]
@@ -32,14 +40,14 @@ namespace Core.Tests
       [TestMethod]
       public void SaveTest()
       {
-         ObjectGraph graph = "foo{a->alpha;b->bravo;c->charlie}";
+         ObjectGraph graph = "foo{a->'alpha';b->\"bravo\";c->charlie}";
          Console.WriteLine(graph);
       }
 
       [TestMethod]
       public void AccessTest()
       {
-         ObjectGraph graph = "a->alpha;b->bravo;c->charlie";
+         ObjectGraph graph = "a->\"alpha\";b->'bravo';c->charlie";
          Console.WriteLine(graph["a"].Value);
          Console.WriteLine(graph["b"].Value);
          Console.WriteLine(graph["c"].Value);
@@ -72,9 +80,8 @@ namespace Core.Tests
          var json = "{name:\"foobar\",index:153,\"isTrue\":true,array:[111,123,153]," +
             "obj:{id:0,name:\"name1\",array2:[111, 222, 333]}, foo_bar: 'xxx'}";
          var parser = new JsonToObjectGraphParser(json);
-         if (parser.ParseBoth().If(out var tuple, out var exception))
+         if (parser.ParseBoth().If(out var jsonObject, out var objectGraph, out var exception))
          {
-            var (jsonObject, objectGraph) = tuple;
             var writer = new JsonWriter();
             jsonObject.Generate(writer);
             Console.WriteLine(writer);

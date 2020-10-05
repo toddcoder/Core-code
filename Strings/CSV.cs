@@ -16,11 +16,11 @@ namespace Core.Strings
          protected List<string> fields;
          protected bool isEmpty;
 
-         public Record(string record, Destringifier destringifier) : this()
+         public Record(string record, DelimitedText delimitedText) : this()
          {
             foreach (var field in record.Split("','"))
             {
-               fields.Add(destringifier.Restring(field, false));
+               fields.Add(delimitedText.Restringify(field, RestringifyQuotes.None));
             }
 
             isEmpty = false;
@@ -59,27 +59,27 @@ namespace Core.Strings
 
       public static implicit operator CSV(string source) => new CSV(source);
 
-      protected Destringifier destringifier;
+      protected DelimitedText delimitedText;
       protected List<Record> records;
 
       public CSV(string source)
       {
          records = new List<Record>();
-         destringifier = new Destringifier(source);
-         var destringified = destringifier.Parse();
+         delimitedText = DelimitedText.AsBasic();
+         var destringified = delimitedText.Destringify(source);
          if (source.IsNotEmpty())
          {
             foreach (var record in destringified.Split("/r /n | /r | /n"))
             {
-               records.Add(getNewRecord(record, destringifier));
+               records.Add(getNewRecord(record, delimitedText));
             }
          }
       }
 
-      internal CSV(IEnumerable<Record> records, Destringifier destringifier)
+      internal CSV(IEnumerable<Record> records, DelimitedText delimitedText)
       {
          this.records = new List<Record>();
-         this.destringifier = destringifier;
+         this.delimitedText = delimitedText;
          var ignored = false;
          foreach (var record in records)
          {
@@ -98,9 +98,9 @@ namespace Core.Strings
 
       public List<Record> Records => records;
 
-      internal Destringifier Destringifier => destringifier;
+      internal DelimitedText DelimitedText => delimitedText;
 
-      protected static Record getNewRecord(string record, Destringifier destringifier) => new Record(record, destringifier);
+      protected static Record getNewRecord(string record, DelimitedText delimitedText) => new Record(record, delimitedText);
 
       public override string ToString() => records.Select(record => record.ToString()).ToString("\r\n");
 
@@ -108,15 +108,13 @@ namespace Core.Strings
 
       IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-      public IEnumerable<T> Objects<T>(params string[] signatures)
-         where T : new()
+      public IEnumerable<T> Objects<T>(params string[] signatures) where T : new()
       {
          var evaluator = new PropertyEvaluator(new T());
          return records.Where(record => !record.IsEmpty).Select(record => getObject<T>(evaluator, record, signatures));
       }
 
-      static T getObject<T>(PropertyEvaluator evaluator, Record record, params string[] signatures)
-         where T : new()
+      static T getObject<T>(PropertyEvaluator evaluator, Record record, params string[] signatures) where T : new()
       {
          var entity = new T();
          evaluator.Object = some<T, object>(entity);
@@ -136,8 +134,7 @@ namespace Core.Strings
          return entity;
       }
 
-      public IMaybe<T> FirstObject<T>(params string[] signatures)
-         where T : new()
+      public IMaybe<T> FirstObject<T>(params string[] signatures) where T : new()
       {
          if (records.Count > 0)
          {

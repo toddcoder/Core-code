@@ -74,10 +74,10 @@ namespace Core.Tests
       public void DestringifyAsSqlTest2()
       {
          var source = "UPDATE Foobar SET A = -A, B = 'This is a test' /*a test*/;";
-         var destringifier = Destringifier.AsSql(source);
-         var parsed = destringifier.Parse();
+         var delimitedText = DelimitedText.AsSql();
+         var parsed = delimitedText.Destringify(source);
          Console.WriteLine(parsed);
-         Console.WriteLine(destringifier.Restring(parsed, true));
+         Console.WriteLine(delimitedText.Restringify(parsed, RestringifyQuotes.SingleQuote));
 
          var inOutside = new DelimitedText("'", "'", "''", friendly: false);
          foreach (var (text, _, _) in inOutside.Enumerable(source))
