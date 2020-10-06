@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Linq;
+using Core.Applications;
+using Core.Collections;
 using Core.Enumerables;
 using Core.Monads;
+using Core.ObjectGraphs;
 using Core.Strings;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Core.Lambdas.LambdaFunctions;
@@ -17,7 +20,10 @@ namespace Core.Tests
       {
          var delimitedText = DelimitedText.AsSql(friendly: false);
          delimitedText.ExceptReplacement = "'".Some();
-         foreach (var (text, index, status) in delimitedText.Enumerable("SELECT foobar as 'can''t';"))
+         var source = "SELECT foobar as 'can''t';";
+         Console.WriteLine(source);
+
+         foreach (var (text, index, status) in delimitedText.Enumerable(source))
          {
             switch (status)
             {
@@ -213,7 +219,7 @@ namespace Core.Tests
 
          source = delimitedText.ToString();
          delimitedText.BeginPattern = "'<<'";
-         delimitedText.EndPattern = "'>>'";
+         delimitedText.EndPattern = "'>>'".Some();
          delimitedText.Status[DelimitedTextStatus.Outside] = true;
          delimitedText.Status[DelimitedTextStatus.Inside] = true;
 
@@ -257,6 +263,60 @@ namespace Core.Tests
 
          var restringed = delimitedText.Restringify(destringified, RestringifyQuotes.DoubleQuote);
          Console.WriteLine(restringed);
+      }
+
+      [TestMethod]
+      public void EmbeddedStringsTest()
+      {
+         var source = "find -P\"^ 'A'\" -F '.'";
+         var delimitedText = DelimitedText.BothQuotes();
+         foreach (var (text, _, status) in delimitedText.Enumerable(source))
+         {
+            switch (status)
+            {
+               case DelimitedTextStatus.Outside:
+                  Console.WriteLine($"outside: {text.Guillemetify()}");
+                  break;
+               case DelimitedTextStatus.Inside:
+                  Console.WriteLine($"inside: {text.Guillemetify()}");
+                  break;
+               case DelimitedTextStatus.BeginDelimiter:
+                  Console.WriteLine($"begin delimiter: {text.Guillemetify()}");
+                  break;
+               case DelimitedTextStatus.EndDelimiter:
+                  Console.WriteLine($"end delimiter: {text.Guillemetify()}");
+                  break;
+            }
+         }
+      }
+
+      [TestMethod]
+      public void DependentClassesTest()
+      {
+         ObjectGraph objectGraph = "foobar{a->'alpha';$b->\"bravo\";@c->charlie}";
+         Console.WriteLine(objectGraph);
+
+         var arguments = new Arguments("find -P\"^ 'A'\" -F '.'");
+         foreach (var argument in arguments)
+         {
+            Console.WriteLine(argument.Text.Guillemetify());
+         }
+
+         StringHash hash = "a? -> 'foobar', '$ b' -> \"bravo\", @c->charlie";
+         foreach (var (key, value) in hash)
+         {
+            Console.WriteLine($"{key}=>{value}");
+         }
+
+         CSV csv = "A,Alpha,180.00\r\nB,Bravo,\"1,982.18\"\r\n,C,Charlie,\"2,020.00\"";
+         foreach (var record in csv)
+         {
+            foreach (var field in record)
+            {
+               Console.Write(field.Guillemetify());
+            }
+            Console.WriteLine();
+         }
       }
    }
 }

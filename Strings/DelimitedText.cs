@@ -17,43 +17,39 @@ namespace Core.Strings
       public static DelimitedText AsCLike(bool ignoreCase = false, bool multiline = false, bool friendly = true)
       {
          var beginPattern = friendly ? "[dquote]" : "[\"]";
-         var endPattern = friendly ? "[dquote]" : "[\"]";
          var exceptPattern = friendly ? @"'\' [dquote]" : "\\[\"]";
 
-         return new DelimitedText(beginPattern, endPattern, exceptPattern, ignoreCase, multiline, friendly);
+         return new DelimitedText(beginPattern, exceptPattern, ignoreCase, multiline, friendly);
       }
 
       public static DelimitedText AsSql(bool ignoreCase = false, bool multiline = false, bool friendly = true)
       {
          var beginPattern = friendly ? "[squote]" : "'";
-         var endPattern = friendly ? "[squote]" : "'";
          var exceptPattern = friendly ? "[squote]2" : "''";
 
-         return new DelimitedText(beginPattern, endPattern, exceptPattern, ignoreCase, multiline, friendly);
+         return new DelimitedText(beginPattern, exceptPattern, ignoreCase, multiline, friendly);
       }
 
       public static DelimitedText AsBasic(bool ignoreCase = false, bool multiline = false, bool friendly = true)
       {
          var beginPattern = friendly ? "[dquote]" : "[\"]";
-         var endPattern = friendly ? "[dquote]" : "[\"]";
          var exceptPattern = friendly ? "[dquote]2" : "[\"]{2}";
 
-         return new DelimitedText(beginPattern, endPattern, exceptPattern, ignoreCase, multiline, friendly);
+         return new DelimitedText(beginPattern, exceptPattern, ignoreCase, multiline, friendly);
       }
 
       public static DelimitedText BothQuotes(bool ignoreCase = false, bool multiline = false, bool friendly = true)
       {
          var beginPattern = friendly ? "[dquote squote]" : "[\"']";
-         var endPattern = friendly ? "[dquote squote]" : "[\"']";
          var exceptPattern = friendly ? @"'\' [dquote squote]" : "\\[\"']";
 
-         return new DelimitedText(beginPattern, endPattern, exceptPattern, ignoreCase, multiline, friendly);
+         return new DelimitedText(beginPattern, exceptPattern, ignoreCase, multiline, friendly);
       }
 
       protected string beginPattern;
-      protected string endPattern;
+      protected IMaybe<string> _endPattern;
       protected string exceptPattern;
-      protected IMaybe<string> exceptReplacement;
+      protected IMaybe<string> _exceptReplacement;
       protected bool ignoreCase;
       protected bool multiline;
       protected bool friendly;
@@ -61,13 +57,13 @@ namespace Core.Strings
       protected Bits32<DelimitedTextStatus> status;
       protected List<string> strings;
 
-      protected DelimitedText(string beginPattern, string endPattern, string exceptPattern, IMaybe<string> exceptReplacement, bool ignoreCase = false,
-         bool multiline = false, bool friendly = true)
+      protected DelimitedText(string beginPattern, IMaybe<string> endPattern, string exceptPattern, bool ignoreCase = false, bool multiline = false,
+         bool friendly = true)
       {
          BeginPattern = beginPattern;
          EndPattern = endPattern;
          ExceptPattern = exceptPattern;
-         ExceptReplacement = exceptReplacement;
+         ExceptReplacement = none<string>();
          this.ignoreCase = ignoreCase;
          this.multiline = multiline;
          this.friendly = friendly;
@@ -78,12 +74,11 @@ namespace Core.Strings
          strings = new List<string>();
       }
 
-      public DelimitedText(string beginPattern, string endPattern, string exceptPattern, string exceptReplacement, bool ignoreCase = false,
-         bool multiline = false, bool friendly = true) :
-         this(beginPattern, endPattern, exceptPattern, exceptReplacement.Some(), ignoreCase, multiline, friendly) { }
-
       public DelimitedText(string beginPattern, string endPattern, string exceptPattern, bool ignoreCase = false, bool multiline = false,
-         bool friendly = true) : this(beginPattern, endPattern, exceptPattern, none<string>(), ignoreCase, multiline, friendly) { }
+         bool friendly = true) : this(beginPattern, endPattern.Some(), exceptPattern, ignoreCase, multiline, friendly) { }
+
+      public DelimitedText(string beginPattern, string exceptPattern, bool ignoreCase = false, bool multiline = false,
+         bool friendly = true) : this(beginPattern, none<string>(), exceptPattern, ignoreCase, multiline, friendly) { }
 
       public string BeginPattern
       {
@@ -95,13 +90,20 @@ namespace Core.Strings
          }
       }
 
-      public string EndPattern
+      public IMaybe<string> EndPattern
       {
-         get => endPattern;
+         get => _endPattern;
          set
          {
-            assert(() => value).Must().Not.BeNullOrEmpty().OrThrow();
-            endPattern = value.StartsWith("^") ? value : $"^{value}";
+            if (value.If(out var newEndPattern))
+            {
+               assert(() => newEndPattern).Must().Not.BeNullOrEmpty().OrThrow();
+               _endPattern = (newEndPattern.StartsWith("^") ? newEndPattern : $"^{newEndPattern}").Some();
+            }
+            else
+            {
+               _endPattern = value;
+            }
          }
       }
 
@@ -117,8 +119,8 @@ namespace Core.Strings
 
       public IMaybe<string> ExceptReplacement
       {
-         get => exceptReplacement;
-         set => exceptReplacement = value;
+         get => _exceptReplacement;
+         set => _exceptReplacement = value;
       }
 
       public bool IgnoreCase
@@ -147,6 +149,26 @@ namespace Core.Strings
 
       public IMaybe<Func<string, string>> TransformingMap { get; set; }
 
+      string getEndPattern(char ch)
+      {
+         if (friendly)
+         {
+            switch (ch)
+            {
+               case '\'':
+                  return "^ [squote]";
+               case '"':
+                  return "^ [dquote]";
+               default:
+                  return $"^ '{ch}'";
+            }
+         }
+         else
+         {
+            return $"^{System.Text.RegularExpressions.Regex.Escape(ch.ToString())}";
+         }
+      }
+
       public IEnumerable<(string text, int index, DelimitedTextStatus status)> Enumerable(string source)
       {
          assert(() => source).Must().Not.BeNull().OrThrow();
@@ -159,6 +181,7 @@ namespace Core.Strings
          var insideStart = 0;
          var outsideStart = 0;
          var matcher = new Matcher(friendly);
+         var endPattern = "";
 
          var i = 0;
          while (i < source.Length)
@@ -169,12 +192,15 @@ namespace Core.Strings
             {
                if (matcher.IsMatch(current, exceptPattern, ignoreCase, multiline))
                {
-                  builder.Append(exceptReplacement.DefaultTo(() => matcher[0]));
+                  builder.Append(_exceptReplacement.DefaultTo(() => matcher[0]));
                   i += matcher.Length;
+
                   continue;
                }
                else if (matcher.IsMatch(current, endPattern, ignoreCase, multiline))
                {
+                  endPattern = "";
+
                   yield return (builder.ToString(), insideStart, DelimitedTextStatus.Inside);
                   yield return (matcher[0], i, DelimitedTextStatus.EndDelimiter);
 
@@ -193,6 +219,8 @@ namespace Core.Strings
             {
                if (matcher.IsMatch(current, beginPattern, ignoreCase, multiline))
                {
+                  endPattern = _endPattern.DefaultTo(() => getEndPattern(ch));
+
                   yield return (builder.ToString(), outsideStart, DelimitedTextStatus.Outside);
                   yield return (matcher[0], i, DelimitedTextStatus.BeginDelimiter);
 

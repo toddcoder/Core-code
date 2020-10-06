@@ -338,7 +338,6 @@
     <Compile Include="Strings\CharacterExtensions.cs" />
     <Compile Include="Strings\CSV.cs" />
     <Compile Include="Strings\Destringifier.cs" />
-    <Compile Include="Strings\FieldRecord.cs" />
     <Compile Include="Strings\Formatter.cs" />
     <Compile Include="Strings\DelimitedTextStatus.cs" />
     <Compile Include="Strings\IStringStream.cs" />
@@ -375,7 +374,6 @@
     <Compile Include="Strings\Text\DifferenceBlock.cs" />
     <Compile Include="Strings\Text\DifferenceBuilder.cs" />
     <Compile Include="Strings\Text\DifferenceResult.cs" />
-    <Compile Include="Strings\Transformer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Core.snk" />

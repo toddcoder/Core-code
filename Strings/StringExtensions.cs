@@ -2002,9 +2002,9 @@ namespace Core.Strings
 
       public static IEnumerable<string> Enumerable(this string source) => source.Select(ch => ch.ToString());
 
-      public static StringSegment Balanced(this string source, char left, int startIndex = 0)
+      public static StringSegment Balanced(this string source, char left)
       {
-         if (source.IsNotEmpty() && startIndex < source.Length)
+         if (source.IsNotEmpty())
          {
             var delimitedText = DelimitedText.BothQuotes();
 
@@ -2012,7 +2012,7 @@ namespace Core.Strings
             if (leftOfPairIndex != -1 && leftOfPairIndex.IsEven())
             {
                var right = PAIRS[leftOfPairIndex + 1];
-               var parsed = delimitedText.Destringify(source.Drop(startIndex), true);
+               var parsed = delimitedText.Destringify(source, true);
                var count = 0;
                var escaped = false;
                var type = StageType.LeftNotFound;
