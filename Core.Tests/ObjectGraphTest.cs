@@ -92,5 +92,26 @@ namespace Core.Tests
             Console.WriteLine($"Exception: {exception.Message}");
          }
       }
+
+      [TestMethod]
+      public void BuildingObjectGraphTest()
+      {
+         var objectGraph = ObjectGraph.RootObjectGraph();
+         for (var i = 0; i < 5; i++)
+         {
+            objectGraph.Subgraph = $"${i}->[i->{i};iSq->{i * i}]";
+         }
+
+         Console.WriteLine(objectGraph);
+
+         for (var i = 0; i < 5; i++)
+         {
+            var name = $"${i}";
+            var childGraph = objectGraph[name];
+            var index = childGraph.ToInt("i");
+            var indexSquared = childGraph.ToInt("iSq");
+            Console.WriteLine($"{name}: index: {index}, index^2: {indexSquared}");
+         }
+      }
    }
 }
