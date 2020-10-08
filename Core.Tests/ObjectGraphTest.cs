@@ -99,7 +99,7 @@ namespace Core.Tests
          var objectGraph = ObjectGraph.RootObjectGraph();
          for (var i = 0; i < 5; i++)
          {
-            objectGraph.Subgraph = $"${i}->[i->{i};iSq->{i * i}]";
+            objectGraph.Subgraph = $"${i}->{{i->{i};iSq->{i * i}}}";
          }
 
          Console.WriteLine(objectGraph);
@@ -112,6 +112,14 @@ namespace Core.Tests
             var indexSquared = childGraph.ToInt("iSq");
             Console.WriteLine($"{name}: index: {index}, index^2: {indexSquared}");
          }
+      }
+
+      [TestMethod]
+      public void NewSyntaxTest()
+      {
+         ObjectGraph objectGraph = "$0->{segment->{index->1236;length->35;line->30;column->22;endLine->30;endColumn->57};" +
+            "message->\"Uses foreign key FK_FeeDelta_FeeArcId (FeeDelta.FeeArcId) -> (FeeArc.FeeArcId)\";oldText->\"\";rule->positiveAnalysisInformation}";
+         Console.WriteLine(objectGraph);
       }
    }
 }
