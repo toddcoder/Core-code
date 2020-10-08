@@ -207,16 +207,16 @@ namespace Core.ObjectGraphs
 
          using (var writer = new ObjectGraphWriter())
          {
-            foreach (var token in parsed.Split("/s* /(['{};[]']) /s*"))
+            foreach (var token in parsed.Split("/s* /(['{};()']) /s*"))
             {
                switch (token)
                {
                   case "{":
-                  case "[":
+                  case "(":
                      writer.Begin();
                      break;
                   case "}":
-                  case "]":
+                  case ")":
                      writer.End();
                      break;
                   default:

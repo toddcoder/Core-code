@@ -1,8 +1,5 @@
-﻿using Core.Assertions;
-using Core.Computers;
-using Core.RegularExpressions;
+﻿using Core.RegularExpressions;
 using Core.Strings;
-using static Core.Assertions.AssertionFunctions;
 
 namespace Core.ObjectGraphs.Parsers
 {
@@ -29,21 +26,7 @@ namespace Core.ObjectGraphs.Parsers
             value = value.TrimEnd();
          }
 
-         if (value.StartsWith("@"))
-         {
-            value = value.Drop(1);
-            value = replacer.Replace(value);
-            FileName file = value;
-
-            assert(() => file).Must().Exist().OrThrow();
-
-            var graph = ObjectGraph.FromFile(file);
-            graph.SetName(name);
-            Result = graph;
-
-            return true;
-         }
-         else if (value.StartsWith("[") && value.EndsWith("]"))
+         if (value.StartsWith("[") && value.EndsWith("]"))
          {
             value = value.Drop(1).Drop(-1).Trim();
             value = replacer.Replace(value);
