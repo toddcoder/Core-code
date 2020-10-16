@@ -225,6 +225,8 @@ namespace Core.Assertions
 
       public static Expression<Func<T>> assert<T>(Expression<Func<T>> func) => func;
 
+      public static Expression<Func<object>> asObject(Expression<Func<object>> func) => func;
+
       public static (string name, T value) resolve<T>(Expression<Func<T>> expression)
       {
          var expressionBody = expression.Body;
