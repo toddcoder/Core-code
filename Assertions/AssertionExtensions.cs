@@ -211,20 +211,20 @@ namespace Core.Assertions
 
       public static FileNameAssertion Must(this Expression<Func<FileName>> expression)
       {
-         var (name, value) = resolve(expression);
+         var (_, value) = resolve(expression);
          var assertion = value.Must();
 
-         return (FileNameAssertion)assertion.Named($"File {name}");
+         return (FileNameAssertion)assertion.Named($"File {value}");
       }
 
       public static FolderNameAssertion Must(this FolderName value) => new FolderNameAssertion(value);
 
       public static FolderNameAssertion Must(this Expression<Func<FolderName>> expression)
       {
-         var (name, value) = resolve(expression);
+         var (_, value) = resolve(expression);
          var assertion = value.Must();
 
-         return (FolderNameAssertion)assertion.Named($"Folder {name}");
+         return (FolderNameAssertion)assertion.Named($"Folder {value}");
       }
 
       public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this Dictionary<TKey, TValue> value)
