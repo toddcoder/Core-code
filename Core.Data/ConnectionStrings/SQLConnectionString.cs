@@ -9,27 +9,27 @@ namespace Core.Data.ConnectionStrings
 {
    public class SQLConnectionString : IConnectionString
    {
-      public static string GetConnectionString(string server, string database, bool integratedSecurity = true)
+      public static string GetConnectionString(string server, string database, string application, bool integratedSecurity = true)
       {
-         var baseValue = $"Data Source={server};Initial Catalog={database};";
+         var baseValue = $"Data Source={server};Initial Catalog={database};Application Name={application};";
          return integratedSecurity ? $"{baseValue}Integrated Security=SSPI;" : baseValue;
       }
 
-      public static string GetConnectionString(string server, string database, string user, string password)
+      public static string GetConnectionString(string server, string database, string application, string user, string password)
       {
-         var baseValue = GetConnectionString(server, database, false);
+         var baseValue = GetConnectionString(server, database, application, false);
          return user.IsNotEmpty() && password.IsNotEmpty() ? $"{baseValue}User ID={user}; Password={password}" : baseValue;
       }
 
-      public static string GetConnectionString(string server, string database, IMaybe<string> anyUser, IMaybe<string> anyPassword)
+      public static string GetConnectionString(string server, string database, string application, IMaybe<string> _user, IMaybe<string> _password)
       {
-         if (anyUser.If(out var user) && anyPassword.If(out var password))
+         if (_user.If(out var user) && _password.If(out var password))
          {
-            return GetConnectionString(server, database, user, password);
+            return GetConnectionString(server, database, application, user, password);
          }
          else
          {
-            return GetConnectionString(server, database);
+            return GetConnectionString(server, database, application);
          }
       }
 
@@ -44,7 +44,8 @@ namespace Core.Data.ConnectionStrings
             return
                from server in connection.Require("server")
                from database in connection.Require("database")
-               select new SQLConnectionString(server, database, connection);
+               from application in connection.Require("application")
+               select new SQLConnectionString(server, database, application, connection);
          }
       }
 
@@ -57,11 +58,11 @@ namespace Core.Data.ConnectionStrings
          this.connectionTimeout = connectionTimeout;
       }
 
-      internal SQLConnectionString(string server, string database, Connection connection)
+      internal SQLConnectionString(string server, string database, string application, Connection connection)
       {
          var user = connection.Map("user");
          var password = connection.Map("password");
-         connectionString = GetConnectionString(server, database, user, password);
+         connectionString = GetConnectionString(server, database, application, user, password);
          connectionTimeout = connection.Timeout;
       }
 
@@ -69,15 +70,16 @@ namespace Core.Data.ConnectionStrings
       {
          var server = connection.Value("server");
          var database = connection.Value("database");
+         var application = connection.Value("application");
          var user = connection.Map("user");
          var password = connection.Map("password");
-         connectionString = GetConnectionString(server, database, user, password);
+         connectionString = GetConnectionString(server, database, application, user, password);
          connectionTimeout = connection.Timeout;
       }
 
-      public SQLConnectionString(string server, string database, string user = "", string password = "", string timeout = "")
+      public SQLConnectionString(string server, string database, string application, string user = "", string password = "", string timeout = "")
       {
-         connectionString = GetConnectionString(server, database, user, password);
+         connectionString = GetConnectionString(server, database, application, user, password);
          connectionTimeout = timeout.IsEmpty() ? 30.Seconds() : timeout.ToTimeSpan();
       }
 

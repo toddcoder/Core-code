@@ -26,11 +26,11 @@ namespace Core.Tests
 
       public override string ToString() => $"{ObjectName}.{ColumnName} {TypeName}";
 
-      public string ConnectionString => SQLConnectionString.GetConnectionString(".", "local_tebennett");
+      public string ConnectionString => SQLConnectionString.GetConnectionString(".", "local_tebennett", "TSqlCop");
 
       public CommandSourceType CommandSourceType => CommandSourceType.File;
 
-      public string Command => @"C:\Enterprise\Projects\TSqlCop\TSqlCop.Ssms\Queries\ColumnNames.sql";
+      public string Command => @"C:\Enterprise\Projects\TSqlCop\source\TSqlCop.Ssms\Queries\ColumnNames.sql";
 
       public TimeSpan CommandTimeout => 30.Seconds();
 
@@ -55,18 +55,18 @@ namespace Core.Tests
    [TestClass]
    public class DataTests
    {
-      const string TRUE_CONNECTION_STRING = "Data Source=.;Initial Catalog=local_tebennett;Integrated Security=SSPI;";
+      const string TRUE_CONNECTION_STRING = "Data Source=.;Initial Catalog=local_tebennett;Integrated Security=SSPI;Application Name=TSqlCop;";
 
       [TestMethod]
       public void FromConfigurationTest()
       {
          var entity = new ColumnData { SchemaName = "PreFlow" };
-         var anyAdapter =
+         var _adapter =
             from configuration in Configuration.LoadFromObjectGraph(@"C:\Enterprise\Projects\Core\Core.Tests\test-data\configuration.objectgraph")
             from setup in SQLSetup.FromConfiguration(configuration, "all")
             from adapter in Adapter<ColumnData>.FromSetup(setup, entity)
             select adapter;
-         if (anyAdapter.If(out var allColumnData, out var exception))
+         if (_adapter.If(out var allColumnData, out var exception))
          {
             var data = allColumnData.ToArray();
             foreach (var columnData in data)
@@ -138,7 +138,7 @@ namespace Core.Tests
 
          public int ObjectId { get; set; }
 
-         public string ConnectionString => SQLConnectionString.GetConnectionString(".", "local_tebennett");
+         public string ConnectionString => SQLConnectionString.GetConnectionString(".", "local_tebennett", "TSqlCop");
 
          public CommandSourceType CommandSourceType => CommandSourceType.SQL;
 

@@ -2,13 +2,14 @@ connections
 	local
 		server -> .
 		database -> local_tebennett
+		application -> TSqlCop
 	local2
 		connection -> DUMMY
 commands
 	all
-		file -> C:\Enterprise\Projects\TSqlCop\TSqlCop.Ssms\Queries\ColumnNames.sql
+		file -> C:\Enterprise\Projects\TSqlCop\source\SqlConformance.Library\MetaData\Queries\Columns.sql
 	all2
-		file -> C:\Enterprise\Projects\TSqlCop\TSqlCop.Ssms\Queries\ColumnNames.sql
+		file -> C:\Enterprise\Projects\TSqlCop\source\SqlConformance.Library\MetaData\Queries\Columns.sql
 adapters
 	all
 		connection -> local
