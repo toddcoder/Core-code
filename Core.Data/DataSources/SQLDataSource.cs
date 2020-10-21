@@ -128,8 +128,7 @@ namespace Core.Data.DataSources
 
       public event SqlInfoMessageEventHandler Message;
 
-      public SQLDataSource(string connectionString, TimeSpan timeout)
-         : base(connectionString, timeout)
+      public SQLDataSource(string connectionString, TimeSpan timeout) : base(connectionString, timeout)
       {
          CommandTimeout = timeout;
          attributes = new Hash<string, string>();
@@ -213,8 +212,7 @@ namespace Core.Data.DataSources
 
       public string TableName { get; set; }
 
-      public void Copy<T>(Adapter<T> sourceAdapter)
-         where T : class
+      public void Copy<T>(Adapter<T> sourceAdapter) where T : class
       {
          assert(() => TableName).Must().Not.BeEmpty().OrThrow();
 

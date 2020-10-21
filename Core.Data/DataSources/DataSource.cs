@@ -45,10 +45,10 @@ namespace Core.Data.DataSources
          }
       }
 
-      protected IMaybe<IDbConnection> anyConnection;
+      protected IMaybe<IDbConnection> _connection;
       protected TimeSpan commandTimeout;
       protected Fields.Fields fields;
-      protected IMaybe<IActive> anyActiveObject;
+      protected IMaybe<IActive> _activeObject;
 
       public event EventHandler<CancelEventArgs> NextRow;
 
@@ -58,7 +58,7 @@ namespace Core.Data.DataSources
          this.commandTimeout = commandTimeout;
          ResultIndex = 0;
          Command = none<IDbCommand>();
-         anyConnection = none<IDbConnection>();
+         _connection = none<IDbConnection>();
          Reader = none<IDataReader>();
       }
 
@@ -104,7 +104,7 @@ namespace Core.Data.DataSources
 
       internal int Execute(object entity, string command, Parameters.Parameters parameters, Fields.Fields inFields)
       {
-         anyActiveObject = entity.IfCast<IActive>();
+         _activeObject = entity.IfCast<IActive>();
 
          fields = inFields;
 
@@ -119,7 +119,7 @@ namespace Core.Data.DataSources
 
          try
          {
-            if (Command.If(out var dbCommand) & anyConnection.If(out var dbConnection))
+            if (Command.If(out var dbCommand) & _connection.If(out var dbConnection))
             {
                dbCommand.Connection = dbConnection;
             }
@@ -144,7 +144,7 @@ namespace Core.Data.DataSources
 
                FillOrdinals(reader, inFields);
 
-               if (anyActiveObject.If(out var activeObject))
+               if (_activeObject.If(out var activeObject))
                {
                   activeObject.BeforeExecute();
                }
@@ -157,14 +157,14 @@ namespace Core.Data.DataSources
                   cancel = new CancelEventArgs().Cancel;
                }
 
-               if (anyActiveObject.If(out activeObject))
+               if (_activeObject.If(out activeObject))
                {
                   activeObject.AfterExecute();
                }
             }
             else
             {
-               if (anyActiveObject.If(out var activeObject))
+               if (_activeObject.If(out var activeObject))
                {
                   activeObject.BeforeExecute();
                }
@@ -172,7 +172,7 @@ namespace Core.Data.DataSources
                recordsAffected = dbCommand.ExecuteNonQuery();
                FillOutput(entity, dbCommand.Parameters, parameters);
 
-               if (anyActiveObject.If(out activeObject))
+               if (_activeObject.If(out activeObject))
                {
                   activeObject.AfterExecute();
                }
@@ -193,7 +193,7 @@ namespace Core.Data.DataSources
       {
          assert(() => inFields.Count).Must().BePositive().OrThrow("You must have at least one field defined");
 
-         anyActiveObject = entity.IfCast<IActive>();
+         _activeObject = entity.IfCast<IActive>();
          fields = inFields;
 
          IDataReader reader = null;
@@ -206,7 +206,7 @@ namespace Core.Data.DataSources
             AddParameters(entity, parameters);
 
             setCommand(entity, command);
-            if (Command.If(out var dbCommand) & anyConnection.If(out var connection))
+            if (Command.If(out var dbCommand) & _connection.If(out var connection))
             {
                dbCommand.Connection = connection;
             }
@@ -224,7 +224,7 @@ namespace Core.Data.DataSources
             FillOutput(entity, dbCommand.Parameters, parameters);
             FillOrdinals(reader, inFields);
 
-            if (anyActiveObject.If(out var activeObject))
+            if (_activeObject.If(out var activeObject))
             {
                activeObject.BeforeExecute();
             }
@@ -271,7 +271,7 @@ namespace Core.Data.DataSources
       {
          if (Reader.If(out var reader))
          {
-            if (anyActiveObject.If(out var activeObject))
+            if (_activeObject.If(out var activeObject))
             {
                activeObject.AfterExecute();
             }
@@ -369,7 +369,7 @@ namespace Core.Data.DataSources
          if (Command.IsNone)
          {
             var command = GetCommand();
-            command.Connection = anyConnection.Required("Connection not properly initialized");
+            command.Connection = _connection.Required("Connection not properly initialized");
             command.CommandTimeout = (int)commandTimeout.TotalSeconds;
 
             Command = command.Some();
@@ -378,7 +378,7 @@ namespace Core.Data.DataSources
 
       void allocateConnection()
       {
-         if (anyConnection.If(out var connection))
+         if (_connection.If(out var connection))
          {
             if (connection.State == ConnectionState.Closed)
             {
@@ -387,11 +387,17 @@ namespace Core.Data.DataSources
          }
          else
          {
-            anyConnection = GetConnection().Some();
+            _connection = GetConnection().Some();
          }
       }
 
       protected void flagAsDeallocated() => Deallocated = true;
+
+      public void Close()
+      {
+         disposeCommand();
+         disposeConnection();
+      }
 
       protected void disposeCommand()
       {
@@ -404,10 +410,10 @@ namespace Core.Data.DataSources
 
       protected void disposeConnection()
       {
-         if (anyConnection.If(out var connection))
+         if (_connection.If(out var connection))
          {
             connection.Dispose();
-            anyConnection = none<IDbConnection>();
+            _connection = none<IDbConnection>();
          }
       }
 
