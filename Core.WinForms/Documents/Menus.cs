@@ -129,7 +129,7 @@ namespace Core.WinForms.Documents
 
       protected static IResult<Keys> shortcutKeys(string text)
       {
-         var matcher = text.Matches("^ /(['^%|']+)? /(/w+) $");
+         var matcher = text.Matcher("^ /(['^%|']+)? /(/w+) $");
          if (matcher.If(out var m))
          {
             var keys = (Keys)0;

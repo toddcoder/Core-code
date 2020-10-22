@@ -304,7 +304,7 @@ namespace Core.Strings
          }
          else
          {
-            var matches = source.Matches($"-/b /(['A-Z']{quantitative})");
+            var matches = source.Matcher($"-/b /(['A-Z']{quantitative})");
             if (matches.If(out var matcher))
             {
                for (var i = 0; i < matcher.MatchCount; i++)
@@ -354,7 +354,7 @@ namespace Core.Strings
          else
          {
             var pattern = separator.Escape().SingleQuotify() + "/(['a-z'])";
-            var matches = source.Matches(pattern);
+            var matches = source.Matcher(pattern);
             if (matches.If(out var matcher))
             {
                for (var i = 0; i < matcher.MatchCount; i++)
@@ -1552,7 +1552,7 @@ namespace Core.Strings
          }
          else
          {
-            return source.Matches("^ [quote] /(.*?) [quote] $").Map(m => m.FirstGroup).DefaultTo(() => source);
+            return source.Matcher("^ [quote] /(.*?) [quote] $").Map(m => m.FirstGroup).DefaultTo(() => source);
          }
       }
 
@@ -1906,7 +1906,7 @@ namespace Core.Strings
          }
          else
          {
-            return source.Matches("/(['+-']? /d+)").Map(m => m[0, 1].ToInt());
+            return source.Matcher("/(['+-']? /d+)").Map(m => m[0, 1].ToInt());
          }
       }
 
@@ -1918,7 +1918,7 @@ namespace Core.Strings
          }
          else
          {
-            return source.Matches("/(['+-']? /d* '.' /d* (['eE'] ['-+']? /d+)?)").Map(m => m[0, 1].ToDouble());
+            return source.Matcher("/(['+-']? /d* '.' /d* (['eE'] ['-+']? /d+)?)").Map(m => m[0, 1].ToDouble());
          }
       }
 
@@ -2459,7 +2459,7 @@ namespace Core.Strings
       {
          IMaybe<int> matches()
          {
-            return source.Matches("^ '0x' /(['0-9a-fA-F']+) $").Map(m => int.Parse(m.FirstGroup, NumberStyles.HexNumber));
+            return source.Matcher("^ '0x' /(['0-9a-fA-F']+) $").Map(m => int.Parse(m.FirstGroup, NumberStyles.HexNumber));
          }
 
          return maybe(source.IsNotEmpty(), matches);
@@ -2467,7 +2467,7 @@ namespace Core.Strings
 
       public static IMaybe<string> GetSignature(this string parameterName)
       {
-         return maybe(parameterName.IsNotEmpty(), () => parameterName.Matches("^ '@' /(.*) $").Map(m => m.FirstGroup.SnakeToCamelCase(true)));
+         return maybe(parameterName.IsNotEmpty(), () => parameterName.Matcher("^ '@' /(.*) $").Map(m => m.FirstGroup.SnakeToCamelCase(true)));
       }
 
       public static IEnumerable<Slice> SlicesOf(this string source, string value, StringComparison comparison = StringComparison.CurrentCulture)
@@ -2579,7 +2579,7 @@ namespace Core.Strings
          {
             return "Source is empty".Failure<long>();
          }
-         else if (source.Matches("^ /(/d+) /['kmg']? $", out var matcher))
+         else if (source.Matcher("^ /(/d+) /['kmg']? $", out var matcher))
          {
             var valueSource = matcher.FirstGroup;
             var suffix = matcher.SecondGroup;

@@ -34,7 +34,7 @@ namespace Core.WinForms.Documents
             textBox.SelectAll();
             textBox.ForeColor = Color.Black;
             textBox.BackColor = Color.White;
-            var matcher = textBox.Text.Matches(pattern, multiline: true);
+            var matcher = textBox.Text.Matcher(pattern, multiline: true);
             if (matcher.If(out var m))
             {
                for (var i = 0; i < m.MatchCount; i++)

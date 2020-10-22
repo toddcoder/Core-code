@@ -199,28 +199,28 @@ namespace Core.Regex
          }
       }
 
-      public static IMaybe<Matcher> Matches(this string input, string pattern, bool ignoreCase = false, bool multiline = false)
+      public static IMaybe<Matcher> Matcher(this string input, string pattern, bool ignoreCase = false, bool multiline = false)
       {
          var matcher = new Matcher();
 
          return maybe(matcher.IsMatch(input, pattern, ignoreCase, multiline), () => matcher);
       }
 
-      public static IMaybe<Matcher> Matches(this string input, string pattern, RegexOptions options)
+      public static IMaybe<Matcher> Matcher(this string input, string pattern, RegexOptions options)
       {
          var matcher = new Matcher();
          return maybe(matcher.IsMatch(input, pattern, options), () => matcher);
       }
 
-      public static bool Matches(this string input, string pattern, out Matcher matcher, bool ignoreCase = false,
+      public static bool Matcher(this string input, string pattern, out Matcher matcher, bool ignoreCase = false,
          bool multiline = false)
       {
-         return input.Matches(pattern, ignoreCase, multiline).If(out matcher);
+         return input.Matcher(pattern, ignoreCase, multiline).If(out matcher);
       }
 
-      public static bool Matches(this string input, string pattern, out Matcher matcher, RegexOptions options)
+      public static bool Matcher(this string input, string pattern, out Matcher matcher, RegexOptions options)
       {
-         return input.Matches(pattern, options).If(out matcher);
+         return input.Matcher(pattern, options).If(out matcher);
       }
 
       public static void IfMatches(this string input, string pattern, Action<Matcher> ifTrue, bool ignoreCase = false,
@@ -291,13 +291,13 @@ namespace Core.Regex
          return new Matcher().MatchOne(input, pattern, ignoreCase, multiline);
       }
 
-      public static IEnumerable<RegularExpressions.Matcher.Match> Matched(this string input, string pattern, bool ignoreCase = false,
+      public static IEnumerable<RegularExpressions.Matcher.Match> Matches(this string input, string pattern, bool ignoreCase = false,
          bool multiline = false)
       {
          return new Matcher().Matched(input, pattern, ignoreCase, multiline);
       }
 
-      public static IEnumerable<RegularExpressions.Matcher.Match> Matched(this string input, string pattern, RegexOptions options)
+      public static IEnumerable<RegularExpressions.Matcher.Match> Matches(this string input, string pattern, RegexOptions options)
       {
          return new Matcher().Matched(input, pattern, options);
       }

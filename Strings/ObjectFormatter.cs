@@ -11,7 +11,7 @@ namespace Core.Strings
 
       public ObjectFormatter(object obj) => evaluator = new PropertyEvaluator(obj);
 
-      public string Format(string source) => source.Matches(REGEX_NAME).Map(matcher =>
+      public string Format(string source) => source.Matcher(REGEX_NAME).Map(matcher =>
       {
          for (var i = 0; i < matcher.MatchCount; i++)
          {

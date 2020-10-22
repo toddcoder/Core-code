@@ -478,7 +478,7 @@ namespace Core.WinForms.Controls
          var offset = leftMargin - 2;
          foreach (var (_, line, point) in VisibleLines)
          {
-            if (line.Matches("^ /(/t1%7)").If(out var matcher))
+            if (line.Matcher("^ /(/t1%7)").If(out var matcher))
             {
                using (var pen = new Pen(Color.Gray) { DashStyle = DashStyle.Dot })
                {
@@ -741,7 +741,7 @@ namespace Core.WinForms.Controls
          else
          {
             var segment = Text.Drop(start).Keep(length);
-            return segment.Matches("/w+").Map(m => RectangleFrom(graphics, m.Index + start, m.Length, false));
+            return segment.Matcher("/w+").Map(m => RectangleFrom(graphics, m.Index + start, m.Length, false));
          }
       }
 
@@ -758,7 +758,7 @@ namespace Core.WinForms.Controls
             for (; i > -1 && char.IsLetterOrDigit(text, i); i--) { }
 
             i++;
-            return text.Drop(i).Matches("/w+").Map(m => RectangleFrom(graphics, m.Index + i, m.Length, false));
+            return text.Drop(i).Matcher("/w+").Map(m => RectangleFrom(graphics, m.Index + i, m.Length, false));
          }
          else
          {

@@ -115,7 +115,7 @@ namespace Core.Dates
       static IResult<TimeSpan> getSpan(string source)
       {
          return
-            from matcher in source.Matches(REGEX_TIMER_INTERVAL).Result($"Can't match {source}")
+            from matcher in source.Matcher(REGEX_TIMER_INTERVAL).Result($"Can't match {source}")
             from span in getSpan(matcher)
             select span;
       }

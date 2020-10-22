@@ -29,7 +29,7 @@ namespace Core.RegularExpressions
       {
          if (friendly)
          {
-            pattern = Matcher.getPattern(pattern);
+            pattern = RegularExpressions.Matcher.getPattern(pattern);
          }
 
          return System.Text.RegularExpressions.Regex.IsMatch(input, pattern, options);
@@ -51,7 +51,7 @@ namespace Core.RegularExpressions
       {
          if (friendly)
          {
-            pattern = Matcher.getPattern(pattern);
+            pattern = RegularExpressions.Matcher.getPattern(pattern);
          }
 
          return System.Text.RegularExpressions.Regex.Replace(input, pattern, replacement, options);
@@ -61,7 +61,7 @@ namespace Core.RegularExpressions
       {
          if (friendly)
          {
-            pattern = Matcher.getPattern(pattern);
+            pattern = RegularExpressions.Matcher.getPattern(pattern);
          }
 
          var regex = new System.Text.RegularExpressions.Regex(pattern, options);
@@ -106,7 +106,7 @@ namespace Core.RegularExpressions
       {
          if (friendly)
          {
-            pattern = Matcher.getPattern(pattern);
+            pattern = RegularExpressions.Matcher.getPattern(pattern);
          }
 
          return System.Text.RegularExpressions.Regex.Split(input, pattern, options);
@@ -241,7 +241,7 @@ namespace Core.RegularExpressions
 
       public static string FriendlyString(this string input) => $"'{input.Replace("'", "\\'")}'";
 
-      public static IMaybe<Matcher> Matches(this string input, string pattern, bool ignoreCase = false,
+      public static IMaybe<Matcher> Matcher(this string input, string pattern, bool ignoreCase = false,
          bool multiline = false, bool friendly = true)
       {
          var matcher = new Matcher(friendly);
@@ -249,7 +249,7 @@ namespace Core.RegularExpressions
          return maybe(matcher.IsMatch(input, pattern, ignoreCase, multiline), () => matcher);
       }
 
-      public static IMaybe<Matcher> Matches(this string input, string pattern, RegexOptions options,
+      public static IMaybe<Matcher> Matcher(this string input, string pattern, RegexOptions options,
          bool friendly = true)
       {
          var matcher = new Matcher(friendly);
@@ -257,16 +257,16 @@ namespace Core.RegularExpressions
          return maybe(matcher.IsMatch(input, pattern, options), () => matcher);
       }
 
-      public static bool Matches(this string input, string pattern, out Matcher matcher, bool ignoreCase = false,
+      public static bool Matcher(this string input, string pattern, out Matcher matcher, bool ignoreCase = false,
          bool multiline = false, bool friendly = true)
       {
-         return input.Matches(pattern, ignoreCase, multiline, friendly).If(out matcher);
+         return input.Matcher(pattern, ignoreCase, multiline, friendly).If(out matcher);
       }
 
-      public static bool Matches(this string input, string pattern, out Matcher matcher, RegexOptions options,
+      public static bool Matcher(this string input, string pattern, out Matcher matcher, RegexOptions options,
          bool friendly = true)
       {
-         return input.Matches(pattern, options, friendly).If(out matcher);
+         return input.Matcher(pattern, options, friendly).If(out matcher);
       }
 
       public static void IfMatches(this string input, string pattern, Action<Matcher> ifTrue, bool ignoreCase = false,
@@ -338,13 +338,13 @@ namespace Core.RegularExpressions
          return new Matcher(friendly).MatchOne(input, pattern, ignoreCase, multiline);
       }
 
-      public static IEnumerable<Matcher.Match> Matched(this string input, string pattern, bool ignoreCase = false, bool multiline = false,
+      public static IEnumerable<Matcher.Match> Matches(this string input, string pattern, bool ignoreCase = false, bool multiline = false,
          bool friendly = true)
       {
          return new Matcher(friendly).Matched(input, pattern, ignoreCase, multiline);
       }
 
-      public static IEnumerable<Matcher.Match> Matched(this string input, string pattern, RegexOptions options, bool friendly = true)
+      public static IEnumerable<Matcher.Match> Matches(this string input, string pattern, RegexOptions options, bool friendly = true)
       {
          return new Matcher(friendly).Matched(input, pattern, options);
       }
