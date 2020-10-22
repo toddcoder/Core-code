@@ -135,7 +135,8 @@ namespace Core.RegularExpressions
          return sliceSplit().ToArray();
       }
 
-      public static IEnumerable<Slice> SliceSplit(this string input, string pattern, bool ignoreCase = false, bool multiline = false, bool friendly = true)
+      public static IEnumerable<Slice> SliceSplit(this string input, string pattern, bool ignoreCase = false, bool multiline = false,
+         bool friendly = true)
       {
          var matcher = new Matcher(friendly);
          if (matcher.IsMatch(input, pattern, ignoreCase, multiline))
@@ -335,6 +336,17 @@ namespace Core.RegularExpressions
          bool multiline = false, bool friendly = true)
       {
          return new Matcher(friendly).MatchOne(input, pattern, ignoreCase, multiline);
+      }
+
+      public static IEnumerable<Matcher.Match> Matched(this string input, string pattern, bool ignoreCase = false, bool multiline = false,
+         bool friendly = true)
+      {
+         return new Matcher(friendly).Matched(input, pattern, ignoreCase, multiline);
+      }
+
+      public static IEnumerable<Matcher.Match> Matched(this string input, string pattern, RegexOptions options, bool friendly = true)
+      {
+         return new Matcher(friendly).Matched(input, pattern, options);
       }
    }
 }

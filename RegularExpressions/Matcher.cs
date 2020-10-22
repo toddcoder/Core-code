@@ -21,7 +21,7 @@ namespace Core.RegularExpressions
    {
       public class Group
       {
-         public static Group Empty => new Group { Index = -1, Length = 0, Text = "", Which = -1};
+         public static Group Empty => new Group { Index = -1, Length = 0, Text = "", Which = -1 };
 
          public int Index { get; set; }
 
@@ -571,5 +571,27 @@ namespace Core.RegularExpressions
       }
 
       public MatcherTrying TryTo => new MatcherTrying(this);
+
+      public IEnumerable<Match> Matched(string input, string pattern, bool ignoreCase = false, bool multiline = false)
+      {
+         if (IsMatch(input, pattern, ignoreCase, multiline))
+         {
+            foreach (var match in this)
+            {
+               yield return match;
+            }
+         }
+      }
+
+      public IEnumerable<Match> Matched(string input, string pattern, RegexOptions options)
+      {
+         if (IsMatch(input, pattern, options))
+         {
+            foreach (var match in this)
+            {
+               yield return match;
+            }
+         }
+      }
    }
 }

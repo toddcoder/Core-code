@@ -290,5 +290,16 @@ namespace Core.Regex
       {
          return new Matcher().MatchOne(input, pattern, ignoreCase, multiline);
       }
+
+      public static IEnumerable<RegularExpressions.Matcher.Match> Matched(this string input, string pattern, bool ignoreCase = false,
+         bool multiline = false)
+      {
+         return new Matcher().Matched(input, pattern, ignoreCase, multiline);
+      }
+
+      public static IEnumerable<RegularExpressions.Matcher.Match> Matched(this string input, string pattern, RegexOptions options)
+      {
+         return new Matcher().Matched(input, pattern, options);
+      }
    }
 }
