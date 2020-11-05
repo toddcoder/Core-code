@@ -293,6 +293,7 @@
     <Compile Include="Objects\PropertyEvaluatorTrying.cs" />
     <Compile Include="Objects\PropertyGetter.cs" />
     <Compile Include="Objects\PropertyInterface.cs" />
+    <Compile Include="Objects\ReadOnlyEquatableBase.cs" />
     <Compile Include="Objects\ReflectorFormat.cs" />
     <Compile Include="Objects\ReflectorReplacement.cs" />
     <Compile Include="Objects\Signature.cs" />

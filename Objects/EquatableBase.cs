@@ -42,7 +42,7 @@ namespace Core.Objects
          equatableInfo.Must().Not.BeEmpty().OrThrow("No fields or properties has an EquatableAttribute");
       }
 
-      protected Hash<string, object> getValues(object obj)
+      protected virtual Hash<string, object> getValues(object obj)
       {
          var hash = new Hash<string, object>();
 
