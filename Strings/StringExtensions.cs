@@ -20,13 +20,13 @@ namespace Core.Strings
 {
    public static class StringExtensions
    {
-      enum StageType
+      private enum StageType
       {
          LeftNotFound,
          LeftFound
       }
 
-      const string PAIRS = "()[]{}<>";
+      private const string PAIRS = "()[]{}<>";
 
       public static string Repeat(this string source, int count)
       {
@@ -227,16 +227,9 @@ namespace Core.Strings
          }
       }
 
-      static string replaceWhitespace(string source, string replacement)
+      private static string replaceWhitespace(string source, string replacement)
       {
-         if (source.IsEmpty())
-         {
-            return string.Empty;
-         }
-         else
-         {
-            return string.Join(replacement, source.Split("/s+"));
-         }
+         return source.Map(s => string.Join(replacement, s.Split("/s+")));
       }
 
       public static string NormalizeWhitespace(this string source) => replaceWhitespace(source, " ");
@@ -245,29 +238,15 @@ namespace Core.Strings
 
       public static string ToTitleCase(this string source)
       {
-         if (source.IsEmpty())
-         {
-            return string.Empty;
-         }
-         else
-         {
-            return new CultureInfo("en-US").TextInfo.ToTitleCase(source.ToLower());
-         }
+         return source.Map(s => new CultureInfo("en-US").TextInfo.ToTitleCase(s.ToLower()));
       }
 
-      static string upCaseFirst(string source)
+      private static string upCaseFirst(string source)
       {
-         if (source.IsEmpty())
-         {
-            return string.Empty;
-         }
-         else
-         {
-            return char.IsUpper(source[0]) ? source : char.ToUpper(source[0]) + source.Substring(1);
-         }
+         return source.Map(s => char.IsUpper(source[0]) ? s : char.ToUpper(s[0]) + s.Substring(1));
       }
 
-      static bool nextIsLower(string source, int index)
+      private static bool nextIsLower(string source, int index)
       {
          if (source.IsEmpty())
          {
@@ -279,7 +258,7 @@ namespace Core.Strings
          }
       }
 
-      static bool nextIsUpper(string source, int index)
+      private static bool nextIsUpper(string source, int index)
       {
          if (source.IsEmpty())
          {
@@ -323,26 +302,12 @@ namespace Core.Strings
 
       public static string CamelToSnakeCase(this string source, string quantitative = "+")
       {
-         if (source.IsEmpty())
-         {
-            return string.Empty;
-         }
-         else
-         {
-            return source.CamelToLowerWithSeparator("_", quantitative);
-         }
+         return source.Map(s => s.CamelToLowerWithSeparator("_", quantitative));
       }
 
       public static string CamelToObjectGraphCase(this string source, string quantitative = "+")
       {
-         if (source.IsEmpty())
-         {
-            return string.Empty;
-         }
-         else
-         {
-            return source.CamelToLowerWithSeparator("-", quantitative);
-         }
+         return source.Map(s => s.CamelToLowerWithSeparator("-", quantitative));
       }
 
       public static string LowerToCamelCase(this string source, string separator, bool upperCase)
@@ -429,7 +394,7 @@ namespace Core.Strings
          }
       }
 
-      static string fixMatch(string match, string subMatch)
+      private static string fixMatch(string match, string subMatch)
       {
          if (match.IsMatch("^ 'assign' /w+"))
          {
@@ -542,38 +507,17 @@ namespace Core.Strings
 
       public static string RemoveCComments(this string source)
       {
-         if (source.IsEmpty())
-         {
-            return string.Empty;
-         }
-         else
-         {
-            return source.Substitute("'/*' .*? '*/'", string.Empty);
-         }
+         return source.Map(s => s.Substitute("'/*' .*? '*/'", string.Empty));
       }
 
       public static string RemoveCOneLineComments(this string source)
       {
-         if (source.IsEmpty())
-         {
-            return string.Empty;
-         }
-         else
-         {
-            return source.Substitute("'//' .*? /crlf", string.Empty, false, true);
-         }
+         return source.Map(s => s.Substitute("'//' .*? /crlf", string.Empty, false, true));
       }
 
       public static string RemoveSQLOneLineComments(this string source)
       {
-         if (source.IsEmpty())
-         {
-            return string.Empty;
-         }
-         else
-         {
-            return source.Substitute("'--' .*? /crlf", string.Empty, false, true);
-         }
+         return source.Map(s => s.Substitute("'--' .*? /crlf", string.Empty, false, true));
       }
 
       public static string AllowOnly(this string source, string allowed)
@@ -623,26 +567,12 @@ namespace Core.Strings
 
       public static string Quotify(this string source, string quote)
       {
-         if (source.IsEmpty())
-         {
-            return string.Empty;
-         }
-         else
-         {
-            return $"\"{source.Replace("\"", quote)}\"";
-         }
+         return source.Map(s => $"\"{s.Replace("\"", quote)}\"");
       }
 
       public static string SingleQuotify(this string source, string quote)
       {
-         if (source.IsEmpty())
-         {
-            return string.Empty;
-         }
-         else
-         {
-            return $"'{source.Replace("'", quote)}'";
-         }
+         return source.Map(s => $"'{s.Replace("'", quote)}'");
       }
 
       public static string Quotify(this string source) => source.Quotify(@"\""");
@@ -665,51 +595,15 @@ namespace Core.Strings
 
       public static string Unquotify(this string source)
       {
-         if (source.IsEmpty())
-         {
-            return string.Empty;
-         }
-
-         var matcher = new Matcher();
-         if (matcher.IsMatch(source, "^ /dq /(.*) /dq $"))
-         {
-            return matcher[0, 1];
-         }
-         else
-         {
-            return source;
-         }
+         return source.Map(s => s.Matcher("^ /dq /(.*) /dq $").Map(matcher => matcher.FirstGroup).DefaultTo(() => s));
       }
 
       public static string SingleUnquotify(this string source)
       {
-         if (source.IsEmpty())
-         {
-            return string.Empty;
-         }
-
-         var matcher = new Matcher();
-         if (matcher.IsMatch(source, "^ /sq /(.*) /sq $"))
-         {
-            return matcher[0, 1];
-         }
-         else
-         {
-            return source;
-         }
+         return source.Map(s => source.Matcher("^ /sq /(.*) /sq $").Map(matcher => matcher.FirstGroup).DefaultTo(() => s));
       }
 
-      public static string Guillemetify(this string source)
-      {
-         if (source.IsEmpty())
-         {
-            return string.Empty;
-         }
-         else
-         {
-            return $"«{source}»";
-         }
-      }
+      public static string Guillemetify(this string source) => source.Map(s => $"«{s}»");
 
       public static string VisibleWhitespace(this string source, bool spaceVisible)
       {
@@ -730,17 +624,7 @@ namespace Core.Strings
          return source;
       }
 
-      public static string VisibleTabs(this string source)
-      {
-         if (source.IsEmpty())
-         {
-            return string.Empty;
-         }
-         else
-         {
-            return source.Substitute("/t", "¬");
-         }
-      }
+      public static string VisibleTabs(this string source) => source.Map(s => s.Substitute("/t", "¬"));
 
       public static string PadCenter(this string source, int length, char paddingCharacter = ' ')
       {
@@ -785,14 +669,7 @@ namespace Core.Strings
 
       public static string Pad(this string source, int width, char paddingCharacter = ' ')
       {
-         if (source.IsEmpty())
-         {
-            return string.Empty;
-         }
-         else
-         {
-            return width > 0 ? source.PadLeft(width, paddingCharacter) : source.PadRight(-width, paddingCharacter);
-         }
+         return source.Map(s => width > 0 ? s.PadLeft(width, paddingCharacter) : s.PadRight(-width, paddingCharacter));
       }
 
       public static string Justify(this object source, Justification justification, int width, char paddingCharacter = ' ')
@@ -860,40 +737,21 @@ namespace Core.Strings
          return result.ToString();
       }
 
-      public static string Debyteify(this string source, Encoding encoding)
-      {
-         if (source.IsEmpty())
-         {
-            return string.Empty;
-         }
-         else
-         {
-            return encoding.GetBytes(source).Debyteify();
-         }
-      }
+      public static string Debyteify(this string source, Encoding encoding) => source.Map(s => encoding.GetBytes(s).Debyteify());
 
       public static string Debyteify(this string source) => source.Debyteify(Encoding.ASCII);
 
-      public static string DefaultTo(this string source, string defaultValue)
-      {
-         return source.IsEmpty() ? defaultValue : source;
-      }
+      public static string DefaultTo(this string source, string defaultValue) => source.IsEmpty() ? defaultValue : source;
 
-      public static string TrimLeft(this string source) => source.IsNotEmpty() ? source.TrimStart() : string.Empty;
+      public static string TrimLeft(this string source) => source.Map(s => s.TrimStart());
 
-      public static string TrimRight(this string source) => source.IsNotEmpty() ? source.TrimEnd() : string.Empty;
+      public static string TrimRight(this string source) => source.Map(s => s.TrimEnd());
 
-      public static string TrimAll(this string source) => source.IsNotEmpty() ? source.Trim() : string.Empty;
+      public static string TrimAll(this string source) => source.Map(s => s.Trim());
 
-      public static string ToUpper1(this string source)
-      {
-         return source.IsNotEmpty() ? source.Keep(1).ToUpper() + source.Drop(1) : string.Empty;
-      }
+      public static string ToUpper1(this string source) => source.Map(s => s.Keep(1).ToUpper() + s.Drop(1));
 
-      public static string ToLower1(this string source)
-      {
-         return source.IsNotEmpty() ? source.Keep(1).ToLower() + source.Drop(1) : string.Empty;
-      }
+      public static string ToLower1(this string source) => source.Map(s => s.Keep(1).ToLower() + s.Drop(1));
 
       public static string Plural(this string source, int number)
       {
@@ -956,14 +814,7 @@ namespace Core.Strings
 
             matcherText = matcher.ToString();
 
-            if (numberAccountedFor)
-            {
-               return matcherText;
-            }
-            else
-            {
-               return $"{number} {matcherText}";
-            }
+            return numberAccountedFor ? matcherText : $"{number} {matcherText}";
          }
          else
          {
@@ -971,17 +822,7 @@ namespace Core.Strings
          }
       }
 
-      public static string Reverse(this string source)
-      {
-         if (source.IsEmpty())
-         {
-            return string.Empty;
-         }
-         else
-         {
-            return new string(source.Select(c => c).Reverse().ToArray());
-         }
-      }
+      public static string Reverse(this string source) => source.Map(new string(source.Select(c => c).Reverse().ToArray()));
 
       public static string Succ(this string source)
       {
@@ -996,7 +837,7 @@ namespace Core.Strings
          }
       }
 
-      static StringBuilder succ(StringBuilder builder, int index)
+      private static StringBuilder succ(StringBuilder builder, int index)
       {
          while (true)
          {
@@ -1072,7 +913,7 @@ namespace Core.Strings
          }
       }
 
-      static StringBuilder pred(StringBuilder builder, int index)
+      private static StringBuilder pred(StringBuilder builder, int index)
       {
          while (true)
          {
@@ -1136,17 +977,7 @@ namespace Core.Strings
 
       public static bool IsWhitespace(this string source) => source.IsEmpty() || source.IsMatch("^ /s* $");
 
-      public static bool IsQuoted(this string source)
-      {
-         if (source.IsEmpty())
-         {
-            return false;
-         }
-         else
-         {
-            return source.IsMatch("^ [quote] .*? [quote] $");
-         }
-      }
+      public static bool IsQuoted(this string source) => !source.IsEmpty() && source.IsMatch("^ [quote] .*? [quote] $");
 
       public static bool Same(this string source, string comparison)
       {
@@ -1165,27 +996,10 @@ namespace Core.Strings
 
       public static bool IsGUID(this string source)
       {
-         if (source.IsEmpty())
-         {
-            return false;
-         }
-         else
-         {
-            return source.IsMatch("^ '{'? [/l /d]8 '-' [/l /d]4 '-' [/l /d]4 '-' [/l /d]4 '-' [/l /d]12 '}'? $");
-         }
+         return !source.IsEmpty() && source.IsMatch("^ '{'? [/l /d]8 '-' [/l /d]4 '-' [/l /d]4 '-' [/l /d]4 '-' [/l /d]12 '}'? $");
       }
 
-      public static bool In(this string source, params string[] comparisons)
-      {
-         if (source.IsEmpty())
-         {
-            return false;
-         }
-         else
-         {
-            return comparisons.Any(source.Same);
-         }
-      }
+      public static bool In(this string source, params string[] comparisons) => !source.IsEmpty() && comparisons.Any(source.Same);
 
       public static bool IsConvertibleTo<T>(this string source)
       {
@@ -1347,126 +1161,63 @@ namespace Core.Strings
 
       public static IMaybe<bool> AsBool(this string source)
       {
-         if (source.IsNotEmpty())
-         {
-            return maybe(bool.TryParse(source, out var result), () => result);
-         }
-         else
-         {
-            return none<bool>();
-         }
+         return source.IsNotEmpty() ? maybe(bool.TryParse(source, out var result), () => result) : none<bool>();
       }
 
       public static IResult<bool> Boolean(this string source) => tryTo(() => bool.Parse(source));
 
       public static IMaybe<byte> AsByte(this string source)
       {
-         if (source.IsNotEmpty())
-         {
-            return maybe(byte.TryParse(source, out var result), () => result);
-         }
-         else
-         {
-            return none<byte>();
-         }
+         return source.IsNotEmpty() ? maybe(byte.TryParse(source, out var result), () => result) : none<byte>();
       }
 
       public static IResult<byte> Byte(this string source) => tryTo(() => byte.Parse(source));
 
       public static IMaybe<int> AsInt(this string source)
       {
-         if (source.IsNotEmpty())
-         {
-            return maybe(int.TryParse(source, out var result), () => result);
-         }
-         else
-         {
-            return none<int>();
-         }
+         return source.IsNotEmpty() ? maybe(int.TryParse(source, out var result), () => result) : none<int>();
       }
 
       public static IResult<int> Int32(this string source) => tryTo(() => int.Parse(source));
 
       public static IMaybe<long> AsLong(this string source)
       {
-         if (source.IsNotEmpty())
-         {
-            return maybe(long.TryParse(source, out var result), () => result);
-         }
-         else
-         {
-            return none<long>();
-         }
+         return source.IsNotEmpty() ? maybe(long.TryParse(source, out var result), () => result) : none<long>();
       }
 
       public static IResult<long> Int64(this string source) => tryTo(() => long.Parse(source));
 
       public static IMaybe<float> AsFloat(this string source)
       {
-         if (source.IsNotEmpty())
-         {
-            return maybe(float.TryParse(source, out var result), () => result);
-         }
-         else
-         {
-            return none<float>();
-         }
+         return source.IsNotEmpty() ? maybe(float.TryParse(source, out var result), () => result) : none<float>();
       }
 
       public static IResult<float> Single(this string source) => tryTo(() => float.Parse(source));
 
       public static IMaybe<double> AsDouble(this string source)
       {
-         if (source.IsNotEmpty())
-         {
-            return maybe(double.TryParse(source, out var result), () => result);
-         }
-         else
-         {
-            return none<double>();
-         }
+         return source.IsNotEmpty() ? maybe(double.TryParse(source, out var result), () => result) : none<double>();
       }
 
       public static IResult<double> Double(this string source) => tryTo(() => double.Parse(source));
 
       public static IMaybe<decimal> AsDecimal(this string source)
       {
-         if (source.IsNotEmpty())
-         {
-            return maybe(decimal.TryParse(source, out var result), () => result);
-         }
-         else
-         {
-            return none<decimal>();
-         }
+         return source.IsNotEmpty() ? maybe(decimal.TryParse(source, out var result), () => result) : none<decimal>();
       }
 
       public static IResult<decimal> Decimal(this string source) => tryTo(() => decimal.Parse(source));
 
       public static IMaybe<DateTime> AsDateTime(this string source)
       {
-         if (source.IsNotEmpty())
-         {
-            return maybe(System.DateTime.TryParse(source, out var result), () => result);
-         }
-         else
-         {
-            return none<DateTime>();
-         }
+         return source.IsNotEmpty() ? maybe(System.DateTime.TryParse(source, out var result), () => result) : none<DateTime>();
       }
 
       public static IResult<DateTime> DateTime(this string source) => tryTo(() => System.DateTime.Parse(source));
 
       public static IMaybe<Guid> AsGuid(this string source)
       {
-         if (source.IsNotEmpty())
-         {
-            return maybe(System.Guid.TryParse(source, out var guid), () => guid);
-         }
-         else
-         {
-            return none<Guid>();
-         }
+         return source.IsNotEmpty() ? maybe(System.Guid.TryParse(source, out var guid), () => guid) : none<Guid>();
       }
 
       public static IResult<Guid> Guid(this string source) => tryTo(() => System.Guid.Parse(source));
@@ -1546,14 +1297,7 @@ namespace Core.Strings
 
       public static string ExtractFromQuotes(this string source)
       {
-         if (source.IsEmpty())
-         {
-            return string.Empty;
-         }
-         else
-         {
-            return source.Matcher("^ [quote] /(.*?) [quote] $").Map(m => m.FirstGroup).DefaultTo(() => source);
-         }
+         return source.Map(s => s.Matcher("^ [quote] /(.*?) [quote] $").Map(m => m.FirstGroup).DefaultTo(() => s));
       }
 
       public static IMaybe<object> ToObject(this string value)
@@ -1931,14 +1675,7 @@ namespace Core.Strings
          if (source.IsNotEmpty())
          {
             var minLength = Math.Min(length, source.Length);
-            if (minLength > 0)
-            {
-               return source.Substring(0, minLength).Some();
-            }
-            else
-            {
-               return none<string>();
-            }
+            return maybe(minLength > 0, () => source.Keep(minLength));
          }
          else
          {
@@ -1951,14 +1688,7 @@ namespace Core.Strings
          if (source.IsNotEmpty())
          {
             var minLength = Math.Min(length, source.Length);
-            if (minLength > 0)
-            {
-               return source.Substring(source.Length - minLength, minLength).Some();
-            }
-            else
-            {
-               return none<string>();
-            }
+            return maybe(minLength > 0, () => source.Substring(source.Length - minLength, minLength));
          }
          else
          {
@@ -2077,7 +1807,7 @@ namespace Core.Strings
 
       public static string[] Words(this string source) => source.IsEmpty() ? new string[0] : source.Split("/s+");
 
-      static string formatWith(string format, Hash<string, string> pairs)
+      private static string formatWith(string format, Hash<string, string> pairs)
       {
          if (format.IsEmpty())
          {
@@ -2104,7 +1834,7 @@ namespace Core.Strings
          return replaceEscaped(format, matcher);
       }
 
-      static string replaceEscaped(string format, Matcher matcher)
+      private static string replaceEscaped(string format, Matcher matcher)
       {
          if (format.IsEmpty())
          {
@@ -2402,20 +2132,10 @@ namespace Core.Strings
 
       public static string Map(this string source, Func<string, string> func)
       {
-         if (source.IsEmpty())
-         {
-            return string.Empty;
-         }
-
-         var builder = new StringBuilder();
-         for (var i = 0; i < source.Length; i++)
-         {
-            builder.Append(func(source.Substring(i)));
-         }
-
-         return builder.ToString();
+         return source.IsNotEmpty() ? func(source) : string.Empty;
       }
 
+      [Obsolete]
       public static string Map(this string source, Func<string> func) => source.IsNotEmpty() ? func() : string.Empty;
 
       public static string Map(this string source, string replacement) => source.IsNotEmpty() ? replacement : string.Empty;

@@ -87,7 +87,7 @@ namespace Core.Regex
          return input.Split(pattern, GetOptions(ignoreCase, multiline));
       }
 
-      static IEnumerable<Slice> sliceSplit(string input, string pattern, RegexOptions regexOptions)
+      private static IEnumerable<Slice> sliceSplit(string input, string pattern, RegexOptions regexOptions)
       {
          var includeSeparator = pattern.StartsWith("(");
          var startIndex = 0;

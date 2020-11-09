@@ -20,9 +20,9 @@ namespace Core.ObjectGraphs.Configurations.Json
             select new JsonSerializer(nonNull, indentString);
       }
 
-      object obj;
-      JsonBuilder builder;
-      string indentString;
+      protected object obj;
+      protected JsonBuilder builder;
+      protected string indentString;
 
       protected JsonSerializer(object obj, string indentString = "   ")
       {
@@ -36,7 +36,7 @@ namespace Core.ObjectGraphs.Configurations.Json
          return serializeMembers(obj).Map(u => builder.Generate(indentString));
       }
 
-      IResult<Unit> serializeObject(string name, object obj)
+      protected IResult<Unit> serializeObject(string name, object obj)
       {
          builder.BeginObject(name.ToLower1());
          var members = serializeMembers(obj);
@@ -48,7 +48,7 @@ namespace Core.ObjectGraphs.Configurations.Json
          return members;
       }
 
-      IResult<Unit> serializeObject(object obj)
+      protected IResult<Unit> serializeObject(object obj)
       {
          builder.BeginObject();
          var members = serializeMembers(obj);
@@ -60,7 +60,7 @@ namespace Core.ObjectGraphs.Configurations.Json
          return members;
       }
 
-      IResult<Unit> serializeMembers(object obj)
+      protected IResult<Unit> serializeMembers(object obj)
       {
          var type = obj.GetType();
          var evaluator = (IHash<string, object>)new PropertyEvaluator(obj);
@@ -78,9 +78,9 @@ namespace Core.ObjectGraphs.Configurations.Json
          return Unit.Success();
       }
 
-      IResult<Unit> serializeValue(object value) => serializeValue("", value);
+      protected IResult<Unit> serializeValue(object value) => serializeValue("", value);
 
-      IResult<Unit> serializeValue(string name, object value)
+      protected IResult<Unit> serializeValue(string name, object value)
       {
          var lName = name.ToLower1();
          if (value.IsNull())

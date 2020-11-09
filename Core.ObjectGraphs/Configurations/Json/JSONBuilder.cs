@@ -581,7 +581,7 @@ namespace Core.ObjectGraphs.Configurations.Json
 
    public class JsonBoolean : JsonItem
    {
-      bool boolean;
+      protected bool boolean;
 
       public JsonBoolean(string name, bool boolean)
       {
@@ -608,7 +608,7 @@ namespace Core.ObjectGraphs.Configurations.Json
 
    public class JsonByteArray : JsonItem
    {
-      byte[] byteArray;
+      protected byte[] byteArray;
 
       public JsonByteArray(string name, byte[] byteArray)
       {
@@ -635,7 +635,7 @@ namespace Core.ObjectGraphs.Configurations.Json
 
    public class JsonFileName : JsonItem
    {
-      FileName fileName;
+      protected FileName fileName;
 
       public JsonFileName(string name, FileName fileName)
       {
@@ -662,7 +662,7 @@ namespace Core.ObjectGraphs.Configurations.Json
 
    public class JsonFolderName : JsonItem
    {
-      FolderName folderName;
+      protected FolderName folderName;
 
       public JsonFolderName(string name, FolderName folderName)
       {
@@ -689,7 +689,7 @@ namespace Core.ObjectGraphs.Configurations.Json
 
    public class JsonEnum : JsonItem
    {
-      Enum enumeration;
+      protected Enum enumeration;
 
       public JsonEnum(string name, Enum enumeration)
       {

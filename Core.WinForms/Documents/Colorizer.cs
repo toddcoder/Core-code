@@ -8,8 +8,8 @@ namespace Core.WinForms.Documents
 {
    public class Colorizer
    {
-      string pattern;
-      Color[] colors;
+      protected string pattern;
+      protected Color[] colors;
 
       public Colorizer(string pattern, params Color[] colors)
       {
@@ -58,7 +58,7 @@ namespace Core.WinForms.Documents
          }
       }
 
-      static void colorize(RichTextBox textBox, Matcher.Group group, Color color)
+      protected static void colorize(RichTextBox textBox, Matcher.Group group, Color color)
       {
          textBox.Select(group.Index, group.Length);
          textBox.SelectionColor = color;

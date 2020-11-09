@@ -25,8 +25,8 @@ namespace Core.Objects
          return ((IHash<string, object>)evaluator).Map(signature, o => o);
       }
 
-      object obj;
-      Type type;
+      protected object obj;
+      protected Type type;
 
       public PropertyEvaluator(object obj)
       {
@@ -205,7 +205,7 @@ namespace Core.Objects
          }
       }
 
-      static bool attributeMatches<TAttribute>(PropertyInfo info) where TAttribute : Attribute
+      protected static bool attributeMatches<TAttribute>(PropertyInfo info) where TAttribute : Attribute
       {
          return info.GetCustomAttributes(true).OfType<TAttribute>().Any();
       }

@@ -47,7 +47,7 @@ namespace Core.Data
             select connectionString.ConnectionString;
       }
 
-      static IResult<IConnectionString> oledbConnectionString(string type)
+      private static IResult<IConnectionString> oledbConnectionString(string type)
       {
          switch (type)
          {

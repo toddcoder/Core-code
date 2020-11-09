@@ -7,11 +7,13 @@ using System.Linq;
 using System.Windows.Forms;
 using Core.Applications;
 using Core.Arrays;
+using Core.Assertions;
 using Core.Exceptions;
 using Core.Monads;
 using Core.Numbers;
 using Core.RegularExpressions;
 using Core.Strings;
+using static Core.Assertions.AssertionFunctions;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Controls
@@ -20,14 +22,14 @@ namespace Core.WinForms.Controls
    {
       public class WindowExtender : NativeWindow
       {
-         const int WM_PAINT = 15;
+         protected const int WM_PAINT = 15;
 
-         ExRichTextBox baseControl;
-         Bitmap canvas;
-         Graphics bufferGraphics;
-         Rectangle bufferClip;
-         Graphics controlGraphics;
-         bool canRender;
+         protected ExRichTextBox baseControl;
+         protected Bitmap canvas;
+         protected Graphics bufferGraphics;
+         protected Rectangle bufferClip;
+         protected Graphics controlGraphics;
+         protected bool canRender;
 
          public WindowExtender(ExRichTextBox baseControl)
          {
@@ -93,7 +95,7 @@ namespace Core.WinForms.Controls
          Visible
       }
 
-      const int ANNOTATION_ALPHA = 200;
+      protected const int ANNOTATION_ALPHA = 200;
 
       protected WindowExtender windowExtender;
       protected bool updateLocked;
@@ -340,17 +342,11 @@ namespace Core.WinForms.Controls
 
       public Rectangle VisibleRectangle => ClientRectangle;
 
-      int getLineNumber(int lineNumber)
+      protected int getLineNumber(int lineNumber)
       {
-         if (lineNumber.Between(0).Until(Lines.Length))
-         {
-            return lineNumber;
-         }
-         else
-         {
-            throw new ArgumentOutOfRangeException(nameof(lineNumber), lineNumber,
-               "Line number must not exceed 0 or lineNumber count - 1");
-         }
+         assert(() => lineNumber).Must().BeBetween(0).Until(Lines.Length).OrThrow();
+
+         return lineNumber;
       }
 
       public Point PositionFrom(int lineNumber) => GetPositionFromCharIndex(GetFirstCharIndexFromLine(lineNumber));
@@ -462,7 +458,7 @@ namespace Core.WinForms.Controls
          }
       }
 
-      static void drawTabLine(Graphics graphics, Pen pen, Point location, int tabStop, int height)
+      protected static void drawTabLine(Graphics graphics, Pen pen, Point location, int tabStop, int height)
       {
          var x1 = tabStop;
          var y1 = location.Y;
@@ -615,14 +611,7 @@ namespace Core.WinForms.Controls
          else
          {
             annotationRectangle.X = selectionRectangle.X - selectionRectangle.Width - margin;
-            if (!selectionRectangle.IntersectsWith(annotationRectangle))
-            {
-               location = annotationRectangle.Location;
-            }
-            else
-            {
-               location = new Point(0, selectionRectangle.Top);
-            }
+            location = !selectionRectangle.IntersectsWith(annotationRectangle) ? annotationRectangle.Location : new Point(0, selectionRectangle.Top);
          }
 
          AnnotateAt(graphics, location, annotation, foreColor, backColor, outlineColor);
@@ -679,7 +668,7 @@ namespace Core.WinForms.Controls
          }
       }
 
-      bool includeVisibleOnly(bool include, Rectangle rectangle) => !include || VisibleRectangle.Contains(rectangle);
+      protected bool includeVisibleOnly(bool include, Rectangle rectangle) => !include || VisibleRectangle.Contains(rectangle);
 
       public IEnumerable<(Rectangle rectangle, string word)> RectangleWords(Graphics graphics, bool visibleOnly = true)
       {

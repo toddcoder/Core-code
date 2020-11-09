@@ -16,7 +16,7 @@ namespace Core.ObjectGraphs.Configurations.Json
    {
       public static IResult<T> Deserialize(JsonObject obj) => DeserializeObject(typeof(T), obj).Map(o => (T)o);
 
-      string json;
+      protected string json;
 
       public JsonDeserializer(string json) => this.json = json;
 

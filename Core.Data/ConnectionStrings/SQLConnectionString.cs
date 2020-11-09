@@ -49,8 +49,8 @@ namespace Core.Data.ConnectionStrings
          }
       }
 
-      string connectionString;
-      TimeSpan connectionTimeout;
+      protected string connectionString;
+      protected TimeSpan connectionTimeout;
 
       internal SQLConnectionString(string connectionString, TimeSpan connectionTimeout)
       {

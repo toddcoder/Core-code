@@ -935,11 +935,6 @@ namespace Core.Enumerables
          return enumerable.ToHash(kv => kv.Key, kv => kv.Value, comparer);
       }
 
-      public static IEnumerable<TResult> Map<TSource, TResult>(this IEnumerable<TSource> enumerable, Func<TSource, TResult> mapFunc)
-      {
-         return enumerable.Select(mapFunc);
-      }
-
       public static IEnumerable<TResult> FlatMap<TSource, TResult>(this IEnumerable<IEnumerable<TSource>> enumerable,
          Func<TSource, TResult> mapFunc)
       {
@@ -962,8 +957,6 @@ namespace Core.Enumerables
             }
          }
       }
-
-      public static IEnumerable<T> If<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate) => enumerable.Where(predicate);
 
       public static TResult FoldLeft<TSource, TResult>(this IEnumerable<TSource> enumerable, TResult init,
          Func<TResult, TSource, TResult> foldFunc)

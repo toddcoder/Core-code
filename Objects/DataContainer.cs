@@ -30,7 +30,7 @@ namespace Core.Objects
 
 		public string Format { get; set; } = "";
 
-		IMaybe<Action> initializeAction(string key) => this.Map(key, o => o.IfCast<Action>());
+		protected IMaybe<Action> initializeAction(string key) => this.Map(key, o => o.IfCast<Action>());
 
 		public void BeforeExecute()
 		{

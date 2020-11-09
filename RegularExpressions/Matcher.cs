@@ -412,7 +412,7 @@ namespace Core.RegularExpressions
 
       public Group GetGroup(int matchIndex, int groupIndex) => getGroup(getMatch(matchIndex), groupIndex);
 
-      static Group getGroup(Match match, int groupIndex)
+      protected static Group getGroup(Match match, int groupIndex)
       {
          if (groupIndex.Between(0).Until(match.Groups.Length))
          {
@@ -424,12 +424,12 @@ namespace Core.RegularExpressions
          }
       }
 
-      static IMaybe<Group> getGroupMaybe(IMaybe<Match> match, int index)
+      protected static IMaybe<Group> getGroupMaybe(IMaybe<Match> match, int index)
       {
          return match.Map(m => maybe(index.Between(0).Until(m.Groups.Length), () => m.Groups[index]));
       }
 
-      Match getMatch(int matchIndex)
+      protected Match getMatch(int matchIndex)
       {
          if (matchIndex.Between(0).Until(matches.Length))
          {
@@ -441,7 +441,7 @@ namespace Core.RegularExpressions
          }
       }
 
-      IMaybe<Match> getMatchMaybe(int index) => maybe(index.Between(0).Until(matches.Length), () => matches[index]);
+      protected IMaybe<Match> getMatchMaybe(int index) => maybe(index.Between(0).Until(matches.Length), () => matches[index]);
 
       public int GroupCount(int index) => getMatch(index).Groups.Length;
 

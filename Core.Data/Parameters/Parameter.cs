@@ -46,14 +46,9 @@ namespace Core.Data.Parameters
          }
          else
          {
-            if (parameterGraph.If("signature", out var sg))
-            {
-               signatureString = sg.Value;
-            }
-            else
-            {
-               signatureString = name.GetSignature().Required($"There is no signature for '{name}'");
-            }
+            signatureString = parameterGraph
+               .Map("signature", g => g.Value)
+               .DefaultTo(() => name.GetSignature().Required($"There is no signature for '{name}'"));
 
             var typeName = parameterGraph.FlatMap("type", g => g.Value, "System.String");
             typeName = fixTypeName(typeName);
@@ -72,9 +67,12 @@ namespace Core.Data.Parameters
          };
       }
 
-      static IMaybe<Type> getType(string typeName) => maybe(typeName.IsNotEmpty(), () => System.Type.GetType(typeName, true, true));
+      protected static IMaybe<Type> getType(string typeName)
+      {
+         return maybe(typeName.IsNotEmpty(), () => System.Type.GetType(typeName, true, true));
+      }
 
-      static string fixTypeName(string typeName)
+      protected static string fixTypeName(string typeName)
       {
          typeName = typeName.Substitute("^ '$'", "System.");
          return typeName.IsNotEmpty() && !typeName.Has(".") ? "System." + typeName : typeName;

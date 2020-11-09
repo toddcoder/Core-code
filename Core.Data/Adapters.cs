@@ -19,7 +19,7 @@ namespace Core.Data
    public class Adapters<T> : IEnumerable<Adapter<T>>
       where T : class
    {
-      static Hash<string, Func<DataGraphs, string, ISetup>> setups;
+      protected static Hash<string, Func<DataGraphs, string, ISetup>> setups;
 
       static Adapters()
       {
@@ -35,10 +35,10 @@ namespace Core.Data
 
       public static IResult<Func<DataGraphs, string, ISetup>> Setup(string setupType) => setups.Require(setupType);
 
-      DataGraphs dataGraphs;
-      Hash<string, Adapter<T>> adapters;
-      Set<string> validAdapters;
-      Predicate<string> isValidAdapterName;
+      protected DataGraphs dataGraphs;
+      protected Hash<string, Adapter<T>> adapters;
+      protected Set<string> validAdapters;
+      protected Predicate<string> isValidAdapterName;
 
       public Adapters(DataGraphs dataGraphs, params string[] validAdapterNames)
       {
@@ -65,12 +65,12 @@ namespace Core.Data
          this.isValidAdapterName = isValidAdapterName;
       }
 
-      IResult<string> validAdapterName(string adapterName)
+      protected IResult<string> validAdapterName(string adapterName)
       {
          return isValidAdapterName(adapterName).Result(() => adapterName, $"Adapter name {adapterName} is invalid");
       }
 
-      IResult<string> adapterExists(string adapterName)
+      protected IResult<string> adapterExists(string adapterName)
       {
          return dataGraphs.AdaptersGraph.ChildExists(adapterName)
             .Result(() => adapterName, $"Adapter name {adapterName} doesn't exist");
@@ -94,7 +94,7 @@ namespace Core.Data
             select adapter;
       }
 
-      IResult<Adapter<T>> getAdapter(T entity, string child, Func<DataGraphs, string, ISetup> setup) => tryTo(() =>
+      protected IResult<Adapter<T>> getAdapter(T entity, string child, Func<DataGraphs, string, ISetup> setup) => tryTo(() =>
       {
          var adapter = adapters.Find(child, an => new Adapter<T>(entity, setup(dataGraphs, an)), true);
          adapter.Entity = entity;
@@ -102,7 +102,7 @@ namespace Core.Data
          return adapter.Success();
       });
 
-      IResult<Adapter<T>> getAdapter(Func<T> alwaysUse, string child, Func<DataGraphs, string, ISetup> setup)
+      protected IResult<Adapter<T>> getAdapter(Func<T> alwaysUse, string child, Func<DataGraphs, string, ISetup> setup)
       {
          return tryTo(() => adapters.Find(child, an => new Adapter<T>(alwaysUse(), setup(dataGraphs, an)), true).Success());
       }

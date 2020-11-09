@@ -13,7 +13,7 @@ namespace Core.WinForms.Documents
 {
    public class Document
    {
-      const string PATTERN_CRLF = "/r /n | /r | /n";
+      protected const string PATTERN_CRLF = "/r /n | /r | /n";
 
       public static string GetWindowsText(string text) => SetWindowsText(text).ToString("\r\n");
 
@@ -73,7 +73,7 @@ namespace Core.WinForms.Documents
          set => keepClean = value;
       }
 
-      void initialize()
+      protected void initialize()
       {
          textBox.TextChanged += (sender, e) =>
          {
@@ -182,7 +182,7 @@ namespace Core.WinForms.Documents
 
       public void RenderContextMenu(Control control) => menus.CreateContextMenu(control);
 
-      void initializeTextBox()
+      protected void initializeTextBox()
       {
          textBox.AcceptsTab = true;
          textBox.DetectUrls = false;

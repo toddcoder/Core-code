@@ -6,7 +6,7 @@ namespace Core.Objects
 {
    public class PropertyEvaluatorTrying
    {
-      PropertyEvaluator evaluator;
+      protected PropertyEvaluator evaluator;
 
       public PropertyEvaluatorTrying(PropertyEvaluator evaluator) => this.evaluator = evaluator;
 

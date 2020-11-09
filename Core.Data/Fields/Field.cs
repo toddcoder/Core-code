@@ -44,7 +44,7 @@ namespace Core.Data.Fields
          return new Field(name, signature, optional) { Type = type };
       }
 
-      static IMaybe<Type> getType(string typeName)
+      protected static IMaybe<Type> getType(string typeName)
       {
          if (typeName.IsEmpty())
          {

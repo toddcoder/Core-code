@@ -63,8 +63,8 @@ namespace Core.ObjectGraphs
       }
 
       public const string ROOT_NAME = "$root";
-      const string REGEX_LINE = "^" + REGEX_NAME + REGEX_TYPE + "/s* '->' /s*" + REGEX_VALUE + "$";
-      const string REGEX_GROUP = "^" + REGEX_NAME + REGEX_TYPE + "$";
+      protected const string REGEX_LINE = "^" + REGEX_NAME + REGEX_TYPE + "/s* '->' /s*" + REGEX_VALUE + "$";
+      protected const string REGEX_GROUP = "^" + REGEX_NAME + REGEX_TYPE + "$";
 
       public static IMaybe<ObjectGraph> Some(string name, string value = "", string type = "")
       {
@@ -129,7 +129,7 @@ namespace Core.ObjectGraphs
          return graph;
       }
 
-      static ObjectGraph getGraph(IMaybe<object> anyObject, string childName, Type childType, Predicate<string> exclude,
+      protected static ObjectGraph getGraph(IMaybe<object> anyObject, string childName, Type childType, Predicate<string> exclude,
          StringHash signatures)
       {
          var obj = assert(() => anyObject).Must().HaveValue().Value;
@@ -338,7 +338,7 @@ namespace Core.ObjectGraphs
 
       public bool IsTrue => value == "true";
 
-      ObjectGraph getChildValue(string graphName)
+      protected ObjectGraph getChildValue(string graphName)
       {
          assert(() => children.Value).Must().HaveKeyOf(graphName)
             .OrThrow($"$name doesn't have '{graphName}' graph under <{Path}> @ {LineNumber}: {LineSource}");
@@ -454,7 +454,7 @@ namespace Core.ObjectGraphs
 
       public void Merge(ObjectGraph sourceGraph) => children.Value[sourceGraph.Name] = sourceGraph;
 
-      string pathRoot() => name == ROOT_NAME ? ROOT_NAME : Path;
+      protected string pathRoot() => name == ROOT_NAME ? ROOT_NAME : Path;
 
       public bool ContainsKey(string childName)
       {
@@ -577,7 +577,7 @@ namespace Core.ObjectGraphs
          }
       }
 
-      static IResult<object> getArray(string source)
+      protected static IResult<object> getArray(string source)
       {
          if (source.StartsWith("["))
          {
@@ -607,7 +607,7 @@ namespace Core.ObjectGraphs
             select copied;
       }
 
-      IResult<object[]> getArguments(Type arrayType)
+      protected IResult<object[]> getArguments(Type arrayType)
       {
          var convertedChildren = Children.Select(c => c.HasChildren ? c.Object(arrayType) : c.Convert(arrayType)).ToArray();
          return convertedChildren.IfAllSuccesses().Map(c => c.ToArray());

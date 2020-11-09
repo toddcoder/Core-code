@@ -149,7 +149,7 @@ namespace Core.Strings
 
       public IMaybe<Func<string, string>> TransformingMap { get; set; }
 
-      string getEndPattern(char ch)
+      protected string getEndPattern(char ch)
       {
          if (friendly)
          {
