@@ -22,6 +22,8 @@ namespace Core.Monads
 
       public static IMaybe<T> Some<T>(this T obj) => obj.IsNull() ? none<T>() : new Some<T>(obj);
 
+      public static bool NotNull<T>(this T obj, out T value) => obj.Some().If(out value);
+
       public static IMaybe<Type> UnderlyingType(this object obj)
       {
          if (obj.IsNull())
@@ -1275,7 +1277,7 @@ namespace Core.Monads
          return maybe.Map(v => v.Completed(token)).DefaultTo(cancelled<T>);
       }
 
-      static ICompletion<T> cancelledOrInterrupted<T>(Exception exception)
+      private static ICompletion<T> cancelledOrInterrupted<T>(Exception exception)
       {
          switch (exception)
          {
