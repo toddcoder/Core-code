@@ -128,10 +128,5 @@ namespace Core.Objects
             throw new ApplicationException(formatter.Format(message()));
          }
       }
-
-      public static T NonNull<T>(this T obj, string name = "") where T : class
-      {
-         return obj.IsNull() ? throw new ArgumentNullException(name) : obj;
-      }
    }
 }

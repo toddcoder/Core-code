@@ -8,20 +8,20 @@ namespace Core.Objects
 {
    public class Invoker
    {
-      static BindingFlags baseBindings = BindingFlags.Public | BindingFlags.Instance;
-      static BindingFlags methodBindings = baseBindings | BindingFlags.InvokeMethod;
-      static BindingFlags getPropertyBindings = baseBindings | BindingFlags.GetProperty;
-      static BindingFlags setPropertyBindings = baseBindings | BindingFlags.SetProperty;
-      static BindingFlags getFieldBindings = baseBindings | BindingFlags.GetField;
-      static BindingFlags setFieldBindings = baseBindings | BindingFlags.SetField;
+      protected const BindingFlags BASE_BINDINGS = BindingFlags.Public | BindingFlags.Instance;
+      protected const BindingFlags METHOD_BINDINGS = BASE_BINDINGS | BindingFlags.InvokeMethod;
+      protected const BindingFlags GET_PROPERTY_BINDINGS = BASE_BINDINGS | BindingFlags.GetProperty;
+      protected const BindingFlags SET_PROPERTY_BINDINGS = BASE_BINDINGS | BindingFlags.SetProperty;
+      protected const BindingFlags GET_FIELD_BINDINGS = BASE_BINDINGS | BindingFlags.GetField;
+      protected const BindingFlags SET_FIELD_BINDINGS = BASE_BINDINGS | BindingFlags.SetField;
 
       public static IResult<Invoker> From(object obj) =>
          from nonNull in assert(() => obj).Must().Not.BeNull().OrFailure()
          from type in nonNull.GetType().Success()
          select new Invoker(nonNull, type);
 
-      object obj;
-      Type type;
+      protected object obj;
+      protected Type type;
 
       protected Invoker(object obj, Type type)
       {
@@ -35,19 +35,19 @@ namespace Core.Objects
          type = obj.GetType();
       }
 
-      object invokeMember(string name, BindingFlags bindings, object[] args) => type.InvokeMember(name, bindings, null, obj, args);
+      protected object invokeMember(string name, BindingFlags bindings, object[] args) => type.InvokeMember(name, bindings, null, obj, args);
 
-      public T Invoke<T>(string name, params object[] args) => (T)invokeMember(name, methodBindings, args);
+      public T Invoke<T>(string name, params object[] args) => (T)invokeMember(name, METHOD_BINDINGS, args);
 
-      public void Invoke(string name, params object[] args) => invokeMember(name, methodBindings, args);
+      public void Invoke(string name, params object[] args) => invokeMember(name, METHOD_BINDINGS, args);
 
-      public T GetProperty<T>(string name, params object[] args) => (T)invokeMember(name, getPropertyBindings, args);
+      public T GetProperty<T>(string name, params object[] args) => (T)invokeMember(name, GET_PROPERTY_BINDINGS, args);
 
-      public void SetProperty(string name, params object[] args) => invokeMember(name, setPropertyBindings, args);
+      public void SetProperty(string name, params object[] args) => invokeMember(name, SET_PROPERTY_BINDINGS, args);
 
-      public T GetField<T>(string name, params object[] args) => (T)invokeMember(name, getFieldBindings, args);
+      public T GetField<T>(string name, params object[] args) => (T)invokeMember(name, GET_FIELD_BINDINGS, args);
 
-      public void SetField(string name, params object[] args) => invokeMember(name, setFieldBindings, args);
+      public void SetField(string name, params object[] args) => invokeMember(name, SET_FIELD_BINDINGS, args);
 
       public InvokerTrying TryTo => new InvokerTrying(this);
    }
