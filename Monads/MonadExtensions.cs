@@ -213,6 +213,17 @@ namespace Core.Monads
          }
       }
 
+      public static IEnumerable<(T, TMaybe)> WhereIsSome<T, TMaybe>(this IEnumerable<T> enumerable, Func<T, IMaybe<TMaybe>> predicate)
+      {
+         foreach (var item in enumerable)
+         {
+            if (predicate(item).If(out var value))
+            {
+               yield return (item, value);
+            }
+         }
+      }
+
       public static IEnumerable<T> WhereIsSuccessful<T>(this IEnumerable<IResult<T>> enumerable)
       {
          foreach (var result in enumerable)
@@ -220,6 +231,17 @@ namespace Core.Monads
             if (result.If(out var value))
             {
                yield return value;
+            }
+         }
+      }
+
+      public static IEnumerable<(T, TResult)> WhereIsSuccessful<T, TResult>(this IEnumerable<T> enumerable, Func<T, IResult<TResult>> predicate)
+      {
+         foreach (var item in enumerable)
+         {
+            if (predicate(item).If(out var value))
+            {
+               yield return (item, value);
             }
          }
       }
@@ -235,6 +257,17 @@ namespace Core.Monads
          }
       }
 
+      public static IEnumerable<(T, TMatched)> WhereIsMatched<T, TMatched>(this IEnumerable<T> enumerable, Func<T, IMatched<TMatched>> predicate)
+      {
+         foreach (var item in enumerable)
+         {
+            if (predicate(item).If(out var value))
+            {
+               yield return (item, value);
+            }
+         }
+      }
+
       public static IEnumerable<T> WhereIsCompleted<T>(this IEnumerable<ICompletion<T>> enumerable)
       {
          foreach (var completion in enumerable)
@@ -242,6 +275,18 @@ namespace Core.Monads
             if (completion.If(out var value))
             {
                yield return value;
+            }
+         }
+      }
+
+      public static IEnumerable<(T, TCompletion)> WhereIsCompleted<T, TCompletion>(this IEnumerable<T> enumerable,
+         Func<T, ICompletion<TCompletion>> predicate)
+      {
+         foreach (var item in enumerable)
+         {
+            if (predicate(item).If(out var value))
+            {
+               yield return (item, value);
             }
          }
       }
