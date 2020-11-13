@@ -202,6 +202,50 @@ namespace Core.Monads
          return result;
       });
 
+      public static IEnumerable<T> WhereIsSome<T>(this IEnumerable<IMaybe<T>> enumerable)
+      {
+         foreach (var maybe in enumerable)
+         {
+            if (maybe.If(out var value))
+            {
+               yield return value;
+            }
+         }
+      }
+
+      public static IEnumerable<T> WhereIsSuccessful<T>(this IEnumerable<IResult<T>> enumerable)
+      {
+         foreach (var result in enumerable)
+         {
+            if (result.If(out var value))
+            {
+               yield return value;
+            }
+         }
+      }
+
+      public static IEnumerable<T> WhereIsMatched<T>(this IEnumerable<IMatched<T>> enumerable)
+      {
+         foreach (var matched in enumerable)
+         {
+            if (matched.If(out var value))
+            {
+               yield return value;
+            }
+         }
+      }
+
+      public static IEnumerable<T> WhereIsCompleted<T>(this IEnumerable<ICompletion<T>> enumerable)
+      {
+         foreach (var completion in enumerable)
+         {
+            if (completion.If(out var value))
+            {
+               yield return value;
+            }
+         }
+      }
+
       public static IMaybe<IEnumerable<T>> AllAreSome<T>(this IEnumerable<IMaybe<T>> enumerable)
       {
          var result = new List<T>();
@@ -1606,17 +1650,20 @@ namespace Core.Monads
          return completion.Map(t => func(t.Item1, t.Item2, t.Item3));
       }
 
-      public static ICompletion<TResult> Map<T1, T2, T3, TResult>(this ICompletion<(T1, T2, T3)> completion, Func<T1, T2, T3, ICompletion<TResult>> func)
+      public static ICompletion<TResult> Map<T1, T2, T3, TResult>(this ICompletion<(T1, T2, T3)> completion,
+         Func<T1, T2, T3, ICompletion<TResult>> func)
       {
          return completion.Map(t => func(t.Item1, t.Item2, t.Item3));
       }
 
-      public static ICompletion<TResult> Map<T1, T2, T3, T4, TResult>(this ICompletion<(T1, T2, T3, T4)> completion, Func<T1, T2, T3, T4, TResult> func)
+      public static ICompletion<TResult> Map<T1, T2, T3, T4, TResult>(this ICompletion<(T1, T2, T3, T4)> completion,
+         Func<T1, T2, T3, T4, TResult> func)
       {
          return completion.Map(t => func(t.Item1, t.Item2, t.Item3, t.Item4));
       }
 
-      public static ICompletion<TResult> Map<T1, T2, T3, T4, TResult>(this ICompletion<(T1, T2, T3, T4)> completion, Func<T1, T2, T3, T4, ICompletion<TResult>> func)
+      public static ICompletion<TResult> Map<T1, T2, T3, T4, TResult>(this ICompletion<(T1, T2, T3, T4)> completion,
+         Func<T1, T2, T3, T4, ICompletion<TResult>> func)
       {
          return completion.Map(t => func(t.Item1, t.Item2, t.Item3, t.Item4));
       }
