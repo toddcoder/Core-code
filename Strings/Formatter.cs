@@ -12,7 +12,7 @@ namespace Core.Strings
 {
 	public class Formatter
 	{
-		const string REGEX_NAME = "-(< '//') '{' /([/w '-']+) /([',:']+ -['}']+)? '}'";
+		protected const string REGEX_NAME = "-(< '//') '{' /([/w '-']+) /([',:']+ -['}']+)? '}'";
 
 		public static Formatter WithStandard(bool includeFolders)
 		{
@@ -30,7 +30,7 @@ namespace Core.Strings
 			return formatter;
 		}
 
-		static void addStandard(Formatter formatter, bool includeFolders)
+		protected static void addStandard(Formatter formatter, bool includeFolders)
 		{
 			formatter["guid"] = guid();
 			formatter["now"] = DateTime.Now.ToString();
@@ -50,7 +50,7 @@ namespace Core.Strings
 			}
 		}
 
-		static string format(string source, bool addStandard, bool includeFolders, params string[] args)
+		protected static string format(string source, bool addStandard, bool includeFolders, params string[] args)
       {
          assert(() => args.Length).Must().BeEven().OrThrow();
 

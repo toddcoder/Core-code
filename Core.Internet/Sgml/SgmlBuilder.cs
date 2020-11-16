@@ -30,13 +30,13 @@ namespace Core.Internet.Sgml
          return builder;
       }
 
-      bool tidy;
-      Encoding encoding;
-      bool includeHeader;
-      QuoteType quote;
-      Element root;
-      bool isHtml;
-      DocType docType;
+      protected bool tidy;
+      protected Encoding encoding;
+      protected bool includeHeader;
+      protected QuoteType quote;
+      protected Element root;
+      protected bool isHtml;
+      protected DocType docType;
 
       public SgmlBuilder(string rootName)
       {
@@ -96,7 +96,7 @@ namespace Core.Internet.Sgml
 
       public char QuoteChar => quote == QuoteType.Double ? '"' : '\'';
 
-      void addDocType(StringBuilder result)
+      protected void addDocType(StringBuilder result)
       {
          if (docType != DocType.None)
          {

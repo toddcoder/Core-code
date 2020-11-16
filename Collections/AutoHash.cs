@@ -9,7 +9,7 @@ namespace Core.Collections
 {
    public class AutoHash<TKey, TValue> : Hash<TKey, TValue>
    {
-      Func<TKey, TValue> defaultLambda;
+      protected Func<TKey, TValue> defaultLambda;
 
       public AutoHash()
       {
@@ -47,6 +47,15 @@ namespace Core.Collections
       }
 
       public AutoHash(Func<TKey, TValue> defaultLambda, bool autoAddDefault = false)
+      {
+         assert(() => defaultLambda).Must().Not.BeNull().OrThrow();
+
+         Default = DefaultType.Lambda;
+         this.defaultLambda = defaultLambda;
+         AutoAddDefault = autoAddDefault;
+      }
+
+      public AutoHash(Func<TKey, TValue> defaultLambda, IEqualityComparer<TKey> comparer, bool autoAddDefault = false) : this(comparer)
       {
          assert(() => defaultLambda).Must().Not.BeNull().OrThrow();
 
@@ -172,6 +181,21 @@ namespace Core.Collections
          foreach (var key in keys.Where(k => k != null && !ContainsKey(k)))
          {
             this[key] = valueFunc(key);
+         }
+      }
+
+      protected override Hash<TKey, TValue> getNewHash()
+      {
+         switch (Default)
+         {
+            case DefaultType.None:
+               return new AutoHash<TKey, TValue>(Comparer);
+            case DefaultType.Value:
+               return new AutoHash<TKey, TValue>(DefaultValue, AutoAddDefault, Comparer);
+            case DefaultType.Lambda:
+               return new AutoHash<TKey, TValue>(defaultLambda, Comparer, AutoAddDefault);
+            default:
+               throw new ArgumentOutOfRangeException();
          }
       }
    }

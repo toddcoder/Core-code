@@ -10,7 +10,7 @@ namespace Core.Tests
    [TestClass]
    public class HashTest
    {
-      static void test(AutoHash<string, int> autoHash, string message, Func<string, int> newLambda)
+      protected static void test(AutoHash<string, int> autoHash, string message, Func<string, int> newLambda)
       {
          var keys = array("alpha", "bravo", "charlie");
 

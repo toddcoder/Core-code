@@ -27,7 +27,7 @@ namespace Core.Exceptions
          }
       }
 
-      static IMaybe<string[]> getCallStack(StackTrace stack, string format)
+      private static IMaybe<string[]> getCallStack(StackTrace stack, string format)
       {
          if (stack.FrameCount != 0)
          {

@@ -9,7 +9,7 @@ namespace Core.Computers
 {
    public class FolderNameTrying
    {
-      FolderName folderName;
+      protected FolderName folderName;
 
       public event EventHandler<FileArgs> FileSuccess;
 

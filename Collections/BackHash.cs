@@ -57,5 +57,18 @@ namespace Core.Collections
          base.Clear();
          backHash.Clear();
       }
+
+      protected override Hash<TKey, TValue> getNewHash() => new BackHash<TKey, TValue>(Comparer);
+
+      public override Hash<TKey, TValue> Subset(params TKey[] keys)
+      {
+         var newHash = (BackHash<TKey, TValue>)getNewHash();
+         foreach (var key in keys)
+         {
+            newHash[key] = this[key];
+         }
+
+         return newHash;
+      }
    }
 }

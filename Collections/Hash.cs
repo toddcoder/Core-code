@@ -302,5 +302,22 @@ namespace Core.Collections
             Remove(oldKey);
          }
       }
+
+
+      protected virtual Hash<TKey, TValue> getNewHash() => new Hash<TKey, TValue>(Comparer);
+
+      public virtual Hash<TKey, TValue> Subset(params TKey[] keys)
+      {
+         var newHash = getNewHash();
+
+         foreach (var key in keys)
+         {
+            newHash[key] = this[key];
+         }
+
+         return newHash;
+      }
+
+      public virtual Hash<TKey, TValue> Subset(IEnumerable<TKey> keys) => Subset(keys.ToArray());
    }
 }

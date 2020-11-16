@@ -5,7 +5,7 @@ namespace Core.Applications.Writers
 {
 	public class FileWriter : BaseWriter, IDisposable
 	{
-		FileName file;
+      protected FileName file;
 
 		public FileWriter(FileName file, bool useBuffer)
 		{
@@ -15,7 +15,7 @@ namespace Core.Applications.Writers
 
 		protected override void writeRaw(string text) => file.Append(text);
 
-		void dispose() => file.Flush();
+      protected void dispose() => file.Flush();
 
 		public void Dispose()
 		{

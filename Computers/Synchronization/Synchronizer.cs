@@ -9,11 +9,11 @@ namespace Core.Computers.Synchronization
 {
    public class Synchronizer
    {
-      FolderName sourceFolder;
-      FolderName targetFolder;
-      string pattern;
-      bool move;
-      bool recursive;
+      protected FolderName sourceFolder;
+      protected FolderName targetFolder;
+      protected string pattern;
+      protected bool move;
+      protected bool recursive;
 
       public event EventHandler<FileArgs> Success;
       public event EventHandler<FailedFileArgs> Failure;
@@ -40,7 +40,7 @@ namespace Core.Computers.Synchronization
          }
       }
 
-      void handleFolder(FolderName currentSourceFolder, FolderName currentTargetFolder)
+      protected void handleFolder(FolderName currentSourceFolder, FolderName currentTargetFolder)
       {
          if (recursive)
          {
@@ -56,7 +56,7 @@ namespace Core.Computers.Synchronization
          }
       }
 
-      void handleFile(FileName sourceFile, FolderName currentTargetFolder)
+      protected void handleFile(FileName sourceFile, FolderName currentTargetFolder)
       {
          var targetFile = currentTargetFolder + sourceFile;
          if (copyIfNeeded(sourceFile, targetFile).If(out var file, out var anyException))
@@ -73,7 +73,7 @@ namespace Core.Computers.Synchronization
          }
       }
 
-      IMatched<FileName> copyIfNeeded(FileName sourceFile, FileName targetFile)
+      protected IMatched<FileName> copyIfNeeded(FileName sourceFile, FileName targetFile)
       {
          try
          {
@@ -104,7 +104,7 @@ namespace Core.Computers.Synchronization
          }
       }
 
-      IMatched<FileName> copy(FileName sourceFile, FileName targetFile)
+      protected IMatched<FileName> copy(FileName sourceFile, FileName targetFile)
       {
          var targetFileFolder = targetFile.Folder;
          var anyWasCreated = targetFileFolder.TryTo.WasCreated();

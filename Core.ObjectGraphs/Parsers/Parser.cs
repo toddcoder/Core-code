@@ -25,8 +25,8 @@ namespace Core.ObjectGraphs.Parsers
 
       public const string DEFAULT_CONFIGS = @"C:\Configurations";
 
-      string source;
-      IMaybe<string> anyConfigFolder;
+      protected string source;
+      protected IMaybe<string> anyConfigFolder;
 
       public IMaybe<Replacer> Replacer { get; set; }
 
@@ -61,7 +61,7 @@ namespace Core.ObjectGraphs.Parsers
          return objectGraph;
       }
 
-      static void setPath(string parentPath, ObjectGraph graph)
+      protected static void setPath(string parentPath, ObjectGraph graph)
       {
          var path = parentPath.IsEmpty() ? GRAPH_ROOT : $"{parentPath}/{graph.Name}";
          graph.Path = path;
@@ -71,7 +71,7 @@ namespace Core.ObjectGraphs.Parsers
          }
       }
 
-      static string[] preprocess(string source, Replacer replacer)
+      protected static string[] preprocess(string source, Replacer replacer)
       {
          var lines = source.Split("/r /n | /r | /n");
          var matcher = new Matcher();
@@ -98,7 +98,7 @@ namespace Core.ObjectGraphs.Parsers
          return newLines.ToArray();
       }
 
-      static void indentLines(string[] lines, string indent)
+      protected static void indentLines(string[] lines, string indent)
       {
          for (var i = 0; i < lines.Length; i++)
          {

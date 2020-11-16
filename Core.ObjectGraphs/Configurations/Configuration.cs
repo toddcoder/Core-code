@@ -35,7 +35,7 @@ namespace Core.ObjectGraphs.Configurations
 
       public static IResult<Configuration> LoadFromJson(FileName file) => tryTo(() => new Configuration(ObjectGraph.RootObjectGraph()));
 
-      ObjectGraph rootGraph;
+      protected ObjectGraph rootGraph;
 
       public Configuration(ObjectGraph rootGraph)
       {

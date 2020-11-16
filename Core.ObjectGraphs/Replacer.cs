@@ -23,10 +23,10 @@ namespace Core.ObjectGraphs
          return new Replacer(source);
       }
 
-      string source;
-      DelimitedText delimitedText;
-      Formatter formatter;
-      List<Macro> macros;
+      protected string source;
+      protected DelimitedText delimitedText;
+      protected Formatter formatter;
+      protected List<Macro> macros;
 
       public Replacer(string source)
       {

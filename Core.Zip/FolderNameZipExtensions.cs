@@ -38,7 +38,7 @@ namespace Core.Zip
          return folder.Zip(zipName, f => true, recursive, compressionLevel);
       }
 
-      static void zipCurrentFolder(ZipArchive archive, FolderName folder, Predicate<FileName> include, bool recursive,
+      private static void zipCurrentFolder(ZipArchive archive, FolderName folder, Predicate<FileName> include, bool recursive,
          CompressionLevel compressionLevel, string prefix)
       {
          foreach (var file in folder.Files.Where(f => include(f)))

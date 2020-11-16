@@ -6,10 +6,10 @@ namespace Core.ObjectGraphs
 {
    public class Macro
    {
-      Formatter formatter;
-      string replacementText;
-      List<string> parameters;
-      string pattern;
+      protected Formatter formatter;
+      protected string replacementText;
+      protected List<string> parameters;
+      protected string pattern;
 
       public Macro(string name, string replacementText)
       {

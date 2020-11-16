@@ -11,15 +11,15 @@ namespace Core.Tests
    [TestClass]
    public class FolderNameTests
    {
-      const string FOLDER_ESTREAM = @"~\src\Estream\Source\Estream.MigrationTests";
-      const string FOLDER_APP_DATA = @"~\AppData\Local\TSqlCop";
-      const string FOLDER_PROGRAM_FILES = @"C:\Program Files (x86)\";
-      const string FOLDER_VISUAL_STUDIO = FOLDER_PROGRAM_FILES +
+      protected const string FOLDER_ESTREAM = @"~\src\Estream\Source\Estream.MigrationTests";
+      protected const string FOLDER_APP_DATA = @"~\AppData\Local\TSqlCop";
+      protected const string FOLDER_PROGRAM_FILES = @"C:\Program Files (x86)\";
+      protected const string FOLDER_VISUAL_STUDIO = FOLDER_PROGRAM_FILES +
          @"Microsoft Visual Studio\2017\Professional\Common7\IDE\Extensions\Enterprise\TSqlCop";
-      const string FOLDER_SSMS130 = FOLDER_PROGRAM_FILES + @"Microsoft SQL Server\130\Tools\Binn\ManagementStudio\Extensions\TSqlCop";
-      const string FOLDER_SSMS140 = FOLDER_PROGRAM_FILES + @"Microsoft SQL Server\140\Tools\Binn\ManagementStudio\Extensions\TSqlCop";
+      protected const string FOLDER_SSMS130 = FOLDER_PROGRAM_FILES + @"Microsoft SQL Server\130\Tools\Binn\ManagementStudio\Extensions\TSqlCop";
+      protected const string FOLDER_SSMS140 = FOLDER_PROGRAM_FILES + @"Microsoft SQL Server\140\Tools\Binn\ManagementStudio\Extensions\TSqlCop";
 
-      static IEnumerable<FolderName> defaultFolderNames()
+      protected static IEnumerable<FolderName> defaultFolderNames()
       {
          yield return FOLDER_ESTREAM;
          yield return FOLDER_APP_DATA;

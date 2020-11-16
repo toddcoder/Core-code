@@ -239,7 +239,7 @@ namespace Core.Data.DataSources
          }
       }
 
-      void setCommand(object entity, string command)
+      protected void setCommand(object entity, string command)
       {
          var commandText = modifyCommand(entity, command);
          if (Command.If(out var dbCommand))
@@ -324,7 +324,7 @@ namespace Core.Data.DataSources
          }
       }
 
-      void fill(object entity, IDataReader dataReader) => FillFields(entity, dataReader, fields);
+      protected void fill(object entity, IDataReader dataReader) => FillFields(entity, dataReader, fields);
 
       public static void FillOrdinals(IDataReader reader, Fields.Fields fields)
       {
@@ -364,7 +364,7 @@ namespace Core.Data.DataSources
          command.CommandType = commandText.IsMatch("/s+") ? CommandType.Text : CommandType.StoredProcedure;
       }
 
-      void allocateCommand()
+      protected void allocateCommand()
       {
          if (Command.IsNone)
          {
@@ -376,7 +376,7 @@ namespace Core.Data.DataSources
          }
       }
 
-      void allocateConnection()
+      protected void allocateConnection()
       {
          if (_connection.If(out var connection))
          {

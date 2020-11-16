@@ -28,7 +28,7 @@ namespace Core.Computers
          }
       }
 
-      const string REGEX_VALID_FILENAME = @"^ ((['a-zA-Z'] ':' | '\') ('\' -['\']+)* '\')? (-['.']+ ('.' -['.\']+)?) $";
+      protected const string REGEX_VALID_FILENAME = @"^ ((['a-zA-Z'] ':' | '\') ('\' -['\']+)* '\')? (-['.']+ ('.' -['.\']+)?) $";
 
       public static FileName operator |(FileName target, FileName source)
       {
@@ -136,7 +136,7 @@ namespace Core.Computers
 
       public static implicit operator FileName(string fileName) => new FileName(fileName);
 
-      static string getDirectoryName(string fullPath)
+      protected static string getDirectoryName(string fullPath)
       {
          var directoryName = Path.GetDirectoryName(fullPath);
          if (directoryName.IsEmpty())
@@ -151,13 +151,13 @@ namespace Core.Computers
 
       public static bool operator !=(FileName left, FileName right) => !(left == right);
 
-      FolderName folder;
-      string name;
-      string extension;
-      string fullPath;
-      StringBuilder buffer;
-      bool useBuffer;
-      Equatable<FileName> equatable;
+      protected FolderName folder;
+      protected string name;
+      protected string extension;
+      protected string fullPath;
+      protected StringBuilder buffer;
+      protected bool useBuffer;
+      protected Equatable<FileName> equatable;
 
       public FileName(FolderName folder, string name, string extension) => initialize(folder, name, extension);
 
@@ -525,13 +525,13 @@ namespace Core.Computers
          }
       }
 
-      void replaceTildes()
+      protected void replaceTildes()
       {
          folder = new FolderName(folder.ToString().Replace("~~~", "..."));
          fullPath = fullPath.Replace("~~~", "...");
       }
 
-      static string join(string[] parts, int index)
+      protected static string join(string[] parts, int index)
       {
          if (index == 0)
          {
@@ -663,7 +663,7 @@ namespace Core.Computers
 
       public void WriteToBinary(FileName target, bool overwriteTarget = false) => WriteToBinary(target, overwriteTarget, false);
 
-      FileName CreateRandomFileName(FolderName folderName, string subfolder)
+      protected FileName CreateRandomFileName(FolderName folderName, string subfolder)
       {
          var newFolder = folderName[subfolder];
          newFolder.CreateIfNonExistent();
@@ -671,15 +671,15 @@ namespace Core.Computers
          return newFolder + uniqueID() + extension;
       }
 
-      bool getAttr(FileAttributes attribute) => Bits32<FileAttributes>.GetBit(info().Attributes, attribute);
+      protected bool getAttr(FileAttributes attribute) => Bits32<FileAttributes>.GetBit(info().Attributes, attribute);
 
-      void setAttr(FileAttributes attribute, bool value)
+      protected void setAttr(FileAttributes attribute, bool value)
       {
          var info = this.info();
          info.Attributes = Bits32<FileAttributes>.SetBit(info.Attributes, attribute, value);
       }
 
-      void setFullPath()
+      protected void setFullPath()
       {
          try
          {
@@ -692,7 +692,7 @@ namespace Core.Computers
          }
       }
 
-      void initialize(FolderName aFolder, string aName, string anExtension)
+      protected void initialize(FolderName aFolder, string aName, string anExtension)
       {
          if (aName.IsMatch("^ '~'"))
          {
@@ -732,7 +732,7 @@ namespace Core.Computers
          setFullPath();
       }
 
-      FileInfo info() => new FileInfo(fullPath);
+      protected FileInfo info() => new FileInfo(fullPath);
 
       public void AppendToExtension(string anExtension)
       {
@@ -813,9 +813,9 @@ namespace Core.Computers
 
       public byte[] GetBytes(int length) => GetBytes(0, length);
 
-      StringBuilder getBuffer() => buffer ?? (buffer = new StringBuilder());
+      protected StringBuilder getBuffer() => buffer ?? (buffer = new StringBuilder());
 
-      void appendText(string text)
+      protected void appendText(string text)
       {
          folder.CreateIfNonExistent();
          using (var file = File.Open(fullPath, FileMode.Append, FileAccess.Write, FileShare.ReadWrite))

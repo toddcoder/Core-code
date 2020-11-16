@@ -12,8 +12,8 @@ namespace Core.Tests
    [TestClass]
    public class ZipTest
    {
-      const string SOURCE_FOLDER = @"C:\Enterprise\Working\Zips\Source";
-      const string ZIPS_FOLDER = @"C:\Enterprise\Working\Zips";
+      protected const string SOURCE_FOLDER = @"C:\Enterprise\Working\Zips\Source";
+      protected const string ZIPS_FOLDER = @"C:\Enterprise\Working\Zips";
 
       [TestInitialize]
       public void Initialize()

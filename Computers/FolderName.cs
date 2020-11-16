@@ -33,7 +33,7 @@ namespace Core.Computers
          }
       }
 
-      const int MAX_PATH = 260;
+      protected const int MAX_PATH = 260;
 
       public static implicit operator FolderName(string folder) => new FolderName(folder);
 
@@ -67,7 +67,7 @@ namespace Core.Computers
 
       public static FolderName CreateRootOnly(string root) => new FolderName(root, new string[0]);
 
-      static FolderName specialFolder(Environment.SpecialFolder folder) => Environment.GetFolderPath(folder);
+      protected static FolderName specialFolder(Environment.SpecialFolder folder) => Environment.GetFolderPath(folder);
 
       public static FolderName Temp => Path.GetTempPath();
 
@@ -125,7 +125,7 @@ namespace Core.Computers
       public static FileName operator +(FolderName folder, FileName file) => folder.File(file.NameExtension);
 
       [DllImport("shlwapi.dll", CharSet = CharSet.Auto)]
-      static extern bool PathRelativePathTo(StringBuilder path, string from, FileAttributes fromAttributes, string to,
+      protected static extern bool PathRelativePathTo(StringBuilder path, string from, FileAttributes fromAttributes, string to,
          FileAttributes toAttributes);
 
       protected string root;
@@ -164,11 +164,11 @@ namespace Core.Computers
          Encoding = Encoding.ASCII;
       }
 
-      DirectoryInfo info() => new DirectoryInfo(fullPath);
+      protected DirectoryInfo info() => new DirectoryInfo(fullPath);
 
-      bool getAttr(FileAttributes attribute) => Bits32<FileAttributes>.GetBit(info().Attributes, attribute);
+      protected bool getAttr(FileAttributes attribute) => Bits32<FileAttributes>.GetBit(info().Attributes, attribute);
 
-      void setAttr(FileAttributes attribute, bool value)
+      protected void setAttr(FileAttributes attribute, bool value)
       {
          var info = this.info();
          info.Attributes = Bits32<FileAttributes>.SetBit(info.Attributes, attribute, value);
@@ -410,7 +410,7 @@ namespace Core.Computers
 
       public bool Valid { get; private set; }
 
-      static string[] getSubfolders(string subfolders)
+      protected static string[] getSubfolders(string subfolders)
       {
          if (subfolders.IsNotEmpty())
          {
@@ -427,7 +427,7 @@ namespace Core.Computers
          }
       }
 
-      void setFullPath()
+      protected void setFullPath()
       {
          try
          {
@@ -440,7 +440,7 @@ namespace Core.Computers
          }
       }
 
-      void initialize(string newRoot, string[] newSubfolders)
+      protected void initialize(string newRoot, string[] newSubfolders)
       {
          root = newRoot;
          subfolders = newSubfolders;
@@ -448,9 +448,9 @@ namespace Core.Computers
          equatable = new Equatable<FolderName>(this, "fullPath");
       }
 
-      void initialize(string newRoot) => initialize(newRoot, new string[0]);
+      protected void initialize(string newRoot) => initialize(newRoot, new string[0]);
 
-      void setFullPath(string folder)
+      protected void setFullPath(string folder)
       {
          folder = replaceTilde(folder);
          folder = Path.GetFullPath(folder);
@@ -490,7 +490,7 @@ namespace Core.Computers
          }
       }
 
-      static void createIfNonExistent(string folder)
+      protected static void createIfNonExistent(string folder)
       {
          if (!Directory.Exists(folder))
          {
@@ -838,7 +838,7 @@ namespace Core.Computers
          }
       }
 
-      static int getFileCount(string folder) => getFiles(folder).Count();
+      protected static int getFileCount(string folder) => getFiles(folder).Count();
 
       public FileName File(string name) => new FileName(this, name);
 

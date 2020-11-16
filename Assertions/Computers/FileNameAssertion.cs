@@ -44,7 +44,7 @@ namespace Core.Assertions.Computers
          }
       }
 
-      static string format(FileName file) => file.TruncateBySubfolder(1);
+      protected static string format(FileName file) => file.TruncateBySubfolder(1);
 
       protected FileNameAssertion add(Func<bool> constraintFunction, string message)
       {
