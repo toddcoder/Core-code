@@ -213,7 +213,7 @@ namespace Core.Monads
          }
       }
 
-      public static IEnumerable<(T, TMaybe)> WhereIsSome<T, TMaybe>(this IEnumerable<T> enumerable, Func<T, IMaybe<TMaybe>> predicate)
+      public static IEnumerable<(T item, TMaybe maybe)> WhereIsSome<T, TMaybe>(this IEnumerable<T> enumerable, Func<T, IMaybe<TMaybe>> predicate)
       {
          foreach (var item in enumerable)
          {
@@ -235,7 +235,7 @@ namespace Core.Monads
          }
       }
 
-      public static IEnumerable<(T, TResult)> WhereIsSuccessful<T, TResult>(this IEnumerable<T> enumerable, Func<T, IResult<TResult>> predicate)
+      public static IEnumerable<(T item, TResult result)> WhereIsSuccessful<T, TResult>(this IEnumerable<T> enumerable, Func<T, IResult<TResult>> predicate)
       {
          foreach (var item in enumerable)
          {
@@ -257,7 +257,7 @@ namespace Core.Monads
          }
       }
 
-      public static IEnumerable<(T, TMatched)> WhereIsMatched<T, TMatched>(this IEnumerable<T> enumerable, Func<T, IMatched<TMatched>> predicate)
+      public static IEnumerable<(T item, TMatched matched)> WhereIsMatched<T, TMatched>(this IEnumerable<T> enumerable, Func<T, IMatched<TMatched>> predicate)
       {
          foreach (var item in enumerable)
          {
@@ -279,7 +279,7 @@ namespace Core.Monads
          }
       }
 
-      public static IEnumerable<(T, TCompletion)> WhereIsCompleted<T, TCompletion>(this IEnumerable<T> enumerable,
+      public static IEnumerable<(T item, TCompletion completion)> WhereIsCompleted<T, TCompletion>(this IEnumerable<T> enumerable,
          Func<T, ICompletion<TCompletion>> predicate)
       {
          foreach (var item in enumerable)
