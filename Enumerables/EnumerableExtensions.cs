@@ -1261,5 +1261,9 @@ namespace Core.Enumerables
             yield return (index++, item);
          }
       }
+
+      public static Set<T> ToSet<T>(this IEnumerable<T> enumerable) => new Set<T>(enumerable);
+
+      public static StringSet ToStringSet(this IEnumerable<string> enumerable, bool ignoreCase = false) => new StringSet(enumerable, ignoreCase);
    }
 }
