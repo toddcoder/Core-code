@@ -1021,8 +1021,46 @@ namespace Core.Enumerables
          return result;
       }
 
-      public static (IEnumerable<T> isTrue, IEnumerable<T> isFalse) Partition<T>(this IEnumerable<T> enumerable,
-         Predicate<T> predicate)
+      public static Hash<TKey, Set<TValue>> GroupToSet<TKey, TValue>(this IEnumerable<TValue> enumerable, Func<TValue, TKey> groupingFunc)
+      {
+         var hash = new Hash<TKey, Set<TValue>>();
+         foreach (var value in enumerable)
+         {
+            var key = groupingFunc(value);
+            if (hash.ContainsKey(key))
+            {
+               hash[key].Add(value);
+            }
+            else
+            {
+               hash[key] = new Set<TValue> { value };
+            }
+         }
+
+         return hash;
+      }
+
+      public static Hash<TKey, StringSet> GroupToStringSet<TKey>(this IEnumerable<string> enumerable, Func<string, TKey> groupingFunc,
+         bool ignoreCase = false)
+      {
+         var hash = new Hash<TKey, StringSet>();
+         foreach (var value in enumerable)
+         {
+            var key = groupingFunc(value);
+            if (hash.ContainsKey(key))
+            {
+               hash[key].Add(value);
+            }
+            else
+            {
+               hash[key] = new StringSet(ignoreCase) { value };
+            }
+         }
+
+         return hash;
+      }
+
+      public static (IEnumerable<T> isTrue, IEnumerable<T> isFalse) Partition<T>(this IEnumerable<T> enumerable, Predicate<T> predicate)
       {
          var isTrue = new List<T>();
          var isFalse = new List<T>();
@@ -1041,8 +1079,7 @@ namespace Core.Enumerables
          return (isTrue, isFalse);
       }
 
-      public static IMaybe<int> IndexOfMax<T>(this IEnumerable<T> enumerable)
-         where T : IComparable<T>
+      public static IMaybe<int> IndexOfMax<T>(this IEnumerable<T> enumerable) where T : IComparable<T>
       {
          var index = none<int>();
          var currentIndex = 0;
@@ -1098,8 +1135,7 @@ namespace Core.Enumerables
          return index;
       }
 
-      public static IMaybe<int> IndexOfMin<T>(this IEnumerable<T> enumerable)
-         where T : IComparable<T>
+      public static IMaybe<int> IndexOfMin<T>(this IEnumerable<T> enumerable) where T : IComparable<T>
       {
          var index = none<int>();
          var currentIndex = 0;
