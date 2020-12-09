@@ -106,7 +106,7 @@ namespace Core.Objects
          }
       }
 
-      public string Keys
+      public virtual string Keys
       {
          get => getValues(this).Select(i => $"{i.Key}=>{(i.Value.IsNull() ? "null" : i.Value)}").ToString(", ");
       }

@@ -66,6 +66,7 @@
     <Compile Include="Applications\CommandLine.cs" />
     <Compile Include="Applications\CommandLineInterface.cs" />
     <Compile Include="Applications\ConsoleFunctions.cs" />
+    <Compile Include="Applications\ConsoleProgress.cs" />
     <Compile Include="Applications\ConvertArgs.cs" />
     <Compile Include="Applications\EntryPointAttribute.cs" />
     <Compile Include="Applications\EntryPointType.cs" />

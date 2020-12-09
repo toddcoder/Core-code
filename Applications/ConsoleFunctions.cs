@@ -7,12 +7,12 @@ namespace Core.Applications
 {
 	public static class ConsoleFunctions
 	{
-		const uint ERROR_ACCESS_DENIED = 5;
-      const char BLOCK = '■';
-      const string BACK = "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
-      const string TWIRL = "-\\|/";
+		private const uint ERROR_ACCESS_DENIED = 5;
+      private const char BLOCK = '■';
+      private const string BACK = "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
+      private const string TWIRL = "-\\|/";
 
-      static string errorMessage() => new Win32Exception(Marshal.GetLastWin32Error()).Message;
+      private static string errorMessage() => new Win32Exception(Marshal.GetLastWin32Error()).Message;
 
 		public static IResult<Unit> consoleNew(bool alwaysCreateNewConsole = true)
 		{

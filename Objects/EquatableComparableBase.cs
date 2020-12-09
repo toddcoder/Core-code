@@ -38,7 +38,7 @@ namespace Core.Objects
          comparableInfo.Must().Not.BeEmpty().OrThrow("No fields or properties has a ComparableAttribute");
       }
 
-      static int compareField(object left, object right, MemberInfo memberInfo)
+      protected static int compareField(object left, object right, MemberInfo memberInfo)
       {
          switch (memberInfo)
          {
