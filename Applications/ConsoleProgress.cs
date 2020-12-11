@@ -83,7 +83,7 @@ namespace Core.Applications
          }
       }
 
-      public void Clear()
+      public void End()
       {
          var totalLength = width + 5 + extent;
          Console.Write("\b".Repeat(totalLength));
