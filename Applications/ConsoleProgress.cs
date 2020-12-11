@@ -56,7 +56,7 @@ namespace Core.Applications
          }
       }
 
-      public void Progress(string label, bool increment)
+      public virtual void Progress(string label, bool increment)
       {
          var backGroundCount = (int)((double)index / count * width);
          backGroundCount = backGroundCount.MinOf(width);
@@ -83,13 +83,14 @@ namespace Core.Applications
          }
       }
 
-      public void End()
+      public virtual void End()
       {
          var totalLength = width + 5 + extent;
+         Console.CursorLeft = currentLeft;
          Console.Write("\b".Repeat(totalLength));
       }
 
-      public void Reset()
+      public virtual void Reset()
       {
          Console.CursorLeft = currentLeft - 1;
          Console.Write(" ".Repeat(length + 3 + extent));
