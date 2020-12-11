@@ -85,9 +85,16 @@ namespace Core.Applications
 
       public void Clear()
       {
+         var totalLength = width + 5 + extent;
+         Console.Write("\b".Repeat(totalLength));
+      }
+
+      public void Reset()
+      {
          Console.CursorLeft = currentLeft - 1;
          Console.Write(" ".Repeat(length + 3 + extent));
          Console.CursorLeft = currentLeft - 1;
+         index = 1;
       }
    }
 }
