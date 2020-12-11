@@ -58,7 +58,7 @@ namespace Core.Applications
 
       public void Progress(string label, bool increment)
       {
-         var backGroundCount = (int)((double)index / count * width) + 1;
+         var backGroundCount = (int)((double)index / count * width);
          backGroundCount = backGroundCount.MinOf(width);
 
          Console.CursorLeft = currentLeft;
