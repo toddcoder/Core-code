@@ -86,14 +86,16 @@ namespace Core.Applications
       public virtual void End()
       {
          var totalLength = width + 5 + extent;
-         Console.CursorLeft = currentLeft;
-         Console.Write("\b".Repeat(totalLength));
+         Console.CursorLeft = currentLeft - 1;
+         Console.Write(" ".Repeat(totalLength));
+         Console.CursorLeft = currentLeft - 1;
       }
 
       public virtual void Reset()
       {
+         var totalLength = length + 3 + extent;
          Console.CursorLeft = currentLeft - 1;
-         Console.Write(" ".Repeat(length + 3 + extent));
+         Console.Write(" ".Repeat(totalLength));
          Console.CursorLeft = currentLeft - 1;
          index = 1;
       }

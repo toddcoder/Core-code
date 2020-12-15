@@ -173,8 +173,10 @@
     <Compile Include="Computers\Synchronization\Synchronizer.cs" />
     <Compile Include="Computers\Synchronization\SynchronizerTrying.cs" />
     <Compile Include="Computers\Target.cs" />
+    <Compile Include="DataStructures\IQueue.cs" />
     <Compile Include="DataStructures\MaybeQueue.cs" />
     <Compile Include="DataStructures\MaybeStack.cs" />
+    <Compile Include="DataStructures\PriorityQueue.cs" />
     <Compile Include="Dates\DateEnumerator.cs" />
     <Compile Include="Dates\DateFunctions.cs" />
     <Compile Include="Dates\DateExtensions.cs" />

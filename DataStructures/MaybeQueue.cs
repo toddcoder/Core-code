@@ -8,7 +8,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.DataStructures
 {
-   public class MaybeQueue<T> : IEnumerable<T>
+   public class MaybeQueue<T> : IQueue<T>, IEnumerable<T>
    {
       protected Queue<T> queue;
 

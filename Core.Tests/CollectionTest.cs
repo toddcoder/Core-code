@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using Core.Assertions;
 using Core.Collections.Infix;
+using Core.DataStructures;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static Core.Arrays.ArrayFunctions;
 using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Tests
@@ -47,6 +49,22 @@ namespace Core.Tests
 
          var result = intStack.Pop();
          assert(() => result).Must().Equal(result).OrThrow();
+      }
+
+      [TestMethod]
+      public void PriorityQueueTest()
+      {
+         var queue = new PriorityQueue<int>();
+
+         foreach (var item in array(1, 5, 3, 6, 9))
+         {
+            queue.Enqueue(item);
+         }
+
+         while (queue.Dequeue().If(out var item))
+         {
+            Console.WriteLine(item);
+         }
       }
    }
 }
