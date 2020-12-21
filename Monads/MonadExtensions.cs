@@ -14,12 +14,6 @@ namespace Core.Monads
 {
    public static class MonadExtensions
    {
-      [Obsolete("Use Some()")]
-      public static IMaybe<T> SomeIf<T>(this T obj, Predicate<T> predicate) => maybe(predicate(obj), () => obj);
-
-      [Obsolete("Use Some()")]
-      public static IMaybe<T> SomeIfNotNull<T>(this T obj) => obj.SomeIf(o => !o.IsNull());
-
       public static IMaybe<T> Some<T>(this T obj) => obj.IsNull() ? none<T>() : new Some<T>(obj);
 
       public static bool NotNull<T>(this T obj, out T value) => obj.Some().If(out value);

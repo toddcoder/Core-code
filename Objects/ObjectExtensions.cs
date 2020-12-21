@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using Core.Monads;
 using Core.RegularExpressions;
@@ -15,7 +16,25 @@ namespace Core.Objects
    {
       public static bool IsNullable(this Type type) => type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
 
-      public static bool IsNull<T>(this T obj) => !typeof(T).IsValueType && EqualityComparer<T>.Default.Equals(obj, default);
+      public static bool IsNull<T>(this T obj)
+      {
+         if (obj is ITuple tuple)
+         {
+            for (var i = 0; i < tuple.Length; i++)
+            {
+               if (tuple[i].IsNull())
+               {
+                  return true;
+               }
+            }
+
+            return false;
+         }
+         else
+         {
+            return !typeof(T).IsValueType && EqualityComparer<T>.Default.Equals(obj, default);
+         }
+      }
 
       public static bool IsNotNull<T>(this T obj) => !obj.IsNull();
 
