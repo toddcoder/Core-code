@@ -139,15 +139,7 @@ namespace Core.Applications
 
       protected object getString(string rest, Type type)
       {
-         string source;
-         if (rest.IsMatch("^ /s* [quote]"))
-         {
-            source = rest.Keep("^ /s* /([quote]) .*? /1").TrimStart().Drop(1).Drop(-1);
-         }
-         else
-         {
-            source = rest.Keep("^ /s* -/s+").TrimStart();
-         }
+         var source = rest.IsMatch("^ /s* [quote]") ? rest.Keep("^ /s* /([quote]) .*? /1").TrimStart().Drop(1).Drop(-1) : rest.Keep("^ /s* -/s+").TrimStart();
 
          if (type == typeof(string))
          {
@@ -192,14 +184,7 @@ namespace Core.Applications
       protected static object getFloatingPoint(string rest, Type type)
       {
          var source = rest.Keep("^ /s* -/s+").TrimStart();
-         if (type == typeof(float))
-         {
-            return source.ToFloat();
-         }
-         else
-         {
-            return source.ToDouble();
-         }
+         return type == typeof(float) ? source.ToFloat() : source.ToDouble();
       }
 
       protected static object getEnum(string rest, Type type)
@@ -268,22 +253,17 @@ namespace Core.Applications
       protected static string removeExecutableFromCommandLine(string commandLine)
       {
          var matcher = new Matcher();
-         if (matcher.IsMatch(commandLine, "^ (.+ '.exe' /s* [quote]? /s*) /s* /(.*) $"))
-         {
-            return matcher.FirstGroup;
-         }
-         else
-         {
-            return commandLine;
-         }
+         return matcher.IsMatch(commandLine, "^ (.+ '.exe' /s* [quote]? /s*) /s* /(.*) $") ? matcher.FirstGroup : commandLine;
       }
 
-      protected static Hash<char, string> getShortcuts(string source) =>
-         source.Split("/s* ';' /s*").Select(s =>
+      protected static Hash<char, string> getShortcuts(string source)
+      {
+         return source.Split("/s* ';' /s*").Select(s =>
          {
             var pair = s.Split("/s* '=' /s*");
             return (key: pair[0][0], value: pair[1]);
          }).ToHash(i => i.key, i => i.value);
+      }
 
       protected string fixCommand(string commandLine, string prefix, string suffix)
       {
@@ -334,7 +314,6 @@ namespace Core.Applications
 
             return true;
          }
-
          else
          {
             return false;
@@ -343,15 +322,7 @@ namespace Core.Applications
 
       protected static IMaybe<string> getCommand(string commandLine)
       {
-         var matcher = new Matcher();
-         if (matcher.IsMatch(commandLine, "^ /([/w '-']+) /b"))
-         {
-            return matcher.FirstGroup.Some();
-         }
-         else
-         {
-            return none<string>();
-         }
+         return commandLine.Matcher("^ /([/w '-']+) /b").Map(matcher => matcher.FirstGroup);
       }
 
       public void runUsingParameters(string prefix, string suffix, string commandLine)
@@ -397,6 +368,12 @@ namespace Core.Applications
          }
       }
 
+      protected static void pressAKeyToEnd()
+      {
+         Console.Write("Press a key to end: ");
+         Console.ReadKey();
+      }
+
       protected void useWithParameters(MethodInfo methodInfo, string prefix, string suffix, string commandLine)
       {
          var arguments = methodInfo.GetParameters()
@@ -428,19 +405,19 @@ namespace Core.Applications
 
             if (Test)
             {
-               Console.ReadLine();
+               pressAKeyToEnd();
             }
          }
       }
 
       protected void useWithObject(MethodInfo methodInfo, string prefix, string suffix, string commandLine)
       {
-         var anyArgument =
+         var _argument =
             from parameterInfo in methodInfo.GetParameters().Take(1).FirstOrFail("Couldn't retrieve object information")
             from obj in parameterInfo.ParameterType.TryCreate()
             from filledObject in fillObject(obj, prefix, suffix, commandLine)
             select filledObject;
-         if (anyArgument.If(out var argument, out var argumentException))
+         if (_argument.If(out var argument, out var argumentException))
          {
             try
             {
@@ -463,7 +440,7 @@ namespace Core.Applications
 
          if (Test)
          {
-            Console.ReadLine();
+            pressAKeyToEnd();
          }
       }
 
@@ -492,7 +469,7 @@ namespace Core.Applications
 
          if (Test)
          {
-            Console.ReadLine();
+            pressAKeyToEnd();
          }
       }
 
@@ -529,6 +506,7 @@ namespace Core.Applications
             var matcher = new Matcher();
             if (matcher.IsMatch(commandLine, pattern))
             {
+               var firstMatch = true;
                foreach (var match in matcher)
                {
                   var name = xmlToPascal(match.FirstGroup);
@@ -561,6 +539,15 @@ namespace Core.Applications
                      {
                         return $"No value for {name}".Failure<object>();
                      }
+                  }
+                  else if (firstMatch)
+                  {
+                     firstMatch = false;
+                     return $"Did not understand command '{name}'".Failure<object>();
+                  }
+                  else
+                  {
+                     return $"Did not understand argument '{name}".Failure<object>();
                   }
                }
             }
