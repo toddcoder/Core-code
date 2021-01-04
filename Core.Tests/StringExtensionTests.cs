@@ -90,5 +90,14 @@ namespace Core.Tests
             Console.WriteLine();
          }
       }
+
+      [TestMethod]
+      public void JustificationTest()
+      {
+         var text = "Apples and oranges";
+         Console.WriteLine($"|{text.LeftJustify(80)}|");
+         Console.WriteLine($"|{text.RightJustify(80)}|");
+         Console.WriteLine($"|{text.Center(80)}|");
+      }
    }
 }
