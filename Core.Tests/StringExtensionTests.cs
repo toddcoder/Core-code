@@ -26,35 +26,24 @@ namespace Core.Tests
          Console.WriteLine(message.Plural(2));
       }
 
-      [TestMethod]
-      public void CamelAndPascalCaseTest()
+      protected void test(string name, string camelResult, string pascalResult)
       {
-         var name = "SetSQL_nameForUser_ID";
          var camel = name.ToCamel();
          var pascal = name.ToPascal();
 
          Console.WriteLine($"camel:  {camel}");
          Console.WriteLine($"pascal: {pascal}");
-         assert(() => camel).Must().Equal("setSQLNameForUserId").OrThrow();
-         assert(() => pascal).Must().Equal("SetSQLNameForUserId").OrThrow();
+         assert(() => camel).Must().Equal(camelResult).OrThrow();
+         assert(() => pascal).Must().Equal(pascalResult).OrThrow();
+      }
 
-         name = "TARGET";
-         camel = name.ToCamel();
-         pascal = name.ToPascal();
-
-         Console.WriteLine($"camel:  {camel}");
-         Console.WriteLine($"pascal: {pascal}");
-         assert(() => camel).Must().Equal("target").OrThrow();
-         assert(() => pascal).Must().Equal("Target").OrThrow();
-
-         name = "TARGET_REPORT";
-         camel = name.ToCamel();
-         pascal = name.ToPascal();
-
-         Console.WriteLine($"camel:  {camel}");
-         Console.WriteLine($"pascal: {pascal}");
-         assert(() => camel).Must().Equal("targetReport").OrThrow();
-         assert(() => pascal).Must().Equal("TargetReport").OrThrow();
+      [TestMethod]
+      public void CamelAndPascalCaseTest()
+      {
+         test("SetSQL_nameForUser_ID", "setSQLNameForUserId", "SetSQLNameForUserId");
+         test("TARGET", "target", "Target");
+         test("TARGET_REPORT", "targetReport", "TargetReport");
+         test("C1","c1", "C1");
       }
 
       [TestMethod]
