@@ -88,5 +88,12 @@ namespace Core.Tests
          Console.WriteLine($"|{text.RightJustify(80)}|");
          Console.WriteLine($"|{text.Center(80)}|");
       }
+
+      [TestMethod]
+      public void NormalizeWhitespaceTest()
+      {
+         var text = "foobar  \t \r\n \tis okay";
+         Console.WriteLine(text.NormalizeWhitespace());
+      }
    }
 }
