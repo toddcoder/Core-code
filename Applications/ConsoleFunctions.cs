@@ -5,18 +5,18 @@ using Core.Monads;
 
 namespace Core.Applications
 {
-	public static class ConsoleFunctions
-	{
-		private const uint ERROR_ACCESS_DENIED = 5;
+   public static class ConsoleFunctions
+   {
+      private const uint ERROR_ACCESS_DENIED = 5;
       private const char BLOCK = '■';
       private const string BACK = "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
       private const string TWIRL = "-\\|/";
 
       private static string errorMessage() => new Win32Exception(Marshal.GetLastWin32Error()).Message;
 
-		public static IResult<Unit> consoleNew(bool alwaysCreateNewConsole = true)
-		{
-			if (alwaysCreateNewConsole ? !Kernel32.consoleAllocate() : !Kernel32.consoleAttach())
+      public static IResult<Unit> consoleNew(bool alwaysCreateNewConsole = true)
+      {
+         if (alwaysCreateNewConsole ? !Kernel32.consoleAllocate() : !Kernel32.consoleAttach())
          {
             return
                from outStream in Kernel32.initializeOutStream()
@@ -64,5 +64,5 @@ namespace Core.Applications
 
          Console.Write(TWIRL[progress % TWIRL.Length]);
       }
-	}
+   }
 }
