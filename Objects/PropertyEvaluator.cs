@@ -5,6 +5,7 @@ using System.Reflection;
 using Core.Assertions;
 using Core.Collections;
 using Core.Enumerables;
+using Core.Exceptions;
 using Core.Monads;
 using Core.RegularExpressions;
 using static Core.Assertions.AssertionFunctions;
@@ -70,9 +71,16 @@ namespace Core.Objects
 
                foreach (var info in new SignatureCollection(signature).Select(s => new ObjectInfo(current, s)))
                {
-                  assert(() => current).Must().Not.BeNull().OrThrow("$name is null; can't continue the chain");
+                  if (current == null)
+                  {
+                     $"{signature} is null; can't continue the chain".Throws();
+                  }
+
                   var infoValue = info.Value.Required($"Signature {signature} doesn't exist");
-                  assert(() => info.PropertyType).Must().HaveValue().OrThrow("Couldn't determine object at $signature");
+                  if (info.PropertyType.IsNone)
+                  {
+                     throw $"Couldn't determine object at {signature}".Throws();
+                  }
                   current = infoValue;
                   lastInfo = info.Some();
                }
