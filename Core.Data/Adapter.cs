@@ -67,7 +67,7 @@ namespace Core.Data
          setNewFunc();
       }
 
-      void setNewFunc()
+      protected void setNewFunc()
       {
          var entityType = entity.GetType();
          if (entityType.GetConstructors().Any(c => c.GetParameters().Length == 0))

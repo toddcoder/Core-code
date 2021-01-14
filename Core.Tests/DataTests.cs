@@ -55,7 +55,7 @@ namespace Core.Tests
    [TestClass]
    public class DataTests
    {
-      const string TRUE_CONNECTION_STRING = "Data Source=.;Initial Catalog=local_tebennett;Integrated Security=SSPI;Application Name=TSqlCop;";
+      protected const string TRUE_CONNECTION_STRING = "Data Source=.;Initial Catalog=local_tebennett;Integrated Security=SSPI;Application Name=TSqlCop;";
 
       [TestMethod]
       public void FromConfigurationTest()
@@ -132,9 +132,14 @@ namespace Core.Tests
          Console.WriteLine(signature);
       }
 
-      class Object : ISetupObject
+      protected class Object : ISetupObject
       {
-         public string ObjectName { get; set; } = "";
+         public Object()
+         {
+            ObjectName = string.Empty;
+         }
+
+         public string ObjectName { get; set; }
 
          public int ObjectId { get; set; }
 

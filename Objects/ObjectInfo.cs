@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Reflection;
-using Core.Assertions;
 using Core.Monads;
-using static Core.Assertions.AssertionFunctions;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Objects
@@ -16,9 +14,9 @@ namespace Core.Objects
          return maybe(info != null, () => info);
       }
 
-      object obj;
-      IMaybe<int> index;
-      IMaybe<PropertyInfo> info;
+      protected object obj;
+      protected IMaybe<int> index;
+      protected IMaybe<PropertyInfo> info;
 
       public ObjectInfo(object obj, Signature signature)
       {
@@ -89,8 +87,7 @@ namespace Core.Objects
                {
                   if (parameters.Length == 0)
                   {
-                     var valueWasSet = setValue(value);
-                     assert(() => valueWasSet).Must().BeTrue().OrThrow("$name couldn't be set");
+                     var _ = setValue(value);
                   }
                   else
                   {
@@ -99,14 +96,13 @@ namespace Core.Objects
                }
                else
                {
-                  assert(() => parameters).Must().BeEmpty().OrThrow();
                   inf.SetValue(obj, val, null);
                }
             }
          }
       }
 
-      IMaybe<object> getValue(int defaultIndex)
+      protected IMaybe<object> getValue(int defaultIndex)
       {
          if (info.If(out var inf))
          {
@@ -134,9 +130,9 @@ namespace Core.Objects
          }
       }
 
-      static object[] getIndex(int singleIndex) => new object[] { singleIndex };
+      protected static object[] getIndex(int singleIndex) => new object[] { singleIndex };
 
-      bool setValue(object value)
+      protected bool setValue(object value)
       {
          if (info.If(out var i))
          {

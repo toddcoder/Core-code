@@ -109,7 +109,11 @@ namespace Core.Objects
       public object Object
       {
          get => obj;
-         set => obj = value;
+         set
+         {
+            assert(() => value).Must().Not.BeNull().OrThrow();
+            obj = value;
+         }
       }
 
       public Type Type(string signature)
@@ -120,8 +124,6 @@ namespace Core.Objects
 
          foreach (var singleSignature in signatures)
          {
-            assert(()=> result).Must().Not.BeNull().OrThrow();
-
             info = new ObjectInfo(result, singleSignature);
             var value = info.Value;
             result = value.Required($"Signature {singleSignature} not found");

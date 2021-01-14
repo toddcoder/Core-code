@@ -10,11 +10,10 @@ namespace Core.Data
 {
    public class Reader<T> : IDisposable, IEnumerable<T>
    {
-      DataSource dataSource;
-      Func<T> entityFunc;
+      protected DataSource dataSource;
+      protected Func<T> entityFunc;
 
-      public Reader(DataSource dataSource, T entity, Func<T> entityFunc, string command,
-         Parameters.Parameters parameters, Fields.Fields fields)
+      public Reader(DataSource dataSource, T entity, Func<T> entityFunc, string command, Parameters.Parameters parameters, Fields.Fields fields)
       {
          this.dataSource = dataSource;
          dataSource.BeginReading(entity, command, parameters, fields);
@@ -39,7 +38,7 @@ namespace Core.Data
          GC.SuppressFinalize(this);
       }
 
-      void dispose()
+      protected void dispose()
       {
          dataSource.EndReading();
       }
