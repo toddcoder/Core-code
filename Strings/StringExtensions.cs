@@ -2518,5 +2518,31 @@ namespace Core.Strings
             return none<bool>();
          }
       }
+
+      public static string Exactly(this string source, int length, bool addEllipsis = true, bool leftJustify = true, bool normalizeWhitespace = true)
+      {
+         if (source.IsEmpty())
+         {
+            return " ".Repeat(length);
+         }
+         else
+         {
+            var normalized = normalizeWhitespace ? source.NormalizeWhitespace() : source;
+            var sourceLength = normalized.Length;
+            if (sourceLength <= length)
+            {
+               return leftJustify ? normalized.LeftJustify(length) : normalized.RightJustify(length);
+            }
+            else
+            {
+               var keepCount = length - (addEllipsis ? 3 : 0);
+               var keep = normalized.Keep(keepCount);
+
+               var ellipsis = addEllipsis ? "..." : string.Empty;
+
+               return $"{keep}{ellipsis}";
+            }
+         }
+      }
    }
 }

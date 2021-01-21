@@ -95,5 +95,21 @@ namespace Core.Tests
          var text = "foobar  \t \r\n \tis okay";
          Console.WriteLine(text.NormalizeWhitespace());
       }
+
+      [TestMethod]
+      public void ExactlyTest()
+      {
+         var empty = string.Empty;
+         var tooLittle = "the cat jumped over the dog";
+         var tooMuch = $"{tooLittle}, but the dog didn't care.";
+         var needsNormalization = $"the cat\tthe dog\r\nThey need help.";
+
+         Console.WriteLine(" 0000000001111111111222222222233333333334");
+         Console.WriteLine(" 1234567890123456789012345678901234567890");
+         Console.WriteLine($"|{empty.Exactly(40)}|");
+         Console.WriteLine($"|{tooLittle.Exactly(40)}|");
+         Console.WriteLine($"|{tooMuch.Exactly(40)}|");
+         Console.WriteLine($"|{needsNormalization.Exactly(40)}|");
+      }
    }
 }
