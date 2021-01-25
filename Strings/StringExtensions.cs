@@ -79,15 +79,10 @@ namespace Core.Strings
 
       public static string[] Lines(this string source, SplitType split)
       {
-         if (source.IsEmpty())
-         {
-            return new string[0];
-         }
-         else
-         {
-            return source.Split(splitPattern(split));
-         }
+         return source.IsEmpty() ? new string[0] : source.Split(splitPattern(split));
       }
+
+      public static string[] Lines(this string source) => source.Split("/r/n | /r | /n");
 
       public static string Slice(this string source, int startIndex, int stopIndex)
       {

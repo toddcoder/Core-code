@@ -26,7 +26,7 @@ namespace Core.Tests
          Console.WriteLine(message.Plural(2));
       }
 
-      protected void test(string name, string camelResult, string pascalResult)
+      protected static void test(string name, string camelResult, string pascalResult)
       {
          var camel = name.ToCamel();
          var pascal = name.ToPascal();
@@ -110,6 +110,17 @@ namespace Core.Tests
          Console.WriteLine($"|{tooLittle.Exactly(40)}|");
          Console.WriteLine($"|{tooMuch.Exactly(40)}|");
          Console.WriteLine($"|{needsNormalization.Exactly(40)}|");
+      }
+
+      [TestMethod]
+      public void LinesTest()
+      {
+         var text = "foobar\r\nfoobaz\rfoo\nbar";
+         var lines = text.Lines();
+         foreach (var line in lines)
+         {
+            Console.WriteLine(line);
+         }
       }
    }
 }
