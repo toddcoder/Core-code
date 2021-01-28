@@ -380,6 +380,13 @@
     <Compile Include="Strings\Text\DifferenceBlock.cs" />
     <Compile Include="Strings\Text\DifferenceBuilder.cs" />
     <Compile Include="Strings\Text\DifferenceResult.cs" />
+    <Compile Include="Threading\CompletedArgs.cs" />
+    <Compile Include="Threading\Job.cs" />
+    <Compile Include="Threading\JobEmptyQueueArgs.cs" />
+    <Compile Include="Threading\JobExceptionArgs.cs" />
+    <Compile Include="Threading\JobPool.cs" />
+    <Compile Include="Threading\JobQueue.cs" />
+    <Compile Include="Threading\SafeThreadHandle.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Core.snk" />
