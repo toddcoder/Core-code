@@ -76,14 +76,6 @@ namespace Core.Applications
             LoadAliases(aliasFile);
          }
 
-         var opensCommandFile = $"{prefix}cmd ";
-         if (commandLine.StartsWith(opensCommandFile))
-         {
-            FileName file = commandLine.Drop(opensCommandFile.Length).Trim();
-            commandLine = file.Text;
-            Run(commandLine, prefix, suffix);
-         }
-
          runUsingParameters(prefix, suffix, commandLine);
 
          if (Application.IsNotEmpty())
@@ -340,6 +332,13 @@ namespace Core.Applications
       public void runUsingParameters(string prefix, string suffix, string commandLine)
       {
          commandLine = removeExecutableFromCommandLine(commandLine);
+
+         var opensCommandFile = $"{prefix}cmd ";
+         if (commandLine.StartsWith(opensCommandFile))
+         {
+            FileName file = commandLine.Drop(opensCommandFile.Length).Trim();
+            commandLine = file.Text;
+         }
 
          if (getCommand(commandLine).If(out var command))
          {
