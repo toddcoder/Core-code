@@ -28,9 +28,13 @@ namespace Core.Applications
 
       public event EventHandler<ConvertArgs> Convert;
 
-      public CommandLineInterface() : this(getStandardWriter()) { }
+      public CommandLineInterface() : this(getStandardWriter())
+      {
+      }
 
-      public CommandLineInterface(IWriter standardWriter) : this(standardWriter, getExceptionWriter()) { }
+      public CommandLineInterface(IWriter standardWriter) : this(standardWriter, getExceptionWriter())
+      {
+      }
 
       public CommandLineInterface(IWriter standardWriter, IWriter exceptionWriter)
       {
@@ -143,11 +147,16 @@ namespace Core.Applications
 
       protected object getString(string rest, Type type)
       {
-         var source = rest.IsMatch("^ /s* [quote]") ? rest.Keep("^ /s* /([quote]) .*? /1").TrimStart().Drop(1).Drop(-1) : rest.Keep("^ /s* -/s+").TrimStart();
+         var source = rest.IsMatch("^ /s* [quote]") ? rest.Keep("^ /s* /([quote]) .*? /1").TrimStart().Drop(1).Drop(-1)
+            : rest.Keep("^ /s* -/s+").TrimStart();
 
          if (type == typeof(string))
          {
             return source;
+         }
+         else if (type == typeof(IMaybe<string>))
+         {
+            return maybe(source.IsNotEmpty(), () => source);
          }
          else if (type == typeof(FolderName))
          {
@@ -333,7 +342,7 @@ namespace Core.Applications
       {
          commandLine = removeExecutableFromCommandLine(commandLine);
 
-         var opensCommandFile = $"{prefix}cmd ";
+         var opensCommandFile = $"{prefix}cmd{suffix}";
          if (commandLine.StartsWith(opensCommandFile))
          {
             FileName file = commandLine.Drop(opensCommandFile.Length).Trim();
@@ -529,8 +538,8 @@ namespace Core.Applications
                      {
                         evaluator[name] = getBoolean(rest, suffix);
                      }
-                     else if (type == typeof(string) || type == typeof(FileName) || type == typeof(FolderName) || type == typeof(IMaybe<FileName>) ||
-                        type == typeof(IMaybe<FolderName>))
+                     else if (type == typeof(string) || type == typeof(IMaybe<string>) || type == typeof(FileName) || type == typeof(FolderName) ||
+                        type == typeof(IMaybe<FileName>) || type == typeof(IMaybe<FolderName>))
                      {
                         evaluator[name] = getString(rest, type);
                      }
