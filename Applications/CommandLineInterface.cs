@@ -345,7 +345,7 @@ namespace Core.Applications
          {
             var rest = commandLine.Drop(opensCommandFile.Length).TrimStart();
             var command = rest.KeepUntil(" ");
-            var remainder = rest.Drop(command.Length);
+            var remainder = rest.Drop(command.Length).TrimStart();
 
             FileName file;
             if (this is ICommandFile commandFile)
