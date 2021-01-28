@@ -350,7 +350,7 @@ namespace Core.Applications
             FileName file;
             if (this is ICommandFile commandFile)
             {
-               file = commandFile.CommandFile(rest);
+               file = commandFile.CommandFile(command);
             }
             else
             {
