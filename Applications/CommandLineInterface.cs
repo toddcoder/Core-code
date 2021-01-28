@@ -345,7 +345,16 @@ namespace Core.Applications
          var opensCommandFile = $"{prefix}cmd{suffix}";
          if (commandLine.StartsWith(opensCommandFile))
          {
-            FileName file = commandLine.Drop(opensCommandFile.Length).Trim();
+            var rest = commandLine.Drop(opensCommandFile.Length).Trim();
+            FileName file;
+            if (this is ICommandFile commandFile)
+            {
+               file = commandFile.CommandFile(rest);
+            }
+            else
+            {
+               file = rest;
+            }
             commandLine = file.Text;
          }
 
