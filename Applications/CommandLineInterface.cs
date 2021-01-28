@@ -338,14 +338,15 @@ namespace Core.Applications
          return commandLine.Matcher("^ /([/w '-']+) /b").Map(matcher => matcher.FirstGroup);
       }
 
-      public void runUsingParameters(string prefix, string suffix, string commandLine)
+      protected IMaybe<string> getCommandsFromFile(string prefix, string suffix, string commandLine)
       {
-         commandLine = removeExecutableFromCommandLine(commandLine);
-
          var opensCommandFile = $"{prefix}cmd{suffix}";
          if (commandLine.StartsWith(opensCommandFile))
          {
-            var rest = commandLine.Drop(opensCommandFile.Length).Trim();
+            var rest = commandLine.Drop(opensCommandFile.Length).TrimStart();
+            var command = rest.KeepUntil(" ");
+            var remainder = rest.Drop(command.Length);
+
             FileName file;
             if (this is ICommandFile commandFile)
             {
@@ -355,7 +356,23 @@ namespace Core.Applications
             {
                file = rest;
             }
-            commandLine = file.Text;
+
+            var text = file.Text;
+            return remainder.IsNotEmpty() ? $"{text} {remainder}".Some() : text.Some();
+         }
+         else
+         {
+            return none<string>();
+         }
+      }
+
+      public void runUsingParameters(string prefix, string suffix, string commandLine)
+      {
+         commandLine = removeExecutableFromCommandLine(commandLine);
+
+         if (getCommandsFromFile(prefix, suffix, commandLine).If(out var newCommandLine))
+         {
+            commandLine = newCommandLine;
          }
 
          if (getCommand(commandLine).If(out var command))
