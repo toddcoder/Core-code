@@ -196,7 +196,7 @@ namespace Core.Data
 
       public DataSet DataSet()
       {
-         if (DataSource is SQLDataSource ds)
+         if (DataSource is SqlDataSource ds)
          {
             return ds.DataSet(entity, Command, Parameters);
          }

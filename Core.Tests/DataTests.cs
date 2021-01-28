@@ -26,7 +26,7 @@ namespace Core.Tests
 
       public override string ToString() => $"{ObjectName}.{ColumnName} {TypeName}";
 
-      public string ConnectionString => SQLConnectionString.GetConnectionString(".", "local_tebennett", "TSqlCop");
+      public string ConnectionString => SqlConnectionString.GetConnectionString(".", "local_tebennett", "TSqlCop");
 
       public CommandSourceType CommandSourceType => CommandSourceType.File;
 
@@ -49,7 +49,7 @@ namespace Core.Tests
 
       public IHash<string, string> Attributes => new Hash<string, string>();
 
-      public ISetup Setup() => new SQLSetup(this);
+      public ISetup Setup() => new SqlSetup(this);
    }
 
    [TestClass]
@@ -63,7 +63,7 @@ namespace Core.Tests
          var entity = new ColumnData { SchemaName = "PreFlow" };
          var _adapter =
             from configuration in Configuration.LoadFromObjectGraph(@"C:\Enterprise\Projects\Core\Core.Tests\test-data\configuration.objectgraph")
-            from setup in SQLSetup.FromConfiguration(configuration, "all")
+            from setup in SqlSetup.FromConfiguration(configuration, "all")
             from adapter in Adapter<ColumnData>.FromSetup(setup, entity)
             select adapter;
          if (_adapter.If(out var allColumnData, out var exception))
@@ -85,7 +85,7 @@ namespace Core.Tests
       {
          var anyAdapter =
             from configuration in Configuration.LoadFromObjectGraph(@"C:\Enterprise\Projects\Core\Core.Tests\test-data\configuration.objectgraph")
-            from setup in SQLSetup.FromConfiguration(configuration, "all2")
+            from setup in SqlSetup.FromConfiguration(configuration, "all2")
             from adapter in Adapter<ColumnData>.FromSetup(setup, new ColumnData())
             select adapter;
          if (anyAdapter.If(out var allColumnData, out var exception))
@@ -143,7 +143,7 @@ namespace Core.Tests
 
          public int ObjectId { get; set; }
 
-         public string ConnectionString => SQLConnectionString.GetConnectionString(".", "local_tebennett", "TSqlCop");
+         public string ConnectionString => SqlConnectionString.GetConnectionString(".", "local_tebennett", "TSqlCop");
 
          public CommandSourceType CommandSourceType => CommandSourceType.SQL;
 
@@ -164,7 +164,7 @@ namespace Core.Tests
 
          public IHash<string, string> Attributes => new Hash<string, string>();
 
-         public ISetup Setup() => new SQLSetup(this);
+         public ISetup Setup() => new SqlSetup(this);
       }
 
       [TestMethod]

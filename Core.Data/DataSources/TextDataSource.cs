@@ -24,7 +24,7 @@ namespace Core.Data.DataSources
 
       public override void AddParameters(object entity, Parameters.Parameters parameters)
       {
-         SQLDataSource.AddParametersToCommand(Command.Required("Command hasn't been set"), entity, parameters);
+         SqlDataSource.AddParametersToCommand(Command.Required("Command hasn't been set"), entity, parameters);
       }
 
       public override void ClearAllPools() { }

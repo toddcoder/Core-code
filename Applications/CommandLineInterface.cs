@@ -39,6 +39,10 @@ namespace Core.Applications
          Test = false;
          Running = false;
          aliases = new Hash<string, string>();
+         Application = string.Empty;
+         Shortcuts = string.Empty;
+         ShortPrefix = "-";
+         ShortSuffix = " ";
       }
 
       public IWriter StandardWriter { get; set; }
@@ -49,13 +53,13 @@ namespace Core.Applications
 
       public bool Running { get; set; }
 
-      public string Application { get; set; } = "";
+      public string Application { get; set; }
 
-      public string Shortcuts { get; set; } = "";
+      public string Shortcuts { get; set; }
 
-      public string ShortPrefix { get; set; } = "-";
+      public string ShortPrefix { get; set; }
 
-      public string ShortSuffix { get; set; } = " ";
+      public string ShortSuffix { get; set; }
 
       public virtual void HandleException(Exception exception) => ExceptionWriter.WriteExceptionLine(exception);
 
@@ -70,6 +74,14 @@ namespace Core.Applications
          if (Application.IsNotEmpty() && aliasFile.Exists() && aliasFile.Length > 0)
          {
             LoadAliases(aliasFile);
+         }
+
+         var opensCommandFile = $"{prefix}cmd ";
+         if (commandLine.StartsWith(opensCommandFile))
+         {
+            FileName file = commandLine.Drop(opensCommandFile.Length).Trim();
+            commandLine = file.Text;
+            Run(commandLine, prefix, suffix);
          }
 
          runUsingParameters(prefix, suffix, commandLine);

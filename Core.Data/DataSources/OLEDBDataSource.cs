@@ -13,9 +13,9 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Data.DataSources
 {
-   public class OLEDBDataSource : DataSource
+   public class OleDbDataSource : DataSource
    {
-      static OleDbType typeToOLEDBType(Type type)
+      static OleDbType typeToOleDbType(Type type)
       {
          switch (Type.GetTypeCode(type))
          {
@@ -48,8 +48,7 @@ namespace Core.Data.DataSources
 
       protected IMaybe<FileName> associatedFile;
 
-      public OLEDBDataSource(string connectionString, IMaybe<FileName> associatedFile) : base(connectionString,
-         "30 seconds".ToTimeSpan())
+      public OleDbDataSource(string connectionString, IMaybe<FileName> associatedFile) : base(connectionString, "30 seconds".ToTimeSpan())
       {
          ConnectionString = getFileConnectionString(associatedFile);
          this.associatedFile = associatedFile;
@@ -71,7 +70,9 @@ namespace Core.Data.DataSources
 
          foreach (var parameter in parameters)
          {
-            if (parameter.Type.If(out var parameterType)) { }
+            if (parameter.Type.If(out var parameterType))
+            {
+            }
             else
             {
                parameter.DeterminePropertyType(entity);
@@ -82,7 +83,7 @@ namespace Core.Data.DataSources
             OleDbParameter oledbParameter;
             if (parameter.Size.If(out var size))
             {
-               oledbParameter = new OleDbParameter(parameter.Name, typeToOLEDBType(parameterType), size);
+               oledbParameter = new OleDbParameter(parameter.Name, typeToOleDbType(parameterType), size);
             }
             else
             {
@@ -136,6 +137,6 @@ namespace Core.Data.DataSources
 
       public override void ClearAllPools() => OleDbConnection.ReleaseObjectPool();
 
-      public override DataSource WithNewConnectionString(string newConnectionString) => new OLEDBDataSource(newConnectionString, associatedFile);
+      public override DataSource WithNewConnectionString(string newConnectionString) => new OleDbDataSource(newConnectionString, associatedFile);
    }
 }

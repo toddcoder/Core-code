@@ -10,17 +10,17 @@ using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Data.Setups
 {
-   public class OLEDBSetup : ISetup
+   public class OleDbSetup : ISetup
    {
-      static Hash<string, Func<IConnectionString>> registeredTypes;
+      protected static Hash<string, Func<IConnectionString>> registeredTypes;
 
-      static OLEDBSetup() => registeredTypes = new Hash<string, Func<IConnectionString>>();
+      static OleDbSetup() => registeredTypes = new Hash<string, Func<IConnectionString>>();
 
       public static void RegisterType(string type, Func<IConnectionString> func) => registeredTypes[type.ToLower()] = func;
 
-      IMaybe<FileName> file;
+      protected IMaybe<FileName> file;
 
-      public OLEDBSetup(DataGraphs dataGraphs, string adapterName, IMaybe<FileName> file)
+      public OleDbSetup(DataGraphs dataGraphs, string adapterName, IMaybe<FileName> file)
       {
          this.file = file;
 
@@ -71,7 +71,7 @@ namespace Core.Data.Setups
          get
          {
             assert(() => (object)ConnectionString).Must().Not.BeNull().OrThrow();
-            return new OLEDBDataSource(ConnectionString.ConnectionString, file);
+            return new OleDbDataSource(ConnectionString.ConnectionString, file);
          }
       }
 

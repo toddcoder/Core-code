@@ -16,14 +16,14 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Data.DataSources
 {
-   public class SQLDataSource : DataSource, IBulkCopyTarget, IHash<string, string>
+   public class SqlDataSource : DataSource, IBulkCopyTarget, IHash<string, string>
    {
-      static string getConnectionString(string server, string database, string user, string password)
+      protected static string getConnectionString(string server, string database, string user, string password)
       {
          return $"Data Source={server};Initial Catalog={database};User ID={user}; Password={password}";
       }
 
-      static string getConnectionString(string server, string database)
+      protected static string getConnectionString(string server, string database)
       {
          return $"Data Source={server};Initial Catalog={database};Integrated Security=SSPI;";
       }
@@ -34,7 +34,9 @@ namespace Core.Data.DataSources
 
          foreach (var parameter in parameters)
          {
-            if (parameter.Type.If(out var parameterType)) { }
+            if (parameter.Type.If(out var parameterType))
+            {
+            }
             else
             {
                parameter.DeterminePropertyType(entity);
@@ -42,15 +44,9 @@ namespace Core.Data.DataSources
                parameter.Type = parameterType.Some();
             }
 
-            SqlParameter sqlParameter;
-            if (parameter.Size.If(out var size))
-            {
-               sqlParameter = new SqlParameter(parameter.Name, typeToSQLType(parameterType), size);
-            }
-            else
-            {
-               sqlParameter = new SqlParameter(parameter.Name, typeToSQLType(parameterType));
-            }
+            var sqlParameter = parameter.Size
+               .Map(size => new SqlParameter(parameter.Name, typeToSqlType(parameterType), size))
+               .DefaultTo(() => new SqlParameter(parameter.Name, typeToSqlType(parameterType)));
 
             if (parameter.Output)
             {
@@ -90,7 +86,7 @@ namespace Core.Data.DataSources
          }
       }
 
-      static SqlDbType typeToSQLType(Type type)
+      protected static SqlDbType typeToSqlType(Type type)
       {
          switch (type.Name)
          {
@@ -123,29 +119,39 @@ namespace Core.Data.DataSources
          }
       }
 
-      Hash<string, string> attributes;
-      long recordCount;
+      protected Hash<string, string> attributes;
+      protected long recordCount;
 
       public event SqlInfoMessageEventHandler Message;
 
-      public SQLDataSource(string connectionString, TimeSpan timeout) : base(connectionString, timeout)
+      public SqlDataSource(string connectionString, TimeSpan timeout) : base(connectionString, timeout)
       {
          CommandTimeout = timeout;
          attributes = new Hash<string, string>();
          recordCount = 0;
       }
 
-      public SQLDataSource(string connectionString) : this(connectionString, 30.Seconds()) { }
+      public SqlDataSource(string connectionString) : this(connectionString, 30.Seconds())
+      {
+      }
 
-      public SQLDataSource(string server, string database, string user, string password) :
-         this(getConnectionString(server, database, user, password)) { }
+      public SqlDataSource(string server, string database, string user, string password) :
+         this(getConnectionString(server, database, user, password))
+      {
+      }
 
-      public SQLDataSource(string server, string database, string user, string password, TimeSpan timeout)
-         : this(getConnectionString(server, database, user, password), timeout) { }
+      public SqlDataSource(string server, string database, string user, string password, TimeSpan timeout)
+         : this(getConnectionString(server, database, user, password), timeout)
+      {
+      }
 
-      public SQLDataSource(string server, string database) : this(getConnectionString(server, database)) { }
+      public SqlDataSource(string server, string database) : this(getConnectionString(server, database))
+      {
+      }
 
-      public SQLDataSource(string server, string database, TimeSpan timeout) : this(getConnectionString(server, database), timeout) { }
+      public SqlDataSource(string server, string database, TimeSpan timeout) : this(getConnectionString(server, database), timeout)
+      {
+      }
 
       public long RecordCount => recordCount;
 
@@ -157,8 +163,7 @@ namespace Core.Data.DataSources
          set => attributes[keyWord] = value;
       }
 
-      public bool ContainsKey(string key) => attributes.ContainsKey(key)
-      ;
+      public bool ContainsKey(string key) => attributes.ContainsKey(key);
       public IResult<Hash<string, string>> AnyHash() => attributes.Success();
 
       public override IDbConnection GetConnection()
@@ -205,7 +210,7 @@ namespace Core.Data.DataSources
          return dataSet;
       }
 
-      void addCommandParameters(object entity, Parameters.Parameters parameters)
+      protected void addCommandParameters(object entity, Parameters.Parameters parameters)
       {
          AddParametersToCommand(Command.Required("Command not initialized"), entity, parameters);
       }
@@ -257,6 +262,6 @@ namespace Core.Data.DataSources
          }
       }
 
-      public override DataSource WithNewConnectionString(string newConnectionString) => new SQLDataSource(newConnectionString, CommandTimeout);
+      public override DataSource WithNewConnectionString(string newConnectionString) => new SqlDataSource(newConnectionString, CommandTimeout);
    }
 }

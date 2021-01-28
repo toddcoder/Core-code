@@ -59,14 +59,14 @@
     <Compile Include="ConnectionStrings\CSVConnectionString.cs" />
     <Compile Include="ConnectionStrings\ExcelConnectionString.cs" />
     <Compile Include="ConnectionStrings\IConnectionString.cs" />
-    <Compile Include="ConnectionStrings\SQLConnectionString.cs" />
+    <Compile Include="ConnectionStrings\SqlConnectionString.cs" />
     <Compile Include="ConnectionStrings\TextConnectionString.cs" />
     <Compile Include="DataExtensions.cs" />
     <Compile Include="DataGraphExtensions.cs" />
     <Compile Include="DataSources\CancelEventArgs.cs" />
     <Compile Include="DataSources\DataSource.cs" />
-    <Compile Include="DataSources\OLEDBDataSource.cs" />
-    <Compile Include="DataSources\SQLDataSource.cs" />
+    <Compile Include="DataSources\OleDbDataSource.cs" />
+    <Compile Include="DataSources\SqlDataSource.cs" />
     <Compile Include="DataSources\TextDataSource.cs" />
     <Compile Include="Fields\Field.cs" />
     <Compile Include="Fields\Fields.cs" />
@@ -81,10 +81,10 @@
     <Compile Include="Setups\ISetupObject.cs" />
     <Compile Include="Setups\ISetupObjectWithSetters.cs" />
     <Compile Include="Setups\ISetupWithInfo.cs" />
-    <Compile Include="Setups\OLEDBSetup.cs" />
-    <Compile Include="Setups\OLEDBSetupInfo.cs" />
+    <Compile Include="Setups\OleDbSetup.cs" />
+    <Compile Include="Setups\OleDbSetupInfo.cs" />
     <Compile Include="Setups\SetupInfo.cs" />
-    <Compile Include="Setups\SQLSetup.cs" />
+    <Compile Include="Setups\SqlSetup.cs" />
     <Compile Include="Setups\TextSetup.cs" />
   </ItemGroup>
   <ItemGroup>

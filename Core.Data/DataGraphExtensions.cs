@@ -13,14 +13,14 @@ namespace Core.Data
       public static Adapter<T> SQLAdapter<T>(this DataGraphs dataGraphs, string adapterName, T entity)
          where T : class
       {
-         var setup = new SQLSetup(dataGraphs, adapterName);
+         var setup = new SqlSetup(dataGraphs, adapterName);
          return new Adapter<T>(entity, setup);
       }
 
       public static Adapter<T> OLEDBAdapter<T>(this DataGraphs dataGraphs, string adapterName, T entity, IMaybe<FileName> file)
          where T : class
       {
-         var setup = new OLEDBSetup(dataGraphs, adapterName, file);
+         var setup = new OleDbSetup(dataGraphs, adapterName, file);
          return new Adapter<T>(entity, setup);
       }
 
@@ -31,7 +31,7 @@ namespace Core.Data
             from connectionNameGraph in adapterGraph.Result["connection"]
             from connectionGraph in dataGraphs.ConnectionsGraph.Result[connectionNameGraph.Value]
             from connection in tryTo(() => new Connection(connectionGraph))
-            from sqlConnection in tryTo(() => new SQLConnectionString(connection))
+            from sqlConnection in tryTo(() => new SqlConnectionString(connection))
             select sqlConnection.ConnectionString;
       }
 

@@ -7,7 +7,7 @@ using Core.Strings;
 
 namespace Core.Data.ConnectionStrings
 {
-   public class SQLConnectionString : IConnectionString
+   public class SqlConnectionString : IConnectionString
    {
       public static string GetConnectionString(string server, string database, string application, bool integratedSecurity = true)
       {
@@ -33,11 +33,11 @@ namespace Core.Data.ConnectionStrings
          }
       }
 
-      public static IResult<SQLConnectionString> FromConnection(Connection connection)
+      public static IResult<SqlConnectionString> FromConnection(Connection connection)
       {
          if (connection.If("connection", out var connectionString))
          {
-            return new SQLConnectionString(connectionString, connection.Timeout).Success();
+            return new SqlConnectionString(connectionString, connection.Timeout).Success();
          }
          else
          {
@@ -45,20 +45,20 @@ namespace Core.Data.ConnectionStrings
                from server in connection.Require("server")
                from database in connection.Require("database")
                from application in connection.Require("application")
-               select new SQLConnectionString(server, database, application, connection);
+               select new SqlConnectionString(server, database, application, connection);
          }
       }
 
       protected string connectionString;
       protected TimeSpan connectionTimeout;
 
-      internal SQLConnectionString(string connectionString, TimeSpan connectionTimeout)
+      internal SqlConnectionString(string connectionString, TimeSpan connectionTimeout)
       {
          this.connectionString = connectionString;
          this.connectionTimeout = connectionTimeout;
       }
 
-      internal SQLConnectionString(string server, string database, string application, Connection connection)
+      internal SqlConnectionString(string server, string database, string application, Connection connection)
       {
          var user = connection.Map("user");
          var password = connection.Map("password");
@@ -66,7 +66,7 @@ namespace Core.Data.ConnectionStrings
          connectionTimeout = connection.Timeout;
       }
 
-      public SQLConnectionString(Connection connection)
+      public SqlConnectionString(Connection connection)
       {
          var server = connection.Value("server");
          var database = connection.Value("database");
@@ -77,7 +77,7 @@ namespace Core.Data.ConnectionStrings
          connectionTimeout = connection.Timeout;
       }
 
-      public SQLConnectionString(string server, string database, string application, string user = "", string password = "", string timeout = "")
+      public SqlConnectionString(string server, string database, string application, string user = "", string password = "", string timeout = "")
       {
          connectionString = GetConnectionString(server, database, application, user, password);
          connectionTimeout = timeout.IsEmpty() ? 30.Seconds() : timeout.ToTimeSpan();

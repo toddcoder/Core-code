@@ -25,7 +25,7 @@ namespace Core.Data
       {
          setups = new Hash<string, Func<DataGraphs, string, ISetup>>
          {
-            ["sql"] = (dg, an) => new SQLSetup(dg, an) { Handler = Handler }
+            ["sql"] = (dg, an) => new SqlSetup(dg, an) { Handler = Handler }
          };
       }
 

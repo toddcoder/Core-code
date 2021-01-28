@@ -14,9 +14,9 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Data.Setups
 {
-   public class SQLSetup : ISetup, ISetupWithInfo
+   public class SqlSetup : ISetup, ISetupWithInfo
    {
-      public static IResult<SQLSetup> FromDataGraphs(DataGraphs dataGraphs, string adapterName)
+      public static IResult<SqlSetup> FromDataGraphs(DataGraphs dataGraphs, string adapterName)
       {
          var connectionsGraph = dataGraphs.ConnectionsGraph;
          var commandsGraph = dataGraphs.CommandsGraph;
@@ -29,11 +29,11 @@ namespace Core.Data.Setups
             from connectionGraph in connectionsGraph.TryTo[connectionName]
             from commandGraph in commandsGraph.TryTo[commandName]
             from connection in tryTo(() => new Connection(connectionGraph))
-            from connectionString in SQLConnectionString.FromConnection(connection)
+            from connectionString in SqlConnectionString.FromConnection(connection)
             from command in Command.FromObjectGraph(commandGraph)
             from parameters in Data.Parameters.Parameters.FromObjectGraph(adapterGraph.Map("parameters"))
             from fields in Data.Fields.Fields.FromObjectGraph(adapterGraph.Map("fields"))
-            select new SQLSetup(dataGraphs)
+            select new SqlSetup(dataGraphs)
             {
                CommandText = command.Text,
                CommandTimeout = command.CommandTimeout,
@@ -43,7 +43,7 @@ namespace Core.Data.Setups
             };
       }
 
-      public static IResult<SQLSetup> FromConfiguration(Configuration configuration, string adapterName)
+      public static IResult<SqlSetup> FromConfiguration(Configuration configuration, string adapterName)
       {
          return
             from dataGraphs in configuration.DataGraphs().Result("Data graphs unavailable")
@@ -51,9 +51,9 @@ namespace Core.Data.Setups
             select setup;
       }
 
-      Hash<string, string> attributes;
+      protected Hash<string, string> attributes;
 
-      public SQLSetup(DataGraphs dataGraphs, string adapterName)
+      public SqlSetup(DataGraphs dataGraphs, string adapterName)
       {
          var connectionsGraph = dataGraphs.ConnectionsGraph;
          var commandsGraph = dataGraphs.CommandsGraph;
@@ -70,7 +70,7 @@ namespace Core.Data.Setups
          var commandGraph = commandsGraph[commandName];
 
          var connection = new Connection(connectionGraph);
-         ConnectionString = new SQLConnectionString(connection);
+         ConnectionString = new SqlConnectionString(connection);
 
          var command = new Command(commandGraph);
          CommandTimeout = command.CommandTimeout;
@@ -84,11 +84,11 @@ namespace Core.Data.Setups
          loadAttributes(dataGraphs.ConnectionsGraph.Map("attributes"));
       }
 
-      public SQLSetup(ObjectGraph setupGraph)
+      public SqlSetup(ObjectGraph setupGraph)
       {
          var connectionGraph = setupGraph["connection"];
          var connection = new Connection(connectionGraph);
-         ConnectionString = new SQLConnectionString(connection);
+         ConnectionString = new SqlConnectionString(connection);
 
          var commandGraph = setupGraph["command"];
          var command = new Command(commandGraph);
@@ -105,9 +105,9 @@ namespace Core.Data.Setups
          loadAttributes(setupGraph.Map("attributes"));
       }
 
-      public SQLSetup(ISetupObject setupObject)
+      public SqlSetup(ISetupObject setupObject)
       {
-         ConnectionString = new SQLConnectionString(setupObject.ConnectionString, 30.Seconds());
+         ConnectionString = new SqlConnectionString(setupObject.ConnectionString, 30.Seconds());
          switch (setupObject.CommandSourceType)
          {
             case CommandSourceType.File:
@@ -125,13 +125,13 @@ namespace Core.Data.Setups
          loadAttributes(setupObject.Attributes);
       }
 
-      internal SQLSetup(DataGraphs dataGraphs)
+      internal SqlSetup(DataGraphs dataGraphs)
       {
          attributes = new Hash<string, string>();
          loadAttributes(dataGraphs.ConnectionsGraph.Map("attributes"));
       }
 
-      void loadAttributes(IMaybe<ObjectGraph> attributesGraph)
+      protected void loadAttributes(IMaybe<ObjectGraph> attributesGraph)
       {
          if (attributesGraph.If(out var ag))
          {
@@ -142,7 +142,7 @@ namespace Core.Data.Setups
          }
       }
 
-      void loadAttributes(IHash<string, string> hash)
+      protected void loadAttributes(IHash<string, string> hash)
       {
          if (hash.AnyHash().If(out var actualHash))
          {
@@ -157,7 +157,7 @@ namespace Core.Data.Setups
       {
          get
          {
-            var sqlDataSource = new SQLDataSource(ConnectionString.ConnectionString, CommandTimeout);
+            var sqlDataSource = new SqlDataSource(ConnectionString.ConnectionString, CommandTimeout);
             foreach (var (key, value) in attributes)
             {
                sqlDataSource[key] = value;
