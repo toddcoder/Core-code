@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Core.Assertions;
 using Core.Computers;
 using Core.Enumerables;
 using Core.RegularExpressions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Tests
 {
@@ -119,6 +121,17 @@ namespace Core.Tests
          var result = defaultFolderNames().LocalAndParentFiles().Where(f => f.NameExtension == "tsqlcop.sql.format.options.xml")
             .FirstOrFail("failed");
          Console.WriteLine(result.Map(f => f.FullPath).Recover(e => e.Message));
+      }
+
+      [TestMethod]
+      public void ContainsFolderTest()
+      {
+         FolderName parentFolder = @"C:\Enterprise\Projects";
+         FolderName subFolder = @"C:\Enterprise\Projects\Core";
+         FolderName alienFolder = @"C:\Enterprise\Working";
+
+         assert(() => parentFolder.ContainsFolder(subFolder)).Must().BeTrue().OrThrow();
+         assert(() => parentFolder.ContainsFolder(alienFolder)).Must().Not.BeTrue().OrThrow();
       }
    }
 }

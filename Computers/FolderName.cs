@@ -930,23 +930,29 @@ namespace Core.Computers
          return getFilesParallel(fullPath, token).Where(f => f.NameExtension == nameExtension).FirstOrNone();
       }
 
-      public IMaybe<FolderName> ExistingFolder(string name, bool parallel)
+      public IMaybe<FolderName> ExistingFolderName(string name, bool parallel)
       {
          var folders = parallel ? getFoldersParallel(fullPath) : getFolders(fullPath);
          return folders.Where(f => f.Name == name).FirstOrNone();
       }
 
-      public IMaybe<FolderName> ExistingFolder(string name, CancellationToken token)
+      public IMaybe<FolderName> ExistingFolderName(string name, CancellationToken token)
       {
          return getFoldersParallel(fullPath, token).Where(f => f.Name == name).FirstOrNone();
+      }
+
+      public bool ContainsFolder(FolderName subFolder)
+      {
+         var subFullPath = subFolder.FullPath;
+         return subFullPath.Length > FullPath.Length && subFullPath.StartsWith(FullPath);
       }
 
       public bool ContainsFile(string nameExtension, bool parallel = false) => ExistingFile(nameExtension, parallel).IsSome;
 
       public bool ContainsFile(string nameExtension, CancellationToken token) => ExistingFile(nameExtension, token).IsSome;
 
-      public bool ContainsFolder(string name, bool parallel = false) => ExistingFolder(name, parallel).IsSome;
+      public bool ContainsFolderName(string name, bool parallel = false) => ExistingFolderName(name, parallel).IsSome;
 
-      public bool ContainsFolder(string name, CancellationToken token) => ExistingFolder(name, token).IsSome;
+      public bool ContainsFolderName(string name, CancellationToken token) => ExistingFolderName(name, token).IsSome;
    }
 }
