@@ -135,9 +135,17 @@ namespace Core.Applications
 
       protected static object getBoolean(string rest, string suffix)
       {
-         if (suffix == " " && !rest.IsMatch("^ /s* 'false' | 'true'"))
+         if (suffix == " " && !rest.IsMatch("^ /s* 'false' | 'true' | '+' | '-'"))
          {
             return true;
+         }
+         else if (rest.IsMatch("^ /s* '+'"))
+         {
+            return true;
+         }
+         else if (rest.IsMatch("^ /s* '-'"))
+         {
+            return false;
          }
          else
          {
