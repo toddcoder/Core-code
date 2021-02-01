@@ -376,7 +376,7 @@ namespace Core.Applications
          }
          else
          {
-            if (commandLine.Matcher($"^ /({REGEX_PARAMETER}){suffix}").If(out var matcher))
+            if (commandLine.Matcher($"^ /({REGEX_PARAMETER})'{suffix}'").If(out var matcher))
             {
                var commandName = matcher.FirstGroup;
                var remainder = commandLine.Drop(commandName.Length);
@@ -576,7 +576,7 @@ namespace Core.Applications
                prefix = "//";
             }
 
-            var pattern = $"'{prefix}' /({REGEX_PARAMETER}) ('{suffix}' | ['+-'] ('{suffix} | $) | $)";
+            var pattern = $"'{prefix}' /({REGEX_PARAMETER}) ('{suffix}' | ['+-'] ('{suffix}' | $) | $)";
             var matcher = new Matcher();
             if (matcher.IsMatch(commandLine, pattern))
             {
