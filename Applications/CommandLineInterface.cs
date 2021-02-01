@@ -376,6 +376,20 @@ namespace Core.Applications
          }
          else
          {
+            if (commandLine.Matcher($"^ /({REGEX_PARAMETER}){suffix}").If(out var matcher))
+            {
+               var commandName = matcher.FirstGroup;
+               var remainder = commandLine.Drop(commandName.Length);
+               if (this is ICommandFile commandFile)
+               {
+                  var file = commandFile.CommandFile(commandName);
+                  if (file.Exists())
+                  {
+                     var text = file.Text;
+                     return remainder.IsNotEmpty() ? $"{text} {remainder}".Some() : text.Some();
+                  }
+               }
+            }
             return none<string>();
          }
       }
@@ -562,7 +576,7 @@ namespace Core.Applications
                prefix = "//";
             }
 
-            var pattern = $"'{prefix}' /({REGEX_PARAMETER}) ('{suffix}' | ['+-'] | $)";
+            var pattern = $"'{prefix}' /({REGEX_PARAMETER}) ('{suffix}' | ['+-'] ('{suffix} | $) | $)";
             var matcher = new Matcher();
             if (matcher.IsMatch(commandLine, pattern))
             {
