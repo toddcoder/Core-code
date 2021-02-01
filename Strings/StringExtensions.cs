@@ -2539,5 +2539,11 @@ namespace Core.Strings
             }
          }
       }
+
+      public static string IndentedLines(this string source, int indentation = 3)
+      {
+         var indent = " ".Repeat(indentation);
+         return source.Lines().Select(line => $"{indent}{line}").ToString("\r\n");
+      }
    }
 }

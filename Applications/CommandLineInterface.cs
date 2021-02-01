@@ -16,6 +16,8 @@ namespace Core.Applications
 {
    public abstract class CommandLineInterface : IDisposable
    {
+      protected const string REGEX_PARAMETER = "[/w '-']* /w";
+
       protected static IWriter getStandardWriter() => new ConsoleWriter();
 
       protected static IWriter getExceptionWriter() => new ConsoleWriter
@@ -293,7 +295,7 @@ namespace Core.Applications
       protected string fixCommand(string commandLine, string prefix, string suffix)
       {
          var matcher = new Matcher();
-         if (matcher.IsMatch(commandLine, "^ /([/w '-']+) /s*"))
+         if (matcher.IsMatch(commandLine, $"^ /({REGEX_PARAMETER}) /s*"))
          {
             var command = matcher.FirstGroup;
             matcher.FirstGroup = $"{prefix}{command}{suffix}true";
@@ -347,7 +349,7 @@ namespace Core.Applications
 
       protected static IMaybe<string> getCommand(string commandLine)
       {
-         return commandLine.Matcher("^ /([/w '-']+) /b").Map(matcher => matcher.FirstGroup);
+         return commandLine.Matcher($"^ /({REGEX_PARAMETER}) /b").Map(matcher => matcher.FirstGroup);
       }
 
       protected IMaybe<string> getCommandsFromFile(string prefix, string suffix, string commandLine)
@@ -560,7 +562,7 @@ namespace Core.Applications
                prefix = "//";
             }
 
-            var pattern = $"'{prefix}' /([/w '-']+) ('{suffix}' | $)";
+            var pattern = $"'{prefix}' /({REGEX_PARAMETER}) ('{suffix}' | ['+-'] | $)";
             var matcher = new Matcher();
             if (matcher.IsMatch(commandLine, pattern))
             {
@@ -568,7 +570,12 @@ namespace Core.Applications
                foreach (var match in matcher)
                {
                   var name = xmlToPascal(match.FirstGroup);
-                  var rest = commandLine.Drop(match.Index + match.Length);
+                  var (text, index, length) = match;
+                  if (text.EndsWith("-") || text.EndsWith("+"))
+                  {
+                     length--;
+                  }
+                  var rest = commandLine.Drop(index + length);
                   if (evaluator.ContainsKey(name))
                   {
                      var type = evaluator.Type(name);
