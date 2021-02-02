@@ -58,38 +58,43 @@ namespace Core.Threading
 
          var thread = new Thread(() =>
          {
-            var coreMask = getCoreMask(affinity);
-            setProcessorAffinity(coreMask);
-
-            while (true)
+            try
             {
-               while (queue.Dequeue(affinity).If(out var action))
+               var coreMask = getCoreMask(affinity);
+               setProcessorAffinity(coreMask);
+
+               while (true)
                {
-                  try
+                  while (queue.Dequeue(affinity).If(out var action))
                   {
-                     action(affinity);
+                     try
+                     {
+                        action(affinity);
 
+                     }
+                     catch (Exception exception)
+                     {
+                        JobException?.Invoke(this, new JobExceptionArgs(affinity, exception));
+                     }
+
+                     Thread.Sleep(500);
                   }
-                  catch (Exception exception)
-                  {
-                     JobException?.Invoke(this, new JobExceptionArgs(affinity, exception));
-                  }
 
-                  Thread.Sleep(500);
-               }
-
-               lock (locker)
-               {
-                  var args = new JobEmptyQueueArgs(affinity);
-                  EmptyQueue?.Invoke(this, args);
-                  if (args.Quit)
+                  lock (locker)
                   {
-                     break;
+                     var args = new JobEmptyQueueArgs(affinity);
+                     EmptyQueue?.Invoke(this, args);
+                     if (args.Quit)
+                     {
+                        break;
+                     }
                   }
                }
             }
-
-            manualResetEvent.Set();
+            finally
+            {
+               manualResetEvent.Set();
+            }
          });
 
          thread.Start();
