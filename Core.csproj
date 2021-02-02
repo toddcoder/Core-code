@@ -72,6 +72,7 @@
     <Compile Include="Applications\EntryPointType.cs" />
     <Compile Include="Applications\EventExtensions.cs" />
     <Compile Include="Applications\ICommandFile.cs" />
+    <Compile Include="Applications\IMissingArgument.cs" />
     <Compile Include="Applications\Invokers\AsyncInvoker.cs" />
     <Compile Include="Applications\Invokers\BackgroundTask.cs" />
     <Compile Include="Applications\Invokers\LambdaInvoker.cs" />

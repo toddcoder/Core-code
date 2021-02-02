@@ -16,6 +16,8 @@ namespace Core.Applications
 {
    public abstract class CommandLineInterface : IDisposable
    {
+      protected const string REGEX_PARAMETER = "[/w '-']* /w";
+
       protected static IWriter getStandardWriter() => new ConsoleWriter();
 
       protected static IWriter getExceptionWriter() => new ConsoleWriter
@@ -135,9 +137,17 @@ namespace Core.Applications
 
       protected static object getBoolean(string rest, string suffix)
       {
-         if (suffix == " " && !rest.IsMatch("^ /s* 'false' | 'true'"))
+         if (suffix == " " && !rest.IsMatch("^ /s* 'false' | 'true' | '+' | '-'"))
          {
             return true;
+         }
+         else if (rest.IsMatch("^ /s* '+'"))
+         {
+            return true;
+         }
+         else if (rest.IsMatch("^ /s* '-'"))
+         {
+            return false;
          }
          else
          {
@@ -206,7 +216,7 @@ namespace Core.Applications
          return Enum.Parse(type, source.Replace("-", ""), true);
       }
 
-      protected IResult<object> retrieveItem(string name, Type type, IMaybe<object> anyDefaultValue, string prefix, string suffix, string commandLine)
+      protected IResult<object> retrieveItem(string name, Type type, IMaybe<object> _defaultValue, string prefix, string suffix, string commandLine)
       {
          return tryTo(() =>
          {
@@ -247,12 +257,16 @@ namespace Core.Applications
                {
                   return getEnum(rest, type).Success();
                }
+               else if (this is IMissingArgument missingArgument)
+               {
+                  return missingArgument.BadType(name, type, rest);
+               }
                else
                {
                   return $"Can't handle type {type.Name}".Failure<object>();
                }
             }
-            else if (anyDefaultValue.If(out var defaultValue))
+            else if (_defaultValue.If(out var defaultValue))
             {
                return defaultValue.Success();
             }
@@ -281,7 +295,7 @@ namespace Core.Applications
       protected string fixCommand(string commandLine, string prefix, string suffix)
       {
          var matcher = new Matcher();
-         if (matcher.IsMatch(commandLine, "^ /([/w '-']+) /s*"))
+         if (matcher.IsMatch(commandLine, $"^ /({REGEX_PARAMETER}) /s*"))
          {
             var command = matcher.FirstGroup;
             matcher.FirstGroup = $"{prefix}{command}{suffix}true";
@@ -335,7 +349,7 @@ namespace Core.Applications
 
       protected static IMaybe<string> getCommand(string commandLine)
       {
-         return commandLine.Matcher("^ /([/w '-']+) /b").Map(matcher => matcher.FirstGroup);
+         return commandLine.Matcher($"^ /({REGEX_PARAMETER}) /b").Map(matcher => matcher.FirstGroup);
       }
 
       protected IMaybe<string> getCommandsFromFile(string prefix, string suffix, string commandLine)
@@ -362,6 +376,20 @@ namespace Core.Applications
          }
          else
          {
+            if (commandLine.Matcher($"^ /({REGEX_PARAMETER})'{suffix}'").If(out var matcher))
+            {
+               var commandName = matcher.FirstGroup;
+               var remainder = commandLine.Drop(commandName.Length);
+               if (this is ICommandFile commandFile)
+               {
+                  var file = commandFile.CommandFile(commandName);
+                  if (file.Exists())
+                  {
+                     var text = file.Text;
+                     return remainder.IsNotEmpty() ? $"{text} {remainder}".Some() : text.Some();
+                  }
+               }
+            }
             return none<string>();
          }
       }
@@ -423,8 +451,8 @@ namespace Core.Applications
       protected void useWithParameters(MethodInfo methodInfo, string prefix, string suffix, string commandLine)
       {
          var arguments = methodInfo.GetParameters()
-            .Select(p => (p.Name, p.ParameterType, anyDefaultValue: maybe(p.HasDefaultValue, () => p.DefaultValue)))
-            .Select(t => retrieveItem(t.Name, t.ParameterType, t.anyDefaultValue, prefix, suffix, commandLine))
+            .Select(p => (p.Name, p.ParameterType, defaultValue: maybe(p.HasDefaultValue, () => p.DefaultValue)))
+            .Select(t => retrieveItem(t.Name, t.ParameterType, t.defaultValue, prefix, suffix, commandLine))
             .ToArray();
          if (arguments.FirstOrNone(p => p.IsFailed).If(out var failure))
          {
@@ -548,15 +576,20 @@ namespace Core.Applications
                prefix = "//";
             }
 
-            var pattern = $"'{prefix}' /([/w '-']+) ('{suffix}' | $)";
+            var pattern = $"'{prefix}' /({REGEX_PARAMETER}) ('{suffix}' | ['+-'] ('{suffix}' | $) | $)";
             var matcher = new Matcher();
             if (matcher.IsMatch(commandLine, pattern))
             {
-               var firstMatch = true;
+               var isFirstMatch = true;
                foreach (var match in matcher)
                {
                   var name = xmlToPascal(match.FirstGroup);
-                  var rest = commandLine.Drop(match.Index + match.Length);
+                  var (text, index, length) = match;
+                  if (text.EndsWith("-") || text.EndsWith("+"))
+                  {
+                     length--;
+                  }
+                  var rest = commandLine.Drop(index + length);
                   if (evaluator.ContainsKey(name))
                   {
                      var type = evaluator.Type(name);
@@ -586,14 +619,22 @@ namespace Core.Applications
                         return $"No value for {name}".Failure<object>();
                      }
                   }
-                  else if (firstMatch)
-                  {
-                     firstMatch = false;
-                     return $"Did not understand command '{name}'".Failure<object>();
-                  }
                   else
                   {
-                     return $"Did not understand argument '{name}".Failure<object>();
+                     if (emptyObject is IMissingArgument missingArgument && missingArgument.Handled(name, rest, isFirstMatch))
+                     {
+                        continue;
+                     }
+
+                     if (isFirstMatch)
+                     {
+                        isFirstMatch = false;
+                        return $"Did not understand command '{name}'".Failure<object>();
+                     }
+                     else
+                     {
+                        return $"Did not understand argument '{name}".Failure<object>();
+                     }
                   }
                }
             }

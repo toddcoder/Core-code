@@ -131,46 +131,46 @@ namespace Core.Tests
       public void RunTest()
       {
          var program = new Program();
-         program.Run("foo.exe pull /code: 153 /amount: 153.69 /attributeTargets: all", "/", ":");
+         program.Run("foo.exe pull /code: 153 /amount: 153.69 /attribute-targets: all", "/", ":");
 
          Console.WriteLine();
 
          var objectProgram = new ObjectProgram();
-         objectProgram.Run("foo.exe pull /code: 153 /amount: 153.69 /attributeTargets: all", "/", ":");
+         objectProgram.Run("foo.exe pull /code: 153 /amount: 153.69 /attribute-targets: all", "/", ":");
 
          Console.WriteLine();
 
          var thisProgram = new ThisProgram();
-         thisProgram.Run("foo.exe pull /code: 153 /amount: 153.69 /attributeTargets: all", "/", ":");
+         thisProgram.Run("foo.exe pull /code: 153 /amount: 153.69 /attribute-targets: all", "/", ":");
       }
 
       [TestMethod]
       public void GreedyTest()
       {
          var program = new Program();
-         program.Run("\"foo.exe\" push /code: 153 /amount: 153.69 /attributeTargets: all /text: 'foo' /recursive: false", "/", ":");
+         program.Run("\"foo.exe\" push /code: 153 /amount: 153.69 /attribute-targets: all /text: 'foo' /recursive: false", "/", ":");
 
          Console.WriteLine();
 
          var objectProgram = new ObjectProgram();
-         objectProgram.Run("\"foo.exe\" push /code: 153 /amount: 153.69 /attributeTargets: all /text: 'foo' /recursive: false", "/", ":");
+         objectProgram.Run("\"foo.exe\" push /code: 153 /amount: 153.69 /attribute-targets: all /text: 'foo' /recursive: false", "/", ":");
 
          Console.WriteLine();
 
          var thisProgram = new ThisProgram();
-         thisProgram.Run("\"foo.exe\" push /code: 153 /amount: 153.69 /attributeTargets: all /text: 'foo' /recursive: false", "/", ":");
+         thisProgram.Run("\"foo.exe\" push /code: 153 /amount: 153.69 /attribute-targets: all /text: 'foo' /recursive: false", "/", ":");
       }
 
       [TestMethod]
       public void AlternateSyntax()
       {
          var program = new Program();
-         program.Run("show --code 153 --amount 153.69 --attribute-targets all --text 'foo' --recursive", "--", " ");
+         program.Run("show --code 153 --amount 153.69 --attribute-targets all --text 'foo' --recursive-", "--", " ");
 
          Console.WriteLine();
 
          var objectProgram = new ObjectProgram();
-         objectProgram.Run("show --code 153 --amount 153.69 --attribute-targets all --text 'foo' --recursive", "--", " ");
+         objectProgram.Run("show --code 153 --amount 153.69 --attribute-targets all --text 'foo' --recursive-", "--", " ");
 
          Console.WriteLine();
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Threading;
+using Core.Exceptions;
 
 namespace Core.Threading
 {
@@ -28,7 +29,7 @@ namespace Core.Threading
             handle = OpenThread(0x60, false, threadId);
             if (SetThreadAffinityMask(handle, new HandleRef(tempHandle, (IntPtr)coreMask)) == IntPtr.Zero)
             {
-               throw new ApplicationException("Failed to set processor affinity for thread");
+               throw "Failed to set processor affinity for thread".Throws();
             }
          }
          finally
