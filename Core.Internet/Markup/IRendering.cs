@@ -1,7 +1,7 @@
 ﻿using System;
 using Core.Computers;
 
-namespace Core.Internet.Sgml
+namespace Core.Internet.Markup
 {
    public interface IRendering
    {

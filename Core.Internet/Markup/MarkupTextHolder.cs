@@ -1,11 +1,11 @@
 ﻿using Core.RegularExpressions;
 using Core.Strings;
 
-namespace Core.Internet.Sgml
+namespace Core.Internet.Markup
 {
-   public class SgmlTextHolder
+   public class MarkupTextHolder
    {
-      public static string Sgmlify(string text, bool html)
+      public static string Markupify(string text, bool html)
       {
          text = text.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;");
          if (!html)
@@ -16,9 +16,9 @@ namespace Core.Internet.Sgml
          return replaceBrackets(text);
       }
 
-      public static string Sgmlify(string text, QuoteType quoteType)
+      public static string Markupify(string text, QuoteType quoteType)
       {
-         text = Sgmlify(text, false);
+         text = Markupify(text, false);
          switch (quoteType)
          {
             case QuoteType.Double:
@@ -32,16 +32,16 @@ namespace Core.Internet.Sgml
          return replaceBrackets(text);
       }
 
-      static string replaceBrackets(string text)
+      protected static string replaceBrackets(string text)
       {
          return text.Substitute("'`' /([/w '-']+) ':'", "<$1>").Substitute("':' /([/w '-']+) '`'", "</$1>");
       }
 
-      public static implicit operator SgmlTextHolder(string text) => new SgmlTextHolder(text);
+      public static implicit operator MarkupTextHolder(string text) => new MarkupTextHolder(text);
 
       protected string text;
 
-      public SgmlTextHolder(string text) => this.text = text.IsNotEmpty() ? Sgmlify(text, false) : "";
+      public MarkupTextHolder(string text) => this.text = text.IsNotEmpty() ? Markupify(text, false) : string.Empty;
 
       public virtual string Text => text;
 

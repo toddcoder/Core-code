@@ -7,15 +7,15 @@ using Core.RegularExpressions;
 using static Core.Assertions.AssertionFunctions;
 using static Core.Monads.AttemptFunctions;
 
-namespace Core.Internet.Sgml
+namespace Core.Internet.Markup
 {
-   public static class SgmlExtensions
+   public static class MarkupExtensions
    {
-      const string REGEX_EMPTY_ELEMENT = "'<' /(-['//!'] -['>']+ -['//']) '><//' /(-['>']+) '>'";
-      const string TEXT_EMPTY_ELEMENT = "<$1/>";
-      const string REGEX_HEADER = "/s* '<?' -['?']+ '?>'";
+      private const string REGEX_EMPTY_ELEMENT = "'<' /(-['//!'] -['>']+ -['//']) '><//' /(-['>']+) '>'";
+      private const string TEXT_EMPTY_ELEMENT = "<$1/>";
+      private const string REGEX_HEADER = "/s* '<?' -['?']+ '?>'";
 
-      static IResult<string> fromStream(Stream stream, Encoding encoding) => tryTo(() =>
+      private static IResult<string> fromStream(Stream stream, Encoding encoding) => tryTo(() =>
       {
          stream.Position = 0;
          using (var reader = new StreamReader(stream, encoding))
@@ -24,13 +24,13 @@ namespace Core.Internet.Sgml
          }
       });
 
-      public static string Tidy(this string sgml, Encoding encoding, bool includeHeader = true, char quoteChar = '"')
+      public static string Tidy(this string markup, Encoding encoding, bool includeHeader = true, char quoteChar = '"')
       {
-         assert(() => sgml).Must().Not.BeNullOrEmpty().OrThrow();
+         assert(() => markup).Must().Not.BeNullOrEmpty().OrThrow();
          assert(() => encoding).Must().Not.BeNull().OrThrow();
 
          var document = new XmlDocument();
-         document.LoadXml(sgml);
+         document.LoadXml(markup);
          document.LoadXml(document.OuterXml.Substitute(REGEX_EMPTY_ELEMENT, TEXT_EMPTY_ELEMENT));
 
          using (var stream = new MemoryStream())
@@ -44,16 +44,16 @@ namespace Core.Internet.Sgml
 
             if (fromStream(stream, encoding).If(out var r))
             {
-               return includeHeader ? r : r.Substitute(REGEX_HEADER, "", false, true).Trim();
+               return includeHeader ? r : r.Substitute(REGEX_HEADER, string.Empty, false, true).Trim();
             }
             else
             {
-               return "";
+               return string.Empty;
             }
          }
       }
 
-      public static string Tidy(this string sgml, bool includeHeader) => Tidy(sgml, Encoding.UTF8, includeHeader);
+      public static string Tidy(this string markup, bool includeHeader) => Tidy(markup, Encoding.UTF8, includeHeader);
 
       public static string Sgmlify(this string text)
       {

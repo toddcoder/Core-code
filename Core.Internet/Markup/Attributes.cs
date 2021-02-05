@@ -4,11 +4,11 @@ using System.Linq;
 using Core.Collections;
 using Core.Enumerables;
 
-namespace Core.Internet.Sgml
+namespace Core.Internet.Markup
 {
    public class Attributes : IEnumerable<Attribute>
    {
-      Hash<string, Attribute> attributes;
+      protected Hash<string, Attribute> attributes;
 
       public Attributes() => attributes = new Hash<string, Attribute>();
 
@@ -34,7 +34,7 @@ namespace Core.Internet.Sgml
 
       public override string ToString()
       {
-         return attributes.Count != 0 ? $" {attributes.Select(i => i.Value.ToString()).ToString(" ")}" : "";
+         return attributes.Count != 0 ? $" {attributes.Select(i => i.Value.ToString()).ToString(" ")}" : string.Empty;
       }
 
       IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
