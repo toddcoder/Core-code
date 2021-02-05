@@ -7,8 +7,8 @@ namespace Core.Io.Delimited
 {
    public class DelimitedTextEnumerator : IEnumerator<string[]>
    {
-      DelimitedTextReader reader;
-      string[] current;
+      protected DelimitedTextReader reader;
+      protected string[] current;
 
       public DelimitedTextEnumerator(DelimitedTextReader reader)
       {
@@ -26,11 +26,15 @@ namespace Core.Io.Delimited
 
             return true;
          }
-
-         return false;
+         else
+         {
+            return false;
+         }
       }
 
-      public void Reset() { }
+      public void Reset()
+      {
+      }
 
       public string[] Current => current;
 

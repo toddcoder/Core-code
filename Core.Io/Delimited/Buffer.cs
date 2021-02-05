@@ -7,16 +7,16 @@ namespace Core.Io.Delimited
 {
    public class Buffer
    {
-      TextReader reader;
-      int bufferSize;
-      char delimiter;
-      char[] buffer;
-      int length;
-      int startIndex;
-      int index;
-      bool endOfLine;
-      bool endOfFile;
-      StringBuilder field;
+      protected TextReader reader;
+      protected int bufferSize;
+      protected char delimiter;
+      protected char[] buffer;
+      protected int length;
+      protected int startIndex;
+      protected int index;
+      protected bool endOfLine;
+      protected bool endOfFile;
+      protected StringBuilder field;
 
       public Buffer(TextReader reader, int bufferSize, char delimiter)
       {
@@ -32,7 +32,7 @@ namespace Core.Io.Delimited
          field = new StringBuilder();
       }
 
-      bool getMore(bool appendToField = true)
+      protected bool getMore(bool appendToField = true)
       {
          if (endOfFile)
          {
@@ -94,12 +94,12 @@ namespace Core.Io.Delimited
          return getString();
       }
 
-      string getString()
+      protected string getString()
       {
          var strLength = index - startIndex;
          if (strLength < 0)
          {
-            return "";
+            return string.Empty;
          }
 
          if (field.Length > 0)
@@ -110,8 +110,10 @@ namespace Core.Io.Delimited
 
             return result;
          }
-
-         return new string(buffer, startIndex, strLength);
+         else
+         {
+            return new string(buffer, startIndex, strLength);
+         }
       }
 
       public bool EndOfLine

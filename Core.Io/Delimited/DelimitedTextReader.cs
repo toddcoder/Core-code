@@ -11,15 +11,15 @@ namespace Core.Io.Delimited
 {
    public class DelimitedTextReader : IDataReader, IEnumerable<string[]>
    {
-      int fieldCount;
-      string[] fields;
-      Buffer buffer;
-      List<string> headers;
-      Hash<string, int> indexes;
-      Hash<int, Func<string, object>> converters;
-      bool hasConverters;
-      bool emptyRecord;
-      int currentFieldCount;
+      protected int fieldCount;
+      protected string[] fields;
+      protected Buffer buffer;
+      protected List<string> headers;
+      protected Hash<string, int> indexes;
+      protected Hash<int, Func<string, object>> converters;
+      protected bool hasConverters;
+      protected bool emptyRecord;
+      protected int currentFieldCount;
 
       public DelimitedTextReader(TextReader reader, int fieldCount, char delimiter, int bufferSize = 0x1000)
       {
@@ -90,7 +90,7 @@ namespace Core.Io.Delimited
          {
             for (var i = currentFieldCount; i < fieldCount; i++)
             {
-               fields[i] = "";
+               fields[i] = string.Empty;
             }
 
             if (StopAtPartialRecord)
@@ -184,26 +184,15 @@ namespace Core.Io.Delimited
 
       object IDataRecord.this[int i] => fields[i];
 
-      public object this[int i]
-      {
-         get
-         {
-            if (hasConverters)
-            {
-               return converters.FlatMap(i, f => f(fields[i]), () => fields[i]);
-            }
-            else
-            {
-               return fields[i];
-            }
-         }
-      }
+      public object this[int i] => hasConverters ? converters.FlatMap(i, f => f(fields[i]), () => fields[i]) : fields[i];
 
       object IDataRecord.this[string name] => fields[indexes.Value(name)];
 
       public object this[string name] => fields[indexes.Value(name)];
 
-      public void Close() { }
+      public void Close()
+      {
+      }
 
       public DataTable GetSchemaTable() => null;
 
@@ -221,6 +210,8 @@ namespace Core.Io.Delimited
 
       IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-      public void Dispose() { }
+      public void Dispose()
+      {
+      }
    }
 }

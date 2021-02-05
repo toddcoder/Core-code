@@ -7,21 +7,21 @@ using Core.Computers;
 using Core.Enumerables;
 using static Core.Assertions.AssertionFunctions;
 
-namespace Core.Internet.Sgml
+namespace Core.Internet.Markup
 {
    public class Elements : IRendering
    {
       public class ElementEventArgs : EventArgs
       {
-         Element element;
+         protected Element element;
 
          public ElementEventArgs(Element element) => this.element = element;
 
          public Element Element => element;
       }
 
-      List<Element> elements;
-      bool isHtml;
+      protected List<Element> elements;
+      protected bool isHtml;
 
       public event EventHandler<ElementEventArgs> ElementAdded;
 
@@ -62,9 +62,9 @@ namespace Core.Internet.Sgml
          return element;
       }
 
-      public Element Add(string name) => Add(name, "");
+      public Element Add(string name) => Add(name, string.Empty);
 
-      public Element Add(string name, SgmlTextHolder text)
+      public Element Add(string name, MarkupTextHolder text)
       {
          var element = new Element { Name = name, Text = text };
          elements.Add(element);
