@@ -43,17 +43,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Http\HttpClientExtensions.cs" />
-    <Compile Include="Sgml\Attributes.cs" />
-    <Compile Include="Sgml\Element.cs" />
-    <Compile Include="Sgml\Elements.cs" />
-    <Compile Include="Sgml\IRendering.cs" />
-    <Compile Include="Sgml\IText.cs" />
+    <Compile Include="Markup\Attributes.cs" />
+    <Compile Include="Markup\Element.cs" />
+    <Compile Include="Markup\Elements.cs" />
+    <Compile Include="Markup\IRendering.cs" />
+    <Compile Include="Markup\IText.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Sgml\QuoteType.cs" />
-    <Compile Include="Sgml\Attribute.cs" />
-    <Compile Include="Sgml\SgmlBuilder.cs" />
-    <Compile Include="Sgml\SgmlExtensions.cs" />
-    <Compile Include="Sgml\SgmlTextHolder.cs" />
+    <Compile Include="Markup\QuoteType.cs" />
+    <Compile Include="Markup\Attribute.cs" />
+    <Compile Include="Markup\MarkupBuilder.cs" />
+    <Compile Include="Markup\MarkupExtensions.cs" />
+    <Compile Include="Markup\MarkupTextHolder.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core.csproj">

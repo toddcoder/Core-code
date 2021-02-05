@@ -5,9 +5,9 @@ using Core.Computers;
 using static Core.Assertions.AssertionFunctions;
 using static Core.Strings.StringFunctions;
 
-namespace Core.Internet.Sgml
+namespace Core.Internet.Markup
 {
-   public class SgmlBuilder
+   public class MarkupBuilder
    {
       public enum DocType
       {
@@ -17,9 +17,9 @@ namespace Core.Internet.Sgml
          FrameSet
       }
 
-      public static SgmlBuilder AsHtml(bool includeHead)
+      public static MarkupBuilder AsHtml(bool includeHead)
       {
-         var builder = new SgmlBuilder("html") { IsHtml = true, IncludeHeader = false, Tidy = false };
+         var builder = new MarkupBuilder("html") { IsHtml = true, IncludeHeader = false, Tidy = false };
          if (includeHead)
          {
             builder.Root.Children.Add("head");
@@ -38,7 +38,7 @@ namespace Core.Internet.Sgml
       protected bool isHtml;
       protected DocType docType;
 
-      public SgmlBuilder(string rootName)
+      public MarkupBuilder(string rootName)
       {
          assert(() => rootName).Must().Not.BeNullOrEmpty().OrThrow();
 
@@ -113,14 +113,9 @@ namespace Core.Internet.Sgml
          var result = new StringBuilder();
          addDocType(result);
          result.Append(root.ToStringRendering(callback));
-         if (tidy)
-         {
-            return result.ToString().Tidy(encoding, includeHeader, QuoteChar);
-         }
-         else
-         {
-            return result.ToString();
-         }
+         var asString = result.ToString();
+
+         return tidy ? asString.Tidy(encoding, includeHeader, QuoteChar) : asString;
       }
 
       public override string ToString() => ToStringRendering(element => true);
@@ -130,7 +125,7 @@ namespace Core.Internet.Sgml
       public void RenderToFile(FileName file, Func<Element, bool> callback)
       {
          var tempFile = file.Folder.File(guid(), ".xml");
-         tempFile.Text = "";
+         tempFile.Text = string.Empty;
          tempFile.Hidden = true;
          tempFile.BufferSize = 512;
 

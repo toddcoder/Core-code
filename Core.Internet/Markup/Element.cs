@@ -3,12 +3,12 @@ using System.Text;
 using Core.Computers;
 using Core.Strings;
 
-namespace Core.Internet.Sgml
+namespace Core.Internet.Markup
 {
    public class Element : IRendering
    {
       protected string name;
-      protected SgmlTextHolder text;
+      protected MarkupTextHolder text;
       protected Element parent;
       protected Elements siblings;
       protected Elements children;
@@ -17,7 +17,7 @@ namespace Core.Internet.Sgml
       public Element()
       {
          name = "no-name";
-         text = "";
+         text = string.Empty;
          parent = null;
          siblings = new Elements();
          siblings.ElementAdded += (sender, e) => e.Element.Parent = parent;
@@ -36,7 +36,7 @@ namespace Core.Internet.Sgml
          set => name = value;
       }
 
-      public SgmlTextHolder Text
+      public MarkupTextHolder Text
       {
          get => text;
          set => text = value;
@@ -87,7 +87,7 @@ namespace Core.Internet.Sgml
          }
          else
          {
-            return "";
+            return string.Empty;
          }
       }
 
