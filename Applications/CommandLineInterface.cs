@@ -49,6 +49,12 @@ namespace Core.Applications
          Shortcuts = string.Empty;
          ShortPrefix = "-";
          ShortSuffix = " ";
+
+         Console.CancelKeyPress += cancelKeyPress;
+      }
+
+      protected virtual void cancelKeyPress(object sender, ConsoleCancelEventArgs e)
+      {
       }
 
       public IWriter StandardWriter { get; set; }
@@ -390,6 +396,7 @@ namespace Core.Applications
                   }
                }
             }
+
             return none<string>();
          }
       }
@@ -589,6 +596,7 @@ namespace Core.Applications
                   {
                      length--;
                   }
+
                   var rest = commandLine.Drop(index + length);
                   if (evaluator.ContainsKey(name))
                   {
