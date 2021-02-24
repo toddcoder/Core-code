@@ -11,7 +11,7 @@ namespace Core.Data
    public class AdapterTrying<T>
       where T : class
    {
-      Adapter<T> adapter;
+      protected Adapter<T> adapter;
 
       public AdapterTrying(Adapter<T> adapter) => this.adapter = adapter;
 

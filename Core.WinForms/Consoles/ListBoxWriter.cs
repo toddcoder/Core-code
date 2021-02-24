@@ -8,10 +8,10 @@ namespace Core.WinForms.Consoles
 {
    public class ListBoxWriter : TextWriter
    {
-      ListBox listBox;
-      int index;
-      StringBuilder builder;
-      bool nextLineLastTime;
+      protected ListBox listBox;
+      protected int index;
+      protected StringBuilder builder;
+      protected bool nextLineLastTime;
 
       public ListBoxWriter(ListBox listBox)
       {

@@ -2,7 +2,7 @@
 {
    public class Wait
    {
-      WaitType wait;
+      protected WaitType wait;
 
       public Wait() => wait = WaitType.North;
 

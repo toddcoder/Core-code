@@ -2,12 +2,12 @@
 
 namespace Core.Applications.Writers
 {
-	public class ActionWriter : BaseWriter
-	{
-		Action<string> action;
+   public class ActionWriter : BaseWriter
+   {
+      protected Action<string> action;
 
-		public ActionWriter(Action<string> action) => this.action = action;
+      public ActionWriter(Action<string> action) => this.action = action;
 
-		protected override void writeRaw(string text) => action(text);
-	}
+      protected override void writeRaw(string text) => action(text);
+   }
 }

@@ -6,7 +6,7 @@ namespace Core.WinForms.Documents
 {
    public class DocumentTrying
    {
-      Document document;
+      protected Document document;
 
       public DocumentTrying(Document document) => this.document = document;
 

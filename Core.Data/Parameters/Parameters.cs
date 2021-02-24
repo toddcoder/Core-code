@@ -12,7 +12,7 @@ namespace Core.Data.Parameters
    {
       public static IResult<Parameters> FromObjectGraph(IMaybe<ObjectGraph> parametersGraph) => tryTo(() => new Parameters(parametersGraph));
 
-      Hash<string, Parameter> parameters;
+      protected Hash<string, Parameter> parameters;
 
       public Parameters() => parameters = new Hash<string, Parameter>();
 

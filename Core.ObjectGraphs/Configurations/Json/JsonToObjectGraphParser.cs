@@ -6,11 +6,11 @@ namespace Core.ObjectGraphs.Configurations.Json
 {
    public class JsonToObjectGraphParser
    {
-      string source;
-      ObjectGraph objectGraph;
-      Stack<ObjectGraph> stack;
-      List<string> arrayValues;
-      bool inArray;
+      protected string source;
+      protected ObjectGraph objectGraph;
+      protected Stack<ObjectGraph> stack;
+      protected List<string> arrayValues;
+      protected bool inArray;
 
       public JsonToObjectGraphParser(string source)
       {
@@ -23,7 +23,7 @@ namespace Core.ObjectGraphs.Configurations.Json
          inArray = false;
       }
 
-      IResult<JsonObject> parse()
+      protected IResult<JsonObject> parse()
       {
          var jsonParser = new JsonParser(source);
          jsonParser.ParseValue += (sender, e) =>
@@ -42,7 +42,7 @@ namespace Core.ObjectGraphs.Configurations.Json
          return parse().Map(jsonObject => (jsonObject, objectGraph));
       }
 
-      void parseValue(TokenType tokenType, string name, string value)
+      protected void parseValue(TokenType tokenType, string name, string value)
       {
          switch (tokenType)
          {

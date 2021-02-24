@@ -17,7 +17,7 @@ namespace Core.Arrays
 {
    public static class ArrayExtensions
    {
-      enum BalanceType
+      private enum BalanceType
       {
          AwaitingStart,
          AwaitingStop
@@ -88,7 +88,7 @@ namespace Core.Arrays
 
       public static T[] Shuffle<T>(this T[] array, int seed) => shuffle(array, new Random(seed));
 
-      static T[] shuffle<T>(T[] array, Random random)
+      private static T[] shuffle<T>(T[] array, Random random)
       {
          var list = array.Select(value => new { Index = random.Next(), Value = value });
          var sortedList = list.OrderBy(i => i.Index).Select(i => i.Value);

@@ -7,7 +7,7 @@ namespace Core.Strings.Text
 {
    internal class DifferenceBuilder
    {
-      static void buildItemHashes(Hash<string, int> itemHash, Modification modification, bool ignoreWhiteSpace, bool ignoreCase)
+      protected static void buildItemHashes(Hash<string, int> itemHash, Modification modification, bool ignoreWhiteSpace, bool ignoreCase)
       {
          var items = modification.RawData;
          modification.Items = items;
@@ -39,7 +39,7 @@ namespace Core.Strings.Text
          }
       }
 
-      IResult<Unit> buildModifications()
+      protected IResult<Unit> buildModifications()
       {
          var oldSize = oldModification.HashedItems.Length;
          var newSize = newModification.HashedItems.Length;
@@ -50,7 +50,7 @@ namespace Core.Strings.Text
          return buildModifications(0, oldSize, 0, newSize, forwardDiagonal, reverseDiagonal);
       }
 
-      IResult<Unit> buildModifications(int oldStart, int oldEnd, int newStart, int newEnd, int[] forwardDiagonal, int[] reverseDiagonal)
+      protected IResult<Unit> buildModifications(int oldStart, int oldEnd, int newStart, int newEnd, int[] forwardDiagonal, int[] reverseDiagonal)
       {
          while (oldStart < oldEnd && newStart < newEnd && oldModification.HashedItems[oldStart] == newModification.HashedItems[newStart])
          {
@@ -125,7 +125,7 @@ namespace Core.Strings.Text
          return Unit.Success();
       }
 
-      static IResult<EditLengthResult> calculateEditLength(int[] oldItems, int oldStart, int oldEnd, int[] newItems, int newStart, int newEnd,
+      protected static IResult<EditLengthResult> calculateEditLength(int[] oldItems, int oldStart, int oldEnd, int[] newItems, int newStart, int newEnd,
          int[] forwardDiagonal, int[] reverseDiagonal)
       {
          if (oldItems.Length == 0 && newItems.Length == 0)
@@ -242,10 +242,10 @@ namespace Core.Strings.Text
          return "Should never get here".Failure<EditLengthResult>();
       }
 
-      bool ignoreWhiteSpace;
-      bool ignoreCase;
-      Modification oldModification;
-      Modification newModification;
+      protected bool ignoreWhiteSpace;
+      protected bool ignoreCase;
+      protected Modification oldModification;
+      protected Modification newModification;
 
       public DifferenceBuilder(string[] oldText, string[] newText, bool ignoreWhiteSpace, bool ignoreCase)
       {

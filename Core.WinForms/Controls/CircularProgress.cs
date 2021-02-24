@@ -9,12 +9,12 @@ namespace Core.WinForms.Controls
    [Obsolete("Use WebProgress")]
    public partial class CircularProgress : UserControl
    {
-      const float MAX_ANGLE = 360.0f;
+      protected const float MAX_ANGLE = 360.0f;
 
-      float angle;
-      int color;
-      Rectangle inside;
-      Stopwatch stopwatch;
+      protected float angle;
+      protected int color;
+      protected Rectangle inside;
+      protected Stopwatch stopwatch;
 
       public event EventHandler<ProgressEventArgs> Tick;
 
@@ -29,7 +29,7 @@ namespace Core.WinForms.Controls
          stopwatch = new Stopwatch();
       }
 
-      Color getColor()
+      protected Color getColor()
       {
          switch (color)
          {
@@ -44,7 +44,7 @@ namespace Core.WinForms.Controls
          }
       }
 
-      void timer_Tick(object sender, EventArgs e)
+      protected void timer_Tick(object sender, EventArgs e)
       {
          angle += 10;
          if (angle > MAX_ANGLE)
@@ -73,7 +73,7 @@ namespace Core.WinForms.Controls
          Tick?.Invoke(this, new ProgressEventArgs(stopwatch.Elapsed));
       }
 
-      void CircularProgress_VisibleChanged(object sender, EventArgs e)
+      protected void CircularProgress_VisibleChanged(object sender, EventArgs e)
       {
          timer.Enabled = Visible;
          if (timer.Enabled)

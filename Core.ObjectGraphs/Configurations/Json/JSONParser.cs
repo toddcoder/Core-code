@@ -10,12 +10,12 @@ namespace Core.ObjectGraphs.Configurations.Json
 {
    public class JsonParser
    {
-      string source;
-      Hash<string, string> replacements;
-      TokenType lookAheadToken;
-      int index;
-      StringBuilder buffer;
-      JsonBuilder builder;
+      protected string source;
+      protected Hash<string, string> replacements;
+      protected TokenType lookAheadToken;
+      protected int index;
+      protected StringBuilder buffer;
+      protected JsonBuilder builder;
 
       public event EventHandler<ParseValueArgs> ParseValue;
 
@@ -46,9 +46,9 @@ namespace Core.ObjectGraphs.Configurations.Json
          ParseValue?.Invoke(this, new ParseValueArgs(tokenType, name, value));
       }
 
-      void advanceIndex(int by = 1) => index += by;
+      protected void advanceIndex(int by = 1) => index += by;
 
-      IResult<Unit> parseValue(string name)
+      protected IResult<Unit> parseValue(string name)
       {
          var anyTokenType = lookAhead();
          if (anyTokenType.ValueOrCast<Unit>(out var tokenType, out var original))
@@ -126,7 +126,7 @@ namespace Core.ObjectGraphs.Configurations.Json
          }
       }
 
-      IResult<string> parseName()
+      protected IResult<string> parseName()
       {
          setLookAheadTokenToNone();
 
@@ -151,7 +151,7 @@ namespace Core.ObjectGraphs.Configurations.Json
          return "Cannot end in a name".Failure<string>();
       }
 
-      IResult<string> parseString(string name, char quote)
+      protected IResult<string> parseString(string name, char quote)
       {
          setLookAheadTokenToNone();
 
@@ -265,7 +265,7 @@ namespace Core.ObjectGraphs.Configurations.Json
          return "Open string".Failure<string>();
       }
 
-      IResult<string> parseNameOrString()
+      protected IResult<string> parseNameOrString()
       {
          switch (lookAheadToken)
          {
@@ -280,7 +280,7 @@ namespace Core.ObjectGraphs.Configurations.Json
          }
       }
 
-      IResult<Unit> parseObject(string name)
+      protected IResult<Unit> parseObject(string name)
       {
          builder.BeginObject(name);
 
@@ -291,7 +291,7 @@ namespace Core.ObjectGraphs.Configurations.Json
          return parseMembers(name);
       }
 
-      IResult<Unit> parseMembers(string name)
+      protected IResult<Unit> parseMembers(string name)
       {
          while (index < source.Length)
          {
@@ -335,7 +335,7 @@ namespace Core.ObjectGraphs.Configurations.Json
          return "Didn't understand".Failure<Unit>();
       }
 
-      IResult<Unit> parseArray(string name)
+      protected IResult<Unit> parseArray(string name)
       {
          builder.BeginArray(name);
 
@@ -377,7 +377,7 @@ namespace Core.ObjectGraphs.Configurations.Json
          }
       }
 
-      static IResult<uint> parseSingleChar(char c, uint multiplier)
+      protected static IResult<uint> parseSingleChar(char c, uint multiplier)
       {
          uint p;
          if (c.Between('0').And('9'))
@@ -400,14 +400,14 @@ namespace Core.ObjectGraphs.Configurations.Json
          return p.Success();
       }
 
-      static IResult<uint> parseUnicode(char c1, char c2, char c3, char c4) =>
+      protected static IResult<uint> parseUnicode(char c1, char c2, char c3, char c4) =>
          from p1 in parseSingleChar(c1, 0x100)
          from p2 in parseSingleChar(c2, 0x100)
          from p3 in parseSingleChar(c3, 0x10)
          from p4 in parseSingleChar(c4, 0)
          select p1 + p2 + p3 + p4;
 
-      IResult<object> parseNumber(string name)
+      protected IResult<object> parseNumber(string name)
       {
          setLookAheadTokenToNone();
 
@@ -455,7 +455,7 @@ namespace Core.ObjectGraphs.Configurations.Json
          }
       }
 
-      IResult<TokenType> lookAhead()
+      protected IResult<TokenType> lookAhead()
       {
          if (lookAheadToken != TokenType.None)
          {
@@ -471,9 +471,9 @@ namespace Core.ObjectGraphs.Configurations.Json
          return token;
       }
 
-      void setLookAheadTokenToNone() => lookAheadToken = TokenType.None;
+      protected void setLookAheadTokenToNone() => lookAheadToken = TokenType.None;
 
-      IResult<TokenType> nextToken()
+      protected IResult<TokenType> nextToken()
       {
          if (lookAheadToken != TokenType.None)
          {
@@ -489,7 +489,7 @@ namespace Core.ObjectGraphs.Configurations.Json
          }
       }
 
-      void ignoreWhitespace()
+      protected void ignoreWhitespace()
       {
          if (index >= source.Length)
          {
@@ -524,7 +524,7 @@ namespace Core.ObjectGraphs.Configurations.Json
          } while (++index < source.Length);
       }
 
-      IResult<TokenType> getToken()
+      protected IResult<TokenType> getToken()
       {
          ignoreWhitespace();
 

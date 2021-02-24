@@ -9,12 +9,12 @@ namespace Core.Strings
 {
    public static class StringFunctions
    {
-      const string STRING_ALPHA = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-      const string STRING_NUMERIC = "0123456789";
-      const int RPC_S_OK = 0;
+      private const string STRING_ALPHA = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+      private const string STRING_NUMERIC = "0123456789";
+      private const int RPC_S_OK = 0;
 
       [DllImport("rpcrt4.dll", SetLastError = true)]
-      static extern int UuidCreateSequential(out Guid guid);
+      private static extern int UuidCreateSequential(out Guid guid);
 
       public static string guid() => Guid.NewGuid().GUID();
 
@@ -41,7 +41,7 @@ namespace Core.Strings
 
       public static string randomString(int length, bool alpha, bool numeric)
       {
-			alpha.Must().Or(numeric).OrThrow("You must specify Alpha and/or Numeric");
+         alpha.Must().Or(numeric).OrThrow("You must specify Alpha and/or Numeric");
 
          var source = "";
          if (alpha)

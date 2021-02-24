@@ -8,10 +8,10 @@ namespace Core.Tests
    [TestClass]
    public class FileNameTests
    {
-      const string SOURCE_FOLDER0 = @"C:\Enterprise\Working\_DDL";
-      const string TARGET_FOLDER0 = @"C:\Enterprise\Working\_DDL_target";
-      const string SOURCE_FOLDER1 = @"C:\Enterprise\Projects\TSqlCop.libs\lib\net45";
-      const string TARGET_FOLDER1 = @"C:\Enterprise\Working\libs\lib\net45";
+      protected const string SOURCE_FOLDER0 = @"C:\Enterprise\Working\_DDL";
+      protected const string TARGET_FOLDER0 = @"C:\Enterprise\Working\_DDL_target";
+      protected const string SOURCE_FOLDER1 = @"C:\Enterprise\Projects\TSqlCop.libs\lib\net45";
+      protected const string TARGET_FOLDER1 = @"C:\Enterprise\Working\libs\lib\net45";
 
       [TestMethod]
       public void TruncateBySubfolderTest()

@@ -9,18 +9,18 @@ namespace Core.Strings
 {
    public class TableMaker
    {
-      interface IRow
+      protected interface IRow
       {
          void Evaluate(ColumnHeader[] columnHeaders);
 
          string Render(ColumnHeader[] columnHeaders, string columnSeparator);
       }
 
-      class ColumnHeader
+      protected class ColumnHeader
       {
-         string header;
-         Justification justification;
-         int maxWidth;
+         protected string header;
+         protected Justification justification;
+         protected int maxWidth;
 
          public ColumnHeader(string header, Justification justification)
          {
@@ -42,9 +42,9 @@ namespace Core.Strings
          public int MaxWidth => maxWidth;
       }
 
-      class Column
+      protected class Column
       {
-         string text;
+         protected string text;
 
          public Column(string text) => this.text = text;
 
@@ -55,9 +55,9 @@ namespace Core.Strings
          public string Render(ColumnHeader columnHeader) => columnHeader.Render(text);
       }
 
-      class Row : IRow
+      protected class Row : IRow
       {
-         Column[] columns;
+         protected Column[] columns;
 
          public Row(Column[] columns) => this.columns = columns;
 
@@ -75,9 +75,9 @@ namespace Core.Strings
          }
       }
 
-      class Divider : IRow
+      protected class Divider : IRow
       {
-         char character;
+         protected char character;
 
          public Divider(char character) => this.character = character;
 
@@ -90,16 +90,16 @@ namespace Core.Strings
          }
       }
 
-      class Line : IRow
+      protected class Line : IRow
       {
          public void Evaluate(ColumnHeader[] columnHeaders) { }
 
          public string Render(ColumnHeader[] columnHeaders, string columnSeparator) => "";
       }
 
-      ColumnHeader[] columnHeaders;
-      List<IRow> rows;
-      bool hasHeaders;
+      protected ColumnHeader[] columnHeaders;
+      protected List<IRow> rows;
+      protected bool hasHeaders;
 
       public TableMaker(params (string header, Justification justification)[] columns)
       {

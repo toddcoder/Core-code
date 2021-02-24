@@ -7,9 +7,9 @@ namespace Core.Applications
 {
    public abstract class CommandLine : IDisposable
    {
-      static IWriter getStandardWriter() => new ConsoleWriter();
+      protected static IWriter getStandardWriter() => new ConsoleWriter();
 
-      static IWriter getExceptionWriter() => new ConsoleWriter
+      protected static IWriter getExceptionWriter() => new ConsoleWriter
       {
          ForegroundColor = ConsoleColor.Red,
          BackgroundColor = ConsoleColor.White
@@ -68,7 +68,7 @@ namespace Core.Applications
          run(arguments);
       }
 
-      void run(Arguments arguments)
+      protected void run(Arguments arguments)
       {
          try
          {
@@ -98,7 +98,7 @@ namespace Core.Applications
          runInLoop(arguments, interval);
       }
 
-      void runInLoop(Arguments arguments, TimeSpan interval)
+      protected void runInLoop(Arguments arguments, TimeSpan interval)
       {
          try
          {
@@ -119,7 +119,7 @@ namespace Core.Applications
          }
       }
 
-      void dispose()
+      protected void dispose()
       {
          StandardWriter?.DisposeIfDisposable();
          ExceptionWriter?.DisposeIfDisposable();

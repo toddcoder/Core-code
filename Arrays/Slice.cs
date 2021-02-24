@@ -9,10 +9,10 @@ namespace Core.Arrays
    {
       public static implicit operator T[](Slice<T> slice) => slice.Array;
 
-      T[] array;
-      int startIndex;
-      int stopIndex;
-      int length;
+      protected T[] array;
+      protected int startIndex;
+      protected int stopIndex;
+      protected int length;
 
       public Slice(T[] array, int startIndex)
       {
@@ -24,7 +24,7 @@ namespace Core.Arrays
 
       public Slice<T> To(int index)
       {
-         stopIndex = assert(()=> index).Must().BeBetween(startIndex).Until(array.Length).Force();
+         stopIndex = assert(() => index).Must().BeBetween(startIndex).Until(array.Length).Force();
 
          length = stopIndex - startIndex;
 

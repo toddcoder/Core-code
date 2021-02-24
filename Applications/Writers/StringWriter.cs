@@ -2,24 +2,24 @@
 
 namespace Core.Applications.Writers
 {
-	public class StringWriter : BaseWriter, IDisposable
-	{
-		System.IO.StringWriter writer;
+   public class StringWriter : BaseWriter, IDisposable
+   {
+      protected System.IO.StringWriter writer;
 
-		public StringWriter() => writer = new System.IO.StringWriter();
+      public StringWriter() => writer = new System.IO.StringWriter();
 
-		void dispose() => writer?.Dispose();
+      protected void dispose() => writer?.Dispose();
 
-		public void Dispose()
-		{
-			dispose();
-			GC.SuppressFinalize(this);
-		}
+      public void Dispose()
+      {
+         dispose();
+         GC.SuppressFinalize(this);
+      }
 
-		~StringWriter() => dispose();
+      ~StringWriter() => dispose();
 
-		protected override void writeRaw(string text) => writer.Write(text);
+      protected override void writeRaw(string text) => writer.Write(text);
 
-		public override string ToString() => writer.ToString();
-	}
+      public override string ToString() => writer.ToString();
+   }
 }

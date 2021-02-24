@@ -2,7 +2,7 @@
 
 namespace Core.Strings.Text
 {
-   internal class DifferenceResult
+   public class DifferenceResult
    {
       public DifferenceResult(string[] oldItems, string[] newItems, List<DifferenceBlock> differenceBlocks)
       {
@@ -10,6 +10,7 @@ namespace Core.Strings.Text
          NewItems = newItems;
          DifferenceBlocks = differenceBlocks;
       }
+
       public string[] OldItems { get; }
 
       public string[] NewItems { get; }

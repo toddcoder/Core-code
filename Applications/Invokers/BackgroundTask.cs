@@ -63,7 +63,7 @@ namespace Core.Applications.Invokers
          set => backgroundEnabled = value;
       }
 
-      void executeBackground()
+      protected void executeBackground()
       {
          while (true)
          {
@@ -148,6 +148,7 @@ namespace Core.Applications.Invokers
                text = text.Substitute("'.' /d+ $", "");
             }
          }
+
          WriteBackground(left, top, text, true);
       }
 

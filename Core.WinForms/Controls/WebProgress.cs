@@ -8,13 +8,13 @@ namespace Core.WinForms.Controls
 {
    public partial class WebProgress : UserControl
    {
-      const int NUMBER_OF_CIRCLES = 8;
-      const float ANGLE = 360.0f / NUMBER_OF_CIRCLES;
-      const int NUMBER_OF_VISIBLE_CIRCLES = 8;
-      const int CIRCLE_SIZE = 1;
+      protected const int NUMBER_OF_CIRCLES = 8;
+      protected const float ANGLE = 360.0f / NUMBER_OF_CIRCLES;
+      protected const int NUMBER_OF_VISIBLE_CIRCLES = 8;
+      protected const int CIRCLE_SIZE = 1;
 
-      int value;
-      Stopwatch stopwatch;
+      protected int value;
+      protected Stopwatch stopwatch;
 
       public event EventHandler<ProgressEventArgs> Tick;
 
@@ -26,7 +26,7 @@ namespace Core.WinForms.Controls
          stopwatch = new Stopwatch();
       }
 
-      void timer_Tick(object sender, EventArgs e)
+      protected void timer_Tick(object sender, EventArgs e)
       {
          if (Visible)
          {
@@ -44,7 +44,7 @@ namespace Core.WinForms.Controls
          }
       }
 
-      void WebProgress_VisibleChanged(object sender, EventArgs e)
+      protected void WebProgress_VisibleChanged(object sender, EventArgs e)
       {
          timer.Enabled = Visible;
          if (timer.Enabled)
@@ -58,7 +58,7 @@ namespace Core.WinForms.Controls
          }
       }
 
-      void WebProgress_Paint(object sender, PaintEventArgs e)
+      protected void WebProgress_Paint(object sender, PaintEventArgs e)
       {
          var state = e.Graphics.Save();
 

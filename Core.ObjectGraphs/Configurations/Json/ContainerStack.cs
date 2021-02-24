@@ -6,15 +6,15 @@ namespace Core.ObjectGraphs.Configurations.Json
 {
    public class ContainerStack
    {
-      static IContainer[] emptyArray;
+      protected static IContainer[] emptyArray;
 
       static ContainerStack()
       {
          emptyArray = new IContainer[0];
       }
 
-      IContainer[] array;
-      int size;
+      protected IContainer[] array;
+      protected int size;
 
       public ContainerStack()
       {

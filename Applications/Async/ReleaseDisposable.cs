@@ -5,8 +5,8 @@ namespace Core.Applications.Async
 {
    public class ReleaseDisposable : IDisposable
    {
-      SemaphoreSlim semaphore;
-      bool isDisposed;
+      protected SemaphoreSlim semaphore;
+      protected bool isDisposed;
 
       public ReleaseDisposable(SemaphoreSlim semaphore)
       {

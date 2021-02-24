@@ -7,12 +7,12 @@ namespace Core.WinForms.Documents
 {
    public class ConsoleDocument : IDisposable
    {
-      readonly RichTextBox editTextBox;
-      readonly RichTextBox consoleTextBox;
-      readonly TextBoxConsole console;
-      readonly Document document;
-      readonly TextWriter writer;
-      readonly TextReader reader;
+      protected readonly RichTextBox editTextBox;
+      protected readonly RichTextBox consoleTextBox;
+      protected readonly TextBoxConsole console;
+      protected readonly Document document;
+      protected readonly TextWriter writer;
+      protected readonly TextReader reader;
 
       public ConsoleDocument(Form form, DocumentConfiguration documentConfiguration, ConsoleConfiguration consoleConfiguration)
       {

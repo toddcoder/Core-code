@@ -149,7 +149,7 @@ namespace Core.Assertions
          return assertion.Value;
       }
 
-      static TResult convert<T, TResult>(IAssertion<T> assertion)
+      private static TResult convert<T, TResult>(IAssertion<T> assertion)
       {
          var converter = TypeDescriptor.GetConverter(typeof(T));
          return (TResult)converter.ConvertTo(assertion.Value, typeof(TResult));
@@ -173,7 +173,8 @@ namespace Core.Assertions
          return convert<T, TResult>(assertion);
       }
 
-      public static TResult forceConvert<T, TException, TResult>(IAssertion<T> assertion, params object[] args) where TException : Exception
+      public static TResult forceConvert<T, TException, TResult>(IAssertion<T> assertion, params object[] args)
+         where TException : Exception
       {
          orThrow<TException, T>(assertion, args);
          return convert<T, TResult>(assertion);
@@ -181,7 +182,8 @@ namespace Core.Assertions
 
       public static IResult<T> orFailure<T>(IAssertion<T> assertion)
       {
-         return assertion.Constraints.FirstOrNone(c => !c.IsTrue()).Map(c => c.Message.Failure<T>()).DefaultTo(() => assertion.Value.Success());
+         return assertion.Constraints.FirstOrNone(c => !c.IsTrue()).Map(c => c.Message.Failure<T>())
+            .DefaultTo(() => assertion.Value.Success());
       }
 
       public static IResult<T> orFailure<T>(IAssertion<T> assertion, string message)
@@ -199,26 +201,28 @@ namespace Core.Assertions
          return maybe(assertion.Constraints.All(c => c.IsTrue()), () => assertion.Value);
       }
 
-      public static async Task<ICompletion<T>> orFailureAsync<T>(IAssertion<T> assertion, CancellationToken token) => await runAsync(t =>
-      {
-         return assertion.Constraints
-            .FirstOrNone(c => !c.IsTrue())
-            .Map(c => c.Message.Interrupted<T>())
-            .DefaultTo(() => assertion.Value.Completed(t));
-      }, token);
+      public static async Task<ICompletion<T>> orFailureAsync<T>(IAssertion<T> assertion, CancellationToken token) => await runAsync(
+         t =>
+         {
+            return assertion.Constraints
+               .FirstOrNone(c => !c.IsTrue())
+               .Map(c => c.Message.Interrupted<T>())
+               .DefaultTo(() => assertion.Value.Completed(t));
+         }, token);
 
       public static async Task<ICompletion<T>> orFailureAsync<T>(IAssertion<T> assertion, string message, CancellationToken token) =>
-         await runAsync(t =>
-         {
-            return assertion.Constraints.Any(c => !c.IsTrue()) ? message.Interrupted<T>() : assertion.Value.Completed(t);
-         }, token);
+         await runAsync(
+            t => { return assertion.Constraints.Any(c => !c.IsTrue()) ? message.Interrupted<T>() : assertion.Value.Completed(t); },
+            token);
 
-      public static async Task<ICompletion<T>> orFailureAsync<T>(IAssertion<T> assertion, Func<string> messageFunc, CancellationToken token)
+      public static async Task<ICompletion<T>> orFailureAsync<T>(IAssertion<T> assertion, Func<string> messageFunc,
+         CancellationToken token)
       {
-         return await runAsync(t =>
-         {
-            return assertion.Constraints.Any(c => !c.IsTrue()) ? messageFunc().Interrupted<T>() : assertion.Value.Completed(t);
-         }, token);
+         return await runAsync(
+            t =>
+            {
+               return assertion.Constraints.Any(c => !c.IsTrue()) ? messageFunc().Interrupted<T>() : assertion.Value.Completed(t);
+            }, token);
       }
 
       public static bool orReturn<T>(IAssertion<T> assertion) => !assertion.BeEquivalentToTrue();
