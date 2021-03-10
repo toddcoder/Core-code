@@ -133,5 +133,13 @@ namespace Core.Tests
          assert(() => parentFolder.ContainsFolder(subFolder)).Must().BeTrue().OrThrow();
          assert(() => parentFolder.ContainsFolder(alienFolder)).Must().Not.BeTrue().OrThrow();
       }
+
+      [TestMethod]
+      public void ImmediateSubFolderTest()
+      {
+         FolderName folder = @"C:\Program Files (x86)\Microsoft Visual Studio\2019";
+         assert(() => folder.ContainsImmediateFolderName("Professional")).Must().BeTrue().OrThrow();
+         assert(() => folder.ContainsImmediateFolderName("Enterprise")).Must().Not.BeTrue().OrThrow();
+      }
    }
 }
