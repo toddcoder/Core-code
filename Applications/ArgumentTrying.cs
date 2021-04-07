@@ -7,7 +7,7 @@ namespace Core.Applications
 {
    public class ArgumentTrying
    {
-      Argument argument;
+      protected Argument argument;
 
       public ArgumentTrying(Argument argument) => this.argument = argument;
 

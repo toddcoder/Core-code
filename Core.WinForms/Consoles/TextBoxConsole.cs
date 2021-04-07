@@ -19,19 +19,19 @@ namespace Core.WinForms.Consoles
          Default
       }
 
-      const int WM_SET_REDRAW = 11;
+      protected const int WM_SET_REDRAW = 11;
 
       [DllImport("user32.dll")]
-      static extern int SendMessage(IntPtr hWnd, int msg, bool wParam, int lParam);
+      protected static extern int SendMessage(IntPtr hWnd, int msg, bool wParam, int lParam);
 
       public static void StopUpdating(TextBoxBase textBox) => SendMessage(textBox.Handle, WM_SET_REDRAW, false, 0);
 
       public static void ResumeUpdating(TextBoxBase textBox) => SendMessage(textBox.Handle, WM_SET_REDRAW, true, 0);
 
-      Form form;
-      RichTextBox textBox;
-      int writeStartingIndex;
-      int suspended;
+      protected Form form;
+      protected RichTextBox textBox;
+      protected int writeStartingIndex;
+      protected int suspended;
 
       public TextBoxConsole(Form form, RichTextBox textBox, string fontName = "Consolas", float fontSize = 10f,
          ConsoleColorType colorType = ConsoleColorType.Windows)
@@ -199,7 +199,7 @@ namespace Core.WinForms.Consoles
          history = new CommandLineHistory();
       }
 
-      bool inBox() => textBox.SelectionStart > writeStartingIndex;
+      protected bool inBox() => textBox.SelectionStart > writeStartingIndex;
 
       public int Suspended => suspended;
 

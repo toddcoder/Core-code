@@ -5,16 +5,16 @@ namespace Core.ObjectGraphs.Parsers
 {
    public class RootParser
    {
-      string name;
-      string type;
-      string key;
-      GroupParser groupParser;
-      SingleParser singleParser;
-      SingleCharacterParser singleCharacterParser;
-      ReplacementParser replacementParser;
-      MacroParser macroParser;
-      ArrayItemParser arrayItemParser;
-      Replacer replacer;
+      protected string name;
+      protected string type;
+      protected string key;
+      protected GroupParser groupParser;
+      protected SingleParser singleParser;
+      protected SingleCharacterParser singleCharacterParser;
+      protected ReplacementParser replacementParser;
+      protected MacroParser macroParser;
+      protected ArrayItemParser arrayItemParser;
+      protected Replacer replacer;
 
       public RootParser(string name, Replacer replacer, string type = "", string key = "")
       {
@@ -94,7 +94,7 @@ namespace Core.ObjectGraphs.Parsers
          return result;
       }
 
-      static int update(BaseParser parser, ObjectGraph result, int lineNumber, string lineSource)
+      protected static int update(BaseParser parser, ObjectGraph result, int lineNumber, string lineSource)
       {
          var objectGraph = parser.Result;
          objectGraph.LineNumber = lineNumber;

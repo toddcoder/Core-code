@@ -9,14 +9,15 @@ namespace Core.Strings.Text
 {
    public class Differentiator
    {
-      static string[] splitWords(string line) => line.Split(array(' ', '\t', '.', '(', ')', '{', '}', ',', '!'));
+      protected static string[] splitWords(string line) => line.Split(array(' ', '\t', '.', '(', ')', '{', '}', ',', '!'));
 
-      string[] oldText;
-      string[] newText;
-      bool ignoreWhiteSpace;
-      bool ignoreCase;
+      protected string[] oldText;
+      protected string[] newText;
+      protected bool ignoreWhiteSpace;
+      protected bool ignoreCase;
 
-      delegate void ItemBuilder(string oldText, string newText, List<DifferenceItem> oldItems, List<DifferenceItem> newItems);
+      protected delegate void ItemBuilder(string oldText, string newText, List<DifferenceItem> oldItems,
+         List<DifferenceItem> newItems);
 
       public Differentiator(string[] oldText, string[] newText, bool ignoreWhiteSpace, bool ignoreCase)
       {
@@ -43,7 +44,8 @@ namespace Core.Strings.Text
          }
       }
 
-      static void buildItemsNoSub(string oldLine, string newLine, List<DifferenceItem> oldItems, List<DifferenceItem> newItems)
+      protected static void buildItemsNoSub(string oldLine, string newLine, List<DifferenceItem> oldItems,
+         List<DifferenceItem> newItems)
       {
          var oldWords = splitWords(oldLine);
          var newWords = splitWords(newLine);
@@ -56,7 +58,8 @@ namespace Core.Strings.Text
          }
       }
 
-      static void buildItems(DifferenceResult result, List<DifferenceItem> oldItems, List<DifferenceItem> newItems, IMaybe<ItemBuilder> anySubItemBuilder)
+      protected static void buildItems(DifferenceResult result, List<DifferenceItem> oldItems, List<DifferenceItem> newItems,
+         IMaybe<ItemBuilder> anySubItemBuilder)
       {
          var oldPosition = 0;
          var newPosition = 0;
@@ -74,8 +77,10 @@ namespace Core.Strings.Text
             var i = 0;
             while (i < Math.Min(diffBlock.OldDeleteCount, diffBlock.NewInsertCount))
             {
-               var oldItem = new DifferenceItem(result.OldItems[i + diffBlock.OldDeleteStart], DifferenceType.Deleted, oldPosition + 1);
-               var newItem = new DifferenceItem(result.NewItems[i + diffBlock.NewInsertStart], DifferenceType.Inserted, newPosition + 1);
+               var oldItem = new DifferenceItem(result.OldItems[i + diffBlock.OldDeleteStart], DifferenceType.Deleted,
+                  oldPosition + 1);
+               var newItem = new DifferenceItem(result.NewItems[i + diffBlock.NewInsertStart], DifferenceType.Inserted,
+                  newPosition + 1);
                if (anySubItemBuilder.If(out var subItemBuilder))
                {
                   var oldWords = result.OldItems[oldPosition].Split("/s+");
@@ -102,7 +107,8 @@ namespace Core.Strings.Text
             {
                while (i < diffBlock.OldDeleteCount)
                {
-                  oldItems.Add(new DifferenceItem(result.OldItems[i + diffBlock.OldDeleteStart], DifferenceType.Deleted, oldPosition + 1));
+                  oldItems.Add(new DifferenceItem(result.OldItems[i + diffBlock.OldDeleteStart], DifferenceType.Deleted,
+                     oldPosition + 1));
                   newItems.Add(new DifferenceItem());
 
                   oldPosition++;
@@ -111,9 +117,10 @@ namespace Core.Strings.Text
             }
             else
             {
-               while (i<diffBlock.NewInsertCount)
+               while (i < diffBlock.NewInsertCount)
                {
-                  newItems.Add(new DifferenceItem(result.NewItems[i + diffBlock.NewInsertStart], DifferenceType.Inserted, newPosition + 1));
+                  newItems.Add(new DifferenceItem(result.NewItems[i + diffBlock.NewInsertStart], DifferenceType.Inserted,
+                     newPosition + 1));
                   oldItems.Add(new DifferenceItem());
 
                   newPosition++;

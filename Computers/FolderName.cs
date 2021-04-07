@@ -954,5 +954,9 @@ namespace Core.Computers
       public bool ContainsFolderName(string name, bool parallel = false) => ExistingFolderName(name, parallel).IsSome;
 
       public bool ContainsFolderName(string name, CancellationToken token) => ExistingFolderName(name, token).IsSome;
+
+      public FolderName Combine(string subPath) => Path.Combine(fullPath, subPath);
+
+      public bool ContainsImmediateFolderName(string name) => Combine(name).Exists();
    }
 }

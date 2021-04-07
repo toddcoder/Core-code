@@ -9,7 +9,7 @@ namespace Core.Data
 {
    public class Connection : IHash<string, string>
    {
-      Hash<string, string> data;
+      protected Hash<string, string> data;
 
       public Connection(ObjectGraph connectionGraph)
       {

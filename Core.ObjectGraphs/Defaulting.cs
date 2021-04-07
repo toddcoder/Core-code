@@ -4,8 +4,8 @@ namespace Core.ObjectGraphs
 {
    public class Defaulting
    {
-      ObjectGraph objectGraph;
-      Func<string> defaultValue;
+      protected ObjectGraph objectGraph;
+      protected Func<string> defaultValue;
 
       public Defaulting(ObjectGraph objectGraph, Func<string> defaultValue)
       {

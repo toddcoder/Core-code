@@ -8,7 +8,7 @@ namespace Core.Tests
    [TestClass]
    public class TextComparisonTest
    {
-      static void test(string oldFileName, string newFileName)
+      protected static void test(string oldFileName, string newFileName)
       {
          FolderName folder = @"C:\Enterprise\Projects\Core\Core.Tests\test-data";
          var oldFile = folder + oldFileName;

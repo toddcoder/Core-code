@@ -5,7 +5,7 @@ namespace Core.Assertions.Comparables
 {
    public class DoubleAssertion : ComparableAssertion<double>
    {
-      static bool nearlyEqual(double d1, object obj, double epsilon)
+      protected static bool nearlyEqual(double d1, object obj, double epsilon)
       {
          var converter = TypeDescriptor.GetConverter(typeof(double));
          if (converter.CanConvertFrom(obj.GetType()))
@@ -19,7 +19,7 @@ namespace Core.Assertions.Comparables
          }
       }
 
-      static bool nearlyEqual(double d1, double d2, double epsilon) => Math.Abs(d1 - d2) < epsilon;
+      protected static bool nearlyEqual(double d1, double d2, double epsilon) => Math.Abs(d1 - d2) < epsilon;
 
       public DoubleAssertion(IComparable comparable) : base(comparable) { }
 

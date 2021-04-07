@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Core.Assertions;
+using Core.Collections;
 using Core.Collections.Infix;
 using Core.DataStructures;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -65,6 +66,19 @@ namespace Core.Tests
          {
             Console.WriteLine(item);
          }
+      }
+
+      [TestMethod]
+      public void SetOfStringVsStringSetTest()
+      {
+         var setOfString = new Set<string> { "Case" };
+         var stringSet = new StringSet(true) { "Case" };
+
+         setOfString.Remove("case");
+         assert(() => setOfString.Count).Must().Equal(1).OrThrow();
+
+         stringSet.Remove("case");
+         assert(() => stringSet.Count).Must().Equal(0).OrThrow();
       }
    }
 }

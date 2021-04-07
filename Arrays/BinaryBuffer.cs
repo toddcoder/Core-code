@@ -5,7 +5,7 @@ namespace Core.Arrays
 {
    public class BinaryBuffer
    {
-      byte[] bytes;
+      protected byte[] bytes;
 
       public BinaryBuffer(int length) => bytes = new byte[length];
 

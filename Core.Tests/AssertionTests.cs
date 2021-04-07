@@ -99,11 +99,11 @@ namespace Core.Tests
          listType.Must().BeGeneric().ContainGenericArgument(typeof(string)).OrThrow();
       }
 
-      static int getX() => 3;
+      protected static int getX() => 3;
 
-      class XClass
+      protected class XClass
       {
-         int x;
+         protected int x;
 
          public XClass(int x)
          {

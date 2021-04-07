@@ -1,11 +1,22 @@
 ﻿using System;
+using System.Linq;
 using Core.Applications;
+using Core.Enumerables;
+using Core.Monads;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Core.Tests
 {
    internal class Parameters
    {
+      public Parameters()
+      {
+         Recursive = true;
+         Text = string.Empty;
+         AttributeTargets = AttributeTargets.All;
+         Array = new string[0];
+      }
+
       public bool Push { get; set; }
 
       public bool Pull { get; set; }
@@ -16,19 +27,26 @@ namespace Core.Tests
 
       public double Amount { get; set; }
 
-      public AttributeTargets AttributeTargets { get; set; } = AttributeTargets.All;
+      public AttributeTargets AttributeTargets { get; set; }
 
-      public string Text { get; set; } = "";
+      public string Text { get; set; }
 
-      public bool Recursive { get; set; } = true;
+      public bool Recursive { get; set; }
+
+      public string[] Array { get; set; }
    }
 
    internal class Program : CommandLineInterface
    {
       [EntryPoint(EntryPointType.Parameters)]
       public void Main(bool push = false, bool pull = false, bool show = false, int code = 0, double amount = 0,
-         AttributeTargets attributeTargets = AttributeTargets.All, string text = "", bool recursive = true)
+         AttributeTargets attributeTargets = AttributeTargets.All, string text = "", bool recursive = true, string[] array = null)
       {
+         if (array == null)
+         {
+            array = new string[0];
+         }
+
          var command = "?";
          if (pull)
          {
@@ -49,6 +67,7 @@ namespace Core.Tests
          Console.WriteLine($"attribute targets: {attributeTargets}");
          Console.WriteLine($"text: '{text}'");
          Console.WriteLine($"recursive: {recursive.ToString().ToLower()}");
+         Console.WriteLine($"array: {array.ToString(", ")}");
       }
    }
 
@@ -77,11 +96,20 @@ namespace Core.Tests
          Console.WriteLine($"attribute targets: {parameters.AttributeTargets}");
          Console.WriteLine($"text: '{parameters.Text}'");
          Console.WriteLine($"recursive: {parameters.Recursive.ToString().ToLower()}");
+         Console.WriteLine($"array: {parameters.Array.ToString(", ")}");
       }
    }
 
    internal class ThisProgram : CommandLineInterface
    {
+      public ThisProgram()
+      {
+         Recursive = true;
+         Text = string.Empty;
+         AttributeTargets = AttributeTargets.All;
+         Array = new string[0];
+      }
+
       public bool Push { get; set; }
 
       public bool Pull { get; set; }
@@ -92,11 +120,13 @@ namespace Core.Tests
 
       public double Amount { get; set; }
 
-      public AttributeTargets AttributeTargets { get; set; } = AttributeTargets.All;
+      public AttributeTargets AttributeTargets { get; set; }
 
-      public string Text { get; set; } = "";
+      public string Text { get; set; }
 
-      public bool Recursive { get; set; } = true;
+      public bool Recursive { get; set; }
+
+      public string[] Array { get; set; }
 
       [EntryPoint(EntryPointType.This)]
       public void Main()
@@ -121,6 +151,7 @@ namespace Core.Tests
          Console.WriteLine($"attribute targets: {AttributeTargets}");
          Console.WriteLine($"text: '{Text}'");
          Console.WriteLine($"recursive: {Recursive.ToString().ToLower()}");
+         Console.WriteLine($"array: {Array.ToString(", ")}");
       }
    }
 
@@ -131,51 +162,54 @@ namespace Core.Tests
       public void RunTest()
       {
          var program = new Program();
-         program.Run("foo.exe pull /code: 153 /amount: 153.69 /attribute-targets: all", "/", ":");
+         program.Run("foo.exe pull /code: 153 /amount: 153.69 /attribute-targets: all /array: [a, b, c]", "/", ":");
 
          Console.WriteLine();
 
          var objectProgram = new ObjectProgram();
-         objectProgram.Run("foo.exe pull /code: 153 /amount: 153.69 /attribute-targets: all", "/", ":");
+         objectProgram.Run("foo.exe pull /code: 153 /amount: 153.69 /attribute-targets: all /array: [a, b, c]", "/", ":");
 
          Console.WriteLine();
 
          var thisProgram = new ThisProgram();
-         thisProgram.Run("foo.exe pull /code: 153 /amount: 153.69 /attribute-targets: all", "/", ":");
+         thisProgram.Run("foo.exe pull /code: 153 /amount: 153.69 /attribute-targets: all /array: [a, b, c]", "/", ":");
       }
 
       [TestMethod]
       public void GreedyTest()
       {
          var program = new Program();
-         program.Run("\"foo.exe\" push /code: 153 /amount: 153.69 /attribute-targets: all /text: 'foo' /recursive: false", "/", ":");
+         program.Run("\"foo.exe\" push /code: 153 /amount: 153.69 /attribute-targets: all /text: 'foo' /recursive: false /array: [a, b, c]", "/",
+            ":");
 
          Console.WriteLine();
 
          var objectProgram = new ObjectProgram();
-         objectProgram.Run("\"foo.exe\" push /code: 153 /amount: 153.69 /attribute-targets: all /text: 'foo' /recursive: false", "/", ":");
+         objectProgram.Run("\"foo.exe\" push /code: 153 /amount: 153.69 /attribute-targets: all /text: 'foo' /recursive: false /array: [a, b, c]",
+            "/", ":");
 
          Console.WriteLine();
 
          var thisProgram = new ThisProgram();
-         thisProgram.Run("\"foo.exe\" push /code: 153 /amount: 153.69 /attribute-targets: all /text: 'foo' /recursive: false", "/", ":");
+         thisProgram.Run("\"foo.exe\" push /code: 153 /amount: 153.69 /attribute-targets: all /text: 'foo' /recursive: false /array: [a, b, c]", "/",
+            ":");
       }
 
       [TestMethod]
       public void AlternateSyntax()
       {
          var program = new Program();
-         program.Run("show --code 153 --amount 153.69 --attribute-targets all --text 'foo' --recursive-", "--", " ");
+         program.Run("show --code 153 --amount 153.69 --attribute-targets all --text 'foo' --recursive- --array [a,b,c]", "--", " ");
 
          Console.WriteLine();
 
          var objectProgram = new ObjectProgram();
-         objectProgram.Run("show --code 153 --amount 153.69 --attribute-targets all --text 'foo' --recursive-", "--", " ");
+         objectProgram.Run("show --code 153 --amount 153.69 --attribute-targets all --text 'foo' --recursive- --array [a,b,c]", "--", " ");
 
          Console.WriteLine();
 
-         var thisProgram = new ThisProgram { Shortcuts = "C = code; A = amount; R = recursive" };
-         thisProgram.Run("show -C 153 -A 153.69 --attribute-targets all --text 'foo' -R", "--", " ");
+         var thisProgram = new ThisProgram { Shortcuts = "C = code; A = amount; R = recursive; a = array" };
+         thisProgram.Run("show -C 153 -A 153.69 --attribute-targets all --text 'foo' -R -a [a, b, c]", "--", " ");
       }
 
       [TestMethod]

@@ -15,7 +15,7 @@ namespace Core.Data.DataSources
 {
    public class OleDbDataSource : DataSource
    {
-      static OleDbType typeToOleDbType(Type type)
+      protected OleDbType typeToOleDbType(Type type)
       {
          switch (Type.GetTypeCode(type))
          {

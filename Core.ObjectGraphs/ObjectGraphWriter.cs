@@ -10,8 +10,8 @@ namespace Core.ObjectGraphs
 {
    public class ObjectGraphWriter : IDisposable
    {
-      int indent;
-      StringWriter writer;
+      protected int indent;
+      protected StringWriter writer;
 
       public ObjectGraphWriter()
       {
@@ -59,7 +59,7 @@ namespace Core.ObjectGraphs
          return parser.Parse(configs);
       }
 
-      string indentation() => "\t".Repeat(indent);
+      protected string indentation() => "\t".Repeat(indent);
 
       public void Dispose()
       {

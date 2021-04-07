@@ -9,9 +9,9 @@ namespace Core.WinForms.Consoles
 {
    public class TextBoxReader : Stream
    {
-      Form form;
-      TextBoxConsole console;
-      IMaybe<Control> anyPreviouslyFocused;
+      protected Form form;
+      protected TextBoxConsole console;
+      protected IMaybe<Control> anyPreviouslyFocused;
 
       public TextBoxReader(Form form, TextBoxConsole console)
       {
@@ -75,14 +75,14 @@ namespace Core.WinForms.Consoles
          }
          else
          {
-            console.Text = "";
+            console.Text = string.Empty;
             close();
 
             return 0;
          }
       }
 
-      void close()
+      protected void close()
       {
          console.GoToEnd();
          console.ReadOnly = true;

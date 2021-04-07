@@ -10,7 +10,7 @@ namespace Core.Assertions.Collections
 {
    public class DictionaryAssertion<TKey, TValue> : IAssertion<Dictionary<TKey, TValue>>
    {
-      static string keyValueImage(KeyValuePair<TKey, TValue> item) => $"[{item.Key}] => {item.Value}";
+      protected static string keyValueImage(KeyValuePair<TKey, TValue> item) => $"[{item.Key}] => {item.Value}";
 
       protected Dictionary<TKey, TValue> dictionary;
       protected List<Constraint> constraints;
@@ -122,7 +122,8 @@ namespace Core.Assertions.Collections
 
       public void OrThrow(Func<string> messageFunc) => orThrow(this, messageFunc);
 
-      public void OrThrow<TException>(params object[] args) where TException : Exception => orThrow<TException, Dictionary<TKey, TValue>>(this, args);
+      public void OrThrow<TException>(params object[] args) where TException : Exception =>
+         orThrow<TException, Dictionary<TKey, TValue>>(this, args);
 
       public Dictionary<TKey, TValue> Force() => force(this);
 
@@ -154,7 +155,8 @@ namespace Core.Assertions.Collections
 
       public IMaybe<Dictionary<TKey, TValue>> OrNone() => orNone(this);
 
-      public async Task<ICompletion<Dictionary<TKey, TValue>>> OrFailureAsync(CancellationToken token) => await orFailureAsync(this, token);
+      public async Task<ICompletion<Dictionary<TKey, TValue>>> OrFailureAsync(CancellationToken token) =>
+         await orFailureAsync(this, token);
 
       public async Task<ICompletion<Dictionary<TKey, TValue>>> OrFailureAsync(string message, CancellationToken token)
       {

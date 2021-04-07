@@ -5,6 +5,7 @@ using Core.Applications.Writers;
 using Core.Collections;
 using Core.Computers;
 using Core.Enumerables;
+using Core.Exceptions;
 using Core.Monads;
 using Core.Objects;
 using Core.RegularExpressions;
@@ -222,6 +223,20 @@ namespace Core.Applications
          return Enum.Parse(type, source.Replace("-", ""), true);
       }
 
+      protected static object getStringArray(string rest)
+      {
+         if (rest.Matcher("^/s* '[' /s*  /(.*) /s* ']'").If(out var matcher))
+         {
+            var list = matcher.FirstGroup;
+            var array = list.Split("/s* ',' /s*");
+            return array;
+         }
+         else
+         {
+            throw "String arrays must be delimited by []".Throws();
+         }
+      }
+
       protected IResult<object> retrieveItem(string name, Type type, IMaybe<object> _defaultValue, string prefix, string suffix, string commandLine)
       {
          return tryTo(() =>
@@ -262,6 +277,10 @@ namespace Core.Applications
                else if (type.IsEnum)
                {
                   return getEnum(rest, type).Success();
+               }
+               else if (type == typeof(string[]))
+               {
+                  return getStringArray(rest).Success();
                }
                else if (this is IMissingArgument missingArgument)
                {
@@ -621,6 +640,10 @@ namespace Core.Applications
                      else if (type.IsEnum)
                      {
                         evaluator[name] = getEnum(rest, type);
+                     }
+                     else if (type == typeof(string[]))
+                     {
+                        evaluator[name] = getStringArray(rest);
                      }
                      else
                      {

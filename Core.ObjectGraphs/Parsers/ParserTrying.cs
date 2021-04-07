@@ -5,7 +5,7 @@ namespace Core.ObjectGraphs.Parsers
 {
    public class ParserTrying
    {
-      Parser parser;
+      protected Parser parser;
 
       internal ParserTrying(Parser parser) => this.parser = parser;
 

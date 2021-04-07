@@ -9,12 +9,12 @@ namespace Core.ObjectGraphs.Configurations.Json
 {
    public class JsonWriter
    {
-      StringWriter writer;
-      string indentString;
-      string indentation;
-      int indentLevel;
-      bool opened;
-      bool nameWritten;
+      protected StringWriter writer;
+      protected string indentString;
+      protected string indentation;
+      protected int indentLevel;
+      protected bool opened;
+      protected bool nameWritten;
 
       public JsonWriter(string indentString = "   ", int indentLevel = 0)
       {
@@ -29,12 +29,12 @@ namespace Core.ObjectGraphs.Configurations.Json
 
       public int IndentLevel => indentLevel;
 
-      void indent()
+      protected void indent()
       {
          indentation = indentString.Repeat(++indentLevel);
       }
 
-      void unindent()
+      protected void unindent()
       {
          if (indentLevel > 0)
          {
@@ -42,7 +42,7 @@ namespace Core.ObjectGraphs.Configurations.Json
          }
       }
 
-      void writeOpen(string ch)
+      protected void writeOpen(string ch)
       {
          if (nameWritten)
          {
@@ -77,7 +77,7 @@ namespace Core.ObjectGraphs.Configurations.Json
          }
       }
 
-      void writeEnd(string ch)
+      protected void writeEnd(string ch)
       {
          writer.WriteLine();
          unindent();
@@ -92,7 +92,7 @@ namespace Core.ObjectGraphs.Configurations.Json
 
       public void EndArray() => writeEnd("]");
 
-      void writeName(string name)
+      protected void writeName(string name)
       {
          if (opened)
          {

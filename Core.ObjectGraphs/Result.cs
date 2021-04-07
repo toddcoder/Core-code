@@ -5,7 +5,7 @@ namespace Core.ObjectGraphs
 {
    public class Result
    {
-      ObjectGraph objectGraph;
+      protected ObjectGraph objectGraph;
 
       public Result(ObjectGraph objectGraph) => this.objectGraph = objectGraph;
 

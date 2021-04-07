@@ -12,8 +12,8 @@ namespace Core.Tests
 {
    internal class Counter
    {
-      long maxValue;
-      bool interrupt;
+      protected long maxValue;
+      protected bool interrupt;
 
       public Counter(long maxValue, bool interrupt = false)
       {
@@ -105,11 +105,11 @@ namespace Core.Tests
          }
       }
 
-      static async Task<ICompletion<int>> getOne(CancellationToken token) => await runAsync(t => 1.Completed(), token);
+      protected static async Task<ICompletion<int>> getOne(CancellationToken token) => await runAsync(t => 1.Completed(), token);
 
-      static async Task<ICompletion<int>> getTwo(CancellationToken token) => await runAsync(t => 2.Completed(), token);
+      protected static async Task<ICompletion<int>> getTwo(CancellationToken token) => await runAsync(t => 2.Completed(), token);
 
-      static async Task<ICompletion<int>> getThree(CancellationToken token) => await runAsync(t => 3.Completed(), token);
+      protected static async Task<ICompletion<int>> getThree(CancellationToken token) => await runAsync(t => 3.Completed(), token);
 
       [TestMethod]
       public void RunAsyncTest()

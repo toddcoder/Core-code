@@ -4,8 +4,8 @@ namespace Core.Applications.Invokers
 {
    public class LambdaInvoker : AsyncInvoker
    {
-      Action begin;
-      Action<IAsyncResult> end;
+      protected Action begin;
+      protected Action<IAsyncResult> end;
 
       public LambdaInvoker(Action begin, Action<IAsyncResult> end)
       {

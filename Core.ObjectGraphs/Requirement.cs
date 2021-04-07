@@ -7,7 +7,7 @@ namespace Core.ObjectGraphs
 {
    public class Requirement
    {
-      ObjectGraph objectGraph;
+      protected ObjectGraph objectGraph;
 
       public Requirement(ObjectGraph objectGraph) => this.objectGraph = objectGraph;
 

@@ -6,7 +6,7 @@ namespace Core.ObjectGraphs
 {
    public class ObjectGraphTrying
    {
-      ObjectGraph graph;
+      protected ObjectGraph graph;
 
       public ObjectGraphTrying(ObjectGraph graph) => this.graph = graph;
 

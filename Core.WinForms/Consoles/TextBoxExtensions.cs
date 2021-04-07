@@ -8,15 +8,15 @@ namespace Core.WinForms.Consoles
 {
    public static class TextBoxExtensions
    {
-      const int WM_SETREDRAW = 11;
-      const int EM_GETRECT = 0x00b2;
-      const int EM_SETRECT = 0x00b3;
-      const int EM_SCROLL = 0x00b5;
-      const int SB_LINEUP = 0;
-      const int SB_LINEDOWN = 1;
+      private const int WM_SETREDRAW = 11;
+      private const int EM_GETRECT = 0x00b2;
+      private const int EM_SETRECT = 0x00b3;
+      private const int EM_SCROLL = 0x00b5;
+      private const int SB_LINEUP = 0;
+      private const int SB_LINEDOWN = 1;
 
       [StructLayout(LayoutKind.Sequential)]
-      struct Rect
+      private struct Rect
       {
          public readonly int Left;
          public readonly int Top;
@@ -35,16 +35,16 @@ namespace Core.WinForms.Consoles
       }
 
       [DllImport("user32.dll")]
-      static extern int SendMessage(IntPtr hWnd, int msg, bool wParam, int lParam);
+      private static extern int SendMessage(IntPtr hWnd, int msg, bool wParam, int lParam);
 
       [DllImport("user32.dll")]
-      static extern int SendMessage(IntPtr hWnd, int msg, int wParam, int lParam);
+      private static extern int SendMessage(IntPtr hWnd, int msg, int wParam, int lParam);
 
       [DllImport("user32.dll")]
-      static extern int SendMessage(IntPtr hWnd, uint msg, int wParam, ref Rect rect);
+      private static extern int SendMessage(IntPtr hWnd, uint msg, int wParam, ref Rect rect);
 
       [DllImport("user32.dll")]
-      static extern int SendMessage(IntPtr hwnd, int wMsg, int wParam, ref Point point);
+      private static extern int SendMessage(IntPtr hwnd, int wMsg, int wParam, ref Point point);
 
       public static void StopUpdating(this TextBoxBase textBox) => SendMessage(textBox.Handle, WM_SETREDRAW, false, 0);
 

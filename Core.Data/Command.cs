@@ -18,7 +18,7 @@ namespace Core.Data
             select new Command { Name = name, Text = values.text, CommandTimeout = values.timeout };
       }
 
-      static IResult<(string text, TimeSpan timeout)> getValues(ObjectGraph commandGraph)
+      protected static IResult<(string text, TimeSpan timeout)> getValues(ObjectGraph commandGraph)
       {
          if (commandGraph.HasChildren)
          {

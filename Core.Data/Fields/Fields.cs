@@ -10,8 +10,8 @@ namespace Core.Data.Fields
 {
    public class Fields : IEnumerable<Field>
    {
-      Hash<string, Field> fields;
-      List<string> ordered;
+      protected Hash<string, Field> fields;
+      protected List<string> ordered;
 
       public static IResult<Fields> FromObjectGraph(IMaybe<ObjectGraph> fieldsGraph) => tryTo(() => new Fields(fieldsGraph));
 

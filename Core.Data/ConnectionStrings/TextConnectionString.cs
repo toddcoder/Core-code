@@ -6,9 +6,9 @@ namespace Core.Data.ConnectionStrings
 {
    public class TextConnectionString : IConnectionString
    {
-      string fileName;
-      string header;
-      string delimited;
+      protected string fileName;
+      protected string header;
+      protected string delimited;
 
       public TextConnectionString(Connection connection)
       {

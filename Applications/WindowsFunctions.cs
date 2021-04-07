@@ -11,9 +11,9 @@ namespace Core.Applications
    public static class WindowsFunctions
    {
       [DllImport("user32.dll")]
-      static extern bool GetKeyboardState([Out] byte[] keyStates);
+      private static extern bool GetKeyboardState([Out] byte[] keyStates);
 
-      static bool getKeyboardState(byte[] keyStates)
+      private static bool getKeyboardState(byte[] keyStates)
       {
          assert(() => (object)keyStates).Must().Not.BeNull().OrThrow();
          assert(() => keyStates).Must().HaveLengthOf(256).OrThrow();

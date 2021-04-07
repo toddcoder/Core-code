@@ -51,7 +51,7 @@ namespace Core.Collections
 
       protected void add(T item)
       {
-         if (!content.Contains(item))
+         if (!Contains(item))
          {
             content.Add(item);
          }
@@ -67,7 +67,7 @@ namespace Core.Collections
 
       public virtual void Remove(T item)
       {
-         if (content.Contains(item))
+         if (Contains(item))
          {
             content.Remove(item);
          }

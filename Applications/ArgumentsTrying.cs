@@ -6,13 +6,14 @@ namespace Core.Applications
 {
    public class ArgumentsTrying
    {
-      Arguments arguments;
+      protected Arguments arguments;
 
       public ArgumentsTrying(Arguments arguments) => this.arguments = arguments;
 
       public IResult<Argument> this[int index]
       {
-         get => assert(() => index).Must().BeBetween(0).Until(arguments.Count).OrFailure(() => "Index $name out of range").Map(i => arguments[i]);
+         get => assert(() => index).Must().BeBetween(0).Until(arguments.Count).OrFailure(() => "Index $name out of range")
+            .Map(i => arguments[i]);
       }
 
       public IResult<Unit> AssertCount(int exactCount)
