@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Linq;
 using Core.Applications;
 using Core.Enumerables;
+using Core.Monads;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Core.Tests
@@ -65,6 +67,7 @@ namespace Core.Tests
          Console.WriteLine($"attribute targets: {attributeTargets}");
          Console.WriteLine($"text: '{text}'");
          Console.WriteLine($"recursive: {recursive.ToString().ToLower()}");
+         Console.WriteLine($"array: {array.ToString(", ")}");
       }
    }
 
