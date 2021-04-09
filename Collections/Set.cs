@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Core.Monads;
@@ -6,15 +7,19 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Collections
 {
-   public class Set<T> : IEnumerable<T>
+   public class Set<T> : IEnumerable<T>, IEquatable<Set<T>>
    {
+      public static Set<T> Of(params T[] items) => new Set<T>(items);
+
+      public static Set<T> Of(IEnumerable<T> items) => new Set<T>(items);
+
       public static Set<T> operator |(Set<T> set1, IEnumerable<T> set2) => set1.Union(set2);
 
       public static Set<T> operator &(Set<T> set1, IEnumerable<T> set2) => set1.Intersection(set2);
 
-      public static Set<T> operator ^(Set<T> set1, IEnumerable<T> set2) => set1.Complement(set2);
-
       public static Set<T> operator -(Set<T> set1, IEnumerable<T> set2) => set1.Except(set2);
+
+      public static Set<T> operator ^(Set<T> set1, IEnumerable<T> set2) => set1.Except(set2, true);
 
       protected HashSet<T> content;
       protected IMaybe<IEqualityComparer<T>> _equalityComparer;
@@ -79,7 +84,7 @@ namespace Core.Collections
 
       public virtual bool Contains(T item) => content.Contains(item);
 
-      public Set<T> Clone() => _equalityComparer.Map(ec => new Set<T>(this, ec)).DefaultTo(() => new Set<T>(this));
+      public Set<T> Clone() => _equalityComparer.Map(ec => new Set<T>(content.ToArray(), ec)).DefaultTo(() => new Set<T>(content.ToArray()));
 
       public Set<T> Union(IEnumerable<T> enumerable)
       {
@@ -116,9 +121,19 @@ namespace Core.Collections
       {
          var clone = Clone();
 
-         foreach (var item in this.Where(i => !set.Contains(i)))
+         if (set is Set<T> otherSet)
          {
-            clone.Add(item);
+            foreach (var item in this.Where(i => !otherSet.Contains(i)))
+            {
+               clone.Add(item);
+            }
+         }
+         else
+         {
+            foreach (var item in this.Where(i => !set.Contains(i)))
+            {
+               clone.Add(item);
+            }
          }
 
          return clone;
@@ -141,5 +156,32 @@ namespace Core.Collections
       IEnumerator IEnumerable.GetEnumerator() => content.GetEnumerator();
 
       public IEnumerator<T> GetEnumerator() => ((IEnumerable<T>)content).GetEnumerator();
+
+      public bool Equals(Set<T> other)
+      {
+         if (other is null)
+         {
+            return false;
+         }
+
+         if (ReferenceEquals(this, other))
+         {
+            return true;
+         }
+
+         return content.SetEquals(other.content) && Equals(_equalityComparer, other._equalityComparer);
+      }
+
+      public override bool Equals(object obj) => obj is Set<T> set && Equals(set);
+
+      public override int GetHashCode()
+      {
+         unchecked
+         {
+            return (content != null ? content.GetHashCode() : 0) * 397 ^ (_equalityComparer != null ? _equalityComparer.GetHashCode() : 0);
+         }
+      }
+
+      public HashSet<T> ToHashSet() => new HashSet<T>(this);
    }
 }

@@ -19,6 +19,7 @@ namespace Core.Assertions.Collections
       protected List<Constraint> constraints;
       protected bool not;
       protected string name;
+      protected string image;
 
       public ListAssertion(List<T> list)
       {
@@ -26,6 +27,7 @@ namespace Core.Assertions.Collections
          constraints = new List<Constraint>();
          not = false;
          name = "List";
+         image = enumerableImage(list);
       }
 
       public List<T> List => list;
@@ -41,7 +43,7 @@ namespace Core.Assertions.Collections
 
       protected ListAssertion<T> add(Func<bool> constraintFunction, string message)
       {
-         constraints.Add(Constraint.Formatted(constraintFunction, message, not, name, Value, enumerableImage));
+         constraints.Add(Constraint.Formatted(constraintFunction, message, not, name, Value, _ => image));
          not = false;
 
          return this;

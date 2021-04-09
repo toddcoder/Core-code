@@ -23,12 +23,12 @@ namespace Core.Assertions
          return (TException)Activator.CreateInstance(typeof(TException), args);
       }
 
-      public static string enumerableImage<T>(IEnumerable<T> enumerable)
+      public static string enumerableImage<T>(IEnumerable<T> enumerable, int limit = 10)
       {
          var list = enumerable.ToList();
-         if (list.Count > 10)
+         if (list.Count > limit)
          {
-            list = list.Take(10).ToList();
+            list = list.Take(limit).ToList();
          }
 
          return list.ToString(", ");
