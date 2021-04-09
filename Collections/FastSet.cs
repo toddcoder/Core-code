@@ -1,9 +1,11 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Core.Collections
 {
+   [Obsolete("Use Set<T>")]
    public class FastSet<T> : IEnumerable<T>
    {
       public static FastSet<T> operator |(FastSet<T> set1, FastSet<T> set2) => set1.Union(set2);
