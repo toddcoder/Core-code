@@ -1,61 +1,69 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Core.Enumerables;
 using Core.Monads;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Collections
 {
    public class Set<T> : IEnumerable<T>
    {
-      public static Set<T> operator |(Set<T> set1, Set<T> set2) => set1.Union(set2);
+      public static Set<T> operator |(Set<T> set1, IEnumerable<T> set2) => set1.Union(set2);
 
-      public static Set<T> operator &(Set<T> set1, Set<T> set2) => set1.Intersection(set2);
+      public static Set<T> operator &(Set<T> set1, IEnumerable<T> set2) => set1.Intersection(set2);
 
-      public static Set<T> operator ^(Set<T> set1, Set<T> set2) => set1.Complement(set2);
+      public static Set<T> operator ^(Set<T> set1, IEnumerable<T> set2) => set1.Complement(set2);
 
-      protected List<T> content;
+      public static Set<T> operator -(Set<T> set1, IEnumerable<T> set2) => set1.Except(set2);
 
-      public Set() => content = new List<T>();
+      protected HashSet<T> content;
+      protected IMaybe<IEqualityComparer<T>> _equalityComparer;
 
-      public Set(IEnumerable<T> items) : this()
+      public Set()
       {
-         foreach (var item in items)
-         {
-            add(item);
-         }
+         content = new HashSet<T>();
+         _equalityComparer = none<IEqualityComparer<T>>();
       }
 
-      public Set(Set<T> other) : this()
+      public Set(IEqualityComparer<T> equalityComparer)
       {
-         foreach (var item in other)
-         {
-            add(item);
-         }
+         content = new HashSet<T>(equalityComparer);
+         _equalityComparer = equalityComparer.Some();
       }
 
-      public Set(params T[] items) : this()
+      public Set(IEnumerable<T> items)
       {
-         foreach (var item in items)
-         {
-            add(item);
-         }
+         content = new HashSet<T>(items);
+         _equalityComparer = none<IEqualityComparer<T>>();
       }
 
-      public T this[int index] => content[index];
+      public Set(IEnumerable<T> items, IEqualityComparer<T> equalityComparer)
+      {
+         content = new HashSet<T>(items, equalityComparer);
+         _equalityComparer = equalityComparer.Some();
+      }
+
+      public Set(Set<T> other)
+      {
+         content = new HashSet<T>(other);
+         _equalityComparer = none<IEqualityComparer<T>>();
+      }
+
+      public Set(Set<T> other, IEqualityComparer<T> equalityComparer)
+      {
+         content = new HashSet<T>(other, equalityComparer);
+         _equalityComparer = equalityComparer.Some();
+      }
+
+      public Set(params T[] items)
+      {
+         content = new HashSet<T>(items);
+         _equalityComparer = none<IEqualityComparer<T>>();
+      }
 
       public int Count => content.Count;
 
-      public virtual void Add(T item) => add(item);
-
-      protected void add(T item)
-      {
-         if (!Contains(item))
-         {
-            content.Add(item);
-         }
-      }
+      public virtual void Add(T item) => content.Add(item);
 
       public void AddRange(IEnumerable<T> enumerable)
       {
@@ -65,80 +73,68 @@ namespace Core.Collections
          }
       }
 
-      public virtual void Remove(T item)
-      {
-         if (Contains(item))
-         {
-            content.Remove(item);
-         }
-      }
+      public virtual void Remove(T item) => content.Remove(item);
 
       public virtual void Clear() => content.Clear();
 
       public virtual bool Contains(T item) => content.Contains(item);
 
-      public virtual IMaybe<T> Find(Predicate<T> predicate) => content.FirstOrNone(i => predicate(i));
+      public Set<T> Clone() => _equalityComparer.Map(ec => new Set<T>(this, ec)).DefaultTo(() => new Set<T>(this));
 
-      public virtual IEnumerable<T> FindAll(Predicate<T> predicate) => content.Where(i => predicate(i));
-
-      public int IndexOf(T item) => content.IndexOf(item);
-
-      public Set<T> Clone()
+      public Set<T> Union(IEnumerable<T> enumerable)
       {
-         var set = new Set<T>();
+         var clone = Clone();
+         clone.content.UnionWith(enumerable);
 
-         foreach (var item in this)
-         {
-            set.Add(item);
-         }
-
-         return set;
+         return clone;
       }
 
-      public Set<T> Union(Set<T> set)
+      public Set<T> Intersection(IEnumerable<T> enumerable)
       {
-         var copy = Clone();
+         var clone = Clone();
+         clone.content.IntersectWith(enumerable);
 
-         foreach (var item in set)
-         {
-            copy.Add(item);
-         }
-
-         return copy;
+         return clone;
       }
 
-      public Set<T> Intersection(Set<T> set)
+      public Set<T> Except(IEnumerable<T> enumerable, bool symmetric = false)
       {
-         var newSet = new Set<T>();
-
-         foreach (var item in this.Where(set.Contains))
+         var clone = Clone();
+         if (symmetric)
          {
-            newSet.Add(item);
+            clone.content.SymmetricExceptWith(enumerable);
+         }
+         else
+         {
+            clone.content.ExceptWith(enumerable);
          }
 
-         foreach (var item in set.Where(Contains))
-         {
-            newSet.Add(item);
-         }
-
-         return newSet;
+         return clone;
       }
 
-      public Set<T> Complement(Set<T> set)
+      public Set<T> Complement(IEnumerable<T> set)
       {
-         var newSet = new Set<T>();
+         var clone = Clone();
 
          foreach (var item in this.Where(i => !set.Contains(i)))
          {
-            newSet.Add(item);
+            clone.Add(item);
          }
 
-         return newSet;
+         return clone;
       }
 
-      public bool IsSubsetOf(Set<T> set) => this.All(set.Contains);
+      public bool Overlaps(IEnumerable<T> set) => content.Overlaps(set);
 
-      public bool IsStrictSubsetOf(Set<T> set) => Count != set.Count && IsSubsetOf(set);
+      public bool IsSubsetOf(IEnumerable<T> set) => content.IsSubsetOf(set);
+
+      public bool IsProperSubsetOf(IEnumerable<T> set) => content.IsProperSubsetOf(set);
+
+      public bool IsSupersetOf(IEnumerable<T> set) => content.IsSupersetOf(set);
+
+      public bool IsProperSupersetOf(IEnumerable<T> set) => content.IsProperSupersetOf(set);
+
+      public bool EqualsEnumerable(IEnumerable<T> set) => content.SetEquals(set);
 
       IEnumerator<T> IEnumerable<T>.GetEnumerator() => ((IEnumerable<T>)content).GetEnumerator();
 
