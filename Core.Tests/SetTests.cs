@@ -4,7 +4,6 @@ using Core.Assertions;
 using Core.Collections;
 using Core.Numbers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using static Core.Arrays.ArrayFunctions;
 using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Tests
@@ -28,15 +27,24 @@ namespace Core.Tests
       [TestMethod]
       public void SetOperatorsTest()
       {
-         var union = Set<int>.Of(0.Until(5).Select(i => i * 2)) | Set<int>.Of(0.Until(5).Select(i => i * 2 + 1));
-         var intersection = Set<int>.Of(3, 4) & Set<int>.Of(1, 3, 5, 2, 4);
-         var exception = Set<int>.Of(3.Until(10)) - Set<int>.Of(0.Until(6));
-         var symmetricException = Set<int>.Of(3, 4) ^ Set<int>.Of(1, 3, 5, 2, 4);
+         var union1 = Set<int>.Of(0.Until(5).Select(i => i * 2));
+         var union2 = Set<int>.Of(0.Until(5).Select(i => i * 2 + 1));
+         var union = union1 | union2;
+         Console.WriteLine($"({enumerableImage(union1)}) union ({enumerableImage(union2)}) = ({enumerableImage(union)})");
 
-         Console.WriteLine($"Union: {enumerableImage(union)}");
-         Console.WriteLine($"Intersection: {enumerableImage(intersection)}");
-         Console.WriteLine($"Exception: {enumerableImage(exception)}");
-         Console.WriteLine($"Symmetric exception: {enumerableImage(symmetricException)}");
+         var intersection1 = Set<int>.Of(3, 4);
+         var intersection2 = Set<int>.Of(1, 3, 5, 2, 4);
+         var intersection = intersection1 & intersection2;
+         Console.WriteLine($"({enumerableImage(intersection1)}) intersection ({enumerableImage(intersection2)}) = ({enumerableImage(intersection)})");
+
+         var exception1 = Set<int>.Of(3.Until(10));
+         var exception2 = Set<int>.Of(0.Until(6));
+         var exception = exception1 - exception2;
+         Console.WriteLine($"({enumerableImage(exception1)}) exception ({enumerableImage(exception2)}) = ({enumerableImage(exception)})");
+
+
+         var symmetricException = intersection1 ^ intersection2;
+         Console.WriteLine($"({enumerableImage(intersection1)}) symmetric exception ({enumerableImage(intersection2)}) = ({enumerableImage(symmetricException)})");
       }
    }
 }
