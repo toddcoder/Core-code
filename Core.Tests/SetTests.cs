@@ -46,5 +46,23 @@ namespace Core.Tests
          var symmetricException = intersection1 ^ intersection2;
          Console.WriteLine($"({enumerableImage(intersection1)}) symmetric exception ({enumerableImage(intersection2)}) = ({enumerableImage(symmetricException)})");
       }
+
+      [TestMethod]
+      public void SetOperators2Test()
+      {
+         var indexes = new StringSet(true, "BillingRecordTypeId", "BillingCompanyId", "BillingRecordStatusId", "CommercialAssetId",
+            "DistributionRecordId", "TariffFeeHeaderId", "ContractId", "ContractRateSheetFeeHeaderId", "BillingScheduleLineItemId", "InvoiceDetailId",
+            "FlowDate", "IsEstimated");
+         var found = new StringSet(true, "InvoiceDetailId", "IsEstimated", "BillingAmount");
+
+         var result = indexes ^ found;
+         Console.WriteLine($"^{enumerableImage(result.OrderBy(i => i))}");
+
+         result = indexes - found;
+         Console.WriteLine($"-{enumerableImage(result.OrderBy(i => i))}");
+
+         result = indexes & found;
+         Console.WriteLine($"&{enumerableImage(result.OrderBy(i => i))}");
+      }
    }
 }
