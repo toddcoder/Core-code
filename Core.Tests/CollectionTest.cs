@@ -71,27 +71,6 @@ namespace Core.Tests
          }
       }
 
-      [TestMethod]
-      public void SetOfStringVsStringSetTest()
-      {
-         var setOfString = new Set<string> { "Case" };
-         var stringSet = new StringSet(true) { "Case" };
-
-         setOfString.Remove("case");
-         assert(() => setOfString.Count).Must().Equal(1).OrThrow();
-
-         stringSet.Remove("case");
-         assert(() => stringSet.Count).Must().Equal(0).OrThrow();
-
-         var fastSetOfString = new FastSet<string>() { "Case" };
-         var fastStringSet = new FastStringSet(true) { "Case" };
-         fastSetOfString.Remove("case");
-         assert(() => fastSetOfString.Count).Must().Equal(1).OrThrow();
-
-         fastStringSet.Remove("case");
-         assert(() => fastStringSet.Count).Must().Equal(0).OrThrow();
-      }
-
       protected static string time(Func<Func<string>, string> func)
       {
          var stopwatch = new Stopwatch();
@@ -108,7 +87,9 @@ namespace Core.Tests
       {
          var limit = 200_000;
          var set = new Set<int>(Enumerable.Range(0, limit));
+#pragma warning disable 618
          var fastSet = new FastSet<int>(Enumerable.Range(0, limit));
+#pragma warning restore 618
 
          var message = time(elapsedFunc =>
          {

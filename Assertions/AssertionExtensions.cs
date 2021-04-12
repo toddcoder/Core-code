@@ -147,6 +147,16 @@ namespace Core.Assertions
          return (ListAssertion<T>)assertion.Named($"List {name}");
       }
 
+      public static SetAssertion<T> Must<T>(this Set<T> value) => new SetAssertion<T>(value);
+
+      public static SetAssertion<T> Must<T>(this Expression<Func<Set<T>>> expression)
+      {
+         var (name, value) = resolve(expression);
+         var assertion = value.Must();
+
+         return (SetAssertion<T>)assertion.Named($"List {name}");
+      }
+
       public static ObjectAssertion Must(this object value)
       {
          if (value is Expression<Func<object>> expression)
