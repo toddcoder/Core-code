@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Core.Collections
 {
+   [Obsolete("Use StringSet")]
    public class FastStringSet : FastSet<string>
    {
       protected bool ignoreCase;

@@ -19,6 +19,7 @@ namespace Core.Assertions.Collections
       protected List<Constraint> constraints;
       protected bool not;
       protected string name;
+      protected string image;
 
       public ArrayAssertion(T[] array)
       {
@@ -26,6 +27,7 @@ namespace Core.Assertions.Collections
          constraints = new List<Constraint>();
          not = false;
          name = "Array";
+         image = enumerableImage(array);
       }
 
       public T[] Array => array;
@@ -41,7 +43,7 @@ namespace Core.Assertions.Collections
 
       protected ArrayAssertion<T> add(Func<bool> constraintFunction, string message)
       {
-         constraints.Add(Constraint.Formatted(constraintFunction, message, not, name, Value, enumerableImage));
+         constraints.Add(Constraint.Formatted(constraintFunction, message, not, name, Value, _ => image));
          not = false;
 
          return this;

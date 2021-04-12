@@ -105,6 +105,7 @@
     <Compile Include="Assertions\Collections\ArrayAssertion.cs" />
     <Compile Include="Assertions\Collections\DictionaryAssertion.cs" />
     <Compile Include="Assertions\Collections\ListAssertion.cs" />
+    <Compile Include="Assertions\Collections\SetAssertion.cs" />
     <Compile Include="Assertions\Collections\TypedAssertion.cs" />
     <Compile Include="Assertions\Comparables\BooleanAssertion.cs" />
     <Compile Include="Assertions\Comparables\ComparableAssertion.cs" />
@@ -128,7 +129,6 @@
     <Compile Include="Collections\AutoHash.cs" />
     <Compile Include="Collections\BackHash.cs" />
     <Compile Include="Collections\DefaultType.cs" />
-    <Compile Include="Collections\EqSet.cs" />
     <Compile Include="Collections\Exister.cs" />
     <Compile Include="Collections\Expiring\AbsoluteExpiration.cs" />
     <Compile Include="Collections\Expiring\ExpirationArgs.cs" />
