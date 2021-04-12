@@ -14,7 +14,11 @@ namespace Core.Collections
       {
       }
 
-      public StringSet(IEnumerable<string> strings, bool ignoreCase) : base(strings, getStringComparison(ignoreCase))
+      public StringSet(bool ignoreCase, IEnumerable<string> strings) : base(strings, getStringComparison(ignoreCase))
+      {
+      }
+
+      public StringSet(bool ignoreCase, params string[] strings) : base(strings, getStringComparison(ignoreCase))
       {
       }
    }
