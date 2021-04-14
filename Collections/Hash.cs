@@ -165,7 +165,10 @@ namespace Core.Collections
          }
       }
 
-      public TValue Memoize(TKey key, Func<TKey, TValue> defaultValue) => Find(key, defaultValue, true);
+      public TValue Memoize(TKey key, Func<TKey, TValue> defaultValue, bool alwaysUseDefaultValue = false)
+      {
+         return alwaysUseDefaultValue ? defaultValue(key) : Find(key, defaultValue, true);
+      }
 
       public bool If(TKey key, out TValue value, Func<TValue> valueToAdd)
       {
