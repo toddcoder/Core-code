@@ -291,6 +291,20 @@ namespace Core.Assertions
          return (DictionaryAssertion<TKey, TValue>)assertion.Named($"Dictionary {name}");
       }
 
+      public static DictionaryAssertion<string, TValue> Must<TValue>(this StringHash<TValue> value)
+      {
+         Dictionary<string, TValue> hash = value.AnyHash().ForceValue();
+         return hash.Must();
+      }
+
+      public static DictionaryAssertion<string, TValue> Must<TValue>(this Expression<Func<StringHash<TValue>>> expression)
+      {
+         var (name, value) = resolve(expression);
+         var assertion = value.Must();
+
+         return (DictionaryAssertion<string, TValue>)assertion.Named($"Dictionary {name}");
+      }
+
       public static TypeAssertion Must(this Type value) => new TypeAssertion(value);
 
       public static TypeAssertion Must(this Expression<Func<Type>> expression)

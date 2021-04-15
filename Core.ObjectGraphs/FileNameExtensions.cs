@@ -28,7 +28,7 @@ namespace Core.ObjectGraphs
          return (T)obj;
       }
 
-      public static void SetObject(this FileName fileName, object obj, Predicate<string> exclude, StringHash signatures)
+      public static void SetObject(this FileName fileName, object obj, Predicate<string> exclude, StringStringHash signatures)
       {
          fileName.Text = Serialize(obj, exclude, signatures).ToString();
       }
@@ -37,7 +37,7 @@ namespace Core.ObjectGraphs
 
       public static void SetObject(this FileName fileName, object obj, Predicate<string> exclude) => fileName.SetObject(obj, exclude, "");
 
-      public static void SetObject(this FileName fileName, object obj, StringHash signatures)
+      public static void SetObject(this FileName fileName, object obj, StringStringHash signatures)
       {
          fileName.SetObject(obj, sig => false, signatures);
       }

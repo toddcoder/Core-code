@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using Core.Assertions;
 using Core.Collections;
 using Core.Strings;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Core.Arrays.ArrayFunctions;
+using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Tests
 {
@@ -39,6 +41,13 @@ namespace Core.Tests
          var autoHash = new AutoHash<string, int>(k => k.Length);
          autoHash.AddKeys(new List<string> { "alpha", "bravo" });
          test(autoHash, "AddKeys", k => -k.Length);
+      }
+
+      [TestMethod]
+      public void StringHashTest()
+      {
+         var hash = new StringHash<int>(true) { ["alpha"] = 0, ["bravo"] = 1, ["charlie"] = 2 };
+         assert(() => hash).Must().HaveKeyOf("Bravo").OrThrow();
       }
    }
 }

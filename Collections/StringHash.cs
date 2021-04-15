@@ -1,36 +1,37 @@
-﻿using Core.Assertions;
-using Core.RegularExpressions;
-using Core.Strings;
-using static Core.Assertions.AssertionFunctions;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Core.Collections
 {
-   public class StringHash : Hash<string, string>
+   public class StringHash<TValue> : Hash<string, TValue>
    {
-      public static implicit operator StringHash(string keyValues)
+      protected static StringComparer getStringComparison(bool ignoreCase)
       {
-         assert(() => keyValues).Must().Not.BeNull().OrThrow();
-         if (keyValues.IsEmpty())
-         {
-            return new StringHash();
-         }
+         return ignoreCase ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal;
+      }
 
-         var destringifier = DelimitedText.BothQuotes();
-         var parsed = destringifier.Destringify(keyValues);
-         var hash = new StringHash();
+      public StringHash(bool ignoreCase) : base(getStringComparison(ignoreCase))
+      {
+      }
 
-         foreach (var keyValue in parsed.Split("/s* ',' /s*"))
-         {
-            var elements = keyValue.Split("/s* '->' /s*");
-            if (elements.Length == 2)
-            {
-               var key = destringifier.Restringify(elements[0], RestringifyQuotes.None);
-               var value = destringifier.Restringify(elements[1], RestringifyQuotes.None);
-               hash[key] = value;
-            }
-         }
+      public StringHash() : this(false)
+      {
+      }
 
-         return hash;
+      public StringHash(bool ignoreCase, int capacity) : base(capacity, getStringComparison(ignoreCase))
+      {
+      }
+
+      public StringHash(int capacity) : this(false, capacity)
+      {
+      }
+
+      public StringHash(bool ignoreCase, IDictionary<string, TValue> dictionary) : base(dictionary, getStringComparison(ignoreCase))
+      {
+      }
+
+      public StringHash(IDictionary<string, TValue> dictionary) : this(false, dictionary)
+      {
       }
    }
 }

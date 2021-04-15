@@ -302,8 +302,8 @@ namespace Core.Tests
             Console.WriteLine(argument.Text.Guillemetify());
          }
 
-         StringHash hash = "a? -> 'foobar', '$ b' -> \"bravo\", @c->charlie";
-         foreach (var (key, value) in hash)
+         StringStringHash stringHash = "a? -> 'foobar', '$ b' -> \"bravo\", @c->charlie";
+         foreach (var (key, value) in stringHash)
          {
             Console.WriteLine($"{key}=>{value}");
          }
