@@ -28,14 +28,14 @@ namespace Core.ObjectGraphs
    {
       public class Try
       {
-         public static IResult<ObjectGraph> Serialize(object obj, Predicate<string> exclude, StringHash signatures)
+         public static IResult<ObjectGraph> Serialize(object obj, Predicate<string> exclude, StringStringHash signatures)
          {
             return tryTo(() => ObjectGraph.Serialize(obj, exclude, signatures));
          }
 
          public static IResult<ObjectGraph> Serialize(object obj) => Serialize(obj, sig => false, "");
 
-         public static IResult<ObjectGraph> Serialize(object obj, StringHash signatures)
+         public static IResult<ObjectGraph> Serialize(object obj, StringStringHash signatures)
          {
             return Serialize(obj, sig => false, signatures);
          }
@@ -88,11 +88,11 @@ namespace Core.ObjectGraphs
 
       public static ObjectGraph Serialize(object obj) => Serialize(obj, sig => false, "");
 
-      public static ObjectGraph Serialize(object obj, StringHash signatures) => Serialize(obj, sig => false, signatures);
+      public static ObjectGraph Serialize(object obj, StringStringHash signatures) => Serialize(obj, sig => false, signatures);
 
       public static ObjectGraph Serialize(object obj, Predicate<string> exclude) => Serialize(obj, exclude, "");
 
-      public static ObjectGraph Serialize(object obj, Predicate<string> exclude, StringHash signatures)
+      public static ObjectGraph Serialize(object obj, Predicate<string> exclude, StringStringHash signatures)
       {
          assert(() => obj).Must().Not.BeNull().OrThrow();
 
@@ -130,7 +130,7 @@ namespace Core.ObjectGraphs
       }
 
       protected static ObjectGraph getGraph(IMaybe<object> anyObject, string childName, Type childType, Predicate<string> exclude,
-         StringHash signatures)
+         StringStringHash signatures)
       {
          var obj = assert(() => anyObject).Must().HaveValue().Value;
 

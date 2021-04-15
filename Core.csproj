@@ -154,6 +154,7 @@
     <Compile Include="Collections\RequiredHash.cs" />
     <Compile Include="Collections\Set.cs" />
     <Compile Include="Collections\StringHash.cs" />
+    <Compile Include="Collections\StringStringHash.cs" />
     <Compile Include="Collections\StringSet.cs" />
     <Compile Include="Collections\TwoKeyHash.cs" />
     <Compile Include="Computers\ComputerExtensions.cs" />
