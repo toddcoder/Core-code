@@ -16,6 +16,11 @@ namespace Core.Collections
          return hash.FlatMap(key, v => v, () => defaultValue);
       }
 
+      public static TValue Default<TValue>(this StringHash<TValue> hash, string key, TValue defaultValue)
+      {
+         return hash.FlatMap(key, v => v, () => defaultValue);
+      }
+
       public static TValue Value<TKey, TValue>(this IHash<TKey, TValue> hash, TKey key)
       {
          return hash.Value(key, $"Value for key {key} not found");
@@ -55,10 +60,20 @@ namespace Core.Collections
          return new AutoHash<TKey, TValue>(hash, hash.Comparer) { Default = DefaultType.Value, DefaultValue = defaultValue };
       }
 
+      public static AutoStringHash<TValue> ToAutoStringHash<TValue>(this StringHash<TValue> hash, TValue defaultValue)
+      {
+         return new AutoStringHash<TValue>(hash.IgnoreCase, hash) { Default = DefaultType.Value, DefaultValue = defaultValue };
+      }
+
       public static AutoHash<TKey, TValue> ToAutoHash<TKey, TValue>(this Hash<TKey, TValue> hash,
          Func<TKey, TValue> defaultLambda)
       {
          return new AutoHash<TKey, TValue>(hash, hash.Comparer) { Default = DefaultType.Lambda, DefaultLambda = defaultLambda };
+      }
+
+      public static AutoStringHash<TValue> ToAutoStringHash<TValue>(this StringHash<TValue> hash, Func<string, TValue> defaultLambda)
+      {
+         return new AutoStringHash<TValue>(hash.IgnoreCase, hash) { Default = DefaultType.Lambda, DefaultLambda = defaultLambda };
       }
 
       public static string Format(this Hash<string, string> hash, string format) => new Formatter(hash).Format(format);
@@ -79,102 +94,46 @@ namespace Core.Collections
 
       public static IMaybe<TValue> Map<TKey, TValue>(this IHash<TKey, TValue> hash, TKey key)
       {
-         if (hash.ContainsKey(key))
-         {
-            return hash[key].Some();
-         }
-         else
-         {
-            return none<TValue>();
-         }
+         return maybe(hash.ContainsKey(key), () => hash[key]);
       }
 
       public static IMaybe<TResult> Map<TKey, TValue, TResult>(this IHash<TKey, TValue> hash, TKey key,
          Func<TValue, TResult> func)
       {
-         if (hash.ContainsKey(key))
-         {
-            return func(hash[key]).Some();
-         }
-         else
-         {
-            return none<TResult>();
-         }
+         return maybe(hash.ContainsKey(key), () => func(hash[key]));
       }
 
       public static IMaybe<TResult> Map<TKey, TValue, TResult>(this IHash<TKey, TValue> hash, TKey key,
          Func<TValue, IMaybe<TResult>> func)
       {
-         if (hash.ContainsKey(key))
-         {
-            return func(hash[key]);
-         }
-         else
-         {
-            return none<TResult>();
-         }
+         return maybe(hash.ContainsKey(key), () => func(hash[key]));
       }
 
       public static TValue FlatMap<TKey, TValue>(this IHash<TKey, TValue> hash, TKey key, Func<TValue> defaultFunc)
       {
-         if (hash.ContainsKey(key))
-         {
-            return hash[key];
-         }
-         else
-         {
-            return defaultFunc();
-         }
+         return hash.ContainsKey(key) ? hash[key] : defaultFunc();
       }
 
       public static TResult FlatMap<TKey, TValue, TResult>(this IHash<TKey, TValue> hash, TKey key,
          Func<TValue, TResult> ifTrue, Func<TResult> ifFalse)
       {
-         if (hash.ContainsKey(key))
-         {
-            return ifTrue(hash[key]);
-         }
-         else
-         {
-            return ifFalse();
-         }
+         return hash.ContainsKey(key) ? ifTrue(hash[key]) : ifFalse();
       }
 
       public static TResult FlatMap<TKey, TValue, TResult>(this IHash<TKey, TValue> hash, TKey key,
          Func<TValue, TResult> ifTrue, TResult ifFalse)
       {
-         if (hash.ContainsKey(key))
-         {
-            return ifTrue(hash[key]);
-         }
-         else
-         {
-            return ifFalse;
-         }
+         return hash.ContainsKey(key) ? ifTrue(hash[key]) : ifFalse;
       }
 
       public static TValue DefaultTo<TKey, TValue>(this IHash<TKey, TValue> hash, TKey key, Func<TValue> defaultFunc)
       {
-         if (hash.ContainsKey(key))
-         {
-            return hash[key];
-         }
-         else
-         {
-            return defaultFunc();
-         }
+         return hash.ContainsKey(key) ? hash[key] : defaultFunc();
       }
 
       public static TValue DefaultTo<TKey, TValue>(this IHash<TKey, TValue> hash, TKey key, TValue defaultValue)
       {
-         if (hash.ContainsKey(key))
-         {
-            return hash[key];
-         }
-         else
-         {
-            return defaultValue;
-         }
+         return hash.ContainsKey(key) ? hash[key] : defaultValue;
       }
 
       public static IMaybe<TValue> Get<TKey, TValue>(this IHash<TKey, TValue> hash, TKey key)
@@ -193,6 +152,11 @@ namespace Core.Collections
          return new Hash<TKey, TValue>(dictionary);
       }
 
+      public static StringHash<TValue> ToStringHash<TValue>(this Dictionary<string, TValue> dictionary, bool ignoreCase)
+      {
+         return new StringHash<TValue>(ignoreCase, dictionary);
+      }
+
       public static Hash<TKey, TValue> ToHash<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, IEqualityComparer<TKey> comparer)
       {
          return new Hash<TKey, TValue>(dictionary, comparer);
@@ -201,6 +165,17 @@ namespace Core.Collections
       public static Hash<TKey, TValue> ToHash<TKey, TValue>(this IEnumerable<TValue> enumerable, Func<TValue, TKey> keySelector)
       {
          var result = new Hash<TKey, TValue>();
+         foreach (var item in enumerable)
+         {
+            result[keySelector(item)] = item;
+         }
+
+         return result;
+      }
+
+      public static StringHash<TValue> ToStringHash<TValue>(this IEnumerable<TValue> enumerable, Func<TValue, string> keySelector, bool ignoreCase)
+      {
+         var result = new StringHash<TValue>(ignoreCase);
          foreach (var item in enumerable)
          {
             result[keySelector(item)] = item;
@@ -225,6 +200,18 @@ namespace Core.Collections
          Func<T, TValue> valueSelector)
       {
          var result = new Hash<TKey, TValue>();
+         foreach (var item in enumerable)
+         {
+            result[keySelector(item)] = valueSelector(item);
+         }
+
+         return result;
+      }
+
+      public static StringHash<TValue> ToStringHash<TValue, T>(this IEnumerable<T> enumerable, Func<T, string> keySelector,
+         Func<T, TValue> valueSelector, bool ignoreCase)
+      {
+         var result = new StringHash<TValue>(ignoreCase);
          foreach (var item in enumerable)
          {
             result[keySelector(item)] = valueSelector(item);
@@ -264,6 +251,25 @@ namespace Core.Collections
          return result.Success();
       }
 
+      public static IResult<StringHash<TValue>> TryToStringHash<TValue, T>(this IEnumerable<T> enumerable, Func<T, string> keySelector,
+         Func<T, IResult<TValue>> valueSelector, bool ignoreCase)
+      {
+         var result = new StringHash<TValue>(ignoreCase);
+         foreach (var item in enumerable)
+         {
+            if (valueSelector(item).ValueOrCast<StringHash<TValue>>(out var selector, out var original))
+            {
+               result[keySelector(item)] = selector;
+            }
+            else
+            {
+               return original;
+            }
+         }
+
+         return result.Success();
+      }
+
       public static IResult<Hash<TKey, TValue>> TryToHash<TKey, TValue, T>(this IEnumerable<T> enumerable, Func<T, TKey> keySelector,
          Func<T, IResult<TValue>> valueSelector, IEqualityComparer<TKey> comparer)
       {
@@ -306,6 +312,29 @@ namespace Core.Collections
          return result.Success();
       }
 
+      public static IResult<StringHash<TValue>> TryToStringHash<TValue, T>(this IEnumerable<T> enumerable, Func<T, IResult<string>> keySelector,
+         Func<T, IResult<TValue>> valueSelector, bool ignoreCase)
+      {
+         var result = new StringHash<TValue>(ignoreCase);
+         foreach (var item in enumerable)
+         {
+            var pair =
+               from selector in valueSelector(item)
+               from key in keySelector(item)
+               select (value: selector, key);
+            if (pair.ValueOrCast<StringHash<TValue>>(out var keyValue, out var original))
+            {
+               result[keyValue.key] = keyValue.value;
+            }
+            else
+            {
+               return original;
+            }
+         }
+
+         return result.Success();
+      }
+
       public static IResult<Hash<TKey, TValue>> TryToHash<TKey, TValue, T>(this IEnumerable<T> enumerable, Func<T, IResult<TKey>> keySelector,
          Func<T, IResult<TValue>> valueSelector, IEqualityComparer<TKey> comparer)
       {
@@ -336,6 +365,25 @@ namespace Core.Collections
          foreach (var item in enumerable)
          {
             if (tryTo(() => valueSelector(item)).ValueOrCast<Hash<TKey, TValue>>(out var selector, out var original))
+            {
+               result[keySelector(item)] = selector;
+            }
+            else
+            {
+               return original;
+            }
+         }
+
+         return result.Success();
+      }
+
+      public static IResult<StringHash<TValue>> TryToStringHash<TValue, T>(this IEnumerable<T> enumerable, Func<T, string> keySelector,
+         Func<T, TValue> valueSelector, bool ignoreCase)
+      {
+         var result = new StringHash<TValue>(ignoreCase);
+         foreach (var item in enumerable)
+         {
+            if (tryTo(() => valueSelector(item)).ValueOrCast<StringHash<TValue>>(out var selector, out var original))
             {
                result[keySelector(item)] = selector;
             }

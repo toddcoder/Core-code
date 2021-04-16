@@ -5,28 +5,23 @@ namespace Core.Collections
 {
    public class StringHash<TValue> : Hash<string, TValue>
    {
+      protected bool ignoreCase;
+
       public StringHash(bool ignoreCase) : base(stringComparer(ignoreCase))
       {
-      }
-
-      public StringHash() : this(false)
-      {
+         this.ignoreCase = ignoreCase;
       }
 
       public StringHash(bool ignoreCase, int capacity) : base(capacity, stringComparer(ignoreCase))
       {
-      }
-
-      public StringHash(int capacity) : this(false, capacity)
-      {
+         this.ignoreCase = ignoreCase;
       }
 
       public StringHash(bool ignoreCase, IDictionary<string, TValue> dictionary) : base(dictionary, stringComparer(ignoreCase))
       {
+         this.ignoreCase = ignoreCase;
       }
 
-      public StringHash(IDictionary<string, TValue> dictionary) : this(false, dictionary)
-      {
-      }
+      public bool IgnoreCase => ignoreCase;
    }
 }
