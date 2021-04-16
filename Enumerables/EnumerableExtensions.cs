@@ -129,7 +129,7 @@ namespace Core.Enumerables
          }
       }
 
-      public static IEnumerable<T> Then<T>(this T seed, Func<T, T> next) => seed.Then(next, v => false);
+      public static IEnumerable<T> Then<T>(this T seed, Func<T, T> next) => seed.Then(next, _ => false);
 
       public static IEnumerable<(int, T)> Indexed<T>(this IEnumerable<T> enumerable)
       {
@@ -1298,8 +1298,8 @@ namespace Core.Enumerables
          }
       }
 
-      public static Set<T> ToSet<T>(this IEnumerable<T> enumerable) => new Set<T>(enumerable);
+      public static Set<T> ToSet<T>(this IEnumerable<T> enumerable) => new(enumerable);
 
-      public static StringSet ToStringSet(this IEnumerable<string> enumerable, bool ignoreCase = false) => new StringSet(ignoreCase, enumerable);
+      public static StringSet ToStringSet(this IEnumerable<string> enumerable, bool ignoreCase) => new(ignoreCase, enumerable);
    }
 }
