@@ -184,19 +184,12 @@ namespace Core.Collections
          }
       }
 
-      protected override Hash<TKey, TValue> getNewHash()
+      protected override Hash<TKey, TValue> getNewHash() => Default switch
       {
-         switch (Default)
-         {
-            case DefaultType.None:
-               return new AutoHash<TKey, TValue>(Comparer);
-            case DefaultType.Value:
-               return new AutoHash<TKey, TValue>(DefaultValue, AutoAddDefault, Comparer);
-            case DefaultType.Lambda:
-               return new AutoHash<TKey, TValue>(defaultLambda, Comparer, AutoAddDefault);
-            default:
-               throw new ArgumentOutOfRangeException();
-         }
-      }
+         DefaultType.None => new AutoHash<TKey, TValue>(Comparer),
+         DefaultType.Value => new AutoHash<TKey, TValue>(DefaultValue, AutoAddDefault, Comparer),
+         DefaultType.Lambda => new AutoHash<TKey, TValue>(defaultLambda, Comparer, AutoAddDefault),
+         _ => throw new ArgumentOutOfRangeException()
+      };
    }
 }
