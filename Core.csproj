@@ -22,7 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <LangVersion>7.3</LangVersion>
+    <LangVersion>latest</LangVersion>
     <RunCodeAnalysis>false</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -127,6 +127,7 @@
     <Compile Include="Assertions\Strings\StringAssertion.cs" />
     <Compile Include="Booleans\BooleanExtensions.cs" />
     <Compile Include="Collections\AutoHash.cs" />
+    <Compile Include="Collections\AutoStringHash.cs" />
     <Compile Include="Collections\BackHash.cs" />
     <Compile Include="Collections\DefaultType.cs" />
     <Compile Include="Collections\Exister.cs" />
@@ -142,6 +143,7 @@
     <Compile Include="Collections\Hash.cs" />
     <Compile Include="Collections\HashArgs.cs" />
     <Compile Include="Collections\HashExtensions.cs" />
+    <Compile Include="Collections\CollectionFunctions.cs" />
     <Compile Include="Collections\HashTrying.cs" />
     <Compile Include="Collections\IfHash.cs" />
     <Compile Include="Collections\IgnoreCaseEqualityComparer.cs" />
