@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Core.Assertions;
 using Core.Collections;
@@ -8,6 +10,7 @@ using Core.Monads;
 using Core.Strings;
 using static Core.Assertions.AssertionFunctions;
 using static Core.Monads.MonadFunctions;
+using static Core.RegularExpressions.RegexExtensions;
 
 namespace Core.Configurations
 {
@@ -15,7 +18,18 @@ namespace Core.Configurations
    {
       protected static Set<Type> allowedTypes;
 
-      protected static bool isAllowed(Type type) => allowedTypes.Contains(type) || type.IsEnum;
+      protected static bool isAllowed(Type type) => allowedTypes.Contains(type) || type.IsEnum || type.IsArray;
+
+      protected object makeArray(Type elementType, Array array)
+      {
+         var length = array.Length;
+         var newArray = Array.CreateInstance(elementType, length);
+         for (int i = 0; i < length; i++)
+         {
+            var item = array.GetValue(i);
+            if (getConversion(elementType, item.ToString()).If(out var ))
+         }
+      }
 
       protected static IMaybe<object> getConversion(Type type, string source)
       {
@@ -59,9 +73,36 @@ namespace Core.Configurations
          {
             return source.ToBaseEnumeration(type).Some<object>();
          }
+         else if (type.IsArray)
+         {
+            var elementType = type.GetElementType();
+            return source.Split("/s* ',' /s*").Select(s => getConversion(elementType, s)).WhereIsSome().ToArray().Some<object>();
+         }
          else
          {
             return none<object>();
+         }
+      }
+
+      protected static string toString(object obj, Type type)
+      {
+         if (type.IsArray)
+         {
+            var array = (Array)obj;
+            var list = new List<string>();
+            foreach (var item in array)
+            {
+               if (item is not null && isAllowed(item.GetType()))
+               {
+                  list.Add(item.ToString());
+               }
+            }
+
+            return list.ToString(", ");
+         }
+         else
+         {
+            return obj.ToString();
          }
       }
 
@@ -97,7 +138,7 @@ namespace Core.Configurations
                   var value = propertyInfo.GetValue(obj);
                   if (value is not null)
                   {
-                     group[key] = new Item(key, value.ToString());
+                     group[key] = new Item(key, toString(value, type));
                   }
                }
             }

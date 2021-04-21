@@ -1,8 +1,10 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Linq;
 using Core.Applications;
 using Core.Computers;
 using Core.Configurations;
+using Core.Enumerables;
 using Core.Monads;
 
 namespace Core.Tests
@@ -27,7 +29,9 @@ namespace Core.Tests
 
          public FileName File { get; set; }
 
-         public override string ToString() => $"{Enum}, {IntValue}, {StringValue}, {File}";
+         public double[] Doubles { get; set; }
+
+         public override string ToString() => $"{Enum}, {IntValue}, {StringValue}, {File}, {Doubles.Select(d => d.ToString()).ToString(", ")}";
       }
 
       [TestMethod]
@@ -116,7 +120,8 @@ namespace Core.Tests
             Enum = TestEnum.Bravo,
             IntValue = 153,
             StringValue = "foobar",
-            File = @"C:\temp\temp.txt"
+            File = @"C:\temp\temp.txt",
+            Doubles = new[] { 1.0, 5.0, 3.0 }
          };
          if (Configuration.Serialize(test, "test").If(out var configuration, out var exception))
          {
@@ -131,7 +136,7 @@ namespace Core.Tests
       [TestMethod]
       public void DeserializationTest()
       {
-         var source = @"enum: Bravo; intValue: 153; stringValue: foobar; file: C:\temp\temp.txt";
+         var source = @"enum: Bravo; intValue: 153; stringValue: foobar; file: C:\temp\temp.txt; doubles: 1.0, 5.0, 3.0";
          var parser = new Parser(source);
          if (parser.Parse().If(out var configuration, out var exception))
          {
