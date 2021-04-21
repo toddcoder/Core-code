@@ -20,15 +20,20 @@ namespace Core.Configurations
 
       protected static bool isAllowed(Type type) => allowedTypes.Contains(type) || type.IsEnum || type.IsArray;
 
-      protected object makeArray(Type elementType, Array array)
+      protected static object makeArray(Type elementType, string[] sourceArray)
       {
-         var length = array.Length;
+         var length = sourceArray.Length;
          var newArray = Array.CreateInstance(elementType, length);
-         for (int i = 0; i < length; i++)
+         for (var i = 0; i < length; i++)
          {
-            var item = array.GetValue(i);
-            if (getConversion(elementType, item.ToString()).If(out var ))
+            var item = sourceArray[i];
+            if (getConversion(elementType, item).If(out var objValue))
+            {
+               newArray.SetValue(objValue, i);
+            }
          }
+
+         return newArray;
       }
 
       protected static IMaybe<object> getConversion(Type type, string source)
@@ -76,7 +81,8 @@ namespace Core.Configurations
          else if (type.IsArray)
          {
             var elementType = type.GetElementType();
-            return source.Split("/s* ',' /s*").Select(s => getConversion(elementType, s)).WhereIsSome().ToArray().Some<object>();
+            var strings = source.Split("/s* ',' /s*");
+            return makeArray(elementType, strings).Some();
          }
          else
          {

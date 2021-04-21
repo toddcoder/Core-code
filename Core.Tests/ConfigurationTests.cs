@@ -31,7 +31,7 @@ namespace Core.Tests
 
          public double[] Doubles { get; set; }
 
-         public override string ToString() => $"{Enum}, {IntValue}, {StringValue}, {File}, {Doubles.Select(d => d.ToString()).ToString(", ")}";
+         public override string ToString() => $"{Enum}; {IntValue}; {StringValue}; {File}; {Doubles.Select(d => d.ToString()).ToString(", ")}";
       }
 
       [TestMethod]
