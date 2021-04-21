@@ -182,6 +182,11 @@
     <Compile Include="Computers\Synchronization\Synchronizer.cs" />
     <Compile Include="Computers\Synchronization\SynchronizerTrying.cs" />
     <Compile Include="Computers\Target.cs" />
+    <Compile Include="Configurations\Configuration.cs" />
+    <Compile Include="Configurations\Group.cs" />
+    <Compile Include="Configurations\IConfigurationItem.cs" />
+    <Compile Include="Configurations\Item.cs" />
+    <Compile Include="Configurations\Parser.cs" />
     <Compile Include="DataStructures\IQueue.cs" />
     <Compile Include="DataStructures\MaybeQueue.cs" />
     <Compile Include="DataStructures\MaybeStack.cs" />

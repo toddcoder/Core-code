@@ -55,6 +55,7 @@
     <Compile Include="AssertionTests.cs" />
     <Compile Include="AsyncTests.cs" />
     <Compile Include="CollectionTest.cs" />
+    <Compile Include="ConfigurationTests.cs" />
     <Compile Include="ConsoleProgressTest.cs" />
     <Compile Include="DataTests.cs" />
     <Compile Include="EnumerableExtensionTests.cs" />
@@ -98,6 +99,18 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+    <None Include="TestData\configuration.objectgraph" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="TestData\big file.bad.sql" />
+    <Content Include="TestData\big file.sql" />
+    <EmbeddedResource Include="TestData\connections2.txt" />
+    <EmbeddedResource Include="TestData\connections.txt" />
+    <Content Include="TestData\new.txt" />
+    <Content Include="TestData\old.txt" />
+    <Content Include="TestData\udtype-formatted.sql" />
+    <Content Include="TestData\udtype-unrepaired.sql" />
+    <Content Include="TestData\udtype.sql" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
