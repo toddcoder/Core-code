@@ -1,18 +1,108 @@
 ﻿using System;
-using System.IO;
+using System.Reflection;
+using Core.Assertions;
 using Core.Collections;
+using Core.Computers;
+using Core.Enumerables;
 using Core.Monads;
+using Core.Strings;
+using static Core.Assertions.AssertionFunctions;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Configurations
 {
    public class Configuration : IHash<string, IConfigurationItem>, IConfigurationItem
    {
-      public static IResult<Configuration> Serialize<T>(T obj) where T : class, new()
+      protected static Set<Type> allowedTypes;
+
+      protected static bool isAllowed(Type type) => allowedTypes.Contains(type) || type.IsEnum;
+
+      protected static IMaybe<object> getConversion(Type type, string source)
+      {
+         if (type == typeof(string))
+         {
+            return source.Some<object>();
+         }
+         else if (type == typeof(int))
+         {
+            return source.ToInt().Some<object>();
+         }
+         else if (type == typeof(long))
+         {
+            return source.ToLong().Some<object>();
+         }
+         else if (type == typeof(float))
+         {
+            return source.ToFloat().Some<object>();
+         }
+         else if (type == typeof(double))
+         {
+            return source.ToDouble().Some<object>();
+         }
+         else if (type == typeof(DateTime))
+         {
+            return DateTime.Parse(source).Some<object>();
+         }
+         else if (type == typeof(Guid))
+         {
+            return Guid.Parse(source).Some<object>();
+         }
+         else if (type == typeof(FileName))
+         {
+            return new FileName(source).Some<object>();
+         }
+         else if (type == typeof(FolderName))
+         {
+            return new FolderName(source).Some<object>();
+         }
+         else if (type.IsEnum)
+         {
+            return source.ToBaseEnumeration(type).Some<object>();
+         }
+         else
+         {
+            return none<object>();
+         }
+      }
+
+      static Configuration()
+      {
+         allowedTypes = new Set<Type>
+         {
+            typeof(string), typeof(int), typeof(long), typeof(float), typeof(double), typeof(DateTime), typeof(Guid), typeof(FileName),
+            typeof(FolderName)
+         };
+      }
+
+      protected static PropertyInfo[] getPropertyInfo(Type type)
+      {
+         return type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.SetProperty | BindingFlags.GetProperty);
+      }
+
+      public static IResult<Configuration> Serialize<T>(T obj, string name) where T : class, new()
       {
          try
          {
-            return "Not implemented".Failure<Configuration>();
+            asObject(() => obj).Must().Not.BeNull().OrThrow();
+
+            var group = new Group(name);
+
+            var allPropertyInfo = getPropertyInfo(obj.GetType());
+            foreach (var propertyInfo in allPropertyInfo)
+            {
+               var type = propertyInfo.PropertyType;
+               if (isAllowed(type))
+               {
+                  var key = propertyInfo.Name.ToCamel();
+                  var value = propertyInfo.GetValue(obj);
+                  if (value is not null)
+                  {
+                     group[key] = new Item(key, value.ToString());
+                  }
+               }
+            }
+
+            return new Configuration(group).Success();
          }
          catch (Exception exception)
          {
@@ -47,7 +137,22 @@ namespace Core.Configurations
       {
          try
          {
-            return "Not implemented".Failure<T>();
+            var obj = new T();
+            var allPropertyInfo = getPropertyInfo(obj.GetType());
+            foreach (var (key, value) in root.Values())
+            {
+               var name = key.ToPascal();
+               if (allPropertyInfo.FirstOrNone(p => p.Name.Same(name)).If(out var propertyInfo))
+               {
+                  var type = propertyInfo.PropertyType;
+                  if (getConversion(type, value).If(out var objValue))
+                  {
+                     propertyInfo.SetValue(obj, objValue);
+                  }
+               }
+            }
+
+            return obj.Success();
          }
          catch (Exception exception)
          {

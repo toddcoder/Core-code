@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using Core.Applications;
+using Core.Computers;
 using Core.Configurations;
 using Core.Monads;
 
@@ -9,9 +10,24 @@ namespace Core.Tests
    [TestClass]
    public class ConfigurationTests
    {
+      protected enum TestEnum
+      {
+         Alpha,
+         Bravo,
+         Charlie
+      }
+
       protected class Test
       {
+         public TestEnum Enum { get; set; }
 
+         public int IntValue { get; set; }
+
+         public string StringValue { get; set; }
+
+         public FileName File { get; set; }
+
+         public override string ToString() => $"{Enum}, {IntValue}, {StringValue}, {File}";
       }
 
       [TestMethod]
@@ -85,6 +101,48 @@ namespace Core.Tests
          if (parser.Parse().If(out var configuration, out var exception))
          {
             Console.Write(configuration);
+         }
+         else
+         {
+            Console.WriteLine(exception.Message);
+         }
+      }
+
+      [TestMethod]
+      public void SerializationTest()
+      {
+         var test = new Test
+         {
+            Enum = TestEnum.Bravo,
+            IntValue = 153,
+            StringValue = "foobar",
+            File = @"C:\temp\temp.txt"
+         };
+         if (Configuration.Serialize(test, "test").If(out var configuration, out var exception))
+         {
+            Console.Write(configuration);
+         }
+         else
+         {
+            Console.WriteLine(exception.Message);
+         }
+      }
+
+      [TestMethod]
+      public void DeserializationTest()
+      {
+         var source = @"enum: Bravo; intValue: 153; stringValue: foobar; file: C:\temp\temp.txt";
+         var parser = new Parser(source);
+         if (parser.Parse().If(out var configuration, out var exception))
+         {
+            if (configuration.Deserialize<Test>().If(out var obj, out exception))
+            {
+               Console.WriteLine(obj);
+            }
+            else
+            {
+               Console.WriteLine(exception.Message);
+            }
          }
          else
          {
