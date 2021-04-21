@@ -16,38 +16,43 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Data
 {
-   public class Adapters<T> : IEnumerable<Adapter<T>>
-      where T : class
+   public class Adapters<T> : IEnumerable<Adapter<T>> where T : class
    {
-      protected static Hash<string, Func<DataGraphs, string, ISetup>> setups;
+      protected static StringHash<Func<DataGroups, string, ISetup>> setups;
 
       static Adapters()
       {
-         setups = new Hash<string, Func<DataGraphs, string, ISetup>>
+         setups = new StringHash<Func<DataGroups, string, ISetup>>(true)
          {
-            ["sql"] = (dg, an) => new SqlSetup(dg, an) { Handler = Handler }
+            ["sql"] = (dataGroups, adapterName) =>
+            {
+               var sqlSetup = SqlSetup.FromDataGroups(dataGroups, adapterName).ForceValue();
+               sqlSetup.Handler = Handler;
+
+               return sqlSetup;
+            }
          };
       }
 
       public static IMaybe<SqlInfoMessageEventHandler> Handler { get; set; } = none<SqlInfoMessageEventHandler>();
 
-      public static void RegisterSetup(string name, Func<DataGraphs, string, ISetup> func) => setups[name] = func;
+      public static void RegisterSetup(string name, Func<DataGroups, string, ISetup> func) => setups[name] = func;
 
-      public static IResult<Func<DataGraphs, string, ISetup>> Setup(string setupType) => setups.Require(setupType);
+      public static IResult<Func<DataGroups, string, ISetup>> Setup(string setupType) => setups.Require(setupType);
 
-      protected DataGraphs dataGraphs;
-      protected Hash<string, Adapter<T>> adapters;
-      protected Set<string> validAdapters;
+      protected DataGroups dataGroups;
+      protected StringHash<Adapter<T>> adapters;
+      protected StringSet validAdapters;
       protected Predicate<string> isValidAdapterName;
 
-      public Adapters(DataGraphs dataGraphs, params string[] validAdapterNames)
+      public Adapters(DataGroups dataGroups, params string[] validAdapterNames)
       {
-         this.dataGraphs = dataGraphs;
-         adapters = new Hash<string, Adapter<T>>();
-         validAdapters = new Set<string>();
+         this.dataGroups = dataGroups;
+         adapters = new StringHash<Adapter<T>>(true);
+         validAdapters = new StringSet(true);
          if (validAdapterNames.Length == 0)
          {
-            isValidAdapterName = adapterName => true;
+            isValidAdapterName = _ => true;
          }
          else
          {
@@ -56,12 +61,12 @@ namespace Core.Data
          }
       }
 
-      protected Adapters(DataGraphs dataGraphs, Hash<string, Adapter<T>> adapters, Set<string> validAdapters,
+      protected Adapters(DataGroups dataGroups, StringHash<Adapter<T>> adapters, StringSet validAdapters,
          Predicate<string> isValidAdapterName)
       {
-         this.dataGraphs = dataGraphs;
-         this.adapters = new Hash<string, Adapter<T>>(adapters);
-         this.validAdapters = new Set<string>(validAdapters);
+         this.dataGroups = dataGroups;
+         this.adapters = new StringHash<Adapter<T>>(true, adapters);
+         this.validAdapters = new StringSet(true, validAdapters);
          this.isValidAdapterName = isValidAdapterName;
       }
 
@@ -72,8 +77,7 @@ namespace Core.Data
 
       protected IResult<string> adapterExists(string adapterName)
       {
-         return dataGraphs.AdaptersGraph.ChildExists(adapterName)
-            .Result(() => adapterName, $"Adapter name {adapterName} doesn't exist");
+         return dataGroups.AdaptersGroup.RequireGroup(adapterName).Map(_ => adapterName);
       }
 
       public IResult<Adapter<T>> Adapter(string adapterName, T entity, string setupType = "sql")
@@ -94,17 +98,17 @@ namespace Core.Data
             select adapter;
       }
 
-      protected IResult<Adapter<T>> getAdapter(T entity, string child, Func<DataGraphs, string, ISetup> setup) => tryTo(() =>
+      protected IResult<Adapter<T>> getAdapter(T entity, string child, Func<DataGroups, string, ISetup> setup) => tryTo(() =>
       {
-         var adapter = adapters.Find(child, an => new Adapter<T>(entity, setup(dataGraphs, an)), true);
+         var adapter = adapters.Find(child, an => new Adapter<T>(entity, setup(dataGroups, an)), true);
          adapter.Entity = entity;
 
          return adapter.Success();
       });
 
-      protected IResult<Adapter<T>> getAdapter(Func<T> alwaysUse, string child, Func<DataGraphs, string, ISetup> setup)
+      protected IResult<Adapter<T>> getAdapter(Func<T> alwaysUse, string child, Func<DataGroups, string, ISetup> setup)
       {
-         return tryTo(() => adapters.Find(child, an => new Adapter<T>(alwaysUse(), setup(dataGraphs, an)), true).Success());
+         return tryTo(() => adapters.Find(child, an => new Adapter<T>(alwaysUse(), setup(dataGroups, an)), true).Success());
       }
 
       public IResult<TResult> Execute<TResult>(string adapterName, T entity, Func<T, TResult> map, string setupType = "sql")
@@ -230,12 +234,13 @@ namespace Core.Data
 
       public string[] Names => adapters.KeyArray();
 
-      public Adapters<T> Clone() => new Adapters<T>(dataGraphs, adapters, validAdapters, isValidAdapterName);
+      public Adapters<T> Clone() => new(dataGroups, adapters, validAdapters, isValidAdapterName);
    }
 
    public class Adapters : Adapters<DataContainer>
    {
-      public Adapters(DataGraphs dataGraphs, params string[] validAdapterNames)
-         : base(dataGraphs, validAdapterNames) { }
+      public Adapters(DataGroups dataGroups, params string[] validAdapterNames) : base(dataGroups, validAdapterNames)
+      {
+      }
    }
 }

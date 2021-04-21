@@ -68,7 +68,6 @@
     <Compile Include="ObjectTests.cs" />
     <Compile Include="RegexTests.cs" />
     <Compile Include="MonadTests.cs" />
-    <Compile Include="ObjectGraphTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SetTests.cs" />
     <Compile Include="StringClassTests.cs" />
@@ -87,10 +86,6 @@
       <Project>{5d564fef-44e1-47a1-ad5c-b0f3ca6be2c5}</Project>
       <Name>Core.Data</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Core.ObjectGraphs\Core.ObjectGraphs.csproj">
-      <Project>{d832ee86-c29e-48c6-9704-73486d3b089c}</Project>
-      <Name>Core.ObjectGraphs</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Core.Zip\Core.Zip.csproj">
       <Project>{5fe6a366-b033-4072-b041-12255f83d139}</Project>
       <Name>Core.Zip</Name>
@@ -99,7 +94,7 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
-    <None Include="TestData\configuration.objectgraph" />
+    <EmbeddedResource Include="TestData\data.configuration" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="TestData\big file.bad.sql" />

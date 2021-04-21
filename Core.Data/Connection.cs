@@ -1,25 +1,25 @@
 ﻿using System;
 using Core.Collections;
+using Core.Configurations;
 using Core.Dates;
 using Core.Dates.DateIncrements;
 using Core.Monads;
-using Core.ObjectGraphs;
 
 namespace Core.Data
 {
    public class Connection : IHash<string, string>
    {
-      protected Hash<string, string> data;
+      protected StringHash<string> data;
 
-      public Connection(ObjectGraph connectionGraph)
+      public Connection(Group connectionGroup)
       {
-         data = new Hash<string, string>();
-         Name = connectionGraph.Name;
-         Type = connectionGraph.FlatMap("type", g => g.Value, "sql");
-         Timeout = connectionGraph.FlatMap("timeout", g => g.Value.ToTimeSpan(), () => 30.Seconds());
-         foreach (var child in connectionGraph.Children)
+         data = new StringHash<string>(true);
+         Name = connectionGroup.Key;
+         Type = connectionGroup.GetValue("type").DefaultTo(() => "sql");
+         Timeout = connectionGroup.GetValue("timeout").Map(s => s.ToTimeSpan()).DefaultTo(() => 30.Seconds());
+         foreach (var (key, value) in connectionGroup.Values())
          {
-            data[child.Name] = child.Value;
+            data[key] = value;
          }
       }
 
@@ -33,7 +33,7 @@ namespace Core.Data
 
       public bool ContainsKey(string key) => data.ContainsKey(key);
 
-      public IResult<Hash<string, string>> AnyHash() => data.Success();
+      public IResult<Hash<string, string>> AnyHash() => data.AsHash.Success();
 
       public string Type { get; set; }
 

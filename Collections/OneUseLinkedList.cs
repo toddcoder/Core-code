@@ -7,7 +7,7 @@ namespace Core.Collections
 {
    public class OneUseLinkedList<T> : IEnumerable<T>
    {
-      class Item
+      protected class Item
       {
          public Item(T value) => Value = value;
 
@@ -16,13 +16,13 @@ namespace Core.Collections
          public IMaybe<Item> Next { get; set; } = none<Item>();
       }
 
-      IMaybe<Item> head;
-      IMaybe<Item> tail;
+      protected IMaybe<Item> _head;
+      protected IMaybe<Item> _tail;
 
       public OneUseLinkedList()
       {
-         head = none<Item>();
-         tail = none<Item>();
+         _head = none<Item>();
+         _tail = none<Item>();
       }
 
       public OneUseLinkedList(IEnumerable<T> values) : this() => AddRange(values);
@@ -30,16 +30,16 @@ namespace Core.Collections
       public void Add(T value)
       {
          var item = new Item(value).Some();
-         if (head.IsSome && tail.If(out var t))
+         if (_head.IsSome && _tail.If(out var tail))
          {
-            t.Next = item;
+            tail.Next = item;
          }
          else
          {
-            head = item;
+            _head = item;
          }
 
-         tail = item;
+         _tail = item;
       }
 
       public void AddRange(IEnumerable<T> values)
@@ -50,16 +50,16 @@ namespace Core.Collections
          }
       }
 
-      public IMaybe<T> Shift() => head.Map(item =>
+      public IMaybe<T> Shift() => _head.Map(item =>
       {
          var value = item.Value;
-         if (head.If(out var h))
+         if (_head.If(out var head))
          {
-            head = h.Next;
+            _head = head.Next;
          }
          else
          {
-            tail = none<Item>();
+            _tail = none<Item>();
          }
 
          return value;
@@ -67,21 +67,21 @@ namespace Core.Collections
 
       public IEnumerator<T> GetEnumerator()
       {
-         var current = head;
-         while (current.If(out var c))
+         var _current = _head;
+         while (_current.If(out var current))
          {
-            yield return c.Value;
+            yield return current.Value;
 
-            current = c.Next;
+            _current = current.Next;
          }
       }
 
       IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-      public IMaybe<T> Head => head.Map(item => item.Value);
+      public IMaybe<T> Head => _head.Map(item => item.Value);
 
-      public IMaybe<T> Tail => tail.Map(item => item.Value);
+      public IMaybe<T> Tail => _tail.Map(item => item.Value);
 
-      public bool More => head.IsSome;
+      public bool More => _head.IsSome;
    }
 }

@@ -1,7 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using Core.Applications;
-using Core.Collections;
 using Core.Configurations;
 using Core.Monads;
 
@@ -10,6 +9,11 @@ namespace Core.Tests
    [TestClass]
    public class ConfigurationTests
    {
+      protected class Test
+      {
+
+      }
+
       [TestMethod]
       public void BasicTest()
       {
@@ -17,11 +21,11 @@ namespace Core.Tests
          var source = resources.String("TestData.connections.txt");
          var parser = new Parser(source);
 
-         if (parser.Parse().If(out var configuration))
+         if (parser.Parse().If(out var configuration, out var exception))
          {
             var result =
-               from connections in configuration.Map("connections")
-               from connection1 in connections.Map("connection1")
+               from connections in configuration.GetGroup("connections")
+               from connection1 in connections.GetGroup("connection1")
                from _server in connection1.GetValue("server")
                from _database in connection1.GetValue("database")
                select (_server, _database);
@@ -30,6 +34,14 @@ namespace Core.Tests
                Console.WriteLine($"server: {server}");
                Console.WriteLine($"database: {database}");
             }
+            else
+            {
+               Console.WriteLine("Failed");
+            }
+         }
+         else
+         {
+            Console.WriteLine(exception.Message);
          }
       }
 
@@ -43,8 +55,8 @@ namespace Core.Tests
          if (parser.Parse().If(out var configuration, out var exception))
          {
             var result =
-               from connections in configuration.Map("connections")
-               from connection1 in connections.Map("connection1")
+               from connections in configuration.GetGroup("connections")
+               from connection1 in connections.GetGroup("connection1")
                from _server in connection1.GetValue("server")
                from _database in connection1.GetValue("database")
                select (_server, _database);
@@ -57,6 +69,22 @@ namespace Core.Tests
             {
                Console.WriteLine("Failed");
             }
+         }
+         else
+         {
+            Console.WriteLine(exception.Message);
+         }
+      }
+
+      [TestMethod]
+      public void ToStringTest()
+      {
+         var resources = new Resources<ConfigurationTests>();
+         var source = resources.String("TestData.connections.txt");
+         var parser = new Parser(source);
+         if (parser.Parse().If(out var configuration, out var exception))
+         {
+            Console.Write(configuration);
          }
          else
          {

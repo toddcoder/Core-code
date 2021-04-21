@@ -1,0 +1,36 @@
+connections [
+    local [
+        server: .
+        database: local_tebennett
+        application: TSqlCop
+    ]
+    local2 [
+        connection: DUMMY
+    ]
+]
+commands [
+    all  [file: C:\Enterprise\Projects\TSqlCop\source\SqlConformance.Library\MetaData\Queries\Columns.sql]
+    all2 [file: C:\Enterprise\Projects\TSqlCop\source\SqlConformance.Library\MetaData\Queries\Columns.sql]
+]
+
+adapters [
+    all [
+        connection: local
+        parameters [@lObjectId [type: $int32; signature: ObjectId]]
+        fields [
+            ObjectId[]
+            Name[signature: ColumnName]
+            TypeName[]
+        ]
+    ]
+    all2 [
+        connection: local2
+        command: all
+        parameters [@lObjectId [type: $int32; signature: ObjectId]]
+        fields [
+            ObjectId[]
+            Name[signature: ColumnName]
+            TypeName[]
+        ]
+    ]
+]

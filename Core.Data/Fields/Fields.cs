@@ -2,22 +2,22 @@
 using System.Collections.Generic;
 using System.Linq;
 using Core.Collections;
+using Core.Configurations;
 using Core.Monads;
-using Core.ObjectGraphs;
 using static Core.Monads.AttemptFunctions;
 
 namespace Core.Data.Fields
 {
    public class Fields : IEnumerable<Field>
    {
-      protected Hash<string, Field> fields;
+      protected StringHash<Field> fields;
       protected List<string> ordered;
 
-      public static IResult<Fields> FromObjectGraph(IMaybe<ObjectGraph> fieldsGraph) => tryTo(() => new Fields(fieldsGraph));
+      public static IResult<Fields> FromGroup(IMaybe<Group> fieldsGroup) => tryTo(() => new Fields(fieldsGroup));
 
       public Fields()
       {
-         fields = new Hash<string, Field>();
+         fields = new StringHash<Field>(true);
          ordered = new List<string>();
       }
 
@@ -29,11 +29,11 @@ namespace Core.Data.Fields
          }
       }
 
-      public Fields(IMaybe<ObjectGraph> anyFieldsGraph) : this()
+      public Fields(IMaybe<Group> _fieldsGroup) : this()
       {
-         if (anyFieldsGraph.If(out var fieldsGraph))
+         if (_fieldsGroup.If(out var fieldsGraph))
          {
-            foreach (var field in fieldsGraph.Children.Select(Field.Parse))
+            foreach (var field in fieldsGraph.Groups().Select(t => Field.Parse(t.group)))
             {
                Add(field);
             }
