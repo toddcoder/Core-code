@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using Core.Assertions;
 using Core.Collections;
@@ -58,6 +57,10 @@ namespace Core.Configurations
          {
             return source.ToDouble().Some<object>();
          }
+         else if (type == typeof(bool))
+         {
+            return source.Same("true").Some<object>();
+         }
          else if (type == typeof(DateTime))
          {
             return DateTime.Parse(source).Some<object>();
@@ -92,6 +95,13 @@ namespace Core.Configurations
 
       protected static string toString(object obj, Type type)
       {
+         static string encloseInQuotes(string text)
+         {
+            var escaped = text.ReplaceAll(("\t", @"\\t"), ("\r", @"\\r"), ("\n", @"\\n"));
+            escaped = escaped.Substitute(@"'\' -(> ['rtn\'])", @"\\");
+            return $"\"{escaped}\"";
+         }
+
          if (type.IsArray)
          {
             var array = (Array)obj;
@@ -106,6 +116,14 @@ namespace Core.Configurations
 
             return list.ToString(", ");
          }
+         else if (type == typeof(bool))
+         {
+            return obj.ToString().ToLower();
+         }
+         else if (type == typeof(string))
+         {
+            return encloseInQuotes(obj.ToString());
+         }
          else
          {
             return obj.ToString();
@@ -116,7 +134,7 @@ namespace Core.Configurations
       {
          allowedTypes = new Set<Type>
          {
-            typeof(string), typeof(int), typeof(long), typeof(float), typeof(double), typeof(DateTime), typeof(Guid), typeof(FileName),
+            typeof(string), typeof(int), typeof(long), typeof(float), typeof(double), typeof(bool), typeof(DateTime), typeof(Guid), typeof(FileName),
             typeof(FolderName)
          };
       }

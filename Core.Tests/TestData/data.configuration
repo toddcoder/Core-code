@@ -1,7 +1,7 @@
 connections [
     local [
         server: .
-        database: local_tebennett
+        database: local_tebennett # this is ignored
         application: TSqlCop
     ]
     local2 [
@@ -18,9 +18,9 @@ adapters [
         connection: local
         parameters [@lObjectId [type: $int32; signature: ObjectId]]
         fields [
-            ObjectId[]
-            Name[signature: ColumnName]
-            TypeName[]
+            ObjectId. #column object id
+            Name. # column name
+            TypeName.#typename
         ]
     ]
     all2 [
@@ -28,9 +28,9 @@ adapters [
         command: all
         parameters [@lObjectId [type: $int32; signature: ObjectId]]
         fields [
-            ObjectId[]
-            Name[signature: ColumnName]
-            TypeName[]
+            ObjectId.
+            Name.
+            TypeName.
         ]
     ]
 ]

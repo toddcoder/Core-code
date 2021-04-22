@@ -59,8 +59,8 @@ namespace Core.Tests
    [TestClass]
    public class DataTests
    {
-      protected const string TRUE_CONNECTION_STRING =
-         "Data Source=.;Initial Catalog=local_tebennett;Integrated Security=SSPI;Application Name=TSqlCop;";
+      protected const string TRUE_CONNECTION_STRING = "Data Source=.;Initial Catalog=local_tebennett;Integrated Security=SSPI;" +
+         "Application Name=TSqlCop;";
 
       [TestMethod]
       public void FromConfigurationTest()

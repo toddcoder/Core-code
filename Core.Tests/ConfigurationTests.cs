@@ -31,7 +31,14 @@ namespace Core.Tests
 
          public double[] Doubles { get; set; }
 
-         public override string ToString() => $"{Enum}; {IntValue}; {StringValue}; {File}; {Doubles.Select(d => d.ToString()).ToString(", ")}";
+         public bool IsTrue { get; set; }
+
+         public string Escape { get; set; }
+
+         public override string ToString()
+         {
+            return $"{Enum}; {IntValue}; {StringValue}; {File}; {Doubles.Select(d => d.ToString()).ToString(", ")}; {IsTrue}; {Escape}";
+         }
       }
 
       [TestMethod]
@@ -121,7 +128,9 @@ namespace Core.Tests
             IntValue = 153,
             StringValue = "foobar",
             File = @"C:\temp\temp.txt",
-            Doubles = new[] { 1.0, 5.0, 3.0 }
+            Doubles = new[] { 1.0, 5.0, 3.0 },
+            IsTrue = true,
+            Escape = "\r \t \\ foobar"
          };
          if (Configuration.Serialize(test, "test").If(out var configuration, out var exception))
          {
@@ -136,7 +145,8 @@ namespace Core.Tests
       [TestMethod]
       public void DeserializationTest()
       {
-         var source = @"enum: Bravo; intValue: 153; stringValue: foobar; file: C:\temp\temp.txt; doubles: 1.0, 5.0, 3.0";
+         var source = @"enum: Bravo; intValue: 153; stringValue: foobar; file: C:\temp\temp.txt; doubles: 1.0, 5.0, 3.0; isTrue: true; " +
+            @"escape: ""\r \t \\ foobar""";
          var parser = new Parser(source);
          if (parser.Parse().If(out var configuration, out var exception))
          {

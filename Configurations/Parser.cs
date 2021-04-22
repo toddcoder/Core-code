@@ -57,7 +57,7 @@ namespace Core.Configurations
                   {
                      case ';':
                         return (source.Drop(i + 1), builder.ToString()).Success();
-                     case ']':
+                     case ']' or '#':
                         return (source.Drop(i), builder.ToString()).Success();
                      case '\r' or '\n':
                         foundReturn = true;
@@ -71,6 +71,7 @@ namespace Core.Configurations
                         {
                            builder.Append(current);
                         }
+
                         break;
                   }
                }
@@ -103,6 +104,7 @@ namespace Core.Configurations
                      {
                         escaped = true;
                      }
+
                      break;
                   case 't':
                      if (escaped)
@@ -114,6 +116,7 @@ namespace Core.Configurations
                      {
                         builder.Append('t');
                      }
+
                      break;
                   case 'r':
                      if (escaped)
@@ -125,6 +128,7 @@ namespace Core.Configurations
                      {
                         builder.Append('r');
                      }
+
                      break;
                   case 'n':
                      if (escaped)
@@ -136,6 +140,7 @@ namespace Core.Configurations
                      {
                         builder.Append('n');
                      }
+
                      break;
                   default:
                      if (current == quote)
@@ -157,6 +162,7 @@ namespace Core.Configurations
                         builder.Append(current);
                         escaped = false;
                      }
+
                      break;
                }
             }
@@ -203,9 +209,29 @@ namespace Core.Configurations
 
                source = source.Drop(matcher.Length);
             }
+            else if (source.Matcher($"^ /s* {REGEX_KEY} '.'").If(out matcher))
+            {
+               var key = matcher.FirstGroup;
+               var group = new Group(key);
+               if (peekGroup().If(out var parentGroup))
+               {
+                  parentGroup[key] = group;
+               }
+               else
+               {
+                  return "No parent group found".Failure<Configuration>();
+               }
+
+               source = source.Drop(matcher.Length);
+            }
+            else if (source.Matcher("^ /s* '#' -[/r /n]*").If(out matcher))
+            {
+               source = source.Drop(matcher.Length);
+            }
             else if (source.Matcher($"^ /s* {REGEX_KEY} ':' /s*").If(out matcher))
             {
                var key = matcher.FirstGroup;
+               var remainder = source.Drop(matcher.Length);
                if (getString(source.Drop(matcher.Length)).If(out source, out var value))
                {
                   var item = new Item(key, value);
@@ -213,6 +239,10 @@ namespace Core.Configurations
                   {
                      group[item.Key] = item;
                   }
+               }
+               else
+               {
+                  return $"Didn't understand value {remainder}".Failure<Configuration>();
                }
             }
             else
