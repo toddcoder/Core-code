@@ -1,0 +1,5 @@
+connections[connection1[server:.;database:local_tebennett]connection2[server:.;database:local_tebennett_parallel]]
+
+commands[selectFromObjects[text:"SELECT object_id FROM sys.objects where object_id > @object_id;"]]
+
+adapters[selectFromObjects[connection:connection1;parameters[@object_id[name:ObjectId;type:$int32]]]]

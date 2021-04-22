@@ -29,7 +29,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <LangVersion>7.3</LangVersion>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -38,6 +38,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.VisualStudio.TestPlatform.TestFramework, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -55,6 +56,7 @@
     <Compile Include="AssertionTests.cs" />
     <Compile Include="AsyncTests.cs" />
     <Compile Include="CollectionTest.cs" />
+    <Compile Include="ConfigurationTests.cs" />
     <Compile Include="ConsoleProgressTest.cs" />
     <Compile Include="DataTests.cs" />
     <Compile Include="EnumerableExtensionTests.cs" />
@@ -67,7 +69,6 @@
     <Compile Include="ObjectTests.cs" />
     <Compile Include="RegexTests.cs" />
     <Compile Include="MonadTests.cs" />
-    <Compile Include="ObjectGraphTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SetTests.cs" />
     <Compile Include="StringClassTests.cs" />
@@ -86,10 +87,6 @@
       <Project>{5d564fef-44e1-47a1-ad5c-b0f3ca6be2c5}</Project>
       <Name>Core.Data</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Core.ObjectGraphs\Core.ObjectGraphs.csproj">
-      <Project>{d832ee86-c29e-48c6-9704-73486d3b089c}</Project>
-      <Name>Core.ObjectGraphs</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Core.Zip\Core.Zip.csproj">
       <Project>{5fe6a366-b033-4072-b041-12255f83d139}</Project>
       <Name>Core.Zip</Name>
@@ -98,6 +95,19 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+    <EmbeddedResource Include="TestData\data.configuration" />
+    <EmbeddedResource Include="TestData\guids.pdf" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="TestData\big file.bad.sql" />
+    <Content Include="TestData\big file.sql" />
+    <EmbeddedResource Include="TestData\connections2.txt" />
+    <EmbeddedResource Include="TestData\connections.txt" />
+    <Content Include="TestData\new.txt" />
+    <Content Include="TestData\old.txt" />
+    <Content Include="TestData\udtype-formatted.sql" />
+    <Content Include="TestData\udtype-unrepaired.sql" />
+    <Content Include="TestData\udtype.sql" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

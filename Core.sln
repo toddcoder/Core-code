@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.421
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31205.134
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core.csproj", "{FE997A92-D183-4C85-9A1A-FB032311EF62}"
 EndProject
@@ -10,8 +10,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Tests", "Core.Tests\Core.Tests.csproj", "{77228C9D-168E-4959-9A5C-361625803672}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Internet", "Core.Internet\Core.Internet.csproj", "{38FFC55B-FE73-4618-86CF-05A3EF9CECAC}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.ObjectGraphs", "Core.ObjectGraphs\Core.ObjectGraphs.csproj", "{D832EE86-C29E-48C6-9704-73486D3B089C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Io", "Core.Io\Core.Io.csproj", "{57AA31E6-00C7-4C62-A045-3B51BD61D685}"
 EndProject
@@ -41,10 +39,6 @@ Global
 		{38FFC55B-FE73-4618-86CF-05A3EF9CECAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{38FFC55B-FE73-4618-86CF-05A3EF9CECAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{38FFC55B-FE73-4618-86CF-05A3EF9CECAC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D832EE86-C29E-48C6-9704-73486D3B089C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D832EE86-C29E-48C6-9704-73486D3B089C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D832EE86-C29E-48C6-9704-73486D3B089C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D832EE86-C29E-48C6-9704-73486D3B089C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{57AA31E6-00C7-4C62-A045-3B51BD61D685}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{57AA31E6-00C7-4C62-A045-3B51BD61D685}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{57AA31E6-00C7-4C62-A045-3B51BD61D685}.Release|Any CPU.ActiveCfg = Release|Any CPU

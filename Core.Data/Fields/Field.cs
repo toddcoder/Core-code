@@ -1,7 +1,6 @@
 ﻿using System;
-using Core.Collections;
+using Core.Configurations;
 using Core.Monads;
-using Core.ObjectGraphs;
 using Core.Objects;
 using Core.RegularExpressions;
 using Core.Strings;
@@ -11,35 +10,13 @@ namespace Core.Data.Fields
 {
    public class Field : PropertyInterface
    {
-      public static Field Parse(ObjectGraph fieldGraph)
+      public static Field Parse(Group fieldGroup)
       {
-         var name = fieldGraph.Name;
-         var optional = false;
-         var type = getType(fieldGraph.Type);
-         var signature = "";
-         if (fieldGraph.HasChildren)
-         {
-            string ifNone() => name;
-            signature = fieldGraph.FlatMap("signature", o => o.Value, ifNone);
-            optional = fieldGraph.FlatMap("optional", o => o.Value == "true", false);
-            if (fieldGraph.Type.IsEmpty())
-            {
-               type = fieldGraph.Map("type", o => getType(o.Value));
-            }
-         }
-         else if (fieldGraph.Value.IsNotEmpty())
-         {
-            signature = fieldGraph.Value;
-         }
-         else
-         {
-            signature = name;
-         }
-
-         if (name.StartsWith("."))
-         {
-            name = $"{name.Tail()}";
-         }
+         var name = fieldGroup.Key;
+         var signature = fieldGroup.GetValue("signature").DefaultTo(() => name);
+         var optional = fieldGroup.GetValue("optional").Map(s => s == "true").DefaultTo(() => false);
+         var typeName = fieldGroup.GetValue("type");
+         var type = typeName.Map(getType);
 
          return new Field(name, signature, optional) { Type = type };
       }

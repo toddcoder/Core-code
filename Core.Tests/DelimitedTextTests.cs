@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Linq;
-using Core.Applications;
-using Core.Collections;
 using Core.Enumerables;
 using Core.Monads;
-using Core.ObjectGraphs;
 using Core.Strings;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Core.Lambdas.LambdaFunctions;
@@ -287,35 +284,6 @@ namespace Core.Tests
                   Console.WriteLine($"end delimiter: {text.Guillemetify()}");
                   break;
             }
-         }
-      }
-
-      [TestMethod]
-      public void DependentClassesTest()
-      {
-         ObjectGraph objectGraph = "foobar{a->'alpha';$b->\"bravo\";@c->charlie}";
-         Console.WriteLine(objectGraph);
-
-         var arguments = new Arguments("find -P\"^ 'A'\" -F '.'");
-         foreach (var argument in arguments)
-         {
-            Console.WriteLine(argument.Text.Guillemetify());
-         }
-
-         StringStringHash stringHash = "a? -> 'foobar', '$ b' -> \"bravo\", @c->charlie";
-         foreach (var (key, value) in stringHash)
-         {
-            Console.WriteLine($"{key}=>{value}");
-         }
-
-         CSV csv = "A,Alpha,180.00\r\nB,Bravo,\"1,982.18\"\r\n,C,Charlie,\"2,020.00\"";
-         foreach (var record in csv)
-         {
-            foreach (var field in record)
-            {
-               Console.Write(field.Guillemetify());
-            }
-            Console.WriteLine();
          }
       }
    }

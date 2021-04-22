@@ -2,19 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using Core.Collections;
+using Core.Configurations;
 using Core.Monads;
-using Core.ObjectGraphs;
 using static Core.Monads.AttemptFunctions;
 
 namespace Core.Data.Parameters
 {
    public class Parameters : IEnumerable<Parameter>, IHash<string, Parameter>
    {
-      public static IResult<Parameters> FromObjectGraph(IMaybe<ObjectGraph> parametersGraph) => tryTo(() => new Parameters(parametersGraph));
+      public static IResult<Parameters> FromGroup(IMaybe<Group> parametersGroup) => tryTo(() => new Parameters(parametersGroup));
 
-      protected Hash<string, Parameter> parameters;
+      protected StringHash<Parameter> parameters;
 
-      public Parameters() => parameters = new Hash<string, Parameter>();
+      public Parameters() => parameters = new StringHash<Parameter>(true);
 
       public Parameters(IEnumerable<Parameter> parameters) : this()
       {
@@ -24,13 +24,13 @@ namespace Core.Data.Parameters
          }
       }
 
-      public Parameters(IMaybe<ObjectGraph> parametersGraph) : this()
+      public Parameters(IMaybe<Group> _parametersGroup) : this()
       {
-         if (parametersGraph.If(out var pg))
+         if (_parametersGroup.If(out var parametersGroup))
          {
-            foreach (var parameter in pg.Children.Select(Parameter.Parse))
+            foreach (var (key, parameter) in parametersGroup.Groups().Select(t => (t.key, Parameter.Parse(t.group))))
             {
-               this[parameter.Name] = parameter;
+               this[key] = parameter;
             }
          }
       }
@@ -43,7 +43,7 @@ namespace Core.Data.Parameters
 
       public bool ContainsKey(string key) => parameters.ContainsKey(key);
 
-      public IResult<Hash<string, Parameter>> AnyHash() => parameters.Success();
+      public IResult<Hash<string, Parameter>> AnyHash() => parameters.AsHash.Success();
 
       public int Count => parameters.Count;
 

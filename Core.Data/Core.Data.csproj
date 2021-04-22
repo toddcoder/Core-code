@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,6 +30,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
@@ -53,7 +55,7 @@
     <Compile Include="AdapterTrying.cs" />
     <Compile Include="Command.cs" />
     <Compile Include="Configurations\ConfigurationExtensions.cs" />
-    <Compile Include="Configurations\DataGraphs.cs" />
+    <Compile Include="Configurations\DataGroups.cs" />
     <Compile Include="Connection.cs" />
     <Compile Include="ConnectionStrings\AccessConnectionString.cs" />
     <Compile Include="ConnectionStrings\CSVConnectionString.cs" />
@@ -62,7 +64,6 @@
     <Compile Include="ConnectionStrings\SqlConnectionString.cs" />
     <Compile Include="ConnectionStrings\TextConnectionString.cs" />
     <Compile Include="DataExtensions.cs" />
-    <Compile Include="DataGraphExtensions.cs" />
     <Compile Include="DataSources\CancelEventArgs.cs" />
     <Compile Include="DataSources\DataSource.cs" />
     <Compile Include="DataSources\OleDbDataSource.cs" />
@@ -91,10 +92,6 @@
     <ProjectReference Include="..\Core.csproj">
       <Project>{fe997a92-d183-4c85-9a1a-fb032311ef62}</Project>
       <Name>Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Core.ObjectGraphs\Core.ObjectGraphs.csproj">
-      <Project>{d832ee86-c29e-48c6-9704-73486d3b089c}</Project>
-      <Name>Core.ObjectGraphs</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
