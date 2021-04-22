@@ -49,17 +49,12 @@ namespace Core.Tests
 
          public bool Equals(BinaryPackage other)
          {
-            if (other is null)
-            {
-               return false;
-            }
-
-            return ReferenceEquals(this, other) || Payload.Zip(other.Payload, (b1, b2) => b1 == b2).All(b => b);
+            return other is not null && (ReferenceEquals(this, other) || Payload.Zip(other.Payload, (b1, b2) => b1 == b2).All(b => b));
          }
 
          public override bool Equals(object obj) => obj is BinaryPackage binaryPackage && Equals(binaryPackage);
 
-         public override int GetHashCode() => Payload != null ? Payload.GetHashCode() : 0;
+         public override int GetHashCode() => Payload?.GetHashCode() ?? 0;
       }
 
       [TestMethod]
