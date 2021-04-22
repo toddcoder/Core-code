@@ -2,10 +2,12 @@
 using System;
 using System.Linq;
 using Core.Applications;
+using Core.Assertions;
 using Core.Computers;
 using Core.Configurations;
 using Core.Enumerables;
 using Core.Monads;
+using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Tests
 {
@@ -39,6 +41,25 @@ namespace Core.Tests
          {
             return $"{Enum}; {IntValue}; {StringValue}; {File}; {Doubles.Select(d => d.ToString()).ToString(", ")}; {IsTrue}; {Escape}";
          }
+      }
+
+      protected class BinaryPackage : IEquatable<BinaryPackage>
+      {
+         public byte[] Payload { get; set; }
+
+         public bool Equals(BinaryPackage other)
+         {
+            if (other is null)
+            {
+               return false;
+            }
+
+            return ReferenceEquals(this, other) || Payload.Zip(other.Payload, (b1, b2) => b1 == b2).All(b => b);
+         }
+
+         public override bool Equals(object obj) => obj is BinaryPackage binaryPackage && Equals(binaryPackage);
+
+         public override int GetHashCode() => Payload != null ? Payload.GetHashCode() : 0;
       }
 
       [TestMethod]
@@ -135,6 +156,30 @@ namespace Core.Tests
          if (Configuration.Serialize(test, "test").If(out var configuration, out var exception))
          {
             Console.Write(configuration);
+         }
+         else
+         {
+            Console.WriteLine(exception.Message);
+         }
+      }
+
+      [TestMethod]
+      public void BinarySerializationTest()
+      {
+         var resources = new Resources<ConfigurationTests>();
+         var binary = resources.Bytes("TestData.guids.pdf");
+         var package = new BinaryPackage { Payload = binary };
+         if (Configuration.Serialize(package, "guids").If(out var configuration, out var exception))
+         {
+            Console.WriteLine(configuration);
+            if (configuration.Deserialize<BinaryPackage>().If(out var newPackage, out exception))
+            {
+               asObject(() => package).Must().Equal(newPackage).OrThrow();
+            }
+            else
+            {
+               Console.WriteLine(exception.Message);
+            }
          }
          else
          {

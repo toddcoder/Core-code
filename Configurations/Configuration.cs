@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Core.Arrays;
 using Core.Assertions;
 using Core.Collections;
 using Core.Computers;
@@ -77,6 +78,10 @@ namespace Core.Configurations
          {
             return new FolderName(source).Some<object>();
          }
+         else if (type == typeof(byte[]))
+         {
+            return source.FromBase64().Some<object>();
+         }
          else if (type.IsEnum)
          {
             return source.ToBaseEnumeration(type).Some<object>();
@@ -102,7 +107,11 @@ namespace Core.Configurations
             return $"\"{escaped}\"";
          }
 
-         if (type.IsArray)
+         if (type == typeof(byte[]))
+         {
+            return ((byte[])obj).ToBase64();
+         }
+         else if (type.IsArray)
          {
             var array = (Array)obj;
             var list = new List<string>();
@@ -135,7 +144,7 @@ namespace Core.Configurations
          allowedTypes = new Set<Type>
          {
             typeof(string), typeof(int), typeof(long), typeof(float), typeof(double), typeof(bool), typeof(DateTime), typeof(Guid), typeof(FileName),
-            typeof(FolderName)
+            typeof(FolderName), typeof(byte[])
          };
       }
 

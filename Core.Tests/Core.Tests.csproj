@@ -95,6 +95,7 @@
     <None Include="app.config" />
     <None Include="packages.config" />
     <EmbeddedResource Include="TestData\data.configuration" />
+    <EmbeddedResource Include="TestData\guids.pdf" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="TestData\big file.bad.sql" />
