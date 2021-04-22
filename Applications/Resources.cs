@@ -15,22 +15,21 @@ namespace Core.Applications
       public Resources()
       {
          type = typeof(T);
-         nameSpace = type.Namespace + ".";
+         nameSpace = $"{type.Namespace}.";
          names = type.Assembly.GetManifestResourceNames();
       }
 
       public string String(string name)
       {
-         assert(() => Contains(name)).Must().BeTrue().OrThrow($"Resource {nameSpace + name} does not exist");
-         using (var reader = new StreamReader(Stream(name)))
-         {
-            return reader.ReadToEnd();
-         }
+         assert(() => Contains(name)).Must().BeTrue().OrThrow($"Resource {nameSpace}{name} does not exist");
+         using var reader = new StreamReader(Stream(name));
+
+         return reader.ReadToEnd();
       }
 
       public Stream Stream(string name)
       {
-         var fullName = nameSpace + name;
+         var fullName = $"{nameSpace}{name}";
          var message = $"Resource {fullName} does not exist";
          assert(() => Contains(name)).Must().BeTrue().OrThrow(message);
 
@@ -38,6 +37,29 @@ namespace Core.Applications
          assert(() => (object)stream).Must().Not.BeNull().OrThrow(message);
 
          return stream;
+      }
+
+      public byte[] Bytes(string name)
+      {
+         assert(() => Contains(name)).Must().BeTrue().OrThrow($"Resource {nameSpace}{name} does not exist");
+         using var stream = Stream(name);
+
+         var length = (int)stream.Length;
+         var buffer = new byte[length];
+
+         while (length > 0)
+         {
+            var numberOfBytesRead = stream.Read(buffer, 0, length);
+
+            if (numberOfBytesRead == 0)
+            {
+               break;
+            }
+
+            length -= numberOfBytesRead;
+         }
+
+         return buffer;
       }
 
       public bool Contains(string name) => names.Contains(nameSpace + name);

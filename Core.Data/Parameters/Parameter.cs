@@ -1,7 +1,6 @@
 ﻿using System;
-using Core.Collections;
+using Core.Configurations;
 using Core.Monads;
-using Core.ObjectGraphs;
 using Core.Objects;
 using Core.RegularExpressions;
 using Core.Strings;
@@ -11,59 +10,25 @@ namespace Core.Data.Parameters
 {
    public class Parameter : PropertyInterface
    {
-      public static Parameter Parse(ObjectGraph parameterGraph)
+      public static Parameter Parse(Group parameterGroup)
       {
-         var name = parameterGraph.Name;
-         var type = none<Type>();
-         bool output;
-         var size = 255.Some();
-         var parameterValue = parameterGraph.Value;
-         var signature = maybe(parameterValue.IsNotEmpty(), () => parameterValue);
-         if (signature.IsNone)
-         {
-            signature = name.GetSignature();
-         }
+         var name = parameterGroup.Key;
+         var signature = parameterGroup.GetValue("signature").DefaultTo(() => name);
+         var typeName = parameterGroup.GetValue("type").DefaultTo(() => "$string");
+         typeName = fixTypeName(typeName);
+         var type = getType(typeName);
+         var size = parameterGroup.GetValue("size").Map(s => s.ToInt());
+         var output = parameterGroup.GetValue("output").Map(s => s == "true").DefaultTo(() => false);
+         var value = parameterGroup.GetValue("value");
+         var _default = parameterGroup.GetValue("default");
 
-         var value = parameterGraph.Map("value", o => o.Value);
-         var @default = parameterGraph.Map("default", o => o.Value);
-         if (signature.If(out var signatureString))
-         {
-            if (parameterGraph.Type.IsNotEmpty())
-            {
-               var typeName = parameterGraph.Type;
-               typeName = fixTypeName(typeName);
-               type = getType(typeName);
-            }
-
-            output = false;
-            var matcher = new Matcher();
-            if (matcher.IsMatch(signatureString, "'(' /(/d+) ')'"))
-            {
-               size = matcher[0, 1].ToInt().Some();
-               matcher[0] = "";
-               signatureString = matcher.ToString();
-            }
-         }
-         else
-         {
-            signatureString = parameterGraph
-               .Map("signature", g => g.Value)
-               .DefaultTo(() => name.GetSignature().Required($"There is no signature for '{name}'"));
-
-            var typeName = parameterGraph.FlatMap("type", g => g.Value, "System.String");
-            typeName = fixTypeName(typeName);
-            type = getType(typeName);
-            size = parameterGraph.Map("size", o => o.Value.ToInt());
-            output = parameterGraph.FlatMap("output", o => o.IsTrue, false);
-         }
-
-         return new Parameter(name, signatureString)
+         return new Parameter(name, signature)
          {
             Type = type,
             Size = size,
             Output = output,
             Value = value,
-            Default = @default
+            Default = _default
          };
       }
 
@@ -78,8 +43,9 @@ namespace Core.Data.Parameters
          return typeName.IsNotEmpty() && !typeName.Has(".") ? "System." + typeName : typeName;
       }
 
-      public Parameter(string name, string signature)
-         : base(name, signature) { }
+      public Parameter(string name, string signature) : base(name, signature)
+      {
+      }
 
       public Parameter(string name, string signature, Type type) : base(name, signature)
       {

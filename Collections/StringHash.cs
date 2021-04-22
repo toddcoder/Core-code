@@ -23,5 +23,7 @@ namespace Core.Collections
       }
 
       public bool IgnoreCase => ignoreCase;
+
+      public Hash<string, TValue> AsHash => this;
    }
 }

@@ -1,73 +1,71 @@
 ﻿using System;
-using Core.Collections;
 using Core.Computers;
+using Core.Configurations;
 using Core.Dates;
 using Core.Dates.DateIncrements;
+using Core.Exceptions;
 using Core.Monads;
-using Core.ObjectGraphs;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Data
 {
    public class Command
    {
-      public static IResult<Command> FromObjectGraph(ObjectGraph commandGraph)
+      public static IResult<Command> FromGroup(Group commandGroup)
       {
-         var name = commandGraph.Name;
+         var name = commandGroup.Key;
          return
-            from values in getValues(commandGraph)
+            from values in getValues(commandGroup)
             select new Command { Name = name, Text = values.text, CommandTimeout = values.timeout };
       }
 
-      protected static IResult<(string text, TimeSpan timeout)> getValues(ObjectGraph commandGraph)
+      protected static IResult<(string text, TimeSpan timeout)> getValues(Group commandGroup)
       {
-         if (commandGraph.HasChildren)
+         try
          {
-            if (commandGraph.ChildExists("command"))
+            string command;
+            if (commandGroup.GetValue("text").If(out var text))
             {
-               return
-                  from timeout in commandGraph.FlatMap("timeout", g => g.Value.TimeSpan(), () => 30.Seconds().Success())
-                  from textGraph in commandGraph.Require("text")
-                  from text in textGraph.Value.Success()
-                  select (text, timeout);
+               command = text;
             }
-
-            if (commandGraph.ChildExists("file"))
+            else if (commandGroup.GetValue("file").If(out var fileName))
             {
-               return
-                  from timeout in commandGraph.FlatMap("timeout", g => g.Value.TimeSpan(), () => 30.Seconds().Success())
-                  from fileGraph in commandGraph.Require("file")
-                  from file in FileName.Try.FromString(fileGraph.Value)
-                  from text in file.TryTo.Text
-                  select (text, timeout);
-            }
-         }
-
-         return (commandGraph.Value, 30.Seconds()).Success();
-      }
-
-      public Command(ObjectGraph commandGraph)
-      {
-         Name = commandGraph.Name;
-         if (commandGraph.HasChildren)
-         {
-            CommandTimeout = commandGraph.FlatMap("timeout", g => g.Value.ToTimeSpan(), () => 30.Seconds());
-            if (commandGraph.If("command", out var text))
-            {
-               Text = text.Value;
+               FileName file = fileName;
+               command = file.Text;
             }
             else
             {
-               FileName fileName = commandGraph["file"].Value;
-               Text = fileName.Text;
+               return "Require 'text' or 'file' values".Failure<(string, TimeSpan)>();
             }
+
+            var timeout = commandGroup.GetValue("timeout").Map(s => s.ToTimeSpan()).DefaultTo(() => 30.Seconds());
+
+            return (command, timeout).Success();
+         }
+         catch (Exception exception)
+         {
+            return failure<(string, TimeSpan)>(exception);
+         }
+      }
+
+      public Command(Group commandGroup)
+      {
+         Name = commandGroup.Key;
+         if (commandGroup.GetValue("text").If(out var text))
+         {
+            Text = text;
+         }
+         else if (commandGroup.GetValue("file").If(out var fileName))
+         {
+            FileName file = fileName;
+            Text = file.Text;
          }
          else
          {
-            Text = commandGraph.Value;
-            CommandTimeout = 30.Seconds();
+            throw "Require 'text' or 'file' values".Throws();
          }
 
-         Text = commandGraph.Replace(Text);
+         CommandTimeout = commandGroup.GetValue("timeout").Map(s => s.ToTimeSpan()).DefaultTo(() => 30.Seconds());
       }
 
       internal Command()

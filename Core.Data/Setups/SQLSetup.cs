@@ -2,38 +2,36 @@
 using System.Data.SqlClient;
 using Core.Collections;
 using Core.Computers;
+using Core.Configurations;
 using Core.Data.Configurations;
 using Core.Data.ConnectionStrings;
 using Core.Data.DataSources;
 using Core.Dates.DateIncrements;
 using Core.Monads;
-using Core.ObjectGraphs;
-using Core.ObjectGraphs.Configurations;
-using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Data.Setups
 {
    public class SqlSetup : ISetup, ISetupWithInfo
    {
-      public static IResult<SqlSetup> FromDataGraphs(DataGraphs dataGraphs, string adapterName)
+      public static IResult<SqlSetup> FromDataGroups(DataGroups dataGroups, string adapterName)
       {
-         var connectionsGraph = dataGraphs.ConnectionsGraph;
-         var commandsGraph = dataGraphs.CommandsGraph;
-         var adaptersGraph = dataGraphs.AdaptersGraph;
-         var commandName = commandsGraph.FlatMap("command", g => g.Value, adapterName);
+         var connectionsGroup = dataGroups.ConnectionsGroup;
+         var commandsGroup = dataGroups.CommandsGroup;
+         var adaptersGroup = dataGroups.AdaptersGroup;
 
          return
-            from adapterGraph in adaptersGraph.TryTo[adapterName]
-            from connectionName in adapterGraph.TryTo["connection"].Map(g => g.Value)
-            from connectionGraph in connectionsGraph.TryTo[connectionName]
-            from commandGraph in commandsGraph.TryTo[commandName]
-            from connection in tryTo(() => new Connection(connectionGraph))
+            from adapterGraph in adaptersGroup.RequireGroup(adapterName)
+            from connectionName in adapterGraph.RequireValue("connection")
+            from connectionGroup in connectionsGroup.RequireGroup(connectionName)
+            let commandName = adaptersGroup.GetValue("command").DefaultTo(() => adapterName)
+            from commandGraph in commandsGroup.RequireGroup(commandName)
+            let connection = new Connection(connectionGroup)
             from connectionString in SqlConnectionString.FromConnection(connection)
-            from command in Command.FromObjectGraph(commandGraph)
-            from parameters in Data.Parameters.Parameters.FromObjectGraph(adapterGraph.Map("parameters"))
-            from fields in Data.Fields.Fields.FromObjectGraph(adapterGraph.Map("fields"))
-            select new SqlSetup(dataGraphs)
+            from command in Command.FromGroup(commandGraph)
+            from parameters in Data.Parameters.Parameters.FromGroup(adapterGraph.GetGroup("parameters"))
+            from fields in Data.Fields.Fields.FromGroup(adapterGraph.GetGroup("fields"))
+            select new SqlSetup(connectionsGroup.GetGroup("attributes"))
             {
                CommandText = command.Text,
                CommandTimeout = command.CommandTimeout,
@@ -46,98 +44,64 @@ namespace Core.Data.Setups
       public static IResult<SqlSetup> FromConfiguration(Configuration configuration, string adapterName)
       {
          return
-            from dataGraphs in configuration.DataGraphs().Result("Data graphs unavailable")
-            from setup in FromDataGraphs(dataGraphs, adapterName)
+            from dataGraphs in configuration.DataGroups().Result("Data graphs unavailable")
+            from setup in FromDataGroups(dataGraphs, adapterName)
             select setup;
       }
 
-      protected Hash<string, string> attributes;
+      protected StringHash<string> attributes;
 
-      public SqlSetup(DataGraphs dataGraphs, string adapterName)
+      public SqlSetup(Group setupGroup)
       {
-         var connectionsGraph = dataGraphs.ConnectionsGraph;
-         var commandsGraph = dataGraphs.CommandsGraph;
-         var adaptersGraph = dataGraphs.AdaptersGraph;
-
-         var adapterGraph = adaptersGraph[adapterName];
-         var parametersGraph = adapterGraph.Map("parameters");
-         var fieldsGraph = adapterGraph.Map("fields");
-
-         var connectionName = adapterGraph["connection"].Value;
-         var commandName = adapterGraph.FlatMap("command", g => g.Value, adapterName);
-
-         var connectionGraph = connectionsGraph[connectionName];
-         var commandGraph = commandsGraph[commandName];
-
-         var connection = new Connection(connectionGraph);
+         var connectionGroup = setupGroup.RequireGroup("connection").ForceValue();
+         var connection = new Connection(connectionGroup);
          ConnectionString = new SqlConnectionString(connection);
 
-         var command = new Command(commandGraph);
-         CommandTimeout = command.CommandTimeout;
-         CommandText = command.Text;
-
-         Parameters = new Parameters.Parameters(parametersGraph);
-
-         Fields = new Fields.Fields(fieldsGraph);
-
-         attributes = new Hash<string, string>();
-         loadAttributes(dataGraphs.ConnectionsGraph.Map("attributes"));
-      }
-
-      public SqlSetup(ObjectGraph setupGraph)
-      {
-         var connectionGraph = setupGraph["connection"];
-         var connection = new Connection(connectionGraph);
-         ConnectionString = new SqlConnectionString(connection);
-
-         var commandGraph = setupGraph["command"];
-         var command = new Command(commandGraph);
+         var commandGroup = setupGroup.RequireGroup("command").ForceValue();
+         var command = new Command(commandGroup);
          CommandText = command.Text;
          CommandTimeout = command.CommandTimeout;
 
-         var parametersGraph = setupGraph.Map("parameters");
-         Parameters = new Parameters.Parameters(parametersGraph);
+         var parametersGroup = setupGroup.GetGroup("parameters");
+         Parameters = new Parameters.Parameters(parametersGroup);
 
-         var fieldsGraph = setupGraph.Map("fields");
-         Fields = new Fields.Fields(fieldsGraph);
+         var fieldsGroup = setupGroup.GetGroup("fields");
+         Fields = new Fields.Fields(fieldsGroup);
 
-         attributes = new Hash<string, string>();
-         loadAttributes(setupGraph.Map("attributes"));
+         attributes = new StringHash<string>(true);
+         loadAttributes(setupGroup.GetGroup("attributes"));
       }
 
       public SqlSetup(ISetupObject setupObject)
       {
          ConnectionString = new SqlConnectionString(setupObject.ConnectionString, 30.Seconds());
-         switch (setupObject.CommandSourceType)
+         CommandText = setupObject.CommandSourceType switch
          {
-            case CommandSourceType.File:
-               CommandText = ((FileName)setupObject.Command).Text;
-               break;
-            default:
-               CommandText = setupObject.Command;
-               break;
-         }
+            CommandSourceType.File => ((FileName)setupObject.Command).Text,
+            _ => setupObject.Command
+         };
+
          CommandTimeout = setupObject.CommandTimeout;
          Parameters = new Parameters.Parameters(setupObject.Parameters());
          Fields = new Fields.Fields(setupObject.Fields());
 
-         attributes = new Hash<string, string>();
+         attributes = new StringHash<string>(true);
          loadAttributes(setupObject.Attributes);
       }
 
-      internal SqlSetup(DataGraphs dataGraphs)
+      internal SqlSetup(IMaybe<Group> attributesGroup)
       {
-         attributes = new Hash<string, string>();
-         loadAttributes(dataGraphs.ConnectionsGraph.Map("attributes"));
+         attributes = new StringHash<string>(true);
+         loadAttributes(attributesGroup);
       }
 
-      protected void loadAttributes(IMaybe<ObjectGraph> attributesGraph)
+      protected void loadAttributes(IMaybe<Group> _attributesGroup)
       {
-         if (attributesGraph.If(out var ag))
+         if (_attributesGroup.If(out var attributesGroup))
          {
-            foreach (var childGraph in ag.Children)
+            foreach (var (key, value) in attributesGroup.Values())
             {
-               attributes[childGraph.Name] = childGraph.Value;
+               attributes[key] = value;
             }
          }
       }

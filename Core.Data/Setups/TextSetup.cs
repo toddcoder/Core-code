@@ -1,35 +1,38 @@
 ﻿using System;
-using Core.Collections;
 using Core.Data.Configurations;
 using Core.Data.ConnectionStrings;
 using Core.Data.DataSources;
+using Core.Monads;
 
 namespace Core.Data.Setups
 {
    public class TextSetup : ISetup
    {
-      public TextSetup(DataGraphs dataGraphs, string adapterName, string fileName)
+      public static IResult<TextSetup> FromDataGroups(DataGroups dataGroups, string adapterName, string fileName)
       {
-         var adapterGraph = dataGraphs.AdaptersGraph[adapterName];
-         var parametersGraph = adapterGraph.Map("parameters");
-         var fieldsGraph = adapterGraph.Map("fields");
+         var connectionsGroup = dataGroups.ConnectionsGroup;
+         var commandsGroup = dataGroups.CommandsGroup;
+         var adaptersGroup = dataGroups.AdaptersGroup;
 
-         var connectionName = adapterGraph["connection"].Value;
-         var commandName = dataGraphs.AdaptersGraph.FlatMap("command", g => g.Value, adapterName);
-
-         var connectionGraph = dataGraphs.ConnectionsGraph[connectionName];
-         var commandGraph = dataGraphs.ConnectionsGraph[commandName];
-
-         var connection = new Connection(connectionGraph) { ["file"] = fileName };
-         ConnectionString = new TextConnectionString(connection);
-
-         var command = new Command(commandGraph);
-         CommandTimeout = command.CommandTimeout;
-         CommandText = command.Text;
-
-         Parameters = new Parameters.Parameters(parametersGraph);
-
-         Fields = new Fields.Fields(fieldsGraph);
+         return
+            from adapterGraph in adaptersGroup.RequireGroup(adapterName)
+            from connectionName in adapterGraph.RequireValue("connection")
+            from connectionGroup in connectionsGroup.RequireGroup(connectionName)
+            let commandName = adaptersGroup.GetValue("command").DefaultTo(() => adapterName)
+            from commandGraph in commandsGroup.RequireGroup(commandName)
+            let connection = new Connection(connectionGroup) { ["file"] = fileName }
+            from connectionString in SqlConnectionString.FromConnection(connection)
+            from command in Command.FromGroup(commandGraph)
+            from parameters in Data.Parameters.Parameters.FromGroup(adapterGraph.GetGroup("parameters"))
+            from fields in Data.Fields.Fields.FromGroup(adapterGraph.GetGroup("fields"))
+            select new TextSetup
+            {
+               CommandText = command.Text,
+               CommandTimeout = command.CommandTimeout,
+               ConnectionString = connectionString,
+               Parameters = parameters,
+               Fields = fields
+            };
       }
 
       public DataSource DataSource => new TextDataSource(ConnectionString.ConnectionString, CommandTimeout);

@@ -7,63 +7,60 @@ using Core.Data.ConnectionStrings;
 using Core.Data.DataSources;
 using Core.Monads;
 using static Core.Assertions.AssertionFunctions;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Data.Setups
 {
    public class OleDbSetup : ISetup
    {
-      protected static Hash<string, Func<IConnectionString>> registeredTypes;
+      protected static StringHash<Func<IConnectionString>> registeredTypes;
 
-      static OleDbSetup() => registeredTypes = new Hash<string, Func<IConnectionString>>();
+      static OleDbSetup() => registeredTypes = new StringHash<Func<IConnectionString>>(true);
 
-      public static void RegisterType(string type, Func<IConnectionString> func) => registeredTypes[type.ToLower()] = func;
+      public static void RegisterType(string type, Func<IConnectionString> func) => registeredTypes[type] = func;
+
+      public static IResult<OleDbSetup> FromDataGroups(DataGroups dataGroups, string adapterName, IMaybe<FileName> file)
+      {
+         var result =
+            from adapterGroup in dataGroups.AdaptersGroup.RequireGroup(adapterName)
+            let _parameters = new Parameters.Parameters(adapterGroup.GetGroup("parameters"))
+            let _fields = new Fields.Fields(adapterGroup.GetGroup("fields"))
+            from connectionName in adapterGroup.RequireValue("connection")
+            let commandName = adapterGroup.GetValue("command").DefaultTo(() => adapterName)
+            from connectionGroup in dataGroups.ConnectionsGroup.RequireGroup(connectionName)
+            from commandGroup in dataGroups.CommandsGroup.RequireGroup(commandName)
+            let _command = new Command(commandGroup)
+            let _connection = new Connection(connectionGroup)
+            let type = _connection.Type.ToLower()
+            select (_parameters, _fields, _command, _connection);
+         if (result.If(out var parameters, out var fields, out var command, out var connection, out var exception))
+         {
+            var type = connection.Type.ToLower();
+            var _connectionString = type switch
+            {
+               "access" => new AccessConnectionString().Some<IConnectionString>(),
+               "excel" => new ExcelConnectionString().Some<IConnectionString>(),
+               "csv" => new CSVConnectionString().Some<IConnectionString>(),
+               _ => registeredTypes.Map(type).Map(f => f())
+            };
+
+            return _connectionString.Map(connectionString => new OleDbSetup(file)
+            {
+               ConnectionString = connectionString, CommandTimeout = command.CommandTimeout, CommandText = command.Text, Parameters = parameters,
+               Fields = fields
+            }).Result($"Didn't understand type {type}");
+         }
+         else
+         {
+            return failure<OleDbSetup>(exception);
+         }
+      }
 
       protected IMaybe<FileName> file;
 
-      public OleDbSetup(DataGraphs dataGraphs, string adapterName, IMaybe<FileName> file)
+      public OleDbSetup(IMaybe<FileName> file)
       {
          this.file = file;
-
-         var connectionsGraph = dataGraphs.ConnectionsGraph;
-         var commandsGraph = dataGraphs.CommandsGraph;
-         var adaptersGraph = dataGraphs.AdaptersGraph;
-
-         var adapterGraph = adaptersGraph[adapterName];
-         var parametersGraph = adapterGraph.Map("parameters");
-         var fieldsGraph = adapterGraph.Map("fields");
-
-         var connectionName = adapterGraph["connection"].Value;
-         var commandName = adaptersGraph.FlatMap("command", g => g.Value, adapterName);
-
-         var connectionGraph = connectionsGraph[connectionName];
-         var commandGraph = commandsGraph[commandName];
-
-         var connection = new Connection(connectionGraph);
-         var type = connection.Type.ToLower();
-         switch (type)
-         {
-            case "access":
-               ConnectionString = new AccessConnectionString();
-               break;
-            case "excel":
-               ConnectionString = new ExcelConnectionString();
-               break;
-            case "csv":
-               ConnectionString = new CSVConnectionString();
-               break;
-            default:
-               var registeredType = registeredTypes.Value(type);
-               ConnectionString = registeredType();
-               break;
-         }
-
-         var command = new Command(commandGraph);
-         CommandTimeout = command.CommandTimeout;
-         CommandText = command.Text;
-
-         Parameters = new Parameters.Parameters(parametersGraph);
-
-         Fields = new Fields.Fields(fieldsGraph);
       }
 
       public DataSource DataSource
