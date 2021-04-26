@@ -18,6 +18,27 @@ namespace Core.Assertions
 {
    public static class AssertionFunctions
    {
+      private static readonly AutoHash<string, string> nameCache;
+      private static readonly Hash<string, object> valueCache;
+
+      static AssertionFunctions()
+      {
+         static string getName(string expressionText)
+         {
+            var name = expressionText;
+            var matcher = new Matcher();
+            if (matcher.IsMatch(name, "'value(' .+ ').' /(.+?) ')'* $"))
+            {
+               name = matcher.FirstGroup;
+            }
+
+            return name;
+         }
+
+         nameCache = new AutoHash<string, string>(getName, true);
+         valueCache = new Hash<string, object>();
+      }
+
       public static TException getException<TException>(params object[] args) where TException : Exception
       {
          return (TException)Activator.CreateInstance(typeof(TException), args);
@@ -73,11 +94,11 @@ namespace Core.Assertions
 
       public static string completionImage<T>(ICompletion<T> completion)
       {
-         if (completion.If(out var value, out var anyException))
+         if (completion.If(out var value, out var _exception))
          {
             return value.ToNonNullString();
          }
-         else if (anyException.If(out var exception))
+         else if (_exception.If(out var exception))
          {
             return $"interrupted<{typeof(T).Name}>({exception.Message})";
          }
@@ -173,8 +194,7 @@ namespace Core.Assertions
          return convert<T, TResult>(assertion);
       }
 
-      public static TResult forceConvert<T, TException, TResult>(IAssertion<T> assertion, params object[] args)
-         where TException : Exception
+      public static TResult forceConvert<T, TException, TResult>(IAssertion<T> assertion, params object[] args) where TException : Exception
       {
          orThrow<TException, T>(assertion, args);
          return convert<T, TResult>(assertion);
@@ -182,8 +202,7 @@ namespace Core.Assertions
 
       public static IResult<T> orFailure<T>(IAssertion<T> assertion)
       {
-         return assertion.Constraints.FirstOrNone(c => !c.IsTrue()).Map(c => c.Message.Failure<T>())
-            .DefaultTo(() => assertion.Value.Success());
+         return assertion.Constraints.FirstOrNone(c => !c.IsTrue()).Map(c => c.Message.Failure<T>()).DefaultTo(() => assertion.Value.Success());
       }
 
       public static IResult<T> orFailure<T>(IAssertion<T> assertion, string message)
@@ -201,28 +220,24 @@ namespace Core.Assertions
          return maybe(assertion.Constraints.All(c => c.IsTrue()), () => assertion.Value);
       }
 
-      public static async Task<ICompletion<T>> orFailureAsync<T>(IAssertion<T> assertion, CancellationToken token) => await runAsync(
-         t =>
-         {
-            return assertion.Constraints
+      public static async Task<ICompletion<T>> orFailureAsync<T>(IAssertion<T> assertion, CancellationToken token)
+      {
+         return await runAsync(t =>
+            assertion.Constraints
                .FirstOrNone(c => !c.IsTrue())
                .Map(c => c.Message.Interrupted<T>())
-               .DefaultTo(() => assertion.Value.Completed(t));
-         }, token);
+               .DefaultTo(() => assertion.Value.Completed(t)), token);
+      }
 
-      public static async Task<ICompletion<T>> orFailureAsync<T>(IAssertion<T> assertion, string message, CancellationToken token) =>
-         await runAsync(
-            t => { return assertion.Constraints.Any(c => !c.IsTrue()) ? message.Interrupted<T>() : assertion.Value.Completed(t); },
-            token);
-
-      public static async Task<ICompletion<T>> orFailureAsync<T>(IAssertion<T> assertion, Func<string> messageFunc,
-         CancellationToken token)
+      public static async Task<ICompletion<T>> orFailureAsync<T>(IAssertion<T> assertion, string message, CancellationToken token)
       {
-         return await runAsync(
-            t =>
-            {
-               return assertion.Constraints.Any(c => !c.IsTrue()) ? messageFunc().Interrupted<T>() : assertion.Value.Completed(t);
-            }, token);
+         return await runAsync(t => assertion.Constraints.Any(c => !c.IsTrue()) ? message.Interrupted<T>() : assertion.Value.Completed(t), token);
+      }
+
+      public static async Task<ICompletion<T>> orFailureAsync<T>(IAssertion<T> assertion, Func<string> messageFunc, CancellationToken token)
+      {
+         return await runAsync(t => assertion.Constraints.Any(c => !c.IsTrue()) ? messageFunc().Interrupted<T>() : assertion.Value.Completed(t),
+            token);
       }
 
       public static bool orReturn<T>(IAssertion<T> assertion) => !assertion.BeEquivalentToTrue();
@@ -234,12 +249,13 @@ namespace Core.Assertions
       public static (string name, T value) resolve<T>(Expression<Func<T>> expression)
       {
          var expressionBody = expression.Body;
-         var name = expressionBody.ToString();
+         var key = expressionBody.ToString();
 
-         var matcher = new Matcher();
-         if (matcher.IsMatch(name, "'value(' .+ ').' /(.+?) ')'* $"))
+         var name = nameCache[key];
+
+         if (valueCache.If(key, out var obj))
          {
-            name = matcher.FirstGroup;
+            return (name, (T)obj);
          }
 
          var value = expression.Compile()();
@@ -247,6 +263,8 @@ namespace Core.Assertions
          {
             name = value.ToNonNullString();
          }
+
+         valueCache[key] = value;
 
          return (name, value);
       }
