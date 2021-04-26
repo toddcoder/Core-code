@@ -8,18 +8,17 @@ using Core.Numbers;
 using Core.RegularExpressions;
 using Core.Strings;
 using static System.Math;
-using static Core.Assertions.AssertionFunctions;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Dates
 {
    public class Time : IComparable<DateTime>, IComparable<Time>
    {
-      const int HOURS_IN_MILLISECONDS = 86400000;
+      protected const int HOURS_IN_MILLISECONDS = 86400000;
 
-      static (int, int, int, int) deriveFromMilliseconds(long millisecondsAsLong)
+      protected static (int, int, int, int) deriveFromMilliseconds(long millisecondsAsLong)
       {
-         assert(() => millisecondsAsLong).Must().BePositive().OrThrow();
+         millisecondsAsLong.Must().BePositive().OrThrow();
 
          var milliseconds = 0;
          var seconds = 0;
@@ -54,7 +53,7 @@ namespace Core.Dates
          return (hours, minutes, seconds, milliseconds);
       }
 
-      static (int, int, int, int) parseParts(string text)
+      protected static (int, int, int, int) parseParts(string text)
       {
          var matcher = new Matcher();
          text = text.RemoveWhitespace();
@@ -66,7 +65,7 @@ namespace Core.Dates
          return (hour.ToInt(), minute.ToInt(), second.ToInt(), millisecond.ToInt());
       }
 
-      static int absoluteDifference(int value1, int value2) => Sign(value1 - value2);
+      protected static int absoluteDifference(int value1, int value2) => Sign(value1 - value2);
 
       public static string ToLongString(int days, int hours, int minutes, int seconds, IMaybe<int> _milliseconds)
       {
@@ -181,17 +180,17 @@ namespace Core.Dates
 
       public static bool operator >=(Time time1, DateTime time2) => time1.CompareTo(time2) >= 0;
 
-      public static Time operator +(Time time1, Time time2) => new Time(time1.Milliseconds + time2.Milliseconds);
+      public static Time operator +(Time time1, Time time2) => new(time1.Milliseconds + time2.Milliseconds);
 
-      public static Time operator +(Time time, TimeSpan interval) => new Time(time.Milliseconds + interval.TotalMilliseconds);
+      public static Time operator +(Time time, TimeSpan interval) => new(time.Milliseconds + interval.TotalMilliseconds);
 
       public static DateTime operator +(Time time, DateTime dateTime) => dateTime.Truncate() + (TimeSpan)time;
 
       public static DateTime operator +(DateTime dateTime, Time time) => dateTime.Truncate() + (TimeSpan)time;
 
-      public static Time operator -(Time time1, Time time2) => new Time(time1.Milliseconds - time2.Milliseconds);
+      public static Time operator -(Time time1, Time time2) => new(time1.Milliseconds - time2.Milliseconds);
 
-      public static Time operator -(Time time, TimeSpan interval) => new Time(time.Milliseconds - interval.TotalMilliseconds);
+      public static Time operator -(Time time, TimeSpan interval) => new(time.Milliseconds - interval.TotalMilliseconds);
 
       public static implicit operator Time(string text)
       {
@@ -199,18 +198,22 @@ namespace Core.Dates
          return new Time(hour, minute, second, millisecond);
       }
 
-      public static implicit operator Time(DateTime date) => new Time(date);
+      public static implicit operator Time(DateTime date) => new(date);
 
       public static implicit operator TimeSpan(Time time) => time.ToTimeSpan();
 
-      int hour;
-      int minute;
-      int second;
-      int millisecond;
+      protected int hour;
+      protected int minute;
+      protected int second;
+      protected int millisecond;
 
-      public Time() : this(0, 0, 0, 0) { }
+      public Time() : this(0, 0, 0, 0)
+      {
+      }
 
-      public Time(DateTime date) : this(date.Hour, date.Minute, date.Second, date.Millisecond) { }
+      public Time(DateTime date) : this(date.Hour, date.Minute, date.Second, date.Millisecond)
+      {
+      }
 
       public Time(int hour, int minute, int second, int millisecond)
       {
@@ -302,30 +305,30 @@ namespace Core.Dates
          }
          set
          {
-            assert(() => value).Must().BeLessThan(HOURS_IN_MILLISECONDS).OrThrow();
+            value.Must().BeLessThan(HOURS_IN_MILLISECONDS).OrThrow();
 
             (hour, minute, second, millisecond) = deriveFromMilliseconds(value);
          }
       }
 
-      void setHour(int newHour)
+      protected void setHour(int newHour)
       {
-         hour = assert(() => newHour).Must().BeBetween(0).And(23).Force();
+         hour = newHour.Must().BeBetween(0).And(23).Force();
       }
 
-      void setMinute(int newMinute)
+      protected void setMinute(int newMinute)
       {
-         minute = assert(() => newMinute).Must().BeBetween(0).And(59).Force();
+         minute = newMinute.Must().BeBetween(0).And(59).Force();
       }
 
-      void setSecond(int newSecond)
+      protected void setSecond(int newSecond)
       {
-         second = assert(() => newSecond).Must().BeBetween(0).And(59).Force();
+         second = newSecond.Must().BeBetween(0).And(59).Force();
       }
 
-      void setMillisecond(int newMillisecond)
+      protected void setMillisecond(int newMillisecond)
       {
-         millisecond = assert(() => newMillisecond).Must().BeBetween(0).And(999).Force();
+         millisecond = newMillisecond.Must().BeBetween(0).And(999).Force();
       }
 
       public override string ToString() => $"{hour:00}:{minute:00}:{second:00}.{millisecond:000}";
@@ -425,6 +428,6 @@ namespace Core.Dates
          return DateTime.MinValue.AddHours(hour).AddMinutes(minute).AddSeconds(second).AddMilliseconds(millisecond);
       }
 
-      public TimeSpan ToTimeSpan() => new TimeSpan(0, hour, minute, second, millisecond);
+      public TimeSpan ToTimeSpan() => new(0, hour, minute, second, millisecond);
    }
 }

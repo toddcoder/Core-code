@@ -4,7 +4,6 @@ using System.Security.Principal;
 using Core.Assertions;
 using Core.Monads;
 using Core.RegularExpressions;
-using static Core.Assertions.AssertionFunctions;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Computers
@@ -13,31 +12,32 @@ namespace Core.Computers
    {
       public class IdentityException : ApplicationException
       {
-         const int FORMAT_MESSAGE_ALLOCATE_BUFFER = 0x100;
-         const int FORMAT_MESSAGE_IGNORE_INSERTS = 0x200;
-         const int FORMAT_MESSAGE_FROM_SYSTEM = 0x1000;
-         const int MESSAGE_SIZE = 255;
-         const int MESSAGE_FLAGS = FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM |
-            FORMAT_MESSAGE_IGNORE_INSERTS;
+         protected const int FORMAT_MESSAGE_ALLOCATE_BUFFER = 0x100;
+         protected const int FORMAT_MESSAGE_IGNORE_INSERTS = 0x200;
+         protected const int FORMAT_MESSAGE_FROM_SYSTEM = 0x1000;
+         protected const int MESSAGE_SIZE = 255;
+         protected const int MESSAGE_FLAGS = FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS;
 
          [DllImport("kernel32.dll")]
-         static extern int FormatMessage(int flags, out IntPtr source, int messageID, int languageID, out string buffer, int size,
+         protected static extern int FormatMessage(int flags, out IntPtr source, int messageID, int languageID, out string buffer, int size,
             out IntPtr arguments);
 
-         static string getErrorMessage(int errorCode)
+         protected static string getErrorMessage(int errorCode)
          {
             var result = FormatMessage(MESSAGE_FLAGS, out _, errorCode, 0, out var messageBuffer, MESSAGE_SIZE, out _);
             return result == 0 ? $"Error code: {errorCode} (Couldn't format message)" : messageBuffer;
          }
 
-         static string errorMessage(string domain, string userName)
+         protected static string errorMessage(string domain, string userName)
          {
             var errorCode = Marshal.GetLastWin32Error();
             return $"Windows Identity couldn't be assumed for {domain}\\{userName} (Win32 code = {errorCode}," +
                $" message=\"{getErrorMessage(errorCode)}\")";
          }
 
-         public IdentityException(string domain, string userName) : base(errorMessage(domain, userName)) { }
+         public IdentityException(string domain, string userName) : base(errorMessage(domain, userName))
+         {
+         }
       }
 
       public enum IdentityType
@@ -59,25 +59,23 @@ namespace Core.Computers
          NT50 = 3
       }
 
-      const int SECURITY_IMPERSONATION = 2;
+      protected const int SECURITY_IMPERSONATION = 2;
 
       [DllImport("advapi32.dll", SetLastError = true)]
-      static extern int LogonUser(string userName, string domain, string password, int logonType, int logonProvider,
-         out IntPtr token);
+      protected static extern int LogonUser(string userName, string domain, string password, int logonType, int logonProvider, out IntPtr token);
 
       [DllImport("advapi32.dll", SetLastError = true)]
-      static extern int DuplicateToken(IntPtr existingTokenHandle, int securityImpersonationLevel,
-         out IntPtr duplicateTokenHandle);
+      protected static extern int DuplicateToken(IntPtr existingTokenHandle, int securityImpersonationLevel, out IntPtr duplicateTokenHandle);
 
       [DllImport("kernel32.dll", SetLastError = true)]
-      static extern bool CloseHandle(IntPtr handle);
+      protected static extern bool CloseHandle(IntPtr handle);
 
-      string userName;
-      string domain;
-      IntPtr tokenHandle;
-      IntPtr dupTokenHandle;
-      bool impersonating;
-      IMaybe<WindowsImpersonationContext> impersonatedUser;
+      protected string userName;
+      protected string domain;
+      protected IntPtr tokenHandle;
+      protected IntPtr dupTokenHandle;
+      protected bool impersonating;
+      protected IMaybe<WindowsImpersonationContext> _impersonatedUser;
 
       public Identity()
       {
@@ -133,11 +131,11 @@ namespace Core.Computers
          }
       }
 
-      void impersonate()
+      protected void impersonate()
       {
-         assert(() => UserName).Must().Not.BeNullOrEmpty().OrThrow();
-         assert(() => Domain).Must().Not.BeNullOrEmpty().OrThrow();
-         assert(() => Password).Must().Not.BeNullOrEmpty().OrThrow();
+         UserName.Must().Not.BeNullOrEmpty().OrThrow();
+         Domain.Must().Not.BeNullOrEmpty().OrThrow();
+         Password.Must().Not.BeNullOrEmpty().OrThrow();
 
          if (LogonUser(UserName, Domain, Password, (int)Type, (int)Provider, out tokenHandle) != 0)
          {
@@ -151,17 +149,17 @@ namespace Core.Computers
          else
          {
             var identity = new WindowsIdentity(dupTokenHandle);
-            impersonatedUser = getContext(identity);
+            _impersonatedUser = getContext(identity);
          }
       }
 
-      static IMaybe<WindowsImpersonationContext> getContext(WindowsIdentity identity) => identity.Impersonate().Some();
+      protected static IMaybe<WindowsImpersonationContext> getContext(WindowsIdentity identity) => identity.Impersonate().Some();
 
-      void unimpersonate()
+      protected void unimpersonate()
       {
-         if (impersonatedUser.If(out var iu) && impersonating)
+         if (_impersonatedUser.If(out var impersonatedUser) && impersonating)
          {
-            iu.Undo();
+            impersonatedUser.Undo();
 
             if (tokenHandle != IntPtr.Zero)
             {
@@ -173,13 +171,13 @@ namespace Core.Computers
                CloseHandle(dupTokenHandle);
             }
 
-            impersonatedUser = none<WindowsImpersonationContext>();
+            _impersonatedUser = none<WindowsImpersonationContext>();
          }
 
          impersonating = false;
       }
 
-      void dispose()
+      protected void dispose()
       {
          if (impersonating)
          {

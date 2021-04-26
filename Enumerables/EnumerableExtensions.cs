@@ -9,7 +9,6 @@ using Core.Monads;
 using Core.Numbers;
 using Core.Objects;
 using Core.Strings;
-using static Core.Assertions.AssertionFunctions;
 using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
 
@@ -19,8 +18,8 @@ namespace Core.Enumerables
    {
       public static string ToString<T>(this IEnumerable<T> enumerable, string connector)
       {
-         assert(() => enumerable).Must().Not.BeNull().OrThrow();
-         assert(() => connector).Must().Not.BeNull().OrThrow();
+         enumerable.Must().Not.BeNull().OrThrow();
+         connector.Must().Not.BeNull().OrThrow();
 
          return string.Join(connector, enumerable.Select(i => i.ToNonNullString()));
       }

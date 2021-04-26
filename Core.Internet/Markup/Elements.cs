@@ -5,7 +5,6 @@ using System.Text;
 using Core.Assertions;
 using Core.Computers;
 using Core.Enumerables;
-using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Internet.Markup
 {
@@ -54,7 +53,7 @@ namespace Core.Internet.Markup
 
       public Element Add(Element element)
       {
-         assert(() => element).Must().Not.BeNull().OrThrow();
+         element.Must().Not.BeNull().OrThrow();
 
          elements.Add(element);
          ElementAdded?.Invoke(this, new ElementEventArgs(element));

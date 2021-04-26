@@ -3,7 +3,6 @@ using Core.Assertions;
 using Core.Enumerables;
 using Core.Strings;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Tests
 {
@@ -33,8 +32,8 @@ namespace Core.Tests
 
          Console.WriteLine($"camel:  {camel}");
          Console.WriteLine($"pascal: {pascal}");
-         assert(() => camel).Must().Equal(camelResult).OrThrow();
-         assert(() => pascal).Must().Equal(pascalResult).OrThrow();
+         camel.Must().Equal(camelResult).OrThrow();
+         pascal.Must().Equal(pascalResult).OrThrow();
       }
 
       [TestMethod]
@@ -43,7 +42,7 @@ namespace Core.Tests
          test("SetSQL_nameForUser_ID", "setSQLNameForUserId", "SetSQLNameForUserId");
          test("TARGET", "target", "Target");
          test("TARGET_REPORT", "targetReport", "TargetReport");
-         test("C1","c1", "C1");
+         test("C1", "c1", "C1");
       }
 
       [TestMethod]
@@ -102,7 +101,7 @@ namespace Core.Tests
          var empty = string.Empty;
          var tooLittle = "the cat jumped over the dog";
          var tooMuch = $"{tooLittle}, but the dog didn't care.";
-         var needsNormalization = $"the cat\tthe dog\r\nThey need help.";
+         var needsNormalization = "the cat\tthe dog\r\nThey need help.";
 
          Console.WriteLine(" 0000000001111111111222222222233333333334");
          Console.WriteLine(" 1234567890123456789012345678901234567890");

@@ -4,7 +4,6 @@ using System.Xml;
 using Core.Assertions;
 using Core.Monads;
 using Core.RegularExpressions;
-using static Core.Assertions.AssertionFunctions;
 using static Core.Monads.AttemptFunctions;
 
 namespace Core.Internet.Markup
@@ -26,8 +25,8 @@ namespace Core.Internet.Markup
 
       public static string Tidy(this string markup, Encoding encoding, bool includeHeader = true, char quoteChar = '"')
       {
-         assert(() => markup).Must().Not.BeNullOrEmpty().OrThrow();
-         assert(() => encoding).Must().Not.BeNull().OrThrow();
+         markup.Must().Not.BeNullOrEmpty().OrThrow();
+         encoding.Must().Not.BeNull().OrThrow();
 
          var document = new XmlDocument();
          document.LoadXml(markup);
@@ -57,7 +56,7 @@ namespace Core.Internet.Markup
 
       public static string Sgmlify(this string text)
       {
-         assert(() => text).Must().Not.BeNullOrEmpty().OrThrow();
+         text.Must().Not.BeNullOrEmpty().OrThrow();
 
          text = text.Substitute("'&' -(> ('amp' | 'lt' | 'gt' | 'quot' | 'apos') ';')", "&amp;");
          text = text.Substitute("'<'", "&lt;");
@@ -70,7 +69,7 @@ namespace Core.Internet.Markup
 
       public static string UnSgmlify(this string text)
       {
-         assert(() => text).Must().Not.BeNullOrEmpty().OrThrow();
+         text.Must().Not.BeNullOrEmpty().OrThrow();
 
          text = text.Substitute("'&apos;'", "'");
          text = text.Substitute("'&quot;'", "\"");
@@ -83,7 +82,7 @@ namespace Core.Internet.Markup
 
       public static string Simplify(this string sgml)
       {
-         assert(() => sgml).Must().Not.BeNullOrEmpty().OrThrow();
+         sgml.Must().Not.BeNullOrEmpty().OrThrow();
 
          return sgml
             .Substitute("/s+ /w+ ':' /w '=' [dquote] -[dquote]+ [dquote]", "")

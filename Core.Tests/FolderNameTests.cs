@@ -6,7 +6,6 @@ using Core.Computers;
 using Core.Enumerables;
 using Core.RegularExpressions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Tests
 {
@@ -130,16 +129,16 @@ namespace Core.Tests
          FolderName subFolder = @"C:\Enterprise\Projects\Core";
          FolderName alienFolder = @"C:\Enterprise\Working";
 
-         assert(() => parentFolder.ContainsFolder(subFolder)).Must().BeTrue().OrThrow();
-         assert(() => parentFolder.ContainsFolder(alienFolder)).Must().Not.BeTrue().OrThrow();
+         parentFolder.ContainsFolder(subFolder).Must().BeTrue().OrThrow();
+         parentFolder.ContainsFolder(alienFolder).Must().Not.BeTrue().OrThrow();
       }
 
       [TestMethod]
       public void ImmediateSubFolderTest()
       {
          FolderName folder = @"C:\Program Files (x86)\Microsoft Visual Studio\2019";
-         assert(() => folder.ContainsImmediateFolderName("Professional")).Must().BeTrue().OrThrow();
-         assert(() => folder.ContainsImmediateFolderName("Enterprise")).Must().Not.BeTrue().OrThrow();
+         folder.ContainsImmediateFolderName("Professional").Must().BeTrue().OrThrow();
+         folder.ContainsImmediateFolderName("Enterprise").Must().Not.BeTrue().OrThrow();
       }
    }
 }

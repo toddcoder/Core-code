@@ -3,7 +3,6 @@ using System.Linq;
 using System.Reflection;
 using Core.Assertions;
 using Core.Exceptions;
-using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Objects
 {
@@ -75,7 +74,7 @@ namespace Core.Objects
 
       public virtual int CompareTo(object obj)
       {
-         assert(() => obj).Must().BeOfType(GetType()).OrThrow();
+         obj.Must().BeOfType(GetType()).OrThrow();
 
          foreach (var memberInfo in comparableInfo)
          {

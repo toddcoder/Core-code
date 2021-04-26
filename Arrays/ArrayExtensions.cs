@@ -9,7 +9,6 @@ using Core.Numbers;
 using Core.RegularExpressions;
 using Core.Strings;
 using static System.Math;
-using static Core.Assertions.AssertionFunctions;
 using static Core.Monads.MonadFunctions;
 using static Core.Objects.ObjectFunctions;
 
@@ -25,10 +24,7 @@ namespace Core.Arrays
 
       public static T[] Append<T>(this T[] source, params T[] items)
       {
-         if (source == null)
-         {
-            source = new T[0];
-         }
+         source ??= new T[0];
 
          var targetLength = source.Length + items.Length;
          var target = new T[targetLength];
@@ -114,7 +110,7 @@ namespace Core.Arrays
 
       public static bool IsEmpty<T>(this T[] array) => array == null || array.Length == 0;
 
-      public static bool IsNotEmpty<T>(this T[] array) => array != null && array.Length > 0;
+      public static bool IsNotEmpty<T>(this T[] array) => array is { Length: > 0 };
 
       public static T[] Slice<T>(this T[] array, int start, int length)
       {
@@ -128,9 +124,9 @@ namespace Core.Arrays
 
       public static T[] RangeOf<T>(this T[] array, int start, int stop)
       {
-         assert(() => start).Must().BeLessThanOrEqual(stop).OrThrow();
-         assert(() => start).Must().BeBetween(0).Until(array.Length).OrThrow();
-         assert(() => stop).Must().BeBetween(0).Until(array.Length).OrThrow();
+         start.Must().BeLessThanOrEqual(stop).OrThrow();
+         start.Must().BeBetween(0).Until(array.Length).OrThrow();
+         stop.Must().BeBetween(0).Until(array.Length).OrThrow();
 
          var result = new T[stop - start + 1];
          var index = 0;
@@ -142,7 +138,7 @@ namespace Core.Arrays
          return result;
       }
 
-      public static Slice<T> From<T>(this T[] array, int startIndex) => new Slice<T>(array, startIndex);
+      public static Slice<T> From<T>(this T[] array, int startIndex) => new(array, startIndex);
 
       public static T[] Pick<T>(this T[] array, string columnIndexes)
       {
@@ -201,14 +197,7 @@ namespace Core.Arrays
 
       public static T Of<T>(this T[] array, int index, T defaultValue)
       {
-         if (index.Between(0).Until(array.Length))
-         {
-            return array[index];
-         }
-         else
-         {
-            return defaultValue;
-         }
+         return index.Between(0).Until(array.Length) ? array[index] : defaultValue;
       }
 
       public static IMaybe<T> Of<T>(this T[] array, int index) => maybe(index.Between(0).Until(array.Length), () => array[index]);
@@ -225,8 +214,7 @@ namespace Core.Arrays
 
       public static T[] AllButLast<T>(this T[] array) => array.IsEmpty() ? new T[0] : array.Slice(0, array.Length - 1);
 
-      public static IMaybe<Slice<T>> Balanced<T>(this T[] array, Predicate<T> startCondition,
-         Predicate<T> stopCondition, int startIndex = 0)
+      public static IMaybe<Slice<T>> Balanced<T>(this T[] array, Predicate<T> startCondition, Predicate<T> stopCondition, int startIndex = 0)
       {
          if (array.IsEmpty())
          {
@@ -423,7 +411,7 @@ namespace Core.Arrays
 
       public static T[] Repeat<T>(this int count, T value) => Enumerable.Repeat(value, count).ToArray();
 
-      public static T[] Repeat<T>(this int count, Func<T> func) => 0.Until(count).Select(i => func()).ToArray();
+      public static T[] Repeat<T>(this int count, Func<T> func) => 0.Until(count).Select(_ => func()).ToArray();
 
       public static T[] Repeat<T>(this T[] array, int count)
       {

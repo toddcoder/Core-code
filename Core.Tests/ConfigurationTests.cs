@@ -7,7 +7,6 @@ using Core.Computers;
 using Core.Configurations;
 using Core.Enumerables;
 using Core.Monads;
-using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Tests
 {
@@ -169,7 +168,7 @@ namespace Core.Tests
             Console.WriteLine(configuration);
             if (configuration.Deserialize<BinaryPackage>().If(out var newPackage, out exception))
             {
-               asObject(() => package).Must().Equal(newPackage).OrThrow();
+               package.Must().Equal(newPackage).OrThrow();
             }
             else
             {

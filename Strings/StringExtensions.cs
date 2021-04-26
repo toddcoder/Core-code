@@ -4,13 +4,11 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using Core.Assertions;
-using Core.Collections;
 using Core.Dates.Now;
 using Core.Enumerables;
 using Core.Monads;
 using Core.Numbers;
 using Core.RegularExpressions;
-using static Core.Assertions.AssertionFunctions;
 using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
 using static Core.Strings.StringFunctions;
@@ -234,35 +232,6 @@ namespace Core.Strings
       public static string ToTitleCase(this string source)
       {
          return source.Map(s => new CultureInfo("en-US").TextInfo.ToTitleCase(s.ToLower()));
-      }
-
-      private static string upCaseFirst(string source)
-      {
-         return source.Map(s => char.IsUpper(source[0]) ? s : char.ToUpper(s[0]) + s.Substring(1));
-      }
-
-      private static bool nextIsLower(string source, int index)
-      {
-         if (source.IsEmpty())
-         {
-            return false;
-         }
-         else
-         {
-            return index < source.Length - 1 && char.IsLower(source[index + 1]);
-         }
-      }
-
-      private static bool nextIsUpper(string source, int index)
-      {
-         if (source.IsEmpty())
-         {
-            return false;
-         }
-         else
-         {
-            return index < source.Length - 1 && char.IsUpper(source[index + 1]);
-         }
       }
 
       public static string CamelToLowerWithSeparator(this string source, string separator, string quantitative = "+")
@@ -647,20 +616,13 @@ namespace Core.Strings
          }
       }
 
-      public static string Pad(this string source, PadType padType, int length, char paddingCharacter = ' ')
+      public static string Pad(this string source, PadType padType, int length, char paddingCharacter = ' ') => padType switch
       {
-         switch (padType)
-         {
-            case PadType.Center:
-               return source.PadCenter(length, paddingCharacter);
-            case PadType.Left:
-               return source.PadLeft(length, paddingCharacter);
-            case PadType.Right:
-               return source.PadRight(length, paddingCharacter);
-            default:
-               return source;
-         }
-      }
+         PadType.Center => source.PadCenter(length, paddingCharacter),
+         PadType.Left => source.PadLeft(length, paddingCharacter),
+         PadType.Right => source.PadRight(length, paddingCharacter),
+         _ => source
+      };
 
       public static string Pad(this string source, int width, char paddingCharacter = ' ')
       {
@@ -1040,15 +1002,12 @@ namespace Core.Strings
       {
          if (source.IsNotEmpty())
          {
-            switch (source)
+            return source switch
             {
-               case "1":
-                  return true;
-               case "0":
-                  return false;
-               default:
-                  return bool.TryParse(source, out var result) ? result : defaultValue;
-            }
+               "1" => true,
+               "0" => false,
+               _ => bool.TryParse(source, out var result) ? result : defaultValue
+            };
          }
          else
          {
@@ -1308,7 +1267,7 @@ namespace Core.Strings
          else if (value.IsIntegral())
          {
             var newValue = value.ToLong();
-            return (newValue >= int.MinValue && newValue <= int.MaxValue ? (object)value.ToInt() : value).Some();
+            return (newValue is >= int.MinValue and <= int.MaxValue ? (object)value.ToInt() : value).Some();
          }
 
          if (value.IsSingle())
@@ -1458,7 +1417,7 @@ namespace Core.Strings
          {
             return
                from newValue in value.Int64()
-               from assertion in assert(() => newValue).Must().BeBetween(int.MinValue).And(int.MaxValue).OrFailure()
+               from assertion in newValue.Must().BeBetween(int.MinValue).And(int.MaxValue).OrFailure()
                select (object)(int)assertion;
          }
 
@@ -1801,53 +1760,6 @@ namespace Core.Strings
       }
 
       public static string[] Words(this string source) => source.IsEmpty() ? new string[0] : source.Split("/s+");
-
-      private static string formatWith(string format, Hash<string, string> pairs)
-      {
-         if (format.IsEmpty())
-         {
-            return string.Empty;
-         }
-
-         var matcher = new Matcher();
-         foreach (var (key, replacement) in pairs)
-         {
-            assert(() => key).Must().Not.BeNullOrEmpty().OrThrow();
-
-            var pattern = "-(< '//') '(" + key.Escape() + ")'";
-            if (matcher.IsMatch(format, pattern))
-            {
-               for (var j = 0; j < matcher.MatchCount; j++)
-               {
-                  matcher[j] = replacement;
-               }
-
-               format = matcher.ToString();
-            }
-         }
-
-         return replaceEscaped(format, matcher);
-      }
-
-      private static string replaceEscaped(string format, Matcher matcher)
-      {
-         if (format.IsEmpty())
-         {
-            return string.Empty;
-         }
-
-         if (matcher.IsMatch(format, "'//('"))
-         {
-            for (var i = 0; i < matcher.MatchCount; i++)
-            {
-               matcher[i] = "(";
-            }
-
-            format = matcher.ToString();
-         }
-
-         return format;
-      }
 
       public static string Drop(this string source, int count)
       {
@@ -2326,7 +2238,7 @@ namespace Core.Strings
          }
       }
 
-      public static IMaybe<long> AsByteSize(this string source) => source.ByteSize().Map(l => l.Some()).Recover(e => none<long>());
+      public static IMaybe<long> AsByteSize(this string source) => source.ByteSize().Map(l => l.Some()).Recover(_ => none<long>());
 
       public static long ToByteSize(this string source, long defaultValue = 0)
       {

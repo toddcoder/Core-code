@@ -1,7 +1,6 @@
 ﻿using Core.Assertions;
 using Core.RegularExpressions;
 using Core.Strings;
-using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Collections
 {
@@ -9,7 +8,7 @@ namespace Core.Collections
    {
       public static implicit operator StringStringHash(string keyValues)
       {
-         assert(() => keyValues).Must().Not.BeNull().OrThrow();
+         keyValues.Must().Not.BeNull().OrThrow();
          if (keyValues.IsEmpty())
          {
             return new StringStringHash();

@@ -2,37 +2,36 @@
 using Core.Assertions;
 using Core.Exceptions;
 using Core.Monads;
-using static Core.Assertions.AssertionFunctions;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Objects
 {
    public class LateLazy<T>
    {
-      const string DEFAULT_ERROR_MESSAGE = "Activator has not been set";
+      protected const string DEFAULT_ERROR_MESSAGE = "Activator has not been set";
 
       protected bool overriding;
       protected string errorMessage;
-      protected IMaybe<T> value;
-      protected IMaybe<Func<T>> activator;
+      protected IMaybe<T> _value;
+      protected IMaybe<Func<T>> _activator;
 
       public LateLazy(bool overriding = false, string errorMessage = DEFAULT_ERROR_MESSAGE)
       {
          this.overriding = overriding;
          this.errorMessage = errorMessage;
 
-         value = none<T>();
-         activator = none<Func<T>>();
+         _value = none<T>();
+         _activator = none<Func<T>>();
       }
 
       public void ActivateWith(Func<T> activator)
       {
-         assert(() => activator).Must().Not.BeNull().OrThrow();
+         activator.Must().Not.BeNull().OrThrow();
 
-         if (!this.activator.HasValue || overriding)
+         if (_activator.IsNone || overriding)
          {
-            this.activator = activator.Some();
-            value = none<T>();
+            _activator = activator.Some();
+            _value = none<T>();
          }
       }
 
@@ -40,17 +39,17 @@ namespace Core.Objects
       {
          get
          {
-            if (value.If(out var v))
+            if (_value.If(out var value))
             {
-               return v;
+               return value;
             }
-            else if (activator.If(out var f))
+            else if (_activator.If(out var activator))
             {
-               var returnValue = f();
+               var returnValue = activator();
 
-               assert(() => returnValue).Must().Not.BeNull().OrThrow();
+               returnValue.Must().Not.BeNull().OrThrow();
 
-               value = returnValue.Some();
+               _value = returnValue.Some();
 
                return returnValue;
             }
@@ -61,11 +60,11 @@ namespace Core.Objects
          }
       }
 
-      public bool IsActivated => value.HasValue;
+      public bool IsActivated => _value.HasValue;
 
-      public IMaybe<T> AnyValue => value;
+      public IMaybe<T> AnyValue => _value;
 
-      public LateLazyTrying<T> TryTo => new LateLazyTrying<T>(this);
+      public LateLazyTrying<T> TryTo => new(this);
 
       public string ErrorMessage
       {

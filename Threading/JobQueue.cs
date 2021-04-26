@@ -3,7 +3,6 @@ using System.Linq;
 using Core.Assertions;
 using Core.DataStructures;
 using Core.Monads;
-using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Threading
 {
@@ -36,7 +35,7 @@ namespace Core.Threading
 
       public IMaybe<Action<int>> Dequeue(int affinity)
       {
-         assert(() => affinity).Must().BeBetween(0).Until(affinityCount).OrThrow();
+         affinity.Must().BeBetween(0).Until(affinityCount).OrThrow();
 
          lock (locker)
          {
@@ -46,17 +45,11 @@ namespace Core.Threading
 
       public int Count(int affinity)
       {
-         assert(() => affinity).Must().BeBetween(0).Until(affinityCount).OrThrow();
+         affinity.Must().BeBetween(0).Until(affinityCount).OrThrow();
 
          return queues[affinity].Count;
       }
 
-      public int AllCount
-      {
-         get
-         {
-            return Enumerable.Range(0, affinityCount).Select(affinity => queues[affinity].Count).Sum();
-         }
-      }
+      public int AllCount => Enumerable.Range(0, affinityCount).Select(affinity => queues[affinity].Count).Sum();
    }
 }

@@ -4,7 +4,6 @@ using System.Runtime.InteropServices;
 using Core.Assertions;
 using Core.Exceptions;
 using Core.Numbers;
-using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Applications
 {
@@ -15,8 +14,8 @@ namespace Core.Applications
 
       private static bool getKeyboardState(byte[] keyStates)
       {
-         assert(() => (object)keyStates).Must().Not.BeNull().OrThrow();
-         assert(() => keyStates).Must().HaveLengthOf(256).OrThrow();
+         keyStates.Must().Not.BeNull().OrThrow();
+         keyStates.Must().HaveLengthOf(256).OrThrow();
 
          return GetKeyboardState(keyStates);
       }
@@ -24,7 +23,7 @@ namespace Core.Applications
       public static byte[] keyboardState()
       {
          var keyStates = new byte[256];
-         assert(() => getKeyboardState(keyStates)).Must().BeTrue().OrThrow<Win32Exception>(Marshal.GetLastWin32Error());
+         getKeyboardState(keyStates).Must().BeTrue().OrThrow<Win32Exception>(Marshal.GetLastWin32Error());
 
          return keyStates;
       }

@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using Core.Assertions;
 using Core.Exceptions;
 using Core.Monads;
-using static Core.Assertions.AssertionFunctions;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Enumerables
@@ -13,11 +12,11 @@ namespace Core.Enumerables
    {
       public class RangeEnumerator : IEnumerator<int>
       {
-         int start;
-         int stop;
-         int increment;
-         Func<int, int, bool> endingPredicate;
-         IMaybe<int> current;
+         protected int start;
+         protected int stop;
+         protected int increment;
+         protected Func<int, int, bool> endingPredicate;
+         protected IMaybe<int> _current;
 
          public RangeEnumerator(int start, int stop, int increment, Func<int, int, bool> endingPredicate)
          {
@@ -25,35 +24,37 @@ namespace Core.Enumerables
             this.stop = stop;
             this.increment = increment;
             this.endingPredicate = endingPredicate;
-            current = none<int>();
+            _current = none<int>();
          }
 
-         public void Dispose() { }
+         public void Dispose()
+         {
+         }
 
          public bool MoveNext()
          {
-            if (current.If(out var value))
+            if (_current.If(out var current))
             {
-               value += increment;
-               current = value.Some();
-               return endingPredicate(value, stop);
+               current += increment;
+               _current = current.Some();
+               return endingPredicate(current, stop);
             }
             else
             {
-               current = start.Some();
+               _current = start.Some();
                return endingPredicate(start, stop);
             }
          }
 
-         public void Reset() => current = none<int>();
+         public void Reset() => _current = none<int>();
 
          public int Current
          {
             get
             {
-               if (current.If(out var value))
+               if (_current.If(out var current))
                {
-                  return value;
+                  return current;
                }
                else
                {
@@ -65,46 +66,46 @@ namespace Core.Enumerables
          object IEnumerator.Current => Current;
       }
 
-      int start;
-      IMaybe<int> stop;
-      int increment;
-      IMaybe<Func<int, int, bool>> endingPredicate;
-      bool inclusive;
+      protected int start;
+      protected IMaybe<int> _stop;
+      protected int increment;
+      protected IMaybe<Func<int, int, bool>> _endingPredicate;
+      protected bool inclusive;
 
       public Range(int start)
       {
          this.start = start;
-         stop = none<int>();
+         _stop = none<int>();
          increment = 1;
-         endingPredicate = none<Func<int, int, bool>>();
+         _endingPredicate = none<Func<int, int, bool>>();
          inclusive = false;
       }
 
       public void To(int newStop)
       {
-         stop = newStop.Some();
-         endingPredicate = ((Func<int, int, bool>)((x, y) => x <= y)).Some();
+         _stop = newStop.Some();
+         _endingPredicate = ((Func<int, int, bool>)((x, y) => x <= y)).Some();
          inclusive = true;
       }
 
       public void Until(int newStop)
       {
-         stop = newStop.Some();
-         endingPredicate = ((Func<int, int, bool>)((x, y) => x < y)).Some();
+         _stop = newStop.Some();
+         _endingPredicate = ((Func<int, int, bool>)((x, y) => x < y)).Some();
          inclusive = false;
       }
 
       public Range By(int newIncrement)
       {
-         increment = assert(() => newIncrement).Must().Not.BeZero().Force();
+         increment = newIncrement.Must().Not.BeZero().Force();
          if (increment < 0)
          {
-            endingPredicate = inclusive ? ((Func<int, int, bool>)((x, y) => x >= y)).Some() :
+            _endingPredicate = inclusive ? ((Func<int, int, bool>)((x, y) => x >= y)).Some() :
                ((Func<int, int, bool>)((x, y) => x > y)).Some();
          }
          else
          {
-            endingPredicate = inclusive ? ((Func<int, int, bool>)((x, y) => x <= y)).Some() :
+            _endingPredicate = inclusive ? ((Func<int, int, bool>)((x, y) => x <= y)).Some() :
                ((Func<int, int, bool>)((x, y) => x < y)).Some();
          }
 
@@ -113,10 +114,10 @@ namespace Core.Enumerables
 
       public IEnumerator<int> GetEnumerator()
       {
-         var s = assert(() => stop).Must().Force("Stop value hasn't been set");
-         var p = assert(() => endingPredicate).Must().Force("Ending predicate hasn't been set");
+         var stop = _stop.Must().Force("Stop value hasn't been set");
+         var endingPredicate = _endingPredicate.Must().Force("Ending predicate hasn't been set");
 
-         return new RangeEnumerator(start, s, increment, p);
+         return new RangeEnumerator(start, stop, increment, endingPredicate);
       }
 
       IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

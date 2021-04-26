@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Core.Assertions;
-using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Arrays
 {
@@ -16,15 +15,15 @@ namespace Core.Arrays
 
       public Slice(T[] array, int startIndex)
       {
-         this.array = assert(() => array).Must().Not.BeEmpty().Force();
-         this.startIndex = assert(() => startIndex).Must().BeBetween(0).Until(array.Length).Force();
+         this.array = array.Must().Not.BeEmpty().Force();
+         this.startIndex = startIndex.Must().BeBetween(0).Until(array.Length).Force();
          stopIndex = this.array.Length - 1;
          length = stopIndex - this.startIndex;
       }
 
       public Slice<T> To(int index)
       {
-         stopIndex = assert(() => index).Must().BeBetween(startIndex).Until(array.Length).Force();
+         stopIndex = index.Must().BeBetween(startIndex).Until(array.Length).Force();
 
          length = stopIndex - startIndex;
 
@@ -35,7 +34,7 @@ namespace Core.Arrays
       {
          length = count;
          stopIndex = startIndex + length;
-         assert(() => stopIndex).Must().BeLessThan(array.Length).OrThrow();
+         stopIndex.Must().BeLessThan(array.Length).OrThrow();
 
          return this;
       }
@@ -46,7 +45,7 @@ namespace Core.Arrays
          {
             var offset = index + startIndex;
 
-            assert(() => offset).Must().BeBetween(0).And(stopIndex).OrThrow();
+            offset.Must().BeBetween(0).And(stopIndex).OrThrow();
 
             return array[offset];
          }

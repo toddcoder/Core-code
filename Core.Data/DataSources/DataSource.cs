@@ -4,46 +4,31 @@ using System.Data.SqlClient;
 using Core.Assertions;
 using Core.Collections;
 using Core.Computers;
-using Core.Data.Fields;
 using Core.Exceptions;
 using Core.Monads;
 using Core.Objects;
 using Core.RegularExpressions;
 using Core.Strings;
-using static Core.Assertions.AssertionFunctions;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Data.DataSources
 {
    public abstract class DataSource
    {
-      protected static DbType typeToDBType(Type parameterType)
+      protected static DbType typeToDBType(Type parameterType) => Type.GetTypeCode(parameterType) switch
       {
-         switch (Type.GetTypeCode(parameterType))
-         {
-            case TypeCode.Boolean:
-               return DbType.Boolean;
-            case TypeCode.Byte:
-               return DbType.Byte;
-            case TypeCode.DateTime:
-               return DbType.DateTime;
-            case TypeCode.Decimal:
-               return DbType.Decimal;
-            case TypeCode.Double:
-               return DbType.Double;
-            case TypeCode.Int16:
-               return DbType.Int16;
-            case TypeCode.Int32:
-               return DbType.Int32;
-            case TypeCode.Int64:
-               return DbType.Int64;
-            case TypeCode.String:
-            case TypeCode.Char:
-               return DbType.String;
-            default:
-               return DbType.Object;
-         }
-      }
+         TypeCode.Boolean => DbType.Boolean,
+         TypeCode.Byte => DbType.Byte,
+         TypeCode.DateTime => DbType.DateTime,
+         TypeCode.Decimal => DbType.Decimal,
+         TypeCode.Double => DbType.Double,
+         TypeCode.Int16 => DbType.Int16,
+         TypeCode.Int32 => DbType.Int32,
+         TypeCode.Int64 => DbType.Int64,
+         TypeCode.String => DbType.String,
+         TypeCode.Char => DbType.String,
+         _ => DbType.Object
+      };
 
       protected IMaybe<IDbConnection> _connection;
       protected TimeSpan commandTimeout;
@@ -191,7 +176,7 @@ namespace Core.Data.DataSources
 
       internal void BeginReading(object entity, string command, Parameters.Parameters parameters, Fields.Fields inFields)
       {
-         assert(() => inFields.Count).Must().BePositive().OrThrow("You must have at least one field defined");
+         inFields.Count.Must().BePositive().OrThrow("You must have at least one field defined");
 
          _activeObject = entity.IfCast<IActive>();
          fields = inFields;
@@ -282,7 +267,9 @@ namespace Core.Data.DataSources
                {
                   reader.Close();
                }
-               catch { }
+               catch
+               {
+               }
             }
 
             deallocateObjects();
@@ -304,16 +291,13 @@ namespace Core.Data.DataSources
 
       public static void FillFields(object entity, IDataReader reader, Fields.Fields fields)
       {
-         var current = new Field();
-         var value = new object();
-
          foreach (var field in fields)
          {
-            current = field;
+            var current = field;
 
             if (current.Ordinal > -1)
             {
-               value = reader.GetValue(current.Ordinal);
+               var value = reader.GetValue(current.Ordinal);
                if (value == DBNull.Value)
                {
                   value = null;
@@ -341,7 +325,7 @@ namespace Core.Data.DataSources
 
             if (!field.Optional)
             {
-               assert(() => field.Ordinal).Must().Not.BeNegative().OrThrow($"Couldn't find {field.Name} field");
+               field.Ordinal.Must().Not.BeNegative().OrThrow($"Couldn't find {field.Name} field");
             }
          }
       }
@@ -455,7 +439,9 @@ namespace Core.Data.DataSources
 
       public abstract void ClearAllPools();
 
-      public virtual void SetMessageHandler(SqlInfoMessageEventHandler handler) { }
+      public virtual void SetMessageHandler(SqlInfoMessageEventHandler handler)
+      {
+      }
 
       public abstract DataSource WithNewConnectionString(string newConnectionString);
    }

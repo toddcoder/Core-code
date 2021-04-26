@@ -6,7 +6,6 @@ using Core.Data.Configurations;
 using Core.Data.ConnectionStrings;
 using Core.Data.DataSources;
 using Core.Monads;
-using static Core.Assertions.AssertionFunctions;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Data.Setups
@@ -67,7 +66,7 @@ namespace Core.Data.Setups
       {
          get
          {
-            assert(() => (object)ConnectionString).Must().Not.BeNull().OrThrow();
+            ConnectionString.Must().Not.BeNull().OrThrow();
             return new OleDbDataSource(ConnectionString.ConnectionString, file);
          }
       }

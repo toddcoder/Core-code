@@ -7,7 +7,6 @@ using Core.Assertions;
 using Core.Computers;
 using Core.Monads;
 using static Core.Applications.Async.AsyncFunctions;
-using static Core.Assertions.AssertionFunctions;
 using static Core.Monads.AttemptFunctions;
 
 namespace Core.Zip
@@ -17,17 +16,15 @@ namespace Core.Zip
       public static FileName Zip(this FolderName folder, string zipName, Predicate<FileName> include, bool recursive = true,
          CompressionLevel compressionLevel = CompressionLevel.Optimal)
       {
-         assert(() => folder).Must().Not.BeNull().OrThrow();
-         assert(() => zipName).Must().Not.BeNullOrEmpty().OrThrow();
-         assert(() => (object)include).Must().Not.BeNull().OrThrow();
+         folder.Must().Not.BeNull().OrThrow();
+         zipName.Must().Not.BeNullOrEmpty().OrThrow();
+         include.Must().Not.BeNull().OrThrow();
 
          var zipFolder = folder.Parent.DefaultTo(() => @"C:\");
          var zipFile = zipFolder.UniqueFileName(zipName, ".zip");
 
-         using (var archive = ZipFile.Open(zipFile.FullPath, ZipArchiveMode.Create))
-         {
-            zipCurrentFolder(archive, folder, include, recursive, compressionLevel, "");
-         }
+         using var archive = ZipFile.Open(zipFile.FullPath, ZipArchiveMode.Create);
+         zipCurrentFolder(archive, folder, include, recursive, compressionLevel, "");
 
          return zipFile;
       }
@@ -35,7 +32,7 @@ namespace Core.Zip
       public static FileName Zip(this FolderName folder, string zipName, bool recursive = true,
          CompressionLevel compressionLevel = CompressionLevel.Optimal)
       {
-         return folder.Zip(zipName, f => true, recursive, compressionLevel);
+         return folder.Zip(zipName, _ => true, recursive, compressionLevel);
       }
 
       private static void zipCurrentFolder(ZipArchive archive, FolderName folder, Predicate<FileName> include, bool recursive,
@@ -64,7 +61,7 @@ namespace Core.Zip
       public static IResult<FileName> TryToZip(this FolderName folder, string zipName, bool recursive = true,
          CompressionLevel compressionLevel = CompressionLevel.Optimal)
       {
-         return folder.TryToZip(zipName, f => true, recursive, compressionLevel);
+         return folder.TryToZip(zipName, _ => true, recursive, compressionLevel);
       }
 
       public static async Task<ICompletion<FileName>> ZipAsync(this FolderName folder, string zipName, CancellationToken token,
@@ -76,7 +73,7 @@ namespace Core.Zip
       public static async Task<ICompletion<FileName>> ZipAsync(this FolderName folder, string zipName, CancellationToken token, bool recursive = true,
          CompressionLevel compressionLevel = CompressionLevel.Optimal)
       {
-         return await folder.ZipAsync(zipName, token, f => true, recursive, compressionLevel);
+         return await folder.ZipAsync(zipName, token, _ => true, recursive, compressionLevel);
       }
    }
 }

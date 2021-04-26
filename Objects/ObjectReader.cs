@@ -8,24 +8,23 @@ using Core.Collections;
 using Core.Monads;
 using static System.Reflection.BindingFlags;
 using static System.Reflection.MemberTypes;
-using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Objects
 {
    public class ObjectReader
    {
       public static IResult<ObjectReader> ReadObject(object obj) =>
-         from nonNull in assert(() => obj).Must().Not.BeNull().OrFailure()
+         from nonNull in obj.Must().Not.BeNull().OrFailure()
          from type in obj.GetType().Success()
          from values in getValues(obj, type)
          select new ObjectReader(values);
 
-      static IResult<Hash<string, object>> getValues(object obj, Type type) =>
+      protected static IResult<Hash<string, object>> getValues(object obj, Type type) =>
          from members in getMembers(type)
          from values in getValues(obj, members)
          select values;
 
-      static IResult<IEnumerable<MemberInfo>> getMembers(Type type)
+      protected static IResult<IEnumerable<MemberInfo>> getMembers(Type type)
       {
          const MemberTypes memberTypes = Field | Property;
          const BindingFlags bindingFlags = BindingFlags.Instance | GetField | GetProperty | NonPublic | Public;
@@ -35,20 +34,17 @@ namespace Core.Objects
             select members;
       }
 
-      static IResult<object> getValue(object obj, MemberInfo memberInfo)
+      protected static IResult<object> getValue(object obj, MemberInfo memberInfo)
       {
-         switch (memberInfo)
+         return memberInfo switch
          {
-            case FieldInfo fieldInfo:
-               return fieldInfo.GetValue(obj).Success();
-            case PropertyInfo propertyInfo:
-               return propertyInfo.GetValue(obj).Success();
-            default:
-               return $"{memberInfo.Name} is neither a field nor a property".Failure<object>();
-         }
+            FieldInfo fieldInfo => fieldInfo.GetValue(obj).Success(),
+            PropertyInfo propertyInfo => propertyInfo.GetValue(obj).Success(),
+            _ => $"{memberInfo.Name} is neither a field nor a property".Failure<object>()
+         };
       }
 
-      static IResult<Hash<string, object>> getValues(object obj, IEnumerable<MemberInfo> memberInfos)
+      protected static IResult<Hash<string, object>> getValues(object obj, IEnumerable<MemberInfo> memberInfos)
       {
          var hash = new Hash<string, object>();
 
@@ -67,11 +63,11 @@ namespace Core.Objects
          return hash.Success();
       }
 
-      Hash<string, object> values;
+      protected Hash<string, object> values;
 
       protected ObjectReader(Hash<string, object> values) => this.values = values;
 
-      TResult invoke<TResult>(LambdaExpression expression)
+      protected TResult invoke<TResult>(LambdaExpression expression)
       {
          var arguments = expression.Parameters
             .Select(p => p.Name)
@@ -82,7 +78,7 @@ namespace Core.Objects
          return (TResult)expression.Compile().DynamicInvoke(arguments);
       }
 
-      void _do(LambdaExpression expression)
+      protected void _do(LambdaExpression expression)
       {
          var arguments = expression.Parameters
             .Select(p => p.Name)
@@ -115,8 +111,7 @@ namespace Core.Objects
          return invoke<TResult>(expression);
       }
 
-      public TResult Invoke<T1, T2, T3, T4, T5, T6, TResult>(Expression<Func<T1, T2, T3, T4, T5, T6,
-         TResult>> expression)
+      public TResult Invoke<T1, T2, T3, T4, T5, T6, TResult>(Expression<Func<T1, T2, T3, T4, T5, T6, TResult>> expression)
       {
          return invoke<TResult>(expression);
       }
@@ -135,6 +130,6 @@ namespace Core.Objects
 
       public T Assign<T>(string name) => (T)values[name];
 
-      public ObjectReaderTrying TryTo => new ObjectReaderTrying(this);
+      public ObjectReaderTrying TryTo => new(this);
    }
 }

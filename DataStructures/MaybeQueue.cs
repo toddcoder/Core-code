@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Core.Assertions;
 using Core.Monads;
-using static Core.Assertions.AssertionFunctions;
 using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
 
@@ -27,7 +26,7 @@ namespace Core.DataStructures
       public IResult<T[]> ToArray(int arrayIndex = 0)
       {
          return
-            from assertion in assert(() => arrayIndex).Must().BeBetween(0).Until(Count).OrFailure()
+            from assertion in arrayIndex.Must().BeBetween(0).Until(Count).OrFailure()
             from array in tryTo(() =>
             {
                var result = new T[Count];

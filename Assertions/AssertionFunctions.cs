@@ -242,6 +242,8 @@ namespace Core.Assertions
 
       public static bool orReturn<T>(IAssertion<T> assertion) => !assertion.BeEquivalentToTrue();
 
+
+      [Obsolete("Use Named extension")]
       public static Expression<Func<T>> assert<T>(Expression<Func<T>> func) => func;
 
       public static Expression<Func<object>> asObject(Expression<Func<object>> func) => func;

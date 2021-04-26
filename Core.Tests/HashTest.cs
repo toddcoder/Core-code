@@ -5,7 +5,6 @@ using Core.Collections;
 using Core.Strings;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Core.Arrays.ArrayFunctions;
-using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Tests
 {
@@ -47,7 +46,7 @@ namespace Core.Tests
       public void StringHashTest()
       {
          var hash = new StringHash<int>(true) { ["alpha"] = 0, ["bravo"] = 1, ["charlie"] = 2 };
-         assert(() => hash).Must().HaveKeyOf("Bravo").OrThrow();
+         hash.Must().HaveKeyOf("Bravo").OrThrow();
       }
    }
 }

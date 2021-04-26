@@ -2,14 +2,13 @@
 using Core.Assertions;
 using Core.Dates.Now;
 using Core.Monads;
-using static Core.Assertions.AssertionFunctions;
 using static Core.Monads.AttemptFunctions;
 
 namespace Core.Dates
 {
    public class DateIncrementer : IComparable<DateTime>
    {
-      public static implicit operator DateIncrementer(DateTime date) => new DateIncrementer(date);
+      public static implicit operator DateIncrementer(DateTime date) => new(date);
 
       public static implicit operator DateTime(DateIncrementer incrementer) => incrementer.date;
 
@@ -35,7 +34,7 @@ namespace Core.Dates
          return incrementer.Date - increment;
       }
 
-      DateTime date;
+      protected DateTime date;
 
       public DateIncrementer(DateTime date) => this.date = date;
 
@@ -49,7 +48,7 @@ namespace Core.Dates
 
       public Year Year
       {
-         get => new Year(date);
+         get => new(date);
          set => date = value.Date;
       }
 
@@ -57,25 +56,25 @@ namespace Core.Dates
 
       public Month Month
       {
-         get => new Month(date);
+         get => new(date);
          set => date = value.Date;
       }
 
       public IResult<DateTime> SetMonth(int month)
       {
-         var newDate = assert(() => month).Must().BeBetween(1).And(12).OrFailure().Map(m => new Month(date, m).Date);
+         var newDate = month.Must().BeBetween(1).And(12).OrFailure().Map(m => new Month(date, m).Date);
          return newDate.OnSuccess(d => date = d);
       }
 
       public Day Day
       {
-         get => new Day(date);
+         get => new(date);
          set => date = value.Date;
       }
 
       public IResult<DateTime> SetDay(int day)
       {
-         var newDate = assert(() => day).Must().BeBetween(1).And(date.LastOfMonth().Day).OrFailure().Map(d => new Day(date, d).Date);
+         var newDate = day.Must().BeBetween(1).And(date.LastOfMonth().Day).OrFailure().Map(d => new Day(date, d).Date);
          return newDate.OnSuccess(d => date = d);
       }
 
@@ -83,49 +82,49 @@ namespace Core.Dates
 
       public Hour Hour
       {
-         get => new Hour(date);
+         get => new(date);
          set => date = value.Date;
       }
 
       public IResult<DateTime> SetHour(int hour)
       {
-         var newDate = assert(() => hour).Must().BeBetween(0).Until(24).OrFailure().Map(h => new Hour(date, h).Date);
+         var newDate = hour.Must().BeBetween(0).Until(24).OrFailure().Map(h => new Hour(date, h).Date);
          return newDate.OnSuccess(d => date = d);
       }
 
       public Minute Minute
       {
-         get => new Minute(date);
+         get => new(date);
          set => date = value.Date;
       }
 
       public IResult<DateTime> SetMinute(int minute)
       {
-         var newDate = assert(() => minute).Must().BeBetween(0).Until(60).OrFailure().Map(m => new Minute(date, m).Date);
+         var newDate = minute.Must().BeBetween(0).Until(60).OrFailure().Map(m => new Minute(date, m).Date);
          return newDate.OnSuccess(d => date = d);
       }
 
       public Second Second
       {
-         get => new Second(date);
+         get => new(date);
          set => date = value.Date;
       }
 
       public IResult<DateTime> SetSecond(int second)
       {
-         var newDate = assert(() => second).Must().BeBetween(0).Until(60).OrFailure().Map(s => new Second(date, s).Date);
+         var newDate = second.Must().BeBetween(0).Until(60).OrFailure().Map(s => new Second(date, s).Date);
          return newDate.OnSuccess(d => date = d);
       }
 
       public Millisecond Millisecond
       {
-         get => new Millisecond(date);
+         get => new(date);
          set => date = value.Date;
       }
 
       public IResult<DateTime> SetMillisecond(int millisecond)
       {
-         var newDate = assert(() => millisecond).Must().BeBetween(0).Until(1000).OrFailure().Map(m => new Millisecond(date, m).Date);
+         var newDate = millisecond.Must().BeBetween(0).Until(1000).OrFailure().Map(m => new Millisecond(date, m).Date);
          return newDate.OnSuccess(d => date = d);
       }
 
@@ -141,6 +140,6 @@ namespace Core.Dates
 
       public override int GetHashCode() => date.GetHashCode();
 
-      public DateIncrementer Clone() => new DateIncrementer(date);
+      public DateIncrementer Clone() => new(date);
    }
 }

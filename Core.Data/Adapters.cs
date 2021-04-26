@@ -10,7 +10,6 @@ using Core.Data.Setups;
 using Core.Monads;
 using Core.Objects;
 using Core.Strings;
-using static Core.Assertions.AssertionFunctions;
 using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
 
@@ -195,7 +194,7 @@ namespace Core.Data
 
       public void Add(string adapterName)
       {
-         assert(() => adapterName).Must().Not.BeNullOrEmpty().OrThrow();
+         adapterName.Must().Not.BeNullOrEmpty().OrThrow();
 
          validAdapters.Add(adapterName);
       }

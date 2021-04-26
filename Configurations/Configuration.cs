@@ -8,7 +8,6 @@ using Core.Computers;
 using Core.Enumerables;
 using Core.Monads;
 using Core.Strings;
-using static Core.Assertions.AssertionFunctions;
 using static Core.Monads.MonadFunctions;
 using static Core.RegularExpressions.RegexExtensions;
 
@@ -157,7 +156,7 @@ namespace Core.Configurations
       {
          try
          {
-            asObject(() => obj).Must().Not.BeNull().OrThrow();
+            obj.Must().Not.BeNull().OrThrow();
 
             var group = new Group(name);
 

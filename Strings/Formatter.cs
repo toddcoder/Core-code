@@ -5,183 +5,181 @@ using Core.Assertions;
 using Core.Collections;
 using Core.Numbers;
 using Core.RegularExpressions;
-using static Core.Assertions.AssertionFunctions;
 using static Core.Strings.StringFunctions;
 
 namespace Core.Strings
 {
-	public class Formatter
-	{
-		protected const string REGEX_NAME = "-(< '//') '{' /([/w '-']+) /([',:']+ -['}']+)? '}'";
+   public class Formatter
+   {
+      protected const string REGEX_NAME = "-(< '//') '{' /([/w '-']+) /([',:']+ -['}']+)? '}'";
 
-		public static Formatter WithStandard(bool includeFolders)
-		{
-			var formatter = new Formatter();
-			addStandard(formatter, includeFolders);
-
-			return formatter;
-		}
-
-		public static Formatter WithStandard(bool includeFolders, Hash<string, string> initializers)
-		{
-			var formatter = new Formatter(initializers);
-			addStandard(formatter, includeFolders);
-
-			return formatter;
-		}
-
-		protected static void addStandard(Formatter formatter, bool includeFolders)
-		{
-			formatter["guid"] = guid();
-			formatter["now"] = DateTime.Now.ToString();
-			formatter["uid"] = uniqueID();
-			formatter["ulid"] = uniqueID();
-			if (includeFolders)
-			{
-				formatter["docs"] = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-				formatter["windir"] = Environment.GetEnvironmentVariable("windir");
-				formatter["tempdir"] = Path.GetTempPath();
-				formatter["system32"] = Environment.GetFolderPath(Environment.SpecialFolder.System);
-				formatter["progs"] = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
-				formatter["configs"] = @"C:\Enterprise\Configurations";
-				formatter["projects"] = @"C:\Enterprise\Projects";
-				formatter["enterprise"] = @"C:\Enterprise";
-				formatter["services"] = @"C:\Enterprise\Services";
-			}
-		}
-
-		protected static string format(string source, bool addStandard, bool includeFolders, params string[] args)
+      public static Formatter WithStandard(bool includeFolders)
       {
-         assert(() => args.Length).Must().BeEven().OrThrow();
+         var formatter = new Formatter();
+         addStandard(formatter, includeFolders);
 
-			var formatter = addStandard ? WithStandard(includeFolders) : new Formatter();
-			for (var i = 0; i < args.Length; i += 2)
-			{
-				formatter[args[i]] = args[i + 1];
-			}
+         return formatter;
+      }
 
-			return formatter.Format(source);
-		}
+      public static Formatter WithStandard(bool includeFolders, Hash<string, string> initializers)
+      {
+         var formatter = new Formatter(initializers);
+         addStandard(formatter, includeFolders);
 
-		public static string Format(string source, params string[] args) => format(source, false, false, args);
+         return formatter;
+      }
 
-		public static string FormatWithStandard(string source, bool includeFolders, params string[] args)
-		{
-			return format(source, true, includeFolders, args);
-		}
+      protected static void addStandard(Formatter formatter, bool includeFolders)
+      {
+         formatter["guid"] = guid();
+         formatter["now"] = DateTime.Now.ToString();
+         formatter["uid"] = uniqueID();
+         formatter["ulid"] = uniqueID();
+         if (includeFolders)
+         {
+            formatter["docs"] = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+            formatter["windir"] = Environment.GetEnvironmentVariable("windir");
+            formatter["tempdir"] = Path.GetTempPath();
+            formatter["system32"] = Environment.GetFolderPath(Environment.SpecialFolder.System);
+            formatter["progs"] = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
+            formatter["configs"] = @"C:\Enterprise\Configurations";
+            formatter["projects"] = @"C:\Enterprise\Projects";
+            formatter["enterprise"] = @"C:\Enterprise";
+            formatter["services"] = @"C:\Enterprise\Services";
+         }
+      }
 
-		public static string[] NamesInString(string source)
-		{
-			if (source.IsNotEmpty())
-			{
-				var matcher = new Matcher();
-				if (matcher.IsMatch(source, REGEX_NAME, true, true))
-				{
-					return 0.Until(matcher.MatchCount).Select(i => matcher[i, 1]).ToArray();
-				}
-				else
-				{
-					return new string[0];
-				}
-			}
-			else
-			{
-				return new string[0];
-			}
-		}
+      protected static string format(string source, bool addStandard, bool includeFolders, params string[] args)
+      {
+         args.Length.Must().BeEven().OrThrow();
 
-		protected Hash<string, string> names;
+         var formatter = addStandard ? WithStandard(includeFolders) : new Formatter();
+         for (var i = 0; i < args.Length; i += 2)
+         {
+            formatter[args[i]] = args[i + 1];
+         }
 
-		public Formatter() => names = new AutoHash<string, string>(n => "");
+         return formatter.Format(source);
+      }
 
-		public Formatter(Hash<string, string> initializers) => names = initializers;
+      public static string Format(string source, params string[] args) => format(source, false, false, args);
 
-		public Formatter(Formatter formatter)
-		{
-			foreach (var item in formatter.names)
-			{
-				names[item.Key] = item.Value;
-			}
-		}
+      public static string FormatWithStandard(string source, bool includeFolders, params string[] args)
+      {
+         return format(source, true, includeFolders, args);
+      }
 
-		public string this[string name]
-		{
-			get => names[name];
-			set => names[name] = value;
-		}
+      public static string[] NamesInString(string source)
+      {
+         if (source.IsNotEmpty())
+         {
+            var matcher = new Matcher();
+            if (matcher.IsMatch(source, REGEX_NAME, true, true))
+            {
+               return 0.Until(matcher.MatchCount).Select(i => matcher[i, 1]).ToArray();
+            }
+            else
+            {
+               return new string[0];
+            }
+         }
+         else
+         {
+            return new string[0];
+         }
+      }
 
-		public string[] Names => names.Select(item => item.Key).ToArray();
+      protected Hash<string, string> names;
 
-		public string[] Values => names.Select(item => item.Value).ToArray();
+      public Formatter() => names = new AutoHash<string, string>(_ => "");
 
-		public Hash<string, string> Replacements => names;
+      public Formatter(Hash<string, string> initializers) => names = initializers;
 
-		public virtual string Format(string source)
-		{
-			if (source.IsNotEmpty())
-			{
-				var matcher = new Matcher();
-				matcher.Evaluate(source, REGEX_NAME, true, true);
-				for (var i = 0; i < matcher.MatchCount; i++)
-				{
-					var name = matcher[i, 1];
-					if (names.ContainsKey(name))
-					{
-						matcher[i] = getText(name, matcher[i, 2]);
-					}
-				}
+      public Formatter(Formatter formatter)
+      {
+         foreach (var (key, value) in formatter.names)
+         {
+            names[key] = value;
+         }
+      }
 
-				return matcher.ToString().Replace("/{", "{");
-			}
-			else
-			{
-				return "";
-			}
-		}
+      public string this[string name]
+      {
+         get => names[name];
+         set => names[name] = value;
+      }
 
-		protected virtual string getText(string name, string format)
-		{
-			if (names.If(name, out var text))
-			{
-				if (format.IsNotEmpty())
-				{
-					var anObject = text.ToObject();
-					if (anObject.If(out var obj))
-					{
-						text = string.Format($"{{0{format}}}", obj);
-					}
-				}
+      public string[] Names => names.Select(item => item.Key).ToArray();
 
-				return text;
-			}
-			else
-			{
-				return "";
-			}
-		}
+      public string[] Values => names.Select(item => item.Value).ToArray();
 
-		public void Merge(Formatter formatter, bool overwriteOriginalValues)
-		{
-			if (overwriteOriginalValues)
-			{
-				foreach (var item in formatter.names)
-				{
-					names[item.Key] = item.Value;
-				}
-			}
-			else
-			{
-				foreach (var item in formatter.names)
-				{
-					var name = item.Key;
-					if (!names.ContainsKey(name))
-					{
-						names[name] = item.Value;
-					}
-				}
-			}
-		}
+      public Hash<string, string> Replacements => names;
 
-		public virtual bool ContainsName(string name) => names.ContainsKey(name);
-	}
+      public virtual string Format(string source)
+      {
+         if (source.IsNotEmpty())
+         {
+            var matcher = new Matcher();
+            matcher.Evaluate(source, REGEX_NAME, true, true);
+            for (var i = 0; i < matcher.MatchCount; i++)
+            {
+               var name = matcher[i, 1];
+               if (names.ContainsKey(name))
+               {
+                  matcher[i] = getText(name, matcher[i, 2]);
+               }
+            }
+
+            return matcher.ToString().Replace("/{", "{");
+         }
+         else
+         {
+            return "";
+         }
+      }
+
+      protected virtual string getText(string name, string format)
+      {
+         if (names.If(name, out var text))
+         {
+            if (format.IsNotEmpty())
+            {
+               var anObject = text.ToObject();
+               if (anObject.If(out var obj))
+               {
+                  text = string.Format($"{{0{format}}}", obj);
+               }
+            }
+
+            return text;
+         }
+         else
+         {
+            return "";
+         }
+      }
+
+      public void Merge(Formatter formatter, bool overwriteOriginalValues)
+      {
+         if (overwriteOriginalValues)
+         {
+            foreach (var (key, value) in formatter.names)
+            {
+               names[key] = value;
+            }
+         }
+         else
+         {
+            foreach (var (name, value) in formatter.names)
+            {
+               if (!names.ContainsKey(name))
+               {
+                  names[name] = value;
+               }
+            }
+         }
+      }
+
+      public virtual bool ContainsName(string name) => names.ContainsKey(name);
+   }
 }

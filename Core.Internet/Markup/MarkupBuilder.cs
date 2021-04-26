@@ -2,7 +2,6 @@
 using System.Text;
 using Core.Assertions;
 using Core.Computers;
-using static Core.Assertions.AssertionFunctions;
 using static Core.Strings.StringFunctions;
 
 namespace Core.Internet.Markup
@@ -40,7 +39,7 @@ namespace Core.Internet.Markup
 
       public MarkupBuilder(string rootName)
       {
-         assert(() => rootName).Must().Not.BeNullOrEmpty().OrThrow();
+         rootName.Must().Not.BeNullOrEmpty().OrThrow();
 
          tidy = true;
          encoding = Encoding.UTF8;

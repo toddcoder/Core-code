@@ -7,7 +7,6 @@ using Core.Monads;
 using Core.Numbers;
 using Core.Objects;
 using Core.RegularExpressions;
-using static Core.Assertions.AssertionFunctions;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Strings
@@ -75,17 +74,21 @@ namespace Core.Strings
       }
 
       public DelimitedText(string beginPattern, string endPattern, string exceptPattern, bool ignoreCase = false, bool multiline = false,
-         bool friendly = true) : this(beginPattern, endPattern.Some(), exceptPattern, ignoreCase, multiline, friendly) { }
+         bool friendly = true) : this(beginPattern, endPattern.Some(), exceptPattern, ignoreCase, multiline, friendly)
+      {
+      }
 
       public DelimitedText(string beginPattern, string exceptPattern, bool ignoreCase = false, bool multiline = false,
-         bool friendly = true) : this(beginPattern, none<string>(), exceptPattern, ignoreCase, multiline, friendly) { }
+         bool friendly = true) : this(beginPattern, none<string>(), exceptPattern, ignoreCase, multiline, friendly)
+      {
+      }
 
       public string BeginPattern
       {
          get => beginPattern;
          set
          {
-            assert(() => value).Must().Not.BeNullOrEmpty().OrThrow();
+            value.Must().Not.BeNullOrEmpty().OrThrow();
             beginPattern = value.StartsWith("^") ? value : $"^{value}";
          }
       }
@@ -97,7 +100,7 @@ namespace Core.Strings
          {
             if (value.If(out var newEndPattern))
             {
-               assert(() => newEndPattern).Must().Not.BeNullOrEmpty().OrThrow();
+               newEndPattern.Must().Not.BeNullOrEmpty().OrThrow();
                _endPattern = (newEndPattern.StartsWith("^") ? newEndPattern : $"^{newEndPattern}").Some();
             }
             else
@@ -112,7 +115,7 @@ namespace Core.Strings
          get => exceptPattern;
          set
          {
-            assert(() => value).Must().Not.BeNullOrEmpty().OrThrow();
+            value.Must().Not.BeNullOrEmpty().OrThrow();
             exceptPattern = value.StartsWith("^") ? value : $"^{value}";
          }
       }
@@ -153,15 +156,12 @@ namespace Core.Strings
       {
          if (friendly)
          {
-            switch (ch)
+            return ch switch
             {
-               case '\'':
-                  return "^ [squote]";
-               case '"':
-                  return "^ [dquote]";
-               default:
-                  return $"^ '{ch}'";
-            }
+               '\'' => "^ [squote]",
+               '"' => "^ [dquote]",
+               _ => $"^ '{ch}'"
+            };
          }
          else
          {
@@ -171,7 +171,7 @@ namespace Core.Strings
 
       public IEnumerable<(string text, int index, DelimitedTextStatus status)> Enumerable(string source)
       {
-         assert(() => source).Must().Not.BeNull().OrThrow();
+         source.Must().Not.BeNull().OrThrow();
 
          slicer.ActivateWith(() => new Slicer(source));
 
@@ -281,7 +281,7 @@ namespace Core.Strings
          get => slicer.Value[index, length];
          set
          {
-            assert(() => value).Must().Not.BeNull().OrThrow();
+            value.Must().Not.BeNull().OrThrow();
             slicer.Value[index, length] = value;
          }
       }
@@ -302,7 +302,7 @@ namespace Core.Strings
 
       public IEnumerable<Slice> Split(string source, string pattern, bool includeDelimiter = false)
       {
-         assert(() => pattern).Must().Not.BeNullOrEmpty().OrThrow();
+         pattern.Must().Not.BeNullOrEmpty().OrThrow();
 
          var lastIndex = 0;
 
@@ -329,16 +329,16 @@ namespace Core.Strings
 
       public void Replace(string source, string pattern, string replacement, int count = 0)
       {
-         assert(() => replacement).Must().Not.BeNull().OrThrow();
+         replacement.Must().Not.BeNull().OrThrow();
 
          Replace(source, pattern, _ => replacement, count);
       }
 
       public void Replace(string source, string pattern, Func<Slice, string> map, int count = 0)
       {
-         assert(() => pattern).Must().Not.BeNullOrEmpty().OrThrow();
-         assert(() => (object)map).Must().Not.BeNull().OrThrow();
-         assert(() => count).Must().BeGreaterThan(-1).OrThrow();
+         pattern.Must().Not.BeNullOrEmpty().OrThrow();
+         map.Must().Not.BeNull().OrThrow();
+         count.Must().BeGreaterThan(-1).OrThrow();
 
          var limited = count > 0;
          var replaced = 0;
@@ -360,7 +360,7 @@ namespace Core.Strings
 
       public string Transform(string source, string pattern, string replacement, bool ignoreCase = false)
       {
-         assert(() => pattern).Must().Not.BeNullOrEmpty().OrThrow();
+         pattern.Must().Not.BeNullOrEmpty().OrThrow();
 
          var startIndex = 0;
          Status = DelimitedTextStatus.Outside;
@@ -437,23 +437,15 @@ namespace Core.Strings
 
       public string Restringify(string source, RestringifyQuotes restringifyQuotes)
       {
-         assert(() => source).Must().Not.BeNull().OrThrow();
+         source.Must().Not.BeNull().OrThrow();
 
-         string quote;
-         switch (restringifyQuotes)
+         var quote = restringifyQuotes switch
          {
-            case RestringifyQuotes.None:
-               quote = "";
-               break;
-            case RestringifyQuotes.DoubleQuote:
-               quote = "\"";
-               break;
-            case RestringifyQuotes.SingleQuote:
-               quote = "'";
-               break;
-            default:
-               throw new ArgumentOutOfRangeException(nameof(restringifyQuotes), restringifyQuotes, null);
-         }
+            RestringifyQuotes.None => "",
+            RestringifyQuotes.DoubleQuote => "\"",
+            RestringifyQuotes.SingleQuote => "'",
+            _ => throw new ArgumentOutOfRangeException(nameof(restringifyQuotes), restringifyQuotes, null)
+         };
 
          Slicer restringified = source;
          for (var i = 0; i < strings.Count; i++)
