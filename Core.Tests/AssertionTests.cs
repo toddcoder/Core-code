@@ -14,24 +14,18 @@ namespace Core.Tests
       [TestMethod]
       public void ComparableTest()
       {
-         if (153.Must().BeBetween(1).And(200))
+         var number = 153;
+         if (assert(() => number).Must().BeBetween(1).And(200))
          {
             Console.WriteLine("153 between 1 and 200");
          }
 
-         if (153.Must().BeBetween(0).Until(154))
+         if (assert(() => number).Must().BeBetween(0).Until(154))
          {
             Console.WriteLine("153 between 0 and 154 exclusively");
          }
 
-         if (0.Must().BeBetween(1).And(153))
-         {
-            Console.WriteLine("0 between 1 and 153");
-         }
-         else
-         {
-            Console.WriteLine("0 outside of 1...153");
-         }
+         Console.WriteLine(0.Must().BeBetween(1).And(153) ? "0 between 1 and 153" : "0 outside of 1...153");
 
          if (0.Must().Not.BePositive())
          {
@@ -59,23 +53,9 @@ namespace Core.Tests
       {
          foreach (var str in array("foobar", "", null))
          {
-            if (str.Must().Not.BeNull())
-            {
-               Console.WriteLine($"{str ?? "null"} is not null");
-            }
-            else
-            {
-               Console.WriteLine("is null");
-            }
+            Console.WriteLine(str.Must().Not.BeNull() ? $"{str ?? "null"} is not null" : "is null");
 
-            if (str.Must().Not.BeEmpty())
-            {
-               Console.WriteLine($"{str ?? "null"} is not empty");
-            }
-            else
-            {
-               Console.WriteLine("is empty");
-            }
+            Console.WriteLine(str.Must().Not.BeEmpty() ? $"{str ?? "null"} is not empty" : "is empty");
          }
       }
 
