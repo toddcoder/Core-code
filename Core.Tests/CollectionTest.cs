@@ -9,7 +9,6 @@ using Core.DataStructures;
 using Core.Dates;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Core.Arrays.ArrayFunctions;
-using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Tests
 {
@@ -52,7 +51,7 @@ namespace Core.Tests
          }
 
          var result = intStack.Pop();
-         assert(() => result).Must().Equal(result).OrThrow();
+         result.Must().Equal(result).OrThrow();
       }
 
       [TestMethod]

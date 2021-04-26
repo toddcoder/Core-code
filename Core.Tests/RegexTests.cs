@@ -2,7 +2,6 @@
 using Core.Assertions;
 using Core.Regex;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Tests
 {
@@ -21,7 +20,7 @@ namespace Core.Tests
             }
 
             Console.WriteLine(matcher);
-            assert(() => matcher.ToString()).Must().Equal("tstylecop.style.format.options.xml").OrThrow();
+            matcher.ToString().Must().Equal("tstylecop.style.format.options.xml").OrThrow();
          }
       }
 
@@ -30,7 +29,7 @@ namespace Core.Tests
       {
          var result = "This is the full sentence with sql1 in it".Substitute(@"sql(\d)", "sql-$1");
          Console.WriteLine(result);
-         assert(() => result).Must().Equal("This is the full sentence with sql-1 in it").OrThrow();
+         result.Must().Equal("This is the full sentence with sql-1 in it").OrThrow();
       }
    }
 }

@@ -2,7 +2,6 @@
 using System.Reflection;
 using Core.Assertions;
 using Core.Monads;
-using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Objects
 {
@@ -16,7 +15,7 @@ namespace Core.Objects
       protected const BindingFlags SET_FIELD_BINDINGS = BASE_BINDINGS | BindingFlags.SetField;
 
       public static IResult<Invoker> From(object obj) =>
-         from nonNull in assert(() => obj).Must().Not.BeNull().OrFailure()
+         from nonNull in obj.Must().Not.BeNull().OrFailure()
          from type in nonNull.GetType().Success()
          select new Invoker(nonNull, type);
 
@@ -49,6 +48,6 @@ namespace Core.Objects
 
       public void SetField(string name, params object[] args) => invokeMember(name, SET_FIELD_BINDINGS, args);
 
-      public InvokerTrying TryTo => new InvokerTrying(this);
+      public InvokerTrying TryTo => new(this);
    }
 }

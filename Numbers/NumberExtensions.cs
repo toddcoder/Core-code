@@ -6,7 +6,6 @@ using Core.Enumerables;
 using Core.RegularExpressions;
 using Core.Strings;
 using static System.Math;
-using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Numbers
 {
@@ -15,29 +14,26 @@ namespace Core.Numbers
       [DllImport("Shlwapi.dll", CharSet = CharSet.Auto)]
       public static extern long StrFormatByteSize(long size, [MarshalAs(UnmanagedType.LPTStr)] StringBuilder buffer, int bufferSize);
 
-      public static Between<T> Between<T>(this T number, T minimum)
-         where T : IComparable<T> => new Between<T>(number, minimum);
+      public static Between<T> Between<T>(this T number, T minimum) where T : IComparable<T> => new(number, minimum);
 
       public static bool IsNumeric(this Type type)
       {
          var code = Type.GetTypeCode(type);
-         switch (code)
+         return code switch
          {
-            case TypeCode.Byte:
-            case TypeCode.Decimal:
-            case TypeCode.Double:
-            case TypeCode.Int16:
-            case TypeCode.Int32:
-            case TypeCode.Int64:
-            case TypeCode.SByte:
-            case TypeCode.Single:
-            case TypeCode.UInt16:
-            case TypeCode.UInt32:
-            case TypeCode.UInt64:
-               return true;
-            default:
-               return false;
-         }
+            TypeCode.Byte => true,
+            TypeCode.Decimal => true,
+            TypeCode.Double => true,
+            TypeCode.Int16 => true,
+            TypeCode.Int32 => true,
+            TypeCode.Int64 => true,
+            TypeCode.SByte => true,
+            TypeCode.Single => true,
+            TypeCode.UInt16 => true,
+            TypeCode.UInt32 => true,
+            TypeCode.UInt64 => true,
+            _ => false
+         };
       }
 
       public static bool IsNumeric(this object value) => (value as string)?.IsNumeric() ?? value.GetType().IsNumeric();
@@ -76,21 +72,19 @@ namespace Core.Numbers
       public static bool IsIntegral(this Type type)
       {
          var code = Type.GetTypeCode(type);
-         switch (code)
+         return code switch
          {
-            case TypeCode.Byte:
-            case TypeCode.Int16:
-            case TypeCode.Int32:
-            case TypeCode.Int64:
-            case TypeCode.SByte:
-            case TypeCode.Single:
-            case TypeCode.UInt16:
-            case TypeCode.UInt32:
-            case TypeCode.UInt64:
-               return true;
-            default:
-               return false;
-         }
+            TypeCode.Byte => true,
+            TypeCode.Int16 => true,
+            TypeCode.Int32 => true,
+            TypeCode.Int64 => true,
+            TypeCode.SByte => true,
+            TypeCode.Single => true,
+            TypeCode.UInt16 => true,
+            TypeCode.UInt32 => true,
+            TypeCode.UInt64 => true,
+            _ => false
+         };
       }
 
       public static bool IsIntegral(this object value) => (value as string)?.IsIntegral() ?? value.GetType().IsIntegral();
@@ -110,15 +104,13 @@ namespace Core.Numbers
       public static bool IsFloat(this Type type)
       {
          var code = Type.GetTypeCode(type);
-         switch (code)
+         return code switch
          {
-            case TypeCode.Decimal:
-            case TypeCode.Double:
-            case TypeCode.Single:
-               return true;
-            default:
-               return false;
-         }
+            TypeCode.Decimal => true,
+            TypeCode.Double => true,
+            TypeCode.Single => true,
+            _ => false
+         };
       }
 
       public static bool IsFloat(this object value) => (value as string)?.IsFloat() ?? value.GetType().IsFloat();
@@ -207,7 +199,7 @@ namespace Core.Numbers
 
       public static (double division, double remainder) DivRem(this double dividend, double divisor)
       {
-         assert(()=> divisor).Must().Not.BeNearlyEqual(0.0).OrThrow();
+         divisor.Must().Not.BeNearlyEqual(0.0).OrThrow();
 
          var result = dividend / divisor;
          var floor = Floor(result);
@@ -218,12 +210,11 @@ namespace Core.Numbers
 
       public static (int division, int remainder) DivRem(this int dividend, int divisor)
       {
-         assert(() => divisor).Must().Not.BeZero().OrThrow();
+         divisor.Must().Not.BeZero().OrThrow();
          return (dividend / divisor, dividend % divisor);
       }
 
-      public static Comparison<T> ComparedTo<T>(this T left, T right)
-         where T : IComparable<T> => new Comparison<T>(left, right);
+      public static Comparison<T> ComparedTo<T>(this T left, T right) where T : IComparable<T> => new(left, right);
 
       public static Range To(this int start, int stop)
       {
@@ -241,11 +232,9 @@ namespace Core.Numbers
          return range;
       }
 
-      public static T MinOf<T>(this T left, T right)
-         where T : IComparable<T> => left.CompareTo(right) < 0 ? left : right;
+      public static T MinOf<T>(this T left, T right) where T : IComparable<T> => left.CompareTo(right) < 0 ? left : right;
 
-      public static T MaxOf<T>(this T left, T right)
-         where T : IComparable<T> => left.CompareTo(right) > 0 ? left : right;
+      public static T MaxOf<T>(this T left, T right) where T : IComparable<T> => left.CompareTo(right) > 0 ? left : right;
 
       public static string ByteSize(this long value)
       {

@@ -5,7 +5,6 @@ using Core.Enumerables;
 using Core.Monads;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Core.Arrays.ArrayFunctions;
-using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Tests
 {
@@ -18,7 +17,7 @@ namespace Core.Tests
          var testArray = 'f'.DownTo('a');
          if (testArray.FirstOrNone().If(out var ch))
          {
-            assert(() => ch.ToString()).Must().Equal("f").OrThrow();
+            ch.ToString().Must().Equal("f").OrThrow();
             Console.WriteLine($"{ch} == 'f'");
          }
       }
@@ -91,10 +90,10 @@ namespace Core.Tests
       {
          var left = array("foobar", "foo", "a", "bar");
          var right = array(6, 3, 1, 3);
-         assert(() => left.AllMatch(right, (s, i) => s.Length == i, true)).Must().BeTrue().OrThrow();
+         left.AllMatch(right, (s, i) => s.Length == i).Must().BeTrue().OrThrow();
 
          var right2 = array(5, 3, 1, 3);
-         assert(() => left.AllMatch(right2, (s, i) => s.Length == i, true)).Must().BeTrue().OrThrow();
+         left.AllMatch(right2, (s, i) => s.Length == i).Must().BeTrue().OrThrow();
       }
    }
 }

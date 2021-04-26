@@ -11,7 +11,6 @@ using Core.Monads;
 using Core.Objects;
 using Core.Strings;
 using static System.Convert;
-using static Core.Assertions.AssertionFunctions;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Data.DataSources
@@ -219,37 +218,30 @@ namespace Core.Data.DataSources
 
       public void Copy<T>(Adapter<T> sourceAdapter) where T : class
       {
-         assert(() => TableName).Must().Not.BeEmpty().OrThrow();
+         TableName.Must().Not.BeEmpty().OrThrow();
 
          recordCount = 0;
 
-         using (var dataReader = sourceAdapter.ExecuteReader())
-         using (var sqlConnection = (SqlConnection)GetConnection())
-         using (var bulkCopy = new SqlBulkCopy(sqlConnection))
-         {
-            bulkCopy.DestinationTableName = TableName;
-            bulkCopy.NotifyAfter = 5000;
-            bulkCopy.SqlRowsCopied += (sender, e) => recordCount += e.RowsCopied;
-            bulkCopy.BulkCopyTimeout = (int)CommandTimeout.TotalSeconds;
-            bulkCopy.WriteToServer(dataReader);
-         }
+         using var dataReader = sourceAdapter.ExecuteReader();
+         using var sqlConnection = (SqlConnection)GetConnection();
+         using var bulkCopy = new SqlBulkCopy(sqlConnection) { DestinationTableName = TableName, NotifyAfter = 5000 };
+         bulkCopy.SqlRowsCopied += (_, e) => recordCount += e.RowsCopied;
+         bulkCopy.BulkCopyTimeout = (int)CommandTimeout.TotalSeconds;
+         bulkCopy.WriteToServer(dataReader);
       }
 
       public void Copy(IDataReader reader, TimeSpan timeout)
       {
-         assert(() => TableName).Must().Not.BeEmpty().OrThrow();
+         TableName.Must().Not.BeEmpty().OrThrow();
 
          recordCount = 0;
 
-         using (var sqlConnection = (SqlConnection)GetConnection())
-         using (var bulkCopy = new SqlBulkCopy(sqlConnection))
-         {
-            bulkCopy.NotifyAfter = 5000;
-            bulkCopy.SqlRowsCopied += (sender, e) => recordCount += e.RowsCopied;
-            bulkCopy.DestinationTableName = TableName;
-            bulkCopy.BulkCopyTimeout = (int)timeout.TotalSeconds;
-            bulkCopy.WriteToServer(reader);
-         }
+         using var sqlConnection = (SqlConnection)GetConnection();
+         using var bulkCopy = new SqlBulkCopy(sqlConnection) { NotifyAfter = 5000 };
+         bulkCopy.SqlRowsCopied += (_, e) => recordCount += e.RowsCopied;
+         bulkCopy.DestinationTableName = TableName;
+         bulkCopy.BulkCopyTimeout = (int)timeout.TotalSeconds;
+         bulkCopy.WriteToServer(reader);
       }
 
       public override void ClearAllPools() => SqlConnection.ClearAllPools();

@@ -2,7 +2,6 @@
 using System.Windows.Forms;
 using Core.Assertions;
 using Core.Monads;
-using static Core.Assertions.AssertionFunctions;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Consoles
@@ -16,7 +15,7 @@ namespace Core.WinForms.Consoles
       public TextBoxReader(Form form, TextBoxConsole console)
       {
          this.form = form;
-         this.form.FormClosing += (sender, e) =>
+         this.form.FormClosing += (_, e) =>
          {
             if (console.IOStatus == IOStatusType.Reading)
             {
@@ -42,7 +41,7 @@ namespace Core.WinForms.Consoles
          console.Focus();
          console.IOStatus = IOStatusType.Reading;
 
-         assert(() => console.Suspended).Must().BeZero().OrThrow("Console must be updating");
+         console.Suspended.Must().BeZero().OrThrow("Console must be updating");
 
          while (console.IOStatus == IOStatusType.Reading)
          {

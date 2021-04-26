@@ -9,7 +9,6 @@ using Core.RegularExpressions;
 using Core.Strings;
 using static System.Reflection.BindingFlags;
 using static System.Reflection.MemberTypes;
-using static Core.Assertions.AssertionFunctions;
 using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
 
@@ -17,7 +16,7 @@ namespace Core.Objects
 {
    public class ReflectorFormat
    {
-      internal class Pair
+      protected class Pair
       {
          public Pair(ReflectorReplacement replacement, IGetter getter)
          {
@@ -32,7 +31,7 @@ namespace Core.Objects
          public void Replace(object obj, Slicer slicer) => Replacement.Replace(obj, Getter, slicer);
       }
 
-      internal class MemberData
+      protected class MemberData
       {
          public MemberData(Hash<string, Pair> pairs, string source)
          {
@@ -45,7 +44,7 @@ namespace Core.Objects
          public string Source { get; }
       }
 
-      internal class Replacements
+      protected class Replacements
       {
          public Replacements(IEnumerable<ReflectorReplacement> replacements, string source)
          {
@@ -58,12 +57,12 @@ namespace Core.Objects
          public string Source { get; }
       }
 
-      internal static IResult<ReflectorFormat> GetReflector(object obj) =>
-         from nonNullObject in assert(() => obj).Must().Not.BeNull().OrFailure()
+      public static IResult<ReflectorFormat> GetReflector(object obj) =>
+         from nonNullObject in obj.Must().Not.BeNull().OrFailure()
          from type in tryTo(nonNullObject.GetType)
          select new ReflectorFormat(nonNullObject, type);
 
-      static IResult<Replacements> getReplacements(string source)
+      protected static IResult<Replacements> getReplacements(string source)
       {
          return source.MatchAll(@"-(< '\') '{' /(-['}']+) '}'").FlatMap(matches =>
             {
@@ -74,12 +73,12 @@ namespace Core.Objects
             failure<Replacements>);
       }
 
-      static IEnumerable<ReflectorReplacement> getReplacements(Matcher.Match[] matches)
+      protected static IEnumerable<ReflectorReplacement> getReplacements(Matcher.Match[] matches)
       {
          return matches.Select(match => new ReflectorReplacement(match.Index, match.Length, match.Groups[1]));
       }
 
-      static IResult<MemberData> getMembers(Type type, string template)
+      protected static IResult<MemberData> getMembers(Type type, string template)
       {
          var members = new Hash<string, Pair>();
          const MemberTypes memberTypes = Field | Property;
@@ -128,13 +127,13 @@ namespace Core.Objects
          });
       }
 
-      static IResult<MemberData> failedFind(Type type, string memberName)
+      protected static IResult<MemberData> failedFind(Type type, string memberName)
       {
          return $"Member {memberName} in type {type} couldn't be found".Failure<MemberData>();
       }
 
-      object obj;
-      Type type;
+      protected object obj;
+      protected Type type;
 
       protected ReflectorFormat(object obj, Type type)
       {
@@ -147,7 +146,7 @@ namespace Core.Objects
             from formatted in getText(memberData)
             select formatted.Substitute(@"'\{'", "{"));
 
-      IResult<string> getText(MemberData memberData) => tryTo(() =>
+      protected IResult<string> getText(MemberData memberData) => tryTo(() =>
       {
          var slicer = new Slicer(memberData.Source);
 
@@ -159,17 +158,11 @@ namespace Core.Objects
          return slicer.ToString();
       });
 
-      IResult<object> getValue(MemberInfo info)
+      protected IResult<object> getValue(MemberInfo info) => info switch
       {
-         switch (info)
-         {
-            case FieldInfo fieldInfo:
-               return fieldInfo.GetValue(obj).Success();
-            case PropertyInfo propertyInfo:
-               return propertyInfo.GetValue(obj).Success();
-            default:
-               return $"Couldn't invoke member {info.Name}".Failure<object>();
-         }
-      }
+         FieldInfo fieldInfo => fieldInfo.GetValue(obj).Success(),
+         PropertyInfo propertyInfo => propertyInfo.GetValue(obj).Success(),
+         _ => $"Couldn't invoke member {info.Name}".Failure<object>()
+      };
    }
 }

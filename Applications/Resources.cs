@@ -2,7 +2,6 @@
 using System.IO;
 using System.Linq;
 using Core.Assertions;
-using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Applications
 {
@@ -21,7 +20,7 @@ namespace Core.Applications
 
       public string String(string name)
       {
-         assert(() => Contains(name)).Must().BeTrue().OrThrow($"Resource {nameSpace}{name} does not exist");
+         Contains(name).Must().BeTrue().OrThrow($"Resource {nameSpace}{name} does not exist");
          using var reader = new StreamReader(Stream(name));
 
          return reader.ReadToEnd();
@@ -31,17 +30,17 @@ namespace Core.Applications
       {
          var fullName = $"{nameSpace}{name}";
          var message = $"Resource {fullName} does not exist";
-         assert(() => Contains(name)).Must().BeTrue().OrThrow(message);
+         Contains(name).Must().BeTrue().OrThrow(message);
 
          var stream = type.Assembly.GetManifestResourceStream(fullName);
-         assert(() => (object)stream).Must().Not.BeNull().OrThrow(message);
+         stream.Must().Not.BeNull().OrThrow(message);
 
          return stream;
       }
 
       public byte[] Bytes(string name)
       {
-         assert(() => Contains(name)).Must().BeTrue().OrThrow($"Resource {nameSpace}{name} does not exist");
+         Contains(name).Must().BeTrue().OrThrow($"Resource {nameSpace}{name} does not exist");
          using var stream = Stream(name);
 
          var length = (int)stream.Length;

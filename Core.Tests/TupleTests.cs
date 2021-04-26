@@ -3,7 +3,6 @@ using Core.Assertions;
 using Core.Enumerables;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Core.Arrays.ArrayFunctions;
-using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Tests
 {
@@ -18,10 +17,10 @@ namespace Core.Tests
          var text1 = enumerable1.ToString(", ");
          var text2 = enumerable2.ToString(", ");
 
-         assert(() => text1).Must().Equal("alpha, bravo, charlie").OrThrow();
+         text1.Must().Equal("alpha, bravo, charlie").OrThrow();
          Console.WriteLine($"First enumerable = {text1}");
 
-         assert(() => text2).Must().Equal("1, 2, 3").OrThrow();
+         text2.Must().Equal("1, 2, 3").OrThrow();
          Console.WriteLine($"Second enumerable = {text2}");
       }
    }

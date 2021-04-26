@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using Core.Assertions;
-using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Collections
 {
@@ -13,42 +12,42 @@ namespace Core.Collections
 
       public AutoHash()
       {
-         defaultLambda = key => default;
+         defaultLambda = _ => default;
       }
 
       public AutoHash(int capacity) : base(capacity)
       {
-         defaultLambda = key => default;
+         defaultLambda = _ => default;
       }
 
       public AutoHash(IEqualityComparer<TKey> comparer) : base(comparer)
       {
-         defaultLambda = key => default;
+         defaultLambda = _ => default;
       }
 
       public AutoHash(int capacity, IEqualityComparer<TKey> comparer) : base(capacity, comparer)
       {
-         defaultLambda = key => default;
+         defaultLambda = _ => default;
       }
 
       public AutoHash(IDictionary<TKey, TValue> dictionary) : base(dictionary)
       {
-         defaultLambda = key => default;
+         defaultLambda = _ => default;
       }
 
       public AutoHash(IDictionary<TKey, TValue> dictionary, IEqualityComparer<TKey> comparer) : base(dictionary, comparer)
       {
-         defaultLambda = key => default;
+         defaultLambda = _ => default;
       }
 
       protected AutoHash(SerializationInfo info, StreamingContext context) : base(info, context)
       {
-         defaultLambda = key => default;
+         defaultLambda = _ => default;
       }
 
       public AutoHash(Func<TKey, TValue> defaultLambda, bool autoAddDefault = false)
       {
-         assert(() => defaultLambda).Must().Not.BeNull().OrThrow();
+         defaultLambda.Must().Not.BeNull().OrThrow();
 
          Default = DefaultType.Lambda;
          this.defaultLambda = defaultLambda;
@@ -57,7 +56,7 @@ namespace Core.Collections
 
       public AutoHash(Func<TKey, TValue> defaultLambda, IEqualityComparer<TKey> comparer, bool autoAddDefault = false) : this(comparer)
       {
-         assert(() => defaultLambda).Must().Not.BeNull().OrThrow();
+         defaultLambda.Must().Not.BeNull().OrThrow();
 
          Default = DefaultType.Lambda;
          this.defaultLambda = defaultLambda;
@@ -66,8 +65,8 @@ namespace Core.Collections
 
       public AutoHash(Func<TKey, TValue> defaultLambda, bool autoAddDefault, IEqualityComparer<TKey> comparer) : this(comparer)
       {
-         assert(() => defaultLambda).Must().Not.BeNull().OrThrow();
-         assert(() => comparer).Must().Not.BeNull().OrThrow();
+         defaultLambda.Must().Not.BeNull().OrThrow();
+         comparer.Must().Not.BeNull().OrThrow();
 
          Default = DefaultType.Lambda;
          this.defaultLambda = defaultLambda;
@@ -80,18 +79,18 @@ namespace Core.Collections
          DefaultValue = defaultValue;
          AutoAddDefault = autoAddDefault;
 
-         defaultLambda = key => default;
+         defaultLambda = _ => default;
       }
 
       public AutoHash(TValue defaultValue, bool autoAddDefault, IEqualityComparer<TKey> comparer) : this(comparer)
       {
-         assert(() => comparer).Must().Not.BeNull().OrThrow();
+         comparer.Must().Not.BeNull().OrThrow();
 
          Default = DefaultType.Value;
          DefaultValue = defaultValue;
          AutoAddDefault = autoAddDefault;
 
-         defaultLambda = key => default;
+         defaultLambda = _ => default;
       }
 
       public DefaultType Default { get; set; } = DefaultType.Value;
@@ -103,7 +102,7 @@ namespace Core.Collections
          get => defaultLambda;
          set
          {
-            assert(() => value).Must().Not.BeNull().OrThrow();
+            value.Must().Not.BeNull().OrThrow();
             defaultLambda = value;
          }
       }
@@ -114,7 +113,7 @@ namespace Core.Collections
       {
          get
          {
-            assert(() => key).Must().Not.BeNull().OrThrow();
+            key.Must().Not.BeNull().OrThrow();
 
             TValue result;
             switch (Default)
@@ -166,10 +165,10 @@ namespace Core.Collections
          switch (Default)
          {
             case DefaultType.None:
-               valueFunc = k => default;
+               valueFunc = _ => default;
                break;
             case DefaultType.Value:
-               valueFunc = k => DefaultValue;
+               valueFunc = _ => DefaultValue;
                break;
             case DefaultType.Lambda:
                valueFunc = DefaultLambda;

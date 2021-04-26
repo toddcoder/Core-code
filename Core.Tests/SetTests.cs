@@ -18,10 +18,10 @@ namespace Core.Tests
          var stringSet = new StringSet(true) { "Case" };
 
          setOfString.Remove("case");
-         assert(() => setOfString.Count).Must().Equal(1).OrThrow();
+         setOfString.Must().HaveCountOfExactly(1).OrThrow();
 
          stringSet.Remove("case");
-         assert(() => stringSet.Count).Must().Equal(0).OrThrow();
+         setOfString.Must().HaveCountOfExactly(0).OrThrow();
       }
 
       [TestMethod]
@@ -42,9 +42,9 @@ namespace Core.Tests
          var exception = exception1 - exception2;
          Console.WriteLine($"({enumerableImage(exception1)}) exception ({enumerableImage(exception2)}) = ({enumerableImage(exception)})");
 
-
          var symmetricException = intersection1 ^ intersection2;
-         Console.WriteLine($"({enumerableImage(intersection1)}) symmetric exception ({enumerableImage(intersection2)}) = ({enumerableImage(symmetricException)})");
+         Console.WriteLine(
+            $"({enumerableImage(intersection1)}) symmetric exception ({enumerableImage(intersection2)}) = ({enumerableImage(symmetricException)})");
       }
 
       [TestMethod]

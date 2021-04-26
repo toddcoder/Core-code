@@ -2,7 +2,6 @@
 using System.Linq;
 using Core.Assertions;
 using Core.Monads;
-using static Core.Assertions.AssertionFunctions;
 using static Core.Monads.AttemptFunctions;
 
 namespace Core.Computers
@@ -31,7 +30,7 @@ namespace Core.Computers
             folderName.CopyTo(targetFolder, includePattern, excludePattern, overwrite);
 
             return targetFolder;
-         }).OnFailure(e => folderName.FileSuccess -= FileSuccess);
+         }).OnFailure(_ => folderName.FileSuccess -= FileSuccess);
       }
 
       public IResult<FolderName> Delete() => tryTo(() =>
@@ -67,7 +66,7 @@ namespace Core.Computers
       public IResult<FolderName> this[string subfolder] => tryTo(() =>
       {
          var name = folderName[subfolder];
-         return assert(() => name).Must().Exist().OrFailure();
+         return name.Must().Exist().OrFailure();
       });
 
       public IResult<FolderName> Subfolder(string name) => tryTo(() => folderName.Subfolder(name));

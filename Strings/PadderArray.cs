@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using Core.Assertions;
-using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Strings
 {
    public class PadderArray
    {
-      int[] maximumLengths;
+      protected int[] maximumLengths;
 
       public PadderArray(int count) => maximumLengths = new int[count];
 
@@ -18,7 +17,7 @@ namespace Core.Strings
          set => maximumLengths[index] = value;
       }
 
-      int withinBounds(int index) => assert(() => index).Must().BeBetween(0).Until(maximumLengths.Length).Force();
+      protected int withinBounds(int index) => index.Must().BeBetween(0).Until(maximumLengths.Length).Force();
 
       public int MaximumLengths(int index) => maximumLengths[withinBounds(index)];
 

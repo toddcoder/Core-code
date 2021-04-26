@@ -17,7 +17,6 @@ using Core.Objects;
 using Core.RegularExpressions;
 using Core.Strings;
 using static System.IO.Directory;
-using static Core.Assertions.AssertionFunctions;
 using static Core.Computers.ComputerFunctions;
 using static Core.Monads.MonadFunctions;
 
@@ -29,19 +28,19 @@ namespace Core.Computers
       {
          public static IResult<FolderName> FromString(string folder)
          {
-            return assert(() => folder).Must().BeAValidFolderName().OrFailure().Map(f => (FolderName)f);
+            return folder.Must().BeAValidFolderName().OrFailure().Map(f => (FolderName)f);
          }
       }
 
       protected const int MAX_PATH = 260;
 
-      public static implicit operator FolderName(string folder) => new FolderName(folder);
+      public static implicit operator FolderName(string folder) => new(folder);
 
       public static bool operator ==(FolderName lhs, FolderName rhs) => lhs.Equals(rhs);
 
       public static bool operator !=(FolderName lhs, FolderName rhs) => !(lhs == rhs);
 
-      public static Target operator |(FolderName folder, Target.Option option) => new Target(folder, option);
+      public static Target operator |(FolderName folder, Target.Option option) => new(folder, option);
 
       public static FileName operator |(FolderName folder, FileName file)
       {
@@ -65,7 +64,7 @@ namespace Core.Computers
          return newFolder;
       }
 
-      public static FolderName CreateRootOnly(string root) => new FolderName(root, new string[0]);
+      public static FolderName CreateRootOnly(string root) => new(root, new string[0]);
 
       protected static FolderName specialFolder(Environment.SpecialFolder folder) => Environment.GetFolderPath(folder);
 
@@ -164,7 +163,7 @@ namespace Core.Computers
          Encoding = Encoding.ASCII;
       }
 
-      protected DirectoryInfo info() => new DirectoryInfo(fullPath);
+      protected DirectoryInfo info() => new(fullPath);
 
       protected bool getAttr(FileAttributes attribute) => Bits32<FileAttributes>.GetBit(info().Attributes, attribute);
 
@@ -222,7 +221,7 @@ namespace Core.Computers
          set => setAttr(FileAttributes.Temporary, value);
       }
 
-      public FolderName this[string subfolder] => new FolderName(root, subfolders.Append(subfolder));
+      public FolderName this[string subfolder] => new(root, subfolders.Append(subfolder));
 
       public IMaybe<FolderName> Parent
       {
@@ -515,7 +514,7 @@ namespace Core.Computers
          Predicate<FileName> exclude;
          if (excludePattern.IsEmpty())
          {
-            exclude = f => true;
+            exclude = _ => true;
          }
          else
          {
@@ -840,9 +839,9 @@ namespace Core.Computers
 
       protected static int getFileCount(string folder) => getFiles(folder).Count();
 
-      public FileName File(string name) => new FileName(this, name);
+      public FileName File(string name) => new(this, name);
 
-      public FileName File(string name, string extension) => new FileName(this, name, extension);
+      public FileName File(string name, string extension) => new(this, name, extension);
 
       public FileName File(FileName fileName)
       {
@@ -874,7 +873,7 @@ namespace Core.Computers
 
       public FolderName Today => Subfolder(NowServer.Now.ToString("yyyy-MM-dd"));
 
-      public FolderNameTrying TryTo => new FolderNameTrying(this);
+      public FolderNameTrying TryTo => new(this);
 
       public FileName UniqueFileName(string name, string extension) => FileName.UniqueFileName(this, name, extension);
 

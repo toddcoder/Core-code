@@ -5,7 +5,6 @@ using Core.Assertions;
 using Core.Computers;
 using Core.Monads;
 using static Core.Applications.Async.AsyncFunctions;
-using static Core.Assertions.AssertionFunctions;
 using static Core.Monads.AttemptFunctions;
 
 namespace Core.Zip
@@ -14,12 +13,12 @@ namespace Core.Zip
    {
       public static FolderName Unzip(this FileName file, string folderName)
       {
-         assert(() => file).Must().Not.BeNull().OrThrow();
-         assert(() => file).Must().Exist().OrThrow();
-         assert(() => folderName).Must().Not.BeNullOrEmpty().OrThrow();
+         file.Must().Not.BeNull().OrThrow();
+         file.Must().Exist().OrThrow();
+         folderName.Must().Not.BeNullOrEmpty().OrThrow();
 
          var folder = file.Folder[folderName];
-         assert(()=> folder).Must().Not.Exist().OrThrow();
+         folder.Must().Not.Exist().OrThrow();
 
          ZipFile.ExtractToDirectory(file.FullPath, folder.FullPath);
 

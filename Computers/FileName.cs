@@ -11,7 +11,6 @@ using Core.Numbers;
 using Core.Objects;
 using Core.RegularExpressions;
 using Core.Strings;
-using static Core.Assertions.AssertionFunctions;
 using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
 using static Core.Strings.StringFunctions;
@@ -24,7 +23,7 @@ namespace Core.Computers
       {
          public static IResult<FileName> FromString(string file)
          {
-            return assert(() => file).Must().BeAValidFileName().OrFailure().Map(f => (FileName)f);
+            return file.Must().BeAValidFileName().OrFailure().Map(f => (FileName)f);
          }
       }
 
@@ -134,7 +133,7 @@ namespace Core.Computers
          return fileName.Truncate(255, false);
       }
 
-      public static implicit operator FileName(string fileName) => new FileName(fileName);
+      public static implicit operator FileName(string fileName) => new(fileName);
 
       protected static string getDirectoryName(string fullPath)
       {
@@ -339,63 +338,51 @@ namespace Core.Computers
             }
             else
             {
-               using (var reader = new FileNameMappedReader(this))
-               {
-                  return reader.ReadToEnd();
-               }
+               using var reader = new FileNameMappedReader(this);
+               return reader.ReadToEnd();
             }
          }
          set
          {
-            using (var file = File.Open(fullPath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
-            using (var writer = new StreamWriter(file, Encoding))
-            {
-               writer.Write(value);
-               writer.Flush();
-               writer.Close();
-            }
+            using var file = File.Open(fullPath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
+            using var writer = new StreamWriter(file, Encoding);
+            writer.Write(value);
+            writer.Flush();
+            writer.Close();
          }
       }
 
       public string GetText(Encoding encoding)
       {
-         using (var reader = new FileNameMappedReader(this, encoding))
-         {
-            return reader.ReadToEnd();
-         }
+         using var reader = new FileNameMappedReader(this, encoding);
+         return reader.ReadToEnd();
       }
 
       public void SetText(string text, Encoding encoding)
       {
-         using (var file = File.Open(fullPath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
-         using (var writer = new StreamWriter(file, encoding))
-         {
-            writer.Write(text);
-            writer.Flush();
-            writer.Close();
-         }
+         using var file = File.Open(fullPath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
+         using var writer = new StreamWriter(file, encoding);
+         writer.Write(text);
+         writer.Flush();
+         writer.Close();
       }
 
       public byte[] Bytes
       {
          get
          {
-            using (var stream = new FileStream(fullPath, FileMode.Open, FileAccess.Read, FileShare.Write))
-            {
-               var length = (int)stream.Length;
-               var bytes = new byte[length];
-               stream.Read(bytes, 0, length);
+            using var stream = new FileStream(fullPath, FileMode.Open, FileAccess.Read, FileShare.Write);
+            var length = (int)stream.Length;
+            var bytes = new byte[length];
+            stream.Read(bytes, 0, length);
 
-               return bytes;
-            }
+            return bytes;
          }
          set
          {
-            using (var stream = new FileStream(fullPath, FileMode.Create, FileAccess.Write, FileShare.Read))
-            {
-               stream.Write(value, 0, value.Length);
-               stream.Flush(true);
-            }
+            using var stream = new FileStream(fullPath, FileMode.Create, FileAccess.Write, FileShare.Read);
+            stream.Write(value, 0, value.Length);
+            stream.Flush(true);
          }
       }
 
@@ -409,16 +396,14 @@ namespace Core.Computers
       {
          get
          {
-            using (var reader = new StreamReader(fullPath))
+            using var reader = new StreamReader(fullPath);
+            var count = 0;
+            while (reader.ReadLine() != null)
             {
-               var count = 0;
-               while (reader.ReadLine() != null)
-               {
-                  count++;
-               }
-
-               return count;
+               count++;
             }
+
+            return count;
          }
       }
 
@@ -572,7 +557,7 @@ namespace Core.Computers
          }
       }
 
-      public FileName Clone() => new FileName(folder.Clone(), name.Copy(), extension.Copy());
+      public FileName Clone() => new(folder.Clone(), name.Copy(), extension.Copy());
 
       public bool Exists() => File.Exists(fullPath);
 
@@ -732,7 +717,7 @@ namespace Core.Computers
          setFullPath();
       }
 
-      protected FileInfo info() => new FileInfo(fullPath);
+      protected FileInfo info() => new(fullPath);
 
       public void AppendToExtension(string anExtension)
       {
@@ -778,22 +763,19 @@ namespace Core.Computers
       {
          var charBuffer = new char[length];
 
-         using (var reader = new StreamReader(fullPath))
-         {
-            var actualLength = reader.Read(charBuffer, start, length);
-            return actualLength == 0 ? "" : new string(charBuffer, start, actualLength);
-         }
+         using var reader = new StreamReader(fullPath);
+         var actualLength = reader.Read(charBuffer, start, length);
+         return actualLength == 0 ? "" : new string(charBuffer, start, actualLength);
       }
 
       public string GetText(int start, int length, Encoding encoding)
       {
          var charBuffer = new char[length];
 
-         using (var reader = new StreamReader(fullPath, encoding))
-         {
-            var actualLength = reader.Read(charBuffer, start, length);
-            return actualLength == 0 ? "" : new string(charBuffer, start, actualLength);
-         }
+         using var reader = new StreamReader(fullPath, encoding);
+         var actualLength = reader.Read(charBuffer, start, length);
+
+         return actualLength == 0 ? "" : new string(charBuffer, start, actualLength);
       }
 
       public string GetText(int length) => GetText(0, length);
@@ -802,27 +784,23 @@ namespace Core.Computers
 
       public byte[] GetBytes(int start, int length)
       {
-         using (var stream = new FileStream(fullPath, FileMode.Open, FileAccess.Read, FileShare.Read))
-         {
-            var bytes = new byte[length];
-            stream.Read(bytes, start, length);
+         using var stream = new FileStream(fullPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+         var bytes = new byte[length];
+         stream.Read(bytes, start, length);
 
-            return bytes;
-         }
+         return bytes;
       }
 
       public byte[] GetBytes(int length) => GetBytes(0, length);
 
-      protected StringBuilder getBuffer() => buffer ?? (buffer = new StringBuilder());
+      protected StringBuilder getBuffer() => buffer ??= new StringBuilder();
 
       protected void appendText(string text)
       {
          folder.CreateIfNonExistent();
-         using (var file = File.Open(fullPath, FileMode.Append, FileAccess.Write, FileShare.ReadWrite))
-         using (var writer = new StreamWriter(file, Encoding))
-         {
-            writer.Write(text);
-         }
+         using var file = File.Open(fullPath, FileMode.Append, FileAccess.Write, FileShare.ReadWrite);
+         using var writer = new StreamWriter(file, Encoding);
+         writer.Write(text);
       }
 
       public void Append(string text)
@@ -849,10 +827,8 @@ namespace Core.Computers
       public void Append(byte[] bytes)
       {
          folder.CreateIfNonExistent();
-         using (var stream = new FileStream(fullPath, FileMode.Append, FileAccess.Write, FileShare.Write))
-         {
-            stream.Write(bytes, 0, bytes.Length);
-         }
+         using var stream = new FileStream(fullPath, FileMode.Append, FileAccess.Write, FileShare.Write);
+         stream.Write(bytes, 0, bytes.Length);
       }
 
       public void Append(string[] lines)
@@ -904,38 +880,36 @@ namespace Core.Computers
 
       public Process Start(string arguments) => global::System.Diagnostics.Process.Start(fullPath, arguments);
 
-      public Process Process() => new Process { StartInfo = new ProcessStartInfo(fullPath) };
+      public Process Process() => new() { StartInfo = new ProcessStartInfo(fullPath) };
 
-      public Process Process(string arguments) => new Process { StartInfo = new ProcessStartInfo(fullPath, arguments) };
+      public Process Process(string arguments) => new() { StartInfo = new ProcessStartInfo(fullPath, arguments) };
 
       public int ExitCode { get; set; }
 
       public string Execute(string arguments, bool wait = true, bool useShellExecute = false, bool createNoWindow = true)
       {
-         using (var process = Process())
+         using var process = Process();
+         process.StartInfo = new ProcessStartInfo(fullPath, arguments)
          {
-            process.StartInfo = new ProcessStartInfo(fullPath, arguments)
-            {
-               UseShellExecute = useShellExecute, CreateNoWindow = createNoWindow
-            };
-            if (wait)
-            {
-               process.StartInfo.RedirectStandardOutput = true;
-               process.StartInfo.RedirectStandardError = true;
-               process.StartInfo.RedirectStandardInput = true;
-            }
+            UseShellExecute = useShellExecute, CreateNoWindow = createNoWindow
+         };
+         if (wait)
+         {
+            process.StartInfo.RedirectStandardOutput = true;
+            process.StartInfo.RedirectStandardError = true;
+            process.StartInfo.RedirectStandardInput = true;
+         }
 
-            process.Start();
-            if (wait)
-            {
-               process.WaitForExit();
-               ExitCode = process.ExitCode;
-               return process.StandardOutput.ReadToEnd();
-            }
-            else
-            {
-               return "";
-            }
+         process.Start();
+         if (wait)
+         {
+            process.WaitForExit();
+            ExitCode = process.ExitCode;
+            return process.StandardOutput.ReadToEnd();
+         }
+         else
+         {
+            return "";
          }
       }
 
@@ -968,7 +942,7 @@ namespace Core.Computers
 
       public FileStream ReadWriteStream()
       {
-         return new FileStream(fullPath, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+         return new(fullPath, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
       }
 
       public void MakeEmpty(bool hidden)
@@ -979,12 +953,10 @@ namespace Core.Computers
 
       public void Clear()
       {
-         using (var stream = File.Open(fullPath, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read))
-         using (var writer = new StreamWriter(stream, Encoding))
-         {
-            writer.Write("");
-            writer.Flush();
-         }
+         using var stream = File.Open(fullPath, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read);
+         using var writer = new StreamWriter(stream, Encoding);
+         writer.Write("");
+         writer.Flush();
       }
 
       public override int GetHashCode() => equatable.GetHashCode();
@@ -993,9 +965,9 @@ namespace Core.Computers
 
       public override bool Equals(object obj) => obj is FileName fn && fullPath.Same(fn.ToString());
 
-      public FileNameMappedReader Reader() => new FileNameMappedReader(this);
+      public FileNameMappedReader Reader() => new(this);
 
-      public FileNameTrying TryTo => new FileNameTrying(this);
+      public FileNameTrying TryTo => new(this);
 
       public IResult<object> NewObject(string typeName, params object[] args) => tryTo(() =>
       {

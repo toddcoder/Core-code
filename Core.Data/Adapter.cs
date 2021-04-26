@@ -9,7 +9,6 @@ using Core.Data.Setups;
 using Core.Exceptions;
 using Core.Monads;
 using Core.Objects;
-using static Core.Assertions.AssertionFunctions;
 using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
 
@@ -50,7 +49,7 @@ namespace Core.Data
          Parameters = new Parameters.Parameters(setup.Parameters);
          Fields = new Fields.Fields(setup.Fields);
 
-         this.entity = assert(() => (object)entity).Must().Not.BeNull().Force<T>();
+         this.entity = entity.Named(nameof(entity)).Must().Not.BeNull().Force<T>();
          setEntityType();
          setNewFunc();
       }
@@ -85,7 +84,7 @@ namespace Core.Data
          get => entity;
          set
          {
-            entity = assert(() => value).MustOfType().Not.BeNull().Force<T>();
+            entity = value.Named(nameof(value)).MustOfType().Not.BeNull().Force<T>();
             setEntityType();
          }
       }
@@ -192,7 +191,7 @@ namespace Core.Data
 
       public IDbConnection NativeConnection() => DataSource.GetConnection();
 
-      public Reader<T> Reader() => new Reader<T>(DataSource, Entity, newFunc, Command, Parameters, Fields);
+      public Reader<T> Reader() => new(DataSource, Entity, newFunc, Command, Parameters, Fields);
 
       public DataSet DataSet()
       {
@@ -210,15 +209,19 @@ namespace Core.Data
 
       IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-      public AdapterTrying<T> TryTo => new AdapterTrying<T>(this);
+      public AdapterTrying<T> TryTo => new(this);
 
-      public Adapter<T> WithNewCommand(string newCommand) => new Adapter<T>(this, newCommand);
+      public Adapter<T> WithNewCommand(string newCommand) => new(this, newCommand);
    }
 
    public class Adapter : Adapter<DataContainer>
    {
-      public Adapter(ISetup setup) : base(new DataContainer(), setup) { }
+      public Adapter(ISetup setup) : base(new DataContainer(), setup)
+      {
+      }
 
-      internal Adapter(Adapter other, string command) : base(other, command) { }
+      internal Adapter(Adapter other, string command) : base(other, command)
+      {
+      }
    }
 }

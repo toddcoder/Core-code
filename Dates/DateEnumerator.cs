@@ -3,20 +3,19 @@ using System.Collections;
 using System.Collections.Generic;
 using Core.Assertions;
 using Core.Dates.DateIncrements;
-using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Dates
 {
    public class DateEnumerator : IEnumerator<DateTime>, IEnumerable<DateTime>
    {
-      DateTime begin;
-      DateTime end;
-      TimeSpan increment;
-      DateTime current;
+      protected DateTime begin;
+      protected DateTime end;
+      protected TimeSpan increment;
+      protected DateTime current;
 
       public DateEnumerator(DateTime begin, DateTime end, TimeSpan increment)
       {
-         this.begin = assert(() => begin).Must().BeLessThan(end).Force();
+         this.begin = begin.Must().BeLessThan(end).Force();
          this.end = end;
          this.increment = increment;
          current = this.begin - increment;

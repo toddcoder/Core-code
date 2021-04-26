@@ -8,7 +8,6 @@ using Core.Enumerables;
 using Core.Exceptions;
 using Core.Monads;
 using Core.RegularExpressions;
-using static Core.Assertions.AssertionFunctions;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Objects
@@ -31,7 +30,7 @@ namespace Core.Objects
 
       public PropertyEvaluator(object obj)
       {
-         this.obj = assert(() => obj).Must().Not.BeNull().Force<ArgumentNullException, object>();
+         this.obj = obj.Must().Not.BeNull().Force<ArgumentNullException, object>();
          type = this.obj.GetType();
       }
 
@@ -119,7 +118,7 @@ namespace Core.Objects
          get => obj;
          set
          {
-            assert(() => value).Must().Not.BeNull().OrThrow();
+            value.Must().Not.BeNull().OrThrow();
             obj = value;
          }
       }
@@ -139,7 +138,7 @@ namespace Core.Objects
 
          var propertyType = info.PropertyType.Required($"Signature {signature} not found");
 
-         return assert(() => propertyType).Must().Not.BeNull().Force();
+         return propertyType.Must().Not.BeNull().Force();
       }
 
       public Type Type(Signature signature) => Type(signature.ToString());
@@ -262,10 +261,10 @@ namespace Core.Objects
             .Select(p => new Signature(p.Name));
       }
 
-      public PropertyEvaluatorTrying TryTo => new PropertyEvaluatorTrying(this);
+      public PropertyEvaluatorTrying TryTo => new(this);
 
-      public PropertyEvaluator Evaluator(Signature signature) => new PropertyEvaluator(this[signature]);
+      public PropertyEvaluator Evaluator(Signature signature) => new(this[signature]);
 
-      public PropertyEvaluator Evaluator(string signature) => new PropertyEvaluator(this[signature]);
+      public PropertyEvaluator Evaluator(string signature) => new(this[signature]);
    }
 }

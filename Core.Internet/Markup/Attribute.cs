@@ -1,5 +1,4 @@
 ﻿using Core.Assertions;
-using static Core.Assertions.AssertionFunctions;
 using static Core.Internet.Markup.MarkupTextHolder;
 
 namespace Core.Internet.Markup
@@ -12,9 +11,9 @@ namespace Core.Internet.Markup
 
       public Attribute(string name, string text, QuoteType quote)
       {
-         assert(() => text).Must().Not.BeNull().OrThrow();
+         text.Named(nameof(text)).Must().Not.BeNull().OrThrow();
 
-         this.name = assert(() => name).Must().Not.BeNullOrEmpty().Force();
+         this.name = name.Named(nameof(name)).Must().Not.BeNullOrEmpty().Force();
          this.text = Markupify(text, quote);
          this.quote = quote;
       }

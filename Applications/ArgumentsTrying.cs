@@ -1,6 +1,5 @@
 ﻿using Core.Assertions;
 using Core.Monads;
-using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Applications
 {
@@ -12,18 +11,17 @@ namespace Core.Applications
 
       public IResult<Argument> this[int index]
       {
-         get => assert(() => index).Must().BeBetween(0).Until(arguments.Count).OrFailure(() => "Index $name out of range")
-            .Map(i => arguments[i]);
+         get => index.Must().BeBetween(0).Until(arguments.Count).OrFailure(() => "Index $name out of range").Map(i => arguments[i]);
       }
 
       public IResult<Unit> AssertCount(int exactCount)
       {
-         return assert(() => arguments.Count).Must().Equal(exactCount).OrFailure(() => $"Expected exact $name of {exactCount}").Unit;
+         return arguments.Count.Must().Equal(exactCount).OrFailure(() => $"Expected exact $name of {exactCount}").Unit;
       }
 
       public IResult<Unit> AssertCount(int minimumCount, int maximumCount)
       {
-         return assert(() => arguments.Count).Must()
+         return arguments.Count.Must()
             .BeBetween(minimumCount).Until(arguments.Count)
             .OrFailure(() => $"$name must between {minimumCount} and {maximumCount}--found {arguments.Count}")
             .Unit;
@@ -31,14 +29,14 @@ namespace Core.Applications
 
       public IResult<Unit> AssertMinimumCount(int minimumCount)
       {
-         return assert(() => arguments.Count).Must().BeGreaterThanOrEqual(minimumCount)
+         return arguments.Count.Must().BeGreaterThanOrEqual(minimumCount)
             .OrFailure(() => $"$name must be at least {minimumCount}--found {arguments.Count}")
             .Unit;
       }
 
       public IResult<Unit> AssertMaximumCount(int maximumCount)
       {
-         return assert(() => arguments.Count).Must().BeLessThanOrEqual(maximumCount)
+         return arguments.Count.Must().BeLessThanOrEqual(maximumCount)
             .OrFailure(() => $"$name must be at most {maximumCount}--found {arguments.Count}")
             .Unit;
       }

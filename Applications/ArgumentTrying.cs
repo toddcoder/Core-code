@@ -1,7 +1,6 @@
 ﻿using Core.Assertions;
 using Core.Computers;
 using Core.Monads;
-using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Applications
 {
@@ -17,7 +16,7 @@ namespace Core.Applications
          {
             var text = argument.Text;
             return
-               from valid in assert(() => text).Must().BeAValidFileName().OrFailure().Map(_ => (FileName)text)
+               from valid in text.Must().BeAValidFileName().OrFailure().Map(_ => (FileName)text)
                from exists in valid.Must().Exist().OrFailure()
                select exists;
          }
@@ -29,7 +28,7 @@ namespace Core.Applications
          {
             var text = argument.Text;
             return
-               from valid in assert(() => text).Must().BeAValidFolderName().OrFailure().Map(_ => (FolderName)text)
+               from valid in text.Must().BeAValidFolderName().OrFailure().Map(_ => (FolderName)text)
                from exists in valid.Must().Exist().OrFailure()
                select exists;
          }

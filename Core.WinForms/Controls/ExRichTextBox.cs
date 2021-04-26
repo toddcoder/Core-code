@@ -13,7 +13,6 @@ using Core.Monads;
 using Core.Numbers;
 using Core.RegularExpressions;
 using Core.Strings;
-using static Core.Assertions.AssertionFunctions;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Controls
@@ -116,7 +115,7 @@ namespace Core.WinForms.Controls
          leftMargin = 0;
          modificationStates = new List<ModificationState>();
 
-         TextChanged += (sender, args) =>
+         TextChanged += (_, _) =>
          {
             if (!ModificationLocked)
             {
@@ -200,10 +199,8 @@ namespace Core.WinForms.Controls
                      var size = TextRenderer.MeasureText(graphics, currentLine, Font);
                      var height = size.Height;
 
-                     using (var pen = new Pen(color, glyphWidth))
-                     {
-                        graphics.DrawLine(pen, glyphLeft, position.Y, glyphLeft, position.Y + height);
-                     }
+                     using var pen = new Pen(color, glyphWidth);
+                     graphics.DrawLine(pen, glyphLeft, position.Y, glyphLeft, position.Y + height);
                   }
                }
             }
@@ -212,10 +209,8 @@ namespace Core.WinForms.Controls
 
       public void DrawModificationGlyphs()
       {
-         using (var graphics = Graphics.FromHwnd(Handle))
-         {
-            DrawModificationGlyphs(graphics);
-         }
+         using var graphics = Graphics.FromHwnd(Handle);
+         DrawModificationGlyphs(graphics);
       }
 
       public void SetToSavedGlyphs(bool drawModificationGlyphs = true)
@@ -236,7 +231,7 @@ namespace Core.WinForms.Controls
 
       public void SetToUnmodifiedGlyphs(bool drawModificationGlyphs = true)
       {
-         modificationStates = Lines.Select(l => ModificationState.Unmodified).ToList();
+         modificationStates = Lines.Select(_ => ModificationState.Unmodified).ToList();
 
          if (drawModificationGlyphs)
          {
@@ -256,7 +251,7 @@ namespace Core.WinForms.Controls
 
       public void SetTabs(params int[] tabs) => SelectionTabs = tabs;
 
-      public Font AnnotationFont { get; set; } = new Font("Calibri", 12f, FontStyle.Bold);
+      public Font AnnotationFont { get; set; } = new("Calibri", 12f, FontStyle.Bold);
 
       public bool ModificationLocked { get; set; }
 
@@ -344,7 +339,7 @@ namespace Core.WinForms.Controls
 
       protected int getLineNumber(int lineNumber)
       {
-         assert(() => lineNumber).Must().BeBetween(0).Until(Lines.Length).OrThrow();
+         lineNumber.Must().BeBetween(0).Until(Lines.Length).OrThrow();
 
          return lineNumber;
       }
@@ -451,10 +446,8 @@ namespace Core.WinForms.Controls
                graphics.FillRectangle(brush, rectangle);
             }
 
-            using (var pen = new Pen(foreColor) { DashStyle = dashStyle })
-            {
-               graphics.DrawRectangle(pen, rectangle);
-            }
+            using var pen = new Pen(foreColor) { DashStyle = dashStyle };
+            graphics.DrawRectangle(pen, rectangle);
          }
       }
 
@@ -476,18 +469,16 @@ namespace Core.WinForms.Controls
          {
             if (line.Matcher("^ /(/t1%7)").If(out var matcher))
             {
-               using (var pen = new Pen(Color.Gray) { DashStyle = DashStyle.Dot })
-               {
-                  drawTabLine(graphics, pen, point, offset, height);
+               using var pen = new Pen(Color.Gray) { DashStyle = DashStyle.Dot };
+               drawTabLine(graphics, pen, point, offset, height);
 
-                  var count = matcher.FirstGroup.Length;
-                  for (var i = 0; i < count; i++)
+               var count = matcher.FirstGroup.Length;
+               for (var i = 0; i < count; i++)
+               {
+                  if (i.Between(0).Until(SelectionTabs.Length))
                   {
-                     if (i.Between(0).Until(SelectionTabs.Length))
-                     {
-                        var tabStop = SelectionTabs[i];
-                        drawTabLine(graphics, pen, point, tabStop + offset, height);
-                     }
+                     var tabStop = SelectionTabs[i];
+                     drawTabLine(graphics, pen, point, tabStop + offset, height);
                   }
                }
             }
@@ -546,18 +537,14 @@ namespace Core.WinForms.Controls
       {
          graphics.TextRenderingHint = TextRenderingHint.AntiAlias;
          var rectangle = new Rectangle(point, size);
-         using (var backBrush = new SolidBrush(Color.FromArgb(ANNOTATION_ALPHA, backColor)))
-         using (var foreBrush = new SolidBrush(foreColor))
+         using var backBrush = new SolidBrush(Color.FromArgb(ANNOTATION_ALPHA, backColor));
+         using var foreBrush = new SolidBrush(foreColor);
+         graphics.FillRectangle(backBrush, rectangle);
+         graphics.DrawString(annotation, AnnotationFont, foreBrush, rectangle);
+         if (outlineColor.HasValue)
          {
-            graphics.FillRectangle(backBrush, rectangle);
-            graphics.DrawString(annotation, AnnotationFont, foreBrush, rectangle);
-            if (outlineColor.HasValue)
-            {
-               using (var pen = new Pen(Color.FromArgb(ANNOTATION_ALPHA, outlineColor.Value)))
-               {
-                  graphics.DrawRectangle(pen, rectangle);
-               }
-            }
+            using var pen = new Pen(Color.FromArgb(ANNOTATION_ALPHA, outlineColor.Value));
+            graphics.DrawRectangle(pen, rectangle);
          }
       }
 
@@ -744,7 +731,9 @@ namespace Core.WinForms.Controls
          else if (char.IsLetterOrDigit(text, start))
          {
             var i = start;
-            for (; i > -1 && char.IsLetterOrDigit(text, i); i--) { }
+            for (; i > -1 && char.IsLetterOrDigit(text, i); i--)
+            {
+            }
 
             i++;
             return text.Drop(i).Matcher("/w+").Map(m => RectangleFrom(graphics, m.Index + i, m.Length, false));
@@ -775,11 +764,9 @@ namespace Core.WinForms.Controls
 
       public void DrawWavyUnderline(Graphics graphics, Rectangle rectangle, Color color)
       {
-         using (var brush = new HatchBrush(HatchStyle.ZigZag, color, Color.Transparent))
-         using (var pen = new Pen(brush, 2f))
-         {
-            graphics.DrawLine(pen, rectangle.Left, rectangle.Bottom, rectangle.Right, rectangle.Bottom);
-         }
+         using var brush = new HatchBrush(HatchStyle.ZigZag, color, Color.Transparent);
+         using var pen = new Pen(brush, 2f);
+         graphics.DrawLine(pen, rectangle.Left, rectangle.Bottom, rectangle.Right, rectangle.Bottom);
       }
 
       public void DrawWhitespace(Graphics graphics, bool visibleOnly = false)
@@ -848,12 +835,10 @@ namespace Core.WinForms.Controls
             graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
             var lineSize = lineCount.ToString().Length.MaxOf(5);
 
-            using (var brush = new SolidBrush(foreColor))
+            using var brush = new SolidBrush(foreColor);
+            foreach (var (lineNumber, _, position) in VisibleLines)
             {
-               foreach (var (lineNumber, _, position) in VisibleLines)
-               {
-                  drawLineNumber(graphics, lineNumber, position, lineSize, brush, backColor);
-               }
+               drawLineNumber(graphics, lineNumber, position, lineSize, brush, backColor);
             }
          }
       }
@@ -889,10 +874,8 @@ namespace Core.WinForms.Controls
          var lineSize = Lines.Length.ToString().Length.MaxOf(5);
          var point = PositionFrom(lineNumber);
 
-         using (var brush = new SolidBrush(foreColor))
-         {
-            drawLineNumber(graphics, lineNumber, point, lineSize, brush, backColor);
-         }
+         using var brush = new SolidBrush(foreColor);
+         drawLineNumber(graphics, lineNumber, point, lineSize, brush, backColor);
       }
    }
 }

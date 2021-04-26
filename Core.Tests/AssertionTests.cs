@@ -4,7 +4,6 @@ using Core.Assertions;
 using Core.Collections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Core.Arrays.ArrayFunctions;
-using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Tests
 {
@@ -15,12 +14,12 @@ namespace Core.Tests
       public void ComparableTest()
       {
          var number = 153;
-         if (assert(() => number).Must().BeBetween(1).And(200))
+         if (number.Must().BeBetween(1).And(200))
          {
             Console.WriteLine("153 between 1 and 200");
          }
 
-         if (assert(() => number).Must().BeBetween(0).Until(154))
+         if (number.Must().BeBetween(0).Until(154))
          {
             Console.WriteLine("153 between 0 and 154 exclusively");
          }
@@ -34,9 +33,9 @@ namespace Core.Tests
 
          var value = 153;
          var result =
-            from positive in assert(() => value).Must().BePositive().OrFailure()
-            from greater in assert(() => value).Must().BeGreaterThan(100).OrFailure()
-            from less in assert(() => value).Must().BeLessThanOrEqual(200).OrFailure()
+            from positive in value.Must().BePositive().OrFailure()
+            from greater in value.Must().BeGreaterThan(100).OrFailure()
+            from less in value.Must().BeLessThanOrEqual(200).OrFailure()
             select less;
          if (result.If(out var integer, out var exception))
          {
@@ -63,8 +62,8 @@ namespace Core.Tests
       public void DictionaryAssertionTest()
       {
          var hash = new Hash<char, string> { ['a'] = "alfa", ['b'] = "bravo", ['c'] = "charlie" };
-         assert(() => hash).Must().Not.BeNullOrEmpty().OrThrow();
-         assert(() => hash).Must().HaveKeyOf('b').OrThrow();
+         hash.Must().Not.BeNullOrEmpty().OrThrow();
+         hash.Must().HaveKeyOf('b').OrThrow();
       }
 
       [TestMethod]
@@ -97,45 +96,45 @@ namespace Core.Tests
       public void NamelessAssertionTest1()
       {
          var x = 1;
-         assert(() => x).Must().Equal(2).OrThrow();
+         x.Must().Equal(2).OrThrow();
       }
 
       [TestMethod]
       public void NamelessAssertionTest2()
       {
-         assert(() => getX()).Must().Equal(2).OrThrow();
+         getX().Must().Equal(2).OrThrow();
       }
 
       [TestMethod]
       public void NamelessAssertionTest3()
       {
          var xObject = new XClass(10);
-         assert(() => xObject.X).Must().Equal(2).OrThrow();
+         xObject.X.Must().Equal(2).OrThrow();
       }
 
       [TestMethod]
       public void NamelessAssertionTest4()
       {
          var text = "";
-         assert(() => text).Must().Not.BeNullOrEmpty().OrThrow();
+         text.Must().Not.BeNullOrEmpty().OrThrow();
       }
 
       [TestMethod]
       public void NamelessAssertionTest5()
       {
-         assert(() => 10).Must().Equal(2).OrThrow();
+         10.Must().Equal(2).OrThrow();
       }
 
       [TestMethod]
       public void CastAssertionTest1()
       {
-         assert(() => (object)10).Must().Equal(2).OrThrow();
+         10.Must().Equal(2).OrThrow();
       }
 
       [TestMethod]
       public void CastAssertionTest2()
       {
-         assert(() => (double)10).Must().Equal(2.0).OrThrow();
+         ((double)10).Must().Equal(2.0).OrThrow();
       }
    }
 }
