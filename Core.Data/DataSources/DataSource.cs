@@ -176,8 +176,7 @@ namespace Core.Data.DataSources
 
       internal void BeginReading(object entity, string command, Parameters.Parameters parameters, Fields.Fields inFields)
       {
-         var fieldCount = inFields.Count;
-         fieldCount.Named(nameof(fieldCount)).Must().BePositive().OrThrow("You must have at least one field defined");
+         inFields.Count.Must().BePositive().OrThrow("You must have at least one field defined");
 
          _activeObject = entity.IfCast<IActive>();
          fields = inFields;
@@ -326,8 +325,7 @@ namespace Core.Data.DataSources
 
             if (!field.Optional)
             {
-               var ordinal = field.Ordinal;
-               ordinal.Named(nameof(ordinal)).Must().Not.BeNegative().OrThrow($"Couldn't find {field.Name} field");
+               field.Ordinal.Must().Not.BeNegative().OrThrow($"Couldn't find {field.Name} field");
             }
          }
       }

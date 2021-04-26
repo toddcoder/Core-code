@@ -49,7 +49,7 @@ namespace Core.Data
          Parameters = new Parameters.Parameters(setup.Parameters);
          Fields = new Fields.Fields(setup.Fields);
 
-         this.entity = entity.Named(nameof(entity)).Must().Not.BeNull().Force<T>();
+         this.entity = entity.Must().Not.BeNull().Force<T>();
          setEntityType();
          setNewFunc();
       }
@@ -84,7 +84,7 @@ namespace Core.Data
          get => entity;
          set
          {
-            entity = value.Named(nameof(value)).MustOfType().Not.BeNull().Force<T>();
+            entity = value.MustOfType().Not.BeNull().Force<T>();
             setEntityType();
          }
       }

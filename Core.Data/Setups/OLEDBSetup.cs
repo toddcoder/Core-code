@@ -66,7 +66,7 @@ namespace Core.Data.Setups
       {
          get
          {
-            ConnectionString.Named(nameof(ConnectionString)).Must().Not.BeNull().OrThrow();
+            ConnectionString.Must().Not.BeNull().OrThrow();
             return new OleDbDataSource(ConnectionString.ConnectionString, file);
          }
       }

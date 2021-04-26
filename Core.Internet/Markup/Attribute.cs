@@ -11,9 +11,9 @@ namespace Core.Internet.Markup
 
       public Attribute(string name, string text, QuoteType quote)
       {
-         text.Named(nameof(text)).Must().Not.BeNull().OrThrow();
+         text.Must().Not.BeNull().OrThrow();
 
-         this.name = name.Named(nameof(name)).Must().Not.BeNullOrEmpty().Force();
+         this.name = name.Must().Not.BeNullOrEmpty().Force();
          this.text = Markupify(text, quote);
          this.quote = quote;
       }

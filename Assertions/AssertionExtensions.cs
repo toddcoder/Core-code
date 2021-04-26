@@ -17,8 +17,6 @@ namespace Core.Assertions
 {
    public static class AssertionExtensions
    {
-      public static (T, string) Named<T>(this T value, string name) => (value, name);
-
       public static ComparableAssertion<int> Must(this int value) => new(value);
 
       [Obsolete("Use value version")]
