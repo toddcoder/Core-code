@@ -6,13 +6,13 @@ using Core.Strings;
 
 namespace Core.Configurations
 {
-   public class Parser
+   internal class Parser
    {
       protected const string REGEX_KEY = "/(['$@']? [/w] [/w '-']*)";
 
       protected string source;
 
-      public Parser(string source)
+      internal Parser(string source)
       {
          this.source = source;
       }

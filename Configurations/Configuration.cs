@@ -15,6 +15,18 @@ namespace Core.Configurations
 {
    public class Configuration : IHash<string, IConfigurationItem>, IConfigurationItem
    {
+      public static implicit operator Configuration(string source)
+      {
+         var parser = new Parser(source);
+         return parser.Parse().ForceValue();
+      }
+
+      public static IResult<Configuration> FromString(string source)
+      {
+         var parser = new Parser(source);
+         return parser.Parse();
+      }
+
       protected static Set<Type> allowedTypes;
 
       protected static bool isAllowed(Type type) => allowedTypes.Contains(type) || type.IsEnum || type.IsArray;

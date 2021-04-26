@@ -68,9 +68,8 @@ namespace Core.Tests
          var entity = new ColumnData { ObjectId = 95 };
          var resources = new Resources<DataTests>();
          var source = resources.String("TestData.data.configuration");
-         var parse = new Parser(source);
          var _adapter =
-            from configuration in parse.Parse()
+            from configuration in Configuration.FromString(source)
             from setup in SqlSetup.FromConfiguration(configuration, "all")
             from adapter in Adapter<ColumnData>.FromSetup(setup, entity)
             select adapter;
@@ -93,9 +92,8 @@ namespace Core.Tests
       {
          var resources = new Resources<DataTests>();
          var source = resources.String("TestData.data.configuration");
-         var parse = new Parser(source);
          var _adapter =
-            from configuration in parse.Parse()
+            from configuration in Configuration.FromString(source)
             from setup in SqlSetup.FromConfiguration(configuration, "all2")
             from adapter in Adapter<ColumnData>.FromSetup(setup, new ColumnData { ObjectId = 5664280 })
             select adapter;
