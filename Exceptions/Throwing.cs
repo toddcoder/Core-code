@@ -5,11 +5,6 @@ namespace Core.Exceptions
 {
    public static class Throwing
    {
-      private static bool isException(Type exceptionType)
-      {
-         return exceptionType == typeof(Exception) || exceptionType.IsSubclassOf(typeof(Exception));
-      }
-
       public static ApplicationException Throws(this string message) => new FullStackException(message);
 
       public static ApplicationException Throws(this string message, Exception innerException)

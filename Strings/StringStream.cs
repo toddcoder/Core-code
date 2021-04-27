@@ -71,7 +71,7 @@ namespace Core.Strings
 
       protected StringStream append(object obj, bool endLine)
       {
-         if (!(obj is null))
+         if (obj is not null)
          {
             var type = obj.GetType();
             switch (type.Name)
