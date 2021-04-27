@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Core.Assertions;
@@ -21,7 +22,7 @@ namespace Core.Strings
          return formatter;
       }
 
-      public static Formatter WithStandard(bool includeFolders, Hash<string, string> initializers)
+      public static Formatter WithStandard(bool includeFolders, Dictionary<string, string> initializers)
       {
          var formatter = new Formatter(initializers);
          addStandard(formatter, includeFolders);
@@ -42,10 +43,6 @@ namespace Core.Strings
             formatter["tempdir"] = Path.GetTempPath();
             formatter["system32"] = Environment.GetFolderPath(Environment.SpecialFolder.System);
             formatter["progs"] = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
-            formatter["configs"] = @"C:\Enterprise\Configurations";
-            formatter["projects"] = @"C:\Enterprise\Projects";
-            formatter["enterprise"] = @"C:\Enterprise";
-            formatter["services"] = @"C:\Enterprise\Services";
          }
       }
 
@@ -89,11 +86,11 @@ namespace Core.Strings
          }
       }
 
-      protected Hash<string, string> names;
+      protected AutoStringHash<string> names;
 
-      public Formatter() => names = new AutoHash<string, string>(_ => "");
+      public Formatter() => names = new AutoStringHash<string>(true, _ => "");
 
-      public Formatter(Hash<string, string> initializers) => names = initializers;
+      public Formatter(Dictionary<string, string> initializers) => names = new AutoStringHash<string>(true, initializers);
 
       public Formatter(Formatter formatter)
       {

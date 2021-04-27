@@ -81,7 +81,9 @@ namespace Core.Strings
 
          public Divider(char character) => this.character = character;
 
-         public void Evaluate(ColumnHeader[] columnHeaders) { }
+         public void Evaluate(ColumnHeader[] columnHeaders)
+         {
+         }
 
          public string Render(ColumnHeader[] columnHeaders, string columnSeparator)
          {
@@ -92,7 +94,9 @@ namespace Core.Strings
 
       protected class Line : IRow
       {
-         public void Evaluate(ColumnHeader[] columnHeaders) { }
+         public void Evaluate(ColumnHeader[] columnHeaders)
+         {
+         }
 
          public string Render(ColumnHeader[] columnHeaders, string columnSeparator) => "";
       }
@@ -106,22 +110,30 @@ namespace Core.Strings
          columnHeaders = columns.Select(c => new ColumnHeader(c.header, c.justification)).ToArray();
          rows = new List<IRow>();
          hasHeaders = true;
+         HeaderFoot = '='.Some();
+         ColumnSeparator = " | ";
+         RowSeparator = '-'.Some();
       }
 
       public TableMaker(params Justification[] justifications)
       {
          columnHeaders = justifications.Select(j => new ColumnHeader("", j)).ToArray();
+
          rows = new List<IRow>();
          hasHeaders = false;
+
+         HeaderFoot = '='.Some();
+         ColumnSeparator = " | ";
+         RowSeparator = '-'.Some();
       }
 
       public void Clear() => rows.Clear();
 
-      public IMaybe<char> HeaderFoot { get; set; } = '='.Some();
+      public IMaybe<char> HeaderFoot { get; set; }
 
-      public string ColumnSeparator { get; set; } = " | ";
+      public string ColumnSeparator { get; set; }
 
-      public IMaybe<char> RowSeparator { get; set; } = '-'.Some();
+      public IMaybe<char> RowSeparator { get; set; }
 
       public TableMaker Add(params object[] items)
       {
@@ -193,9 +205,8 @@ namespace Core.Strings
             rowSeparator = rowSeparator + separator.ToString().Repeat(headerWidth) + rowSeparator;
          }
 
-         foreach (var row in rows)
+         foreach (var renderedRow in rows.Select(row => row.Render(columnHeaders, ColumnSeparator)))
          {
-            var renderedRow = row.Render(columnHeaders, ColumnSeparator);
             builder.Append(renderedRow);
             builder.Append(rowSeparator);
          }

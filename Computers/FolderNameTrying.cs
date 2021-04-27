@@ -80,17 +80,7 @@ namespace Core.Computers
 
       public IResult<FolderName> Guarantee() => tryTo(() => folderName.Guarantee());
 
-      public IResult<FolderName> Parent
-      {
-         get
-         {
-            return tryTo(() =>
-            {
-               var parent = folderName.Parent;
-               return parent.Map(p => p.Success()).DefaultTo(() => $"{folderName} doesn't have a parent".Failure<FolderName>());
-            });
-         }
-      }
+      public IResult<FolderName> Parent => folderName.Parent.Result($"{folderName} doesn't have a parent");
 
       public IResult<FolderName> SetAsCurrent() => tryTo(() =>
       {
@@ -109,5 +99,9 @@ namespace Core.Computers
       public IResult<string> AbsoluteString(string relativePath) => tryTo(() => folderName.AbsoluteString(relativePath));
 
       public IResult<bool> WasCreated() => tryTo(() => folderName.WasCreated());
+
+      public IResult<bool> Exists() => tryTo(() => folderName.Exists());
+
+      public IResult<FolderName> Existing() => Exists().Map(_ => folderName);
    }
 }

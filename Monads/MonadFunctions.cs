@@ -9,9 +9,7 @@ namespace Core.Monads
          return new Some<TParent>(value);
       }
 
-      public static IMaybe<TParent> someAs<TChild, TParent>(TChild value)
-         where TChild : class, TParent
-         where TParent : class
+      public static IMaybe<TParent> someAs<TChild, TParent>(TChild value) where TChild : class, TParent where TParent : class
       {
          return new Some<TParent>(value);
       }
@@ -20,9 +18,7 @@ namespace Core.Monads
 
       public static IResult<T> success<T>(T value) => new Success<T>(value);
 
-      public static IResult<TParent> successAs<TChild, TParent>(TChild value)
-         where TChild : class, TParent
-         where TParent : class
+      public static IResult<TParent> successAs<TChild, TParent>(TChild value) where TChild : class, TParent where TParent : class
       {
          return new Success<TParent>(value);
       }
@@ -34,9 +30,7 @@ namespace Core.Monads
          return new Matched<TParent>(value);
       }
 
-      public static IMatched<TParent> matchedAs<TChild, TParent>(TChild value)
-         where TChild : class
-         where TParent : class
+      public static IMatched<TParent> matchedAs<TChild, TParent>(TChild value) where TChild : class where TParent : class
       {
          return new Matched<TParent>(value as TParent);
       }

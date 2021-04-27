@@ -25,14 +25,7 @@ namespace Core.Strings
       public static Guid serialGUID()
       {
          var result = UuidCreateSequential(out var guid);
-         if (result != RPC_S_OK)
-         {
-            return Guid.Empty;
-         }
-         else
-         {
-            return guid;
-         }
+         return result == RPC_S_OK ? guid : Guid.Empty;
       }
 
       public static string uniqueID() => serialGUID().ToString();
@@ -66,35 +59,21 @@ namespace Core.Strings
          return result.ToString();
       }
 
-      public static string splitLiteral(SplitType split)
+      public static string splitLiteral(SplitType split) => split switch
       {
-         switch (split)
-         {
-            case SplitType.CRLF:
-               return "\r\n";
-            case SplitType.CR:
-               return "\r";
-            case SplitType.LF:
-               return "\n";
-            default:
-               return "";
-         }
-      }
+         SplitType.CRLF => "\r\n",
+         SplitType.CR => "\r",
+         SplitType.LF => "\n",
+         _ => ""
+      };
 
-      public static string splitPattern(SplitType split)
+      public static string splitPattern(SplitType split) => split switch
       {
-         switch (split)
-         {
-            case SplitType.CRLF:
-               return "/r /n";
-            case SplitType.CR:
-               return "/r";
-            case SplitType.LF:
-               return "/n";
-            default:
-               return "";
-         }
-      }
+         SplitType.CRLF => "/r /n",
+         SplitType.CR => "/r",
+         SplitType.LF => "/n",
+         _ => ""
+      };
 
       public static string uniqueIDFromTime(int index, int indexPadLength)
       {

@@ -57,7 +57,7 @@ namespace Core.Strings
          IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
       }
 
-      public static implicit operator CSV(string source) => new CSV(source);
+      public static implicit operator CSV(string source) => new(source);
 
       protected DelimitedText delimitedText;
       protected List<Record> records;
@@ -100,7 +100,7 @@ namespace Core.Strings
 
       internal DelimitedText DelimitedText => delimitedText;
 
-      protected static Record getNewRecord(string record, DelimitedText delimitedText) => new Record(record, delimitedText);
+      protected static Record getNewRecord(string record, DelimitedText delimitedText) => new(record, delimitedText);
 
       public override string ToString() => records.Select(record => record.ToString()).ToString("\r\n");
 
@@ -114,7 +114,7 @@ namespace Core.Strings
          return records.Where(record => !record.IsEmpty).Select(record => getObject<T>(evaluator, record, signatures));
       }
 
-      static T getObject<T>(PropertyEvaluator evaluator, Record record, params string[] signatures) where T : new()
+      protected static T getObject<T>(PropertyEvaluator evaluator, Record record, params string[] signatures) where T : new()
       {
          var entity = new T();
          evaluator.Object = some<T, object>(entity);

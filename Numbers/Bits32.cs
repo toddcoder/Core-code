@@ -6,10 +6,9 @@ using Core.Enumerables;
 
 namespace Core.Numbers
 {
-   public class Bits32<TEnum> : IEnumerable<TEnum>
-      where TEnum : struct, IConvertible
+   public class Bits32<TEnum> : IEnumerable<TEnum> where TEnum : struct, IConvertible
    {
-      static TEnum enumOf(int value) => (TEnum)Enum.ToObject(typeof(TEnum), value);
+      protected static TEnum enumOf(int value) => (TEnum)Enum.ToObject(typeof(TEnum), value);
 
       public static bool GetBit(TEnum bits, TEnum bit) => (bits.ToInt32(null) & bit.ToInt32(null)) != 0;
 
@@ -35,11 +34,11 @@ namespace Core.Numbers
          return bits;
       }
 
-      public static implicit operator Bits32<TEnum>(TEnum bits) => new Bits32<TEnum>(bits);
+      public static implicit operator Bits32<TEnum>(TEnum bits) => new(bits);
 
       public static implicit operator TEnum(Bits32<TEnum> bits) => bits.Value;
 
-      TEnum bits;
+      protected TEnum bits;
 
       public Bits32(TEnum bits) => this.bits = bits;
 
@@ -57,10 +56,7 @@ namespace Core.Numbers
 
       public void Reverse(TEnum bit) => bits = ReverseBit(bits, bit);
 
-      public IEnumerator<TEnum> GetEnumerator()
-      {
-         return Enum.GetValues(typeof(TEnum)).Cast<TEnum>().Where(item => GetBit(bits, item)).GetEnumerator();
-      }
+      public IEnumerator<TEnum> GetEnumerator() => Enum.GetValues(typeof(TEnum)).Cast<TEnum>().Where(item => GetBit(bits, item)).GetEnumerator();
 
       IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 

@@ -61,9 +61,8 @@ namespace Core.Tests
       {
          var resources = new Resources<ConfigurationTests>();
          var source = resources.String("TestData.connections.txt");
-         var parser = new Parser(source);
 
-         if (parser.Parse().If(out var configuration, out var exception))
+         if (Configuration.FromString(source).If(out var configuration, out var exception))
          {
             var result =
                from connections in configuration.GetGroup("connections")
@@ -92,9 +91,8 @@ namespace Core.Tests
       {
          var resources = new Resources<ConfigurationTests>();
          var source = resources.String("TestData.connections2.txt");
-         var parser = new Parser(source);
 
-         if (parser.Parse().If(out var configuration, out var exception))
+         if (Configuration.FromString(source).If(out var configuration, out var exception))
          {
             var result =
                from connections in configuration.GetGroup("connections")
@@ -123,8 +121,7 @@ namespace Core.Tests
       {
          var resources = new Resources<ConfigurationTests>();
          var source = resources.String("TestData.connections.txt");
-         var parser = new Parser(source);
-         if (parser.Parse().If(out var configuration, out var exception))
+         if (Configuration.FromString(source).If(out var configuration, out var exception))
          {
             Console.Write(configuration);
          }
@@ -186,8 +183,7 @@ namespace Core.Tests
       {
          var source = @"enum: Bravo; intValue: 153; stringValue: foobar; file: C:\temp\temp.txt; doubles: 1.0, 5.0, 3.0; isTrue: true; " +
             @"escape: ""\r \t \\ foobar""";
-         var parser = new Parser(source);
-         if (parser.Parse().If(out var configuration, out var exception))
+         if (Configuration.FromString(source).If(out var configuration, out var exception))
          {
             if (configuration.Deserialize<Test>().If(out var obj, out exception))
             {

@@ -57,23 +57,23 @@ namespace Core.Collections
 
       public static AutoHash<TKey, TValue> ToAutoHash<TKey, TValue>(this Hash<TKey, TValue> hash, TValue defaultValue)
       {
-         return new AutoHash<TKey, TValue>(hash, hash.Comparer) { Default = DefaultType.Value, DefaultValue = defaultValue };
+         return new(hash, hash.Comparer) { Default = DefaultType.Value, DefaultValue = defaultValue };
       }
 
       public static AutoStringHash<TValue> ToAutoStringHash<TValue>(this StringHash<TValue> hash, TValue defaultValue)
       {
-         return new AutoStringHash<TValue>(hash.IgnoreCase, hash) { Default = DefaultType.Value, DefaultValue = defaultValue };
+         return new(hash.IgnoreCase, hash) { Default = DefaultType.Value, DefaultValue = defaultValue };
       }
 
       public static AutoHash<TKey, TValue> ToAutoHash<TKey, TValue>(this Hash<TKey, TValue> hash,
          Func<TKey, TValue> defaultLambda)
       {
-         return new AutoHash<TKey, TValue>(hash, hash.Comparer) { Default = DefaultType.Lambda, DefaultLambda = defaultLambda };
+         return new(hash, hash.Comparer) { Default = DefaultType.Lambda, DefaultLambda = defaultLambda };
       }
 
       public static AutoStringHash<TValue> ToAutoStringHash<TValue>(this StringHash<TValue> hash, Func<string, TValue> defaultLambda)
       {
-         return new AutoStringHash<TValue>(hash.IgnoreCase, hash) { Default = DefaultType.Lambda, DefaultLambda = defaultLambda };
+         return new(hash.IgnoreCase, hash) { Default = DefaultType.Lambda, DefaultLambda = defaultLambda };
       }
 
       public static string Format(this Hash<string, string> hash, string format) => new Formatter(hash).Format(format);
@@ -149,17 +149,17 @@ namespace Core.Collections
 
       public static Hash<TKey, TValue> ToHash<TKey, TValue>(this Dictionary<TKey, TValue> dictionary)
       {
-         return new Hash<TKey, TValue>(dictionary);
+         return new(dictionary);
       }
 
       public static StringHash<TValue> ToStringHash<TValue>(this Dictionary<string, TValue> dictionary, bool ignoreCase)
       {
-         return new StringHash<TValue>(ignoreCase, dictionary);
+         return new(ignoreCase, dictionary);
       }
 
       public static Hash<TKey, TValue> ToHash<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, IEqualityComparer<TKey> comparer)
       {
-         return new Hash<TKey, TValue>(dictionary, comparer);
+         return new(dictionary, comparer);
       }
 
       public static Hash<TKey, TValue> ToHash<TKey, TValue>(this IEnumerable<TValue> enumerable, Func<TValue, TKey> keySelector)

@@ -85,7 +85,7 @@ namespace Core.Objects
          }
       }
 
-      static Type getUngenericType(string assemblyPath, string typeName)
+      private static Type getUngenericType(string assemblyPath, string typeName)
       {
          if (assemblyPath.IsEmpty())
          {
@@ -97,8 +97,7 @@ namespace Core.Objects
          }
       }
 
-      static Type getGenericType(string genericAssemblyPath, string genericTypeName, string specificAssemblyPath,
-         string specificTypeName)
+      private static Type getGenericType(string genericAssemblyPath, string genericTypeName, string specificAssemblyPath, string specificTypeName)
       {
          var specificType = getUngenericType(specificAssemblyPath, specificTypeName);
          if (specificType != null)

@@ -57,17 +57,7 @@ namespace Core.Numbers
          }
       }
 
-      public static bool IsCommaNumeric(this string value)
-      {
-         if (value.IsNotEmpty())
-         {
-            return value.Replace(",", "").IsNumeric();
-         }
-         else
-         {
-            return false;
-         }
-      }
+      public static bool IsCommaNumeric(this string value) => value.IsNotEmpty() && value.Replace(",", "").IsNumeric();
 
       public static bool IsIntegral(this Type type)
       {
@@ -89,17 +79,7 @@ namespace Core.Numbers
 
       public static bool IsIntegral(this object value) => (value as string)?.IsIntegral() ?? value.GetType().IsIntegral();
 
-      public static bool IsIntegral(this string value)
-      {
-         if (value.IsNotEmpty())
-         {
-            return value.IsMatch("^ ['+-']? /d+ $") || value.IsHex();
-         }
-         else
-         {
-            return false;
-         }
-      }
+      public static bool IsIntegral(this string value) => value.IsNotEmpty() && (value.IsMatch("^ ['+-']? /d+ $") || value.IsHex());
 
       public static bool IsFloat(this Type type)
       {

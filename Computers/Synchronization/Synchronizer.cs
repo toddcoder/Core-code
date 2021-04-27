@@ -107,8 +107,8 @@ namespace Core.Computers.Synchronization
       protected IMatched<FileName> copy(FileName sourceFile, FileName targetFile)
       {
          var targetFileFolder = targetFile.Folder;
-         var anyWasCreated = targetFileFolder.TryTo.WasCreated();
-         if (anyWasCreated.If(out var wasCreated, out var exception))
+         var _wasCreated = targetFileFolder.TryTo.WasCreated();
+         if (_wasCreated.If(out var wasCreated, out var exception))
          {
             if (wasCreated)
             {
@@ -145,6 +145,6 @@ namespace Core.Computers.Synchronization
          }
       }
 
-      public SynchronizerTrying TryTo => new SynchronizerTrying(this);
+      public SynchronizerTrying TryTo => new(this);
    }
 }

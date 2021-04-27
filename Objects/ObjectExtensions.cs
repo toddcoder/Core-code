@@ -90,14 +90,7 @@ namespace Core.Objects
 
       public static bool IsDate(this object date)
       {
-         if (date is DateTime)
-         {
-            return true;
-         }
-         else
-         {
-            return DateTime.TryParse(date.ToString(), out _);
-         }
+         return date is DateTime || DateTime.TryParse(date.ToString(), out _);
       }
 
       public static IResult<string> FormatObject(this object obj, string format) => GetReflector(obj).Map(rf => rf.Format(format));
