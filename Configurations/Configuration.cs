@@ -73,16 +73,11 @@ namespace Core.Configurations
 
       protected static IMaybe<object> getConversion(Type type, string source)
       {
+         string sourceWithoutQuotes() => source.StartsWith(@"""") && source.EndsWith(@"""") ? source.Drop(1).Drop(-1) : source;
+
          if (type == typeof(string))
          {
-            if (source.StartsWith(@"""") && source.EndsWith(@""""))
-            {
-               return source.Drop(1).Drop(-1).Some<object>();
-            }
-            else
-            {
-               return source.Some<object>();
-            }
+            return sourceWithoutQuotes().Some<object>();
          }
          else if (type == typeof(int))
          {
@@ -114,11 +109,11 @@ namespace Core.Configurations
          }
          else if (type == typeof(FileName))
          {
-            return new FileName(source).Some<object>();
+            return new FileName(sourceWithoutQuotes()).Some<object>();
          }
          else if (type == typeof(FolderName))
          {
-            return new FolderName(source).Some<object>();
+            return new FolderName(sourceWithoutQuotes()).Some<object>();
          }
          else if (type == typeof(byte[]))
          {
@@ -165,7 +160,7 @@ namespace Core.Configurations
          static string encloseInQuotes(string text)
          {
             var escaped = text.ReplaceAll(("\t", @"\\t"), ("\r", @"\\r"), ("\n", @"\\n"));
-            escaped = escaped.Substitute(@"'\' -(> ['rtn\'])", @"\\");
+            escaped = escaped.Substitute(@"'\' -(> ['rtn\'])", @"\\", true);
             return $"\"{escaped}\"";
          }
 
@@ -191,9 +186,13 @@ namespace Core.Configurations
          {
             return obj.ToString().ToLower();
          }
-         else if (type == typeof(string))
+         else if (type == typeof(string) || type == typeof(FileName) || type == typeof(FolderName))
          {
             return encloseInQuotes(obj.ToString());
+         }
+         else if (type.IsEnum)
+         {
+            return obj.ToString();
          }
          else
          {

@@ -213,8 +213,7 @@ namespace Core.Tests
       [TestMethod]
       public void ComplexSerializationDeserializationTest()
       {
-         FolderName folder = @"C:\Temp";
-         var file = folder + "temp.txt";
+         FileName file = @"C:\Temp\temp.txt";
 
          var container = new Container
          {
