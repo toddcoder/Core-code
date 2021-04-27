@@ -2,11 +2,10 @@
 
 namespace Core.Numbers
 {
-   public class Between<T>
-      where T : IComparable<T>
+   public class Between<T> where T : IComparable<T>
    {
-      T number;
-      T minimum;
+      protected T number;
+      protected T minimum;
 
       public Between(T number, T minimum)
       {

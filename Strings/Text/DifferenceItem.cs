@@ -18,22 +18,21 @@ namespace Core.Strings.Text
          subItems = new List<DifferenceItem>();
       }
 
-      public DifferenceItem(string text, DifferenceType type, int position) : this(text, type, position.Some()) { }
+      public DifferenceItem(string text, DifferenceType type, int position) : this(text, type, position.Some())
+      {
+      }
 
-      public DifferenceItem(string text, DifferenceType type) : this(text, type, none<int>()) { }
+      public DifferenceItem(string text, DifferenceType type) : this(text, type, none<int>())
+      {
+      }
 
-      public DifferenceItem() : this("", DifferenceType.Imaginary) { }
+      public DifferenceItem() : this("", DifferenceType.Imaginary)
+      {
+      }
 
       protected override bool equals(object other)
       {
-         if (other is DifferenceItem otherDiffItem)
-         {
-            return Position.HasValue == otherDiffItem.Position.HasValue && subItemsEqual(otherDiffItem);
-         }
-         else
-         {
-            return false;
-         }
+         return other is DifferenceItem otherDiffItem && Position.HasValue == otherDiffItem.Position.HasValue && subItemsEqual(otherDiffItem);
       }
 
       [Equatable]
@@ -75,37 +74,36 @@ namespace Core.Strings.Text
 
       public override string ToString()
       {
-         using (var writer = new StringWriter())
+         using var writer = new StringWriter();
+
+         if (Position.If(out var position))
          {
-            if (Position.If(out var position))
-            {
-               writer.Write(position.RightJustify(10));
-               writer.Write(" ");
-            }
-            else
-            {
-               writer.Write(" ".Repeat(11));
-            }
-
-            writer.Write(Type.LeftJustify(10));
-
-            writer.Write(" | ");
-            writer.Write(Text.Elliptical(60, ' '));
-
-            if (subItems.Count > 0)
-            {
-               writer.WriteLine();
-               writer.WriteLine("          {");
-               foreach (var subItem in subItems)
-               {
-                  writer.WriteLine($"  {subItem}");
-               }
-
-               writer.Write("          }");
-            }
-
-            return writer.ToString();
+            writer.Write(position.RightJustify(10));
+            writer.Write(" ");
          }
+         else
+         {
+            writer.Write(" ".Repeat(11));
+         }
+
+         writer.Write(Type.LeftJustify(10));
+
+         writer.Write(" | ");
+         writer.Write(Text.Elliptical(60, ' '));
+
+         if (subItems.Count > 0)
+         {
+            writer.WriteLine();
+            writer.WriteLine("          {");
+            foreach (var subItem in subItems)
+            {
+               writer.WriteLine($"  {subItem}");
+            }
+
+            writer.Write("          }");
+         }
+
+         return writer.ToString();
       }
    }
 }

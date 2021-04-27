@@ -66,66 +66,79 @@ namespace Core.Strings.Text
 
          var oldLength = oldEnd - oldStart;
          var newLength = newEnd - newStart;
-         if (oldLength > 0 && newLength > 0)
+         switch (oldLength)
          {
-            if (calculateEditLength(oldModification.HashedItems, oldStart, oldEnd, newModification.HashedItems, newStart, newEnd, forwardDiagonal,
-                  reverseDiagonal)
-               .If(out var result, out var exception))
+            case > 0 when newLength > 0:
             {
-               if (result.EditLength <= 0)
+               if (calculateEditLength(oldModification.HashedItems, oldStart, oldEnd, newModification.HashedItems, newStart, newEnd, forwardDiagonal,
+                     reverseDiagonal)
+                  .If(out var result, out var exception))
                {
-                  return Unit.Success();
-               }
+                  if (result.EditLength <= 0)
+                  {
+                     return Unit.Success();
+                  }
 
-               switch (result.LastEdit)
-               {
-                  case EditType.DeleteRight when result.OldStart - 1 > oldStart:
-                     oldModification.Modifications[--result.OldStart] = true;
-                     break;
-                  case EditType.InsertDown when result.NewStart - 1 > newStart:
-                     newModification.Modifications[--result.NewStart] = true;
-                     break;
-                  case EditType.DeleteLeft when result.OldEnd < oldEnd:
-                     oldModification.Modifications[result.OldEnd++] = true;
-                     break;
-                  case EditType.InsertUp when result.NewEnd < newEnd:
-                     newModification.Modifications[result.NewEnd++] = true;
-                     break;
-               }
+                  switch (result.LastEdit)
+                  {
+                     case EditType.DeleteRight when result.OldStart - 1 > oldStart:
+                        oldModification.Modifications[--result.OldStart] = true;
+                        break;
+                     case EditType.InsertDown when result.NewStart - 1 > newStart:
+                        newModification.Modifications[--result.NewStart] = true;
+                        break;
+                     case EditType.DeleteLeft when result.OldEnd < oldEnd:
+                        oldModification.Modifications[result.OldEnd++] = true;
+                        break;
+                     case EditType.InsertUp when result.NewEnd < newEnd:
+                        newModification.Modifications[result.NewEnd++] = true;
+                        break;
+                  }
 
-               var resultAll =
-                  from resultA in buildModifications(oldStart, result.OldStart, newStart, result.NewStart, forwardDiagonal, reverseDiagonal)
-                  from resultB in buildModifications(result.OldEnd, oldEnd, result.NewEnd, newEnd, forwardDiagonal, reverseDiagonal)
-                  select resultB;
-               if (resultAll.IfNot(out exception))
+                  var resultAll =
+                     from resultA in buildModifications(oldStart, result.OldStart, newStart, result.NewStart, forwardDiagonal, reverseDiagonal)
+                     from resultB in buildModifications(result.OldEnd, oldEnd, result.NewEnd, newEnd, forwardDiagonal, reverseDiagonal)
+                     select resultB;
+                  if (resultAll.IfNot(out exception))
+                  {
+                     return failure<Unit>(exception);
+                  }
+               }
+               else
                {
                   return failure<Unit>(exception);
                }
+
+               break;
             }
-            else
+            case > 0:
             {
-               return failure<Unit>(exception);
+               for (var i = oldStart; i < oldEnd; i++)
+               {
+                  oldModification.Modifications[i] = true;
+               }
+
+               break;
             }
-         }
-         else if (oldLength > 0)
-         {
-            for (var i = oldStart; i < oldEnd; i++)
+            default:
             {
-               oldModification.Modifications[i] = true;
-            }
-         }
-         else if (newLength > 0)
-         {
-            for (var i = newStart; i < newEnd; i++)
-            {
-               newModification.Modifications[i] = true;
+               if (newLength > 0)
+               {
+                  for (var i = newStart; i < newEnd; i++)
+                  {
+                     newModification.Modifications[i] = true;
+                  }
+               }
+
+               break;
             }
          }
 
          return Unit.Success();
       }
 
-      protected static IResult<EditLengthResult> calculateEditLength(int[] oldItems, int oldStart, int oldEnd, int[] newItems, int newStart, int newEnd,
+      protected static IResult<EditLengthResult> calculateEditLength(int[] oldItems, int oldStart, int oldEnd, int[] newItems, int newStart,
+         int newEnd,
          int[] forwardDiagonal, int[] reverseDiagonal)
       {
          if (oldItems.Length == 0 && newItems.Length == 0)
@@ -145,12 +158,12 @@ namespace Core.Strings.Text
 
          for (var d = 0; d <= half; d++)
          {
-            var lastEdit = EditType.None;
+            EditType lastEdit;
 
             for (var k = -d; k <= d; k += 2)
             {
                var kIndex = k + half;
-               var oldIndex = 0;
+               int oldIndex;
                if (k == -d || k != d && forwardDiagonal[kIndex - 1] < forwardDiagonal[kIndex + 1])
                {
                   oldIndex = forwardDiagonal[kIndex + 1];
@@ -196,7 +209,7 @@ namespace Core.Strings.Text
             for (var k = -d; k <= d; k += 2)
             {
                var kIndex = k + half;
-               var oldIndex = 0;
+               int oldIndex;
                if (k == -d || k != d && reverseDiagonal[kIndex + 1] <= reverseDiagonal[kIndex - 1])
                {
                   oldIndex = reverseDiagonal[kIndex + 1] - 1;

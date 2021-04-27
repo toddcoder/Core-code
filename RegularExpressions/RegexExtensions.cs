@@ -176,62 +176,48 @@ namespace Core.RegularExpressions
          bool friendly = true)
       {
          var result = input.Split(pattern, ignoreCase, multiline, friendly);
-         switch (result.Length)
+         return result.Length switch
          {
-            case 1:
-               return (result[0], "", "");
-            case 2:
-               return (result[0], result[1], "");
-            default:
-               return (result[0], result[1], result[2]);
-         }
+            1 => (result[0], "", ""),
+            2 => (result[0], result[1], ""),
+            _ => (result[0], result[1], result[2])
+         };
       }
 
       public static (string, string, string) Split3(this string input, string pattern, RegexOptions options, bool friendly = true)
       {
          var result = input.Split(pattern, options, friendly);
-         switch (result.Length)
+         return result.Length switch
          {
-            case 1:
-               return (result[0], "", "");
-            case 2:
-               return (result[0], result[1], "");
-            default:
-               return (result[0], result[1], result[2]);
-         }
+            1 => (result[0], "", ""),
+            2 => (result[0], result[1], ""),
+            _ => (result[0], result[1], result[2])
+         };
       }
 
       public static (string, string, string, string) Split4(this string input, string pattern, bool ignoreCase = false, bool multiline = false,
          bool friendly = true)
       {
          var result = input.Split(pattern, ignoreCase, multiline, friendly);
-         switch (result.Length)
+         return result.Length switch
          {
-            case 1:
-               return (result[0], "", "", "");
-            case 2:
-               return (result[0], result[1], "", "");
-            case 3:
-               return (result[0], result[1], result[2], "");
-            default:
-               return (result[0], result[1], result[2], result[3]);
-         }
+            1 => (result[0], "", "", ""),
+            2 => (result[0], result[1], "", ""),
+            3 => (result[0], result[1], result[2], ""),
+            _ => (result[0], result[1], result[2], result[3])
+         };
       }
 
       public static (string, string, string, string) Split4(this string input, string pattern, RegexOptions options, bool friendly = true)
       {
          var result = input.Split(pattern, options, friendly);
-         switch (result.Length)
+         return result.Length switch
          {
-            case 1:
-               return (result[0], "", "", "");
-            case 2:
-               return (result[0], result[1], "", "");
-            case 3:
-               return (result[0], result[1], result[2], "");
-            default:
-               return (result[0], result[1], result[2], result[3]);
-         }
+            1 => (result[0], "", "", ""),
+            2 => (result[0], result[1], "", ""),
+            3 => (result[0], result[1], result[2], ""),
+            _ => (result[0], result[1], result[2], result[3])
+         };
       }
 
       public static string Escape(this string input, bool friendly = true)
@@ -241,35 +227,51 @@ namespace Core.RegularExpressions
 
       public static string FriendlyString(this string input) => $"'{input.Replace("'", "\\'")}'";
 
-      public static IMaybe<Matcher> Matcher(this string input, string pattern, bool ignoreCase = false,
-         bool multiline = false, bool friendly = true)
+      public static IMaybe<Matcher> Matcher(this string input, string pattern, bool ignoreCase = false, bool multiline = false, bool friendly = true)
       {
          var matcher = new Matcher(friendly);
 
          return maybe(matcher.IsMatch(input, pattern, ignoreCase, multiline), () => matcher);
       }
 
-      public static IMaybe<Matcher> Matcher(this string input, string pattern, RegexOptions options,
-         bool friendly = true)
+      public static IMaybe<Matcher> Matcher(this string input, string pattern, RegexOptions options, bool friendly = true)
       {
          var matcher = new Matcher(friendly);
 
          return maybe(matcher.IsMatch(input, pattern, options), () => matcher);
       }
 
-      public static bool Matcher(this string input, string pattern, out Matcher matcher, bool ignoreCase = false,
-         bool multiline = false, bool friendly = true)
+      public static bool Matcher(this string input, string pattern, out Matcher matcher, bool ignoreCase = false, bool multiline = false,
+         bool friendly = true)
       {
          return input.Matcher(pattern, ignoreCase, multiline, friendly).If(out matcher);
       }
 
-      public static bool Matcher(this string input, string pattern, out Matcher matcher, RegexOptions options,
-         bool friendly = true)
+      public static bool Matcher(this string input, string pattern, out Matcher matcher, RegexOptions options, bool friendly = true)
       {
          return input.Matcher(pattern, options, friendly).If(out matcher);
       }
 
-      public static void IfMatches(this string input, string pattern, Action<Matcher> ifTrue, bool ignoreCase = false,
+      public static void IfMatches(this string input, string pattern, Action<Matcher> ifTrue, bool ignoreCase = false, bool multiline = false,
+         bool friendly = true)
+      {
+         var matcher = new Matcher(friendly);
+         if (matcher.IsMatch(input, pattern, ignoreCase, multiline))
+         {
+            ifTrue(matcher);
+         }
+      }
+
+      public static void IfMatches(this string input, string pattern, Action<Matcher> ifTrue, RegexOptions options, bool friendly = true)
+      {
+         var matcher = new Matcher(friendly);
+         if (matcher.IsMatch(input, pattern, options))
+         {
+            ifTrue(matcher);
+         }
+      }
+
+      public static void IfMatches(this string input, string pattern, Action<Matcher> ifTrue, Action ifFalse, bool ignoreCase = false,
          bool multiline = false, bool friendly = true)
       {
          var matcher = new Matcher(friendly);
@@ -277,34 +279,14 @@ namespace Core.RegularExpressions
          {
             ifTrue(matcher);
          }
-      }
-
-      public static void IfMatches(this string input, string pattern, Action<Matcher> ifTrue, RegexOptions options,
-         bool friendly = true)
-      {
-         var matcher = new Matcher(friendly);
-         if (matcher.IsMatch(input, pattern, options))
-         {
-            ifTrue(matcher);
-         }
-      }
-
-      public static void IfMatches(this string input, string pattern, Action<Matcher> ifTrue, Action ifFalse,
-         bool ignoreCase = false, bool multiline = false, bool friendly = true)
-      {
-         var matcher = new Matcher(friendly);
-         if (matcher.IsMatch(input, pattern, ignoreCase, multiline))
-         {
-            ifTrue(matcher);
-         }
          else
          {
             ifFalse();
          }
       }
 
-      public static void IfMatches(this string input, string pattern, Action<Matcher> ifTrue, Action ifFalse,
-         RegexOptions options, bool friendly = true)
+      public static void IfMatches(this string input, string pattern, Action<Matcher> ifTrue, Action ifFalse, RegexOptions options,
+         bool friendly = true)
       {
          var matcher = new Matcher(friendly);
          if (matcher.IsMatch(input, pattern, options))
@@ -317,23 +299,22 @@ namespace Core.RegularExpressions
          }
       }
 
-      public static IMatched<Matcher.Match[]> MatchAll(this string input, string pattern, RegexOptions options,
-         bool friendly = true)
+      public static IMatched<Matcher.Match[]> MatchAll(this string input, string pattern, RegexOptions options, bool friendly = true)
       {
          return new Matcher(friendly).MatchAll(input, pattern, options);
       }
 
-      public static IMatched<Matcher.Match[]> MatchAll(this string input, string pattern, bool ignoreCase = false,
-         bool multiline = false, bool friendly = true)
+      public static IMatched<Matcher.Match[]> MatchAll(this string input, string pattern, bool ignoreCase = false, bool multiline = false,
+         bool friendly = true)
       {
          return new Matcher(friendly).MatchAll(input, pattern, ignoreCase, multiline);
       }
 
-      public static IMatched<Matcher.Match> MatchOne(this string input, string pattern, RegexOptions options,
-         bool friendly = true) => new Matcher(friendly).MatchOne(input, pattern, options);
+      public static IMatched<Matcher.Match> MatchOne(this string input, string pattern, RegexOptions options, bool friendly = true) =>
+         new Matcher(friendly).MatchOne(input, pattern, options);
 
-      public static IMatched<Matcher.Match> MatchOne(this string input, string pattern, bool ignoreCase = false,
-         bool multiline = false, bool friendly = true)
+      public static IMatched<Matcher.Match> MatchOne(this string input, string pattern, bool ignoreCase = false, bool multiline = false,
+         bool friendly = true)
       {
          return new Matcher(friendly).MatchOne(input, pattern, ignoreCase, multiline);
       }

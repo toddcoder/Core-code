@@ -8,8 +8,7 @@ namespace Core.Exceptions
 {
    public static class Deep
    {
-      public static string DeepMessage(this Exception exception, string format = "{level}:{message}({inner})",
-         int level = 0)
+      public static string DeepMessage(this Exception exception, string format = "{level}:{message}({inner})", int level = 0)
       {
          if (exception.InnerException != null)
          {
@@ -81,8 +80,7 @@ namespace Core.Exceptions
 
       public static IMaybe<string[]> CallStack(this Exception exception) => exception.CallStack("{string}", 0);
 
-      public static string DeepStack(this Exception exception, string format = "{level}:{stack}:\r\n{inner}",
-         int level = 0)
+      public static string DeepStack(this Exception exception, string format = "{level}:{stack}:\r\n{inner}", int level = 0)
       {
          if (exception.InnerException != null)
          {

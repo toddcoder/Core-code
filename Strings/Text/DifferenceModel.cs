@@ -63,24 +63,23 @@ namespace Core.Strings.Text
 
       public override string ToString()
       {
-         using (var writer = new StringWriter())
+         using var writer = new StringWriter();
+
+         writer.WriteLine("old:");
+         foreach (var item in OldDifferenceItems)
          {
-            writer.WriteLine("old:");
-            foreach (var item in OldDifferenceItems)
-            {
-               writer.WriteLine(item);
-            }
-
-            writer.WriteLine();
-
-            writer.WriteLine("new:");
-            foreach (var item in NewDifferenceItems)
-            {
-               writer.WriteLine(item);
-            }
-
-            return writer.ToString();
+            writer.WriteLine(item);
          }
+
+         writer.WriteLine();
+
+         writer.WriteLine("new:");
+         foreach (var item in NewDifferenceItems)
+         {
+            writer.WriteLine(item);
+         }
+
+         return writer.ToString();
       }
    }
 }

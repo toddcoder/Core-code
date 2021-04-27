@@ -16,8 +16,7 @@ namespace Core.Strings.Text
       protected bool ignoreWhiteSpace;
       protected bool ignoreCase;
 
-      protected delegate void ItemBuilder(string oldText, string newText, List<DifferenceItem> oldItems,
-         List<DifferenceItem> newItems);
+      protected delegate void ItemBuilder(string oldText, string newText, List<DifferenceItem> oldItems, List<DifferenceItem> newItems);
 
       public Differentiator(string[] oldText, string[] newText, bool ignoreWhiteSpace, bool ignoreCase)
       {
@@ -30,7 +29,7 @@ namespace Core.Strings.Text
       public IResult<DifferenceModel> BuildModel()
       {
          var differ = new DifferenceBuilder(oldText, newText, ignoreWhiteSpace, ignoreCase);
-         if (differ.Build().If(out var result, out var exception))
+         if (differ.Build().ValueOrCast<DifferenceModel>(out var result, out var asDifferenceModel))
          {
             var model = new DifferenceModel();
             ItemBuilder itemBuilder = buildItemsNoSub;
@@ -40,12 +39,11 @@ namespace Core.Strings.Text
          }
          else
          {
-            return failure<DifferenceModel>(exception);
+            return asDifferenceModel;
          }
       }
 
-      protected static void buildItemsNoSub(string oldLine, string newLine, List<DifferenceItem> oldItems,
-         List<DifferenceItem> newItems)
+      protected static void buildItemsNoSub(string oldLine, string newLine, List<DifferenceItem> oldItems, List<DifferenceItem> newItems)
       {
          var oldWords = splitWords(oldLine);
          var newWords = splitWords(newLine);
@@ -59,7 +57,7 @@ namespace Core.Strings.Text
       }
 
       protected static void buildItems(DifferenceResult result, List<DifferenceItem> oldItems, List<DifferenceItem> newItems,
-         IMaybe<ItemBuilder> anySubItemBuilder)
+         IMaybe<ItemBuilder> _subItemBuilder)
       {
          var oldPosition = 0;
          var newPosition = 0;
@@ -81,7 +79,7 @@ namespace Core.Strings.Text
                   oldPosition + 1);
                var newItem = new DifferenceItem(result.NewItems[i + diffBlock.NewInsertStart], DifferenceType.Inserted,
                   newPosition + 1);
-               if (anySubItemBuilder.If(out var subItemBuilder))
+               if (_subItemBuilder.If(out var subItemBuilder))
                {
                   var oldWords = result.OldItems[oldPosition].Split("/s+");
                   var newWords = result.NewItems[newPosition].Split("/s+");

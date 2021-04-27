@@ -5,7 +5,7 @@ namespace Core.Computers.Synchronization
 {
    public class SynchronizerTrying
    {
-      Synchronizer synchronizer;
+      protected Synchronizer synchronizer;
 
       public SynchronizerTrying(Synchronizer synchronizer)
       {

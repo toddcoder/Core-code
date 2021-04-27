@@ -27,7 +27,7 @@ namespace Core.Exceptions
          public override string ToString() => $"{Key}: {Set.ToString(", ")} [{StackTrace}]";
       }
 
-      Hash<string, Set<T>> data;
+      protected Hash<string, Set<T>> data;
       Hash<string, string> stackTraces;
 
       public GroupedExceptions()
@@ -54,9 +54,9 @@ namespace Core.Exceptions
 
       public IEnumerator<GroupedExceptionItem> GetEnumerator() => data.Select(getItem).GetEnumerator();
 
-      GroupedExceptionItem getItem(KeyValuePair<string, Set<T>> item)
+      protected GroupedExceptionItem getItem(KeyValuePair<string, Set<T>> item)
       {
-         return new GroupedExceptionItem(item.Value, item.Key, stackTraces[item.Key]);
+         return new(item.Value, item.Key, stackTraces[item.Key]);
       }
 
       IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

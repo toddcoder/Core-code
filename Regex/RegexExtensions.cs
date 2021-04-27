@@ -71,8 +71,7 @@ namespace Core.Regex
          }
       }
 
-      public static string Replace(this string input, string pattern, Action<Matcher> replacer, bool ignoreCase = false,
-         bool multiline = false)
+      public static string Replace(this string input, string pattern, Action<Matcher> replacer, bool ignoreCase = false, bool multiline = false)
       {
          return input.Replace(pattern, replacer, GetOptions(ignoreCase, multiline));
       }
@@ -142,67 +141,52 @@ namespace Core.Regex
       public static (string, string, string) Split3(this string input, string pattern, bool ignoreCase = false, bool multiline = false)
       {
          var result = input.Split(pattern, ignoreCase, multiline);
-         switch (result.Length)
+         return result.Length switch
          {
-            case 1:
-               return (result[0], "", "");
-            case 2:
-               return (result[0], result[1], "");
-            default:
-               return (result[0], result[1], result[2]);
-         }
+            1 => (result[0], "", ""),
+            2 => (result[0], result[1], ""),
+            _ => (result[0], result[1], result[2])
+         };
       }
 
       public static (string, string, string) Split3(this string input, string pattern, RegexOptions options)
       {
          var result = input.Split(pattern, options);
-         switch (result.Length)
+         return result.Length switch
          {
-            case 1:
-               return (result[0], "", "");
-            case 2:
-               return (result[0], result[1], "");
-            default:
-               return (result[0], result[1], result[2]);
-         }
+            1 => (result[0], "", ""),
+            2 => (result[0], result[1], ""),
+            _ => (result[0], result[1], result[2])
+         };
       }
 
       public static (string, string, string, string) Split4(this string input, string pattern, bool ignoreCase = false, bool multiline = false)
       {
          var result = input.Split(pattern, ignoreCase, multiline);
-         switch (result.Length)
+         return result.Length switch
          {
-            case 1:
-               return (result[0], "", "", "");
-            case 2:
-               return (result[0], result[1], "", "");
-            case 3:
-               return (result[0], result[1], result[2], "");
-            default:
-               return (result[0], result[1], result[2], result[3]);
-         }
+            1 => (result[0], "", "", ""),
+            2 => (result[0], result[1], "", ""),
+            3 => (result[0], result[1], result[2], ""),
+            _ => (result[0], result[1], result[2], result[3])
+         };
       }
 
       public static (string, string, string, string) Split4(this string input, string pattern, RegexOptions options)
       {
          var result = input.Split(pattern, options);
-         switch (result.Length)
+         return result.Length switch
          {
-            case 1:
-               return (result[0], "", "", "");
-            case 2:
-               return (result[0], result[1], "", "");
-            case 3:
-               return (result[0], result[1], result[2], "");
-            default:
-               return (result[0], result[1], result[2], result[3]);
-         }
+            1 => (result[0], "", "", ""),
+            2 => (result[0], result[1], "", ""),
+            3 => (result[0], result[1], result[2], ""),
+            _ => (result[0], result[1], result[2], result[3])
+         };
       }
 
       public static IMaybe<Matcher> Matcher(this string input, string pattern, bool ignoreCase = false, bool multiline = false)
       {
          var matcher = new Matcher();
-
          return maybe(matcher.IsMatch(input, pattern, ignoreCase, multiline), () => matcher);
       }
 
@@ -212,8 +196,7 @@ namespace Core.Regex
          return maybe(matcher.IsMatch(input, pattern, options), () => matcher);
       }
 
-      public static bool Matcher(this string input, string pattern, out Matcher matcher, bool ignoreCase = false,
-         bool multiline = false)
+      public static bool Matcher(this string input, string pattern, out Matcher matcher, bool ignoreCase = false, bool multiline = false)
       {
          return input.Matcher(pattern, ignoreCase, multiline).If(out matcher);
       }
@@ -223,8 +206,7 @@ namespace Core.Regex
          return input.Matcher(pattern, options).If(out matcher);
       }
 
-      public static void IfMatches(this string input, string pattern, Action<Matcher> ifTrue, bool ignoreCase = false,
-         bool multiline = false)
+      public static void IfMatches(this string input, string pattern, Action<Matcher> ifTrue, bool ignoreCase = false, bool multiline = false)
       {
          var matcher = new Matcher();
          if (matcher.IsMatch(input, pattern, ignoreCase, multiline))
@@ -242,8 +224,8 @@ namespace Core.Regex
          }
       }
 
-      public static void IfMatches(this string input, string pattern, Action<Matcher> ifTrue, Action ifFalse,
-         bool ignoreCase = false, bool multiline = false)
+      public static void IfMatches(this string input, string pattern, Action<Matcher> ifTrue, Action ifFalse, bool ignoreCase = false,
+         bool multiline = false)
       {
          var matcher = new Matcher();
          if (matcher.IsMatch(input, pattern, ignoreCase, multiline))

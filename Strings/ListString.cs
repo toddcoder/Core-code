@@ -8,9 +8,9 @@ namespace Core.Strings
    {
       public static implicit operator string(ListString listString) => listString.Text;
 
-      List<string> list;
-      string separator;
-      bool unique;
+      protected List<string> list;
+      protected string separator;
+      protected bool unique;
 
       public ListString(string initialString, string separator = ", ", bool unique = false)
       {

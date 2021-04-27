@@ -9,7 +9,7 @@ namespace Core.Exceptions
 {
    public class MultiExceptions : Exception, IList<Exception>
    {
-      List<Exception> exceptions;
+      protected List<Exception> exceptions;
 
       public MultiExceptions() => exceptions = new List<Exception>();
 

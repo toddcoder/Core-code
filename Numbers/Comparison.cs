@@ -6,13 +6,12 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Numbers
 {
-   public class Comparison<T>
-      where T : IComparable<T>
+   public class Comparison<T> where T : IComparable<T>
    {
       public struct Pair
       {
-         T left;
-         T right;
+         private T left;
+         private T right;
 
          public Pair(T left, T right)
          {
@@ -31,26 +30,26 @@ namespace Core.Numbers
          .Select(Math.Sign)
          .FirstOrDefault();
 
-      List<Pair> pairs;
-      IMaybe<T> left;
+      protected List<Pair> pairs;
+      protected IMaybe<T> _left;
 
       public Comparison(T left, T right)
       {
-         pairs = new List<Pair> { new Pair(left, right) };
+         pairs = new List<Pair> { new(left, right) };
 
-         this.left = none<T>();
+         _left = none<T>();
       }
 
       public Comparison<T> And(T comparable)
       {
-         left = comparable.Some();
+         _left = comparable.Some();
          return this;
       }
 
       public Comparison<T> ComparedTo(T comparable)
       {
-         pairs.Add(new Pair(left.Required("Then not called"), comparable));
-         left = none<T>();
+         pairs.Add(new Pair(_left.Required("Then not called"), comparable));
+         _left = none<T>();
 
          return this;
       }
