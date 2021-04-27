@@ -8,13 +8,9 @@ namespace Core.Monads
    {
       public static implicit operator bool(NotMatched<T> _) => false;
 
-      public static bool operator &(NotMatched<T> x, IHasValue y) => false;
-
-      public static bool operator |(NotMatched<T> x, IHasValue y) => y.HasValue;
-
-      public static bool operator !(NotMatched<T> _) => true;
-
-      internal NotMatched() { }
+      internal NotMatched()
+      {
+      }
 
       public IMatched<T> Do(Action<T> ifMatched, Action ifNotOrFailed)
       {
@@ -85,8 +81,8 @@ namespace Core.Monads
 
       public bool IfNot(out IMaybe<Exception> anyException)
       {
-	      anyException = none<Exception>();
-	      return true;
+         anyException = none<Exception>();
+         return true;
       }
 
       public bool Else<TOther>(out IMatched<TOther> result)
@@ -103,7 +99,9 @@ namespace Core.Monads
          return false;
       }
 
-      public void Force() { }
+      public void Force()
+      {
+      }
 
       public T ForceValue() => throw "There is no value".Throws();
 
@@ -131,6 +129,10 @@ namespace Core.Monads
 
       public IMatched<T> Where(Predicate<T> predicate, Func<string> exceptionMessage) => this;
 
+      public IMatched<T> ExceptionMessage(string message) => this;
+
+      public IMatched<T> ExceptionMessage(Func<Exception, string> message) => this;
+
       public bool IsMatched => false;
 
       public bool IsNotMatched => true;
@@ -146,8 +148,7 @@ namespace Core.Monads
          return ifNotMatched();
       }
 
-      public IMatched<TResult> Map<TResult>(Func<T, IMatched<TResult>> ifMatched,
-         Func<Exception, IMatched<TResult>> ifFailedMatch)
+      public IMatched<TResult> Map<TResult>(Func<T, IMatched<TResult>> ifMatched, Func<Exception, IMatched<TResult>> ifFailedMatch)
       {
          return notMatched<TResult>();
       }
@@ -158,8 +159,7 @@ namespace Core.Monads
          return notMatched<TResult>();
       }
 
-      public TResult FlatMap<TResult>(Func<T, TResult> ifMatched, Func<TResult> ifNotMatched,
-         Func<Exception, TResult> ifFailedMatch)
+      public TResult FlatMap<TResult>(Func<T, TResult> ifMatched, Func<TResult> ifNotMatched, Func<Exception, TResult> ifFailedMatch)
       {
          return ifNotMatched();
       }

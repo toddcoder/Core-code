@@ -8,12 +8,6 @@ namespace Core.Monads
    {
       public static implicit operator bool(Some<T> _) => true;
 
-      public static bool operator &(Some<T> x, IHasValue y) => y.HasValue;
-
-      public static bool operator |(Some<T> x, IHasValue y) => true;
-
-      public static bool operator !(Some<T> _) => false;
-
       protected T value;
 
       internal Some(T value) => this.value = value;
@@ -60,7 +54,9 @@ namespace Core.Monads
          return false;
       }
 
-      public void Force(string message) { }
+      public void Force(string message)
+      {
+      }
 
       public void Deconstruct(out bool isSome, out T value)
       {
@@ -68,11 +64,11 @@ namespace Core.Monads
          value = this.value;
       }
 
-	   public IMaybe<T> IfThen(Action<T> action)
-	   {
-		   action(value);
+      public IMaybe<T> IfThen(Action<T> action)
+      {
+         action(value);
          return this;
-	   }
+      }
 
       public bool EqualToValueOf(IMaybe<T> otherMaybe) => otherMaybe.If(out var otherValue) && ValueEqualTo(otherValue);
 
@@ -98,17 +94,12 @@ namespace Core.Monads
 
       public bool Equals(Some<T> other)
       {
-         if (ReferenceEquals(null, other))
+         if (other is null)
          {
             return false;
          }
 
-         if (ReferenceEquals(this, other))
-         {
-            return true;
-         }
-
-         return EqualityComparer<T>.Default.Equals(value, other.value);
+         return ReferenceEquals(this, other) || EqualityComparer<T>.Default.Equals(value, other.value);
       }
 
       public override bool Equals(object obj) => obj is Some<T> other && Equals(other);

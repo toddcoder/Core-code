@@ -2,13 +2,13 @@
 <package >
   <metadata>
     <id>Core</id>
-    <version>1.3.0.4</version>
+    <version>1.3.0.5</version>
     <title>Core</title>
     <authors>Todd Bennett</authors>
     <owners>Enterprise Products</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Common core code</description>
-    <releaseNotes>Existing for FileName and FolderName</releaseNotes>
+    <releaseNotes>Improved Configuration serialization</releaseNotes>
     <copyright>Copyright 2021</copyright>
     <tags>Core Async Types Monads Strings WinForms Internet Io Data</tags>
   </metadata>

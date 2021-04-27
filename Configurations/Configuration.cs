@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Core.Arrays;
 using Core.Assertions;
@@ -7,7 +8,9 @@ using Core.Collections;
 using Core.Computers;
 using Core.Enumerables;
 using Core.Monads;
+using Core.Objects;
 using Core.Strings;
+using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
 using static Core.RegularExpressions.RegexExtensions;
 
@@ -27,9 +30,9 @@ namespace Core.Configurations
          return parser.Parse();
       }
 
-      protected static Set<Type> allowedTypes;
+      protected static Set<Type> baseTypes;
 
-      protected static bool isAllowed(Type type) => allowedTypes.Contains(type) || type.IsEnum || type.IsArray;
+      protected static bool isBaseType(Type type) => baseTypes.Contains(type) || type.IsEnum;
 
       protected static object makeArray(Type elementType, string[] sourceArray)
       {
@@ -47,11 +50,39 @@ namespace Core.Configurations
          return newArray;
       }
 
+      protected static IMaybe<object> makeArray(Type elementType, Group[] groups)
+      {
+         var length = groups.Length;
+         var newArray = Array.CreateInstance(elementType, length);
+         for (var i = 0; i < length; i++)
+         {
+            var group = groups[i];
+            var configuration = new Configuration(group);
+            if (configuration.Deserialize(elementType).If(out var element))
+            {
+               newArray.SetValue(element, i);
+            }
+            else
+            {
+               return none<object>();
+            }
+         }
+
+         return newArray.Some<object>();
+      }
+
       protected static IMaybe<object> getConversion(Type type, string source)
       {
          if (type == typeof(string))
          {
-            return source.Some<object>();
+            if (source.StartsWith(@"""") && source.EndsWith(@""""))
+            {
+               return source.Drop(1).Drop(-1).Some<object>();
+            }
+            else
+            {
+               return source.Some<object>();
+            }
          }
          else if (type == typeof(int))
          {
@@ -100,8 +131,28 @@ namespace Core.Configurations
          else if (type.IsArray)
          {
             var elementType = type.GetElementType();
-            var strings = source.Split("/s* ',' /s*");
-            return makeArray(elementType, strings).Some();
+            if (isBaseType(elementType))
+            {
+               var strings = source.Split("/s* ',' /s*");
+               return makeArray(elementType, strings).Some();
+            }
+            else
+            {
+               if (FromString(source).If(out var arrayConfiguration))
+               {
+                  var root = arrayConfiguration.root;
+                  var groups = root.Groups().Select(t => t.group).ToArray();
+                  return makeArray(elementType, groups);
+               }
+               else
+               {
+                  return none<object>();
+               }
+            }
+         }
+         else if (FromString(source).If(out var configuration))
+         {
+            return configuration.Deserialize(type).Maybe();
          }
          else
          {
@@ -128,7 +179,7 @@ namespace Core.Configurations
             var list = new List<string>();
             foreach (var item in array)
             {
-               if (item is not null && isAllowed(item.GetType()))
+               if (item is not null && isBaseType(item.GetType()))
                {
                   list.Add(item.ToString());
                }
@@ -152,7 +203,7 @@ namespace Core.Configurations
 
       static Configuration()
       {
-         allowedTypes = new Set<Type>
+         baseTypes = new Set<Type>
          {
             typeof(string), typeof(int), typeof(long), typeof(float), typeof(double), typeof(bool), typeof(DateTime), typeof(Guid), typeof(FileName),
             typeof(FolderName), typeof(byte[])
@@ -164,36 +215,88 @@ namespace Core.Configurations
          return type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.SetProperty | BindingFlags.GetProperty);
       }
 
-      public static IResult<Configuration> Serialize<T>(T obj, string name) where T : class, new()
+      public static IResult<Configuration> Serialize(Type type, object obj, string name)
       {
-         try
+         if (type.IsValueType)
          {
-            obj.Must().Not.BeNull().OrThrow();
-
-            var group = new Group(name);
-
-            var allPropertyInfo = getPropertyInfo(obj.GetType());
-            foreach (var propertyInfo in allPropertyInfo)
+            return $"Type provided ({type.FullName}) is a value type. Only classes are allowed".Failure<Configuration>();
+         }
+         else
+         {
+            try
             {
-               var type = propertyInfo.PropertyType;
-               if (isAllowed(type))
+               obj.Must().Not.BeNull().OrThrow();
+
+               var group = new Group(name);
+
+               var allPropertyInfo = getPropertyInfo(obj.GetType());
+               foreach (var propertyInfo in allPropertyInfo)
                {
+                  var propertyType = propertyInfo.PropertyType;
                   var key = propertyInfo.Name.ToCamel();
                   var value = propertyInfo.GetValue(obj);
                   if (value is not null)
                   {
-                     group[key] = new Item(key, toString(value, type));
+                     if (isBaseType(propertyType))
+                     {
+                        group[key] = new Item(key, toString(value, propertyType));
+                     }
+                     else if (value is Array array)
+                     {
+                        var elementType = propertyType.GetElementType();
+
+                        if (isBaseType(elementType))
+                        {
+                           var list = new List<string>();
+                           for (var i = 0; i < array.Length; i++)
+                           {
+                              list.Add(toString(array.GetValue(i), elementType));
+                           }
+
+                           group[key] = new Item(key, list.ToString(", "));
+                        }
+                        else
+                        {
+                           var arrayGroup = new Group(key);
+                           for (var i = 0; i < array.Length; i++)
+                           {
+                              if (Serialize(elementType, array.GetValue(i), $"${i}").If(out var elementConfiguration, out var exception))
+                              {
+                                 arrayGroup[$"${i}"] = elementConfiguration.root;
+                              }
+                              else
+                              {
+                                 return failure<Configuration>(exception);
+                              }
+                           }
+
+                           group[key] = arrayGroup;
+                        }
+                     }
+                     else
+                     {
+                        if (Serialize(propertyType, value, key).If(out var propertyConfiguration, out var exception))
+                        {
+                           group[key] = propertyConfiguration;
+                        }
+                        else
+                        {
+                           return failure<Configuration>(exception);
+                        }
+                     }
                   }
                }
-            }
 
-            return new Configuration(group).Success();
-         }
-         catch (Exception exception)
-         {
-            return failure<Configuration>(exception);
+               return new Configuration(group).Success();
+            }
+            catch (Exception exception)
+            {
+               return failure<Configuration>(exception);
+            }
          }
       }
+
+      public static IResult<Configuration> Serialize<T>(T obj, string name) where T : class, new() => tryTo(() => Serialize(typeof(T), obj, name));
 
       protected Group root;
 
@@ -218,19 +321,48 @@ namespace Core.Configurations
 
       public IResult<Hash<string, IConfigurationItem>> AnyHash() => root.AnyHash();
 
-      public IResult<T> Deserialize<T>() where T : class, new()
+      protected static object getObject(Type type, Group group)
+      {
+         if (type.IsArray)
+         {
+            var elementType = type.GetElementType();
+            var groups = group.Groups().Select(t => t.group).ToArray();
+
+            return makeArray(elementType, groups).Required($"Couldn't make array of element type {elementType.FullName}");
+         }
+         else
+         {
+            return Activator.CreateInstance(type);
+         }
+      }
+
+      public IResult<object> Deserialize(Type type)
       {
          try
          {
-            var obj = new T();
-            var allPropertyInfo = getPropertyInfo(obj.GetType());
+            var obj = getObject(type, root);
+            var allPropertyInfo = getPropertyInfo(type);
             foreach (var (key, value) in root.Values())
             {
                var name = key.ToPascal();
                if (allPropertyInfo.FirstOrNone(p => p.Name.Same(name)).If(out var propertyInfo))
                {
-                  var type = propertyInfo.PropertyType;
-                  if (getConversion(type, value).If(out var objValue))
+                  var propertyType = propertyInfo.PropertyType;
+                  if (getConversion(propertyType, value).If(out var objValue))
+                  {
+                     propertyInfo.SetValue(obj, objValue);
+                  }
+               }
+            }
+
+            foreach (var (key, group) in root.Groups())
+            {
+               var name = key.ToPascal();
+               if (allPropertyInfo.FirstOrNone(p => p.Name.Same(name)).If(out var propertyInfo))
+               {
+                  var propertyType = propertyInfo.PropertyType;
+                  var configuration = new Configuration(group);
+                  if (configuration.Deserialize(propertyType).If(out var objValue))
                   {
                      propertyInfo.SetValue(obj, objValue);
                   }
@@ -241,8 +373,16 @@ namespace Core.Configurations
          }
          catch (Exception exception)
          {
-            return failure<T>(exception);
+            return failure<object>(exception);
          }
+      }
+
+      public IResult<T> Deserialize<T>() where T : class, new()
+      {
+         return
+            from obj in tryTo(() => Deserialize(typeof(T)))
+            from cast in obj.CastAs<T>()
+            select cast;
       }
 
       public override string ToString() => root.ToString(true);

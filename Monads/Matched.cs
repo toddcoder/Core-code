@@ -9,12 +9,6 @@ namespace Core.Monads
    {
       public static implicit operator bool(Matched<T> _) => true;
 
-      public static bool operator &(Matched<T> x, IHasValue y) => y.HasValue;
-
-      public static bool operator |(Matched<T> x, IHasValue y) => true;
-
-      public static bool operator !(Matched<T> _) => false;
-
       protected T value;
 
       internal Matched(T value) => this.value = value;
@@ -106,7 +100,9 @@ namespace Core.Monads
          return true;
       }
 
-      public void Force() { }
+      public void Force()
+      {
+      }
 
       public T ForceValue() => value;
 
@@ -142,7 +138,14 @@ namespace Core.Monads
 
       public IMatched<T> Where(Predicate<T> predicate, string exceptionMessage) => predicate(value) ? this : exceptionMessage.FailedMatch<T>();
 
-      public IMatched<T> Where(Predicate<T> predicate, Func<string> exceptionMessage) => predicate(value) ? this : exceptionMessage().FailedMatch<T>();
+      public IMatched<T> Where(Predicate<T> predicate, Func<string> exceptionMessage)
+      {
+         return predicate(value) ? this : exceptionMessage().FailedMatch<T>();
+      }
+
+      public IMatched<T> ExceptionMessage(string message) => this;
+
+      public IMatched<T> ExceptionMessage(Func<Exception, string> message) => this;
 
       public bool IsMatched => true;
 
@@ -159,8 +162,7 @@ namespace Core.Monads
          return ifMatched(value);
       }
 
-      public IMatched<TResult> Map<TResult>(Func<T, IMatched<TResult>> ifMatched,
-         Func<Exception, IMatched<TResult>> ifFailedMatch)
+      public IMatched<TResult> Map<TResult>(Func<T, IMatched<TResult>> ifMatched, Func<Exception, IMatched<TResult>> ifFailedMatch)
       {
          return ifMatched(value);
       }
@@ -193,17 +195,12 @@ namespace Core.Monads
 
       public bool Equals(Matched<T> other)
       {
-         if (ReferenceEquals(null, other))
+         if (other is null)
          {
             return false;
          }
 
-         if (ReferenceEquals(this, other))
-         {
-            return true;
-         }
-
-         return EqualityComparer<T>.Default.Equals(value, other.value);
+         return ReferenceEquals(this, other) || EqualityComparer<T>.Default.Equals(value, other.value);
       }
 
       public override bool Equals(object obj) => obj is Matched<T> other && Equals(other);

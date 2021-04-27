@@ -11,12 +11,6 @@ namespace Core.Monads
    {
       public static implicit operator bool(Success<T> _) => true;
 
-      public static bool operator &(Success<T> x, IHasValue y) => y.HasValue;
-
-      public static bool operator |(Success<T> x, IHasValue y) => true;
-
-      public static bool operator !(Success<T> _) => false;
-
       protected T value;
 
       internal Success(T value) => this.value = value;
@@ -157,7 +151,9 @@ namespace Core.Monads
          return false;
       }
 
-      public void Force() { }
+      public void Force()
+      {
+      }
 
       public T ForceValue() => value;
 
@@ -167,22 +163,24 @@ namespace Core.Monads
          {
             action(value);
          }
-         catch { }
+         catch
+         {
+         }
 
          return this;
       }
 
       public IResult<T> OnFailure(Action<Exception> action) => this;
 
-	   public void Deconstruct(out IMaybe<T> value, out Exception exception)
-	   {
-		   value = this.value.Some();
-		   exception = default;
-	   }
+      public void Deconstruct(out IMaybe<T> value, out Exception exception)
+      {
+         value = this.value.Some();
+         exception = default;
+      }
 
-	   public IResult<T> Assert(Predicate<T> predicate, Func<string> exceptionMessage)
-	   {
-		   if (predicate(value))
+      public IResult<T> Assert(Predicate<T> predicate, Func<string> exceptionMessage)
+      {
+         if (predicate(value))
          {
             return this;
          }
@@ -220,21 +218,20 @@ namespace Core.Monads
 
       public IResult<T> Where(Predicate<T> predicate, Func<string> exceptionMessage) => predicate(value) ? this : exceptionMessage().Failure<T>();
 
+      public IResult<T> ExceptionMessage(string message) => this;
+
+      public IResult<T> ExceptionMessage(Func<Exception, string> message) => this;
+
       public bool HasValue => true;
 
       public bool Equals(Success<T> other)
       {
-         if (ReferenceEquals(null, other))
+         if (other is null)
          {
             return false;
          }
 
-         if (ReferenceEquals(this, other))
-         {
-            return true;
-         }
-
-         return EqualityComparer<T>.Default.Equals(value, other.value);
+         return ReferenceEquals(this, other) || EqualityComparer<T>.Default.Equals(value, other.value);
       }
 
       public override bool Equals(object obj) => obj is Success<T> other && Equals(other);

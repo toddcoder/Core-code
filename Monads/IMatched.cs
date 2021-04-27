@@ -93,5 +93,9 @@ namespace Core.Monads
       IMatched<T> Where(Predicate<T> predicate, string exceptionMessage);
 
       IMatched<T> Where(Predicate<T> predicate, Func<string> exceptionMessage);
+
+      IMatched<T> ExceptionMessage(string message);
+
+      IMatched<T> ExceptionMessage(Func<Exception, string> message);
    }
 }

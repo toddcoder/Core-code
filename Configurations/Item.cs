@@ -29,7 +29,7 @@ namespace Core.Configurations
       public override string ToString()
       {
          var value = Value.ReplaceAll(("\t", @"\t"), ("\r", @"\r"), ("\n", @"\n"), ("\"", @"\"""));
-         return $"{Key}: \"{value}\"";
+         return $"{Key}: {value}";
       }
    }
 }

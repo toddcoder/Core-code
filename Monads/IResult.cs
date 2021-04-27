@@ -81,5 +81,9 @@ namespace Core.Monads
       IResult<T> Where(Predicate<T> predicate, string exceptionMessage);
 
       IResult<T> Where(Predicate<T> predicate, Func<string> exceptionMessage);
+
+      IResult<T> ExceptionMessage(string message);
+
+      IResult<T> ExceptionMessage(Func<Exception, string> message);
    }
 }

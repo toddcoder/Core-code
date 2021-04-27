@@ -42,6 +42,16 @@ namespace Core.Tests
          }
       }
 
+      protected class Container
+      {
+         public Container()
+         {
+            Tests = new Test[0];
+         }
+
+         public Test[] Tests { get; set; }
+      }
+
       protected class BinaryPackage : IEquatable<BinaryPackage>
       {
          public byte[] Payload { get; set; }
@@ -188,6 +198,49 @@ namespace Core.Tests
             if (configuration.Deserialize<Test>().If(out var obj, out exception))
             {
                Console.WriteLine(obj);
+            }
+            else
+            {
+               Console.WriteLine(exception.Message);
+            }
+         }
+         else
+         {
+            Console.WriteLine(exception.Message);
+         }
+      }
+
+      [TestMethod]
+      public void ComplexSerializationDeserializationTest()
+      {
+         FolderName folder = @"C:\Temp";
+         var file = folder + "temp.txt";
+
+         var container = new Container
+         {
+            Tests = new[]
+            {
+               new Test
+               {
+                  Enum = TestEnum.Alpha, Doubles = new double[] { 1, 2, 3 }, Escape = "`1", File = file, IntValue = 123, IsTrue = true,
+                  StringValue = "foo"
+               },
+               new Test
+               {
+                  Enum = TestEnum.Bravo, Doubles = new[] { 1.0, 5, 3 }, Escape = "`2", File = file, IntValue = 153, IsTrue = false,
+                  StringValue = "bar"
+               }
+            }
+         };
+         if (Configuration.Serialize(container, "data").If(out var configuration, out var exception))
+         {
+            Console.WriteLine(configuration);
+            if (configuration.Deserialize<Container>().If(out container, out exception))
+            {
+               foreach (var test in container.Tests)
+               {
+                  Console.WriteLine(test);
+               }
             }
             else
             {
