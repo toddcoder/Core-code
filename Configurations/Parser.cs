@@ -240,10 +240,18 @@ namespace Core.Configurations
                      group[item.Key] = item;
                   }
                }
+               else if (source.IsMatch("^ /s+ $"))
+               {
+                  break;
+               }
                else
                {
                   return $"Didn't understand value {remainder}".Failure<Configuration>();
                }
+            }
+            else if (source.IsMatch("^ /s+ $"))
+            {
+               break;
             }
             else
             {
