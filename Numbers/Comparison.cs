@@ -10,8 +10,8 @@ namespace Core.Numbers
    {
       public struct Pair
       {
-         private T left;
-         private T right;
+         private readonly T left;
+         private readonly T right;
 
          public Pair(T left, T right)
          {
