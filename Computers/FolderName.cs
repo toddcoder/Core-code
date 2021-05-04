@@ -13,7 +13,6 @@ using Core.Enumerables;
 using Core.Exceptions;
 using Core.Monads;
 using Core.Numbers;
-using Core.Objects;
 using Core.RegularExpressions;
 using Core.Strings;
 using static System.IO.Directory;
@@ -130,14 +129,12 @@ namespace Core.Computers
       protected string root;
       protected string[] subfolders;
       protected string fullPath;
-      protected Equatable<FolderName> equatable;
 
       public event EventHandler<FileArgs> FileSuccess;
 
       public FolderName(string folder)
       {
          setFullPath(folder);
-         equatable = new Equatable<FolderName>(this, "fullPath");
       }
 
       public FolderName(string root, params string[] subfolders)
@@ -444,7 +441,6 @@ namespace Core.Computers
          root = newRoot;
          subfolders = newSubfolders;
          setFullPath();
-         equatable = new Equatable<FolderName>(this, "fullPath");
       }
 
       protected void initialize(string newRoot) => initialize(newRoot, new string[0]);
@@ -853,13 +849,13 @@ namespace Core.Computers
 
       public FolderName Clone() => subfolders.Length > 0 ? new FolderName(root, subfolders) : new FolderName(root, "");
 
-      public override int GetHashCode() => equatable.GetHashCode();
+      public override int GetHashCode() => fullPath.GetHashCode();
 
       public int CompareTo(object obj) => obj is FolderName fn ? fullPath.CompareTo(fn.ToString()) : -1;
 
       public int CompareTo(FolderName other) => fullPath.CompareTo(other.fullPath);
 
-      public bool Equals(FolderName other) => equatable.Equals(other);
+      public bool Equals(FolderName other) => fullPath == other.fullPath;
 
       public override string ToString() => fullPath;
 

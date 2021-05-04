@@ -156,7 +156,6 @@ namespace Core.Computers
       protected string fullPath;
       protected StringBuilder buffer;
       protected bool useBuffer;
-      protected Equatable<FileName> equatable;
 
       public FileName(FolderName folder, string name, string extension) => initialize(folder, name, extension);
 
@@ -693,7 +692,6 @@ namespace Core.Computers
 
          setExtension(anExtension);
          setFullPath();
-         equatable = new Equatable<FileName>(this, "fullPath");
          BufferSize = 2048;
          Encoding = Encoding.ASCII;
          SplitType = SplitType.CRLF;
@@ -862,7 +860,7 @@ namespace Core.Computers
 
       public int CompareTo(FileName other) => ToString().CompareTo(other.ToString());
 
-      public bool Equals(FileName other) => equatable.Equals(other);
+      public bool Equals(FileName other) => fullPath == other.fullPath;
 
       public override string ToString() => fullPath;
 
@@ -959,11 +957,11 @@ namespace Core.Computers
          writer.Flush();
       }
 
-      public override int GetHashCode() => equatable.GetHashCode();
+      public override int GetHashCode() => fullPath.GetHashCode();
 
       public int CompareTo(object obj) => obj is FileName fn ? ToString().CompareTo(fn.ToString()) : -1;
 
-      public override bool Equals(object obj) => obj is FileName fn && fullPath.Same(fn.ToString());
+      public override bool Equals(object obj) => obj is FileName otherFileName && Equals(otherFileName);
 
       public FileNameMappedReader Reader() => new(this);
 

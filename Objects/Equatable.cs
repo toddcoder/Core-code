@@ -8,6 +8,7 @@ using Core.Enumerables;
 
 namespace Core.Objects
 {
+   [Obsolete("Do not use this class for performance reasons")]
    public class Equatable<T> : IEquatable<T>
    {
       protected static Hash<string, object> getValues(T obj, string[] signatures)
