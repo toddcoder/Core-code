@@ -4,7 +4,7 @@ namespace Core.Arrays
 {
    public static class ListFunctions
    {
-      public static List<T> list<T>() => new List<T>();
+      public static List<T> list<T>() => new();
 
       public static List<T> list<T>(params T[] items)
       {
