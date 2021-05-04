@@ -22,9 +22,6 @@ namespace Core.WinForms.Documents
 
       public TextBoxConsole.ConsoleColorType ConsoleColorType { get; }
 
-      public TextBoxConsole Console(Form form)
-      {
-         return new TextBoxConsole(form, TextBox, FontName, FontSize, ConsoleColorType);
-      }
+      public TextBoxConsole Console(Form form) => new(form, TextBox, FontName, FontSize, ConsoleColorType);
    }
 }

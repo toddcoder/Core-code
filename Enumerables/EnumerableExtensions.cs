@@ -143,7 +143,7 @@ namespace Core.Enumerables
       {
          var first = enumerable.FirstOrDefault();
 
-         if (first.IsNull())
+         if (first is null)
          {
             return none<T>();
          }
@@ -161,7 +161,7 @@ namespace Core.Enumerables
       {
          var last = enumerable.LastOrDefault();
 
-         if (last.IsNull())
+         if (last is null)
          {
             return none<T>();
          }
@@ -490,7 +490,7 @@ namespace Core.Enumerables
       {
          var first = enumerable.FirstOrDefault(predicate);
 
-         if (first.IsNull())
+         if (first is null)
          {
             return none<T>();
          }
@@ -508,7 +508,7 @@ namespace Core.Enumerables
       {
          var first = enumerable.FirstOrDefault(i => predicate(i.Item1, i.Item2));
 
-         if (first.IsNull())
+         if (first.AnyNull())
          {
             return none<(T1, T2)>();
          }
@@ -526,7 +526,7 @@ namespace Core.Enumerables
       {
          var first = enumerable.FirstOrDefault(i => predicate(i.Item1, i.Item2, i.Item3));
 
-         if (first.IsNull())
+         if (first.AnyNull())
          {
             return none<(T1, T2, T3)>();
          }
@@ -545,7 +545,7 @@ namespace Core.Enumerables
       {
          var first = enumerable.FirstOrDefault(i => predicate(i.Item1, i.Item2, i.Item3, i.Item4));
 
-         if (first.IsNull())
+         if (first.AnyNull())
          {
             return none<(T1, T2, T3, T4)>();
          }
@@ -563,7 +563,7 @@ namespace Core.Enumerables
       {
          var last = enumerable.LastOrDefault(predicate);
 
-         if (last.IsNull())
+         if (last is null)
          {
             return none<T>();
          }
@@ -581,7 +581,7 @@ namespace Core.Enumerables
       {
          var last = enumerable.LastOrDefault(i => predicate(i.Item1, i.Item2));
 
-         if (last.IsNull())
+         if (last.AnyNull())
          {
             return none<(T1, T2)>();
          }
@@ -599,7 +599,7 @@ namespace Core.Enumerables
       {
          var last = enumerable.LastOrDefault(i => predicate(i.Item1, i.Item2, i.Item3));
 
-         if (last.IsNull())
+         if (last.AnyNull())
          {
             return none<(T1, T2, T3)>();
          }
@@ -618,7 +618,7 @@ namespace Core.Enumerables
       {
          var last = enumerable.LastOrDefault(i => predicate(i.Item1, i.Item2, i.Item3, i.Item4));
 
-         if (last.IsNull())
+         if (last.AnyNull())
          {
             return none<(T1, T2, T3, T4)>();
          }
@@ -638,7 +638,7 @@ namespace Core.Enumerables
          {
             var first = enumerable.First(predicate);
 
-            if (first.IsNull())
+            if (first is null)
             {
                return notMatched<T>();
             }
@@ -667,7 +667,7 @@ namespace Core.Enumerables
          {
             var first = enumerable.First(i => predicate(i.Item1, i.Item2));
 
-            if (first.IsNull())
+            if (first.AnyNull())
             {
                return notMatched<(T1, T2)>();
             }
@@ -696,7 +696,7 @@ namespace Core.Enumerables
          {
             var first = enumerable.First(i => predicate(i.Item1, i.Item2, i.Item3));
 
-            if (first.IsNull())
+            if (first.AnyNull())
             {
                return notMatched<(T1, T2, T3)>();
             }
@@ -726,7 +726,7 @@ namespace Core.Enumerables
          {
             var first = enumerable.First(i => predicate(i.Item1, i.Item2, i.Item3, i.Item4));
 
-            if (first.IsNull())
+            if (first.AnyNull())
             {
                return notMatched<(T1, T2, T3, T4)>();
             }
@@ -755,7 +755,7 @@ namespace Core.Enumerables
          {
             var last = enumerable.Last(predicate);
 
-            if (last.IsNull())
+            if (last is null)
             {
                return notMatched<T>();
             }
@@ -784,7 +784,7 @@ namespace Core.Enumerables
          {
             var last = enumerable.Last(i => predicate(i.Item1, i.Item2));
 
-            if (last.IsNull())
+            if (last.AnyNull())
             {
                return notMatched<(T1, T2)>();
             }
@@ -813,7 +813,7 @@ namespace Core.Enumerables
          {
             var last = enumerable.Last(i => predicate(i.Item1, i.Item2, i.Item3));
 
-            if (last.IsNull())
+            if (last.AnyNull())
             {
                return notMatched<(T1, T2, T3)>();
             }
@@ -843,7 +843,7 @@ namespace Core.Enumerables
          {
             var last = enumerable.Last(i => predicate(i.Item1, i.Item2, i.Item3, i.Item4));
 
-            if (last.IsNull())
+            if (last.AnyNull())
             {
                return notMatched<(T1, T2, T3, T4)>();
             }
@@ -872,7 +872,7 @@ namespace Core.Enumerables
          {
             var first = enumerable.First();
 
-            if (first.IsNull())
+            if (first is null)
             {
                return notMatched<T>();
             }
@@ -901,7 +901,7 @@ namespace Core.Enumerables
          {
             var last = enumerable.Last();
 
-            if (last.IsNull())
+            if (last is null)
             {
                return notMatched<T>();
             }
@@ -1213,9 +1213,9 @@ namespace Core.Enumerables
          return enumerable.FirstOrNotMatched(i => i is TResult).CastAs<TResult>();
       }
 
-      public static bool AtLeastOne<T>(this IEnumerable<T> enumerable) => enumerable.FirstOrNone().HasValue;
+      public static bool AtLeastOne<T>(this IEnumerable<T> enumerable) => enumerable.FirstOrNone().IsSome;
 
-      public static bool AtLeastOne<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate) => enumerable.FirstOrNone(predicate).HasValue;
+      public static bool AtLeastOne<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate) => enumerable.FirstOrNone(predicate).IsSome;
 
       public static IEnumerable<T> Do<T>(this IEnumerable<T> enumerable, Action<T> action)
       {

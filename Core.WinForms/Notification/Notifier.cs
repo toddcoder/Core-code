@@ -7,14 +7,32 @@ namespace Core.WinForms.Notification
    public class Notifier : Component
    {
       protected const int DEFAULT_DURATION = 10000;
+
       protected IContainer components;
 
-      public Notifier() => components = new Container();
+      public Notifier()
+      {
+         components = new Container();
+         LeftColor = Color.FromArgb(150, 150, 150);
+         RightColor = Color.FromArgb(204, 204, 204);
+         Duration = 3000;
+         Text = "";
+         TextColor = Color.Black;
+         Title = "";
+         TitleColor = Color.Black;
+      }
 
       public Notifier(IContainer container)
       {
          container.Add(this);
          components = new Container();
+         LeftColor = Color.FromArgb(150, 150, 150);
+         RightColor = Color.FromArgb(204, 204, 204);
+         Duration = 3000;
+         Text = "";
+         TextColor = Color.Black;
+         Title = "";
+         TitleColor = Color.Black;
       }
 
       protected override void Dispose(bool disposing)
@@ -28,37 +46,35 @@ namespace Core.WinForms.Notification
       }
 
       [Description("Left side color"), Category("Appearance"), DefaultValue(typeof(ColorDialog), null), Browsable(true)]
-      public Color LeftColor { get; set; } = Color.FromArgb(150, 150, 150);
+      public Color LeftColor { get; set; }
 
       [Description("Right side color"), Category("Appearance"), DefaultValue(typeof(ColorDialog), null), Browsable(true)]
-      public Color RightColor { get; set; } = Color.FromArgb(204, 204, 204);
+      public Color RightColor { get; set; }
 
       [Description("Duration to display"), Category("Appearance"), DefaultValue(typeof(NumericUpDown), null), Browsable(true)]
-      public int Duration { get; set; } = 3000;
+      public int Duration { get; set; }
 
       [Description("Icon on left side"), Category("Appearance"), DefaultValue(typeof(PictureBox), null), Browsable(true)]
       public Image Icon { get; set; }
 
       [Description("Text"), Category("Appearance"), DefaultValue(typeof(TextBox), null), Browsable(true)]
-      public string Text { get; set; } = "";
+      public string Text { get; set; }
 
       [Description("Color of text"), Category("Appearance"), DefaultValue(typeof(ColorDialog), null), Browsable(true)]
-      public Color TextColor { get; set; } = Color.Black;
+      public Color TextColor { get; set; }
 
       [Description("Title"), Category("Appearance"), DefaultValue(typeof(TextBox), null), Browsable(true)]
-      public string Title { get; set; } = "";
+      public string Title { get; set; }
 
       [Description("Color of title"), Category("Appearance"), DefaultValue(typeof(ColorDialog), null), Browsable(true)]
-      public Color TitleColor { get; set; } = Color.Black;
+      public Color TitleColor { get; set; }
 
       public static void ShowNotifier(string title, string text, int duration = 3000)
       {
-         showNotifier(duration, title, text, Color.FromArgb(150, 150, 150), Color.FromArgb(204, 204, 204), Color.Black, Color.Black,
-            "information");
+         showNotifier(duration, title, text, Color.FromArgb(150, 150, 150), Color.FromArgb(204, 204, 204), Color.Black, Color.Black, "information");
       }
 
-      public static void ShowNotifier(string title, string text, Image icon, string leftColor, string rightColor,
-         string titleColor = "Black",
+      public static void ShowNotifier(string title, string text, Image icon, string leftColor, string rightColor, string titleColor = "Black",
          string textColor = "Black", int duration = DEFAULT_DURATION)
       {
          var actualLeftColor = Color.FromName(leftColor);
@@ -69,8 +85,7 @@ namespace Core.WinForms.Notification
          showNotifier(duration, title, text, actualLeftColor, actualRightColor, actualTitleColor, actualTextColor, icon);
       }
 
-      public static void ShowNotifier(string title, string text, string icon, string leftColor, string rightColor,
-         string titleColor = "Black",
+      public static void ShowNotifier(string title, string text, string icon, string leftColor, string rightColor, string titleColor = "Black",
          string textColor = "Black", int duration = DEFAULT_DURATION)
       {
          var actualLeftColor = Color.FromName(leftColor);

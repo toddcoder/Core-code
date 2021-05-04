@@ -4,7 +4,8 @@ namespace Core.Objects
 {
    public class PropertyGetter : IGetter
    {
-      PropertyInfo propertyInfo;
+      protected PropertyInfo propertyInfo;
+
       public PropertyGetter(PropertyInfo propertyInfo) => this.propertyInfo = propertyInfo;
 
       public object GetValue(object obj) => propertyInfo.GetValue(obj);

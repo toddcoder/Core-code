@@ -4,75 +4,65 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads
 {
-	public class None<T> : IMaybe<T>, IEquatable<None<T>>
-	{
+   public class None<T> : IMaybe<T>, IEquatable<None<T>>
+   {
       public static implicit operator bool(None<T> _) => false;
 
-      public static bool operator &(None<T> x, IHasValue y) => false;
+      internal None()
+      {
+      }
 
-      public static bool operator |(None<T> x, IHasValue y) => y.HasValue;
+      public bool IsSome => false;
 
-      public static bool operator !(None<T> _) => true;
+      public bool IsNone => true;
 
-      internal None() { }
+      public T DefaultTo(Func<T> func) => func();
 
-		public bool IsSome => false;
+      public IMaybe<TResult> Map<TResult>(Func<T, TResult> ifSome) => none<TResult>();
 
-		public bool IsNone => true;
+      public IMaybe<TResult> Map<TResult>(Func<T, IMaybe<TResult>> ifSome) => none<TResult>();
 
-		public T DefaultTo(Func<T> func) => func();
+      public T Required(string message) => throw new ApplicationException(message);
 
-		public TResult FlatMap<TResult>(Func<T, TResult> ifSome, Func<TResult> ifNone) => ifNone();
+      public IResult<T> Result(string message) => message.Failure<T>();
 
-		public IMaybe<TResult> Map<TResult>(Func<T, TResult> ifSome) => none<TResult>();
+      public IMaybe<T> Or(IMaybe<T> other) => other;
 
-		public IMaybe<TResult> Map<TResult>(Func<T, IMaybe<TResult>> ifSome) => none<TResult>();
+      public IMaybe<T> Or(Func<IMaybe<T>> other) => other();
 
-		public T Required(string message) => throw new ApplicationException(message);
+      public IMaybe<T> Or(Func<T> other) => other().Some();
 
-		public IResult<T> Result(string message) => message.Failure<T>();
+      public IMaybe<T> Or(T other) => other.Some();
 
-		public IMaybe<T> Or(IMaybe<T> other) => other;
+      public bool If(out T value)
+      {
+         value = default;
+         return false;
+      }
 
-		public IMaybe<T> Or(Func<IMaybe<T>> other) => other();
+      public bool Else(out T value)
+      {
+         value = default;
+         return true;
+      }
 
-		public IMaybe<T> Or(Func<T> other) => other().Some();
+      public void Force(string message) => throw message.Throws();
 
-		public IMaybe<T> Or(T other) => other.Some();
+      public void Deconstruct(out bool isSome, out T value)
+      {
+         isSome = false;
+         value = default;
+      }
 
-		public bool If(out T value)
-		{
-			value = default;
-			return false;
-		}
-
-		public bool Else(out T value)
-		{
-			value = default;
-			return true;
-		}
-
-		public void Force(string message) => throw message.Throws();
-
-		public void Deconstruct(out bool isSome, out T value)
-		{
-			isSome = false;
-			value = default;
-		}
-
-		public IMaybe<T> IfThen(Action<T> action) => this;
+      public IMaybe<T> IfThen(Action<T> action) => this;
 
       public bool EqualToValueOf(IMaybe<T> otherMaybe) => false;
 
       public bool ValueEqualTo(T otherValue) => false;
 
-      public IMaybe<object> AsObject() => none<object>();
-
       public IMaybe<TResult> CastAs<TResult>() => none<TResult>();
 
       public IMaybe<T> Where(Predicate<T> predicate) => this;
-
-      public bool HasValue => false;
 
       public bool Equals(None<T> other) => true;
 

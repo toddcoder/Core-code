@@ -302,6 +302,7 @@ namespace Core.Strings
 
       public IEnumerable<Slice> Split(string source, string pattern, bool includeDelimiter = false)
       {
+         source.Must().Not.BeNull().OrThrow();
          pattern.Must().Not.BeNullOrEmpty().OrThrow();
 
          var lastIndex = 0;
@@ -312,6 +313,7 @@ namespace Core.Strings
             {
                var index = outerIndex + sliceIndex;
                var text = source.Drop(lastIndex).Keep(index - lastIndex);
+
                yield return new Slice(text, index, text.Length);
 
                if (includeDelimiter)
@@ -329,13 +331,14 @@ namespace Core.Strings
 
       public void Replace(string source, string pattern, string replacement, int count = 0)
       {
+         source.Must().Not.BeNull().OrThrow();
          replacement.Must().Not.BeNull().OrThrow();
-
          Replace(source, pattern, _ => replacement, count);
       }
 
       public void Replace(string source, string pattern, Func<Slice, string> map, int count = 0)
       {
+         source.Must().Not.BeNull().OrThrow();
          pattern.Must().Not.BeNullOrEmpty().OrThrow();
          map.Must().Not.BeNull().OrThrow();
          count.Must().BeGreaterThan(-1).OrThrow();
@@ -360,7 +363,9 @@ namespace Core.Strings
 
       public string Transform(string source, string pattern, string replacement, bool ignoreCase = false)
       {
+         source.Must().Not.BeNull().OrThrow();
          pattern.Must().Not.BeNullOrEmpty().OrThrow();
+         replacement.Must().Not.BeNull().OrThrow();
 
          var startIndex = 0;
          Status = DelimitedTextStatus.Outside;

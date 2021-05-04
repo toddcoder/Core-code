@@ -5,7 +5,7 @@ namespace Core.Objects
 {
    public class InvokerTrying
    {
-      Invoker invoker;
+      protected Invoker invoker;
 
       public InvokerTrying(Invoker invoker) => this.invoker = invoker;
 

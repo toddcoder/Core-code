@@ -9,12 +9,6 @@ namespace Core.Monads
    {
       public static implicit operator bool(Completed<T> _) => true;
 
-      public static bool operator &(Completed<T> x, IHasValue y) => y.HasValue;
-
-      public static bool operator |(Completed<T> x, IHasValue y) => true;
-
-      public static bool operator !(Completed<T> _) => false;
-
       protected T value;
 
       internal Completed(T value) => this.value = value;
@@ -40,8 +34,10 @@ namespace Core.Monads
          return ifCompleted(value);
       }
 
-      public TResult FlatMap<TResult>(Func<T, TResult> ifCompleted, Func<TResult> ifCancelled, Func<Exception, TResult> ifInterrupted) =>
-         ifCompleted(value);
+      public TResult FlatMap<TResult>(Func<T, TResult> ifCompleted, Func<TResult> ifCancelled, Func<Exception, TResult> ifInterrupted)
+      {
+         return ifCompleted(value);
+      }
 
       public TResult FlatMap<TResult>(Func<T, TResult> ifCompleted, Func<TResult> ifNotCompleted) => ifCompleted(value);
 
@@ -98,17 +94,17 @@ namespace Core.Monads
          return false;
       }
 
-      public bool If(out T value, out IMaybe<Exception> anyException)
+      public bool If(out T value, out IMaybe<Exception> _exception)
       {
          value = this.value;
-         anyException = none<Exception>();
+         _exception = none<Exception>();
 
          return true;
       }
 
-      public bool IfNot(out IMaybe<Exception> anyException)
+      public bool IfNot(out IMaybe<Exception> _exception)
       {
-         anyException = none<Exception>();
+         _exception = none<Exception>();
          return false;
       }
 
@@ -132,7 +128,9 @@ namespace Core.Monads
          return false;
       }
 
-      public void Force() { }
+      public void Force()
+      {
+      }
 
       public T ForceValue() => value;
 
@@ -142,10 +140,10 @@ namespace Core.Monads
 
       public ICompletion<TOther> NotCompletedOnly<TOther>() => cancelled<TOther>();
 
-      public void Deconstruct(out IMaybe<T> value, out IMaybe<Exception> anyException)
+      public void Deconstruct(out IMaybe<T> value, out IMaybe<Exception> _exception)
       {
          value = this.value.Some();
-         anyException = none<Exception>();
+         _exception = none<Exception>();
       }
 
       public ICompletion<T> OnCompleted(Action<T> action)
@@ -201,21 +199,9 @@ namespace Core.Monads
          return predicate(value) ? this : exceptionMessage().Interrupted<T>();
       }
 
-      public bool HasValue => true;
-
       public bool Equals(Completed<T> other)
       {
-         if (ReferenceEquals(null, other))
-         {
-            return false;
-         }
-
-         if (ReferenceEquals(this, other))
-         {
-            return true;
-         }
-
-         return EqualityComparer<T>.Default.Equals(value, other.value);
+         return other is not null && (ReferenceEquals(this, other) || EqualityComparer<T>.Default.Equals(value, other.value));
       }
 
       public override bool Equals(object obj) => obj is Completed<T> other && Equals(other);

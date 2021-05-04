@@ -15,53 +15,46 @@ namespace Core.Objects
       }
 
       protected object obj;
-      protected IMaybe<int> index;
-      protected IMaybe<PropertyInfo> info;
+      protected IMaybe<int> _index;
+      protected IMaybe<PropertyInfo> _info;
 
       public ObjectInfo(object obj, Signature signature)
       {
          this.obj = obj;
-         index = signature.Index;
-         info = PropertyInfo(obj, signature);
+         _index = signature.Index;
+         _info = PropertyInfo(obj, signature);
       }
 
       public ObjectInfo(object obj, Signature signature, PropertyInfo info)
       {
          this.obj = obj;
-         index = signature.Index;
-         this.info = info.Some();
+         _index = signature.Index;
+         _info = info.Some();
       }
 
       public ObjectInfo()
       {
          obj = none<object>();
-         index = none<int>();
-         info = none<PropertyInfo>();
+         _index = none<int>();
+         _info = none<PropertyInfo>();
       }
 
       public object Object => obj;
 
-      public IMaybe<int> Index => index;
+      public IMaybe<int> Index => _index;
 
-      public IMaybe<Type> PropertyType => info.Map(pi => pi.PropertyType);
+      public IMaybe<Type> PropertyType => _info.Map(pi => pi.PropertyType);
 
       public IMaybe<object> Value
       {
          get
          {
-            if (info.If(out var inf))
+            if (_info.If(out var info))
             {
-               var parameters = inf.GetIndexParameters();
-               if (index.If(out var ind))
+               var parameters = info.GetIndexParameters();
+               if (_index.If(out var index))
                {
-                  if (parameters.Length == 0)
-                  {
-                     return getValue(ind);
-                  }
-                  else
-                  {
-                     return inf.GetValue(obj, getIndex(ind)).Some();
-                  }
+                  return parameters.Length == 0 ? getValue(index) : info.GetValue(obj, getIndex(index)).Some();
                }
                else if (parameters.Length > 0)
                {
@@ -69,7 +62,7 @@ namespace Core.Objects
                }
                else
                {
-                  return inf.GetValue(obj, null).Some();
+                  return info.GetValue(obj, null).Some();
                }
             }
             else
@@ -80,10 +73,10 @@ namespace Core.Objects
          set
          {
             var val = value.Required("Value must be set to a Some");
-            var parameters = info.Required("No property exists for signature").GetIndexParameters();
-            if (info.If(out var inf))
+            var parameters = _info.Required("No property exists for signature").GetIndexParameters();
+            if (_info.If(out var info))
             {
-               if (index.If(out var i))
+               if (_index.If(out var index))
                {
                   if (parameters.Length == 0)
                   {
@@ -91,12 +84,12 @@ namespace Core.Objects
                   }
                   else
                   {
-                     inf.SetValue(obj, val, getIndex(i));
+                     info.SetValue(obj, val, getIndex(index));
                   }
                }
                else
                {
-                  inf.SetValue(obj, val, null);
+                  info.SetValue(obj, val, null);
                }
             }
          }
@@ -104,24 +97,21 @@ namespace Core.Objects
 
       protected IMaybe<object> getValue(int defaultIndex)
       {
-         if (info.If(out var inf))
+         if (_info.If(out var inf))
          {
             var result = inf.GetValue(obj, null);
-            if (result.IsNull())
+            if (result is null)
             {
                return result.Some();
             }
             else
             {
-               switch (result)
+               return result switch
                {
-                  case Array array:
-                     return array.GetValue(defaultIndex).Some();
-                  case IList list:
-                     return list[defaultIndex].Some();
-                  default:
-                     return none<object>();
-               }
+                  Array array => array.GetValue(defaultIndex).Some(),
+                  IList list => list[defaultIndex].Some(),
+                  _ => none<object>()
+               };
             }
          }
          else
@@ -134,22 +124,22 @@ namespace Core.Objects
 
       protected bool setValue(object value)
       {
-         if (info.If(out var i))
+         if (_info.If(out var info))
          {
-            var result = i.GetValue(obj, null);
-            if (result.IsNull())
+            var result = info.GetValue(obj, null);
+            if (result is null)
             {
                return false;
             }
-            else if (index.If(out var idx))
+            else if (_index.If(out var index))
             {
                switch (result)
                {
                   case Array array:
-                     array.SetValue(value, idx);
+                     array.SetValue(value, index);
                      return true;
                   case IList list:
-                     list[idx] = value;
+                     list[index] = value;
                      return true;
                   default:
                      return false;

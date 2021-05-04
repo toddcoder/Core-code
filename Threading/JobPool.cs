@@ -117,10 +117,10 @@ namespace Core.Threading
             {
                var count = queue.Count(i);
                totalCount += count;
-               list.Add($"[{i + 1} | {count.ToString().PadLeft(4)}]");
+               list.Add($"[{i + 1} | {count,4}]");
             }
 
-            list.Add($"[All | {totalCount.ToString().PadLeft(4)}]");
+            list.Add($"[All | {totalCount,4}]");
 
             return list.ToString(" ");
          }

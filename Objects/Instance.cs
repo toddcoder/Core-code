@@ -20,8 +20,7 @@ namespace Core.Objects
 
       public static IResult<object> TryCreate(this Type type) => tryTo(() => Create(type));
 
-      public static IResult<T> TryCreate<T>(this Type type)
-         where T : new()
+      public static IResult<T> TryCreate<T>(this Type type) where T : new()
       {
          return
             from obj in tryTo(type.Create)
@@ -56,28 +55,36 @@ namespace Core.Objects
 
       public static IResult<object> TryCreate(this Type type, params object[] args) => tryTo(() => Create(type, args));
 
-      public static IResult<T> TryCreate<T>(this Type type, params object[] args) =>
-         from obj in tryTo(() => type.Create(args))
-         from cast in obj.CastAs<T>()
-         select cast;
+      public static IResult<T> TryCreate<T>(this Type type, params object[] args)
+      {
+         return
+            from obj in tryTo(() => type.Create(args))
+            from cast in obj.CastAs<T>()
+            select cast;
+      }
 
       public static object Create(this string typeName) => Type.GetType(typeName, true, true).Create();
 
       public static IResult<object> TryCreate(this string typeName) => tryTo(() => Create(typeName));
 
-      public static IResult<T> TryCreate<T>(this string typeName)
-         where T : new() =>
-         from obj in tryTo(typeName.Create)
-         from cast in obj.CastAs<T>()
-         select cast;
+      public static IResult<T> TryCreate<T>(this string typeName) where T : new()
+      {
+         return
+            from obj in tryTo(typeName.Create)
+            from cast in obj.CastAs<T>()
+            select cast;
+      }
 
       public static object Create(this string typeName, params object[] args) => Type.GetType(typeName, true, true).Create(args);
 
       public static IResult<object> TryCreate(this string typeName, params object[] args) => tryTo(() => Create(typeName, args));
 
-      public static IResult<T> TryCreate<T>(this string typeName, params object[] args) =>
-         from obj in tryTo(() => typeName.Create(args))
-         from cast in obj.CastAs<T>()
-         select cast;
+      public static IResult<T> TryCreate<T>(this string typeName, params object[] args)
+      {
+         return
+            from obj in tryTo(() => typeName.Create(args))
+            from cast in obj.CastAs<T>()
+            select cast;
+      }
    }
 }

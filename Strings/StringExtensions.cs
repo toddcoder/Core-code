@@ -100,14 +100,7 @@ namespace Core.Strings
          }
 
          var length = stopIndex - startIndex + 1;
-         if (length > 0)
-         {
-            return source.Substring(startIndex, length);
-         }
-         else
-         {
-            return string.Empty;
-         }
+         return source.Drop(startIndex).Keep(length);
       }
 
       public static string Slice(this string source, IMaybe<int> startIndex, IMaybe<int> stopIndex)
@@ -300,10 +293,7 @@ namespace Core.Strings
          }
       }
 
-      public static string SnakeToCamelCase(this string source, bool upperCase)
-      {
-         return source.LowerToCamelCase("_", upperCase);
-      }
+      public static string SnakeToCamelCase(this string source, bool upperCase) => source.LowerToCamelCase("_", upperCase);
 
       public static string Abbreviate(this string source)
       {
@@ -418,10 +408,7 @@ namespace Core.Strings
          }
       }
 
-      public static string Append(this string target, string text)
-      {
-         return string.IsNullOrEmpty(target) ? text : target + text;
-      }
+      public static string Append(this string target, string text) => string.IsNullOrEmpty(target) ? text : target + text;
 
       public static string Passwordify(this string source)
       {
@@ -442,6 +429,7 @@ namespace Core.Strings
          source = source.Replace("q", "9");
          source = source.Replace("s", "$");
          source = source.Replace("t", "+");
+
          return source.Replace("z", "2");
       }
 
@@ -464,6 +452,7 @@ namespace Core.Strings
          source = source.Replace("9", "q");
          source = source.Replace("$", "s");
          source = source.Replace("+", "t");
+
          return source.Replace("2", "z");
       }
 
@@ -529,15 +518,9 @@ namespace Core.Strings
          return source.AllowOnly(characters.ToString());
       }
 
-      public static string Quotify(this string source, string quote)
-      {
-         return source.Map(s => $"\"{s.Replace("\"", quote)}\"");
-      }
+      public static string Quotify(this string source, string quote) => source.Map(s => $"\"{s.Replace("\"", quote)}\"");
 
-      public static string SingleQuotify(this string source, string quote)
-      {
-         return source.Map(s => $"'{s.Replace("'", quote)}'");
-      }
+      public static string SingleQuotify(this string source, string quote) => source.Map(s => $"'{s.Replace("'", quote)}'");
 
       public static string Quotify(this string source) => source.Quotify(@"\""");
 
@@ -603,11 +586,10 @@ namespace Core.Strings
             {
                var difference = length - sourceLength;
                var half = difference / 2;
-               var padLeft = half;
                var padRight = difference.IsEven() ? half : half + 1;
                var paddingString = paddingCharacter.ToString();
 
-               return paddingString.Repeat(padLeft) + source + paddingString.Repeat(padRight);
+               return paddingString.Repeat(half) + source + paddingString.Repeat(padRight);
             }
             else
             {
@@ -1216,11 +1198,9 @@ namespace Core.Strings
          }
       }
 
-      public static T ToEnumeration<T>(this string value, T defaultValue)
-         where T : struct => value.ToEnumeration(true, defaultValue);
+      public static T ToEnumeration<T>(this string value, T defaultValue) where T : struct => value.ToEnumeration(true, defaultValue);
 
-      public static IMaybe<T> AsEnumeration<T>(this string value, bool ignoreCase = true)
-         where T : struct
+      public static IMaybe<T> AsEnumeration<T>(this string value, bool ignoreCase = true) where T : struct
       {
          try
          {
@@ -1598,26 +1578,12 @@ namespace Core.Strings
 
       public static IMaybe<int> ExtractInt(this string source)
       {
-         if (source.IsEmpty())
-         {
-            return none<int>();
-         }
-         else
-         {
-            return source.Matcher("/(['+-']? /d+)").Map(m => m[0, 1].ToInt());
-         }
+         return maybe(source.IsNotEmpty(), () => source.Matcher("/(['+-']? /d+)")).Map(m => m[0, 1].ToInt());
       }
 
       public static IMaybe<double> ExtractDouble(this string source)
       {
-         if (source.IsEmpty())
-         {
-            return none<double>();
-         }
-         else
-         {
-            return source.Matcher("/(['+-']? /d* '.' /d* (['eE'] ['-+']? /d+)?)").Map(m => m[0, 1].ToDouble());
-         }
+         return maybe(source.IsNotEmpty(), () => source.Matcher("/(['+-']? /d* '.' /d* (['eE'] ['-+']? /d+)?)")).Map(m => m[0, 1].ToDouble());
       }
 
       public static IMaybe<char> First(this string source) => maybe(source.IsNotEmpty(), () => source[0]);
@@ -1626,45 +1592,24 @@ namespace Core.Strings
 
       public static IMaybe<string> Left(this string source, int length)
       {
-         if (source.IsNotEmpty())
-         {
-            var minLength = Math.Min(length, source.Length);
-            return maybe(minLength > 0, () => source.Keep(minLength));
-         }
-         else
-         {
-            return none<string>();
-         }
+         var minLength = length.MinOf(source.Length);
+         return maybe(minLength > 0, () => source.Keep(minLength));
       }
 
       public static IMaybe<string> Right(this string source, int length)
       {
-         if (source.IsNotEmpty())
-         {
-            var minLength = Math.Min(length, source.Length);
-            return maybe(minLength > 0, () => source.Substring(source.Length - minLength, minLength));
-         }
-         else
-         {
-            return none<string>();
-         }
+         var minLength = Math.Min(length, source.Length);
+         return maybe(source.IsNotEmpty() && minLength > 0, () => source.Drop(source.Length - minLength).Keep(minLength));
       }
 
       public static IMaybe<string> Sub(this string source, int index, int length)
       {
-         if (source.IsNotEmpty() && length > 0 && index >= 0)
-         {
-            return maybe(index + length - 1 < source.Length, () => source.Substring(index, length));
-         }
-         else
-         {
-            return none<string>();
-         }
+         return maybe(source.IsNotEmpty() && length > 0 && index >= 0 && index + length - 1 < source.Length, () => source.Drop(index).Keep(length));
       }
 
       public static IMaybe<string> Sub(this string source, int index)
       {
-         return maybe(source.IsNotEmpty() && index >= 0 && index < source.Length, () => source.Substring(index));
+         return maybe(source.IsNotEmpty() && index >= 0 && index < source.Length, () => source.Drop(index));
       }
 
       public static bool IsDate(this string date) => System.DateTime.TryParse(date, out _);
@@ -1768,19 +1713,16 @@ namespace Core.Strings
             return string.Empty;
          }
 
-         if (count > 0)
+         switch (count)
          {
-            count = count.MinOf(source.Length);
-            return source.Substring(count);
-         }
-         else if (count == 0)
-         {
-            return source;
-         }
-         else
-         {
-            count = (-count).MinOf(source.Length);
-            return source.Substring(0, source.Length - count);
+            case > 0:
+               count = count.MinOf(source.Length);
+               return source.Substring(count);
+            case 0:
+               return source;
+            default:
+               count = (-count).MinOf(source.Length);
+               return source.Substring(0, source.Length - count);
          }
       }
 
@@ -1878,7 +1820,7 @@ namespace Core.Strings
          }
 
          var index = source.IndexOf(searchString, comparisonType);
-         return index > -1 ? Drop(source, index) : "";
+         return index > -1 ? Drop(source, index) : string.Empty;
       }
 
       public static string DropUntil(this string source, params char[] chars)
@@ -1906,19 +1848,16 @@ namespace Core.Strings
             return string.Empty;
          }
 
-         if (count > 0)
+         switch (count)
          {
-            count = count.MinOf(source.Length);
-            return source.Substring(0, count);
-         }
-         else if (count == 0)
-         {
-            return string.Empty;
-         }
-         else
-         {
-            count = (-count).MinOf(source.Length);
-            return source.Substring(source.Length - count);
+            case > 0:
+               count = count.MinOf(source.Length);
+               return source.Substring(0, count);
+            case 0:
+               return string.Empty;
+            default:
+               count = (-count).MinOf(source.Length);
+               return source.Substring(source.Length - count);
          }
       }
 
@@ -1968,7 +1907,7 @@ namespace Core.Strings
          }
 
          var index = source.LastIndexOf(searchString, comparisonType);
-         return index > -1 ? Keep(source, index + searchString.Length) : "";
+         return index > -1 ? Keep(source, index + searchString.Length) : string.Empty;
       }
 
       public static string KeepWhile(this string source, params char[] chars)
@@ -2122,6 +2061,7 @@ namespace Core.Strings
             var start = list[i];
             var length = i + 1 < list.Count ? list[i + 1] - start : source.Length - start;
             var text = source.Drop(start).Keep(length);
+
             yield return new Slice(text, start, length);
          }
       }
@@ -2176,12 +2116,6 @@ namespace Core.Strings
          }
 
          return result;
-      }
-
-      [Obsolete("Use map")]
-      public static string Extend(this string source, string before = "", string after = "")
-      {
-         return source.Map($"{before}{source}{after}");
       }
 
       public static string ReplaceAll(this string source, params (string, string)[] replacements)
@@ -2254,6 +2188,7 @@ namespace Core.Strings
 
          var array = source.Split(splitPattern);
          var result = array.Select(e => $"{e}{" ".Repeat(padding)}").ToString(string.Empty).Trim();
+
          return result.Center(allowedLength).Elliptical(allowedLength, ' ');
       }
 
@@ -2347,9 +2282,9 @@ namespace Core.Strings
 
       public static string ToPascal(this string source)
       {
-         string allPascalCase(string word) => word.Keep(1).ToUpper() + word.Drop(1).ToLower();
+         static string allPascalCase(string word) => word.Keep(1).ToUpper() + word.Drop(1).ToLower();
 
-         IEnumerable<string> split(string whole)
+         static IEnumerable<string> split(string whole)
          {
             if (whole.IsMatch("^ ['A-Z']+ $"))
             {

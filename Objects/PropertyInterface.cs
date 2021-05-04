@@ -6,10 +6,7 @@ namespace Core.Objects
 {
    public class PropertyInterface
    {
-      public static IEvaluator GetEvaluator(object obj)
-      {
-         return obj is DataContainer dc ? (IEvaluator)new DataContainerEvaluator(dc) : new PropertyEvaluator(obj);
-      }
+      public static IEvaluator GetEvaluator(object obj) => obj is DataContainer dc ? new DataContainerEvaluator(dc) : new PropertyEvaluator(obj);
 
       protected IEvaluator evaluator;
       protected bool isConvertible;
@@ -26,7 +23,7 @@ namespace Core.Objects
 
       public virtual Type PropertyType { get; private set; }
 
-      static bool getIsConvertible(Type type) => type?.GetInterface("IConvertible") != null;
+      protected static bool getIsConvertible(Type type) => type?.GetInterface("IConvertible") is not null;
 
       public void DeterminePropertyType(object entity)
       {

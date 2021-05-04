@@ -10,13 +10,13 @@ namespace Core.Strings
 {
    public class PadderTable
    {
-      struct PadderItem
+      protected struct PadderItem
       {
          public IMaybe<int> Length;
          public PadType PadType;
       }
 
-      static string[] newCurrentRow(int length)
+      protected static string[] newCurrentRow(int length)
       {
          var currentRow = new string[length];
          for (var i = 0; i < length; i++)
@@ -27,14 +27,13 @@ namespace Core.Strings
          return currentRow;
       }
 
-      List<string[]> data;
-      PadderItem[] items;
-
-      int itemCount;
-      int itemIndex;
-      string[] currentRow;
-      bool hasNoLength;
-      Lazy<PadderArray> padder;
+      protected List<string[]> data;
+      protected PadderItem[] items;
+      protected int itemCount;
+      protected int itemIndex;
+      protected string[] currentRow;
+      protected bool hasNoLength;
+      protected Lazy<PadderArray> padder;
 
       public PadderTable(string format)
       {
@@ -52,7 +51,7 @@ namespace Core.Strings
 
       public int ItemIndex => itemIndex;
 
-      void getPaddings()
+      protected void getPaddings()
       {
          hasNoLength = false;
          var maxCount = 0;
@@ -80,22 +79,15 @@ namespace Core.Strings
          itemCount = maxCount + 1;
       }
 
-      static PadType getPadType(string letter)
+      protected static PadType getPadType(string letter)
       {
-         switch (letter)
+         return letter switch
          {
-            case "l":
-            case "L":
-               return PadType.Left;
-            case "c":
-            case "C":
-               return PadType.Center;
-            case "r":
-            case "R":
-               return PadType.Right;
-            default:
-               return PadType.Left;
-         }
+            "l" or "L" => PadType.Left,
+            "c" or "C" => PadType.Center,
+            "r" or "R" => PadType.Right,
+            _ => PadType.Left
+         };
       }
 
       public PadderTable Add(string text)

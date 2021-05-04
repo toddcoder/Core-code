@@ -2,7 +2,7 @@
 
 namespace Core.Monads
 {
-   public interface IMatched<T> : IHasValue
+   public interface IMatched<T>
    {
       bool IsMatched { get; }
 
@@ -83,9 +83,6 @@ namespace Core.Monads
 
       bool ValueEqualTo(T otherValue);
 
-      [Obsolete("Use CastAs<object>()")]
-      IMatched<object> AsObject();
-
       IMatched<TResult> CastAs<TResult>();
 
       IMatched<T> Where(Predicate<T> predicate);
@@ -93,5 +90,9 @@ namespace Core.Monads
       IMatched<T> Where(Predicate<T> predicate, string exceptionMessage);
 
       IMatched<T> Where(Predicate<T> predicate, Func<string> exceptionMessage);
+
+      IMatched<T> ExceptionMessage(string message);
+
+      IMatched<T> ExceptionMessage(Func<Exception, string> message);
    }
 }

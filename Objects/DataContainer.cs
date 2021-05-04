@@ -9,101 +9,99 @@ using Core.Strings;
 
 namespace Core.Objects
 {
-	public class DataContainer : Hash<string, object>
-	{
-		protected IMaybe<Action> beforeExecute;
-		protected IMaybe<Action> afterExecute;
+   public class DataContainer : StringHash<object>
+   {
+      protected IMaybe<Action> _beforeExecute;
+      protected IMaybe<Action> _afterExecute;
 
-		public DataContainer()
-		{
-			beforeExecute = initializeAction("BeforeExecute");
-			afterExecute = initializeAction("AfterExecute");
-		}
+      public DataContainer() : base(true)
+      {
+         _beforeExecute = initializeAction("BeforeExecute");
+         _afterExecute = initializeAction("AfterExecute");
+         Format = "";
+      }
 
-		public DataContainer(IEnumerable<KeyValuePair<string, object>> initializers) : this()
-		{
-			foreach (var (key, value) in initializers)
+      public DataContainer(IEnumerable<KeyValuePair<string, object>> initializers) : this()
+      {
+         foreach (var (key, value) in initializers)
          {
             this[key] = value.Some();
          }
       }
 
-		public string Format { get; set; } = "";
+      public string Format { get; set; }
 
-		protected IMaybe<Action> initializeAction(string key) => this.Map(key, o => o.IfCast<Action>());
+      protected IMaybe<Action> initializeAction(string key) => this.Map(key, o => o.IfCast<Action>());
 
-		public void BeforeExecute()
-		{
-			if (beforeExecute.If(out var b))
+      public void BeforeExecute()
+      {
+         if (_beforeExecute.If(out var beforeExecute))
          {
-            b();
+            beforeExecute();
          }
       }
 
-		public void AfterExecute()
-		{
-			if (afterExecute.If(out var b))
+      public void AfterExecute()
+      {
+         if (_afterExecute.If(out var afterExecute))
          {
-            b();
+            afterExecute();
          }
       }
 
-		public Hash<TKey, TValue> ToHash<TKey, TValue>(Func<string, TKey> toKey, Func<object, TValue> toValue)
-			where TKey : class
-			where TValue : class
-		{
-			var result = new Hash<TKey, TValue>();
+      public Hash<TKey, TValue> ToHash<TKey, TValue>(Func<string, TKey> toKey, Func<object, TValue> toValue) where TKey : class where TValue : class
+      {
+         var result = new Hash<TKey, TValue>();
 
-			foreach (var item in this)
-			{
-				var key = toKey(item.Key);
-				var value = toValue(item.Value);
-				result[key] = value;
-			}
+         foreach (var (rawKey, rawValue) in this)
+         {
+            var key = toKey(rawKey);
+            var value = toValue(rawValue);
+            result[key] = value;
+         }
 
-			return result;
-		}
+         return result;
+      }
 
-		public Hash<string, TValue> ToHash<TValue>(Func<object, TValue> toValue)
-			where TValue : class
-		{
-			var result = new Hash<string, TValue>();
+      public StringHash<TValue> ToHash<TValue>(Func<object, TValue> toValue) where TValue : class
+      {
+         var result = new StringHash<TValue>(ignoreCase);
 
-			foreach (var (key, obj) in this)
-			{
-				var value = toValue(obj);
-				result[key] = value;
-			}
+         foreach (var (key, obj) in this)
+         {
+            var value = toValue(obj);
+            result[key] = value;
+         }
 
-			return result;
-		}
+         return result;
+      }
 
-		public DateTime AsDateTime(string key, DateTime defaultValue) => this.FlatMap(key, dt => (DateTime)dt, () => defaultValue);
+      public DateTime AsDateTime(string key, DateTime defaultValue) => this.FlatMap(key, dt => (DateTime)dt, () => defaultValue);
 
-		public string AsString(string key, string defaultValue = "") => this.FlatMap(key, s => (string)s, () => defaultValue);
+      public string AsString(string key, string defaultValue = "") => this.FlatMap(key, s => (string)s, () => defaultValue);
 
-		public int AsInt(string key, int defaultValue = 0) => this.FlatMap(key, i => (int)i, () => defaultValue);
+      public int AsInt(string key, int defaultValue = 0) => this.FlatMap(key, i => (int)i, () => defaultValue);
 
-		public double AsDouble(string key, double defaultValue = 0d) => this.FlatMap(key, d => (double)d, () => defaultValue);
+      public double AsDouble(string key, double defaultValue = 0d) => this.FlatMap(key, d => (double)d, () => defaultValue);
 
-		public bool AsBoolean(string key, bool defaultValue = false) => this.FlatMap(key, b => (bool)b, () => defaultValue);
+      public bool AsBoolean(string key, bool defaultValue = false) => this.FlatMap(key, b => (bool)b, () => defaultValue);
 
-		public override string ToString()
-		{
-			if (Format.IsEmpty())
+      public override string ToString()
+      {
+         if (Format.IsEmpty())
          {
             return KeyArray().Select(key => $"{key} = {this[key]}").ToString(", ");
          }
          else
-			{
-				var builder = new StringBuilder(Format);
-				foreach (var key in KeyArray())
+         {
+            var builder = new StringBuilder(Format);
+            foreach (var key in KeyArray())
             {
                builder.Replace("{" + key + "}", this[key]?.ToString() ?? "");
             }
 
             return builder.ToString();
-			}
-		}
-	}
+         }
+      }
+   }
 }

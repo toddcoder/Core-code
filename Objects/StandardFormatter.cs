@@ -2,7 +2,7 @@
 {
    public class StandardFormatter : IFormatter
    {
-      string format;
+      protected string format;
 
       public StandardFormatter(string format) => this.format = $"{{0{format}}}";
 

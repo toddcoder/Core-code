@@ -67,7 +67,7 @@ namespace Core.WinForms.Consoles
                break;
          }
 
-         this.textBox.KeyDown += (sender, e) =>
+         this.textBox.KeyDown += (_, e) =>
          {
             switch (e.KeyCode)
             {
@@ -126,7 +126,7 @@ namespace Core.WinForms.Consoles
             }
          };
 
-         this.textBox.KeyUp += (sender, e) =>
+         this.textBox.KeyUp += (_, e) =>
          {
             switch (e.KeyCode)
             {
@@ -176,7 +176,7 @@ namespace Core.WinForms.Consoles
             }
          };
 
-         this.textBox.KeyPress += (sender, e) =>
+         this.textBox.KeyPress += (_, e) =>
          {
             if (e.KeyChar == 13)
             {
@@ -187,7 +187,7 @@ namespace Core.WinForms.Consoles
             }
          };
 
-         this.textBox.MouseClick += (sender, e) =>
+         this.textBox.MouseClick += (_, _) =>
          {
             if (!inBox())
             {

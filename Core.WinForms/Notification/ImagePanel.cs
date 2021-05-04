@@ -24,7 +24,9 @@ namespace Core.WinForms.Notification
          }
       }
 
-      protected override void OnPaintBackground(PaintEventArgs e) { }
+      protected override void OnPaintBackground(PaintEventArgs e)
+      {
+      }
 
       protected override CreateParams CreateParams
       {

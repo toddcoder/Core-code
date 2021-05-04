@@ -6,88 +6,29 @@ namespace Core.RegularExpressions.Parsers
 {
    public class OutsideRangeParser : BaseParser
    {
-      public static string GetRange(string word)
+      public static string GetRange(string word) => word switch
       {
-         var result = "";
-
-         switch (word)
-         {
-            case "alphanum":
-            case "an":
-               result = "A-Za-z0-9";
-               break;
-            case "alpha":
-            case "al":
-               result = "A-Za-z";
-               break;
-            case "digit":
-               result = "0-9";
-               break;
-            case "uppercase":
-            case "u":
-               result = "A-Z";
-               break;
-            case "lowercase":
-            case "l":
-               result = "a-z";
-               break;
-            case "hex":
-            case "h":
-               result = "0-9A-Fa-f";
-               break;
-            case "xml0":
-            case "x0":
-               result = "_:A-Za-z";
-               break;
-            case "xml":
-            case "x":
-               result = "-._:A-Za-z0-9";
-               break;
-            case "crlf":
-               result = @"\r\n";
-               break;
-            case "cr":
-               result = @"\r";
-               break;
-            case "lf":
-               result = @"\n";
-               break;
-            case "punct":
-            case "p":
-               result = @"!@#$%^&*()_+={}[]:;""'|\,.<>/?-";
-               break;
-            case "squote":
-            case "sq":
-               result = "'";
-               break;
-            case "dquote":
-            case "dq":
-               result = @"""";
-               break;
-            case "lvowels":
-            case "lv":
-               result = "aeiou";
-               break;
-            case "uvowels":
-            case "uv":
-               result = "AEIOU";
-               break;
-            case "lconsonants":
-            case "lc":
-               result = "bcdfghjklmnpqrstvwxyz";
-               break;
-            case "uconsonants":
-            case "uc":
-               result = "BCDFGHJKLMNPQRSTVWXYZ";
-               break;
-            case "real":
-            case "r":
-               result = "0-9eE,.+-";
-               break;
-         }
-
-         return result;
-      }
+         "alphanum" or "an" => "A-Za-z0-9",
+         "alpha"or "al" => "A-Za-z",
+         "digit" => "0-9",
+         "uppercase"or "u" => "A-Z",
+         "lowercase"or "l" => "a-z",
+         "hex"or "h" => "0-9A-Fa-f",
+         "xml0"or "x0" => "_:A-Za-z",
+         "xml"or "x" => "-._:A-Za-z0-9",
+         "crlf" => @"\r\n",
+         "cr" => @"\r",
+         "lf" => @"\n",
+         "punct" or "p" => @"!@#$%^&*()_+={}[]:;""'|\,.<>/?-",
+         "squote" or "sq" => "'",
+         "dquote" or "dq" => @"""",
+         "lvowels" or "lv" => "aeiou",
+         "uvowels" or "uv" => "AEIOU",
+         "lconsonants" or "lc" => "bcdfghjklmnpqrstvwxyz",
+         "uconsonants" or "uc" => "BCDFGHJKLMNPQRSTVWXYZ",
+         "real" or "r" => "0-9eE,.+-",
+         _ => ""
+      };
 
       public override string Pattern => @"^\s*(-)?\s*/(" + REGEX_IDENTIFIER + @")\b";
 

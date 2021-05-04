@@ -117,9 +117,9 @@ namespace Core.Internet.Markup
          return tidy ? asString.Tidy(encoding, includeHeader, QuoteChar) : asString;
       }
 
-      public override string ToString() => ToStringRendering(element => true);
+      public override string ToString() => ToStringRendering(_ => true);
 
-      public void RenderToFile(FileName file) => RenderToFile(file, element => true);
+      public void RenderToFile(FileName file) => RenderToFile(file, _ => true);
 
       public void RenderToFile(FileName file, Func<Element, bool> callback)
       {

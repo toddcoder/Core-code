@@ -38,7 +38,7 @@ namespace Core.WinForms.Consoles
             listBox.Items.Add(builder);
          }
 
-         if (value == '\r' || value == '\n')
+         if (value is '\r' or '\n')
          {
             if (nextLineLastTime)
             {

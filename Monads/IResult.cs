@@ -2,7 +2,7 @@
 
 namespace Core.Monads
 {
-   public interface IResult<T> : IHasValue
+   public interface IResult<T>
    {
       bool If(out T value, out Exception exception);
 
@@ -19,9 +19,6 @@ namespace Core.Monads
       IResult<TResult> Map<TResult>(Func<T, IResult<TResult>> ifSuccessful);
 
       IResult<TResult> Map<TResult>(Func<T, TResult> ifSuccessful);
-
-      [Obsolete("Use Recover instead")]
-      TResult FlatMap<TResult>(Func<T, TResult> ifSuccessful, Func<Exception, TResult> ifFailed);
 
       IResult<TResult> SelectMany<TResult>(Func<T, IResult<TResult>> projection);
 
@@ -73,13 +70,14 @@ namespace Core.Monads
 
       IResult<T> Otherwise(Func<Exception, IResult<T>> func);
 
-      [Obsolete("Use CastAs<object>")]
-      IResult<object> AsObject();
-
       IResult<TResult> CastAs<TResult>();
 
       IResult<T> Where(Predicate<T> predicate, string exceptionMessage);
 
       IResult<T> Where(Predicate<T> predicate, Func<string> exceptionMessage);
+
+      IResult<T> ExceptionMessage(string message);
+
+      IResult<T> ExceptionMessage(Func<Exception, string> message);
    }
 }

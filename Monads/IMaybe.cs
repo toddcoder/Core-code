@@ -2,16 +2,13 @@
 
 namespace Core.Monads
 {
-   public interface IMaybe<T> : IHasValue
+   public interface IMaybe<T>
    {
       bool IsSome { get; }
 
       bool IsNone { get; }
 
       T DefaultTo(Func<T> func);
-
-      [Obsolete("Use DefaultTo")]
-      TResult FlatMap<TResult>(Func<T, TResult> ifSome, Func<TResult> ifNone);
 
       IMaybe<TResult> Map<TResult>(Func<T, TResult> ifSome);
 
@@ -37,14 +34,11 @@ namespace Core.Monads
 
       void Deconstruct(out bool isSome, out T value);
 
-	   IMaybe<T> IfThen(Action<T> action);
+      IMaybe<T> IfThen(Action<T> action);
 
       bool EqualToValueOf(IMaybe<T> otherMaybe);
 
       bool ValueEqualTo(T otherValue);
-
-      [Obsolete("Use CastAs<object>()")]
-      IMaybe<object> AsObject();
 
       IMaybe<TResult> CastAs<TResult>();
 

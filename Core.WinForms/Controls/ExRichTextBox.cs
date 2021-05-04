@@ -383,14 +383,7 @@ namespace Core.WinForms.Controls
          var rightPosition = GetPositionFromCharIndex(index + length);
          if (rectangle.Contains(position))
          {
-            if (rectangle.Contains(rightPosition))
-            {
-               return SelectionVisibility.Visible;
-            }
-            else
-            {
-               return SelectionVisibility.PartiallyVisible;
-            }
+            return rectangle.Contains(rightPosition) ? SelectionVisibility.Visible : SelectionVisibility.PartiallyVisible;
          }
          else
          {
@@ -453,12 +446,10 @@ namespace Core.WinForms.Controls
 
       protected static void drawTabLine(Graphics graphics, Pen pen, Point location, int tabStop, int height)
       {
-         var x1 = tabStop;
          var y1 = location.Y;
-         var x2 = tabStop;
          var y2 = location.Y + height;
 
-         graphics.DrawLine(pen, x1, y1, x2, y2);
+         graphics.DrawLine(pen, tabStop, y1, tabStop, y2);
       }
 
       public void DrawTabLines(Graphics graphics)
@@ -532,8 +523,7 @@ namespace Core.WinForms.Controls
          return RectangleFrom(graphics, SelectionStart, SelectionLength, expand);
       }
 
-      protected void annotateAt(Graphics graphics, Point point, string annotation, Color foreColor, Color backColor,
-         Color? outlineColor, Size size)
+      protected void annotateAt(Graphics graphics, Point point, string annotation, Color foreColor, Color backColor, Color? outlineColor, Size size)
       {
          graphics.TextRenderingHint = TextRenderingHint.AntiAlias;
          var rectangle = new Rectangle(point, size);
@@ -756,10 +746,8 @@ namespace Core.WinForms.Controls
             graphics.FillRectangle(brush, rectangle);
          }
 
-         using (var pen = new Pen(Color.Black) { DashStyle = dashStyle })
-         {
-            graphics.DrawRectangle(pen, rectangle);
-         }
+         using var pen = new Pen(Color.Black) { DashStyle = dashStyle };
+         graphics.DrawRectangle(pen, rectangle);
       }
 
       public void DrawWavyUnderline(Graphics graphics, Rectangle rectangle, Color color)

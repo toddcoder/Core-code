@@ -230,14 +230,12 @@ namespace Core.RegularExpressions
       public static IMaybe<Matcher> Matcher(this string input, string pattern, bool ignoreCase = false, bool multiline = false, bool friendly = true)
       {
          var matcher = new Matcher(friendly);
-
          return maybe(matcher.IsMatch(input, pattern, ignoreCase, multiline), () => matcher);
       }
 
       public static IMaybe<Matcher> Matcher(this string input, string pattern, RegexOptions options, bool friendly = true)
       {
          var matcher = new Matcher(friendly);
-
          return maybe(matcher.IsMatch(input, pattern, options), () => matcher);
       }
 

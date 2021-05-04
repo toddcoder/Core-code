@@ -8,7 +8,7 @@ namespace Core.Objects
 {
    public class DataContainerEvaluator : IEvaluator, IHash<string, object>, IHash<Signature, object>
    {
-      DataContainer data;
+      protected DataContainer data;
 
       public DataContainerEvaluator(DataContainer data) => this.data = data;
 

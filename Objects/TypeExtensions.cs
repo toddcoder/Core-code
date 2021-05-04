@@ -14,22 +14,18 @@ namespace Core.Objects
    {
       public static IMaybe<object> DefaultValue(this Type type)
       {
-         if (type != null)
+         return maybe(type is not null, () =>
          {
             var expression = Lambda<Func<object>>(Convert(Default(type), typeof(object)));
-            return expression.Compile()().Some();
-         }
-         else
-         {
-            return none<object>();
-         }
+            return expression.Compile()();
+         });
       }
 
       public static IMaybe<object> DefaultValue(this string typeName, bool defaultStringToEmpty = false)
       {
          if (typeName.StartsWith("$"))
          {
-            typeName = "System." + typeName.Tail();
+            typeName = $"System.{typeName.Tail()}";
          }
 
          if (defaultStringToEmpty && typeName.IsMatch("^ 'System.string' $", true))
@@ -44,7 +40,7 @@ namespace Core.Objects
 
       public static object DefaultOf(this Type type)
       {
-         if (type != null)
+         if (type is not null)
          {
             try
             {
@@ -100,7 +96,7 @@ namespace Core.Objects
       private static Type getGenericType(string genericAssemblyPath, string genericTypeName, string specificAssemblyPath, string specificTypeName)
       {
          var specificType = getUngenericType(specificAssemblyPath, specificTypeName);
-         if (specificType != null)
+         if (specificType is not null)
          {
             var fullTypeName = $"{genericTypeName}`[[{specificType.AssemblyQualifiedName}]]";
             return LoadFrom(genericAssemblyPath).GetType(fullTypeName, false);

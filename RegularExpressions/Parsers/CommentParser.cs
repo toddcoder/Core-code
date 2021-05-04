@@ -16,20 +16,19 @@ namespace Core.RegularExpressions.Parsers
          for (var i = index; i < source.Length; i++)
          {
             var ch = source[i];
-            if (!star && ch == '*')
+            switch (star)
             {
-               star = true;
-               continue;
+               case false when ch == '*':
+                  star = true;
+                  continue;
+               case true when ch == '/':
+                  index = i + 1;
+                  return $"(?#{contents.ToString().Escape()})".Some();
+               default:
+                  contents.Append(ch);
+                  star = false;
+                  break;
             }
-
-            if (star && ch == '/')
-            {
-               index = i + 1;
-               return $"(?#{contents.ToString().Escape()})".Some();
-            }
-
-            contents.Append(ch);
-            star = false;
          }
 
          return none<string>();

@@ -9,12 +9,12 @@ namespace Core.WinForms.Consoles
 	public class TextBoxWriter : TextWriter
 	{
 		protected TextBoxConsole console;
-		protected IMaybe<StringBuilder> buffer;
+		protected IMaybe<StringBuilder> _buffer;
 
 		public TextBoxWriter(TextBoxConsole console)
 		{
 			this.console = console;
-			buffer = maybe(this.console.Buffer, () => new StringBuilder());
+			_buffer = maybe(this.console.Buffer, () => new StringBuilder());
 		}
 
 		public bool AutoStop { get; set; }
@@ -23,9 +23,9 @@ namespace Core.WinForms.Consoles
 		{
 			if (value != '\r')
          {
-            if (buffer.If(out var b))
+            if (_buffer.If(out var buffer))
             {
-               b.Append(value);
+               buffer.Append(value);
             }
             else
             {
@@ -45,19 +45,19 @@ namespace Core.WinForms.Consoles
 
 		protected void flush()
 		{
-			if (buffer.If(out var b))
+			if (_buffer.If(out var buffer))
 			{
 				if (AutoStop)
             {
                console.StopUpdating();
             }
 
-            foreach (var ch in b.ToString())
+            foreach (var ch in buffer.ToString())
             {
                console.Write(ch);
             }
 
-            b.Clear();
+            buffer.Clear();
 
 				if (AutoStop)
             {
@@ -72,7 +72,7 @@ namespace Core.WinForms.Consoles
 
 		public override void Flush() => flush();
 
-		public override Task FlushAsync() => Task.Run(() => flush());
+		public override Task FlushAsync() => Task.Run(flush);
 
 		public override Encoding Encoding => Encoding.UTF8;
 	}

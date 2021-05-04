@@ -8,12 +8,6 @@ namespace Core.Monads
    {
       public static implicit operator bool(FailedMatch<T> _) => false;
 
-      public static bool operator &(FailedMatch<T> x, IHasValue y) => false;
-
-      public static bool operator |(FailedMatch<T> x, IHasValue y) => y.HasValue;
-
-      public static bool operator !(FailedMatch<T> _) => true;
-
       protected Exception exception;
 
       internal FailedMatch(Exception exception)
@@ -132,8 +126,6 @@ namespace Core.Monads
 
       public bool ValueEqualTo(T otherValue) => false;
 
-      public IMatched<object> AsObject() => failedMatch<object>(exception);
-
       public IMatched<TResult> CastAs<TResult>() => failedMatch<TResult>(exception);
 
       public IMatched<T> Where(Predicate<T> predicate) => this;
@@ -141,6 +133,13 @@ namespace Core.Monads
       public IMatched<T> Where(Predicate<T> predicate, string exceptionMessage) => this;
 
       public IMatched<T> Where(Predicate<T> predicate, Func<string> exceptionMessage) => this;
+
+      public IMatched<T> ExceptionMessage(string message) => new FailedMatch<T>(new FullStackException(message, exception));
+
+      public IMatched<T> ExceptionMessage(Func<Exception, string> message)
+      {
+         return new FailedMatch<T>(new FullStackException(message(exception), exception));
+      }
 
       public bool IsMatched => false;
 
@@ -187,21 +186,9 @@ namespace Core.Monads
          return this;
       }
 
-      public bool HasValue => false;
-
       public bool Equals(FailedMatch<T> other)
       {
-         if (ReferenceEquals(null, other))
-         {
-            return false;
-         }
-
-         if (ReferenceEquals(this, other))
-         {
-            return true;
-         }
-
-         return Equals(exception, other.exception);
+         return other is not null && ReferenceEquals(this, other) || Equals(exception, other.exception);
       }
 
       public override bool Equals(object obj) => obj is FailedMatch<T> other && Equals(other);

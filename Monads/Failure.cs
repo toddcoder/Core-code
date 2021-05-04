@@ -10,12 +10,6 @@ namespace Core.Monads
    {
       public static implicit operator bool(Failure<T> _) => false;
 
-      public static bool operator &(Failure<T> x, IHasValue y) => false;
-
-      public static bool operator |(Failure<T> x, IHasValue y) => y.HasValue;
-
-      public static bool operator !(Failure<T> _) => true;
-
       protected Exception exception;
 
       internal Failure(Exception exception)
@@ -58,12 +52,6 @@ namespace Core.Monads
 
       [DebuggerStepThrough]
       public IResult<TResult> Map<TResult>(Func<T, TResult> ifSuccessful) => failure<TResult>(exception);
-
-      [DebuggerStepThrough]
-      public TResult FlatMap<TResult>(Func<T, TResult> ifSuccessful, Func<Exception, TResult> ifFailed)
-      {
-         return ifFailed(exception);
-      }
 
       [DebuggerStepThrough]
       public IResult<TResult> SelectMany<TResult>(Func<T, IResult<TResult>> projection) => failure<TResult>(exception);
@@ -134,18 +122,20 @@ namespace Core.Monads
          {
             action(exception);
          }
-         catch { }
+         catch
+         {
+         }
 
          return this;
       }
 
-	   public void Deconstruct(out IMaybe<T> value, out Exception exception)
-	   {
-		   value = none<T>();
-		   exception = this.exception;
-	   }
+      public void Deconstruct(out IMaybe<T> value, out Exception exception)
+      {
+         value = none<T>();
+         exception = this.exception;
+      }
 
-	   public IResult<T> Assert(Predicate<T> predicate, Func<string> exceptionMessage) => this;
+      public IResult<T> Assert(Predicate<T> predicate, Func<string> exceptionMessage) => this;
 
       public IMaybe<T> Maybe() => none<T>();
 
@@ -177,29 +167,19 @@ namespace Core.Monads
          }
       }
 
-      public IResult<object> AsObject() => failure<object>(exception);
-
       public IResult<TResult> CastAs<TResult>() => failure<TResult>(exception);
 
       public IResult<T> Where(Predicate<T> predicate, string exceptionMessage) => this;
 
       public IResult<T> Where(Predicate<T> predicate, Func<string> exceptionMessage) => this;
 
-      public bool HasValue => false;
+      public IResult<T> ExceptionMessage(string message) => new Failure<T>(new FullStackException(message, exception));
+
+      public IResult<T> ExceptionMessage(Func<Exception, string> message) => new Failure<T>(new FullStackException(message(exception), exception));
 
       public bool Equals(Failure<T> other)
       {
-         if (ReferenceEquals(null, other))
-         {
-            return false;
-         }
-
-         if (ReferenceEquals(this, other))
-         {
-            return true;
-         }
-
-         return Equals(exception, other.exception);
+         return other is not null && ReferenceEquals(this, other) || Equals(exception, other.exception);
       }
 
       public override bool Equals(object obj) => obj is Failure<T> other && Equals(other);

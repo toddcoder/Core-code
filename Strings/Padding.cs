@@ -9,14 +9,14 @@ namespace Core.Strings
 {
    public class Padding
    {
-      const string DEFAULT_SPLIT_PATTERN = "/s* ',' /s*";
-      const string LINE_SPLIT_PATTERN = "/r /n | /r | /n";
+      protected const string DEFAULT_SPLIT_PATTERN = "/s* ',' /s*";
+      protected const string LINE_SPLIT_PATTERN = "/r /n | /r | /n";
 
-      PadType[] padTypes;
-      string splitPattern;
-      string columnSeparator;
-      string text;
-      int[] sizes;
+      protected PadType[] padTypes;
+      protected string splitPattern;
+      protected string columnSeparator;
+      protected string text;
+      protected int[] sizes;
 
       public Padding(params PadType[] padTypes)
       {
@@ -77,7 +77,7 @@ namespace Core.Strings
          set => text = value;
       }
 
-      string getText(string[][] lines)
+      protected string getText(string[][] lines)
       {
          if (lines.Length != 0)
          {
@@ -99,10 +99,7 @@ namespace Core.Strings
          }
       }
 
-      public string ToString(IEnumerable<IEnumerable<string>> source)
-      {
-         return getText(source.Select(columns => columns.ToArray()).ToArray());
-      }
+      public string ToString(IEnumerable<IEnumerable<string>> source) => getText(source.Select(columns => columns.ToArray()).ToArray());
 
       public override string ToString() => Text;
 

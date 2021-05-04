@@ -2,7 +2,7 @@
 
 namespace Core.Monads
 {
-   public interface ICompletion<T> : IHasValue
+   public interface ICompletion<T>
    {
       ICompletion<TResult> Map<TResult>(Func<T, ICompletion<TResult>> ifCompleted);
 
@@ -49,9 +49,9 @@ namespace Core.Monads
 
       bool IfInterrupted(out Exception exception);
 
-      bool If(out T value, out IMaybe<Exception> anyException);
+      bool If(out T value, out IMaybe<Exception> _exception);
 
-      bool IfNot(out IMaybe<Exception> anyException);
+      bool IfNot(out IMaybe<Exception> _exception);
 
       bool Else<TOther>(out ICompletion<TOther> result);
 
@@ -71,7 +71,7 @@ namespace Core.Monads
 
       ICompletion<TOther> NotCompletedOnly<TOther>();
 
-      void Deconstruct(out IMaybe<T> value, out IMaybe<Exception> anyException);
+      void Deconstruct(out IMaybe<T> value, out IMaybe<Exception> _exception);
 
       ICompletion<T> OnCompleted(Action<T> action);
 
@@ -86,9 +86,6 @@ namespace Core.Monads
       bool ValueEqualTo(ICompletion<T> otherCompletion);
 
       bool EqualToValueOf(T otherValue);
-
-      [Obsolete("Use CastAs<object>()")]
-      ICompletion<object> AsObject();
 
       ICompletion<TResult> CastAs<TResult>();
 

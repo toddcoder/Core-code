@@ -2,38 +2,33 @@
 using System.Linq;
 using System.Reflection;
 using Core.Arrays;
+using Core.Assertions;
 using Core.Collections;
 using Core.Enumerables;
-using Core.Exceptions;
 
 namespace Core.Objects
 {
    public class Equatable<T> : IEquatable<T>
    {
-      static Hash<string, object> getValues(T obj, string[] signatures)
+      protected static Hash<string, object> getValues(T obj, string[] signatures)
       {
          var fieldValues = typeof(T).GetRuntimeFields()
             .Where(fi => signatures.Contains(fi.Name))
             .Select(fi => (signature: fi.Name, value: fi.GetValue(obj)))
-            .Where(t => t.value.IsNotNull())
-            .ToHash(t => t.signature, t => t.value);
+            .Where(t => t.value is not null)
+            .ToStringHash(t => t.signature, t => t.value, true);
          var propertyValues = typeof(T).GetRuntimeProperties()
             .Where(pi => signatures.Contains(pi.Name))
             .Select(pi => (signature: pi.Name, value: pi.GetValue(obj)))
-            .Where(t => t.value.IsNotNull())
-            .ToHash(t => t.signature, t => t.value);
+            .Where(t => t.value is not null)
+            .ToStringHash(t => t.signature, t => t.value, true);
 
          var hash = fieldValues.Merge(propertyValues);
 
          var notFoundSignatures = signatures.Where(signature => !hash.ContainsKey(signature)).ToArray();
-         if (notFoundSignatures.Length == 0)
-         {
-            return hash;
-         }
-         else
-         {
-            throw $"Didn't find fields or property {notFoundSignatures.Andify()}".Throws();
-         }
+         notFoundSignatures.Must().Not.BeEmpty().OrThrow(() => $"Didn't find fields or property {notFoundSignatures.Andify()}");
+
+         return hash;
       }
 
       public static int HashCode(params object[] values)
@@ -44,8 +39,8 @@ namespace Core.Objects
          }
       }
 
-      T obj;
-      string[] signatures;
+      protected T obj;
+      protected string[] signatures;
 
       public Equatable(T obj, params string[] signatures)
       {
@@ -55,7 +50,7 @@ namespace Core.Objects
 
       public bool Equals(T other)
       {
-         if (other.IsNull())
+         if (other is null)
          {
             return false;
          }
@@ -82,9 +77,6 @@ namespace Core.Objects
          }
       }
 
-      public string Keys
-      {
-         get => getValues(obj, signatures).Select(i => $"{i.Key}=>{(i.Value.IsNull() ? "null" : i.Value)}").ToString(", ");
-      }
+      public string Keys => getValues(obj, signatures).Select(i => $"{i.Key}=>{(i.Value is null ? "null" : i.Value)}").ToString(", ");
    }
 }

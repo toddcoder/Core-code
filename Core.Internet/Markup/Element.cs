@@ -20,9 +20,9 @@ namespace Core.Internet.Markup
          text = string.Empty;
          parent = null;
          siblings = new Elements();
-         siblings.ElementAdded += (sender, e) => e.Element.Parent = parent;
+         siblings.ElementAdded += (_, e) => e.Element.Parent = parent;
          children = new Elements();
-         children.ElementAdded += (sender, e) => e.Element.Parent = this;
+         children.ElementAdded += (_, e) => e.Element.Parent = this;
          attributes = new Attributes();
       }
 
@@ -54,7 +54,7 @@ namespace Core.Internet.Markup
 
       public Attributes Attributes => attributes;
 
-      public override string ToString() => ToStringRendering(e => true);
+      public override string ToString() => ToStringRendering(_ => true);
 
       public virtual string ToStringRendering(Func<Element, bool> callback)
       {
@@ -91,7 +91,7 @@ namespace Core.Internet.Markup
          }
       }
 
-      public virtual void RenderToFile(FileName file) => RenderToFile(file, element => true);
+      public virtual void RenderToFile(FileName file) => RenderToFile(file, _ => true);
 
       public virtual void RenderToFile(FileName file, Func<Element, bool> callback)
       {

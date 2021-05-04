@@ -32,12 +32,12 @@ namespace Core.Strings
          }
       }
 
-      public static implicit operator Slicer(string text) => new Slicer(text);
+      public static implicit operator Slicer(string text) => new(text);
 
-      string text;
-      List<Replacement> replacements;
-      int offset;
-      int currentLength;
+      protected string text;
+      protected List<Replacement> replacements;
+      protected int offset;
+      protected int currentLength;
 
       public Slicer(string text)
       {
@@ -49,7 +49,7 @@ namespace Core.Strings
 
       public bool IsEmpty => text.Length == 0;
 
-      void updateOffsets(int index, int length, string replacementText)
+      protected void updateOffsets(int index, int length, string replacementText)
       {
          offset = index + offset;
          var replacementLength = length;

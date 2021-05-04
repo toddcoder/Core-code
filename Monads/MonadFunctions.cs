@@ -39,7 +39,7 @@ namespace Core.Monads
 
       public static IMatched<T> failedMatch<T>(Exception exception) => new FailedMatch<T>(exception);
 
-      public static IMatched<T> ifMatches<T>(bool test, Func<T> result)
+      public static IMatched<T> isMatched<T>(bool test, Func<T> result)
       {
          try
          {
@@ -51,7 +51,7 @@ namespace Core.Monads
          }
       }
 
-      public static IMatched<T> ifMatches<T>(bool test, Func<IMatched<T>> result)
+      public static IMatched<T> isMatched<T>(bool test, Func<IMatched<T>> result)
       {
          try
          {

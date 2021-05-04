@@ -11,11 +11,11 @@ namespace Core.Objects
    {
       public static bool operator ==(EquatableBase lhs, EquatableBase rhs)
       {
-         if (ReferenceEquals(lhs, null))
+         if (lhs is null)
          {
-            return ReferenceEquals(rhs, null);
+            return rhs is null;
          }
-         else if (ReferenceEquals(rhs, null))
+         else if (rhs is null)
          {
             return false;
          }
@@ -53,7 +53,7 @@ namespace Core.Objects
                case FieldInfo fieldInfo:
                {
                   var value = fieldInfo.GetValue(obj);
-                  if (value.IsNotNull())
+                  if (value is not null)
                   {
                      hash[fieldInfo.Name] = value;
                   }
@@ -62,7 +62,7 @@ namespace Core.Objects
                case PropertyInfo propertyInfo:
                {
                   var value = propertyInfo.GetValue(obj);
-                  if (value.IsNotNull())
+                  if (value is not null)
                   {
                      hash[propertyInfo.Name] = value;
                   }
@@ -74,11 +74,11 @@ namespace Core.Objects
          return hash;
       }
 
-      public virtual bool Equals(EquatableBase other) => !ReferenceEquals(other, null) && other.GetType() == GetType() && Equals((object)other);
+      public virtual bool Equals(EquatableBase other) => other is not null && other.GetType() == GetType() && Equals((object)other);
 
       public override bool Equals(object obj)
       {
-         if (obj.IsNull())
+         if (obj is null)
          {
             return false;
          }
@@ -106,9 +106,6 @@ namespace Core.Objects
          }
       }
 
-      public virtual string Keys
-      {
-         get => getValues(this).Select(i => $"{i.Key}=>{(i.Value.IsNull() ? "null" : i.Value)}").ToString(", ");
-      }
+      public virtual string Keys => getValues(this).Select(i => $"{i.Key}=>{(i.Value is null ? "null" : i.Value)}").ToString(", ");
    }
 }

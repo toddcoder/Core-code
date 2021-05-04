@@ -37,7 +37,7 @@ namespace Core.Internet.Markup
          return text.Substitute("'`' /([/w '-']+) ':'", "<$1>").Substitute("':' /([/w '-']+) '`'", "</$1>");
       }
 
-      public static implicit operator MarkupTextHolder(string text) => new MarkupTextHolder(text);
+      public static implicit operator MarkupTextHolder(string text) => new(text);
 
       protected string text;
 

@@ -8,13 +8,9 @@ namespace Core.Monads
    {
       public static implicit operator bool(Cancelled<T> _) => false;
 
-      public static bool operator &(Cancelled<T> x, IHasValue y) => false;
-
-      public static bool operator |(Cancelled<T> x, IHasValue y) => y.HasValue;
-
-      public static bool operator !(Cancelled<T> _) => true;
-
-      internal Cancelled() { }
+      internal Cancelled()
+      {
+      }
 
       public ICompletion<TResult> Map<TResult>(Func<T, ICompletion<TResult>> ifCompleted) => cancelled<TResult>();
 
@@ -25,8 +21,7 @@ namespace Core.Monads
          return ifCancelled();
       }
 
-      public ICompletion<TResult> Map<TResult>(Func<T, ICompletion<TResult>> ifCompleted,
-         Func<Exception, ICompletion<TResult>> ifInterrupted)
+      public ICompletion<TResult> Map<TResult>(Func<T, ICompletion<TResult>> ifCompleted, Func<Exception, ICompletion<TResult>> ifInterrupted)
       {
          return cancelled<TResult>();
       }
@@ -94,16 +89,16 @@ namespace Core.Monads
          return false;
       }
 
-      public bool If(out T value, out IMaybe<Exception> anyException)
+      public bool If(out T value, out IMaybe<Exception> _exception)
       {
          value = default;
-         anyException = none<Exception>();
+         _exception = none<Exception>();
          return false;
       }
 
-      public bool IfNot(out IMaybe<Exception> anyException)
+      public bool IfNot(out IMaybe<Exception> _exception)
       {
-         anyException = none<Exception>();
+         _exception = none<Exception>();
          return true;
       }
 
@@ -127,7 +122,9 @@ namespace Core.Monads
          return true;
       }
 
-      public void Force() { }
+      public void Force()
+      {
+      }
 
       public T ForceValue() => throw "There is no value".Throws();
 
@@ -137,10 +134,10 @@ namespace Core.Monads
 
       public ICompletion<TOther> NotCompletedOnly<TOther>() => cancelled<TOther>();
 
-      public void Deconstruct(out IMaybe<T> value, out IMaybe<Exception> anyException)
+      public void Deconstruct(out IMaybe<T> value, out IMaybe<Exception> _exception)
       {
          value = none<T>();
-         anyException = none<Exception>();
+         _exception = none<Exception>();
       }
 
       public ICompletion<T> OnCompleted(Action<T> action) => this;
@@ -182,8 +179,6 @@ namespace Core.Monads
       public ICompletion<T> Where(Predicate<T> predicate, string exceptionMessage) => this;
 
       public ICompletion<T> Where(Predicate<T> predicate, Func<string> exceptionMessage) => this;
-
-      public bool HasValue => false;
 
       public bool Equals(Cancelled<T> other) => true;
 

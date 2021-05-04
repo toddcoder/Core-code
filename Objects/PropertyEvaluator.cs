@@ -14,10 +14,7 @@ namespace Core.Objects
 {
    public class PropertyEvaluator : IEvaluator, IHash<string, object>, IHash<Signature, object>
    {
-      public static void SetValue(object obj, string signature, object value)
-      {
-         new PropertyEvaluator(obj) { [signature] = value };
-      }
+      public static void SetValue(object obj, string signature, object value) => new PropertyEvaluator(obj) { [signature] = value };
 
       public static IMaybe<object> GetValue(object obj, string signature)
       {
@@ -44,7 +41,7 @@ namespace Core.Objects
 
             foreach (var s in new SignatureCollection(signature))
             {
-               if (current.IsNull())
+               if (current is null)
                {
                   return null;
                }
@@ -62,7 +59,7 @@ namespace Core.Objects
          }
          set
          {
-            if (value.IsNotNull())
+            if (value is not null)
             {
                var current = obj;
 
@@ -80,6 +77,7 @@ namespace Core.Objects
                   {
                      throw $"Couldn't determine object at {signature}".Throws();
                   }
+
                   current = infoValue;
                   lastInfo = info.Some();
                }
@@ -153,7 +151,7 @@ namespace Core.Objects
 
                foreach (var singleSignature in new SignatureCollection(signature))
                {
-                  if (current.IsNotNull())
+                  if (current is not null)
                   {
                      if (ObjectInfo.PropertyInfo(current, singleSignature).If(out var info))
                      {

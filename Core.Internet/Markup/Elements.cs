@@ -34,8 +34,7 @@ namespace Core.Internet.Markup
       {
          get
          {
-            var result = elements.Where(e => e.Name == name).FirstOrNone();
-            if (result.If(out var value))
+            if (elements.Where(e => e.Name == name).FirstOrNone().If(out var value))
             {
                return value;
             }
@@ -94,7 +93,7 @@ namespace Core.Internet.Markup
 
       public void Clear() => elements.Clear();
 
-      public override string ToString() => ToStringRendering(e => true);
+      public override string ToString() => ToStringRendering(_ => true);
 
       public string ToStringRendering(Func<Element, bool> callback)
       {
@@ -107,7 +106,7 @@ namespace Core.Internet.Markup
          return builder.ToString();
       }
 
-      public void RenderToFile(FileName file) => RenderToFile(file, e => true);
+      public void RenderToFile(FileName file) => RenderToFile(file, _ => true);
 
       public void RenderToFile(FileName file, Func<Element, bool> callback)
       {

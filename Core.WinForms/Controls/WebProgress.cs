@@ -75,18 +75,16 @@ namespace Core.WinForms.Controls
 
             var drawColor = Color.FromArgb(alpha, Color);
 
-            using (var brush = new SolidBrush(drawColor))
-            {
-               var sizeRate = 4.5F / CIRCLE_SIZE;
-               var size = Width / sizeRate;
+            using var brush = new SolidBrush(drawColor);
+            var sizeRate = 4.5F / CIRCLE_SIZE;
+            var size = Width / sizeRate;
 
-               var diff = Width / 4.5F - size;
+            var diff = Width / 4.5F - size;
 
-               var x = Width / 9.0F + diff;
-               var y = Height / 9.0F + diff;
-               e.Graphics.FillEllipse(brush, x, y, size, size);
-               e.Graphics.RotateTransform(ANGLE);
-            }
+            var x = Width / 9.0F + diff;
+            var y = Height / 9.0F + diff;
+            e.Graphics.FillEllipse(brush, x, y, size, size);
+            e.Graphics.RotateTransform(ANGLE);
          }
 
          e.Graphics.Restore(state);

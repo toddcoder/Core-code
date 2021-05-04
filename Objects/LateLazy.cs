@@ -46,9 +46,7 @@ namespace Core.Objects
             else if (_activator.If(out var activator))
             {
                var returnValue = activator();
-
                returnValue.Must().Not.BeNull().OrThrow();
-
                _value = returnValue.Some();
 
                return returnValue;
@@ -60,7 +58,7 @@ namespace Core.Objects
          }
       }
 
-      public bool IsActivated => _value.HasValue;
+      public bool IsActivated => _value.IsSome;
 
       public IMaybe<T> AnyValue => _value;
 
