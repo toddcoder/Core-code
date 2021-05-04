@@ -29,7 +29,7 @@ namespace Core.WinForms.Documents
       protected string extension;
       protected string documentName;
       protected string formName;
-      protected IMaybe<FileName> file;
+      protected IMaybe<FileName> _file;
       protected bool isDirty;
       protected OpenFileDialog openFileDialog;
       protected SaveFileDialog saveFileDialog;
@@ -37,7 +37,7 @@ namespace Core.WinForms.Documents
       protected string fontName;
       protected float fontSize;
       protected bool displayFileName;
-      protected IMaybe<Colorizer> colorizer;
+      protected IMaybe<Colorizer> _colorizer;
       protected string filter;
       protected bool keepClean;
 
@@ -60,8 +60,8 @@ namespace Core.WinForms.Documents
 
          isDirty = false;
          formName = this.form.Text;
-         file = none<FileName>();
-         colorizer = none<Colorizer>();
+         _file = none<FileName>();
+         _colorizer = none<Colorizer>();
          keepClean = false;
 
          initialize();
@@ -75,20 +75,20 @@ namespace Core.WinForms.Documents
 
       protected void initialize()
       {
-         textBox.TextChanged += (sender, e) =>
+         textBox.TextChanged += (_, _) =>
          {
             if (!keepClean)
             {
                Dirty();
             }
 
-            if (colorizer.If(out var c))
+            if (_colorizer.If(out var c))
             {
                c.Colorize(textBox);
             }
          };
 
-         form.FormClosing += (sender, e) => Close(e);
+         form.FormClosing += (_, e) => Close(e);
 
          openFileDialog = new OpenFileDialog
          {
@@ -119,14 +119,14 @@ namespace Core.WinForms.Documents
 
       public IMaybe<Colorizer> Colorizer
       {
-         get => colorizer;
-         set => colorizer = value;
+         get => _colorizer;
+         set => _colorizer = value;
       }
 
       public void StandardFileMenu()
       {
          menus.Menu("&File");
-         menus.Menu("File", "New...", (sender, e) => New(), "^N");
+         menus.Menu("File", "New...", (_, _) => New(), "^N");
          standardItems();
       }
 
@@ -139,25 +139,25 @@ namespace Core.WinForms.Documents
 
       protected void standardItems()
       {
-         menus.Menu("File", "Open...", (sender, e) => Open(), "^O");
-         menus.Menu("File", "Save", (sender, e) => Save(), "^S");
-         menus.Menu("File", "Save As...", (sender, e) => SaveAs());
+         menus.Menu("File", "Open...", (_, _) => Open(), "^O");
+         menus.Menu("File", "Save", (_, _) => Save(), "^S");
+         menus.Menu("File", "Save As...", (_, _) => SaveAs());
          menus.MenuSeparator("File");
-         menus.Menu("File", "Exit", (sender, e) => form.Close(), "%F4");
+         menus.Menu("File", "Exit", (_, _) => form.Close(), "%F4");
       }
 
       public void StandardEditMenu()
       {
          menus.Menu("&Edit");
-         menus.Menu("Edit", "Undo", (sender, e) => Undo(), "^Z");
-         menus.Menu("Edit", "Redo", (sender, e) => Redo());
+         menus.Menu("Edit", "Undo", (_, _) => Undo(), "^Z");
+         menus.Menu("Edit", "Redo", (_, _) => Redo());
          menus.MenuSeparator("Edit");
-         menus.Menu("Edit", "Cut", (sender, e) => Cut(), "^X");
-         menus.Menu("Edit", "Copy", (sender, e) => Copy(), "^C");
-         menus.Menu("Edit", "Paste", (sender, e) => Paste(), "^V");
-         menus.Menu("Edit", "Delete", (sender, e) => Delete());
+         menus.Menu("Edit", "Cut", (_, _) => Cut(), "^X");
+         menus.Menu("Edit", "Copy", (_, _) => Copy(), "^C");
+         menus.Menu("Edit", "Paste", (_, _) => Paste(), "^V");
+         menus.Menu("Edit", "Delete", (_, _) => Delete());
          menus.MenuSeparator("Edit");
-         menus.Menu("Edit", "Select All", (sender, e) => SelectAll(), "^A");
+         menus.Menu("Edit", "Select All", (_, _) => SelectAll(), "^A");
       }
 
       public void StandardMenus()
@@ -194,7 +194,7 @@ namespace Core.WinForms.Documents
          textBox.ScrollBars = RichTextBoxScrollBars.Both;
       }
 
-      public IMaybe<string> FileName => file.Map(f => f.ToString());
+      public IMaybe<string> FileName => _file.Map(f => f.ToString());
 
       public bool IsDirty => isDirty;
 
@@ -233,7 +233,7 @@ namespace Core.WinForms.Documents
 
          textBox.Clear();
          Clean();
-         file = none<FileName>();
+         _file = none<FileName>();
          DisplayFileName();
       }
 
@@ -263,10 +263,10 @@ namespace Core.WinForms.Documents
 
       public virtual void Open(FileName fileName)
       {
-         file = fileName.Some();
-         if (file.If(out var f))
+         _file = fileName.Some();
+         if (_file.If(out var file))
          {
-            textBox.Text = f.Lines.ToString("\r\n");
+            textBox.Text = file.Lines.ToString("\r\n");
          }
 
          Clean();
@@ -277,9 +277,9 @@ namespace Core.WinForms.Documents
          if (displayFileName)
          {
             var title = new StringBuilder();
-            if (file.If(out var f))
+            if (_file.If(out var file))
             {
-               title.Append(f);
+               title.Append(file);
                title.Append(" - ");
                title.Append(formName);
                if (IsDirty)
@@ -304,7 +304,7 @@ namespace Core.WinForms.Documents
       {
          if (IsDirty)
          {
-            if (file.IsSome)
+            if (_file.IsSome)
             {
                save();
             }
@@ -317,15 +317,15 @@ namespace Core.WinForms.Documents
 
       protected virtual void save()
       {
-         if (file.If(out var f))
+         if (_file.If(out var file))
          {
-            if (f.Exists())
+            if (file.Exists())
             {
-               f.Delete();
+               file.Delete();
             }
 
-            f.Encoding = Encoding.UTF8;
-            f.Text = getText();
+            file.Encoding = Encoding.UTF8;
+            file.Text = getText();
          }
 
          Clean();
@@ -336,7 +336,7 @@ namespace Core.WinForms.Documents
          if (saveFileDialog.ShowDialog() == DialogResult.OK)
          {
             OKButtonClicked?.Invoke(this, new EventArgs());
-            file = ((FileName)saveFileDialog.FileName).Some();
+            _file = ((FileName)saveFileDialog.FileName).Some();
             save();
          }
          else
@@ -366,7 +366,7 @@ namespace Core.WinForms.Documents
 
       protected DialogResult getSaveResponse()
       {
-         var message = file.Map(f => $"File {f} not saved").DefaultTo(() => "File not saved");
+         var message = _file.Map(f => $"File {f} not saved").DefaultTo(() => "File not saved");
          var text = $"{documentName} File Not Saved";
 
          return MessageBox.Show(message, text, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
@@ -454,6 +454,6 @@ namespace Core.WinForms.Documents
          set => textBox.Lines = value;
       }
 
-      public DocumentTrying TryTo => new DocumentTrying(this);
+      public DocumentTrying TryTo => new(this);
    }
 }

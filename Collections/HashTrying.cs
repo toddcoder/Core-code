@@ -15,7 +15,7 @@ namespace Core.Collections
       public IResult<TValue> Find(TKey key, Func<TKey, IResult<TValue>> defaultValue, bool addIfNotFound = false)
       {
          var result = this[key];
-         if (result.HasValue)
+         if (result.IsSuccessful)
          {
             return result;
          }

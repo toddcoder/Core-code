@@ -20,7 +20,7 @@ namespace Core.Strings
             if (evaluator.ContainsKey(name))
             {
                var obj1 = evaluator[name];
-               matcher[i, 0] = obj1.IsNull() ? "" : string.Format("{{0" + format + "}}", obj1);
+               matcher[i, 0] = obj1 is null ? "" : string.Format("{{0" + format + "}}", obj1);
             }
          }
 

@@ -119,8 +119,6 @@ namespace Core.Monads
 
       public bool ValueEqualTo(T otherValue) => false;
 
-      public IMatched<object> AsObject() => notMatched<object>();
-
       public IMatched<TResult> CastAs<TResult>() => notMatched<TResult>();
 
       public IMatched<T> Where(Predicate<T> predicate) => this;
@@ -175,8 +173,6 @@ namespace Core.Monads
       }
 
       public IMatched<T> Else(Action<Exception> action) => this;
-
-      public bool HasValue => false;
 
       public bool Equals(NotMatched<T> other) => true;
 

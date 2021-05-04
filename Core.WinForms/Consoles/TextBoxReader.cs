@@ -10,7 +10,7 @@ namespace Core.WinForms.Consoles
    {
       protected Form form;
       protected TextBoxConsole console;
-      protected IMaybe<Control> anyPreviouslyFocused;
+      protected IMaybe<Control> _previouslyFocused;
 
       public TextBoxReader(Form form, TextBoxConsole console)
       {
@@ -25,19 +25,23 @@ namespace Core.WinForms.Consoles
 
          this.console = console;
          this.console.IOStatus = IOStatusType.Writing;
-         anyPreviouslyFocused = none<Control>();
+         _previouslyFocused = none<Control>();
       }
 
-      public override void Flush() { }
+      public override void Flush()
+      {
+      }
 
       public override long Seek(long offset, SeekOrigin origin) => 0;
 
-      public override void SetLength(long value) { }
+      public override void SetLength(long value)
+      {
+      }
 
       public override int Read(byte[] buffer, int offset, int count)
       {
          console.ReadOnly = false;
-         anyPreviouslyFocused = form.ActiveControl.Some();
+         _previouslyFocused = form.ActiveControl.Some();
          console.Focus();
          console.IOStatus = IOStatusType.Reading;
 
@@ -86,13 +90,15 @@ namespace Core.WinForms.Consoles
          console.GoToEnd();
          console.ReadOnly = true;
 
-         if (anyPreviouslyFocused.If(out var previouslyFocused))
+         if (_previouslyFocused.If(out var previouslyFocused))
          {
             form.ActiveControl = previouslyFocused;
          }
       }
 
-      public override void Write(byte[] buffer, int offset, int count) { }
+      public override void Write(byte[] buffer, int offset, int count)
+      {
+      }
 
       public override bool CanRead => true;
 

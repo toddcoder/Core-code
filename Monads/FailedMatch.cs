@@ -126,8 +126,6 @@ namespace Core.Monads
 
       public bool ValueEqualTo(T otherValue) => false;
 
-      public IMatched<object> AsObject() => failedMatch<object>(exception);
-
       public IMatched<TResult> CastAs<TResult>() => failedMatch<TResult>(exception);
 
       public IMatched<T> Where(Predicate<T> predicate) => this;
@@ -188,16 +186,9 @@ namespace Core.Monads
          return this;
       }
 
-      public bool HasValue => false;
-
       public bool Equals(FailedMatch<T> other)
       {
-         if (other is null)
-         {
-            return false;
-         }
-
-         return ReferenceEquals(this, other) || Equals(exception, other.exception);
+         return other is not null && ReferenceEquals(this, other) || Equals(exception, other.exception);
       }
 
       public override bool Equals(object obj) => obj is FailedMatch<T> other && Equals(other);

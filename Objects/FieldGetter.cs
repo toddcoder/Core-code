@@ -4,7 +4,7 @@ namespace Core.Objects
 {
    public class FieldGetter : IGetter
    {
-      FieldInfo fieldInfo;
+      protected FieldInfo fieldInfo;
 
       public FieldGetter(FieldInfo fieldInfo) => this.fieldInfo = fieldInfo;
 

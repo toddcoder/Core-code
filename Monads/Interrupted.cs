@@ -8,12 +8,6 @@ namespace Core.Monads
    {
       public static implicit operator bool(Interrupted<T> _) => false;
 
-      public static bool operator &(Interrupted<T> x, IHasValue y) => false;
-
-      public static bool operator |(Interrupted<T> x, IHasValue y) => y.HasValue;
-
-      public static bool operator !(Interrupted<T> _) => true;
-
       protected Exception exception;
 
       internal Interrupted(Exception exception)
@@ -98,17 +92,17 @@ namespace Core.Monads
          return true;
       }
 
-      public bool If(out T value, out IMaybe<Exception> anyException)
+      public bool If(out T value, out IMaybe<Exception> _exception)
       {
          value = default;
-         anyException = exception.Some();
+         _exception = exception.Some();
 
          return false;
       }
 
-      public bool IfNot(out IMaybe<Exception> anyException)
+      public bool IfNot(out IMaybe<Exception> _exception)
       {
-         anyException = exception.Some();
+         _exception = exception.Some();
          return true;
       }
 
@@ -142,10 +136,10 @@ namespace Core.Monads
 
       public ICompletion<TOther> NotCompletedOnly<TOther>() => new Interrupted<TOther>(exception);
 
-      public void Deconstruct(out IMaybe<T> value, out IMaybe<Exception> anyException)
+      public void Deconstruct(out IMaybe<T> value, out IMaybe<Exception> _exception)
       {
          value = default;
-         anyException = exception.Some();
+         _exception = exception.Some();
       }
 
       public ICompletion<T> OnCompleted(Action<T> action) => this;
@@ -188,21 +182,9 @@ namespace Core.Monads
 
       public ICompletion<T> Where(Predicate<T> predicate, Func<string> exceptionMessage) => this;
 
-      public bool HasValue => false;
-
       public bool Equals(Interrupted<T> other)
       {
-         if (ReferenceEquals(null, other))
-         {
-            return false;
-         }
-
-         if (ReferenceEquals(this, other))
-         {
-            return true;
-         }
-
-         return Equals(exception, other.exception);
+         return other is not null && ReferenceEquals(this, other) || Equals(exception, other.exception);
       }
 
       public override bool Equals(object obj) => obj is Interrupted<T> other && Equals(other);

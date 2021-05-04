@@ -303,7 +303,6 @@
     <Compile Include="Objects\NewFormatter.cs" />
     <Compile Include="Objects\ObjectExtensions.cs" />
     <Compile Include="Objects\ObjectFunctions.cs" />
-    <Compile Include="Objects\ObjectHelps.cs" />
     <Compile Include="Objects\ObjectInfo.cs" />
     <Compile Include="Objects\ObjectReader.cs" />
     <Compile Include="Objects\ObjectReaderTrying.cs" />
@@ -356,7 +355,6 @@
     <Compile Include="RegularExpressions\Splitter.cs" />
     <Compile Include="Strings\CharacterExtensions.cs" />
     <Compile Include="Strings\CSV.cs" />
-    <Compile Include="Strings\Destringifier.cs" />
     <Compile Include="Strings\Formatter.cs" />
     <Compile Include="Strings\DelimitedTextStatus.cs" />
     <Compile Include="Strings\IStringStream.cs" />

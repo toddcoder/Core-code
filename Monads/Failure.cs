@@ -54,12 +54,6 @@ namespace Core.Monads
       public IResult<TResult> Map<TResult>(Func<T, TResult> ifSuccessful) => failure<TResult>(exception);
 
       [DebuggerStepThrough]
-      public TResult FlatMap<TResult>(Func<T, TResult> ifSuccessful, Func<Exception, TResult> ifFailed)
-      {
-         return ifFailed(exception);
-      }
-
-      [DebuggerStepThrough]
       public IResult<TResult> SelectMany<TResult>(Func<T, IResult<TResult>> projection) => failure<TResult>(exception);
 
       [DebuggerStepThrough]
@@ -173,8 +167,6 @@ namespace Core.Monads
          }
       }
 
-      public IResult<object> AsObject() => failure<object>(exception);
-
       public IResult<TResult> CastAs<TResult>() => failure<TResult>(exception);
 
       public IResult<T> Where(Predicate<T> predicate, string exceptionMessage) => this;
@@ -185,16 +177,9 @@ namespace Core.Monads
 
       public IResult<T> ExceptionMessage(Func<Exception, string> message) => new Failure<T>(new FullStackException(message(exception), exception));
 
-      public bool HasValue => false;
-
       public bool Equals(Failure<T> other)
       {
-         if (other is null)
-         {
-            return false;
-         }
-
-         return ReferenceEquals(this, other) || Equals(exception, other.exception);
+         return other is not null && ReferenceEquals(this, other) || Equals(exception, other.exception);
       }
 
       public override bool Equals(object obj) => obj is Failure<T> other && Equals(other);

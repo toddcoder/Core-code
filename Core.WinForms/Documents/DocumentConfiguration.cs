@@ -30,9 +30,6 @@ namespace Core.WinForms.Documents
 
       public string Filter { get; }
 
-      public Document Document(Form form)
-      {
-         return new Document(form, TextBox, Extension, DocumentName, FontName, FontSize, DisplayFileName, Filter);
-      }
+      public Document Document(Form form) => new(form, TextBox, Extension, DocumentName, FontName, FontSize, DisplayFileName, Filter);
    }
 }

@@ -6,7 +6,6 @@ using Core.Computers;
 using Core.Dates;
 using Core.Exceptions;
 using Core.Monads;
-using Core.Objects;
 using Core.Strings;
 using static System.Convert;
 using static Core.Monads.MonadFunctions;
@@ -15,36 +14,21 @@ namespace Core.Data.DataSources
 {
    public class OleDbDataSource : DataSource
    {
-      protected OleDbType typeToOleDbType(Type type)
+      protected static OleDbType typeToOleDbType(Type type) => Type.GetTypeCode(type) switch
       {
-         switch (Type.GetTypeCode(type))
-         {
-            case TypeCode.Boolean:
-               return OleDbType.Boolean;
-            case TypeCode.Byte:
-               return OleDbType.UnsignedTinyInt;
-            case TypeCode.Char:
-               return OleDbType.Char;
-            case TypeCode.DateTime:
-               return OleDbType.DBTimeStamp;
-            case TypeCode.Decimal:
-               return OleDbType.Decimal;
-            case TypeCode.Double:
-               return OleDbType.Double;
-            case TypeCode.Int16:
-               return OleDbType.SmallInt;
-            case TypeCode.Int32:
-               return OleDbType.Integer;
-            case TypeCode.Int64:
-               return OleDbType.BigInt;
-            case TypeCode.Object:
-               return OleDbType.Variant;
-            case TypeCode.String:
-               return OleDbType.VarWChar;
-            default:
-               throw $"Doesn't support {type}".Throws();
-         }
-      }
+         TypeCode.Boolean => OleDbType.Boolean,
+         TypeCode.Byte => OleDbType.UnsignedTinyInt,
+         TypeCode.Char => OleDbType.Char,
+         TypeCode.DateTime => OleDbType.DBTimeStamp,
+         TypeCode.Decimal => OleDbType.Decimal,
+         TypeCode.Double => OleDbType.Double,
+         TypeCode.Int16 => OleDbType.SmallInt,
+         TypeCode.Int32 => OleDbType.Integer,
+         TypeCode.Int64 => OleDbType.BigInt,
+         TypeCode.Object => OleDbType.Variant,
+         TypeCode.String => OleDbType.VarWChar,
+         _ => throw $"Doesn't support {type}".Throws()
+      };
 
       protected IMaybe<FileName> associatedFile;
 
@@ -80,15 +64,9 @@ namespace Core.Data.DataSources
                parameter.Type = parameterType.Some();
             }
 
-            OleDbParameter oledbParameter;
-            if (parameter.Size.If(out var size))
-            {
-               oledbParameter = new OleDbParameter(parameter.Name, typeToOleDbType(parameterType), size);
-            }
-            else
-            {
-               oledbParameter = new OleDbParameter(parameter.Name, typeToDBType(parameterType));
-            }
+            var oledbParameter = parameter.Size
+               .Map(size => new OleDbParameter(parameter.Name, typeToOleDbType(parameterType), size))
+               .DefaultTo(() => new OleDbParameter(parameter.Name, typeToDBType(parameterType)));
 
             if (parameter.Output)
             {
@@ -109,7 +87,7 @@ namespace Core.Data.DataSources
             else
             {
                var value = parameter.GetValue(entity).Required($"Parameter {parameter.Name}'s value couldn't be determined");
-               if (value.IsNull() && parameter.Default.If(out var defaultValue))
+               if (value is null && parameter.Default.If(out var defaultValue))
                {
                   value = parameter.Type.Map(t => ChangeType(defaultValue, t)).DefaultTo(() => defaultValue);
                }

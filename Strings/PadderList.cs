@@ -8,7 +8,7 @@ namespace Core.Strings
 {
    public class PadderList
    {
-      static void allocate<T>(List<T> list, int index)
+      protected static void allocate<T>(List<T> list, int index)
       {
          if (index >= list.Count)
          {
@@ -19,9 +19,9 @@ namespace Core.Strings
          }
       }
 
-      class Row
+      protected class Row
       {
-         List<string> columns;
+         protected List<string> columns;
 
          public Row() => columns = new List<string>();
 
@@ -44,13 +44,13 @@ namespace Core.Strings
          }
       }
 
-      List<Row> rows;
-      List<int> lengths;
-      int currentIndex;
+      protected List<Row> rows;
+      protected List<int> lengths;
+      protected int currentIndex;
 
       public PadderList()
       {
-         rows = new List<Row> { new Row() };
+         rows = new List<Row> { new() };
          lengths = new List<int>();
          currentIndex = 0;
       }
@@ -83,22 +83,12 @@ namespace Core.Strings
          return rows.Select(row => row.Columns(lengths, padTypes).ToString(columnSeparator));
       }
 
-      static PadType[] getPadTypes(string source) => source.ToCharArray().Select(c =>
+      protected static PadType[] getPadTypes(string source) => source.ToCharArray().Select(c => c switch
       {
-         switch (c)
-         {
-            case 'L':
-            case 'l':
-               return PadType.Left;
-            case 'r':
-            case 'R':
-               return PadType.Right;
-            case 'c':
-            case 'C':
-               return PadType.Center;
-            default:
-               return PadType.Left;
-         }
+         'L' or 'l' => PadType.Left,
+         'r' or 'R' => PadType.Right,
+         'c' or 'C' => PadType.Center,
+         _ => PadType.Left
       }).ToArray();
 
       public IEnumerable<string> Lines(string columnSeparator, string padTypes)

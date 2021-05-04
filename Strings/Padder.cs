@@ -18,24 +18,17 @@ namespace Core.Strings
 
       public static string PadCenter(string source, int maximumLength, char padding = ' ') => source.PadCenter(maximumLength, padding);
 
-      public static string Pad(string text, PadType type, int maximumLength, char paddingCharacter = ' ')
+      public static string Pad(string text, PadType type, int maximumLength, char paddingCharacter = ' ') => type switch
       {
-         switch (type)
-         {
-            case PadType.Left:
-               return PadLeft(text, maximumLength, paddingCharacter);
-            case PadType.Right:
-               return PadRight(text, maximumLength, paddingCharacter);
-            case PadType.Center:
-               return PadCenter(text, maximumLength, paddingCharacter);
-            default:
-               return text;
-         }
-      }
+         PadType.Left => PadLeft(text, maximumLength, paddingCharacter),
+         PadType.Right => PadRight(text, maximumLength, paddingCharacter),
+         PadType.Center => PadCenter(text, maximumLength, paddingCharacter),
+         _ => text
+      };
 
       public static string Repeat(string text, int maximumLength) => text.Repeat(maximumLength);
 
-      int maximumLength;
+      protected int maximumLength;
 
       public Padder() => maximumLength = 0;
 

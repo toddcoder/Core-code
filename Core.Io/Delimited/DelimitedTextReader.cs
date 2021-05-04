@@ -15,7 +15,7 @@ namespace Core.Io.Delimited
       protected string[] fields;
       protected Buffer buffer;
       protected List<string> headers;
-      protected Hash<string, int> indexes;
+      protected StringHash<int> indexes;
       protected Hash<int, Func<string, object>> converters;
       protected bool hasConverters;
       protected bool emptyRecord;
@@ -27,7 +27,7 @@ namespace Core.Io.Delimited
          fields = new string[fieldCount];
          buffer = new Buffer(reader, bufferSize, delimiter);
          headers = new List<string>();
-         indexes = new Hash<string, int>();
+         indexes = new StringHash<int>(true);
          converters = new Hash<int, Func<string, object>>();
          hasConverters = false;
          emptyRecord = false;
@@ -50,7 +50,7 @@ namespace Core.Io.Delimited
 
       public void AddHeaders(params string[] inHeaders)
       {
-         foreach (var header in inHeaders.TakeWhile(header => headers.Count < fieldCount))
+         foreach (var header in inHeaders.TakeWhile(_ => headers.Count < fieldCount))
          {
             headers.Add(header);
          }
@@ -158,7 +158,7 @@ namespace Core.Io.Delimited
          return length;
       }
 
-      public Guid GetGuid(int i) => new Guid(fields[i]);
+      public Guid GetGuid(int i) => new(fields[i]);
 
       public short GetInt16(int i) => short.Parse(fields[i]);
 

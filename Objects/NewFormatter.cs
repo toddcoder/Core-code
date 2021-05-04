@@ -2,7 +2,7 @@
 {
    public class NewFormatter : IFormatter
    {
-      string format;
+      protected string format;
 
       public NewFormatter(string format) => this.format = format;
 

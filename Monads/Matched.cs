@@ -120,8 +120,6 @@ namespace Core.Monads
 
       public bool ValueEqualTo(T otherValue) => value.Equals(otherValue);
 
-      public IMatched<object> AsObject() => value.Matched<object>();
-
       public IMatched<TResult> CastAs<TResult>()
       {
          if (value is TResult result)
@@ -191,16 +189,9 @@ namespace Core.Monads
 
       public IMatched<T> Else(Action<Exception> action) => this;
 
-      public bool HasValue => true;
-
       public bool Equals(Matched<T> other)
       {
-         if (other is null)
-         {
-            return false;
-         }
-
-         return ReferenceEquals(this, other) || EqualityComparer<T>.Default.Equals(value, other.value);
+         return other is not null && ReferenceEquals(this, other) || EqualityComparer<T>.Default.Equals(value, other.value);
       }
 
       public override bool Equals(object obj) => obj is Matched<T> other && Equals(other);

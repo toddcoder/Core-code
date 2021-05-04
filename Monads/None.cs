@@ -18,8 +18,6 @@ namespace Core.Monads
 
       public T DefaultTo(Func<T> func) => func();
 
-      public TResult FlatMap<TResult>(Func<T, TResult> ifSome, Func<TResult> ifNone) => ifNone();
-
       public IMaybe<TResult> Map<TResult>(Func<T, TResult> ifSome) => none<TResult>();
 
       public IMaybe<TResult> Map<TResult>(Func<T, IMaybe<TResult>> ifSome) => none<TResult>();
@@ -62,13 +60,9 @@ namespace Core.Monads
 
       public bool ValueEqualTo(T otherValue) => false;
 
-      public IMaybe<object> AsObject() => none<object>();
-
       public IMaybe<TResult> CastAs<TResult>() => none<TResult>();
 
       public IMaybe<T> Where(Predicate<T> predicate) => this;
-
-      public bool HasValue => false;
 
       public bool Equals(None<T> other) => true;
 

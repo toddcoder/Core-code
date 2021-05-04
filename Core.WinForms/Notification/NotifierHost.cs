@@ -9,8 +9,7 @@ namespace Core.WinForms.Notification
       protected int x;
       protected Image iconImage;
 
-      public NotifierHost(int duration, string title, string text, object icon, Color leftColor, Color rightColor, Color titleColor,
-         Color textColor)
+      public NotifierHost(int duration, string title, string text, object icon, Color leftColor, Color rightColor, Color titleColor, Color textColor)
       {
          InitializeComponent();
 
@@ -23,15 +22,12 @@ namespace Core.WinForms.Notification
          panelRight.BackColor = rightColor;
          labelTitle.Text = title;
          labelMessage.Text = text;
-         switch (icon)
+         iconImage = icon switch
          {
-            case Image image:
-               iconImage = image;
-               break;
-            case string name:
-               iconImage = icons.Images[name];
-               break;
-         }
+            Image image => image,
+            string name => icons.Images[name],
+            _ => iconImage
+         };
 
          panelLeft.Image = iconImage;
 

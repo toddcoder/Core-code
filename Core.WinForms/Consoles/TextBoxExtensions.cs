@@ -16,7 +16,7 @@ namespace Core.WinForms.Consoles
       private const int SB_LINEDOWN = 1;
 
       [StructLayout(LayoutKind.Sequential)]
-      private struct Rect
+      private readonly struct Rect
       {
          public readonly int Left;
          public readonly int Top;
@@ -31,7 +31,9 @@ namespace Core.WinForms.Consoles
             Bottom = bottom;
          }
 
-         public Rect(Rectangle rectangle) : this(rectangle.Left, rectangle.Top, rectangle.Right, rectangle.Bottom) { }
+         public Rect(Rectangle rectangle) : this(rectangle.Left, rectangle.Top, rectangle.Right, rectangle.Bottom)
+         {
+         }
       }
 
       [DllImport("user32.dll")]
@@ -102,7 +104,8 @@ namespace Core.WinForms.Consoles
       public static void RestoreSelection(this TextBoxBase textBox, (int index, int length) selection,
          ScrollNearCaretType scrollType = ScrollNearCaretType.NoScroll)
       {
-         textBox.Select(selection.index, selection.length);
+         var (index, length) = selection;
+         textBox.Select(index, length);
          textBox.ScrollNearCaret(scrollType);
       }
 

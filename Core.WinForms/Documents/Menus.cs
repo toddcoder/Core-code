@@ -11,14 +11,14 @@ namespace Core.WinForms.Documents
 {
    public class Menus : IHash<string, ToolStripMenuItem>
    {
-      protected Hash<string, ToolStripItem> menuItems;
-      protected Hash<string, int> tabIndexes;
+      protected StringHash<ToolStripItem> menuItems;
+      protected StringHash<int> tabIndexes;
       protected int tabIndex;
 
       public Menus()
       {
-         menuItems = new Hash<string, ToolStripItem>();
-         tabIndexes = new Hash<string, int>();
+         menuItems = new StringHash<ToolStripItem>(true);
+         tabIndexes = new StringHash<int>(true);
          tabIndex = 0;
       }
 
@@ -97,7 +97,7 @@ namespace Core.WinForms.Documents
       public IMaybe<Delegate> ReplaceHandler(string parentText, string text, EventHandler handler) =>
          from submenus in Submenus(parentText)
          from item in submenus.Map(text)
-         from d in item.ClearEvent("Click").IfThen(d => item.Click += handler)
+         from d in item.ClearEvent("Click").IfThen(_ => item.Click += handler)
          select d;
 
       public void MenuSeparator(string parentText)
@@ -189,15 +189,15 @@ namespace Core.WinForms.Documents
 
       public void StandardContextEdit(Document document)
       {
-         ContextMenu("Undo", (sender, e) => document.Undo(), "^Z");
-         ContextMenu("Redo", (sender, e) => document.Redo());
+         ContextMenu("Undo", (_, _) => document.Undo(), "^Z");
+         ContextMenu("Redo", (_, _) => document.Redo());
          ContextMenuSeparator();
-         ContextMenu("Cut", (sender, e) => document.Cut(), "^X");
-         ContextMenu("Copy", (sender, e) => document.Copy(), "^C");
-         ContextMenu("Paste", (sender, e) => document.Paste(), "^V");
-         ContextMenu("Delete", (sender, e) => document.Delete());
+         ContextMenu("Cut", (_, _) => document.Cut(), "^X");
+         ContextMenu("Copy", (_, _) => document.Copy(), "^C");
+         ContextMenu("Paste", (_, _) => document.Paste(), "^V");
+         ContextMenu("Delete", (_, _) => document.Delete());
          ContextMenuSeparator();
-         ContextMenu("Select All", (sender, e) => document.SelectAll(), "^A");
+         ContextMenu("Select All", (_, _) => document.SelectAll(), "^A");
       }
 
       public ToolStripMenuItem this[string text] => (ToolStripMenuItem)menuItems[MenuName(text)];

@@ -1,4 +1,5 @@
 ﻿using Core.Monads;
+using Core.Strings;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.RegularExpressions.Parsers
@@ -21,7 +22,7 @@ namespace Core.RegularExpressions.Parsers
 
       public IMaybe<string> Scan(string source, ref int index)
       {
-         var input = source.Substring(index);
+         var input = source.Drop(index);
          if (matcher.IsMatch(input, Pattern))
          {
             var oldIndex = index;

@@ -5,77 +5,77 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Documents
 {
-	public class FreeMenus : Menus
-	{
-		public IMaybe<Document> Document { get; set; } = none<Document>();
+   public class FreeMenus : Menus
+   {
+      public IMaybe<Document> Document { get; set; } = none<Document>();
 
-		public IMaybe<Form> Form { get; set; } = none<Form>();
+      public IMaybe<Form> Form { get; set; } = none<Form>();
 
-		public IMaybe<EventHandler> SaveAll { get; set; } = none<EventHandler>();
+      public IMaybe<EventHandler> SaveAll { get; set; } = none<EventHandler>();
 
-		public void StandardContextEdit()
-		{
-			ContextMenu("Undo", (sender, e) => Document.IfThen(d => d.Undo()), "^Z");
-			ContextMenu("Redo", (sender, e) => Document.IfThen(d => d.Redo()));
-			ContextMenuSeparator();
-			ContextMenu("Cut", (sender, e) => Document.IfThen(d => d.Cut()), "^X");
-			ContextMenu("Copy", (sender, e) => Document.IfThen(d => d.Copy()), "^C");
-			ContextMenu("Paste", (sender, e) => Document.IfThen(d => d.Paste()), "^V");
-			ContextMenu("Delete", (sender, e) => Document.IfThen(d => d.Delete()));
-			ContextMenuSeparator();
-			ContextMenu("Select All", (sender, e) => Document.IfThen(d => d.SelectAll()), "^A");
-		}
+      public void StandardContextEdit()
+      {
+         ContextMenu("Undo", (_, _) => Document.IfThen(d => d.Undo()), "^Z");
+         ContextMenu("Redo", (_, _) => Document.IfThen(d => d.Redo()));
+         ContextMenuSeparator();
+         ContextMenu("Cut", (_, _) => Document.IfThen(d => d.Cut()), "^X");
+         ContextMenu("Copy", (_, _) => Document.IfThen(d => d.Copy()), "^C");
+         ContextMenu("Paste", (_, _) => Document.IfThen(d => d.Paste()), "^V");
+         ContextMenu("Delete", (_, _) => Document.IfThen(d => d.Delete()));
+         ContextMenuSeparator();
+         ContextMenu("Select All", (_, _) => Document.IfThen(d => d.SelectAll()), "^A");
+      }
 
-		public void StandardFileMenu()
-		{
-			Menu("&File");
-			Menu("File", "New...", (sender, e) => Document.IfThen(d => d.New()), "^N");
-			standardItems();
-		}
+      public void StandardFileMenu()
+      {
+         Menu("&File");
+         Menu("File", "New...", (_, _) => Document.IfThen(d => d.New()), "^N");
+         standardItems();
+      }
 
-		public void StandardFileMenu(EventHandler handler)
-		{
-			Menu("&File");
-			Menu("File", "New", handler, "^N");
-			standardItems();
-		}
+      public void StandardFileMenu(EventHandler handler)
+      {
+         Menu("&File");
+         Menu("File", "New", handler, "^N");
+         standardItems();
+      }
 
-		protected void standardItems()
-		{
-			Menu("File", "Open...", (sender, e) => Document.IfThen(d => d.Open()), "^O");
-			Menu("File", "Save", (sender, e) => Document.IfThen(d => d.Save()), "^S");
-			Menu("File", "Save As...", (sender, e) => Document.IfThen(d => d.SaveAs()));
-			SaveAll.IfThen(eh => Menu("File", "Save All", eh, "^|S"));
-			MenuSeparator("File");
-			Menu("File", "Exit", (sender, e) => Form.IfThen(f => f.Close()), "%F4");
-		}
+      protected void standardItems()
+      {
+         Menu("File", "Open...", (_, _) => Document.IfThen(d => d.Open()), "^O");
+         Menu("File", "Save", (_, _) => Document.IfThen(d => d.Save()), "^S");
+         Menu("File", "Save As...", (_, _) => Document.IfThen(d => d.SaveAs()));
+         SaveAll.IfThen(eh => Menu("File", "Save All", eh, "^|S"));
+         MenuSeparator("File");
+         Menu("File", "Exit", (_, _) => Form.IfThen(f => f.Close()), "%F4");
+      }
 
-		public void StandardEditMenu()
-		{
-			Menu("&Edit");
-			Menu("Edit", "Undo", (sender, e) => Document.IfThen(d => d.Undo()), "^Z");
-			Menu("Edit", "Redo", (sender, e) => Document.IfThen(d => d.Redo()));
-			MenuSeparator("Edit");
-			Menu("Edit", "Cut", (sender, e) => Document.IfThen(d => d.Cut()), "^X");
-			Menu("Edit", "Copy", (sender, e) => Document.IfThen(d => d.Copy()), "^C");
-			Menu("Edit", "Paste", (sender, e) => Document.IfThen(d => d.Paste()), "^V");
-			Menu("Edit", "Delete", (sender, e) => Document.IfThen(d => d.Delete()));
-			MenuSeparator("Edit");
-			Menu("Edit", "Select All", (sender, e) => Document.IfThen(d => d.SelectAll()), "^A");
-		}
+      public void StandardEditMenu()
+      {
+         Menu("&Edit");
+         Menu("Edit", "Undo", (_, _) => Document.IfThen(d => d.Undo()), "^Z");
+         Menu("Edit", "Redo", (_, _) => Document.IfThen(d => d.Redo()));
+         MenuSeparator("Edit");
+         Menu("Edit", "Cut", (_, _) => Document.IfThen(d => d.Cut()), "^X");
+         Menu("Edit", "Copy", (_, _) => Document.IfThen(d => d.Copy()), "^C");
+         Menu("Edit", "Paste", (_, _) => Document.IfThen(d => d.Paste()), "^V");
+         Menu("Edit", "Delete", (_, _) => Document.IfThen(d => d.Delete()));
+         MenuSeparator("Edit");
+         Menu("Edit", "Select All", (_, _) => Document.IfThen(d => d.SelectAll()), "^A");
+      }
 
-		public void StandardMenus()
-		{
-			StandardFileMenu();
-			StandardEditMenu();
-		}
+      public void StandardMenus()
+      {
+         StandardFileMenu();
+         StandardEditMenu();
+      }
 
-		public void StandardMenus(EventHandler fileNewHandler)
-		{
-			StandardFileMenu(fileNewHandler);
-			StandardEditMenu();
-		}
+      public void StandardMenus(EventHandler fileNewHandler)
+      {
+         StandardFileMenu(fileNewHandler);
+         StandardEditMenu();
+      }
 
-		public void RenderMainMenu() => Form.IfThen(CreateMainMenu);
-	}
+      public void RenderMainMenu() => Form.IfThen(CreateMainMenu);
+   }
 }

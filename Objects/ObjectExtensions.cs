@@ -16,13 +16,27 @@ namespace Core.Objects
    {
       public static bool IsNullable(this Type type) => type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
 
+      public static bool AnyNull(this ITuple tuple)
+      {
+         for (var i = 0; i < tuple.Length; i++)
+         {
+            if (tuple[i] is null)
+            {
+               return true;
+            }
+         }
+
+         return false;
+      }
+
+      [Obsolete("Use is null construct")]
       public static bool IsNull<T>(this T obj)
       {
          if (obj is ITuple tuple)
          {
             for (var i = 0; i < tuple.Length; i++)
             {
-               if (tuple[i].IsNull())
+               if (tuple[i] is null)
                {
                   return true;
                }
@@ -36,7 +50,8 @@ namespace Core.Objects
          }
       }
 
-      public static bool IsNotNull<T>(this T obj) => !obj.IsNull();
+      [Obsolete("Use is not null construct")]
+      public static bool IsNotNull<T>(this T obj) => obj is not null;
 
       public static Type UnderlyingType(this Type type) => type.IsNullable() ? Nullable.GetUnderlyingType(type) : type;
 

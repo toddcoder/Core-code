@@ -32,7 +32,7 @@ namespace Core.Strings.Text
 
       protected override bool equals(object other)
       {
-         return other is DifferenceItem otherDiffItem && Position.HasValue == otherDiffItem.Position.HasValue && subItemsEqual(otherDiffItem);
+         return other is DifferenceItem otherDiffItem && Position.IsSome == otherDiffItem.Position.IsSome && subItemsEqual(otherDiffItem);
       }
 
       [Equatable]

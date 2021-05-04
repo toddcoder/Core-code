@@ -2,7 +2,7 @@
 
 namespace Core.Monads
 {
-   public interface IMatched<T> : IHasValue
+   public interface IMatched<T>
    {
       bool IsMatched { get; }
 
@@ -82,9 +82,6 @@ namespace Core.Monads
       bool EqualToValueOf(IMatched<T> otherMatched);
 
       bool ValueEqualTo(T otherValue);
-
-      [Obsolete("Use CastAs<object>()")]
-      IMatched<object> AsObject();
 
       IMatched<TResult> CastAs<TResult>();
 

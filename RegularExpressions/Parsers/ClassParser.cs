@@ -7,7 +7,7 @@ namespace Core.RegularExpressions.Parsers
 {
    public class ClassParser : BaseParser
    {
-      List<BaseParser> parsers;
+      protected List<BaseParser> parsers;
 
       public ClassParser() => parsers = new List<BaseParser>
       {

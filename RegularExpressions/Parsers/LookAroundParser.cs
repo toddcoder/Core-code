@@ -11,15 +11,13 @@ namespace Core.RegularExpressions.Parsers
       {
          var negative = tokens[1] == "-";
          var type = tokens[2];
-         switch (type)
+
+         return type switch
          {
-            case ">":
-               return (negative ? "(?!" : "(?=").Some();
-            case "<":
-               return (negative ? "(?<!" : "(?<=").Some();
-            default:
-               return none<string>();
-         }
+            ">" => (negative ? "(?!" : "(?=").Some(),
+            "<" => (negative ? "(?<!" : "(?<=").Some(),
+            _ => none<string>()
+         };
       }
    }
 }

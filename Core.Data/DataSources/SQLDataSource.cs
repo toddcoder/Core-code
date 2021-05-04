@@ -8,7 +8,6 @@ using Core.Collections;
 using Core.Dates.DateIncrements;
 using Core.Enumerables;
 using Core.Monads;
-using Core.Objects;
 using Core.Strings;
 using static System.Convert;
 using static Core.Monads.MonadFunctions;
@@ -66,7 +65,7 @@ namespace Core.Data.DataSources
             else
             {
                var value = parameter.GetValue(entity).Required($"Parameter {parameter.Name}'s value couldn't be determined");
-               if (value.IsNull() && parameter.Default.If(out var defaultValue))
+               if (value is null && parameter.Default.If(out var defaultValue))
                {
                   value = parameter.Type.Map(t => ChangeType(defaultValue, t)).DefaultTo(() => defaultValue);
                }
@@ -85,40 +84,24 @@ namespace Core.Data.DataSources
          }
       }
 
-      protected static SqlDbType typeToSqlType(Type type)
+      protected static SqlDbType typeToSqlType(Type type) => type.Name switch
       {
-         switch (type.Name)
-         {
-            case "Int64":
-               return SqlDbType.BigInt;
-            case "Byte[]":
-               return SqlDbType.Binary;
-            case "Boolean":
-               return SqlDbType.Bit;
-            case "String":
-               return SqlDbType.VarChar;
-            case "DateTime":
-               return SqlDbType.DateTime;
-            case "Decimal":
-               return SqlDbType.Decimal;
-            case "Double":
-               return SqlDbType.Float;
-            case "Int32":
-               return SqlDbType.Int;
-            case "Single":
-               return SqlDbType.Real;
-            case "Int16":
-               return SqlDbType.SmallInt;
-            case "Byte":
-               return SqlDbType.TinyInt;
-            case "Guid":
-               return SqlDbType.UniqueIdentifier;
-            default:
-               return SqlDbType.Variant;
-         }
-      }
+         "Int64" => SqlDbType.BigInt,
+         "Byte[]" => SqlDbType.Binary,
+         "Boolean" => SqlDbType.Bit,
+         "String" => SqlDbType.VarChar,
+         "DateTime" => SqlDbType.DateTime,
+         "Decimal" => SqlDbType.Decimal,
+         "Double" => SqlDbType.Float,
+         "Int32" => SqlDbType.Int,
+         "Single" => SqlDbType.Real,
+         "Int16" => SqlDbType.SmallInt,
+         "Byte" => SqlDbType.TinyInt,
+         "Guid" => SqlDbType.UniqueIdentifier,
+         _ => SqlDbType.Variant
+      };
 
-      protected Hash<string, string> attributes;
+      protected StringHash<string> attributes;
       protected long recordCount;
 
       public event SqlInfoMessageEventHandler Message;
@@ -126,7 +109,7 @@ namespace Core.Data.DataSources
       public SqlDataSource(string connectionString, TimeSpan timeout) : base(connectionString, timeout)
       {
          CommandTimeout = timeout;
-         attributes = new Hash<string, string>();
+         attributes = new StringHash<string>(true);
          recordCount = 0;
       }
 
@@ -163,7 +146,8 @@ namespace Core.Data.DataSources
       }
 
       public bool ContainsKey(string key) => attributes.ContainsKey(key);
-      public IResult<Hash<string, string>> AnyHash() => attributes.Success();
+
+      public IResult<Hash<string, string>> AnyHash() => attributes.Success<Hash<string, string>>();
 
       public override IDbConnection GetConnection()
       {
@@ -194,17 +178,17 @@ namespace Core.Data.DataSources
       public DataSet DataSet(object entity, string command, Parameters.Parameters parameters)
       {
          var dataSet = new DataSet();
+         using var sqlConnection = new SqlConnection(ConnectionString);
+         using var sqlCommand = new SqlCommand(command, sqlConnection);
 
-         using (var sqlConnection = new SqlConnection(ConnectionString))
-         using (var sqlCommand = new SqlCommand(command, sqlConnection))
-         {
-            sqlConnection.Open();
-            var adapter = new SqlDataAdapter { SelectCommand = sqlCommand };
-            Command = sqlCommand.Some<IDbCommand>();
-            changeCommandType(adapter.SelectCommand, command);
-            addCommandParameters(entity, parameters);
-            adapter.Fill(dataSet);
-         }
+         sqlConnection.Open();
+
+         var adapter = new SqlDataAdapter { SelectCommand = sqlCommand };
+         Command = sqlCommand.Some<IDbCommand>();
+
+         changeCommandType(adapter.SelectCommand, command);
+         addCommandParameters(entity, parameters);
+         adapter.Fill(dataSet);
 
          return dataSet;
       }

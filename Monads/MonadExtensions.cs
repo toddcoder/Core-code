@@ -14,13 +14,13 @@ namespace Core.Monads
 {
    public static class MonadExtensions
    {
-      public static IMaybe<T> Some<T>(this T obj) => obj.IsNull() ? none<T>() : new Some<T>(obj);
+      public static IMaybe<T> Some<T>(this T obj) => obj is null ? none<T>() : new Some<T>(obj);
 
       public static bool NotNull<T>(this T obj, out T value) => obj.Some().If(out value);
 
       public static IMaybe<Type> UnderlyingType(this object obj)
       {
-         if (obj.IsNull())
+         if (obj is null)
          {
             return none<Type>();
          }
@@ -81,7 +81,7 @@ namespace Core.Monads
          return maybe.IsSome;
       }
 
-      public static IResult<T> Success<T>(this T value) => value.IsNull() ? "Value cannot be null".Failure<T>() : new Success<T>(value);
+      public static IResult<T> Success<T>(this T value) => value is null ? "Value cannot be null".Failure<T>() : new Success<T>(value);
 
       public static IResult<T> Failure<T>(this string message) => failure<T>(new Exception(message));
 
@@ -93,14 +93,11 @@ namespace Core.Monads
          return failure<T>((TException)typeof(TException).Create(list.ToArray()));
       }
 
-      public static IMatched<T> Matched<T>(this T matches) => matches.IsNull() ? "Matches cannot be null".FailedMatch<T>() : new Matched<T>(matches);
+      public static IMatched<T> Matched<T>(this T matches) => matches is null ? "Matches cannot be null".FailedMatch<T>() : new Matched<T>(matches);
 
-      public static IMatched<T> MatchedUnlessNull<T>(this T obj) => obj.IsNull() ? notMatched<T>() : obj.Matched();
+      public static IMatched<T> MatchedUnlessNull<T>(this T obj) => obj is null ? notMatched<T>() : obj.Matched();
 
-      public static IMatched<T> FailedMatch<T>(this string message)
-      {
-         return new FailedMatch<T>(new ApplicationException(message));
-      }
+      public static IMatched<T> FailedMatch<T>(this string message) => new FailedMatch<T>(new ApplicationException(message));
 
       public static IMatched<T> FailedMatch<T, TException>(this object firstItem, params object[] args) where TException : Exception
       {
@@ -229,7 +226,8 @@ namespace Core.Monads
          }
       }
 
-      public static IEnumerable<(T item, TResult result)> WhereIsSuccessful<T, TResult>(this IEnumerable<T> enumerable, Func<T, IResult<TResult>> predicate)
+      public static IEnumerable<(T item, TResult result)> WhereIsSuccessful<T, TResult>(this IEnumerable<T> enumerable,
+         Func<T, IResult<TResult>> predicate)
       {
          foreach (var item in enumerable)
          {
@@ -251,7 +249,8 @@ namespace Core.Monads
          }
       }
 
-      public static IEnumerable<(T item, TMatched matched)> WhereIsMatched<T, TMatched>(this IEnumerable<T> enumerable, Func<T, IMatched<TMatched>> predicate)
+      public static IEnumerable<(T item, TMatched matched)> WhereIsMatched<T, TMatched>(this IEnumerable<T> enumerable,
+         Func<T, IMatched<TMatched>> predicate)
       {
          foreach (var item in enumerable)
          {
@@ -450,40 +449,39 @@ namespace Core.Monads
 
       public static void ForEach<T>(this IEnumerable<T> enumerable, Action<T> ifSuccess, Action<Exception> ifFailure)
       {
-         using (var enumerator = enumerable.GetEnumerator())
-         {
-            while (true)
-            {
-               var movedNext = false;
-               var value = default(T);
-               try
-               {
-                  movedNext = enumerator.MoveNext();
-                  if (movedNext)
-                  {
-                     value = enumerator.Current;
-                  }
-                  else
-                  {
-                     break;
-                  }
-               }
-               catch (Exception exception)
-               {
-                  ifFailure(exception);
-               }
+         using var enumerator = enumerable.GetEnumerator();
 
-               try
+         while (true)
+         {
+            var movedNext = false;
+            var value = default(T);
+            try
+            {
+               movedNext = enumerator.MoveNext();
+               if (movedNext)
                {
-                  if (movedNext)
-                  {
-                     ifSuccess(value);
-                  }
+                  value = enumerator.Current;
                }
-               catch (Exception exception)
+               else
                {
-                  ifFailure(exception);
+                  break;
                }
+            }
+            catch (Exception exception)
+            {
+               ifFailure(exception);
+            }
+
+            try
+            {
+               if (movedNext)
+               {
+                  ifSuccess(value);
+               }
+            }
+            catch (Exception exception)
+            {
+               ifFailure(exception);
             }
          }
       }
@@ -1312,7 +1310,7 @@ namespace Core.Monads
          }
       }
 
-      public static ICompletion<T> Completed<T>(this T value) => value.IsNull() ? "value cannot be null".Interrupted<T>() : new Completed<T>(value);
+      public static ICompletion<T> Completed<T>(this T value) => value is null ? "value cannot be null".Interrupted<T>() : new Completed<T>(value);
 
       public static ICompletion<T> Completed<T>(this T value, CancellationToken token)
       {
@@ -1360,33 +1358,27 @@ namespace Core.Monads
          return maybe.Map(v => v.Completed(token)).DefaultTo(cancelled<T>);
       }
 
-      private static ICompletion<T> cancelledOrInterrupted<T>(Exception exception)
+      private static ICompletion<T> cancelledOrInterrupted<T>(Exception exception) => exception switch
       {
-         switch (exception)
-         {
-            case OperationCanceledException _:
-            case ObjectDisposedException _:
-               return cancelled<T>();
-            case FullStackException fullStackException
-               when fullStackException.InnerException != null && !(fullStackException.InnerException is FullStackException):
-               return cancelledOrInterrupted<T>(fullStackException.InnerException);
-            default:
-               return interrupted<T>(exception);
-         }
-      }
+         OperationCanceledException => cancelled<T>(),
+         ObjectDisposedException => cancelled<T>(),
+         FullStackException { InnerException: { } and not FullStackException } fullStackException => cancelledOrInterrupted<T>(fullStackException
+            .InnerException),
+         _ => interrupted<T>(exception)
+      };
 
       public static async Task<ICompletion<T3>> SelectMany<T1, T2, T3>(this Task<ICompletion<T1>> source, Func<T1, Task<ICompletion<T2>>> func,
          Func<T1, T2, T3> projection)
       {
          var t = await source;
-         if (t.If(out var tValue, out var anyException))
+         if (t.If(out var tValue, out var _exception))
          {
             var u = await func(tValue);
-            if (u.If(out var uValue, out anyException))
+            if (u.If(out var uValue, out _exception))
             {
                return projection(tValue, uValue).Completed();
             }
-            else if (anyException.If(out var exception))
+            else if (_exception.If(out var exception))
             {
                return cancelledOrInterrupted<T3>(exception);
             }
@@ -1395,7 +1387,7 @@ namespace Core.Monads
                return cancelled<T3>();
             }
          }
-         else if (anyException.If(out var exception))
+         else if (_exception.If(out var exception))
          {
             return cancelledOrInterrupted<T3>(exception);
          }
@@ -1407,11 +1399,11 @@ namespace Core.Monads
 
       public static IResult<T> Result<T>(this ICompletion<T> completion)
       {
-         if (completion.If(out var value, out var anyException))
+         if (completion.If(out var value, out var _exception))
          {
             return value.Success();
          }
-         else if (anyException.If(out var exception))
+         else if (_exception.If(out var exception))
          {
             return failure<T>(exception);
          }
@@ -1424,68 +1416,39 @@ namespace Core.Monads
       public static IMaybe<T> MaxOrNone<T>(this IEnumerable<T> enumerable)
       {
          var array = enumerable.ToArray();
-         if (array.Length == 0)
-         {
-            return none<T>();
-         }
-         else
-         {
-            return array.Max().Some();
-         }
+         return maybe(array.Length > 0, () => array.Max());
       }
 
       public static IMaybe<T> MaxOrNone<T, TMax>(this IEnumerable<T> enumerable, Func<T, TMax> maxOnFunc)
       {
          var array = enumerable.ToArray();
-         if (array.Length == 0)
-         {
-            return none<T>();
-         }
-         else
+         return maybe(array.Length > 0, () =>
          {
             var max = array.Select((v, i) => (v: maxOnFunc(v), i)).Max();
-            return array[max.i].Some();
-         }
+            return array[max.i];
+         });
       }
 
       public static IMaybe<T> MinOrNone<T>(this IEnumerable<T> enumerable)
       {
          var array = enumerable.ToArray();
-         if (array.Length == 0)
-         {
-            return none<T>();
-         }
-         else
-         {
-            return array.Min().Some();
-         }
+         return maybe(array.Length > 0, () => array.Min());
       }
 
       public static IMaybe<T> MinOrNone<T, TMin>(this IEnumerable<T> enumerable, Func<T, TMin> minOnFunc)
       {
          var array = enumerable.ToArray();
-         if (array.Length == 0)
-         {
-            return none<T>();
-         }
-         else
+         return maybe(array.Length > 0, () =>
          {
             var min = array.Select((v, i) => (v: minOnFunc(v), i)).Min();
-            return array[min.i].Some();
-         }
+            return array[min.i];
+         });
       }
 
       public static IResult<T> MaxOrFail<T>(this IEnumerable<T> enumerable, Func<string> exceptionMessage) => tryTo(() =>
       {
          var array = enumerable.ToArray();
-         if (array.Length == 0)
-         {
-            return exceptionMessage().Failure<T>();
-         }
-         else
-         {
-            return array.Max().Success();
-         }
+         return assert(array.Length > 0, () => array.Max(), exceptionMessage);
       });
 
       public static IResult<T> MaxOrFail<T, TMax>(this IEnumerable<T> enumerable, Func<T, TMax> maxOnFunc, Func<string> exceptionMessage)
@@ -1493,29 +1456,18 @@ namespace Core.Monads
          return tryTo(() =>
          {
             var array = enumerable.ToArray();
-            if (array.Length == 0)
-            {
-               return exceptionMessage().Failure<T>();
-            }
-            else
+            return assert(array.Length > 0, () =>
             {
                var max = array.Select((v, i) => (v: maxOnFunc(v), i)).Max();
-               return array[max.i].Success();
-            }
+               return array[max.i];
+            }, exceptionMessage);
          });
       }
 
       public static IResult<T> MinOrFail<T>(this IEnumerable<T> enumerable, Func<string> exceptionMessage) => tryTo(() =>
       {
          var array = enumerable.ToArray();
-         if (array.Length == 0)
-         {
-            return exceptionMessage().Failure<T>();
-         }
-         else
-         {
-            return array.Min().Success();
-         }
+         return assert(array.Length > 0, () => array.Min(), exceptionMessage);
       });
 
       public static IResult<T> MinOrFail<T, TMin>(this IEnumerable<T> enumerable, Func<T, TMin> minOnFunc, Func<string> exceptionMessage)
@@ -1523,70 +1475,44 @@ namespace Core.Monads
          return tryTo(() =>
          {
             var array = enumerable.ToArray();
-            if (array.Length == 0)
-            {
-               return exceptionMessage().Failure<T>();
-            }
-            else
+            return assert(array.Length > 0, () =>
             {
                var min = array.Select((v, i) => (v: minOnFunc(v), i)).Min();
-               return array[min.i].Success();
-            }
+               return array[min.i];
+            }, exceptionMessage);
          });
       }
 
       public static IMatched<T> MaxOrNotMatched<T>(this IEnumerable<T> enumerable)
       {
          var array = enumerable.ToArray();
-         if (array.Length == 0)
-         {
-            return notMatched<T>();
-         }
-         else
-         {
-            return array.Max().Matched();
-         }
+         return isMatched(array.Length > 0, () => array.Max());
       }
 
       public static IMatched<T> maxOrNotMatched<T, TMax>(this IEnumerable<T> enumerable, Func<T, TMax> maxOnFunc)
       {
          var array = enumerable.ToArray();
-         if (array.Length == 0)
-         {
-            return notMatched<T>();
-         }
-         else
+         return isMatched(array.Length > 0, () =>
          {
             var max = array.Select((v, i) => (v: maxOnFunc(v), i)).Max();
-            return array[max.i].Matched();
-         }
+            return array[max.i];
+         });
       }
 
       public static IMatched<T> minOrNotMatched<T>(this IEnumerable<T> enumerable)
       {
          var array = enumerable.ToArray();
-         if (array.Length == 0)
-         {
-            return notMatched<T>();
-         }
-         else
-         {
-            return array.Min().Matched();
-         }
+         return isMatched(array.Length > 0, () => array.Min());
       }
 
       public static IMatched<T> minOrNotMatched<T, TMin>(this IEnumerable<T> enumerable, Func<T, TMin> minOnFunc)
       {
          var array = enumerable.ToArray();
-         if (array.Length == 0)
+         return isMatched(array.Length > 0, () =>
          {
-            return notMatched<T>();
-         }
-         else
-         {
-            var min = array.Select((v, i) => (v: minOnFunc(v), i)).Min();
-            return array[min.i].Matched();
-         }
+            var min = array.Select((v, i) => (v: minOnFunc(v), i)).Max();
+            return array[min.i];
+         });
       }
 
       public static IMaybe<TResult> Map<T1, T2, TResult>(this IMaybe<(T1, T2)> maybe, Func<T1, T2, TResult> func)

@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Core.Arrays;
+using Core.Assertions;
 using Core.Collections;
-using Core.Exceptions;
 using Core.Monads;
 using Core.Numbers;
 using Core.RegularExpressions.Parsers;
@@ -21,7 +21,7 @@ namespace Core.RegularExpressions
    {
       public class Group
       {
-         public static Group Empty => new Group { Index = -1, Length = 0, Text = "", Which = -1 };
+         public static Group Empty => new() { Index = -1, Length = 0, Text = "", Which = -1 };
 
          public int Index { get; set; }
 
@@ -85,7 +85,7 @@ namespace Core.RegularExpressions
          variables = new Hash<string, string>();
       }
 
-      internal static string getPattern(string source) => friendlyPatterns.Find(source, pattern => new Parser().Parse(source), true);
+      internal static string getPattern(string source) => friendlyPatterns.Find(source, _ => new Parser().Parse(source), true);
 
       public static void SetVariable(string variableName, string pattern) => variables[variableName] = pattern;
 
@@ -94,7 +94,7 @@ namespace Core.RegularExpressions
       protected bool friendly;
       protected Match[] matches;
       protected Hash<int, string> indexesToNames;
-      protected Hash<string, int> namesToIndexes;
+      protected StringHash<int> namesToIndexes;
       protected Slicer slicer;
 
       public Matcher(bool friendly = true)
@@ -103,8 +103,9 @@ namespace Core.RegularExpressions
 
          matches = new Match[0];
          indexesToNames = new Hash<int, string>();
-         namesToIndexes = new Hash<string, int>();
+         namesToIndexes = new StringHash<int>(true);
          slicer = new Slicer("");
+         Pattern = string.Empty;
       }
 
       public string Pattern { get; set; }
@@ -365,13 +366,13 @@ namespace Core.RegularExpressions
       {
          get
          {
-            var index = IndexFromName(groupName);
-            return this[matchIndex, index.Required($"Group name {groupName} doesn't exist")];
+            var index = IndexFromName(groupName).Required($"Group name {groupName} doesn't exist");
+            return this[matchIndex, index];
          }
          set
          {
-            var index = IndexFromName(groupName);
-            this[matchIndex, index.Required($"Group name {groupName} doesn't exist")] = value;
+            var index = IndexFromName(groupName).Required($"Group name {groupName} doesn't exist");
+            this[matchIndex, index] = value;
          }
       }
 
@@ -414,14 +415,10 @@ namespace Core.RegularExpressions
 
       protected static Group getGroup(Match match, int groupIndex)
       {
-         if (groupIndex.Between(0).Until(match.Groups.Length))
-         {
-            return match.Groups[groupIndex];
-         }
-         else
-         {
-            throw $"groupIndex must be >= 0 and < {match.Groups.Length}; found value {groupIndex}".Throws();
-         }
+         string messageFunc() => $"groupIndex must be >= 0 and < {match.Groups.Length}; found value {groupIndex}";
+
+         groupIndex.Must().BeBetween(0).Until(match.Groups.Length).OrThrow(messageFunc);
+         return match.Groups[groupIndex];
       }
 
       protected static IMaybe<Group> getGroupMaybe(IMaybe<Match> match, int index)
@@ -431,14 +428,10 @@ namespace Core.RegularExpressions
 
       protected Match getMatch(int matchIndex)
       {
-         if (matchIndex.Between(0).Until(matches.Length))
-         {
-            return matches[matchIndex];
-         }
-         else
-         {
-            throw $"matchIndex must be >= 0 and < {matches.Length}; found value {matchIndex}".Throws();
-         }
+         string messageFunc() => $"matchIndex must be >= 0 and < {matches.Length}; found value {matchIndex}";
+
+         matchIndex.Must().BeBetween(0).Until(matches.Length).OrThrow(messageFunc);
+         return matches[matchIndex];
       }
 
       protected IMaybe<Match> getMatchMaybe(int index) => maybe(index.Between(0).Until(matches.Length), () => matches[index]);
@@ -570,7 +563,21 @@ namespace Core.RegularExpressions
          return hash;
       }
 
-      public MatcherTrying TryTo => new MatcherTrying(this);
+      public StringHash<string> ToStringHash(bool ignoreCase)
+      {
+         var hash = new StringHash<string>(ignoreCase);
+         for (var i = 0; i < GroupCount(0); i++)
+         {
+            if (indexesToNames.If(i, out var name))
+            {
+               hash[name] = this[0, 1];
+            }
+         }
+
+         return hash;
+      }
+
+      public MatcherTrying TryTo => new(this);
 
       public IEnumerable<Match> Matched(string input, string pattern, bool ignoreCase = false, bool multiline = false)
       {

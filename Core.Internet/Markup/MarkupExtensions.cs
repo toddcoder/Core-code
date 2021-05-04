@@ -17,10 +17,9 @@ namespace Core.Internet.Markup
       private static IResult<string> fromStream(Stream stream, Encoding encoding) => tryTo(() =>
       {
          stream.Position = 0;
-         using (var reader = new StreamReader(stream, encoding))
-         {
-            return reader.ReadToEnd();
-         }
+         using var reader = new StreamReader(stream, encoding);
+
+         return reader.ReadToEnd();
       });
 
       public static string Tidy(this string markup, Encoding encoding, bool includeHeader = true, char quoteChar = '"')
@@ -32,29 +31,24 @@ namespace Core.Internet.Markup
          document.LoadXml(markup);
          document.LoadXml(document.OuterXml.Substitute(REGEX_EMPTY_ELEMENT, TEXT_EMPTY_ELEMENT));
 
-         using (var stream = new MemoryStream())
-         using (var writer = new XmlTextWriter(stream, encoding))
+         using var stream = new MemoryStream();
+         using var writer = new XmlTextWriter(stream, encoding) { Formatting = Formatting.Indented, Indentation = 3, QuoteChar = quoteChar };
+
+         document.Save(writer);
+
+         if (fromStream(stream, encoding).If(out var text))
          {
-            writer.Formatting = Formatting.Indented;
-            writer.Indentation = 3;
-            writer.QuoteChar = quoteChar;
-
-            document.Save(writer);
-
-            if (fromStream(stream, encoding).If(out var r))
-            {
-               return includeHeader ? r : r.Substitute(REGEX_HEADER, string.Empty, false, true).Trim();
-            }
-            else
-            {
-               return string.Empty;
-            }
+            return includeHeader ? text : text.Substitute(REGEX_HEADER, string.Empty, false, true).Trim();
+         }
+         else
+         {
+            return string.Empty;
          }
       }
 
       public static string Tidy(this string markup, bool includeHeader) => Tidy(markup, Encoding.UTF8, includeHeader);
 
-      public static string Sgmlify(this string text)
+      public static string ToMarkup(this string text)
       {
          text.Must().Not.BeNullOrEmpty().OrThrow();
 
@@ -67,7 +61,7 @@ namespace Core.Internet.Markup
          return text;
       }
 
-      public static string UnSgmlify(this string text)
+      public static string FromMarkup(this string text)
       {
          text.Must().Not.BeNullOrEmpty().OrThrow();
 
@@ -80,11 +74,11 @@ namespace Core.Internet.Markup
          return text;
       }
 
-      public static string Simplify(this string sgml)
+      public static string Simplify(this string markup)
       {
-         sgml.Must().Not.BeNullOrEmpty().OrThrow();
+         markup.Must().Not.BeNullOrEmpty().OrThrow();
 
-         return sgml
+         return markup
             .Substitute("/s+ /w+ ':' /w '=' [dquote] -[dquote]+ [dquote]", "")
             .Substitute("/s+ 'xmlns=' [dquote] -[dquote]+ [dquote]", "");
       }

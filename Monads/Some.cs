@@ -18,8 +18,6 @@ namespace Core.Monads
 
       public T DefaultTo(Func<T> func) => value;
 
-      public TResult FlatMap<TResult>(Func<T, TResult> ifSome, Func<TResult> ifNone) => ifSome(value);
-
       public IMaybe<TResult> Map<TResult>(Func<T, TResult> ifSome) => ifSome(value).Some();
 
       public IMaybe<TResult> Map<TResult>(Func<T, IMaybe<TResult>> ifSome) => ifSome(value);
@@ -74,8 +72,6 @@ namespace Core.Monads
 
       public bool ValueEqualTo(T otherValue) => value.Equals(otherValue);
 
-      public IMaybe<object> AsObject() => value.Some<object>();
-
       public IMaybe<TResult> CastAs<TResult>()
       {
          if (value is TResult result)
@@ -94,12 +90,7 @@ namespace Core.Monads
 
       public bool Equals(Some<T> other)
       {
-         if (other is null)
-         {
-            return false;
-         }
-
-         return ReferenceEquals(this, other) || EqualityComparer<T>.Default.Equals(value, other.value);
+         return other is not null && ReferenceEquals(this, other) || EqualityComparer<T>.Default.Equals(value, other.value);
       }
 
       public override bool Equals(object obj) => obj is Some<T> other && Equals(other);

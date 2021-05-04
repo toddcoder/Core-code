@@ -9,51 +9,28 @@ namespace Core.RegularExpressions.Parsers
       public override string Pattern => @"^\s*\b(alpha|digit|alnum|blank|cntrl|graph|lower|upper|print|punct|space|" +
          @"xdigit|lcon|ucon|lvow|uvow|squote|dquote|quote)\b";
 
-      public override IMaybe<string> Parse(string source, ref int index)
+      public override IMaybe<string> Parse(string source, ref int index) => tokens[1] switch
       {
-         switch (tokens[1])
-         {
-            case "alpha":
-               return "a-zA-Z".Some();
-            case "digit":
-               return "0-9".Some();
-            case "alnum":
-               return "a-zA-Z0-9".Some();
-            case "blank":
-               return " \t".Some();
-            case "cntrl":
-               return new string(Enumerable.Range(0, 32).Select(i => (char)i).ToArray()).Escape(false).Some();
-            case "graph":
-               return new string(Enumerable.Range(0, 256).Where(i => i != 32).Select(i => (char)i).ToArray()).Escape(false).Some();
-            case "lower":
-               return "a-z".Some();
-            case "upper":
-               return "A-Z".Some();
-            case "print":
-               return new string(Enumerable.Range(0, 256).Select(i => (char)i).ToArray()).Escape(false).Some();
-            case "punct":
-               return "~`!@#$%^&*()_+=[]{}:;\"'<>,./?\\-".Escape(false).Some();
-            case "space":
-               return " /t/r/n".Some();
-            case "xdigit":
-               return "0-9a-fA-F".Some();
-            case "lcon":
-               return "bcdfghjklmnpqrstvwxyz".Some();
-            case "ucon":
-               return "BCDFGHJKLMNPQRSTVWXYZ".Some();
-            case "lvow":
-               return "aeiou".Some();
-            case "uvow":
-               return "AEIOU".Some();
-            case "squote":
-               return "'".Some();
-            case "dquote":
-               return "\"".Some();
-            case "quote":
-               return "'\"".Some();
-            default:
-               return none<string>();
-         }
-      }
+         "alpha" => "a-zA-Z".Some(),
+         "digit" => "0-9".Some(),
+         "alnum" => "a-zA-Z0-9".Some(),
+         "blank" => " \t".Some(),
+         "cntrl" => new string(Enumerable.Range(0, 32).Select(i => (char)i).ToArray()).Escape(false).Some(),
+         "graph" => new string(Enumerable.Range(0, 256).Where(i => i != 32).Select(i => (char)i).ToArray()).Escape(false).Some(),
+         "lower" => "a-z".Some(),
+         "upper" => "A-Z".Some(),
+         "print" => new string(Enumerable.Range(0, 256).Select(i => (char)i).ToArray()).Escape(false).Some(),
+         "punct" => "~`!@#$%^&*()_+=[]{}:;\"'<>,./?\\-".Escape(false).Some(),
+         "space" => " /t/r/n".Some(),
+         "xdigit" => "0-9a-fA-F".Some(),
+         "lcon" => "bcdfghjklmnpqrstvwxyz".Some(),
+         "ucon" => "BCDFGHJKLMNPQRSTVWXYZ".Some(),
+         "lvow" => "aeiou".Some(),
+         "uvow" => "AEIOU".Some(),
+         "squote" => "'".Some(),
+         "dquote" => "\"".Some(),
+         "quote" => "'\"".Some(),
+         _ => none<string>()
+      };
    }
 }

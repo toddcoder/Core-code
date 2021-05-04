@@ -72,12 +72,6 @@ namespace Core.Monads
       }
 
       [DebuggerStepThrough]
-      public TResult FlatMap<TResult>(Func<T, TResult> ifSuccessful, Func<Exception, TResult> ifFailed)
-      {
-         return ifSuccessful(value);
-      }
-
-      [DebuggerStepThrough]
       public IResult<TResult> SelectMany<TResult>(Func<T, IResult<TResult>> projection)
       {
          try
@@ -180,14 +174,7 @@ namespace Core.Monads
 
       public IResult<T> Assert(Predicate<T> predicate, Func<string> exceptionMessage)
       {
-         if (predicate(value))
-         {
-            return this;
-         }
-         else
-         {
-            return exceptionMessage().Failure<T>();
-         }
+         return predicate(value) ? this : exceptionMessage().Failure<T>();
       }
 
       public IMaybe<T> Maybe() => value.Some();
@@ -199,8 +186,6 @@ namespace Core.Monads
       public IResult<T> Otherwise(Func<Exception, T> func) => this;
 
       public IResult<T> Otherwise(Func<Exception, IResult<T>> func) => this;
-
-      public IResult<object> AsObject() => value.Success<object>();
 
       public IResult<TResult> CastAs<TResult>()
       {
@@ -222,16 +207,9 @@ namespace Core.Monads
 
       public IResult<T> ExceptionMessage(Func<Exception, string> message) => this;
 
-      public bool HasValue => true;
-
       public bool Equals(Success<T> other)
       {
-         if (other is null)
-         {
-            return false;
-         }
-
-         return ReferenceEquals(this, other) || EqualityComparer<T>.Default.Equals(value, other.value);
+         return other is not null && ReferenceEquals(this, other) || EqualityComparer<T>.Default.Equals(value, other.value);
       }
 
       public override bool Equals(object obj) => obj is Success<T> other && Equals(other);
