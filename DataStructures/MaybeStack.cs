@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Core.Assertions;
 using Core.Enumerables;
 using Core.Monads;
@@ -36,6 +37,14 @@ namespace Core.DataStructures
                return result;
             })
             select array;
+      }
+
+      public IResult<T> Item(int index)
+      {
+         return
+            from assertion in index.Must().BeBetween(0).Until(Count).OrFailure()
+            from item in tryTo(() => stack.Skip(index).Take(1).ToArray()[0])
+            select item;
       }
 
       public IMaybe<T> Peek() => maybe(IsNotEmpty, () => stack.Peek());
