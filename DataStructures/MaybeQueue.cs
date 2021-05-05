@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Core.Assertions;
 using Core.Monads;
 using static Core.Monads.AttemptFunctions;
@@ -35,6 +36,14 @@ namespace Core.DataStructures
                return result;
             })
             select array;
+      }
+
+      public IResult<T> Item(int index)
+      {
+         return
+            from assertion in index.Must().BeBetween(0).Until(Count).OrFailure()
+            from item in tryTo(() => queue.Skip(index).Take(1).ToArray()[0])
+            select item;
       }
 
       public IMaybe<T> Dequeue() => maybe(IsNotEmpty, () => queue.Dequeue());

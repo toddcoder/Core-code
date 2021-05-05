@@ -154,5 +154,32 @@ namespace Core.Tests
          });
          Console.WriteLine(message);
       }
+
+      [TestMethod]
+      public void MaybeStackItemTest()
+      {
+         var stack = new MaybeStack<string>();
+         stack.Push("alpha");
+         stack.Push("bravo");
+         stack.Push("charlie");
+
+         if (stack.Item(0).If(out var item, out var exception))
+         {
+            Console.WriteLine(item);
+         }
+         else
+         {
+            Console.WriteLine(exception.Message);
+         }
+
+         if (stack.Item(-1).If(out item, out exception))
+         {
+            Console.WriteLine(item);
+         }
+         else
+         {
+            Console.WriteLine(exception.Message);
+         }
+      }
    }
 }
