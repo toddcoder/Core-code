@@ -80,6 +80,10 @@ namespace Core.Monads
 
       public override Either<TLeft, TRight> OnRight(Action<TRight> action) => this;
 
+      public override TLeft DefaultToLeft(Func<TLeft> map) => value;
+
+      public override TRight DefaultToRight(Func<TRight> map) => map();
+
       public bool Equals(Left<TLeft, TRight> other)
       {
          return other is not null && (ReferenceEquals(this, other) || EqualityComparer<TLeft>.Default.Equals(value, other.value));

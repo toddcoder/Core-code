@@ -39,5 +39,9 @@ namespace Core.Monads
       public abstract Either<TLeft, TRight> OnLeft(Action<TLeft> action);
 
       public abstract Either<TLeft, TRight> OnRight(Action<TRight> action);
+
+      public abstract TLeft DefaultToLeft(Func<TLeft> map);
+
+      public abstract TRight DefaultToRight(Func<TRight> map);
    }
 }
