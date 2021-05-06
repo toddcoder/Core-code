@@ -59,6 +59,7 @@
     <Compile Include="ConfigurationTests.cs" />
     <Compile Include="ConsoleProgressTest.cs" />
     <Compile Include="DataTests.cs" />
+    <Compile Include="EitherTests.cs" />
     <Compile Include="EnumerableExtensionTests.cs" />
     <Compile Include="EnumTests.cs" />
     <Compile Include="EquatableTest.cs" />

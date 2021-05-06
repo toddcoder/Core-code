@@ -252,6 +252,8 @@
     <Compile Include="Monads\AttemptFunctions.cs" />
     <Compile Include="Monads\Cancelled.cs" />
     <Compile Include="Monads\Completed.cs" />
+    <Compile Include="Monads\Either.cs" />
+    <Compile Include="Monads\EitherExtensions.cs" />
     <Compile Include="Monads\FailedMatch.cs" />
     <Compile Include="Monads\Failure.cs" />
     <Compile Include="Monads\FailureEventArgs.cs" />
@@ -262,6 +264,7 @@
     <Compile Include="Monads\IMaybe.cs" />
     <Compile Include="Monads\Interrupted.cs" />
     <Compile Include="Monads\IResult.cs" />
+    <Compile Include="Monads\Left.cs" />
     <Compile Include="Monads\Matched.cs" />
     <Compile Include="Monads\MatchedIterator.cs" />
     <Compile Include="Monads\Matching.cs" />
@@ -272,6 +275,7 @@
     <Compile Include="Monads\None.cs" />
     <Compile Include="Monads\NotMatched.cs" />
     <Compile Include="Monads\ResultIterator.cs" />
+    <Compile Include="Monads\Right.cs" />
     <Compile Include="Monads\Some.cs" />
     <Compile Include="Monads\Success.cs" />
     <Compile Include="Monads\SuccessEventArgs.cs" />
