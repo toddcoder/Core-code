@@ -10,6 +10,8 @@ namespace Core.Monads
 
       internal Right(TRight value) => this.value = value;
 
+      public TRight Value => value;
+
       public override bool IfLeft(out TLeft value)
       {
          value = default;

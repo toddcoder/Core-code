@@ -13,6 +13,8 @@ namespace Core.Monads
 
       internal Completed(T value) => this.value = value;
 
+      public T Value => value;
+
       public ICompletion<TResult> Map<TResult>(Func<T, ICompletion<TResult>> ifCompleted) => ifCompleted(value);
 
       public ICompletion<TResult> Map<TResult>(Func<T, TResult> ifCompleted) => ifCompleted(value).Completed();

@@ -15,6 +15,8 @@ namespace Core.Monads
 
       internal Success(T value) => this.value = value;
 
+      public T Value => value;
+
       public bool If(out T value, out Exception exception)
       {
          value = this.value;

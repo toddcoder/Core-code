@@ -15,6 +15,8 @@ namespace Core.Monads
          this.exception = exception is FullStackException ? exception : new FullStackException(exception);
       }
 
+      public Exception Exception => exception;
+
       public ICompletion<TResult> Map<TResult>(Func<T, ICompletion<TResult>> ifCompleted) => interrupted<TResult>(exception);
 
       public ICompletion<TResult> Map<TResult>(Func<T, TResult> ifCompleted) => interrupted<TResult>(exception);

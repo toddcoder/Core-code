@@ -12,6 +12,8 @@ namespace Core.Monads
 
       internal Some(T value) => this.value = value;
 
+      public T Value => value;
+
       public bool IsSome => true;
 
       public bool IsNone => false;

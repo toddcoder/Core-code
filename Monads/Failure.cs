@@ -17,6 +17,8 @@ namespace Core.Monads
          this.exception = exception is FullStackException ? exception : new FullStackException(exception);
       }
 
+      public Exception Exception => exception;
+
       public bool If(out T value, out Exception exception)
       {
          value = default;
