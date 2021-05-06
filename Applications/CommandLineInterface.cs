@@ -50,6 +50,7 @@ namespace Core.Applications
          Shortcuts = string.Empty;
          ShortPrefix = "-";
          ShortSuffix = " ";
+         ErrorCode = 1;
 
          Console.CancelKeyPress += cancelKeyPress;
       }
@@ -74,7 +75,13 @@ namespace Core.Applications
 
       public string ShortSuffix { get; set; }
 
-      public virtual void HandleException(Exception exception) => ExceptionWriter.WriteExceptionLine(exception);
+      public int ErrorCode { get; set; }
+
+      public virtual void HandleException(Exception exception)
+      {
+         ExceptionWriter.WriteExceptionLine(exception);
+         Environment.ExitCode = ErrorCode;
+      }
 
       public void Run(string prefix = "--", string suffix = " ")
       {
