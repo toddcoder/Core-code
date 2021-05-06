@@ -13,6 +13,8 @@ namespace Core.Monads
 
       internal Matched(T value) => this.value = value;
 
+      public T Value => value;
+
       public IMatched<T> Do(Action<T> ifMatched, Action ifNotOrFailed)
       {
          ifMatched(value);

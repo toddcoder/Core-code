@@ -15,6 +15,8 @@ namespace Core.Monads
          this.exception = exception is FullStackException ? exception : new FullStackException(exception);
       }
 
+      public Exception Exception => exception;
+
       public IMatched<T> Do(Action<T> ifMatched, Action ifNotOrFailed)
       {
          ifNotOrFailed();
