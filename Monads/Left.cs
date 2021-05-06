@@ -1,0 +1,94 @@
+﻿using System;
+using System.Collections.Generic;
+using static Core.Monads.MonadFunctions;
+
+namespace Core.Monads
+{
+   public class Left<TLeft, TRight> : Either<TLeft, TRight>, IEquatable<Left<TLeft, TRight>>
+   {
+      protected TLeft value;
+
+      internal Left(TLeft value) => this.value = value;
+
+      public override bool IfLeft(out TLeft value)
+      {
+         value = this.value;
+         return true;
+      }
+
+      public override bool IfLeft(out TLeft left, out TRight right)
+      {
+         left = value;
+         right = default;
+
+         return true;
+      }
+
+      public override bool IfRight(out TRight value)
+      {
+         value = default;
+         return false;
+      }
+
+      public override bool IfRight(out TRight right, out TLeft left)
+      {
+         right = default;
+         left = value;
+
+         return false;
+      }
+
+      public override bool IsLeft => true;
+
+      public override bool IsRight => false;
+
+      public override Either<TLeftResult, TRightResult> Map<TLeftResult, TRightResult>(Func<TLeft, TLeftResult> leftMap,
+         Func<TRight, TRightResult> rightMap)
+      {
+         return new Left<TLeftResult, TRightResult>(leftMap(value));
+      }
+
+      public override Either<TLeftResult, TRightResult> Map<TLeftResult, TRightResult>(Func<TLeft, Either<TLeftResult, TRightResult>> leftMap,
+         Func<TRight, Either<TLeftResult, TRightResult>> rightMap)
+      {
+         return leftMap(value);
+      }
+
+      public override void Deconstruct(out IMaybe<TLeft> left, out IMaybe<TRight> right)
+      {
+         left = value.Some();
+         right = none<TRight>();
+      }
+
+      public override IMaybe<TLeft> MaybeFromLeft() => value.Some();
+
+      public override IMaybe<TRight> MaybeFromRight() => none<TRight>();
+
+      public override IResult<TLeft> ResultFromLeft(string exceptionMessage) => value.Success();
+
+      public override IResult<TLeft> ResultFromLeft(Func<TRight, string> exceptionMessage) => value.Success();
+
+      public override IResult<TRight> ResultFromRight(string exceptionMessage) => exceptionMessage.Failure<TRight>();
+
+      public override IResult<TRight> ResultFromRight(Func<TLeft, string> exceptionMessage) => exceptionMessage(value).Failure<TRight>();
+
+      public override Either<TLeft, TRight> OnLeft(Action<TLeft> action)
+      {
+         action(value);
+         return this;
+      }
+
+      public override Either<TLeft, TRight> OnRight(Action<TRight> action) => this;
+
+      public bool Equals(Left<TLeft, TRight> other)
+      {
+         return other is not null && (ReferenceEquals(this, other) || EqualityComparer<TLeft>.Default.Equals(value, other.value));
+      }
+
+      public override bool Equals(object obj) => obj is Left<TLeft, TRight> other && Equals(other);
+
+      public override int GetHashCode() => EqualityComparer<TLeft>.Default.GetHashCode(value);
+
+      public override string ToString() => $"Left({value})";
+   }
+}
