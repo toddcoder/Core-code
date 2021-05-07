@@ -312,7 +312,7 @@ namespace Core.Applications
       protected static string removeExecutableFromCommandLine(string commandLine)
       {
          var matcher = new Matcher();
-         return matcher.IsMatch(commandLine, "^ (.+? '.exe' /s* [quote]? /s*) /s* /(.*) $") ? matcher.FirstGroup : commandLine;
+         return matcher.IsMatch(commandLine, "^ (.+? ('.exe' | '.dll') /s* [quote]? /s*) /s* /(.*) $") ? matcher.FirstGroup : commandLine;
       }
 
       protected static Hash<char, string> getShortcuts(string source)
