@@ -166,6 +166,7 @@
     <Compile Include="Computers\FileExceptionArgs.cs" />
     <Compile Include="Computers\FileFolderExtensions.cs" />
     <Compile Include="Computers\FileName.cs" />
+    <Compile Include="Computers\FileNameCore.cs" />
     <Compile Include="Computers\FileNameMappedReader.cs" />
     <Compile Include="Computers\FileNameTrying.cs" />
     <Compile Include="Computers\Filer.cs" />

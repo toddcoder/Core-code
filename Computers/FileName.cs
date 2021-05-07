@@ -1004,5 +1004,7 @@ namespace Core.Computers
 
          return none<FileName>();
       }
+
+      public FileNameCore Core => new(this);
    }
 }
