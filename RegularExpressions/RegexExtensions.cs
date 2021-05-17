@@ -351,7 +351,7 @@ namespace Core.RegularExpressions
             if (matcher.IsMatch(input, patternString, pattern.Options))
             {
                var result = input.Keep(matcher.Length);
-               yield return new RegexResult(result, matcher.Index + offset, matcher.Length, itemIndex++);
+               yield return new RegexResult(result, matcher.Index + offset, matcher.Length, matcher.Groups(0), itemIndex++);
 
                input = input.Drop(matcher.Length);
                offset += matcher.Length;

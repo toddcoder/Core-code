@@ -35,7 +35,7 @@ namespace Core.Tests
       [TestMethod]
       public void MatchPatternsTest()
       {
-         foreach (var (text, index, _, itemIndex, isFound) in "foobar(foo,baz)".Matches("/w+ '('", "/w+ ','", "/w+ ')'"))
+         foreach (var (text, index, _, _, itemIndex, isFound) in "foobar(foo,baz)".Matches("/w+ '('", "/w+ ','", "/w+ ')'"))
          {
             if (isFound)
             {
