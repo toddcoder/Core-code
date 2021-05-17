@@ -1,6 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using Core.Arrays;
+using Core.Numbers;
 using Core.Strings;
 
 namespace Core.RegularExpressions
@@ -27,9 +28,9 @@ namespace Core.RegularExpressions
          IsMatch = true;
       }
 
-      internal RegexResult()
+      internal RegexResult(string text)
       {
-         Text = "";
+         Text = text;
          Index = -1;
          Length = -1;
          Groups = Array.Empty<string>();
@@ -39,6 +40,10 @@ namespace Core.RegularExpressions
          offset = -1;
 
          IsMatch = false;
+      }
+
+      internal RegexResult() : this("")
+      {
       }
 
       public string Text { get; }
@@ -101,12 +106,35 @@ namespace Core.RegularExpressions
             }
          }
 
-         return new RegexResult();
+         return new RegexResult(restOfText);
       }
 
-      public IEnumerable<RegexResult> Matches(string input, IEnumerable<string> patterns)
+      public RegexResult MatchFirst(string pattern, RegexOptions options)
       {
-         return RegexExtensions.matches(input, patterns, offset + Length, ItemIndex + 1);
+         if (!pattern.StartsWith("^"))
+         {
+            pattern = $"^{pattern}";
+         }
+
+         var matcher = new Matcher(this.pattern.Friendly);
+         if (matcher.IsMatch(Text, pattern, options))
+         {
+            return new RegexResult(matcher.FirstMatch, matcher.Index, matcher.Length, matcher.Groups(0), 0, new RegexPattern(pattern, options),
+               Text.Drop(Length), matcher.Index);
+         }
+         else
+         {
+            return new RegexResult(Text);
+         }
+      }
+
+      public RegexResult MatchFirst(string pattern, bool ignoreCase = false, bool multiline = false)
+      {
+         Bits32<RegexOptions> options = RegexOptions.None;
+         options[RegexOptions.IgnoreCase] = ignoreCase;
+         options[RegexOptions.Multiline] = multiline;
+
+         return MatchFirst(pattern, options);
       }
    }
 }

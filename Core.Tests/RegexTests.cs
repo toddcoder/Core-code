@@ -86,7 +86,7 @@ namespace Core.Tests
       public void MatchFirstTest()
       {
          var matcher = new Matcher();
-         var input = "foobar(foo, baz, boq)";
+         var input = "foobar(foo, baz, boq) -> foobaz";
          var pattern = @"^(\w+)\(";
 
          if (matcher.IsMatch(input, pattern))
@@ -100,7 +100,11 @@ namespace Core.Tests
                result = result.MatchNext();
             }
 
-            Console.WriteLine($"{list.ToString(", ")})");
+            result = result.MatchFirst(@"^\)\s*->\s*(\w+)");
+            if (result.IsMatch)
+            {
+               Console.WriteLine($"{list.ToString(", ")}) -> {result.FirstGroup}");
+            }
          }
       }
    }
