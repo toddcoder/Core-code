@@ -327,5 +327,40 @@ namespace Core.RegularExpressions
       {
          return new Matcher(friendly).Matched(input, pattern, options);
       }
+
+      public static IEnumerable<RegexResult> Matches(this string input, params string[] patterns)
+      {
+         var offset = 0;
+         var itemIndex = 0;
+
+         foreach (var patternSource in patterns)
+         {
+            if (input.IsEmpty())
+            {
+               yield return new RegexResult();
+            }
+
+            RegexPattern pattern = patternSource;
+            var matcher = new Matcher(pattern.Friendly);
+            var patternString = pattern.Pattern;
+            if (!patternString.StartsWith("^"))
+            {
+               patternString = $"^{patternString}";
+            }
+
+            if (matcher.IsMatch(input, patternString, pattern.Options))
+            {
+               var result = input.Keep(matcher.Length);
+               yield return new RegexResult(result, matcher.Index + offset, matcher.Length, itemIndex++);
+
+               input = input.Drop(matcher.Length);
+               offset += matcher.Length;
+            }
+            else
+            {
+               yield return new RegexResult();
+            }
+         }
+      }
    }
 }
