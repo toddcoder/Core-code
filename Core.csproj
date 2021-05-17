@@ -356,7 +356,9 @@
     <Compile Include="RegularExpressions\Parsers\StringParser.cs" />
     <Compile Include="RegularExpressions\Parsers\UnmodifiedParser.cs" />
     <Compile Include="RegularExpressions\Parsers\VariableParser.cs" />
+    <Compile Include="RegularExpressions\RegexPattern.cs" />
     <Compile Include="RegularExpressions\RegexExtensions.cs" />
+    <Compile Include="RegularExpressions\RegexResult.cs" />
     <Compile Include="RegularExpressions\Splitter.cs" />
     <Compile Include="Strings\CharacterExtensions.cs" />
     <Compile Include="Strings\CSV.cs" />

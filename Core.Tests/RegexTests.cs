@@ -31,5 +31,21 @@ namespace Core.Tests
          Console.WriteLine(result);
          result.Must().Equal("This is the full sentence with sql-1 in it").OrThrow();
       }
+
+      [TestMethod]
+      public void MatchPatternsTest()
+      {
+         foreach (var (text, index, _, itemIndex, isFound) in "foobar(foo,baz)".Matches("/w+ '('", "/w+ ','", "/w+ ')'"))
+         {
+            if (isFound)
+            {
+               Console.WriteLine($"{itemIndex}: Found \"{text}\" at {index}");
+            }
+            else
+            {
+               Console.WriteLine($"{itemIndex}: Not found");
+            }
+         }
+      }
    }
 }

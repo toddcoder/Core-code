@@ -919,9 +919,9 @@ namespace Core.Computers
       public FileStream WritingStream(bool shared = false)
       {
          folder.CreateIfNonExistent();
-         var fileShare = shared ? FileShare.ReadWrite : FileShare.Read;
+         var fileShare = shared ? FileShare.ReadWrite : FileShare.Write;
 
-         return new FileStream(fullPath, FileMode.OpenOrCreate, FileAccess.Read, fileShare);
+         return new FileStream(fullPath, FileMode.OpenOrCreate, FileAccess.Write, fileShare);
       }
 
       public FileStream AppendingStream(bool shared = false)

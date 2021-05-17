@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Core.Monads;
+using Core.RegularExpressions;
 using Core.Strings;
 using static System.Text.RegularExpressions.RegexOptions;
 using static Core.Monads.MonadFunctions;
@@ -282,6 +283,11 @@ namespace Core.Regex
       public static IEnumerable<RegularExpressions.Matcher.Match> Matches(this string input, string pattern, RegexOptions options)
       {
          return new Matcher().Matched(input, pattern, options);
+      }
+
+      public static IEnumerable<RegexResult> Matches(this string input, params string[] patterns)
+      {
+         return RegularExpressions.RegexExtensions.Matches(input, patterns);
       }
    }
 }
