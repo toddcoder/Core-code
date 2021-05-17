@@ -7,7 +7,7 @@ namespace Core.RegularExpressions
 {
    public class RegexResult
    {
-      public static RegexResult Empty => new RegexResult();
+      public static RegexResult Empty => new();
 
       protected RegexPattern pattern;
       protected string restOfText;
@@ -24,7 +24,7 @@ namespace Core.RegularExpressions
          this.restOfText = restOfText;
          this.offset = offset;
 
-         IsFound = true;
+         IsMatch = true;
       }
 
       internal RegexResult()
@@ -38,7 +38,7 @@ namespace Core.RegularExpressions
          restOfText = "";
          offset = -1;
 
-         IsFound = false;
+         IsMatch = false;
       }
 
       public string Text { get; }
@@ -51,7 +51,7 @@ namespace Core.RegularExpressions
 
       public int ItemIndex { get; }
 
-      public bool IsFound { get; }
+      public bool IsMatch { get; }
 
       public string FirstGroup => Groups.Of(1).DefaultTo(() => "");
 
@@ -73,23 +73,19 @@ namespace Core.RegularExpressions
 
       public string TenthGroup => Groups.Of(10).DefaultTo(() => "");
 
-      public void Deconstruct(out string text, out int index, out int length, out string[] groups, out int itemIndex, out bool isFound)
+      public void Deconstruct(out string text, out int index, out int length, out string[] groups, out int itemIndex, out bool isMatch)
       {
          text = Text;
          index = Index;
          length = Length;
          groups = Groups;
          itemIndex = ItemIndex;
-         isFound = IsFound;
+         isMatch = IsMatch;
       }
 
-      public RegexResult Next()
+      public RegexResult MatchNext()
       {
-         if (!IsFound)
-         {
-            return new RegexResult();
-         }
-         else
+         if (IsMatch)
          {
             var matcher = new Matcher(pattern.Friendly);
             if (matcher.IsMatch(restOfText, pattern.Pattern, pattern.Options))
@@ -99,14 +95,13 @@ namespace Core.RegularExpressions
                var length = matcher.Length;
                var groups = matcher.Groups(0);
                var itemIndex = ItemIndex + 1;
+
                return new RegexResult(text, index, length, groups, itemIndex, pattern, restOfText.Drop(matcher.Index + matcher.Length),
                   offset + matcher.Index);
             }
-            else
-            {
-               return new RegexResult();
-            }
          }
+
+         return new RegexResult();
       }
 
       public IEnumerable<RegexResult> Matches(string input, IEnumerable<string> patterns)

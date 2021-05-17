@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using Core.Assertions;
+using Core.Enumerables;
 using Core.RegularExpressions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Matcher = Core.Regex.Matcher;
@@ -71,13 +73,35 @@ namespace Core.Tests
             }
          }
 
-         while (outerResult.IsFound)
+         while (outerResult.IsMatch)
          {
             Console.Write(outerResult.Text);
-            outerResult = outerResult.Next();
+            outerResult = outerResult.MatchNext();
          }
 
          Console.WriteLine(")");
+      }
+
+      [TestMethod]
+      public void MatchFirstTest()
+      {
+         var matcher = new Matcher();
+         var input = "foobar(foo, baz, boq)";
+         var pattern = @"^(\w+)\(";
+
+         if (matcher.IsMatch(input, pattern))
+         {
+            Console.Write($"{matcher.FirstGroup}(");
+            var result = matcher.MatchFirst(@"(?:\s*,)?\s*(\w+)");
+            var list = new List<string>();
+            while (result.IsMatch)
+            {
+               list.Add(result.FirstGroup);
+               result = result.MatchNext();
+            }
+
+            Console.WriteLine($"{list.ToString(", ")})");
+         }
       }
    }
 }
