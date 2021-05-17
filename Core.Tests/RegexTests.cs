@@ -1,7 +1,9 @@
 ﻿using System;
 using Core.Assertions;
-using Core.Regex;
+using Core.RegularExpressions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Matcher = Core.Regex.Matcher;
+using RegexExtensions = Core.Regex.RegexExtensions;
 
 namespace Core.Tests
 {
@@ -27,7 +29,7 @@ namespace Core.Tests
       [TestMethod]
       public void MatchOnlySubstitutions()
       {
-         var result = "This is the full sentence with sql1 in it".Substitute(@"sql(\d)", "sql-$1");
+         var result = RegexExtensions.Substitute("This is the full sentence with sql1 in it", @"sql(\d)", "sql-$1");
          Console.WriteLine(result);
          result.Must().Equal("This is the full sentence with sql-1 in it").OrThrow();
       }
@@ -35,7 +37,7 @@ namespace Core.Tests
       [TestMethod]
       public void MatchPatternsTest()
       {
-         foreach (var (text, index, _, _, itemIndex, isFound) in "foobar(foo,baz)".Matches("/w+ '('", "/w+ ','", "/w+ ')'"))
+         foreach (var (text, index, _, _, itemIndex, isFound) in RegexExtensions.Matches("foobar(foo,baz)", "/w+ '('", "/w+ ','", "/w+ ')'"))
          {
             if (isFound)
             {
@@ -46,6 +48,36 @@ namespace Core.Tests
                Console.WriteLine($"{itemIndex}: Not found");
             }
          }
+
+         var outerResult = RegexResult.Empty;
+
+         foreach (var result in RegexExtensions.Matches("foobar(foo, baz, box)", "/(/w+) '('", "(/s* ',')? /s* /(/w+)"))
+         {
+            outerResult = result;
+            var exit = false;
+            switch (result.ItemIndex)
+            {
+               case 0:
+                  Console.Write($"{result.FirstGroup}(");
+                  break;
+               case 1:
+                  exit = true;
+                  break;
+            }
+
+            if (exit)
+            {
+               break;
+            }
+         }
+
+         while (outerResult.IsFound)
+         {
+            Console.Write(outerResult.Text);
+            outerResult = outerResult.Next();
+         }
+
+         Console.WriteLine(")");
       }
    }
 }

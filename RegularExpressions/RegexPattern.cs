@@ -57,6 +57,13 @@ namespace Core.RegularExpressions
          options[RegexOptions.Multiline] = multiline;
       }
 
+      public RegexPattern()
+      {
+         pattern = "";
+         options = RegexOptions.None;
+         friendly = false;
+      }
+
       public string Pattern => pattern;
 
       public RegexOptions Options => options;

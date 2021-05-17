@@ -328,11 +328,8 @@ namespace Core.RegularExpressions
          return new Matcher(friendly).Matched(input, pattern, options);
       }
 
-      public static IEnumerable<RegexResult> Matches(this string input, params string[] patterns)
+      internal static IEnumerable<RegexResult> matches(string input, IEnumerable<string> patterns, int offset, int itemIndex)
       {
-         var offset = 0;
-         var itemIndex = 0;
-
          foreach (var patternSource in patterns)
          {
             if (input.IsEmpty())
@@ -351,7 +348,9 @@ namespace Core.RegularExpressions
             if (matcher.IsMatch(input, patternString, pattern.Options))
             {
                var result = input.Keep(matcher.Length);
-               yield return new RegexResult(result, matcher.Index + offset, matcher.Length, matcher.Groups(0), itemIndex++);
+               var restOfText = input.Drop(matcher.Length);
+               yield return new RegexResult(result, matcher.Index + offset, matcher.Length, matcher.Groups(0), itemIndex++, pattern, restOfText,
+                  offset);
 
                input = input.Drop(matcher.Length);
                offset += matcher.Length;
@@ -362,5 +361,7 @@ namespace Core.RegularExpressions
             }
          }
       }
+
+      public static IEnumerable<RegexResult> Matches(this string input, params string[] patterns) => matches(input, patterns, 0, 0);
    }
 }
