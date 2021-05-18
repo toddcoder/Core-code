@@ -16,6 +16,7 @@ namespace Core.RegularExpressions.Parsers
          new InsideRangeParser(),
          new UnmodifiedParser(),
          new NamedClassParser(),
+         new QuoteParser(),
          new EndOfClassParser()
       };
 

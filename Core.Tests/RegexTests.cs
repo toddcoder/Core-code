@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Core.Assertions;
 using Core.Enumerables;
 using Core.RegularExpressions;
+using Core.Strings;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Core.Tests
@@ -103,6 +104,16 @@ namespace Core.Tests
             {
                Console.WriteLine($"{list.ToString(", ")}) -> {result.FirstGroup}");
             }
+         }
+      }
+
+      [TestMethod]
+      public void QuoteTest()
+      {
+         var pattern = (RegexPattern)"`quote /(-[`quote]+) `quote";
+         if ("\"Fee fi fo fum\" said the giant.".Matcher(pattern).If(out var matcher))
+         {
+            Console.WriteLine(matcher.FirstGroup.Guillemetify());
          }
       }
    }

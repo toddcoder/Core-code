@@ -35,6 +35,7 @@ namespace Core.RegularExpressions.Parsers
          new NonCapturingGroupParser(),
          new OutsideRangeParser(),
          new ClassParser(),
+         new QuoteParser(),
          new NumericQuantificationParser(),
          new NumericQuantification2Parser(),
          new UnmodifiedParser()
