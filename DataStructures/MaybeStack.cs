@@ -66,5 +66,7 @@ namespace Core.DataStructures
       public bool IsEmpty => stack.Count == 0;
 
       public bool IsNotEmpty => stack.Count > 0;
+
+      public ResultStack<T> TryTo => new(this);
    }
 }
