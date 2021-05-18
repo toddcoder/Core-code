@@ -14,13 +14,15 @@ namespace Core.RegularExpressions
       protected string restOfText;
       protected int offset;
 
-      internal RegexResult(string text, int index, int length, string[] groups, int itemIndex, RegexPattern pattern, string restOfText, int offset)
+      internal RegexResult(string text, int index, int length, string[] groups, int itemIndex, Matcher.Match match, RegexPattern pattern,
+         string restOfText, int offset)
       {
          Text = text;
          Index = index;
          Length = length;
          Groups = groups;
          ItemIndex = itemIndex;
+         Match = match;
          this.pattern = pattern;
          this.restOfText = restOfText;
          this.offset = offset;
@@ -35,6 +37,7 @@ namespace Core.RegularExpressions
          Length = -1;
          Groups = Array.Empty<string>();
          ItemIndex = -1;
+         Match = new Matcher.Match();
          pattern = new RegexPattern();
          restOfText = "";
          offset = -1;
@@ -57,6 +60,8 @@ namespace Core.RegularExpressions
       public int ItemIndex { get; }
 
       public bool IsMatch { get; }
+
+      public Matcher.Match Match { get; }
 
       public string FirstGroup => Groups.Of(1).DefaultTo(() => "");
 
@@ -101,8 +106,9 @@ namespace Core.RegularExpressions
                var groups = matcher.Groups(0);
                var itemIndex = ItemIndex + 1;
 
-               return new RegexResult(text, index, length, groups, itemIndex, pattern, restOfText.Drop(matcher.Index + matcher.Length),
-                  offset + matcher.Index);
+               restOfText = restOfText.Drop(matcher.Index + matcher.Length);
+               var offsetText = offset + matcher.Index;
+               return new RegexResult(text, index, length, groups, itemIndex, matcher.GetMatch(0), pattern, restOfText, offsetText);
             }
          }
 
@@ -119,8 +125,10 @@ namespace Core.RegularExpressions
          var matcher = new Matcher(this.pattern.Friendly);
          if (matcher.IsMatch(Text, pattern, options))
          {
-            return new RegexResult(matcher.FirstMatch, matcher.Index, matcher.Length, matcher.Groups(0), 0,
-               new RegexPattern(pattern, options, this.pattern.Friendly), Text.Drop(Length), matcher.Index);
+            var regexPattern = new RegexPattern(pattern, options, this.pattern.Friendly);
+            var text = Text.Drop(Length);
+            return new RegexResult(matcher.FirstMatch, matcher.Index, matcher.Length, matcher.Groups(0), 0, matcher.GetMatch(0), regexPattern, text,
+               matcher.Index);
          }
          else
          {
@@ -150,7 +158,8 @@ namespace Core.RegularExpressions
          var matcher = new Matcher(regexPattern.Friendly);
          if (matcher.IsMatch(Text, regexPattern))
          {
-            return new RegexResult(matcher.FirstMatch, matcher.Index, matcher.Length, matcher.Groups(0), 0, regexPattern, Text.Drop(Length),
+            var text = Text.Drop(Length);
+            return new RegexResult(matcher.FirstMatch, matcher.Index, matcher.Length, matcher.Groups(0), 0, matcher.GetMatch(0), regexPattern, text,
                matcher.Index);
          }
          else

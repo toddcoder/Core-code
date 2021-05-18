@@ -424,8 +424,8 @@ namespace Core.RegularExpressions
             {
                var result = input.Keep(matcher.Length);
                var restOfText = input.Drop(matcher.Length);
-               yield return new RegexResult(result, matcher.Index + offset, matcher.Length, matcher.Groups(0), itemIndex++, pattern, restOfText,
-                  offset);
+               yield return new RegexResult(result, matcher.Index + offset, matcher.Length, matcher.Groups(0), itemIndex++, matcher.GetMatch(0),
+                  pattern, restOfText, offset);
 
                input = input.Drop(matcher.Length);
                offset += matcher.Length;

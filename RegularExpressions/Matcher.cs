@@ -623,7 +623,8 @@ namespace Core.RegularExpressions
       {
          if (IsMatch(input, pattern, options))
          {
-            return new RegexResult(FirstMatch, Index, Length, Groups(0), 0, new RegexPattern(pattern, options), input.Drop(Length), Index);
+            return new RegexResult(FirstMatch, Index, Length, Groups(0), 0, GetMatch(0), new RegexPattern(pattern, options), input.Drop(Length),
+               Index);
          }
          else
          {
