@@ -326,6 +326,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Regex\Matcher.cs" />
     <Compile Include="Regex\RegexExtensions.cs" />
+    <Compile Include="Regex\RegexPattern.cs" />
     <Compile Include="Regex\Splitter.cs" />
     <Compile Include="RegularExpressions\Matcher.cs" />
     <Compile Include="RegularExpressions\MatcherTrying.cs" />

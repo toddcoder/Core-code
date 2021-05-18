@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using Core.Arrays;
 using Core.Assertions;
@@ -173,6 +172,8 @@ namespace Core.RegularExpressions
          return matches.Length > 0;
       }
 
+      public bool IsMatch(string input, RegexPattern regexPattern) => IsMatch(input, regexPattern.Pattern, regexPattern.Options);
+
       public IMatched<Match[]> MatchAll(string input, string pattern, RegexOptions options)
       {
          try
@@ -190,6 +191,8 @@ namespace Core.RegularExpressions
          return MatchAll(input, pattern, GetOptions(ignoreCase, multiline));
       }
 
+      public IMatched<Match[]> MatchAll(string input, RegexPattern regexPattern) => MatchAll(input, regexPattern.Pattern, regexPattern.Options);
+
       public IMaybe<Match[]> MatchMaybe(string input, string pattern, RegexOptions options)
       {
          return IsMatch(input, pattern, options) ? matches.Some() : none<Match[]>();
@@ -200,6 +203,8 @@ namespace Core.RegularExpressions
          return MatchMaybe(input, pattern, GetOptions(ignoreCase, multiline));
       }
 
+      public IMaybe<Match[]> MatchMaybe(string input, RegexPattern regexPattern) => MatchMaybe(input, regexPattern.Pattern, regexPattern.Options);
+
       public IMaybe<Match> MatchOneMaybe(string input, string pattern, RegexOptions options)
       {
          return IsMatch(input, pattern, options) ? matches[0].Some() : none<Match>();
@@ -209,6 +214,8 @@ namespace Core.RegularExpressions
       {
          return MatchOneMaybe(input, pattern, GetOptions(ignoreCase, multiline));
       }
+
+      public IMaybe<Match> MatchOneMaybe(string input, RegexPattern regexPattern) => MatchOneMaybe(input, regexPattern.Pattern, regexPattern.Options);
 
       public IMatched<Match> MatchOne(string input, string pattern, RegexOptions options)
       {
@@ -226,6 +233,8 @@ namespace Core.RegularExpressions
       {
          return MatchOne(input, pattern, GetOptions(ignoreCase, multiline));
       }
+
+      public IMatched<Match> MatchOne(string input, RegexPattern regexPattern) => MatchOne(input, regexPattern.Pattern, regexPattern.Options);
 
       public string FirstMatch
       {
@@ -358,6 +367,8 @@ namespace Core.RegularExpressions
       {
          IsMatch(input, pattern, ignoreCase, multiline);
       }
+
+      public virtual void Evaluate(string input, RegexPattern regexPattern) => Evaluate(input, regexPattern.Pattern, regexPattern.Options);
 
       public int MatchCount => matches.Length;
 
@@ -606,39 +617,13 @@ namespace Core.RegularExpressions
          }
       }
 
-      protected RegexPattern regexPattern(string pattern, Bits32<RegexOptions> options)
-      {
-         return regexPattern(pattern, options[RegexOptions.IgnoreCase], options[RegexOptions.Multiline]);
-      }
-
-      protected RegexPattern regexPattern(string pattern, bool ignoreCase, bool multiline)
-      {
-         var builder = new StringBuilder();
-         if (ignoreCase)
-         {
-            builder.Append("i");
-         }
-
-         if (multiline)
-         {
-            builder.Append("m");
-         }
-
-         if (!friendly)
-         {
-            builder.Append("f");
-         }
-
-         var optionsString = builder.ToString().Map(os => $";{os}");
-
-         return $"{pattern}{optionsString}";
-      }
+      public IEnumerable<Match> Matched(string input, RegexPattern regexPattern) => Matched(input, regexPattern.Pattern, regexPattern.Options);
 
       public RegexResult MatchFirst(string input, string pattern, RegexOptions options)
       {
          if (IsMatch(input, pattern, options))
          {
-            return new RegexResult(FirstMatch, Index, Length, Groups(0), 0, regexPattern(pattern, options), input.Drop(Length), Index);
+            return new RegexResult(FirstMatch, Index, Length, Groups(0), 0, new RegexPattern(pattern, options), input.Drop(Length), Index);
          }
          else
          {
@@ -670,5 +655,7 @@ namespace Core.RegularExpressions
 
          return MatchFirst(lastInput.Drop(Length), pattern, ignoreCase, multiline);
       }
+
+      public RegexResult MatchFirst(RegexPattern regexPattern) => MatchFirst(regexPattern.Pattern, regexPattern.Options);
    }
 }

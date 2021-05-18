@@ -119,8 +119,8 @@ namespace Core.RegularExpressions
          var matcher = new Matcher(this.pattern.Friendly);
          if (matcher.IsMatch(Text, pattern, options))
          {
-            return new RegexResult(matcher.FirstMatch, matcher.Index, matcher.Length, matcher.Groups(0), 0, new RegexPattern(pattern, options),
-               Text.Drop(Length), matcher.Index);
+            return new RegexResult(matcher.FirstMatch, matcher.Index, matcher.Length, matcher.Groups(0), 0,
+               new RegexPattern(pattern, options, this.pattern.Friendly), Text.Drop(Length), matcher.Index);
          }
          else
          {
@@ -135,6 +135,28 @@ namespace Core.RegularExpressions
          options[RegexOptions.Multiline] = multiline;
 
          return MatchFirst(pattern, options);
+      }
+
+      public RegexResult MatchFirst(RegexPattern regexPattern)
+      {
+         var newPattern = regexPattern.Pattern;
+         if (!newPattern.StartsWith("^"))
+         {
+            newPattern = $"^{regexPattern}";
+         }
+
+         regexPattern = regexPattern.WithPattern(newPattern);
+
+         var matcher = new Matcher(regexPattern.Friendly);
+         if (matcher.IsMatch(Text, regexPattern))
+         {
+            return new RegexResult(matcher.FirstMatch, matcher.Index, matcher.Length, matcher.Groups(0), 0, regexPattern, Text.Drop(Length),
+               matcher.Index);
+         }
+         else
+         {
+            return new RegexResult(Text);
+         }
       }
    }
 }

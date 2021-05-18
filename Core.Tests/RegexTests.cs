@@ -4,8 +4,6 @@ using Core.Assertions;
 using Core.Enumerables;
 using Core.RegularExpressions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Matcher = Core.Regex.Matcher;
-using RegexExtensions = Core.Regex.RegexExtensions;
 
 namespace Core.Tests
 {
@@ -31,7 +29,7 @@ namespace Core.Tests
       [TestMethod]
       public void MatchOnlySubstitutions()
       {
-         var result = RegexExtensions.Substitute("This is the full sentence with sql1 in it", @"sql(\d)", "sql-$1");
+         var result = "This is the full sentence with sql1 in it".Substitute("'sql' /(/d)", "sql-$1");
          Console.WriteLine(result);
          result.Must().Equal("This is the full sentence with sql-1 in it").OrThrow();
       }
@@ -39,7 +37,7 @@ namespace Core.Tests
       [TestMethod]
       public void MatchPatternsTest()
       {
-         foreach (var (text, index, _, _, itemIndex, isFound) in RegexExtensions.Matches("foobar(foo,baz)", "/w+ '('", "/w+ ','", "/w+ ')'"))
+         foreach (var (text, index, _, _, itemIndex, isFound) in "foobar(foo,baz)".Matches("/w+ '('", "/w+ ','", "/w+ ')'"))
          {
             if (isFound)
             {
@@ -53,7 +51,7 @@ namespace Core.Tests
 
          var outerResult = RegexResult.Empty;
 
-         foreach (var result in RegexExtensions.Matches("foobar(foo, baz, box)", "/(/w+) '('", "(/s* ',')? /s* /(/w+)"))
+         foreach (var result in "foobar(foo, baz, box)".Matches("/(/w+) '('", "(/s* ',')? /s* /(/w+)"))
          {
             outerResult = result;
             var exit = false;
@@ -87,12 +85,12 @@ namespace Core.Tests
       {
          var matcher = new Matcher();
          var input = "foobar(foo, baz, boq) -> foobaz";
-         var pattern = @"^(\w+)\(";
+         var pattern = (RegexPattern)@"^ /(/w+) '('";
 
          if (matcher.IsMatch(input, pattern))
          {
             Console.Write($"{matcher.FirstGroup}(");
-            var result = matcher.MatchFirst(@"(?:\s*,)?\s*(\w+)");
+            var result = matcher.MatchFirst((RegexPattern)@"(/s* ',')? /s* /(/w+)");
             var list = new List<string>();
             while (result.IsMatch)
             {
@@ -100,7 +98,7 @@ namespace Core.Tests
                result = result.MatchNext();
             }
 
-            result = result.MatchFirst(@"^\)\s*->\s*(\w+)");
+            result = result.MatchFirst((RegexPattern)@"^ ')' /s* '->' /s* /(/w+)");
             if (result.IsMatch)
             {
                Console.WriteLine($"{list.ToString(", ")}) -> {result.FirstGroup}");
