@@ -95,17 +95,13 @@ namespace Core.Arrays
       public static string Andify<T>(this T[] array)
       {
          var length = array.Length;
-         switch (length)
+         return length switch
          {
-            case 0:
-               return "";
-            case 1:
-               return array[0].ToString();
-            case 2:
-               return $"{array[0]} and {array[1]}";
-         }
-
-         return $"{array.Take(array.Length - 1).ToString(", ")}, and {array[array.Length - 1]}";
+            0 => "",
+            1 => array[0].ToString(),
+            2 => $"{array[0]} and {array[1]}",
+            _ => $"{array.Take(array.Length - 1).ToString(", ")}, and {array[array.Length - 1]}"
+         };
       }
 
       public static bool IsEmpty<T>(this T[] array) => array == null || array.Length == 0;

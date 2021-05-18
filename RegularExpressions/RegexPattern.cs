@@ -1,15 +1,16 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Text.RegularExpressions;
 using Core.Numbers;
 using Core.Strings;
 
 namespace Core.RegularExpressions
 {
-   public class RegexPattern
+   public class RegexPattern : IEquatable<RegexPattern>
    {
-      public static implicit operator RegexPattern(string source)
+      public static explicit operator RegexPattern(string source)
       {
          var matcher = new Matcher();
-         if (matcher.IsMatch(source, "';' /(['imf']1%3)"))
+         if (matcher.IsMatch(source, "';' /(['icmsfu']1%3)"))
          {
             var ignoreCase = false;
             var multiline = false;
@@ -19,13 +20,25 @@ namespace Core.RegularExpressions
             {
                ignoreCase = true;
             }
+            else if (options.Contains("c"))
+            {
+               ignoreCase = false;
+            }
 
             if (options.Contains("m"))
             {
                multiline = true;
             }
+            else if (options.Contains("s"))
+            {
+               multiline = false;
+            }
 
             if (options.Contains("f"))
+            {
+               friendly = true;
+            }
+            else if (options.Contains("u"))
             {
                friendly = false;
             }
@@ -57,6 +70,13 @@ namespace Core.RegularExpressions
          options[RegexOptions.Multiline] = multiline;
       }
 
+      public RegexPattern()
+      {
+         pattern = "";
+         options = RegexOptions.None;
+         friendly = false;
+      }
+
       public string Pattern => pattern;
 
       public RegexOptions Options => options;
@@ -66,5 +86,27 @@ namespace Core.RegularExpressions
       public bool Multiline => options[RegexOptions.Multiline];
 
       public bool Friendly => friendly;
+
+      public RegexPattern WithPattern(string newPattern) => new(newPattern, options, friendly);
+
+      public bool Equals(RegexPattern other)
+      {
+         return other is not null && (ReferenceEquals(this, other) ||
+            pattern == other.pattern && Equals(options, other.options) && friendly == other.friendly);
+      }
+
+      public override bool Equals(object obj) => obj is RegexPattern other && Equals(other);
+
+      public override int GetHashCode()
+      {
+         unchecked
+         {
+            var hashCode = pattern != null ? pattern.GetHashCode() : 0;
+            hashCode = hashCode * 397 ^ (options != null ? options.GetHashCode() : 0);
+            hashCode = hashCode * 397 ^ friendly.GetHashCode();
+
+            return hashCode;
+         }
+      }
    }
 }

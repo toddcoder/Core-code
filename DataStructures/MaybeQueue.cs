@@ -67,5 +67,7 @@ namespace Core.DataStructures
       public bool IsEmpty => queue.Count == 0;
 
       public bool IsNotEmpty => queue.Count > 0;
+
+      public ResultQueue<T> TryTo => new(this);
    }
 }

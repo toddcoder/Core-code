@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.RegularExpressions;
 using Core.Monads;
 using Core.RegularExpressions;
@@ -36,6 +35,11 @@ namespace Core.Regex
          return input.IsMatch(pattern, GetOptions(ignoreCase, multiline));
       }
 
+      public static bool IsMatch(this string input, RegexPattern regexPattern)
+      {
+         return input.IsMatch(regexPattern.Pattern, regexPattern.Options);
+      }
+
       public static string Substitute(this string input, string pattern, string replacement, RegexOptions options)
       {
          return System.Text.RegularExpressions.Regex.Replace(input, pattern, replacement, options);
@@ -58,6 +62,16 @@ namespace Core.Regex
          return input.Substitute(pattern, replacement, GetOptions(ignoreCase, multiline), count);
       }
 
+      public static string Substitute(this string input, RegexPattern regexPattern, string replacement)
+      {
+         return input.Substitute(regexPattern.Pattern, replacement, regexPattern.Options);
+      }
+
+      public static string Substitute(this string input, RegexPattern regexPattern, string replacement, int count)
+      {
+         return input.Substitute(regexPattern.Pattern, replacement, regexPattern.Options, count);
+      }
+
       public static string Replace(this string input, string pattern, Action<Matcher> replacer, RegexOptions options)
       {
          var matcher = new Matcher();
@@ -77,6 +91,11 @@ namespace Core.Regex
          return input.Replace(pattern, replacer, GetOptions(ignoreCase, multiline));
       }
 
+      public static string Replace(this string input, RegexPattern regexPattern, Action<Matcher> replacer)
+      {
+         return input.Replace(regexPattern.Pattern, replacer, regexPattern.Options);
+      }
+
       public static string[] Split(this string input, string pattern, RegexOptions options)
       {
          return System.Text.RegularExpressions.Regex.Split(input, pattern, options);
@@ -85,6 +104,11 @@ namespace Core.Regex
       public static string[] Split(this string input, string pattern, bool ignoreCase = false, bool multiline = false)
       {
          return input.Split(pattern, GetOptions(ignoreCase, multiline));
+      }
+
+      public static string[] Split(this string input, RegexPattern regexPattern)
+      {
+         return input.Split(regexPattern.Pattern, regexPattern.Options);
       }
 
       private static IEnumerable<Slice> sliceSplit(string input, string pattern, RegexOptions regexOptions)
@@ -117,14 +141,19 @@ namespace Core.Regex
          }
       }
 
-      public static Slice[] SliceSplit(this string input, string pattern, RegexOptions regexOptions)
+      public static IEnumerable<Slice> SliceSplit(this string input, string pattern, RegexOptions regexOptions)
       {
-         return sliceSplit(input, pattern, regexOptions).ToArray();
+         return sliceSplit(input, pattern, regexOptions);
       }
 
-      public static Slice[] SliceSplit(this string input, string pattern, bool ignoreCase = false, bool multiline = false)
+      public static IEnumerable<Slice> SliceSplit(this string input, string pattern, bool ignoreCase = false, bool multiline = false)
       {
-         return sliceSplit(input, pattern, GetOptions(ignoreCase, multiline)).ToArray();
+         return sliceSplit(input, pattern, GetOptions(ignoreCase, multiline));
+      }
+
+      public static IEnumerable<Slice> SliceSplit(this string input, RegexPattern regexPattern)
+      {
+         return sliceSplit(input, regexPattern.Pattern, regexPattern.Options);
       }
 
       public static (string, string) Split2(this string input, string pattern, bool ignoreCase = false, bool multiline = false)
@@ -137,6 +166,11 @@ namespace Core.Regex
       {
          var result = input.Split(pattern, options);
          return result.Length == 1 ? (result[0], "") : (result[0], result[1]);
+      }
+
+      public static (string, string) Split2(this string input, RegexPattern regexPattern)
+      {
+         return input.Split2(regexPattern.Pattern, regexPattern.Options);
       }
 
       public static (string, string, string) Split3(this string input, string pattern, bool ignoreCase = false, bool multiline = false)
@@ -159,6 +193,11 @@ namespace Core.Regex
             2 => (result[0], result[1], ""),
             _ => (result[0], result[1], result[2])
          };
+      }
+
+      public static (string, string, string) Split3(this string input, RegexPattern regexPattern)
+      {
+         return input.Split3(regexPattern.Pattern, regexPattern.Options);
       }
 
       public static (string, string, string, string) Split4(this string input, string pattern, bool ignoreCase = false, bool multiline = false)
@@ -185,6 +224,11 @@ namespace Core.Regex
          };
       }
 
+      public static (string, string, string, string) Split4(this string input, RegexPattern regexPattern)
+      {
+         return input.Split4(regexPattern.Pattern, regexPattern.Options);
+      }
+
       public static IMaybe<Matcher> Matcher(this string input, string pattern, bool ignoreCase = false, bool multiline = false)
       {
          var matcher = new Matcher();
@@ -197,6 +241,11 @@ namespace Core.Regex
          return maybe(matcher.IsMatch(input, pattern, options), () => matcher);
       }
 
+      public static IMaybe<Matcher> Matcher(this string input, RegexPattern regexPattern)
+      {
+         return input.Matcher(regexPattern.Pattern, regexPattern.Options);
+      }
+
       public static bool Matcher(this string input, string pattern, out Matcher matcher, bool ignoreCase = false, bool multiline = false)
       {
          return input.Matcher(pattern, ignoreCase, multiline).If(out matcher);
@@ -205,6 +254,11 @@ namespace Core.Regex
       public static bool Matcher(this string input, string pattern, out Matcher matcher, RegexOptions options)
       {
          return input.Matcher(pattern, options).If(out matcher);
+      }
+
+      public static bool Matcher(this string input, RegexPattern regexPattern, out Matcher matcher)
+      {
+         return input.Matcher(regexPattern).If(out matcher);
       }
 
       public static void IfMatches(this string input, string pattern, Action<Matcher> ifTrue, bool ignoreCase = false, bool multiline = false)
@@ -223,6 +277,11 @@ namespace Core.Regex
          {
             ifTrue(matcher);
          }
+      }
+
+      public static void IfMatches(this string input, RegexPattern regexPattern, Action<Matcher> ifTrue)
+      {
+         input.IfMatches(regexPattern.Pattern, ifTrue, regexPattern.Options);
       }
 
       public static void IfMatches(this string input, string pattern, Action<Matcher> ifTrue, Action ifFalse, bool ignoreCase = false,
@@ -252,6 +311,11 @@ namespace Core.Regex
          }
       }
 
+      public static void IfMatches(this string input, RegexPattern regexPattern, Action<Matcher> ifTrue, Action ifFalse)
+      {
+         input.IfMatches(regexPattern.Pattern, ifTrue, ifFalse, regexPattern.Options);
+      }
+
       public static IMatched<RegularExpressions.Matcher.Match[]> MatchAll(this string input, string pattern, RegexOptions options)
       {
          return new Matcher().MatchAll(input, pattern, options);
@@ -261,6 +325,11 @@ namespace Core.Regex
          bool multiline = false)
       {
          return new Matcher().MatchAll(input, pattern, ignoreCase, multiline);
+      }
+
+      public static IMatched<RegularExpressions.Matcher.Match[]> MatchAll(this string input, RegexPattern regexPattern)
+      {
+         return new Matcher().MatchAll(input, regexPattern);
       }
 
       public static IMatched<RegularExpressions.Matcher.Match> MatchOne(this string input, string pattern, RegexOptions options)
@@ -274,6 +343,11 @@ namespace Core.Regex
          return new Matcher().MatchOne(input, pattern, ignoreCase, multiline);
       }
 
+      public static IMatched<RegularExpressions.Matcher.Match> MatchOne(this string input, RegexPattern regexPattern)
+      {
+         return new Matcher().MatchOne(input, regexPattern);
+      }
+
       public static IEnumerable<RegularExpressions.Matcher.Match> Matches(this string input, string pattern, bool ignoreCase = false,
          bool multiline = false)
       {
@@ -283,6 +357,11 @@ namespace Core.Regex
       public static IEnumerable<RegularExpressions.Matcher.Match> Matches(this string input, string pattern, RegexOptions options)
       {
          return new Matcher().Matched(input, pattern, options);
+      }
+
+      public static IEnumerable<RegularExpressions.Matcher.Match> Matches(this string input, RegexPattern regexPattern)
+      {
+         return new Matcher().Matched(input, regexPattern);
       }
 
       public static IEnumerable<RegexResult> Matches(this string input, params string[] patterns)
