@@ -115,7 +115,7 @@ namespace Core.RegularExpressions
          return new RegexResult(restOfText);
       }
 
-      public RegexResult MatchFirst(string pattern, RegexOptions options)
+      public RegexResult MatchOn(string pattern, RegexOptions options)
       {
          if (!pattern.StartsWith("^"))
          {
@@ -136,16 +136,16 @@ namespace Core.RegularExpressions
          }
       }
 
-      public RegexResult MatchFirst(string pattern, bool ignoreCase = false, bool multiline = false)
+      public RegexResult MatchOn(string pattern, bool ignoreCase = false, bool multiline = false)
       {
          Bits32<RegexOptions> options = RegexOptions.None;
          options[RegexOptions.IgnoreCase] = ignoreCase;
          options[RegexOptions.Multiline] = multiline;
 
-         return MatchFirst(pattern, options);
+         return MatchOn(pattern, options);
       }
 
-      public RegexResult MatchFirst(RegexPattern regexPattern)
+      public RegexResult MatchOn(RegexPattern regexPattern)
       {
          var newPattern = regexPattern.Pattern;
          if (!newPattern.StartsWith("^"))

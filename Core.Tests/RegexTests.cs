@@ -91,7 +91,7 @@ namespace Core.Tests
          if (matcher.IsMatch(input, pattern))
          {
             Console.Write($"{matcher.FirstGroup}(");
-            var result = matcher.MatchFirst((RegexPattern)@"(/s* ',')? /s* /(/w+)");
+            var result = matcher.MatchOn((RegexPattern)@"(/s* ',')? /s* /(/w+)");
             var list = new List<string>();
             while (result.IsMatch)
             {
@@ -99,7 +99,7 @@ namespace Core.Tests
                result = result.MatchNext();
             }
 
-            result = result.MatchFirst((RegexPattern)@"^ ')' /s* '->' /s* /(/w+)");
+            result = result.MatchOn((RegexPattern)@"^ ')' /s* '->' /s* /(/w+)");
             if (result.IsMatch)
             {
                Console.WriteLine($"{list.ToString(", ")}) -> {result.FirstGroup}");
