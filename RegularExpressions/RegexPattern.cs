@@ -53,6 +53,10 @@ namespace Core.RegularExpressions
          }
       }
 
+      public static RegexPattern operator +(RegexPattern pattern, string suffix) => pattern.WithPattern(pattern.Pattern + suffix);
+
+      public static RegexPattern operator +(string prefix, RegexPattern pattern) => pattern.WithPattern(prefix + pattern.Pattern);
+
       protected string pattern;
       protected Bits32<RegexOptions> options;
       protected bool friendly;
