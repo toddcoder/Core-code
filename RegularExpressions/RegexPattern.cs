@@ -112,5 +112,11 @@ namespace Core.RegularExpressions
             return hashCode;
          }
       }
+
+      public RegexResult Matches(string input)
+      {
+         var matcher = new Matcher(Friendly);
+         return matcher.MatchOn(input, this);
+      }
    }
 }
