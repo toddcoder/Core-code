@@ -38,47 +38,25 @@ namespace Core.Tests
       [TestMethod]
       public void MatchPatternsTest()
       {
-         foreach (var (text, index, _, _, itemIndex, isFound) in "foobar(foo,baz)".Matches("/w+ '('", "/w+ ','", "/w+ ')'"))
+         var result = "^ /w+ '('".Matches("foobar(foo,baz)");
+         if (result.IsMatch)
          {
-            if (isFound)
+            Console.Write(result.Text);
+            while (result.IsMatch)
             {
-               Console.WriteLine($"{itemIndex}: Found \"{text}\" at {index}");
+               result = result.Matches("/w+ ','");
+               if (result.IsMatch)
+               {
+                  Console.Write(result.Text);
+               }
             }
-            else
+
+            result = result.Matches("/w+ ')'");
+            if (result.IsMatch)
             {
-               Console.WriteLine($"{itemIndex}: Not found");
+               Console.WriteLine(result.Text);
             }
          }
-
-         var outerResult = RegexResult.Empty;
-
-         foreach (var result in "foobar(foo, baz, box)".Matches("/(/w+) '('", "(/s* ',')? /s* /(/w+)"))
-         {
-            outerResult = result;
-            var exit = false;
-            switch (result.ItemIndex)
-            {
-               case 0:
-                  Console.Write($"{result.FirstGroup}(");
-                  break;
-               case 1:
-                  exit = true;
-                  break;
-            }
-
-            if (exit)
-            {
-               break;
-            }
-         }
-
-         while (outerResult.IsMatch)
-         {
-            Console.Write(outerResult.Text);
-            outerResult = outerResult.MatchNext();
-         }
-
-         Console.WriteLine(")");
       }
 
       [TestMethod]
@@ -99,7 +77,7 @@ namespace Core.Tests
                result = result.MatchNext();
             }
 
-            result = result.MatchOn((RegexPattern)@"^ ')' /s* '->' /s* /(/w+)");
+            result = result.Matches((RegexPattern)@"^ ')' /s* '->' /s* /(/w+)");
             if (result.IsMatch)
             {
                Console.WriteLine($"{list.ToString(", ")}) -> {result.FirstGroup}");

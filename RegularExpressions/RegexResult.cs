@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Text.RegularExpressions;
 using Core.Arrays;
-using Core.Numbers;
 using Core.Strings;
 
 namespace Core.RegularExpressions
@@ -30,7 +28,7 @@ namespace Core.RegularExpressions
          IsMatch = true;
       }
 
-      internal RegexResult(string text)
+      internal RegexResult(string text, string restOfText)
       {
          Text = text;
          Index = -1;
@@ -39,13 +37,13 @@ namespace Core.RegularExpressions
          ItemIndex = -1;
          Match = new Matcher.Match();
          pattern = new RegexPattern();
-         restOfText = "";
+         this.restOfText = restOfText;
          offset = -1;
 
          IsMatch = false;
       }
 
-      internal RegexResult() : this("")
+      internal RegexResult() : this("", "")
       {
       }
 
@@ -112,40 +110,20 @@ namespace Core.RegularExpressions
             }
          }
 
-         return new RegexResult(restOfText);
+         return new RegexResult(restOfText, restOfText);
       }
 
-      public RegexResult MatchOn(string pattern, RegexOptions options)
+      public RegexResult Matches(string pattern)
       {
          if (!pattern.StartsWith("^"))
          {
             pattern = $"^{pattern}";
          }
 
-         var matcher = new Matcher(this.pattern.Friendly);
-         if (matcher.IsMatch(Text, pattern, options))
-         {
-            var regexPattern = new RegexPattern(pattern, options, this.pattern.Friendly);
-            var text = Text.Drop(Length);
-            return new RegexResult(matcher.FirstMatch, matcher.Index, matcher.Length, matcher.Groups(0), 0, matcher.GetMatch(0), regexPattern, text,
-               matcher.Index);
-         }
-         else
-         {
-            return new RegexResult(Text);
-         }
+         return Matches((RegexPattern)pattern);
       }
 
-      public RegexResult MatchOn(string pattern, bool ignoreCase = false, bool multiline = false)
-      {
-         Bits32<RegexOptions> options = RegexOptions.None;
-         options[RegexOptions.IgnoreCase] = ignoreCase;
-         options[RegexOptions.Multiline] = multiline;
-
-         return MatchOn(pattern, options);
-      }
-
-      public RegexResult MatchOn(RegexPattern regexPattern)
+      public RegexResult Matches(RegexPattern regexPattern)
       {
          var newPattern = regexPattern.Pattern;
          if (!newPattern.StartsWith("^"))
@@ -156,15 +134,15 @@ namespace Core.RegularExpressions
          regexPattern = regexPattern.WithPattern(newPattern);
 
          var matcher = new Matcher(regexPattern.Friendly);
-         if (matcher.IsMatch(Text, regexPattern))
+         if (matcher.IsMatch(restOfText, regexPattern))
          {
-            var text = Text.Drop(Length);
+            var text = restOfText.Drop(matcher.Length);
             return new RegexResult(matcher.FirstMatch, matcher.Index, matcher.Length, matcher.Groups(0), 0, matcher.GetMatch(0), regexPattern, text,
                matcher.Index);
          }
          else
          {
-            return new RegexResult(Text);
+            return new RegexResult(restOfText, restOfText);
          }
       }
    }
