@@ -329,6 +329,7 @@
     <Compile Include="Regex\Matcher.cs" />
     <Compile Include="Regex\RegexExtensions.cs" />
     <Compile Include="Regex\RegexPattern.cs" />
+    <Compile Include="Regex\Scraper.cs" />
     <Compile Include="Regex\Splitter.cs" />
     <Compile Include="RegularExpressions\Matcher.cs" />
     <Compile Include="RegularExpressions\MatcherTrying.cs" />
@@ -363,6 +364,8 @@
     <Compile Include="RegularExpressions\RegexPattern.cs" />
     <Compile Include="RegularExpressions\RegexExtensions.cs" />
     <Compile Include="RegularExpressions\RegexResult.cs" />
+    <Compile Include="RegularExpressions\Scraper.cs" />
+    <Compile Include="RegularExpressions\Source.cs" />
     <Compile Include="RegularExpressions\Splitter.cs" />
     <Compile Include="Strings\CharacterExtensions.cs" />
     <Compile Include="Strings\CSV.cs" />
