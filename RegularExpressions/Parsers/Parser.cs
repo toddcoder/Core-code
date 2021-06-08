@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Text;
 using Core.Assertions;
+using Core.Strings;
 
 namespace Core.RegularExpressions.Parsers
 {
@@ -63,7 +64,7 @@ namespace Core.RegularExpressions.Parsers
                break;
             }
 
-            added.Must().BeTrue().OrThrow($"Didn't recognize {source.Substring(index)}");
+            added.Must().BeTrue().OrThrow($"Didn't recognize {source.Drop(index)}");
          }
 
          return content.ToString();
