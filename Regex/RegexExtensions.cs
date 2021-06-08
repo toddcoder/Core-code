@@ -366,7 +366,21 @@ namespace Core.Regex
 
       public static IEnumerable<RegexResult> Matches(this string input, params string[] patterns)
       {
-         return RegularExpressions.RegexExtensions.Matches(input, patterns);
+         foreach (var pattern in patterns)
+         {
+            var regexPattern = (RegularExpressions.RegexPattern)pattern;
+            var result = regexPattern.Matches(input);
+            if (result.IsMatch)
+            {
+               yield return result;
+
+               input = input.Drop(result.Length);
+            }
+            else
+            {
+               yield break;
+            }
+         }
       }
    }
 }

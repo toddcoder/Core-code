@@ -437,6 +437,6 @@ namespace Core.RegularExpressions
          }
       }
 
-      public static IEnumerable<RegexResult> Matches(this string input, params string[] patterns) => matches(input, patterns, 0, 0);
+      public static RegexResult Matches(this string patternSource, string input) => ((RegexPattern)patternSource).Matches(input);
    }
 }

@@ -56,10 +56,12 @@ namespace Core.Numbers
 
       public void Reverse(TEnum bit) => bits = ReverseBit(bits, bit);
 
-      public IEnumerator<TEnum> GetEnumerator() => Enum.GetValues(typeof(TEnum)).Cast<TEnum>().Where(item => GetBit(bits, item)).GetEnumerator();
+      public IEnumerator<TEnum> GetEnumerator() => Enumerable().GetEnumerator();
 
       IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-      public override string ToString() => this.ToString(" | ");
+      public IEnumerable<TEnum> Enumerable() => Enum.GetValues(typeof(TEnum)).Cast<TEnum>().Where(item => GetBit(bits, item));
+
+      public override string ToString() => Enumerable().ToString(" | ");
    }
 }

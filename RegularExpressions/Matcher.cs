@@ -619,7 +619,7 @@ namespace Core.RegularExpressions
 
       public IEnumerable<Match> Matched(string input, RegexPattern regexPattern) => Matched(input, regexPattern.Pattern, regexPattern.Options);
 
-      public RegexResult MatchFirst(string input, string pattern, RegexOptions options)
+      public RegexResult MatchOn(string input, string pattern, RegexOptions options)
       {
          if (IsMatch(input, pattern, options))
          {
@@ -632,31 +632,33 @@ namespace Core.RegularExpressions
          }
       }
 
-      public RegexResult MatchFirst(string input, string pattern, bool ignoreCase = false, bool multiline = false)
+      public RegexResult MatchOn(string input, string pattern, bool ignoreCase = false, bool multiline = false)
       {
-         return MatchFirst(input, pattern, GetOptions(ignoreCase, multiline));
+         return MatchOn(input, pattern, GetOptions(ignoreCase, multiline));
       }
 
-      public RegexResult MatchFirst(string pattern, RegexOptions options)
-      {
-         if (!pattern.StartsWith("^"))
-         {
-            pattern = $"^{pattern}";
-         }
+      public RegexResult MatchOn(string input, RegexPattern pattern) => MatchOn(input, pattern.Pattern, pattern.Options);
 
-         return MatchFirst(lastInput.Drop(Length), pattern, options);
-      }
-
-      public RegexResult MatchFirst(string pattern, bool ignoreCase = false, bool multiline = false)
+      public RegexResult MatchOn(string pattern, RegexOptions options)
       {
          if (!pattern.StartsWith("^"))
          {
             pattern = $"^{pattern}";
          }
 
-         return MatchFirst(lastInput.Drop(Length), pattern, ignoreCase, multiline);
+         return MatchOn(lastInput.Drop(Length), pattern, options);
       }
 
-      public RegexResult MatchFirst(RegexPattern regexPattern) => MatchFirst(regexPattern.Pattern, regexPattern.Options);
+      public RegexResult MatchOn(string pattern, bool ignoreCase = false, bool multiline = false)
+      {
+         if (!pattern.StartsWith("^"))
+         {
+            pattern = $"^{pattern}";
+         }
+
+         return MatchOn(lastInput.Drop(Length), pattern, ignoreCase, multiline);
+      }
+
+      public RegexResult MatchOn(RegexPattern regexPattern) => MatchOn(regexPattern.Pattern, regexPattern.Options);
    }
 }
