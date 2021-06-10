@@ -157,12 +157,7 @@ namespace Core.Configurations
 
       protected static string toString(object obj, Type type)
       {
-         static string encloseInQuotes(string text)
-         {
-            var escaped = text.ReplaceAll(("\t", @"\t"), ("\r", @"\r"), ("\n", @"\n"));
-            escaped = escaped.Substitute(@"'\' -(> ['rtn\'])", @"\\", true);
-            return $"\"{escaped}\"";
-         }
+         static string encloseInQuotes(string text) => $"\"{text}\"";
 
          if (type == typeof(byte[]))
          {
