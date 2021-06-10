@@ -73,7 +73,12 @@ namespace Core.Configurations
 
       protected static IMaybe<object> getConversion(Type type, string source)
       {
-         string sourceWithoutQuotes() => source.StartsWith(@"""") && source.EndsWith(@"""") ? source.Drop(1).Drop(-1) : source;
+         string sourceWithoutQuotes()
+         {
+            var withoutQuotes = source.StartsWith(@"""") && source.EndsWith(@"""") ? source.Drop(1).Drop(-1) : source;
+            var unescaped = withoutQuotes.ReplaceAll(("~x09", "\t"), ("~x0d", "\r"), ("~0xa", "\n"), ("~x5c", "\\"));
+            return unescaped;
+         }
 
          if (type == typeof(string))
          {
@@ -157,7 +162,11 @@ namespace Core.Configurations
 
       protected static string toString(object obj, Type type)
       {
-         static string encloseInQuotes(string text) => $"\"{text}\"";
+         static string encloseInQuotes(string text)
+         {
+            var escaped = text.ReplaceAll(("\t", "~x09"), ("\r", "~x0d"), ("\n", "~0x0a"), ("\\", "~x5c"));
+            return $"\"{escaped}\"";
+         }
 
          if (type == typeof(byte[]))
          {
