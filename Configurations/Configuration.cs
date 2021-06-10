@@ -76,7 +76,7 @@ namespace Core.Configurations
          string sourceWithoutQuotes()
          {
             var withoutQuotes = source.StartsWith(@"""") && source.EndsWith(@"""") ? source.Drop(1).Drop(-1) : source;
-            var unescaped = withoutQuotes.ReplaceAll(("~x09", "\t"), ("~x0d", "\r"), ("~0xa", "\n"), ("~x5c", "\\"));
+            var unescaped = withoutQuotes.ReplaceAll(("~x09", "\t"), ("~x0d", "\r"), ("~x0a", "\n"), ("~x5c", "\\"));
             return unescaped;
          }
 
