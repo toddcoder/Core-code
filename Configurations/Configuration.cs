@@ -159,7 +159,7 @@ namespace Core.Configurations
       {
          static string encloseInQuotes(string text)
          {
-            var escaped = text.ReplaceAll(("\t", @"\\t"), ("\r", @"\\r"), ("\n", @"\\n"));
+            var escaped = text.ReplaceAll(("\t", @"\t"), ("\r", @"\r"), ("\n", @"\n"));
             escaped = escaped.Substitute(@"'\' -(> ['rtn\'])", @"\\", true);
             return $"\"{escaped}\"";
          }
