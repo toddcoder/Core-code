@@ -164,7 +164,7 @@ namespace Core.Configurations
       {
          static string encloseInQuotes(string text)
          {
-            var escaped = text.ReplaceAll(("\t", "~x09"), ("\r", "~x0d"), ("\n", "~0x0a"), ("\\", "~x5c"));
+            var escaped = text.ReplaceAll(("\t", "~x09"), ("\r", "~x0d"), ("\n", "~x0a"), ("\\", "~x5c"));
             return $"\"{escaped}\"";
          }
 
