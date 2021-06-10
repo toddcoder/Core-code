@@ -142,5 +142,21 @@ namespace Core.Tests
             Console.WriteLine("Not matched");
          }
       }
+
+      [TestMethod]
+      public void RetainTest()
+      {
+         var source = "~foobar-foo?baz-boo!boo-yogi";
+         var retained = source.Retain((RegexPattern)"[/w '-']");
+         Console.WriteLine(retained);
+      }
+
+      [TestMethod]
+      public void ScrubTest()
+      {
+         var source = "~foobar-foo?baz-boo!boo-yogi";
+         var retained = source.Scrub((RegexPattern)"[/w '-']");
+         Console.WriteLine(retained);
+      }
    }
 }

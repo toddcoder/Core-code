@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using Core.Monads;
+using Core.Numbers;
 using Core.Strings;
 using static System.Text.RegularExpressions.RegexOptions;
 using static Core.Monads.MonadFunctions;
@@ -438,5 +440,62 @@ namespace Core.RegularExpressions
       }
 
       public static RegexResult Matches(this string patternSource, string input) => ((RegexPattern)patternSource).Matches(input);
+
+      public static string Retain(this string input, string pattern, bool ignoreCase, bool multiline, bool friendly = true)
+      {
+         var matcher = new Matcher(friendly);
+         if (matcher.IsMatch(input, pattern, ignoreCase, multiline))
+         {
+            var builder = new StringBuilder();
+            foreach (var match in matcher.Matches)
+            {
+               builder.Append(match);
+            }
+
+            return builder.ToString();
+         }
+         else
+         {
+            return string.Empty;
+         }
+      }
+
+      public static string Retain(this string input, string pattern, Bits32<RegexOptions> options, bool friendly = true)
+      {
+         return input.Retain(pattern, options[IgnoreCase], options[Multiline], friendly);
+      }
+
+      public static string Retain(this string input, RegexPattern regexPattern)
+      {
+         return input.Retain(regexPattern.Pattern, regexPattern.IgnoreCase, regexPattern.Multiline, regexPattern.Friendly);
+      }
+
+      public static string Scrub(this string input, string pattern, bool ignoreCase, bool multiline, bool friendly = true)
+      {
+         var matcher = new Matcher(friendly);
+         if (matcher.IsMatch(input, pattern, ignoreCase, multiline))
+         {
+            for (var i = 0; i < matcher.MatchCount; i++)
+            {
+               matcher[i] = string.Empty;
+            }
+
+            return matcher.ToString();
+         }
+         else
+         {
+            return input;
+         }
+      }
+
+      public static string Scrub(this string input, string pattern, Bits32<RegexOptions> options, bool friendly = true)
+      {
+         return input.Scrub(pattern, options[IgnoreCase], options[Multiline], friendly);
+      }
+
+      public static string Scrub(this string input, RegexPattern regexPattern)
+      {
+         return input.Scrub(regexPattern.Pattern, regexPattern.IgnoreCase, regexPattern.Multiline, regexPattern.Friendly);
+      }
    }
 }
