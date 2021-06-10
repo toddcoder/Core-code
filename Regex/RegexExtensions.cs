@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Text.RegularExpressions;
 using Core.Monads;
+using Core.Numbers;
 using Core.RegularExpressions;
 using Core.Strings;
 using static System.Text.RegularExpressions.RegexOptions;
@@ -381,6 +383,63 @@ namespace Core.Regex
                yield break;
             }
          }
+      }
+
+      public static string Retain(this string input, string pattern, bool ignoreCase, bool multiline)
+      {
+         var matcher = new Matcher();
+         if (matcher.IsMatch(input, pattern, ignoreCase, multiline))
+         {
+            var builder = new StringBuilder();
+            foreach (var match in matcher.Matches)
+            {
+               builder.Append(match);
+            }
+
+            return builder.ToString();
+         }
+         else
+         {
+            return string.Empty;
+         }
+      }
+
+      public static string Retain(this string input, string pattern, Bits32<RegexOptions> options)
+      {
+         return input.Retain(pattern, options[IgnoreCase], options[Multiline]);
+      }
+
+      public static string Retain(this string input, RegexPattern regexPattern)
+      {
+         return input.Retain(regexPattern.Pattern, regexPattern.IgnoreCase, regexPattern.Multiline);
+      }
+
+      public static string Scrub(this string input, string pattern, bool ignoreCase, bool multiline)
+      {
+         var matcher = new Matcher();
+         if (matcher.IsMatch(input, pattern, ignoreCase, multiline))
+         {
+            for (var i = 0; i < matcher.MatchCount; i++)
+            {
+               matcher[i] = string.Empty;
+            }
+
+            return matcher.ToString();
+         }
+         else
+         {
+            return input;
+         }
+      }
+
+      public static string Scrub(this string input, string pattern, Bits32<RegexOptions> options)
+      {
+         return input.Scrub(pattern, options[IgnoreCase], options[Multiline]);
+      }
+
+      public static string Scrub(this string input, RegexPattern regexPattern)
+      {
+         return input.Scrub(regexPattern.Pattern, regexPattern.IgnoreCase, regexPattern.Multiline);
       }
    }
 }
