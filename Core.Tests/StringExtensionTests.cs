@@ -3,6 +3,7 @@ using Core.Assertions;
 using Core.Enumerables;
 using Core.Strings;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static Core.Arrays.ArrayFunctions;
 
 namespace Core.Tests
 {
@@ -119,6 +120,32 @@ namespace Core.Tests
          foreach (var line in lines)
          {
             Console.WriteLine(line);
+         }
+      }
+
+      protected static void quoteString(string text, bool indent = true)
+      {
+         var indentation = indent ? "  " : "";
+         Console.WriteLine($"{indentation}\"{text}\"");
+      }
+
+      protected void writeWords(string text)
+      {
+         quoteString(text, false);
+         foreach (var word in text.Words())
+         {
+            quoteString(word);
+         }
+
+         Console.WriteLine("=".Repeat(80));
+      }
+
+      [TestMethod]
+      public void WordsTest()
+      {
+         foreach (var text in array("maryMaryContrary", "ExamplesRemarksConstructorsProperties", "alpha-bravo-charlie"))
+         {
+            writeWords(text);
          }
       }
    }

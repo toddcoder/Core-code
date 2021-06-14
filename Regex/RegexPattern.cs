@@ -33,7 +33,7 @@ namespace Core.Regex
 
             var pattern = source.Drop(-matcher.Length);
 
-            return new RegexPattern(pattern, ignoreCase, multiline);
+            return new RegexPattern(pattern.TrimEnd(), ignoreCase, multiline);
          }
          else
          {
