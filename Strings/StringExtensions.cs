@@ -1704,7 +1704,7 @@ namespace Core.Strings
          }
       }
 
-      public static string[] Words(this string source) => source.IsEmpty() ? new string[0] : source.Split("/s+");
+      //public static string[] Words(this string source) => source.IsEmpty() ? new string[0] : source.Split("/s+");
 
       public static string Drop(this string source, int count)
       {
@@ -2391,6 +2391,44 @@ namespace Core.Strings
       {
          var indent = " ".Repeat(indentation);
          return source.Lines().Select(line => $"{indent}{line}").ToString("\r\n");
+      }
+
+      public static IEnumerable<string> Words(this string source)
+      {
+         var builder = new StringBuilder();
+
+         foreach (var ch in source)
+         {
+            if (char.IsUpper(ch))
+            {
+               if (builder.Length > 0)
+               {
+                  yield return builder.ToString();
+
+                  builder.Clear();
+               }
+
+               builder.Append(ch);
+            }
+            else if (char.IsLower(ch) || char.IsDigit(ch))
+            {
+               builder.Append(ch);
+            }
+            else if (ch == '_' || char.IsPunctuation(ch) || char.IsWhiteSpace(ch))
+            {
+               if (builder.Length > 0)
+               {
+                  yield return builder.ToString();
+
+                  builder.Clear();
+               }
+            }
+         }
+
+         if (builder.Length > 0)
+         {
+            yield return builder.ToString();
+         }
       }
    }
 }
