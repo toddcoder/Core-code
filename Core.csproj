@@ -326,6 +326,11 @@
     <Compile Include="Objects\TypeExtensions.cs" />
     <Compile Include="Objects\TypeFunctions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RegexMatching\Group.cs" />
+    <Compile Include="RegexMatching\Match.cs" />
+    <Compile Include="RegexMatching\Matcher.cs" />
+    <Compile Include="RegexMatching\RegexExtensions.cs" />
+    <Compile Include="RegexMatching\Result.cs" />
     <Compile Include="Regex\Matcher.cs" />
     <Compile Include="Regex\RegexExtensions.cs" />
     <Compile Include="Regex\RegexPattern.cs" />
