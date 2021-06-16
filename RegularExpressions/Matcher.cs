@@ -17,6 +17,7 @@ using RGroup = System.Text.RegularExpressions.Group;
 
 namespace Core.RegularExpressions
 {
+   [Obsolete("Use RegexMatching.Matcher")]
    public class Matcher : IEnumerable<Matcher.Match>
    {
       public class Group

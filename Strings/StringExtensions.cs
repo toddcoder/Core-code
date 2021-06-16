@@ -8,7 +8,7 @@ using Core.Dates.Now;
 using Core.Enumerables;
 using Core.Monads;
 using Core.Numbers;
-using Core.RegularExpressions;
+using Core.RegexMatching;
 using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
 using static Core.Strings.StringFunctions;
@@ -240,15 +240,15 @@ namespace Core.Strings
          }
          else
          {
-            var matches = source.Matcher($"-/b /(['A-Z']{quantitative})");
-            if (matches.If(out var matcher))
+            var matches = source.Matched($"-/b /(['A-Z']{quantitative})");
+            if (matches.If(out var result))
             {
-               for (var i = 0; i < matcher.MatchCount; i++)
+               for (var i = 0; i < result.MatchCount; i++)
                {
-                  matcher[i, 1] = separator + matcher[i, 1];
+                  result[i, 1] = separator + result[i, 1];
                }
 
-               return matcher.ToString().ToLower();
+               return result.ToString().ToLower();
             }
             else
             {
@@ -276,15 +276,15 @@ namespace Core.Strings
          else
          {
             var pattern = separator.Escape().SingleQuotify() + "/(['a-z'])";
-            var matches = source.Matcher(pattern);
-            if (matches.If(out var matcher))
+            var matches = source.Matched(pattern);
+            if (matches.If(out var result))
             {
-               for (var i = 0; i < matcher.MatchCount; i++)
+               for (var i = 0; i < result.MatchCount; i++)
                {
-                  matcher[i] = matcher[i, 1].ToUpper();
+                  result[i] = result[i, 1].ToUpper();
                }
 
-               return upperCase ? matcher.ToString().ToUpper1() : matcher.ToString().ToLower1();
+               return upperCase ? result.ToString().ToUpper1() : result.ToString().ToLower1();
             }
             else
             {
@@ -308,39 +308,39 @@ namespace Core.Strings
             text = text.SnakeToCamelCase(true);
          }
 
-         var matcher = new Matcher();
-         if (matcher.IsMatch(text, "['A-Z'] ['a-z']*"))
+         Matcher matcher = "['A-Z'] ['a-z']*";
+         if (matcher.Matches(text).If(out var result))
          {
-            var numericMatcher = new Matcher();
+            Matcher numericMatcher = "/d+ $";
             var numeric = string.Empty;
-            if (numericMatcher.IsMatch(text, "/d+ $"))
+            if (numericMatcher.Matches(text).If(out var numericResult))
             {
-               numeric = numericMatcher[0];
+               numeric = numericResult[0];
             }
 
-            var result = new StringBuilder();
-            var subMatcher = new Matcher();
-            for (var i = 0; i < matcher.MatchCount; i++)
+            var builder = new StringBuilder();
+            Matcher subMatcher = "^ /uc? /lc* [/lv 'y' /uv 'Y']+ /(/lc?) /1? ['h']? ('e' $)?";
+            for (var i = 0; i < result.MatchCount; i++)
             {
-               if (subMatcher.IsMatch(matcher[i, 0], "^ /uc? /lc* [/lv 'y' /uv 'Y']+ /(/lc?) /1? ['h']? ('e' $)?"))
+               if (subMatcher.Matches(result[i, 0]).If(out var subResult))
                {
-                  for (var j = 0; j < subMatcher.MatchCount; j++)
+                  for (var j = 0; j < subResult.MatchCount; j++)
                   {
-                     result.Append(fixMatch(matcher[i, 0], subMatcher[j, 0]));
+                     builder.Append(fixMatch(result[i, 0], subResult[j, 0]));
                   }
                }
                else
                {
-                  result.Append(matcher[0, 0]);
+                  builder.Append(result[0, 0]);
                }
 
-               if (matcher[0, 0].EndsWith("s"))
+               if (result[0, 0].EndsWith("s"))
                {
-                  result.Append("s");
+                  builder.Append("s");
                }
             }
 
-            return result + numeric;
+            return builder + numeric;
          }
          else
          {
@@ -465,12 +465,12 @@ namespace Core.Strings
 
       public static string RemoveCOneLineComments(this string source)
       {
-         return source.Map(s => s.Substitute("'//' .*? /crlf", string.Empty, false, true));
+         return source.Map(s => s.Substitute("'//' .*? /crlf; m", string.Empty));
       }
 
       public static string RemoveSQLOneLineComments(this string source)
       {
-         return source.Map(s => s.Substitute("'--' .*? /crlf", string.Empty, false, true));
+         return source.Map(s => s.Substitute("'--' .*? /crlf; m", string.Empty));
       }
 
       public static string AllowOnly(this string source, string allowed)
@@ -485,16 +485,16 @@ namespace Core.Strings
             allowed = $"['{allowed}']";
          }
 
-         var matcher = new Matcher();
-         if (matcher.IsMatch(source, allowed))
+         var matcher = allowed;
+         if (matcher.Matched(source).If(out var result))
          {
-            var result = new StringBuilder();
-            for (var i = 0; i < matcher.MatchCount; i++)
+            var builder = new StringBuilder();
+            for (var i = 0; i < result.MatchCount; i++)
             {
-               result.Append(matcher[i, 0]);
+               builder.Append(result[i, 0]);
             }
 
-            return result.ToString();
+            return builder.ToString();
          }
          else
          {
@@ -542,12 +542,12 @@ namespace Core.Strings
 
       public static string Unquotify(this string source)
       {
-         return source.Map(s => s.Matcher("^ /dq /(.*) /dq $").Map(matcher => matcher.FirstGroup).DefaultTo(() => s));
+         return source.Map(s => s.Matches("^ /dq /(.*) /dq $").Map(result => result.FirstGroup).DefaultTo(() => s));
       }
 
       public static string SingleUnquotify(this string source)
       {
-         return source.Map(s => source.Matcher("^ /sq /(.*) /sq $").Map(matcher => matcher.FirstGroup).DefaultTo(() => s));
+         return source.Map(s => source.Matches("^ /sq /(.*) /sq $").Map(result => result.FirstGroup).DefaultTo(() => s));
       }
 
       public static string Guillemetify(this string source) => source.Map(s => $"«{s}»");
@@ -699,40 +699,41 @@ namespace Core.Strings
             return string.Empty;
          }
 
-         var matcher = new Matcher();
-         if (matcher.IsMatch(source, "'(' /(/w+) (',' /(/w+))? ')'", true))
+         Matcher matcher = "'(' /(/w+) (',' /(/w+))? ')'; i";
+         if (matcher.Matches(source).If(out var result))
          {
             if (number == 1)
             {
-               for (var matchIndex = 0; matchIndex < matcher.MatchCount; matchIndex++)
+               for (var matchIndex = 0; matchIndex < result.MatchCount; matchIndex++)
                {
-                  if (matcher[matchIndex, 2].IsNotEmpty())
+                  if (result[matchIndex, 2].IsNotEmpty())
                   {
-                     matcher[matchIndex] = matcher[matchIndex, 1];
+                     result[matchIndex] = result[matchIndex, 1];
                   }
                   else
                   {
-                     matcher[matchIndex] = string.Empty;
+                     result[matchIndex] = string.Empty;
                   }
                }
             }
             else
             {
-               for (var matchIndex = 0; matchIndex < matcher.MatchCount; matchIndex++)
+               for (var matchIndex = 0; matchIndex < result.MatchCount; matchIndex++)
                {
-                  if (matcher[matchIndex, 2].IsNotEmpty())
+                  if (result[matchIndex, 2].IsNotEmpty())
                   {
-                     matcher[matchIndex] = matcher[matchIndex, 2];
+                     result[matchIndex] = result[matchIndex, 2];
                   }
                   else
                   {
-                     matcher[matchIndex] = matcher[matchIndex, 1];
+                     result[matchIndex] = result[matchIndex, 1];
                   }
                }
             }
 
-            var matcherText = matcher.ToString();
+            var matcherText = result.ToString();
             var numberAccountedFor = false;
+            matcherText.matches
             if (matcher.IsMatch(matcherText, @"-(< '\') /'#'"))
             {
                numberAccountedFor = true;

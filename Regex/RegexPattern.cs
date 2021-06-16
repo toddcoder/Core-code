@@ -1,8 +1,10 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Text.RegularExpressions;
 using Core.Strings;
 
 namespace Core.Regex
 {
+   [Obsolete("Use RegexMatching.Matcher")]
    public class RegexPattern : RegularExpressions.RegexPattern
    {
       public static explicit operator RegexPattern(string source)
