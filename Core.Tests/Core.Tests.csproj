@@ -68,6 +68,7 @@
     <Compile Include="HashTest.cs" />
     <Compile Include="DelimitedTextTests.cs" />
     <Compile Include="ObjectTests.cs" />
+    <Compile Include="RegexMatchingTests.cs" />
     <Compile Include="RegexTests.cs" />
     <Compile Include="MonadTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
