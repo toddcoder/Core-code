@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Core.Assertions;
 using Core.Collections;
@@ -11,6 +12,11 @@ namespace Core.RegexMatching
 {
    public class Result : IEnumerable<Match>
    {
+      public static Result Empty
+      {
+         get => new(Array.Empty<Match>(), new Hash<int, string>(), new StringHash<int>(true), new Slicer(string.Empty), string.Empty);
+      }
+
       protected Match[] matches;
       protected Hash<int, string> indexesToNames;
       protected StringHash<int> namesToIndexes;

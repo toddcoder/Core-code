@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Core.Monads;
 using Core.Strings;
 using RRegex = System.Text.RegularExpressions.Regex;
 
@@ -90,6 +91,45 @@ namespace Core.RegexMatching
          };
       }
 
+      public static (string group1, string group2) Group2(this string input, string pattern)
+      {
+         Matcher matcher = pattern;
+         if (matcher.Matches(input).If(out var result))
+         {
+            return (result.FirstGroup, result.SecondGroup);
+         }
+         else
+         {
+            return ("", "");
+         }
+      }
+
+      public static (string group1, string group2, string group3) Group3(this string input, string pattern)
+      {
+         Matcher matcher = pattern;
+         if (matcher.Matches(input).If(out var result))
+         {
+            return (result.FirstGroup, result.SecondGroup, result.ThirdGroup);
+         }
+         else
+         {
+            return ("", "", "");
+         }
+      }
+
+      public static (string group1, string group2, string group3, string group4) Group4(this string input, string pattern)
+      {
+         Matcher matcher = pattern;
+         if (matcher.Matches(input).If(out var result))
+         {
+            return (result.FirstGroup, result.SecondGroup, result.ThirdGroup, result.FourthGroup);
+         }
+         else
+         {
+            return ("", "", "", "");
+         }
+      }
+
       public static string Retain(this string input, string pattern)
       {
          Matcher matcher = pattern;
@@ -125,6 +165,22 @@ namespace Core.RegexMatching
          {
             return input;
          }
+      }
+
+      public static IMatched<Result> Matches(this string input, string pattern) => ((Matcher)pattern).Matches(input);
+
+      public static Matcher Matcher(this string pattern, bool ignoreCase, bool multiline, bool friendly)
+      {
+         if (!ignoreCase && !multiline && RegexMatching.Matcher.IsFriendly)
+         {
+            return pattern;
+         }
+
+         var strIgnoreCase = ignoreCase ? "i" : "c";
+         var strMultiline = multiline ? "m" : "s";
+         var strFriendly = friendly ? "f" : "u";
+
+         return $"{pattern}; {strIgnoreCase}{strMultiline}{strFriendly}";
       }
    }
 }
