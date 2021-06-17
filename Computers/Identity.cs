@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using System.Security.Principal;
 using Core.Assertions;
 using Core.Monads;
-using Core.RegularExpressions;
+using Core.RegexMatching;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Computers
@@ -94,11 +94,10 @@ namespace Core.Computers
          get => userName;
          set
          {
-            var matcher = new Matcher();
-            if (matcher.IsMatch(value, @"^ /([/w '-']+) '\' /([/w '-']+) $"))
+            if (value.Matches(@"^ /([/w '-']+) '\' /([/w '-']+) $; f").If(out var result))
             {
-               domain = matcher[0, 1];
-               userName = matcher[0, 2];
+               domain = result.FirstGroup;
+               userName = result.SecondGroup;
             }
             else
             {

@@ -14,12 +14,12 @@ using RRegex = System.Text.RegularExpressions.Regex;
 
 namespace Core.RegexMatching
 {
-   public class Matcher
+   public class Pattern
    {
       protected static bool isFriendly;
       protected static MaybeStack<bool> friendlyStack;
 
-      public static implicit operator Matcher(string source)
+      public static implicit operator Pattern(string source)
       {
          var regex = new RRegex(@"\s*;\s*([icmsfu]{1,3})$", RegexOptions.IgnoreCase);
          var matches = regex.Matches(source);
@@ -63,24 +63,24 @@ namespace Core.RegexMatching
             regexOptions[RegexOptions.IgnoreCase] = ignoreCase;
             regexOptions[RegexOptions.Multiline] = multiline;
 
-            return new Matcher(pattern, regexOptions);
+            return new Pattern(pattern, regexOptions);
          }
          else
          {
-            return new Matcher(source, RegexOptions.None);
+            return new Pattern(source, RegexOptions.None);
          }
       }
 
       protected static StringHash<string> friendlyPatterns;
 
-      static Matcher()
+      static Pattern()
       {
          friendlyPatterns = new StringHash<string>(true);
          isFriendly = true;
          friendlyStack = new MaybeStack<bool>();
       }
 
-      internal static string getPattern(string source) => friendlyPatterns.Find(source, _ => new Parser().Parse(source), true);
+      internal static string getRegex(string source) => friendlyPatterns.Find(source, _ => new Parser().Parse(source), true);
 
       public static bool IsFriendly
       {
@@ -102,25 +102,25 @@ namespace Core.RegexMatching
          }
       }
 
-      protected string pattern;
+      protected string regex;
       protected RegexOptions options;
 
-      protected Matcher(string pattern, RegexOptions options)
+      protected Pattern(string regex, RegexOptions options)
       {
-         this.pattern = isFriendly ? getPattern(pattern) : pattern;
+         this.regex = isFriendly ? getRegex(regex) : regex;
          this.options = options;
       }
 
-      public string Pattern => pattern;
+      public string Regex => regex;
 
       public RegexOptions Options => options;
 
-      public IMatched<Result> Matches(string input)
+      public IMatched<Result> MatchedBy(string input)
       {
          try
          {
-            var regex = new RRegex(pattern, options);
-            var newMatches = regex.Matches(input)
+            var rregex = new RRegex(regex, options);
+            var newMatches = rregex.Matches(input)
                .Cast<RMatch>()
                .Select((m, i) => new Match
                {
@@ -136,14 +136,14 @@ namespace Core.RegexMatching
             var slicer = new Slicer(input);
             var indexesToNames = new Hash<int, string>();
             var namesToIndexes = new StringHash<int>(true);
-            foreach (var name in regex.GetGroupNames())
+            foreach (var name in rregex.GetGroupNames())
             {
                if (RRegex.IsMatch(name, @"^[+-]?\d+$"))
                {
                   continue;
                }
 
-               var index = regex.GroupNumberFromName(name);
+               var index = rregex.GroupNumberFromName(name);
                indexesToNames.Add(index, name);
                namesToIndexes.Add(name, index);
             }
@@ -161,6 +161,22 @@ namespace Core.RegexMatching
          {
             return failedMatch<Result>(exception);
          }
+      }
+
+      public Pattern WithIgnoreCase(bool ignoreCase)
+      {
+         Bits32<RegexOptions> newOptions = options;
+         newOptions[RegexOptions.IgnoreCase] = ignoreCase;
+
+         return new Pattern(regex, newOptions);
+      }
+
+      public Pattern WithMultiline(bool multiline)
+      {
+         Bits32<RegexOptions> newOptions = options;
+         newOptions[RegexOptions.Multiline] = multiline;
+
+         return new Pattern(regex, newOptions);
       }
    }
 }

@@ -1,10 +1,10 @@
 ﻿using System;
-using Core.Configurations;
 using Core.Monads;
 using Core.Objects;
-using Core.RegularExpressions;
+using Core.RegexMatching;
 using Core.Strings;
 using static Core.Monads.MonadFunctions;
+using Group = Core.Configurations.Group;
 
 namespace Core.Data.Fields
 {
@@ -29,7 +29,7 @@ namespace Core.Data.Fields
          }
          else
          {
-            var fullName = typeName.Substitute("^ '$'", "System.");
+            var fullName = typeName.Substitute("^ '$'; f", "System.");
             return System.Type.GetType(fullName, false, true).Some();
          }
       }

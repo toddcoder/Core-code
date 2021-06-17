@@ -6,7 +6,7 @@ namespace Core.Objects
 {
    public class Signature
    {
-      public const string REGEX_FORMAT = "^ /(/w+) ('[' /(/d*) ']')? $";
+      public const string REGEX_FORMAT = "^ /(/w+) ('[' /(/d*) ']')? $; f";
 
       public Signature(string signature)
       {

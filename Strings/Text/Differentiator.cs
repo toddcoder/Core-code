@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Core.Monads;
-using Core.RegularExpressions;
+using Core.RegexMatching;
 using static Core.Arrays.ArrayFunctions;
 using static Core.Monads.MonadFunctions;
 
@@ -81,8 +81,8 @@ namespace Core.Strings.Text
                   newPosition + 1);
                if (_subItemBuilder.If(out var subItemBuilder))
                {
-                  var oldWords = result.OldItems[oldPosition].Split("/s+");
-                  var newWords = result.NewItems[newPosition].Split("/s+");
+                  var oldWords = result.OldItems[oldPosition].Split("/s+; f");
+                  var newWords = result.NewItems[newPosition].Split("/s+; f");
                   var differ = new DifferenceBuilder(oldWords, newWords, false, false);
 
                   if (differ.Build().If(out _))

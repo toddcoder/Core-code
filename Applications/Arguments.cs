@@ -5,7 +5,7 @@ using Core.Collections;
 using Core.Exceptions;
 using Core.Monads;
 using Core.Numbers;
-using Core.RegularExpressions;
+using Core.RegexMatching;
 using Core.Strings;
 using static Core.Monads.MonadFunctions;
 
@@ -17,7 +17,7 @@ namespace Core.Applications
       {
          var delimitedText = DelimitedText.BothQuotes();
          var destringified = delimitedText.Destringify(arguments.Replace(@"\", @"\\"));
-         return destringified.Split("/s+").Select(s => delimitedText.Restringify(s, RestringifyQuotes.None)).ToArray();
+         return destringified.Split("/s+; f").Select(s => delimitedText.Restringify(s, RestringifyQuotes.None)).ToArray();
       }
 
       protected Argument[] arguments;
@@ -35,7 +35,9 @@ namespace Core.Applications
          }
       }
 
-      public Arguments(string arguments) : this(splitArguments(arguments)) { }
+      public Arguments(string arguments) : this(splitArguments(arguments))
+      {
+      }
 
       public Arguments()
       {
@@ -102,16 +104,16 @@ namespace Core.Applications
 
       IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-      public Hash<string, string> Switches(string pattern, string keyReplacement = "$0", string valueReplacement = "$1")
+      public Hash<string, string> Switches(Pattern pattern, string keyReplacement = "$0", string valueReplacement = "$1")
       {
          var result = new Hash<string, string>();
 
          foreach (var text in arguments.Select(argument => argument.Text))
          {
-            if (text.IsMatch(pattern, true))
+            if (text.IsMatch(pattern))
             {
-               var key = text.Substitute(pattern, keyReplacement, true);
-               var value = text.Substitute(pattern, valueReplacement, true);
+               var key = text.Substitute(pattern, keyReplacement);
+               var value = text.Substitute(pattern, valueReplacement);
                result[key] = value;
             }
          }
@@ -119,6 +121,6 @@ namespace Core.Applications
          return result;
       }
 
-      public ArgumentsTrying TryTo => new ArgumentsTrying(this);
+      public ArgumentsTrying TryTo => new(this);
    }
 }

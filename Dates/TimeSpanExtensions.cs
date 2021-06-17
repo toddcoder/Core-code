@@ -5,7 +5,7 @@ using Core.Arrays;
 using Core.Dates.DateIncrements;
 using Core.Exceptions;
 using Core.Monads;
-using Core.RegularExpressions;
+using Core.RegexMatching;
 using Core.Strings;
 using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
@@ -14,8 +14,8 @@ namespace Core.Dates
 {
    public static class TimeSpanExtensions
    {
-      const string REGEX_TIMER_INTERVAL = "/(/d+) /s+ /(('milli')? 'sec' ('ond')? 's'? | 'min' ('ute')? 's'? | " +
-         "'h' ('ou')? 'r' 's'? | 'days'?)";
+      private const string REGEX_TIMER_INTERVAL = "/(/d+) /s+ /(('milli')? 'sec' ('ond')? 's'? | 'min' ('ute')? 's'? | " +
+         "'h' ('ou')? 'r' 's'? | 'days'?); f";
 
       public static string ToLongString(this TimeSpan span, bool includeMilliseconds) => Time.ToLongString(span, includeMilliseconds);
 
@@ -66,13 +66,13 @@ namespace Core.Dates
          return Time.ToShortString(span, includeMilliseconds);
       }
 
-      public static TimeSpan ToTimeSpan(this string source) => source.TimeSpan().Recover(e => 1.Second());
+      public static TimeSpan ToTimeSpan(this string source) => source.TimeSpan().Recover(_ => 1.Second());
 
-      public static TimeSpan ToTimeSpan(this string source, TimeSpan defaultValue) => source.TimeSpan().Recover(e => defaultValue);
+      public static TimeSpan ToTimeSpan(this string source, TimeSpan defaultValue) => source.TimeSpan().Recover(_ => defaultValue);
 
       public static IMaybe<TimeSpan> AsTimeSpan(this string source)
       {
-         var intervals = source.Split("/s* (',' | 'and') /s*");
+         var intervals = source.Split("/s* (',' | 'and') /s*; f");
          var spans = intervals.Where(i => i.IsNotEmpty()).Select(getSpan);
          var newSpan = new TimeSpan(0, 0, 0, 0);
 
@@ -93,7 +93,7 @@ namespace Core.Dates
 
       public static IResult<TimeSpan> TimeSpan(this string source)
       {
-         var intervals = source.Split("/s* (',' | 'and') /s*");
+         var intervals = source.Split("/s* (',' | 'and') /s*; f");
          var spans = intervals.Where(i => i.IsNotEmpty()).Select(getSpan);
          var newSpan = new TimeSpan(0, 0, 0, 0);
 
@@ -112,40 +112,40 @@ namespace Core.Dates
          return newSpan.Success();
       }
 
-      static IResult<TimeSpan> getSpan(string source)
+      private static IResult<TimeSpan> getSpan(string source)
       {
          return
-            from matcher in source.Matcher(REGEX_TIMER_INTERVAL).Result($"Can't match {source}")
-            from span in getSpan(matcher)
+            from result in source.Matches(REGEX_TIMER_INTERVAL).Result($"Can't match {source}")
+            from span in getSpan(result)
             select span;
       }
 
-      static IResult<TimeSpan> getSpan(Matcher matcher)
+      private static IResult<TimeSpan> getSpan(Result result)
       {
-         var value = matcher.FirstGroup;
-         var unit = matcher.SecondGroup;
+         var value = result.FirstGroup;
+         var unit = result.SecondGroup;
 
          return
             from intValue in value.Int32()
             from span in tryTo(() =>
             {
-               if (unit.IsMatch("'millisec' ('ond')? 's'?"))
+               if (unit.IsMatch("'millisec' ('ond')? 's'?; f"))
                {
                   return new TimeSpan(0, 0, 0, 0, intValue);
                }
-               else if (unit.IsMatch("'sec' ('ond') 's'?"))
+               else if (unit.IsMatch("'sec' ('ond') 's'?; f"))
                {
                   return new TimeSpan(0, 0, 0, intValue, 0);
                }
-               else if (unit.IsMatch("'min' ('ute')? 's'?"))
+               else if (unit.IsMatch("'min' ('ute')? 's'?; f"))
                {
                   return new TimeSpan(0, intValue, 0);
                }
-               else if (unit.IsMatch("'h' ('ou')? 'r' 's'?"))
+               else if (unit.IsMatch("'h' ('ou')? 'r' 's'?; f"))
                {
                   return new TimeSpan(0, intValue, 0, 0);
                }
-               else if (unit.IsMatch("'days'?"))
+               else if (unit.IsMatch("'days'?; f"))
                {
                   return new TimeSpan(intValue, 0, 0, 0);
                }

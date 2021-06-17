@@ -4,7 +4,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Core.Monads;
-using Core.RegularExpressions;
+using Core.RegexMatching;
 using Core.Strings;
 using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
@@ -99,7 +99,7 @@ namespace Core.Objects
 
       public static string GUID(this Guid value) => value.ToString().ToUpper();
 
-      public static string Compressed(this Guid value) => value.GUID().Substitute("['{}-']", "");
+      public static string Compressed(this Guid value) => value.GUID().Substitute("['{}-']; f", "");
 
       public static string WithoutBrackets(this Guid value) => value.GUID().Drop(1).Drop(-1);
 
@@ -116,30 +116,31 @@ namespace Core.Objects
          {
             return dateTime.ToString(format);
          }
+         else if (format.Matches("/['cdefgnprxs'] /('-'? /d+)? ('.' /(/d+))?; fi").If(out var result))
+         {
+            var (specifier, width, places) = result;
+
+            var builder = new StringBuilder("{0");
+            if (width.IsNotEmpty())
+            {
+               builder.Append($",{width}");
+            }
+
+            if (specifier.IsNotEmpty() && specifier != "s")
+            {
+               builder.Append($":{specifier}");
+               if (places.IsNotEmpty())
+               {
+                  builder.Append(places);
+               }
+            }
+
+            builder.Append("}");
+            return string.Format(builder.ToString(), obj);
+         }
          else
          {
-            return format.MatchOne("/['cdefgnprxs'] /('-'? /d+)? ('.' /(/d+))?", true).FlatMap(match =>
-            {
-               var (specifier, width, places) = match.Groups3();
-
-               var result = new StringBuilder("{0");
-               if (width.IsNotEmpty())
-               {
-                  result.Append($",{width}");
-               }
-
-               if (specifier.IsNotEmpty() && specifier != "s")
-               {
-                  result.Append($":{specifier}");
-                  if (places.IsNotEmpty())
-                  {
-                     result.Append(places);
-                  }
-               }
-
-               result.Append("}");
-               return string.Format(result.ToString(), obj);
-            }, obj.ToString);
+            return obj.ToString();
          }
       }
 

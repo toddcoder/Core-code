@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using Core.RegexMatching;
 using Core.Strings;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -73,13 +74,14 @@ namespace Core.Tests
       [TestMethod]
       public void DestringifyAsSqlTest2()
       {
+         Pattern.IsFriendly = false;
          var source = "UPDATE Foobar SET A = -A, B = 'This is a test' /*a test*/;";
          var delimitedText = DelimitedText.AsSql();
          var parsed = delimitedText.Destringify(source);
          Console.WriteLine(parsed);
          Console.WriteLine(delimitedText.Restringify(parsed, RestringifyQuotes.SingleQuote));
 
-         var inOutside = new DelimitedText("'", "'", "''", friendly: false);
+         var inOutside = new DelimitedText("'", "'", "''");
          foreach (var (text, _, _) in inOutside.Enumerable(source))
          {
             Console.WriteLine($"<{text}>");

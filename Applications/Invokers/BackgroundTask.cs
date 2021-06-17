@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Threading;
 using Core.Dates;
 using Core.Dates.DateIncrements;
-using Core.RegularExpressions;
+using Core.RegexMatching;
 using Core.Strings;
 using static System.Console;
 using Timeout = System.Threading.Timeout;
@@ -145,7 +145,7 @@ namespace Core.Applications.Invokers
             text = stopwatch.Elapsed.ToString("g");
             if (!includeMilliseconds && text.Contains("."))
             {
-               text = text.Substitute("'.' /d+ $", "");
+               text = text.Substitute("'.' /d+ $; f", "");
             }
          }
 

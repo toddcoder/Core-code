@@ -5,7 +5,7 @@ using System.Windows.Forms;
 using Core.Computers;
 using Core.Enumerables;
 using Core.Monads;
-using Core.RegularExpressions;
+using Core.RegexMatching;
 using Core.Strings;
 using static Core.Monads.MonadFunctions;
 
@@ -13,7 +13,7 @@ namespace Core.WinForms.Documents
 {
    public class Document
    {
-      protected const string PATTERN_CRLF = "/r /n | /r | /n";
+      protected const string PATTERN_CRLF = "/r /n | /r | /n; f";
 
       public static string GetWindowsText(string text) => SetWindowsText(text).ToString("\r\n");
 

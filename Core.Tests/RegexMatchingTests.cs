@@ -10,10 +10,9 @@ namespace Core.Tests
    [TestClass]
    public class RegexMatchingTests
    {
-      protected static void matcherTest(string pattern)
+      protected static void matcherTest(Pattern pattern)
       {
-         Matcher matcher = pattern;
-         if (matcher.Matches("tsqlcop.sql.format.options.xml").If(out var result))
+         if (pattern.MatchedBy("tsqlcop.sql.format.options.xml").If(out var result))
          {
             for (var matchIndex = 0; matchIndex < result.MatchCount; matchIndex++)
             {
@@ -28,18 +27,18 @@ namespace Core.Tests
       [TestMethod]
       public void UMatcherTest()
       {
-         Matcher.IsFriendly = false;
-         matcherTest("(sql)");
+         Pattern.IsFriendly = false;
+         matcherTest("(sql); f");
       }
 
       [TestMethod]
       public void FMatcherTest()
       {
-         Matcher.IsFriendly = true;
-         matcherTest("/('sql')");
+         Pattern.IsFriendly = true;
+         matcherTest("/('sql'); f");
       }
 
-      protected static void matchOnlySubstitutions(string pattern)
+      protected static void matchOnlySubstitutions(Pattern pattern)
       {
          var result = "This is the full sentence with sql1 in it".Substitute(pattern, "sql-$1");
          Console.WriteLine(result);
@@ -49,25 +48,25 @@ namespace Core.Tests
       [TestMethod]
       public void UMatchOnlySubstitutionsTest()
       {
-         Matcher.IsFriendly = false;
-         matchOnlySubstitutions(@"sql(\d+)");
+         Pattern.IsFriendly = false;
+         matchOnlySubstitutions(@"sql(\d+); u");
       }
 
       [TestMethod]
       public void FMatchOnlySubstitutionsTest()
       {
-         Matcher.IsFriendly = true;
-         matchOnlySubstitutions("'sql' /(/d+)");
+         Pattern.IsFriendly = true;
+         matchOnlySubstitutions("'sql' /(/d+); f");
       }
 
-      protected static void matchPatternsTest(string pattern1, string pattern2, string pattern3)
+      protected static void matchPatternsTest(Pattern pattern1, Pattern pattern2, Pattern pattern3)
       {
-         if (((Matcher)pattern1).Matches("foobar(foo,baz)").If(out var result))
+         if (pattern1.MatchedBy("foobar(foo,baz)").If(out var result))
          {
             Console.Write(result.FirstMatch);
             IMaybe<Exception> _exception;
             var lastResult = result;
-            while (result.Matches(pattern2).If(out result, out _exception))
+            while (result.MatchedBy(pattern2).If(out result, out _exception))
             {
                Console.Write(result.FirstMatch);
                lastResult = result;
@@ -78,7 +77,7 @@ namespace Core.Tests
                Console.WriteLine($"Exception: {exception.Message}");
             }
 
-            if (lastResult.Matches(pattern3).If(out result))
+            if (lastResult.MatchedBy(pattern3).If(out result))
             {
                Console.WriteLine(result.FirstMatch);
             }
@@ -88,22 +87,22 @@ namespace Core.Tests
       [TestMethod]
       public void UMatchPatternsTest()
       {
-         Matcher.IsFriendly = false;
-         matchPatternsTest(@"^\w+\(", @"\w+,",@"\w+\)");
+         Pattern.IsFriendly = false;
+         matchPatternsTest(@"^\w+\(; u", @"\w+,; u",@"\w+\)l; u");
       }
 
       [TestMethod]
       public void FMatchPatternsTest()
       {
-         Matcher.IsFriendly = true;
-         matchPatternsTest("^ /w+ '('", "/w+ ','", "/w+ ')'");
+         Pattern.IsFriendly = true;
+         matchPatternsTest("^ /w+ '('", "/w+ ','", "/w+ ')'; f");
       }
 
       [TestMethod]
       public void FQuoteTest()
       {
-         Matcher matcher = "`quote /(-[`quote]+) `quote";
-         if (matcher.Matches("\"Fee fi fo fum\" said the giant.").If(out var result))
+         Pattern pattern = "`quote /(-[`quote]+) `quote; f";
+         if (pattern.MatchedBy("\"Fee fi fo fum\" said the giant.").If(out var result))
          {
             Console.WriteLine(result.FirstGroup.Guillemetify());
          }
@@ -112,10 +111,10 @@ namespace Core.Tests
       [TestMethod]
       public void RetainTest()
       {
-         Matcher.IsFriendly = true;
+         Pattern.IsFriendly = true;
 
          var source = "~foobar-foo?baz-boo!boo-yogi";
-         var retained = source.Retain("[/w '-']");
+         var retained = source.Retain("[/w '-']; f");
          Console.WriteLine(retained);
       }
 
@@ -123,7 +122,7 @@ namespace Core.Tests
       public void ScrubTest()
       {
          var source = "~foobar-foo?baz-boo!boo-yogi";
-         var scrubbed = source.Scrub("[/w '-']");
+         var scrubbed = source.Scrub("[/w '-']; f");
          Console.WriteLine(scrubbed);
       }
    }

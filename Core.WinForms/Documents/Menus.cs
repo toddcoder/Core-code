@@ -4,7 +4,7 @@ using System.Windows.Forms;
 using Core.Applications;
 using Core.Collections;
 using Core.Monads;
-using Core.RegularExpressions;
+using Core.RegexMatching;
 using Core.Strings;
 
 namespace Core.WinForms.Documents
@@ -49,7 +49,7 @@ namespace Core.WinForms.Documents
 
       public static string MenuName(string text) => "menu" + makeIdentifier(text);
 
-      protected static string makeIdentifier(string text) => text.Replace("&", "").Substitute("/s+", "_").SnakeToCamelCase(false);
+      protected static string makeIdentifier(string text) => text.Replace("&", "").Substitute("/s+; f", "_").SnakeToCamelCase(false);
 
       public static string SubmenuName(string parentText, string text) => MenuName(parentText) + makeIdentifier(text);
 
@@ -129,11 +129,10 @@ namespace Core.WinForms.Documents
 
       protected static IResult<Keys> shortcutKeys(string text)
       {
-         var matcher = text.Matcher("^ /(['^%|']+)? /(/w+) $");
-         if (matcher.If(out var m))
+         if (text.Matches("^ /(['^%|']+)? /(/w+) $; f").If(out var result))
          {
             var keys = (Keys)0;
-            var prefix = m[0, 1];
+            var prefix = result[0, 1];
             if (prefix.IsNotEmpty())
             {
                foreach (var sign in prefix)
@@ -153,10 +152,10 @@ namespace Core.WinForms.Documents
                }
             }
 
-            return m[0, 2]
+            return result[0, 2]
                .AsEnumeration<Keys>()
                .Map(k => (keys | k).Success())
-               .DefaultTo(() => $"Couldn't translate {m[0, 2]} into a key".Failure<Keys>());
+               .DefaultTo(() => $"Couldn't translate {result[0, 2]} into a key".Failure<Keys>());
          }
          else
          {

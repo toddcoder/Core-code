@@ -9,7 +9,7 @@ using Core.Enumerables;
 using Core.Monads;
 using Core.Numbers;
 using Core.Objects;
-using Core.RegularExpressions;
+using Core.RegexMatching;
 using Core.Strings;
 using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
@@ -27,7 +27,7 @@ namespace Core.Computers
          }
       }
 
-      protected const string REGEX_VALID_FILENAME = @"^ ((['a-zA-Z'] ':' | '\') ('\' -['\']+)* '\')? (-['.']+ ('.' -['.\']+)?) $";
+      protected const string REGEX_VALID_FILENAME = @"^ ((['a-zA-Z'] ':' | '\') ('\' -['\']+)* '\')? (-['.']+ ('.' -['.\']+)?) $; f";
 
       public static FileName operator |(FileName target, FileName source)
       {
@@ -107,16 +107,16 @@ namespace Core.Computers
          return ResolvedFileName(name).Map(IsValidUnresolvedFileName).DefaultTo(() => false);
       }
 
-      public static bool IsValidShortFileName(string name) => name.IsMatch(@"^ (-['//:*?<>|' /n '\']+)+ $");
+      public static bool IsValidShortFileName(string name) => name.IsMatch(@"^ (-['//:*?<>|' /n '\']+)+ $; f");
 
       public static string MakeFileNameValid(string fileName)
       {
-         if (fileName.IsMatch("^ 'clock$' | 'aux' | 'con' | 'nul' | 'prn' | 'com' /d | 'lpt' /d"))
+         if (fileName.IsMatch("^ 'clock$' | 'aux' | 'con' | 'nul' | 'prn' | 'com' /d | 'lpt' /d; f"))
          {
             fileName += "_" + fileName;
          }
 
-         if (fileName.IsMatch("^ '.'+ $"))
+         if (fileName.IsMatch("^ '.'+ $; f"))
          {
             fileName = fileName.Replace(".", "_dot_");
          }
@@ -207,14 +207,13 @@ namespace Core.Computers
          get => name + extension;
          set
          {
-            var matcher = new Matcher();
-            matcher.Evaluate(value, "^ /(.+) '.' /(-['.']+) $");
-            matcher.Must().HaveMatchCountOf(1).OrThrow($"Couldn't extract name and extension from {value}");
+            var result = value.Matches("^ /(.+) '.' /(-['.']+) $; f").Required($"Couldn't extract name and extension from {value}");
+            result.Must().HaveMatchCountOf(1).OrThrow($"Couldn't extract name and extension from {value}");
 
-            var fileName = matcher.FirstGroup;
-            var fileExtension = matcher.SecondGroup;
+            var fileName = result.FirstGroup;
+            var fileExtension = result.SecondGroup;
             name = fileName;
-            extension = "." + fileExtension;
+            extension = $".{fileExtension}";
             setFullPath();
          }
       }
@@ -425,7 +424,7 @@ namespace Core.Computers
          }
       }
 
-      public string[] Parts => fullPath.Split(@"'\'");
+      public string[] Parts => fullPath.Split(@"'\'; f");
 
       public bool IsRooted => Path.IsPathRooted(fullPath);
 
@@ -470,7 +469,7 @@ namespace Core.Computers
          }
          else
          {
-            var parts = fullPath.Split(@"'\'");
+            var parts = fullPath.Split(@"'\'; f");
             string result;
             var index = parts.Length - 4;
 
@@ -600,7 +599,7 @@ namespace Core.Computers
 
       public static string UniqueName(FolderName folder, string name)
       {
-         return $"{name}-{folder.Files.Count(f => f.Name.IsMatch($"'{name}-' /d10")).FormatAs("D.10")}";
+         return $"{name}-{folder.Files.Count(f => f.Name.IsMatch($"'{name}-' /d10; f")).FormatAs("D.10")}";
       }
 
       public static FileName UniqueFileName(FolderName targetFolder, FileName fileName)
@@ -678,7 +677,7 @@ namespace Core.Computers
 
       protected void initialize(FolderName aFolder, string aName, string anExtension)
       {
-         if (aName.IsMatch("^ '~'"))
+         if (aName.IsMatch("^ '~'; f"))
          {
             var fullName = ComputerFunctions.replaceTilde(aFolder.ToString());
             folder = getDirectoryName(fullName);
@@ -866,12 +865,12 @@ namespace Core.Computers
 
       public virtual string ToURL(string host)
       {
-         return $"file://{host}/{fullPath.Substitute("^ /l ':\'", "").Substitute(@"^ '\\'", "").Substitute("'\'+", "/")}";
+         return $"file://{host}/{fullPath.Substitute("^ /l ':\'; f", "").Substitute(@"^ '\\'; f", "").Substitute("'\'+; f", "/")}";
       }
 
       public virtual string ToURL()
       {
-         return $"file://{fullPath.Substitute("^ /l ':\'", "").Substitute("^ '\\'", "").Substitute("'\'+", "/")}";
+         return $"file://{fullPath.Substitute("^ /l ':\'; f", "").Substitute("^ '\\'; f", "").Substitute("'\'+; f", "/")}";
       }
 
       public Process Start() => global::System.Diagnostics.Process.Start(fullPath);

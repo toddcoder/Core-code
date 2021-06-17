@@ -2,10 +2,10 @@
 using System.Linq;
 using Core.Enumerables;
 using Core.Monads;
+using Core.RegexMatching;
 using Core.Strings;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Core.Lambdas.LambdaFunctions;
-using static Core.RegularExpressions.RegexExtensions;
 
 namespace Core.Tests
 {
@@ -15,7 +15,8 @@ namespace Core.Tests
       [TestMethod]
       public void BasicDelimitedTextTest()
       {
-         var delimitedText = DelimitedText.AsSql(friendly: false);
+         Pattern.IsFriendly = false;
+         var delimitedText = DelimitedText.AsSql();
          delimitedText.ExceptReplacement = "'".Some();
          var source = "SELECT foobar as 'can''t';";
          Console.WriteLine(source);
@@ -45,6 +46,7 @@ namespace Core.Tests
       [TestMethod]
       public void UnusualDelimiterTest()
       {
+         Pattern.IsFriendly = true;
          var delimitedText = new DelimitedText("'('", "')'", @"'\)'");
          foreach (var (text, _, _) in delimitedText.Enumerable("foo(bar)baz").Where(i => i.status == DelimitedTextStatus.Outside))
          {
@@ -55,6 +57,7 @@ namespace Core.Tests
       [TestMethod]
       public void SwapTest()
       {
+         Pattern.IsFriendly = false;
          var delimitedText = DelimitedText.AsSql();
          var source = "'a = b' != 'b = a'";
          var result = delimitedText.Enumerable(source)
@@ -73,6 +76,7 @@ namespace Core.Tests
       [TestMethod]
       public void EmptyStringTest()
       {
+         Pattern.IsFriendly = false;
          var delimitedText = DelimitedText.AsSql();
          var source = "'a', '', 'b'";
          foreach (var (text, _, _) in delimitedText.Enumerable(source).Where(t => t.status == DelimitedTextStatus.Inside))
@@ -92,6 +96,7 @@ namespace Core.Tests
       [TestMethod]
       public void Transforming1Test()
       {
+         Pattern.IsFriendly = false;
          var delimitedText = DelimitedText.AsSql();
          var result = delimitedText.Transform("a BETWEEN 0 AND 100", "$0 BETWEEN $1 AND $2", "$0 >= $1 AND $0 <= $2");
          Console.WriteLine(result);
@@ -100,6 +105,7 @@ namespace Core.Tests
       [TestMethod]
       public void Transforming2Test()
       {
+         Pattern.IsFriendly = false;
          var delimitedText = DelimitedText.AsSql();
          var result = delimitedText.Transform("'9/1/2020' BETWEEN '1/1/2020' AND '12/31/2020'", "$0 BETWEEN $1 AND $2", "$0 >= $1 AND $0 <= $2");
          Console.WriteLine(result);
@@ -108,6 +114,7 @@ namespace Core.Tests
       [TestMethod]
       public void Transforming3Test()
       {
+         Pattern.IsFriendly = false;
          var delimitedText = DelimitedText.AsSql();
          var result = delimitedText.Transform("(111 + 123       - 153) / 3", "($0+$1-$2) / 3", "sum('$0', '$1', '$2') / n('$0', '$1', '$2')");
          Console.WriteLine(result);
@@ -124,6 +131,7 @@ namespace Core.Tests
       [TestMethod]
       public void SlicerTest()
       {
+         Pattern.IsFriendly = false;
          var source = "'foobar' ELSE-1 'ELSE-1'";
          var delimitedText = DelimitedText.AsSql();
 
@@ -146,8 +154,9 @@ namespace Core.Tests
       [TestMethod]
       public void SplitTest()
       {
+         Pattern.IsFriendly = false;
          var source = "'foobar' AND 'foobaz' OR 'foo' AND 'bar'";
-         var delimitedText = DelimitedText.AsSql(true);
+         var delimitedText = DelimitedText.AsSql();
          var slices = delimitedText.Split(source, "/s+ 'OR' /s+").ToArray();
          foreach (var slice in slices)
          {
@@ -162,8 +171,9 @@ namespace Core.Tests
       [TestMethod]
       public void ReplacementTest()
       {
+         Pattern.IsFriendly = true;
          var source = "'foobar' AND 'foobaz' OR 'foo' AND 'bar'";
-         var delimitedText = DelimitedText.AsSql(true);
+         var delimitedText = DelimitedText.AsSql();
          delimitedText.Replace(source, "/b 'AND' | 'OR' /b", slice => slice.Text.Same("AND") ? "OR" : "AND");
          Console.WriteLine(delimitedText);
 
@@ -187,8 +197,9 @@ namespace Core.Tests
       [TestMethod]
       public void EnumerationTest()
       {
+         Pattern.IsFriendly = true;
          var source = "'foobar' AND 'foobaz' OR 'foo' AND 'bar'";
-         var delimitedText = DelimitedText.AsSql(true);
+         var delimitedText = DelimitedText.AsSql();
          foreach (var (index, _) in delimitedText.Substrings(source, "AND"))
          {
             delimitedText[index, 3] = "&&";
@@ -243,6 +254,7 @@ namespace Core.Tests
       [TestMethod]
       public void DestringifyingAndRestringifyingTest()
       {
+         Pattern.IsFriendly = false;
          var source = "'a' and 'b' equals 'a' plus 'b'";
          var delimitedText = DelimitedText.AsSql();
 
@@ -265,6 +277,7 @@ namespace Core.Tests
       [TestMethod]
       public void EmbeddedStringsTest()
       {
+         Pattern.IsFriendly = false;
          var source = "find -P\"^ 'A'\" -F '.'";
          var delimitedText = DelimitedText.BothQuotes();
          foreach (var (text, _, status) in delimitedText.Enumerable(source))

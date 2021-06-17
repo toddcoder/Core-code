@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using Core.RegularExpressions;
+using Core.RegexMatching;
 
 namespace Core.WinForms.Consoles
 {
@@ -62,7 +62,7 @@ namespace Core.WinForms.Consoles
 
       public static void AppendAtEnd(this TextBoxBase textBox, string text, string endOfLine = "/r/n", bool moveToEndOfText = true)
       {
-         if (!textBox.Text.IsMatch($"{endOfLine} $"))
+         if (!textBox.Text.IsMatch($"{endOfLine} $; f"))
          {
             var newEndOfLine = endOfLine.Replace("/r", "\r").Replace("/n", "\n");
             textBox.AppendText(newEndOfLine);

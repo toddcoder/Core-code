@@ -3,16 +3,16 @@ using System.Text;
 using System.Xml;
 using Core.Assertions;
 using Core.Monads;
-using Core.RegularExpressions;
+using Core.RegexMatching;
 using static Core.Monads.AttemptFunctions;
 
 namespace Core.Internet.Markup
 {
    public static class MarkupExtensions
    {
-      private const string REGEX_EMPTY_ELEMENT = "'<' /(-['//!'] -['>']+ -['//']) '><//' /(-['>']+) '>'";
+      private const string REGEX_EMPTY_ELEMENT = "'<' /(-['//!'] -['>']+ -['//']) '><//' /(-['>']+) '>'; f";
       private const string TEXT_EMPTY_ELEMENT = "<$1/>";
-      private const string REGEX_HEADER = "/s* '<?' -['?']+ '?>'";
+      private const string REGEX_HEADER = "/s* '<?' -['?']+ '?>'; mf";
 
       private static IResult<string> fromStream(Stream stream, Encoding encoding) => tryTo(() =>
       {
@@ -38,7 +38,7 @@ namespace Core.Internet.Markup
 
          if (fromStream(stream, encoding).If(out var text))
          {
-            return includeHeader ? text : text.Substitute(REGEX_HEADER, string.Empty, false, true).Trim();
+            return includeHeader ? text : text.Substitute(REGEX_HEADER, string.Empty).Trim();
          }
          else
          {
@@ -52,10 +52,10 @@ namespace Core.Internet.Markup
       {
          text.Must().Not.BeNullOrEmpty().OrThrow();
 
-         text = text.Substitute("'&' -(> ('amp' | 'lt' | 'gt' | 'quot' | 'apos') ';')", "&amp;");
-         text = text.Substitute("'<'", "&lt;");
-         text = text.Substitute("'>'", "&gt;");
-         text = text.Substitute("[dquote]", "&quot;");
+         text = text.Substitute("'&' -(> ('amp' | 'lt' | 'gt' | 'quot' | 'apos') ';'); f", "&amp;");
+         text = text.Substitute("'<'; f", "&lt;");
+         text = text.Substitute("'>'; f", "&gt;");
+         text = text.Substitute("[dquote]; f", "&quot;");
          text = text.Substitute("[squote]", "&apos;");
 
          return text;
@@ -65,11 +65,11 @@ namespace Core.Internet.Markup
       {
          text.Must().Not.BeNullOrEmpty().OrThrow();
 
-         text = text.Substitute("'&apos;'", "'");
-         text = text.Substitute("'&quot;'", "\"");
-         text = text.Substitute("'&gt;'", ">");
-         text = text.Substitute("'&lt;'", "<");
-         text = text.Substitute("'&amp'", "&");
+         text = text.Substitute("'&apos;'; f", "'");
+         text = text.Substitute("'&quot;'; f", "\"");
+         text = text.Substitute("'&gt;'; f", ">");
+         text = text.Substitute("'&lt;'; f", "<");
+         text = text.Substitute("'&amp'; f", "&");
 
          return text;
       }

@@ -10,6 +10,7 @@ using Core.Assertions.Strings;
 using Core.Collections;
 using Core.Computers;
 using Core.Monads;
+using Core.RegexMatching;
 using Core.RegularExpressions;
 using static Core.Assertions.AssertionFunctions;
 
@@ -531,7 +532,12 @@ namespace Core.Assertions
          return (TypeAssertion)assertion.Named($"Type {value.Name} {name}");
       }
 
+      [Obsolete("Use Pattern or Result assertion")]
       public static MatcherAssertion Must(this Matcher value) => new(value);
+
+      public static PatternAssertion Must(this Pattern value) => new(value);
+
+      public static ResultAssertion Must(this Result value) => new(value);
 
       [Obsolete("Use value version")]
       public static MatcherAssertion Must(this Expression<Func<Matcher>> expression)
@@ -542,12 +548,29 @@ namespace Core.Assertions
          return (MatcherAssertion)assertion.Named($"Matcher {name}");
       }
 
+      [Obsolete("Use Pattern or Result assertion")]
       public static MatcherAssertion Must(this (Matcher, string) tuple)
       {
          var (value, name) = tuple;
          var assertion = value.Must();
 
          return (MatcherAssertion)assertion.Named($"Matcher {name}");
+      }
+
+      public static PatternAssertion Must(this (Pattern, string) tuple)
+      {
+         var (value, name) = tuple;
+         var assertion = value.Must();
+
+         return (PatternAssertion)assertion.Named($"Pattern {name}");
+      }
+
+      public static ResultAssertion Must(this (Result, string) tuple)
+      {
+         var (value, name) = tuple;
+         var assertion = value.Must();
+
+         return (ResultAssertion)assertion.Named($"Result {name}");
       }
 
       public static TypedAssertion<T> MustOfType<T>(this T value) => new(value);

@@ -4,19 +4,18 @@ using Core.Arrays;
 using Core.Dates.Now;
 using Core.Monads;
 using Core.Numbers;
-using Core.RegularExpressions;
+using Core.RegexMatching;
 using Core.Strings;
-using static Core.Monads.MonadFunctions;
 
 namespace Core.Dates
 {
    public static class DateTimeExtensions
    {
-      const string REGEX_SIGN = "^ ['+-']";
+      private const string REGEX_SIGN = "^ ['+-']; f";
 
       public class ValidDate
       {
-         static IResult<DateTime> valid(int year, int month, int day)
+         protected static IResult<DateTime> valid(int year, int month, int day)
          {
             if (year <= 0)
             {
@@ -46,7 +45,7 @@ namespace Core.Dates
             Day = "Day not set".Failure<int>();
          }
 
-         IResult<DateTime> validate()
+         protected IResult<DateTime> validate()
          {
             if (Year.ValueOrCast<DateTime>(out var year, out var original) && Month.ValueOrCast(out var month, out original) &&
                Day.ValueOrCast(out var day, out original))
@@ -96,7 +95,7 @@ namespace Core.Dates
          }
       }
 
-      public static ValidDate IsYear(this int year) => new ValidDate { Year = year.Success() };
+      public static ValidDate IsYear(this int year) => new() { Year = year.Success() };
 
       public static IResult<ValidDate> AndYear(this IResult<ValidDate> validDate, int year)
       {
@@ -108,7 +107,7 @@ namespace Core.Dates
          return validDate.Map(vd => vd.AndYearValid(year));
       }
 
-      public static ValidDate IsMonth(this int month) => new ValidDate { Month = month.Success() };
+      public static ValidDate IsMonth(this int month) => new() { Month = month.Success() };
 
       public static IResult<ValidDate> AndMonth(this IResult<ValidDate> validDate, int month)
       {
@@ -120,7 +119,7 @@ namespace Core.Dates
          return validDate.Map(vd => vd.AndMonthValid(month));
       }
 
-      public static ValidDate IsDay(this int day) => new ValidDate { Day = day.Success() };
+      public static ValidDate IsDay(this int day) => new() { Day = day.Success() };
 
       public static IResult<ValidDate> AndDay(this IResult<ValidDate> validDate, int day) => validDate.Map(vd => vd.AndDay(day));
 
@@ -129,7 +128,7 @@ namespace Core.Dates
          return validDate.Map(vd => vd.AndDayValid(day));
       }
 
-      public static DateTime FirstOfMonth(this DateTime date) => new DateTime(date.Year, date.Month, 1);
+      public static DateTime FirstOfMonth(this DateTime date) => new(date.Year, date.Month, 1);
 
       public static DateTime LastOfMonth(this DateTime date) => date.FirstOfMonth().AddMonths(1).AddDays(-1);
 
@@ -140,7 +139,7 @@ namespace Core.Dates
          var minutes = time.Minute;
          var quarter = minutes % 15;
 
-         if (quarter >= 0 && quarter <= 7)
+         if (quarter is >= 0 and <= 7)
          {
             minutes -= quarter;
          }
@@ -164,17 +163,11 @@ namespace Core.Dates
          return result;
       }
 
-      public static DateTime Truncate(this DateTime date) => new DateTime(date.Year, date.Month, date.Day);
+      public static DateTime Truncate(this DateTime date) => new(date.Year, date.Month, date.Day);
 
-      public static Numbers.Comparison<DateTime> ComparedTo(this DateTime left, DateTime right)
-      {
-         return new Numbers.Comparison<DateTime>(left, right);
-      }
+      public static Numbers.Comparison<DateTime> ComparedTo(this DateTime left, DateTime right) => new(left, right);
 
-      public static DateEnumerator To(this DateTime beginDate, DateTime endDate)
-      {
-         return new DateEnumerator(beginDate, endDate);
-      }
+      public static DateEnumerator To(this DateTime beginDate, DateTime endDate) => new(beginDate, endDate);
 
       public static IResult<string> MonthName(this int month)
       {
@@ -209,60 +202,34 @@ namespace Core.Dates
          }
       }
 
-      public static IResult<int> MonthNumber(this string name)
+      public static IResult<int> MonthNumber(this string name) => name.ToLower() switch
       {
-         switch (name.ToLower())
-         {
-            case "january":
-            case "jan":
-               return 1.Success();
-            case "february":
-            case "feb":
-               return 2.Success();
-            case "march":
-            case "mar":
-               return 3.Success();
-            case "april":
-            case "apr":
-               return 4.Success();
-            case "may":
-               return 5.Success();
-            case "june":
-            case "jun":
-               return 6.Success();
-            case "july":
-            case "jul":
-               return 7.Success();
-            case "august":
-            case "aug":
-               return 8.Success();
-            case "september":
-            case "sep":
-               return 9.Success();
-            case "october":
-            case "oct":
-               return 10.Success();
-            case "november":
-            case "nov":
-               return 11.Success();
-            case "december":
-            case "dec":
-               return 12.Success();
-            default:
-               return $"Didn't understand {name}".Failure<int>();
-         }
-      }
+         "january" or "jan" => 1.Success(),
+         "february" or "feb" => 2.Success(),
+         "march" or "mar" => 3.Success(),
+         "april" or "apr" => 4.Success(),
+         "may" => 5.Success(),
+         "june" or "jun" => 6.Success(),
+         "july" or "jul" => 7.Success(),
+         "august" or "aug" => 8.Success(),
+         "september" or "sep" => 9.Success(),
+         "october" or "oct" => 10.Success(),
+         "november" or "nov" => 11.Success(),
+         "december" or "dec" => 12.Success(),
+         _ => $"Didn't understand {name}".Failure<int>()
+      };
 
       public static IResult<DateTime> RelativeTo(this DateTime date, string pattern)
       {
-         if (pattern.IsMatch("^ ['//|'] /s* ['//|'] /s* ['//|'] $"))
+         if (pattern.IsMatch("^ ['//|'] /s* ['//|'] /s* ['//|'] $; f"))
          {
             return date.Success();
          }
          else
          {
-            return pattern.MatchOne("/(['+-']? /d*) ['//|'] /(['+-']? /d*) ['//|'] /(['+-']? /d*)").FlatMap(match =>
+            if (pattern.Matches("/(['+-']? /d*) ['//|'] /(['+-']? /d*) ['//|'] /(['+-']? /d*); f").If(out var result))
             {
+               var match = result.GetMatch(0);
                if (match.Groups.Assign(out _, out var year, out var month, out var day).IsSuccessful)
                {
                   DateIncrementer builder = date;
@@ -276,10 +243,10 @@ namespace Core.Dates
                      }
                      else
                      {
-                        var result = builder.SetYear(yearAmount);
-                        if (result.IsFailed)
+                        var setYearResult = builder.SetYear(yearAmount);
+                        if (setYearResult.IsFailed)
                         {
-                           return result;
+                           return setYearResult;
                         }
                      }
                   }
@@ -294,10 +261,10 @@ namespace Core.Dates
                      }
                      else
                      {
-                        var result = builder.SetMonth(monthAmount);
-                        if (result.IsFailed)
+                        var setMonthResult = builder.SetMonth(monthAmount);
+                        if (setMonthResult.IsFailed)
                         {
-                           return result;
+                           return setMonthResult;
                         }
                      }
                   }
@@ -312,18 +279,18 @@ namespace Core.Dates
                      }
                      else if (dayAmount == 0)
                      {
-                        var result = builder.SetToLastDay();
-                        if (result.IsFailed)
+                        var setDayResult = builder.SetToLastDay();
+                        if (setDayResult.IsFailed)
                         {
-                           return result;
+                           return setDayResult;
                         }
                      }
                      else
                      {
-                        var result = builder.SetDay(dayAmount);
-                        if (result.IsFailed)
+                        var setDayResult = builder.SetDay(dayAmount);
+                        if (setDayResult.IsFailed)
                         {
-                           return result;
+                           return setDayResult;
                         }
                      }
                   }
@@ -332,7 +299,11 @@ namespace Core.Dates
                }
 
                return $"Couldn't extract date elements from {pattern}".Failure<DateTime>();
-            }, () => $"Didn't understand {pattern}".Failure<DateTime>(), failure<DateTime>);
+            }
+            else
+            {
+               return $"Didn't understand {pattern}".Failure<DateTime>();
+            }
          }
       }
 

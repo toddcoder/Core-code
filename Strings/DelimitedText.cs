@@ -15,48 +15,48 @@ namespace Core.Strings
    {
       public static DelimitedText AsCLike()
       {
-         Matcher beginPattern = Matcher.IsFriendly ? "[dquote]" : "[\"]";
-         Matcher exceptPattern = Matcher.IsFriendly ? @"'\' [dquote]" : "\\[\"]";
+         Pattern beginPattern = Pattern.IsFriendly ? "[dquote]" : "[\"]";
+         Pattern exceptPattern = Pattern.IsFriendly ? @"'\' [dquote]" : "\\[\"]";
 
          return new DelimitedText(beginPattern, exceptPattern);
       }
 
       public static DelimitedText AsSql()
       {
-         Matcher beginPattern = Matcher.IsFriendly ? "[squote]" : "'";
-         Matcher exceptPattern = Matcher.IsFriendly ? "[squote]2" : "''";
+         Pattern beginPattern = Pattern.IsFriendly ? "[squote]" : "'";
+         Pattern exceptPattern = Pattern.IsFriendly ? "[squote]2" : "''";
 
          return new DelimitedText(beginPattern, exceptPattern);
       }
 
       public static DelimitedText AsBasic()
       {
-         Matcher beginPattern = Matcher.IsFriendly ? "[dquote]" : "[\"]";
-         Matcher exceptPattern = Matcher.IsFriendly ? "[dquote]2" : "[\"]{2}";
+         Pattern beginPattern = Pattern.IsFriendly ? "[dquote]" : "[\"]";
+         Pattern exceptPattern = Pattern.IsFriendly ? "[dquote]2" : "[\"]{2}";
 
          return new DelimitedText(beginPattern, exceptPattern);
       }
 
       public static DelimitedText BothQuotes()
       {
-         Matcher beginPattern = Matcher.IsFriendly ? "[dquote squote]" : "[\"']";
-         Matcher exceptPattern = Matcher.IsFriendly ? @"'\' [dquote squote]" : "\\[\"']";
+         Pattern beginPattern = Pattern.IsFriendly ? "[dquote squote]" : "[\"']";
+         Pattern exceptPattern = Pattern.IsFriendly ? @"'\' [dquote squote]" : "\\[\"']";
 
          return new DelimitedText(beginPattern, exceptPattern);
       }
 
-      protected Matcher beginPattern;
-      protected IMaybe<Matcher> _endPattern;
-      protected Matcher exceptPattern;
+      protected Pattern beginPattern;
+      protected IMaybe<Pattern> _endPattern;
+      protected Pattern exceptPattern;
       protected IMaybe<string> _exceptReplacement;
       protected LateLazy<Slicer> slicer;
       protected Bits32<DelimitedTextStatus> status;
       protected List<string> strings;
 
-      protected DelimitedText(Matcher beginPattern, IMaybe<string> endPattern, Matcher exceptPattern)
+      protected DelimitedText(Pattern beginPattern, IMaybe<string> endPattern, Pattern exceptPattern)
       {
          this.beginPattern = beginPattern;
-         _endPattern = endPattern.Map(p => (Matcher)p);
+         _endPattern = endPattern.Map(p => (Pattern)p);
          this.exceptPattern = exceptPattern;
          _exceptReplacement = none<string>();
 
@@ -66,18 +66,18 @@ namespace Core.Strings
          strings = new List<string>();
       }
 
-      public DelimitedText(Matcher beginPattern, Matcher endPattern, Matcher exceptPattern) : this(beginPattern, endPattern.Pattern.Some(),
+      public DelimitedText(Pattern beginPattern, Pattern endPattern, Pattern exceptPattern) : this(beginPattern, endPattern.Regex.Some(),
          exceptPattern)
       {
       }
 
-      public DelimitedText(Matcher beginPattern, Matcher exceptPattern) : this(beginPattern, none<string>(), exceptPattern)
+      public DelimitedText(Pattern beginPattern, Pattern exceptPattern) : this(beginPattern, none<string>(), exceptPattern)
       {
       }
 
       public string BeginPattern
       {
-         get => beginPattern.Pattern;
+         get => beginPattern.Regex;
          set
          {
             value.Must().Not.BeNullOrEmpty().OrThrow();
@@ -87,13 +87,13 @@ namespace Core.Strings
 
       public IMaybe<string> EndPattern
       {
-         get => _endPattern.Map(m => m.Pattern);
-         set { _endPattern = value.Map(p => (Matcher)(p.StartsWith("^") ? p : $"^{value}")); }
+         get => _endPattern.Map(m => m.Regex);
+         set { _endPattern = value.Map(p => (Pattern)(p.StartsWith("^") ? p : $"^{value}")); }
       }
 
       public string ExceptPattern
       {
-         get => exceptPattern.Pattern;
+         get => exceptPattern.Regex;
          set
          {
             value.Must().Not.BeNullOrEmpty().OrThrow();
@@ -115,9 +115,9 @@ namespace Core.Strings
 
       public IMaybe<Func<string, string>> TransformingMap { get; set; }
 
-      protected Matcher getEndPattern(char ch)
+      protected Pattern getEndPattern(char ch)
       {
-         if (Matcher.IsFriendly)
+         if (Pattern.IsFriendly)
          {
             return ch switch
             {
@@ -143,7 +143,7 @@ namespace Core.Strings
          var current = source;
          var insideStart = 0;
          var outsideStart = 0;
-         var _endMatcher = none<Matcher>();
+         var _endMatcher = none<Pattern>();
 
          var i = 0;
          while (i < source.Length)
@@ -152,16 +152,16 @@ namespace Core.Strings
             current = source.Drop(i);
             if (inside)
             {
-               if (exceptPattern.Matches(current).If(out var result))
+               if (exceptPattern.MatchedBy(current).If(out var result))
                {
                   builder.Append(_exceptReplacement.DefaultTo(() => result[0]));
                   i += result.Length;
 
                   continue;
                }
-               else if (_endMatcher.If(out var endPattern) && endPattern.Matches(current).If(out result))
+               else if (_endMatcher.If(out var endPattern) && endPattern.MatchedBy(current).If(out result))
                {
-                  _endMatcher = none<Matcher>();
+                  _endMatcher = none<Pattern>();
 
                   yield return (builder.ToString(), insideStart, DelimitedTextStatus.Inside);
                   yield return (result[0], i, DelimitedTextStatus.EndDelimiter);
@@ -179,7 +179,7 @@ namespace Core.Strings
             }
             else
             {
-               if (beginPattern.Matches(current).If(out var result))
+               if (beginPattern.MatchedBy(current).If(out var result))
                {
                   if (_endMatcher.IsNone)
                   {
@@ -229,7 +229,7 @@ namespace Core.Strings
          }
       }
 
-      public IEnumerable<(string text, int index, DelimitedTextStatus status)> Matches(string source, Matcher pattern)
+      public IEnumerable<(string text, int index, DelimitedTextStatus status)> Matches(string source, Pattern pattern)
       {
          foreach (var (text, index, inOutsideStatus) in Enumerable(source).Where(t => Status[t.status]))
          {

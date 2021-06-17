@@ -10,6 +10,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.RegularExpressions
 {
+   [Obsolete("Use Core.RegexMatching.Scraper")]
    public class Scraper : IHash<string, string>
    {
       protected static MaybeStack<Scraper> scraperStack;

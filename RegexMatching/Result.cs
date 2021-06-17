@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Core.Assertions;
 using Core.Collections;
 using Core.Monads;
@@ -33,6 +34,8 @@ namespace Core.RegexMatching
       }
 
       public string Input => input;
+
+      public Match[] Matches => matches;
 
       protected IMaybe<Match> getMatchMaybe(int index) => maybe(index.Between(0).Until(matches.Length), () => matches[index]);
 
@@ -382,10 +385,8 @@ namespace Core.RegexMatching
 
       public string Unmatched => input.Drop(Index + Length);
 
-      public IMatched<Result> Matches(string pattern)
-      {
-         Matcher matcher = pattern;
-         return matcher.Matches(Unmatched);
-      }
+      public IMatched<Result> MatchedBy(Pattern pattern) => pattern.MatchedBy(Unmatched);
+
+      public string[] Groups(int matchIndex) => getMatch(matchIndex).Groups.Select(g => g.GetSlice(slicer)).ToArray();
    }
 }

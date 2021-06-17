@@ -10,26 +10,26 @@ namespace Core.RegexMatching
 {
    public static class RegexExtensions
    {
-      public static bool IsMatch(this string input, Matcher pattern)
+      public static bool IsMatch(this string input, Pattern pattern)
       {
-         return pattern.Matches(input).IsMatched;
+         return pattern.MatchedBy(input).IsMatched;
       }
 
-      public static string Substitute(this string input, Matcher pattern, string replacement)
+      public static string Substitute(this string input, Pattern pattern, string replacement)
       {
-         return RRegex.Replace(input, pattern.Pattern, replacement, pattern.Options);
+         return RRegex.Replace(input, pattern.Regex, replacement, pattern.Options);
       }
 
-      public static string Substitute(this string input, Matcher pattern, string replacement, int count)
+      public static string Substitute(this string input, Pattern pattern, string replacement, int count)
       {
-         var regex = new RRegex(pattern.Pattern, pattern.Options);
+         var regex = new RRegex(pattern.Regex, pattern.Options);
 
          return regex.Replace(input, replacement, count);
       }
 
-      public static string Replace(this string input, Matcher pattern, Action<Result> replacer)
+      public static string Replace(this string input, Pattern pattern, Action<Result> replacer)
       {
-         if (pattern.Matches(input).If(out var result, out _))
+         if (pattern.MatchedBy(input).If(out var result, out _))
          {
             replacer(result);
             return result.ToString();
@@ -40,12 +40,12 @@ namespace Core.RegexMatching
          }
       }
 
-      public static string[] Split(this string input, Matcher pattern)
+      public static string[] Split(this string input, Pattern pattern)
       {
-         return RRegex.Split(input, pattern.Pattern, pattern.Options);
+         return RRegex.Split(input, pattern.Regex, pattern.Options);
       }
 
-      public static IEnumerable<Slice> SplitIntoSlices(this string input, Matcher pattern)
+      public static IEnumerable<Slice> SplitIntoSlices(this string input, Pattern pattern)
       {
          var split = input.Split(pattern);
          var index = 0;
@@ -58,13 +58,13 @@ namespace Core.RegexMatching
          }
       }
 
-      public static (string, string) Split2(this string input, Matcher pattern)
+      public static (string, string) Split2(this string input, Pattern pattern)
       {
          var result = input.Split(pattern);
          return result.Length == 1 ? (result[0], "") : (result[0], result[1]);
       }
 
-      public static (string, string, string) Split3(this string input, Matcher pattern)
+      public static (string, string, string) Split3(this string input, Pattern pattern)
       {
          var result = input.Split(pattern);
          return result.Length switch
@@ -75,7 +75,7 @@ namespace Core.RegexMatching
          };
       }
 
-      public static (string, string, string, string) Split4(this string input, Matcher pattern)
+      public static (string, string, string, string) Split4(this string input, Pattern pattern)
       {
          var result = input.Split(pattern);
          return result.Length switch
@@ -87,10 +87,9 @@ namespace Core.RegexMatching
          };
       }
 
-      public static (string group1, string group2) Group2(this string input, Matcher pattern)
+      public static (string group1, string group2) Group2(this string input, Pattern pattern)
       {
-         Matcher matcher = pattern;
-         if (matcher.Matches(input).If(out var result))
+         if (pattern.MatchedBy(input).If(out var result))
          {
             return (result.FirstGroup, result.SecondGroup);
          }
@@ -100,10 +99,9 @@ namespace Core.RegexMatching
          }
       }
 
-      public static (string group1, string group2, string group3) Group3(this string input, Matcher pattern)
+      public static (string group1, string group2, string group3) Group3(this string input, Pattern pattern)
       {
-         Matcher matcher = pattern;
-         if (matcher.Matches(input).If(out var result))
+         if (pattern.MatchedBy(input).If(out var result))
          {
             return (result.FirstGroup, result.SecondGroup, result.ThirdGroup);
          }
@@ -113,10 +111,9 @@ namespace Core.RegexMatching
          }
       }
 
-      public static (string group1, string group2, string group3, string group4) Group4(this string input, Matcher pattern)
+      public static (string group1, string group2, string group3, string group4) Group4(this string input, Pattern pattern)
       {
-         Matcher matcher = pattern;
-         if (matcher.Matches(input).If(out var result))
+         if (pattern.MatchedBy(input).If(out var result))
          {
             return (result.FirstGroup, result.SecondGroup, result.ThirdGroup, result.FourthGroup);
          }
@@ -126,9 +123,9 @@ namespace Core.RegexMatching
          }
       }
 
-      public static string Retain(this string input, Matcher pattern)
+      public static string Retain(this string input, Pattern pattern)
       {
-         if (pattern.Matches(input).If(out var result))
+         if (pattern.MatchedBy(input).If(out var result))
          {
             var builder = new StringBuilder();
             foreach (var match in result)
@@ -144,9 +141,9 @@ namespace Core.RegexMatching
          }
       }
 
-      public static string Scrub(this string input, Matcher pattern)
+      public static string Scrub(this string input, Pattern pattern)
       {
-         if (pattern.Matches(input).If(out var result))
+         if (pattern.MatchedBy(input).If(out var result))
          {
             for (var i = 0; i < result.MatchCount; i++)
             {
@@ -161,11 +158,11 @@ namespace Core.RegexMatching
          }
       }
 
-      public static IMatched<Result> Matched(this string input, Matcher pattern) => pattern.Matches(input);
+      public static IMatched<Result> Matched(this string input, Pattern pattern) => pattern.MatchedBy(input);
 
-      public static IMaybe<Result> Matches(this string input, Matcher pattern)
+      public static IMaybe<Result> Matches(this string input, Pattern pattern)
       {
-         if (pattern.Matches(input).If(out var result))
+         if (pattern.MatchedBy(input).If(out var result))
          {
             return result.Some();
          }
@@ -175,9 +172,9 @@ namespace Core.RegexMatching
          }
       }
 
-      public static Matcher Matcher(this string pattern, bool ignoreCase, bool multiline, bool friendly)
+      public static Pattern Matcher(this string pattern, bool ignoreCase, bool multiline, bool friendly)
       {
-         if (!ignoreCase && !multiline && RegexMatching.Matcher.IsFriendly)
+         if (!ignoreCase && !multiline && Pattern.IsFriendly)
          {
             return pattern;
          }
@@ -191,7 +188,7 @@ namespace Core.RegexMatching
 
       public static string Escape(this string input)
       {
-         return RegexMatching.Matcher.IsFriendly ? input.Replace("/", "//") : RRegex.Escape(input).Replace("]", @"\]");
+         return Pattern.IsFriendly ? input.Replace("/", "//") : RRegex.Escape(input).Replace("]", @"\]");
       }
    }
 }

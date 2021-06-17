@@ -5,7 +5,7 @@ using System.Reflection;
 using Core.Assertions;
 using Core.Collections;
 using Core.Monads;
-using Core.RegularExpressions;
+using Core.RegexMatching;
 using Core.Strings;
 using static System.Reflection.BindingFlags;
 using static System.Reflection.MemberTypes;
@@ -64,16 +64,19 @@ namespace Core.Objects
 
       protected static IResult<Replacements> getReplacements(string source)
       {
-         return source.MatchAll(@"-(< '\') '{' /(-['}']+) '}'").FlatMap(matches =>
-            {
-               var replacements = getReplacements(matches);
-               return new Replacements(replacements, source).Success();
-            },
-            () => "Couldn't find any replacements".Failure<Replacements>(),
-            failure<Replacements>);
+         if (source.Matches(@"-(< '\') '{' /(-['}']+) '}'; f").If(out var result))
+         {
+            var matches = result.Matches;
+            var replacements = getReplacements(matches);
+            return new Replacements(replacements, source).Success();
+         }
+         else
+         {
+            return "Couldn't find any replacements".Failure<Replacements>();
+         }
       }
 
-      protected static IEnumerable<ReflectorReplacement> getReplacements(Matcher.Match[] matches)
+      protected static IEnumerable<ReflectorReplacement> getReplacements(Match[] matches)
       {
          return matches.Select(match => new ReflectorReplacement(match.Index, match.Length, match.Groups[1]));
       }
@@ -144,7 +147,7 @@ namespace Core.Objects
       public IResult<string> Format(string template) =>
          tryTo(() => from memberData in getMembers(type, template)
             from formatted in getText(memberData)
-            select formatted.Substitute(@"'\{'", "{"));
+            select formatted.Substitute(@"'\{'; f", "{"));
 
       protected IResult<string> getText(MemberData memberData) => tryTo(() =>
       {

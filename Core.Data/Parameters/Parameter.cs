@@ -1,10 +1,10 @@
 ﻿using System;
-using Core.Configurations;
 using Core.Monads;
 using Core.Objects;
-using Core.RegularExpressions;
+using Core.RegexMatching;
 using Core.Strings;
 using static Core.Monads.MonadFunctions;
+using Group = Core.Configurations.Group;
 
 namespace Core.Data.Parameters
 {
@@ -39,7 +39,7 @@ namespace Core.Data.Parameters
 
       protected static string fixTypeName(string typeName)
       {
-         typeName = typeName.Substitute("^ '$'", "System.");
+         typeName = typeName.Substitute("^ '$'; f", "System.");
          return typeName.IsNotEmpty() && !typeName.Has(".") ? "System." + typeName : typeName;
       }
 

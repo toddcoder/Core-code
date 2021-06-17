@@ -1,12 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Core.Assertions;
 using Core.Collections;
 using Core.Enumerables;
-using Core.RegularExpressions;
+using Core.RegexMatching;
 using Core.Strings;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using RegexExtensions = Core.RegexMatching.RegexExtensions;
 
 namespace Core.Tests
 {
@@ -16,23 +16,22 @@ namespace Core.Tests
       [TestMethod]
       public void MatcherTest()
       {
-         var matcher = new Matcher();
-         if (matcher.IsMatch("tsqlcop.sql.format.options.xml", "(sql)"))
+         if (RegexExtensions.Matches("tsqlcop.sql.format.options.xml", "(sql); f").If(out var result))
          {
-            for (var matchIndex = 0; matchIndex < matcher.MatchCount; matchIndex++)
+            for (var matchIndex = 0; matchIndex < result.MatchCount; matchIndex++)
             {
-               matcher[matchIndex, 1] = "style";
+               result[matchIndex, 1] = "style";
             }
 
-            Console.WriteLine(matcher);
-            matcher.ToString().Must().Equal("tstylecop.style.format.options.xml").OrThrow();
+            Console.WriteLine(result);
+            result.ToString().Must().Equal("tstylecop.style.format.options.xml").OrThrow();
          }
       }
 
       [TestMethod]
       public void MatchOnlySubstitutions()
       {
-         var result = "This is the full sentence with sql1 in it".Substitute("'sql' /(/d)", "sql-$1");
+         var result = RegexExtensions.Substitute("This is the full sentence with sql1 in it", "'sql' /(/d)", "sql-$1");
          Console.WriteLine(result);
          result.Must().Equal("This is the full sentence with sql-1 in it").OrThrow();
       }
@@ -40,49 +39,19 @@ namespace Core.Tests
       [TestMethod]
       public void MatchPatternsTest()
       {
-         var result = "^ /w+ '('".Matches("foobar(foo,baz)");
-         if (result.IsMatch)
+         if (RegexExtensions.Matches("foobar(foo,baz)", "^ /w+ '('; f").If(out var result))
          {
-            Console.Write(result.Text);
-            while (result.IsMatch)
+            Console.Write(result);
+            var lastResult = result;
+            while (result.MatchedBy("/w+ ','; f").If(out result))
             {
-               result = result.Matches("/w+ ','");
-               if (result.IsMatch)
-               {
-                  Console.Write(result.Text);
-               }
+               Console.Write(result);
+               lastResult = result;
             }
 
-            result = result.Matches("/w+ ')'");
-            if (result.IsMatch)
+            if (lastResult.MatchedBy("/w+ ')'; f").If(out result))
             {
-               Console.WriteLine(result.Text);
-            }
-         }
-      }
-
-      [TestMethod]
-      public void MatchFirstTest()
-      {
-         var matcher = new Matcher();
-         var input = "foobar(foo, baz, boq) -> foobaz";
-         var pattern = (RegexPattern)@"^ /(/w+) '('";
-
-         if (matcher.IsMatch(input, pattern))
-         {
-            Console.Write($"{matcher.FirstGroup}(");
-            var result = matcher.MatchOn((RegexPattern)@"(/s* ',')? /s* /(/w+)");
-            var list = new List<string>();
-            while (result.IsMatch)
-            {
-               list.Add(result.FirstGroup);
-               result = result.MatchNext();
-            }
-
-            result = result.Matches((RegexPattern)@"^ ')' /s* '->' /s* /(/w+)");
-            if (result.IsMatch)
-            {
-               Console.WriteLine($"{list.ToString(", ")}) -> {result.FirstGroup}");
+               Console.WriteLine(result);
             }
          }
       }
@@ -90,10 +59,10 @@ namespace Core.Tests
       [TestMethod]
       public void QuoteTest()
       {
-         var pattern = (RegexPattern)"`quote /(-[`quote]+) `quote";
-         if ("\"Fee fi fo fum\" said the giant.".Matcher(pattern).If(out var matcher))
+         var pattern = "`quote /(-[`quote]+) `quote; f";
+         if (RegexExtensions.Matches("\"Fee fi fo fum\" said the giant.", pattern).If(out var result))
          {
-            Console.WriteLine(matcher.FirstGroup.Guillemetify());
+            Console.WriteLine(result.FirstGroup.Guillemetify());
          }
       }
 
@@ -110,19 +79,19 @@ namespace Core.Tests
             return hash.ValuesFromKeys(keys).ToString(", ");
          }
 
-         var scraper = new Scraper("foo(a, b, c)\r\nbar(x,y , z)");
+         var scraper = new Scraper("foo(a, b, c)\r\nbar(x,y , z); f");
          var index1 = 0;
          var index2 = 0;
          var _result =
-            from name1 in scraper.Match("^ /(/w+) '('", "name1")
-            from pushed1 in name1.Push("^ -[')']+")
-            from split1 in pushed1.Split("/s* ',' /s*", s => $"var0_{s}:{index1++}")
+            from name1 in scraper.Match("^ /(/w+) '('; f", "name1")
+            from pushed1 in name1.Push("^ -[')']+; f")
+            from split1 in pushed1.Split("/s* ',' /s*; f", s => $"var0_{s}:{index1++}")
             from popped1 in split1.Pop()
             from skipped1 in popped1.Skip(1)
-            from skippedCrLf in skipped1.Skip("^ (/r /n)+")
-            from name2 in scraper.Match("^ /(/w+) '('", "name2")
-            from pushed2 in name2.Push("^ -[')']+")
-            from split2 in pushed2.Split("/s* ',' /s*", s => $"var1_{s}:{index2++}")
+            from skippedCrLf in skipped1.Skip("^ (/r /n)+; f")
+            from name2 in scraper.Match("^ /(/w+) '('; f", "name2")
+            from pushed2 in name2.Push("^ -[')']+; f")
+            from split2 in pushed2.Split("/s* ',' /s*; f", s => $"var1_{s}:{index2++}")
             from popped2 in split2.Pop()
             select popped2;
          if (_result.If(out scraper, out var _exception))
@@ -147,7 +116,7 @@ namespace Core.Tests
       public void RetainTest()
       {
          var source = "~foobar-foo?baz-boo!boo-yogi";
-         var retained = source.Retain((RegexPattern)"[/w '-']");
+         var retained = source.Retain("[/w '-']; f");
          Console.WriteLine(retained);
       }
 
@@ -155,7 +124,7 @@ namespace Core.Tests
       public void ScrubTest()
       {
          var source = "~foobar-foo?baz-boo!boo-yogi";
-         var retained = source.Scrub((RegexPattern)"[/w '-']");
+         var retained = source.Scrub("[/w '-']; f");
          Console.WriteLine(retained);
       }
    }
