@@ -733,26 +733,27 @@ namespace Core.Strings
 
             var matcherText = result.ToString();
             var numberAccountedFor = false;
-            matcherText.matches
-            if (matcher.IsMatch(matcherText, @"-(< '\') /'#'"))
+            matcher = @"-(< '\') /'#'";
+            if (matcher.Matches(matcherText).If(out result))
             {
                numberAccountedFor = true;
-               for (var matchIndex = 0; matchIndex < matcher.MatchCount; matchIndex++)
+               for (var matchIndex = 0; matchIndex < result.MatchCount; matchIndex++)
                {
-                  matcher[matchIndex, 1] = number.ToString();
+                  result[matchIndex, 1] = number.ToString();
                }
             }
 
-            matcherText = matcher.ToString();
-            if (matcher.IsMatch(matcherText, @"/('\#')"))
+            matcherText = result.ToString();
+            matcher = @"/('\#')";
+            if (matcher.Matches(matcherText).If(out result))
             {
-               for (var matchIndex = 0; matchIndex < matcher.MatchCount; matchIndex++)
+               for (var matchIndex = 0; matchIndex < result.MatchCount; matchIndex++)
                {
-                  matcher[matchIndex, 1] = "#";
+                  result[matchIndex, 1] = "#";
                }
             }
 
-            matcherText = matcher.ToString();
+            matcherText = result.ToString();
 
             return numberAccountedFor ? matcherText : $"{number} {matcherText}";
          }
@@ -1232,7 +1233,7 @@ namespace Core.Strings
 
       public static string ExtractFromQuotes(this string source)
       {
-         return source.Map(s => s.Matcher("^ [quote] /(.*?) [quote] $").Map(m => m.FirstGroup).DefaultTo(() => s));
+         return source.Map(s => s.Matches("^ [quote] /(.*?) [quote] $").Map(result => result.FirstGroup).DefaultTo(() => s));
       }
 
       public static IMaybe<object> ToObject(this string value)
@@ -1253,28 +1254,28 @@ namespace Core.Strings
 
          if (value.IsSingle())
          {
-            var matcher = new Matcher();
-            if (matcher.IsMatch(value, "^ /(.+) ['fF'] $"))
+            Matcher matcher = "^ /(.+) ['fF'] $";
+            if (matcher.Matches(value).If(out var result))
             {
-               return some<float, object>(matcher.FirstGroup.ToFloat());
+               return some<float, object>(result.FirstGroup.ToFloat());
             }
          }
 
          if (value.IsDouble())
          {
-            var matcher = new Matcher();
-            if (matcher.IsMatch(value, "^ /(.+) ['dD'] $"))
+            Matcher matcher = "^ /(.+) ['dD'] $";
+            if (matcher.Matches(value).If(out var result))
             {
-               return some<double, object>(matcher[0, 1].ToDouble());
+               return some<double, object>(result.FirstGroup.ToDouble());
             }
          }
 
          if (value.IsDecimal())
          {
-            var matcher = new Matcher();
-            if (matcher.IsMatch(value, "^ /(.+) ['mM'] $"))
+            Matcher matcher = "^ /(.+) ['mM'] $";
+            if (matcher.Matches(value).If(out var result))
             {
-               return some<decimal, object>(matcher[0, 1].ToDecimal());
+               return some<decimal, object>(result.FirstGroup.ToDecimal());
             }
          }
 
@@ -1404,29 +1405,26 @@ namespace Core.Strings
 
          if (value.IsSingle())
          {
-            var matcher = new Matcher();
             return
-               from attempt in matcher.IsMatch(value, "^ /(.+) ['fF'] $").Must().BeTrue().OrFailure("Single in invalid format")
-               from floated in matcher.FirstGroup.Single()
+               from result in value.Matches("^ /(.+) ['fF'] $").Result("Single in invalid format")
+               from floated in result.FirstGroup.Single()
                select (object)floated;
          }
 
          if (value.IsDouble())
          {
-            var matcher = new Matcher();
             return
-               from attempt in matcher.IsMatch(value, "^ /(.+) ['dD'] $").Must().BeTrue().OrFailure("Double in invalid format")
-               from doubled in matcher.FirstGroup.Double()
+               from result in value.Matches("^ /(.+) ['dD'] $").Result("Double in invalid format")
+               from doubled in result.FirstGroup.Double()
                select (object)doubled;
          }
 
          if (value.IsDecimal())
          {
-            var matcher = new Matcher();
             return
-               from attempt in matcher.IsMatch(value, "^ /(.+) ['mM'] $").Must().BeTrue().OrFailure("Decimal in invalid format")
-               from result in matcher.FirstGroup.Decimal()
-               select (object)result;
+               from result in value.Matches("^ /(.+) ['mM'] $").Result("Decimal in invalid format")
+               from decimaled in result.FirstGroup.Decimal()
+               select (object)decimaled;
          }
 
          if (value.IsGUID())
@@ -1579,12 +1577,12 @@ namespace Core.Strings
 
       public static IMaybe<int> ExtractInt(this string source)
       {
-         return maybe(source.IsNotEmpty(), () => source.Matcher("/(['+-']? /d+)")).Map(m => m[0, 1].ToInt());
+         return maybe(source.IsNotEmpty(), () => source.Matches("/(['+-']? /d+)")).Map(result => result[0, 1].ToInt());
       }
 
       public static IMaybe<double> ExtractDouble(this string source)
       {
-         return maybe(source.IsNotEmpty(), () => source.Matcher("/(['+-']? /d* '.' /d* (['eE'] ['-+']? /d+)?)")).Map(m => m[0, 1].ToDouble());
+         return maybe(source.IsNotEmpty(), () => source.Matches("/(['+-']? /d* '.' /d* (['eE'] ['-+']? /d+)?)")).Map(result => result[0, 1].ToDouble());
       }
 
       public static IMaybe<char> First(this string source) => maybe(source.IsNotEmpty(), () => source[0]);
@@ -1727,17 +1725,16 @@ namespace Core.Strings
          }
       }
 
-      public static string Drop(this string source, string pattern, bool friendly = true, bool ignoreCase = false, bool multiline = false)
+      public static string Drop(this string source, Matcher pattern)
       {
          if (source.IsEmpty())
          {
             return string.Empty;
          }
 
-         var matcher = new Matcher(friendly);
-         if (matcher.IsMatch(source, pattern, ignoreCase, multiline))
+         if (pattern.Matches(source).If(out var result))
          {
-            var count = matcher.Index + matcher.Length;
+            var count = result.Index + result.Length;
             return source.Drop(count);
          }
          else
@@ -1862,17 +1859,16 @@ namespace Core.Strings
          }
       }
 
-      public static string Keep(this string source, string pattern, bool friendly = true, bool ignoreCase = false, bool multiline = false)
+      public static string Keep(this string source, Matcher pattern)
       {
          if (source.IsEmpty())
          {
             return string.Empty;
          }
 
-         var matcher = new Matcher(friendly);
-         if (matcher.IsMatch(source, pattern, ignoreCase, multiline))
+         if (pattern.Matches(source).If(out var result))
          {
-            var count = matcher.Index + matcher.Length;
+            var count = result.Index + result.Length;
             return source.Keep(count);
          }
          else
@@ -2026,7 +2022,7 @@ namespace Core.Strings
       {
          IMaybe<int> matches()
          {
-            return source.Matcher("^ '0x' /(['0-9a-fA-F']+) $").Map(m => int.Parse(m.FirstGroup, NumberStyles.HexNumber));
+            return source.Matches("^ '0x' /(['0-9a-fA-F']+) $").Map(m => int.Parse(m.FirstGroup, NumberStyles.HexNumber));
          }
 
          return maybe(source.IsNotEmpty(), matches);
@@ -2034,7 +2030,7 @@ namespace Core.Strings
 
       public static IMaybe<string> GetSignature(this string parameterName)
       {
-         return maybe(parameterName.IsNotEmpty(), () => parameterName.Matcher("^ '@' /(.*) $").Map(m => m.FirstGroup.SnakeToCamelCase(true)));
+         return maybe(parameterName.IsNotEmpty(), () => parameterName.Matches("^ '@' /(.*) $").Map(m => m.FirstGroup.SnakeToCamelCase(true)));
       }
 
       public static IEnumerable<Slice> SlicesOf(this string source, string value, StringComparison comparison = StringComparison.CurrentCulture)
@@ -2141,10 +2137,10 @@ namespace Core.Strings
          {
             return "Source is empty".Failure<long>();
          }
-         else if (source.Matcher("^ /(/d+) /['kmg']? $", out var matcher))
+         else if (source.Matches("^ /(/d+) /['kmg']? $").If(out var result))
          {
-            var valueSource = matcher.FirstGroup;
-            var suffix = matcher.SecondGroup;
+            var valueSource = result.FirstGroup;
+            var suffix = result.SecondGroup;
 
             if (valueSource.AsLong().If(out var value))
             {
@@ -2228,13 +2224,11 @@ namespace Core.Strings
          }
       }
 
-      public static IMaybe<Slice> FindByRegex(this string source, string pattern, bool ignoreCase = false, bool multiline = false,
-         bool friendly = true)
+      public static IMaybe<Slice> FindByRegex(this string source, Matcher pattern)
       {
-         var matcher = new Matcher(friendly);
-         if (matcher.IsMatch(source, pattern, ignoreCase, multiline))
+         if (pattern.Matches(source).If(out var result))
          {
-            var (text, index, length) = matcher.GetMatch(0);
+            var (text, index, length) = result.GetMatch(0);
             return new Slice(text, index, length).Some();
          }
          else
@@ -2261,15 +2255,13 @@ namespace Core.Strings
          }
       }
 
-      public static IEnumerable<Slice> FindAllByRegex(this string source, string pattern, bool ignoreCase = false, bool multiline = false,
-         bool friendly = true)
+      public static IEnumerable<Slice> FindAllByRegex(this string source, Matcher pattern)
       {
-         var matcher = new Matcher(friendly);
-         if (matcher.IsMatch(source, pattern, ignoreCase, multiline))
+         if (pattern.Matches(source).If(out var result))
          {
-            for (var i = 0; i < matcher.MatchCount; i++)
+            for (var i = 0; i < result.MatchCount; i++)
             {
-               var (text, index, length) = matcher.GetMatch(i);
+               var (text, index, length) = result.GetMatch(i);
                yield return new Slice(text, index, length);
             }
          }

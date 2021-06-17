@@ -7,7 +7,7 @@ using Core.Computers;
 using Core.Exceptions;
 using Core.Monads;
 using Core.Objects;
-using Core.RegularExpressions;
+using Core.RegexMatching;
 using Core.Strings;
 using static Core.Monads.MonadFunctions;
 
@@ -66,22 +66,21 @@ namespace Core.Data.DataSources
       protected static string modifyCommand(object entity, string commandText)
       {
          var evaluator = PropertyInterface.GetEvaluator(entity);
-         var matcher = new Matcher();
          var text = commandText;
          foreach (var signature in evaluator.Signatures)
          {
             var name = signature.Name;
             var pattern = $"'{{{name}}}'";
             var value = evaluator[signature].ToNonNullString().Replace("'", "''");
-            if (matcher.IsMatch(text, pattern))
+            if (text.Matches(pattern).If(out var result))
             {
-               for (var i = 0; i < matcher.MatchCount; i++)
+               for (var i = 0; i < result.MatchCount; i++)
                {
-                  matcher[i] = value;
+                  result[i] = value;
                }
             }
 
-            text = matcher.ToString();
+            text = result.ToString();
          }
 
          return text;
