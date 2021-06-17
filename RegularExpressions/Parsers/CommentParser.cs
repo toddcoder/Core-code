@@ -23,7 +23,8 @@ namespace Core.RegularExpressions.Parsers
                   continue;
                case true when ch == '/':
                   index = i + 1;
-                  return $"(?#{contents.ToString().Escape()})".Some();
+                  var escaped = escape(contents.ToString());
+                  return $"(?#{escaped})".Some();
                default:
                   contents.Append(ch);
                   star = false;

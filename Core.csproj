@@ -362,7 +362,6 @@
     <Compile Include="RegularExpressions\Parsers\SpanBreakParser.cs" />
     <Compile Include="RegularExpressions\Parsers\StringParser.cs" />
     <Compile Include="RegularExpressions\Parsers\UnmodifiedParser.cs" />
-    <Compile Include="RegularExpressions\Parsers\VariableParser.cs" />
     <Compile Include="RegularExpressions\RegexPattern.cs" />
     <Compile Include="RegularExpressions\RegexExtensions.cs" />
     <Compile Include="RegularExpressions\RegexResult.cs" />
@@ -370,7 +369,7 @@
     <Compile Include="RegularExpressions\Source.cs" />
     <Compile Include="RegularExpressions\Splitter.cs" />
     <Compile Include="Strings\CharacterExtensions.cs" />
-    <Compile Include="Strings\CSV.cs" />
+    <Compile Include="Strings\Csv.cs" />
     <Compile Include="Strings\Formatter.cs" />
     <Compile Include="Strings\DelimitedTextStatus.cs" />
     <Compile Include="Strings\IStringStream.cs" />

@@ -4,12 +4,12 @@ using System.Linq;
 using Core.Enumerables;
 using Core.Monads;
 using Core.Objects;
-using Core.RegularExpressions;
+using Core.RegexMatching;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Strings
 {
-   public class CSV : IEnumerable<IEnumerable<string>>
+   public class Csv : IEnumerable<IEnumerable<string>>
    {
       public class Record : IEnumerable<string>
       {
@@ -18,7 +18,7 @@ namespace Core.Strings
 
          public Record(string record, DelimitedText delimitedText) : this()
          {
-            foreach (var field in record.Split("','"))
+            foreach (var field in record.Split("','; f"))
             {
                fields.Add(delimitedText.Restringify(field, RestringifyQuotes.None));
             }
@@ -57,26 +57,26 @@ namespace Core.Strings
          IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
       }
 
-      public static implicit operator CSV(string source) => new(source);
+      public static implicit operator Csv(string source) => new(source);
 
       protected DelimitedText delimitedText;
       protected List<Record> records;
 
-      public CSV(string source)
+      public Csv(string source)
       {
          records = new List<Record>();
          delimitedText = DelimitedText.AsBasic();
          var destringified = delimitedText.Destringify(source);
          if (source.IsNotEmpty())
          {
-            foreach (var record in destringified.Split("/r /n | /r | /n"))
+            foreach (var record in destringified.Split("/r /n | /r | /n; f"))
             {
                records.Add(getNewRecord(record, delimitedText));
             }
          }
       }
 
-      internal CSV(IEnumerable<Record> records, DelimitedText delimitedText)
+      internal Csv(IEnumerable<Record> records, DelimitedText delimitedText)
       {
          this.records = new List<Record>();
          this.delimitedText = delimitedText;

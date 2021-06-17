@@ -3,14 +3,14 @@ using System.Linq;
 using Core.Arrays;
 using Core.Enumerables;
 using Core.Monads;
-using Core.RegularExpressions;
+using Core.RegexMatching;
 
 namespace Core.Strings
 {
    public class Padding
    {
-      protected const string DEFAULT_SPLIT_PATTERN = "/s* ',' /s*";
-      protected const string LINE_SPLIT_PATTERN = "/r /n | /r | /n";
+      protected const string DEFAULT_SPLIT_PATTERN = "/s* ',' /s*; f";
+      protected const string LINE_SPLIT_PATTERN = "/r /n | /r | /n; f";
 
       protected PadType[] padTypes;
       protected string splitPattern;

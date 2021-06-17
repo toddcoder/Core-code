@@ -1,30 +1,30 @@
 ﻿using Core.Objects;
-using Core.RegularExpressions;
+using Core.RegexMatching;
 
 namespace Core.Strings
 {
    public class ObjectFormatter
    {
-      protected const string REGEX_NAME = "-(< '//') '{' /([/w '-']+) /([',:']+ -['}']+)? '}'";
+      protected const string REGEX_NAME = "-(< '//') '{' /([/w '-']+) /([',:']+ -['}']+)? '}'; f";
 
       protected PropertyEvaluator evaluator;
 
       public ObjectFormatter(object obj) => evaluator = new PropertyEvaluator(obj);
 
-      public string Format(string source) => source.Matcher(REGEX_NAME).Map(matcher =>
+      public string Format(string source) => source.Matches(REGEX_NAME).Map(result =>
       {
-         for (var i = 0; i < matcher.MatchCount; i++)
+         for (var i = 0; i < result.MatchCount; i++)
          {
-            var name = matcher[i, 1].ToCamel();
-            var format = matcher[i, 2];
+            var name = result[i, 1].ToCamel();
+            var format = result[i, 2];
             if (evaluator.ContainsKey(name))
             {
                var obj1 = evaluator[name];
-               matcher[i, 0] = obj1 is null ? "" : string.Format("{{0" + format + "}}", obj1);
+               result[i, 0] = obj1 is null ? "" : string.Format("{{0" + format + "}}", obj1);
             }
          }
 
-         return matcher.ToString();
+         return result.ToString();
       }).DefaultTo(() => "");
    }
 }

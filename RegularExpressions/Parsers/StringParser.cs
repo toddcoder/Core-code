@@ -43,7 +43,7 @@ namespace Core.RegularExpressions.Parsers
                      else
                      {
                         index = i + 1;
-                        return contents.ToString().Escape(false).Enclose(enclose).Some();
+                        return escape(contents.ToString()).Enclose(enclose).Some();
                      }
                   }
                   else
@@ -63,7 +63,7 @@ namespace Core.RegularExpressions.Parsers
                      else
                      {
                         index = i + 1;
-                        return contents.ToString().Escape(false).Enclose(enclose).Some();
+                        return escape(contents.ToString()).Enclose(enclose).Some();
                      }
                   }
                   else

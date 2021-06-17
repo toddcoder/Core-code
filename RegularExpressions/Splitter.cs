@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Core.Enumerables;
 
 namespace Core.RegularExpressions
 {
+   [Obsolete]
    public class Splitter : Matcher
    {
       protected List<string> subPatterns;

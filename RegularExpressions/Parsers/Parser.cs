@@ -31,7 +31,6 @@ namespace Core.RegularExpressions.Parsers
          new CapturingGroupParser(),
          new LookAroundParser(),
          new AtomicGroupParser(),
-         new VariableParser(),
          new ConditionalParser(),
          new NonCapturingGroupParser(),
          new OutsideRangeParser(),

@@ -4,6 +4,7 @@ using Core.Strings;
 
 namespace Core.RegularExpressions
 {
+   [Obsolete("Use Result")]
    public class RegexResult
    {
       public static RegexResult Empty => new();

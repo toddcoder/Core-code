@@ -4,7 +4,7 @@ using System.Linq;
 using Core.Enumerables;
 using Core.Monads;
 using Core.Objects;
-using Core.RegularExpressions;
+using Core.RegexMatching;
 
 namespace Core.Strings
 {
@@ -57,24 +57,25 @@ namespace Core.Strings
          var maxCount = 0;
          var padderItems = new List<PadderItem>();
 
-         var matcher = new Matcher();
-
-         matcher.Evaluate(Format, "'{' /(/d+) '}' /('[' /(/d+) /(['lLrRcC']) ']')", true);
-         for (var i = 0; i < matcher.MatchCount; i++)
+         //matcher.Evaluate(Format, , true);
+         if (Format.Matches("'{' /(/d+) '}' /('[' /(/d+) /(['lLrRcC']) ']'); fi").If(out var result))
          {
-            maxCount = Math.Max(maxCount, matcher[i, 1].ToInt());
-            var length = matcher[i, 3].AsInt();
-            var item = new PadderItem { Length = length, PadType = getPadType(matcher[i, 4]) };
-            if (item.Length.IsNone && !hasNoLength)
+            for (var i = 0; i < result.MatchCount; i++)
             {
-               hasNoLength = true;
-            }
+               maxCount = Math.Max(maxCount, result[i, 1].ToInt());
+               var length = result[i, 3].AsInt();
+               var item = new PadderItem { Length = length, PadType = getPadType(result[i, 4]) };
+               if (item.Length.IsNone && !hasNoLength)
+               {
+                  hasNoLength = true;
+               }
 
-            padderItems.Add(item);
-            matcher[i, 2] = "";
+               padderItems.Add(item);
+               result[i, 2] = "";
+            }
          }
 
-         Format = matcher.ToString();
+         Format = result.ToString();
          items = padderItems.ToArray();
          itemCount = maxCount + 1;
       }

@@ -1,9 +1,11 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Text.RegularExpressions;
 using Core.Monads;
 using static Core.Monads.AttemptFunctions;
 
 namespace Core.RegularExpressions
 {
+   [Obsolete("Use Pattern and Results")]
    public class MatcherTrying
    {
       protected Matcher matcher;

@@ -1,6 +1,6 @@
 ﻿using System;
 using Core.Monads;
-using Core.RegularExpressions;
+using Core.RegexMatching;
 using Core.Strings;
 using static System.Reflection.Assembly;
 using static System.Linq.Expressions.Expression;
@@ -28,7 +28,7 @@ namespace Core.Objects
             typeName = $"System.{typeName.Tail()}";
          }
 
-         if (defaultStringToEmpty && typeName.IsMatch("^ 'System.string' $", true))
+         if (defaultStringToEmpty && typeName.IsMatch("^ 'System.string' $; fi"))
          {
             return some<string, object>("");
          }
@@ -62,13 +62,13 @@ namespace Core.Objects
       {
          try
          {
-            if (source.MatchOne("^ -/{,} ','? /s* /{a-zA-Z_0-9.} $").If(out var m))
+            if (source.Matches("^ -/{,} ','? /s* /{a-zA-Z_0-9.} $; f").If(out var result))
             {
-               return getUngenericType(m.FirstGroup, m.SecondGroup).Success();
+               return getUngenericType(result.FirstGroup, result.SecondGroup).Success();
             }
-            else if (source.MatchOne("^ -/{,} ','? /s* /{a-zA-Z_0-9.} '<' -/{,} ',' -/{>} '>' $").If(out m))
+            else if (source.Matches("^ -/{,} ','? /s* /{a-zA-Z_0-9.} '<' -/{,} ',' -/{>} '>' $; f").If(out result))
             {
-               return getGenericType(m.FirstGroup, m.SecondGroup, m.ThirdGroup, m.FourthGroup).Success();
+               return getGenericType(result.FirstGroup, result.SecondGroup, result.ThirdGroup, result.FourthGroup).Success();
             }
             else
             {

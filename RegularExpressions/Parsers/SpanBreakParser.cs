@@ -61,7 +61,7 @@ namespace Core.RegularExpressions.Parsers
                   }
                   else
                   {
-                     builder.Append(ch.ToString().Escape(false));
+                     builder.Append(escape(ch.ToString()));
                   }
 
                   break;
