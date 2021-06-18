@@ -26,7 +26,7 @@ namespace Core.Matching.Parsers
 
       public abstract string Pattern { get; }
 
-      protected static string escape(string text) => RRegex.Escape(text);
+      protected static string escape(string text) => RRegex.Escape(text).Replace("]", @"\]");
 
       public IMaybe<string> Scan(string source, ref int index)
       {

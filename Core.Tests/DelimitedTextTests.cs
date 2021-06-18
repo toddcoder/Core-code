@@ -15,7 +15,6 @@ namespace Core.Tests
       [TestMethod]
       public void BasicDelimitedTextTest()
       {
-         Pattern.IsFriendly = false;
          var delimitedText = DelimitedText.AsSql();
          delimitedText.ExceptReplacement = "'".Some();
          var source = "SELECT foobar as 'can''t';";

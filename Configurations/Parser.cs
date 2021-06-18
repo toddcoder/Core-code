@@ -8,7 +8,7 @@ namespace Core.Configurations
 {
    internal class Parser
    {
-      protected const string REGEX_KEY = "/(['$@']? [/w] [/w '-']*); f";
+      protected const string REGEX_KEY = "/(['$@']? [/w] [/w '-']*)";
 
       protected string source;
 

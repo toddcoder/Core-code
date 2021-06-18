@@ -8,7 +8,7 @@ using Core.Strings;
 namespace Core.Tests
 {
    [TestClass]
-   public class RegexMatchingTests
+   public class PatternTests
    {
       protected static void matcherTest(Pattern pattern)
       {
@@ -119,6 +119,21 @@ namespace Core.Tests
          var source = "~foobar-foo?baz-boo!boo-yogi";
          var scrubbed = source.Scrub("[/w '-']; f");
          Console.WriteLine(scrubbed);
+      }
+
+      [TestMethod]
+      public void BugTest()
+      {
+         var pattern = "[/w '.[]']+; f";
+         var input = "Pull";
+         if (input.Matches(pattern).IsSome)
+         {
+            Console.WriteLine("Matched");
+         }
+         else
+         {
+            Console.WriteLine("Not matched");
+         }
       }
    }
 }

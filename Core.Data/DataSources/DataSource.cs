@@ -78,9 +78,9 @@ namespace Core.Data.DataSources
                {
                   result[i] = value;
                }
-            }
 
-            text = result.ToString();
+               text = result.ToString();
+            }
          }
 
          return text;

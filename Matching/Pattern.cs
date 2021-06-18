@@ -27,7 +27,6 @@ namespace Core.Matching
             var group = match.Groups[0];
             var ignoreCase = false;
             var multiline = false;
-            var friendly = isFriendly;
             var options = group.Value;
 
             if (options.Contains("i"))
@@ -48,6 +47,7 @@ namespace Core.Matching
                multiline = false;
             }
 
+            bool friendly;
             if (options.Contains("f"))
             {
                friendly = true;
