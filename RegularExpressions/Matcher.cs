@@ -8,7 +8,7 @@ using Core.Assertions;
 using Core.Collections;
 using Core.Monads;
 using Core.Numbers;
-using Core.RegularExpressions.Parsers;
+using Core.RegexMatching.Parsers;
 using Core.Strings;
 using static Core.Monads.MonadFunctions;
 using static Core.RegularExpressions.RegexExtensions;

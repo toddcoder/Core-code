@@ -80,7 +80,7 @@ namespace Core.Strings
          return source.IsEmpty() ? new string[0] : source.Split(splitPattern(split));
       }
 
-      public static string[] Lines(this string source) => source.Split("/r/n | /r | /n");
+      public static string[] Lines(this string source) => source.Split("/r/n | /r | /n; f");
 
       public static string Slice(this string source, int startIndex, int stopIndex)
       {
@@ -215,7 +215,7 @@ namespace Core.Strings
 
       private static string replaceWhitespace(string source, string replacement)
       {
-         return source.Map(s => string.Join(replacement, s.Split("/s+")));
+         return source.Map(s => string.Join(replacement, s.Split("/s+; f")));
       }
 
       public static string NormalizeWhitespace(this string source) => replaceWhitespace(source, " ");
@@ -234,13 +234,13 @@ namespace Core.Strings
             return string.Empty;
          }
 
-         if (source.IsMatch("^ {A-Z} $"))
+         if (source.IsMatch("^ {A-Z} $; f"))
          {
             return source.ToLower();
          }
          else
          {
-            var matches = source.Matched($"-/b /(['A-Z']{quantitative})");
+            var matches = source.Matched($"-/b /(['A-Z']{quantitative}); f");
             if (matches.If(out var result))
             {
                for (var i = 0; i < result.MatchCount; i++)
@@ -275,7 +275,7 @@ namespace Core.Strings
          }
          else
          {
-            var pattern = separator.Escape().SingleQuotify() + "/(['a-z'])";
+            var pattern = separator.Escape().SingleQuotify() + "/(['a-z']); f";
             var matches = source.Matched(pattern);
             if (matches.If(out var result))
             {
@@ -308,21 +308,18 @@ namespace Core.Strings
             text = text.SnakeToCamelCase(true);
          }
 
-         Pattern pattern = "['A-Z'] ['a-z']*";
-         if (pattern.MatchedBy(text).If(out var result))
+         if (text.Matches("['A-Z'] ['a-z']*; f").If(out var result))
          {
-            Pattern numericPattern = "/d+ $";
             var numeric = string.Empty;
-            if (numericPattern.MatchedBy(text).If(out var numericResult))
+            if (text.Matches("/d+ $; f").If(out var numericResult))
             {
                numeric = numericResult[0];
             }
 
             var builder = new StringBuilder();
-            Pattern subPattern = "^ /uc? /lc* [/lv 'y' /uv 'Y']+ /(/lc?) /1? ['h']? ('e' $)?";
             for (var i = 0; i < result.MatchCount; i++)
             {
-               if (subPattern.MatchedBy(result[i, 0]).If(out var subResult))
+               if (result[i, 0].Matches("^ /uc? /lc* [/lv 'y' /uv 'Y']+ /(/lc?) /1? ['h']? ('e' $)?; f").If(out var subResult))
                {
                   for (var j = 0; j < subResult.MatchCount; j++)
                   {
@@ -350,55 +347,55 @@ namespace Core.Strings
 
       private static string fixMatch(string match, string subMatch)
       {
-         if (match.IsMatch("^ 'assign' /w+"))
+         if (match.IsMatch("^ 'assign' /w+; f"))
          {
             return "Assign";
          }
-         else if (match.IsMatch("^ 'institut' /w+"))
+         else if (match.IsMatch("^ 'institut' /w+; f"))
          {
             return "Inst";
          }
-         else if (match.IsMatch("^ 'cust'"))
+         else if (match.IsMatch("^ 'cust'; f"))
          {
             return "Cust";
          }
-         else if (match.IsMatch("'id' $"))
+         else if (match.IsMatch("'id' $; f"))
          {
             return "ID";
          }
-         else if (match.IsMatch("/b 'image' /b"))
+         else if (match.IsMatch("/b 'image' /b; f"))
          {
             return "Img";
          }
-         else if (match.IsMatch("'company'"))
+         else if (match.IsMatch("'company'; f"))
          {
             return "Cpny";
          }
-         else if (match.IsMatch("'user'"))
+         else if (match.IsMatch("'user'; f"))
          {
             return "Usr";
          }
-         else if (match.IsMatch("'order'"))
+         else if (match.IsMatch("'order'; f"))
          {
             return "Ord";
          }
-         else if (match.IsMatch("'history'"))
+         else if (match.IsMatch("'history'; f"))
          {
             return "Hist";
          }
-         else if (match.IsMatch("'account'"))
+         else if (match.IsMatch("'account'; f"))
          {
             return "Acct";
          }
-         else if (match.IsMatch("^ 'stag' ('e' | 'ing')"))
+         else if (match.IsMatch("^ 'stag' ('e' | 'ing'); f"))
          {
             return "Stg";
          }
-         else if (match.IsMatch("'import'"))
+         else if (match.IsMatch("'import'; f"))
          {
             return "Imp";
          }
-         else if (match.IsMatch("'message' 's'?"))
+         else if (match.IsMatch("'message' 's'?; f"))
          {
             return "Msg";
          }
@@ -460,17 +457,17 @@ namespace Core.Strings
 
       public static string RemoveCComments(this string source)
       {
-         return source.Map(s => s.Substitute("'/*' .*? '*/'", string.Empty));
+         return source.Map(s => s.Substitute("'/*' .*? '*/'; f", string.Empty));
       }
 
       public static string RemoveCOneLineComments(this string source)
       {
-         return source.Map(s => s.Substitute("'//' .*? /crlf; m", string.Empty));
+         return source.Map(s => s.Substitute("'//' .*? /crlf; fm", string.Empty));
       }
 
       public static string RemoveSQLOneLineComments(this string source)
       {
-         return source.Map(s => s.Substitute("'--' .*? /crlf; m", string.Empty));
+         return source.Map(s => s.Substitute("'--' .*? /crlf; fm", string.Empty));
       }
 
       public static string AllowOnly(this string source, string allowed)
@@ -480,7 +477,7 @@ namespace Core.Strings
             return string.Empty;
          }
 
-         if (!allowed.IsMatch("'[' -[']']+ ']'"))
+         if (!allowed.IsMatch("'[' -[']']+ ']'; f"))
          {
             allowed = $"['{allowed}']";
          }
@@ -542,12 +539,12 @@ namespace Core.Strings
 
       public static string Unquotify(this string source)
       {
-         return source.Map(s => s.Matches("^ /dq /(.*) /dq $").Map(result => result.FirstGroup).DefaultTo(() => s));
+         return source.Map(s => s.Matches("^ /dq /(.*) /dq $; f").Map(result => result.FirstGroup).DefaultTo(() => s));
       }
 
       public static string SingleUnquotify(this string source)
       {
-         return source.Map(s => source.Matches("^ /sq /(.*) /sq $").Map(result => result.FirstGroup).DefaultTo(() => s));
+         return source.Map(s => source.Matches("^ /sq /(.*) /sq $; f").Map(result => result.FirstGroup).DefaultTo(() => s));
       }
 
       public static string Guillemetify(this string source) => source.Map(s => $"«{s}»");
@@ -561,17 +558,17 @@ namespace Core.Strings
 
          if (spaceVisible)
          {
-            source = source.Substitute("' '", "•");
+            source = source.Substitute("' '; f", "•");
          }
 
-         source = source.Substitute("/t", "¬");
-         source = source.Substitute("/n", "¶");
-         source = source.Substitute("/r", "¤");
+         source = source.Substitute("/t; f", "¬");
+         source = source.Substitute("/n; f", "¶");
+         source = source.Substitute("/r; f", "¤");
 
          return source;
       }
 
-      public static string VisibleTabs(this string source) => source.Map(s => s.Substitute("/t", "¬"));
+      public static string VisibleTabs(this string source) => source.Map(s => s.Substitute("/t; f", "¬"));
 
       public static string PadCenter(this string source, int length, char paddingCharacter = ' ')
       {
@@ -699,8 +696,8 @@ namespace Core.Strings
             return string.Empty;
          }
 
-         Pattern pattern = "'(' /(/w+) (',' /(/w+))? ')'; i";
-         if (pattern.MatchedBy(source).If(out var result))
+         Pattern pattern = "'(' /(/w+) (',' /(/w+))? ')'; fi";
+         if (source.Matches(pattern).If(out var result))
          {
             if (number == 1)
             {
@@ -733,8 +730,8 @@ namespace Core.Strings
 
             var matcherText = result.ToString();
             var numberAccountedFor = false;
-            pattern = @"-(< '\') /'#'";
-            if (pattern.MatchedBy(matcherText).If(out result))
+            pattern = @"-(< '\') /'#'; f";
+            if (matcherText.Matches(pattern).If(out result))
             {
                numberAccountedFor = true;
                for (var matchIndex = 0; matchIndex < result.MatchCount; matchIndex++)
@@ -744,8 +741,8 @@ namespace Core.Strings
             }
 
             matcherText = result.ToString();
-            pattern = @"/('\#')";
-            if (pattern.MatchedBy(matcherText).If(out result))
+            pattern = @"/('\#'); f";
+            if (matcherText.Matches(pattern).If(out result))
             {
                for (var matchIndex = 0; matchIndex < result.MatchCount; matchIndex++)
                {
@@ -821,7 +818,7 @@ namespace Core.Strings
                         continue;
                   }
 
-                  if (ch.ToString().IsMatch("[alnum]"))
+                  if (ch.ToString().IsMatch("[alnum]; u"))
                   {
                      builder[index] = (char)(builder[index] + 1);
                      return builder;
@@ -879,7 +876,7 @@ namespace Core.Strings
                         continue;
                   }
 
-                  if (ch.ToString().IsMatch("[alnum]"))
+                  if (ch.ToString().IsMatch("[alnum]; u"))
                   {
                      builder[index] = (char)(builder[index] - 1);
                      return builder;
@@ -916,9 +913,9 @@ namespace Core.Strings
          }
       }
 
-      public static bool IsWhitespace(this string source) => source.IsEmpty() || source.IsMatch("^ /s* $");
+      public static bool IsWhitespace(this string source) => source.IsEmpty() || source.IsMatch("^ /s* $; f");
 
-      public static bool IsQuoted(this string source) => !source.IsEmpty() && source.IsMatch("^ [quote] .*? [quote] $");
+      public static bool IsQuoted(this string source) => !source.IsEmpty() && source.IsMatch("^ [quote] .*? [quote] $; f");
 
       public static bool Same(this string source, string comparison)
       {
@@ -937,7 +934,7 @@ namespace Core.Strings
 
       public static bool IsGUID(this string source)
       {
-         return !source.IsEmpty() && source.IsMatch("^ '{'? [/l /d]8 '-' [/l /d]4 '-' [/l /d]4 '-' [/l /d]4 '-' [/l /d]12 '}'? $");
+         return !source.IsEmpty() && source.IsMatch("^ '{'? [/l /d]8 '-' [/l /d]4 '-' [/l /d]4 '-' [/l /d]4 '-' [/l /d]12 '}'? $; f");
       }
 
       public static bool In(this string source, params string[] comparisons) => !source.IsEmpty() && comparisons.Any(source.Same);
@@ -1233,7 +1230,7 @@ namespace Core.Strings
 
       public static string ExtractFromQuotes(this string source)
       {
-         return source.Map(s => s.Matches("^ [quote] /(.*?) [quote] $").Map(result => result.FirstGroup).DefaultTo(() => s));
+         return source.Map(s => s.Matches("^ [quote] /(.*?) [quote] $; f").Map(result => result.FirstGroup).DefaultTo(() => s));
       }
 
       public static IMaybe<object> ToObject(this string value)
@@ -1254,8 +1251,8 @@ namespace Core.Strings
 
          if (value.IsSingle())
          {
-            Pattern pattern = "^ /(.+) ['fF'] $";
-            if (pattern.MatchedBy(value).If(out var result))
+            Pattern pattern = "^ /(.+) ['fF'] $; f";
+            if (value.Matches(pattern).If(out var result))
             {
                return some<float, object>(result.FirstGroup.ToFloat());
             }
@@ -1263,8 +1260,8 @@ namespace Core.Strings
 
          if (value.IsDouble())
          {
-            Pattern pattern = "^ /(.+) ['dD'] $";
-            if (pattern.MatchedBy(value).If(out var result))
+            Pattern pattern = "^ /(.+) ['dD'] $; f";
+            if (value.Matches(pattern).If(out var result))
             {
                return some<double, object>(result.FirstGroup.ToDouble());
             }
@@ -1272,8 +1269,8 @@ namespace Core.Strings
 
          if (value.IsDecimal())
          {
-            Pattern pattern = "^ /(.+) ['mM'] $";
-            if (pattern.MatchedBy(value).If(out var result))
+            Pattern pattern = "^ /(.+) ['mM'] $; f";
+            if (value.Matches(pattern).If(out var result))
             {
                return some<decimal, object>(result.FirstGroup.ToDecimal());
             }
@@ -1406,7 +1403,7 @@ namespace Core.Strings
          if (value.IsSingle())
          {
             return
-               from result in value.Matches("^ /(.+) ['fF'] $").Result("Single in invalid format")
+               from result in value.Matches("^ /(.+) ['fF'] $; f").Result("Single in invalid format")
                from floated in result.FirstGroup.Single()
                select (object)floated;
          }
@@ -1414,7 +1411,7 @@ namespace Core.Strings
          if (value.IsDouble())
          {
             return
-               from result in value.Matches("^ /(.+) ['dD'] $").Result("Double in invalid format")
+               from result in value.Matches("^ /(.+) ['dD'] $; f").Result("Double in invalid format")
                from doubled in result.FirstGroup.Double()
                select (object)doubled;
          }
@@ -1422,7 +1419,7 @@ namespace Core.Strings
          if (value.IsDecimal())
          {
             return
-               from result in value.Matches("^ /(.+) ['mM'] $").Result("Decimal in invalid format")
+               from result in value.Matches("^ /(.+) ['mM'] $; f").Result("Decimal in invalid format")
                from decimaled in result.FirstGroup.Decimal()
                select (object)decimaled;
          }
@@ -1577,12 +1574,12 @@ namespace Core.Strings
 
       public static IMaybe<int> ExtractInt(this string source)
       {
-         return maybe(source.IsNotEmpty(), () => source.Matches("/(['+-']? /d+)")).Map(result => result[0, 1].ToInt());
+         return maybe(source.IsNotEmpty(), () => source.Matches("/(['+-']? /d+); f")).Map(result => result[0, 1].ToInt());
       }
 
       public static IMaybe<double> ExtractDouble(this string source)
       {
-         return maybe(source.IsNotEmpty(), () => source.Matches("/(['+-']? /d* '.' /d* (['eE'] ['-+']? /d+)?)")).Map(result => result[0, 1].ToDouble());
+         return maybe(source.IsNotEmpty(), () => source.Matches("/(['+-']? /d* '.' /d* (['eE'] ['-+']? /d+)?); f")).Map(result => result[0, 1].ToDouble());
       }
 
       public static IMaybe<char> First(this string source) => maybe(source.IsNotEmpty(), () => source[0]);
@@ -1703,8 +1700,6 @@ namespace Core.Strings
          }
       }
 
-      //public static string[] Words(this string source) => source.IsEmpty() ? new string[0] : source.Split("/s+");
-
       public static string Drop(this string source, int count)
       {
          if (source.IsEmpty())
@@ -1732,7 +1727,7 @@ namespace Core.Strings
             return string.Empty;
          }
 
-         if (pattern.MatchedBy(source).If(out var result))
+         if (source.Matches(pattern).If(out var result))
          {
             var count = result.Index + result.Length;
             return source.Drop(count);
@@ -1866,7 +1861,7 @@ namespace Core.Strings
             return string.Empty;
          }
 
-         if (pattern.MatchedBy(source).If(out var result))
+         if (source.Matches(pattern).If(out var result))
          {
             var count = result.Index + result.Length;
             return source.Keep(count);
@@ -2022,7 +2017,7 @@ namespace Core.Strings
       {
          IMaybe<int> matches()
          {
-            return source.Matches("^ '0x' /(['0-9a-fA-F']+) $").Map(m => int.Parse(m.FirstGroup, NumberStyles.HexNumber));
+            return source.Matches("^ '0x' /(['0-9a-fA-F']+) $; f").Map(m => int.Parse(m.FirstGroup, NumberStyles.HexNumber));
          }
 
          return maybe(source.IsNotEmpty(), matches);
@@ -2030,7 +2025,7 @@ namespace Core.Strings
 
       public static IMaybe<string> GetSignature(this string parameterName)
       {
-         return maybe(parameterName.IsNotEmpty(), () => parameterName.Matches("^ '@' /(.*) $").Map(m => m.FirstGroup.SnakeToCamelCase(true)));
+         return maybe(parameterName.IsNotEmpty(), () => parameterName.Matches("^ '@' /(.*) $; f").Map(m => m.FirstGroup.SnakeToCamelCase(true)));
       }
 
       public static IEnumerable<Slice> SlicesOf(this string source, string value, StringComparison comparison = StringComparison.CurrentCulture)
@@ -2137,7 +2132,7 @@ namespace Core.Strings
          {
             return "Source is empty".Failure<long>();
          }
-         else if (source.Matches("^ /(/d+) /['kmg']? $").If(out var result))
+         else if (source.Matches("^ /(/d+) /['kmg']? $; f").If(out var result))
          {
             var valueSource = result.FirstGroup;
             var suffix = result.SecondGroup;
@@ -2176,7 +2171,7 @@ namespace Core.Strings
          return source.AsByteSize().DefaultTo(() => defaultValue);
       }
 
-      public static string Partition(this string source, int allowedLength, string splitPattern = @"-(< '\')','", int padding = 1)
+      public static string Partition(this string source, int allowedLength, string splitPattern = @"-(< '\')','; f", int padding = 1)
       {
          if (source.IsEmpty())
          {
@@ -2226,7 +2221,7 @@ namespace Core.Strings
 
       public static IMaybe<Slice> FindByRegex(this string source, Pattern pattern)
       {
-         if (pattern.MatchedBy(source).If(out var result))
+         if (source.Matches(pattern).If(out var result))
          {
             var (text, index, length) = result.GetMatch(0);
             return new Slice(text, index, length).Some();
@@ -2257,7 +2252,7 @@ namespace Core.Strings
 
       public static IEnumerable<Slice> FindAllByRegex(this string source, Pattern pattern)
       {
-         if (pattern.MatchedBy(source).If(out var result))
+         if (source.Matches(pattern).If(out var result))
          {
             for (var i = 0; i < result.MatchCount; i++)
             {
@@ -2279,13 +2274,13 @@ namespace Core.Strings
 
          static IEnumerable<string> split(string whole)
          {
-            if (whole.IsMatch("^ ['A-Z']+ $"))
+            if (whole.IsMatch("^ ['A-Z']+ $; f"))
             {
                whole = allPascalCase(whole);
             }
-            else if (whole.IsMatch("'_'"))
+            else if (whole.IsMatch("'_'; f"))
             {
-               whole = whole.Split("'_'+").Select(s => s.ToPascal()).ToString("");
+               whole = whole.Split("'_'+; f").Select(s => s.ToPascal()).ToString("");
             }
 
             var part = new StringBuilder();
@@ -2330,7 +2325,7 @@ namespace Core.Strings
          {
             return string.Empty;
          }
-         else if (source.IsMatch("^ ['0-9']+ $"))
+         else if (source.IsMatch("^ ['0-9']+ $; f"))
          {
             return source;
          }

@@ -12,7 +12,7 @@ namespace Core.Tests
    {
       protected static void matcherTest(Pattern pattern)
       {
-         if (pattern.MatchedBy("tsqlcop.sql.format.options.xml").If(out var result))
+         if ("tsqlcop.sql.format.options.xml".Matches(pattern).If(out var result))
          {
             for (var matchIndex = 0; matchIndex < result.MatchCount; matchIndex++)
             {
@@ -61,7 +61,7 @@ namespace Core.Tests
 
       protected static void matchPatternsTest(Pattern pattern1, Pattern pattern2, Pattern pattern3)
       {
-         if (pattern1.MatchedBy("foobar(foo,baz)").If(out var result))
+         if ("foobar(foo,baz)".Matches(pattern1).If(out var result))
          {
             Console.Write(result.FirstMatch);
             IMaybe<Exception> _exception;
@@ -102,7 +102,7 @@ namespace Core.Tests
       public void FQuoteTest()
       {
          Pattern pattern = "`quote /(-[`quote]+) `quote; f";
-         if (pattern.MatchedBy("\"Fee fi fo fum\" said the giant.").If(out var result))
+         if ("\"Fee fi fo fum\" said the giant.".Matches(pattern).If(out var result))
          {
             Console.WriteLine(result.FirstGroup.Guillemetify());
          }

@@ -2,7 +2,7 @@
 using Core.Exceptions;
 using Core.Monads;
 
-namespace Core.RegularExpressions.Parsers
+namespace Core.RegexMatching.Parsers
 {
    public class StringParser : BaseParser
    {

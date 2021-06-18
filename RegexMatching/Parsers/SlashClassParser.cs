@@ -1,7 +1,7 @@
 ﻿using Core.Monads;
 using Core.Strings;
 
-namespace Core.RegularExpressions.Parsers
+namespace Core.RegexMatching.Parsers
 {
    public class SlashClassParser : BaseParser
    {

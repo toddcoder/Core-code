@@ -6,7 +6,7 @@ using Core.Strings;
 using static Core.Monads.MonadFunctions;
 using RRegex = System.Text.RegularExpressions.Regex;
 
-namespace Core.RegularExpressions.Parsers
+namespace Core.RegexMatching.Parsers
 {
    public abstract class BaseParser
    {
@@ -30,9 +30,9 @@ namespace Core.RegularExpressions.Parsers
 
       public IMaybe<string> Scan(string source, ref int index)
       {
-         static IEnumerable<Group> getGroups(Match match)
+         static IEnumerable<System.Text.RegularExpressions.Group> getGroups(System.Text.RegularExpressions.Match match)
          {
-            foreach (Group group in match.Groups)
+            foreach (System.Text.RegularExpressions.Group group in match.Groups)
             {
                yield return group;
             }

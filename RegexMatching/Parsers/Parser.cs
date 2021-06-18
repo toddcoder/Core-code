@@ -4,7 +4,7 @@ using System.Text;
 using Core.Assertions;
 using Core.Strings;
 
-namespace Core.RegularExpressions.Parsers
+namespace Core.RegexMatching.Parsers
 {
    public class Parser
    {

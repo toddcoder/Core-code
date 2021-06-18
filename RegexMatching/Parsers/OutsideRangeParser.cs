@@ -2,7 +2,7 @@
 using Core.Strings;
 using static Core.Monads.MonadFunctions;
 
-namespace Core.RegularExpressions.Parsers
+namespace Core.RegexMatching.Parsers
 {
    public class OutsideRangeParser : BaseParser
    {

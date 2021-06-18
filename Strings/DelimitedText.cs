@@ -152,14 +152,14 @@ namespace Core.Strings
             current = source.Drop(i);
             if (inside)
             {
-               if (exceptPattern.MatchedBy(current).If(out var result))
+               if (current.Matches(exceptPattern).If(out var result))
                {
                   builder.Append(_exceptReplacement.DefaultTo(() => result[0]));
                   i += result.Length;
 
                   continue;
                }
-               else if (_endMatcher.If(out var endPattern) && endPattern.MatchedBy(current).If(out result))
+               else if (_endMatcher.If(out var endPattern) && current.Matches(endPattern).If(out result))
                {
                   _endMatcher = none<Pattern>();
 
@@ -179,7 +179,7 @@ namespace Core.Strings
             }
             else
             {
-               if (beginPattern.MatchedBy(current).If(out var result))
+               if (current.Matches(beginPattern).If(out var result))
                {
                   if (_endMatcher.IsNone)
                   {

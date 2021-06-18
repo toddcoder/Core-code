@@ -56,7 +56,7 @@ namespace Core.Assertions.Strings
 
       public PatternAssertion MatchedBy(string input)
       {
-         return add(() => pattern.MatchedBy(input).IsMatched, $"$name must $not be matched by \"{pattern}\"");
+         return add(() => input.Matches(pattern).IsSome, $"$name must $not be matched by \"{pattern}\"");
       }
 
       public void OrThrow() => orThrow(this);

@@ -1,4 +1,4 @@
-﻿namespace Core.RegularExpressions.Parsers
+﻿namespace Core.RegexMatching.Parsers
 {
    public static class ParserExtensions
    {
