@@ -6,9 +6,9 @@ using Core.Collections;
 using Core.Computers;
 using Core.Enumerables;
 using Core.Exceptions;
+using Core.Matching;
 using Core.Monads;
 using Core.Objects;
-using Core.RegexMatching;
 using Core.Strings;
 using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
@@ -234,7 +234,7 @@ namespace Core.Applications
          if (rest.Matches("^/s* '[' /s*  /(.*) /s* ']'; f").If(out var result))
          {
             var list = result.FirstGroup;
-            var array = list.Split("/s* ',' /s*");
+            var array = list.Split("/s* ',' /s*; f");
             return array;
          }
          else
@@ -315,9 +315,9 @@ namespace Core.Applications
 
       protected static Hash<char, string> getShortcuts(string source)
       {
-         return source.Split("/s* ';' /s*").Select(s =>
+         return source.Split("/s* ';' /s*; f").Select(s =>
          {
-            var pair = s.Split("/s* '=' /s*");
+            var pair = s.Split("/s* '=' /s*; f");
             return (key: pair[0][0], value: pair[1]);
          }).ToHash(i => i.key, i => i.value);
       }

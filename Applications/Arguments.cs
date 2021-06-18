@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Core.Collections;
 using Core.Exceptions;
+using Core.Matching;
 using Core.Monads;
 using Core.Numbers;
-using Core.RegexMatching;
 using Core.Strings;
 using static Core.Monads.MonadFunctions;
 

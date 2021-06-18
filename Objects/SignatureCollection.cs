@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Core.RegexMatching;
+using Core.Matching;
 
 namespace Core.Objects
 {

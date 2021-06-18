@@ -4,7 +4,7 @@ using System.Linq;
 using Core.Assertions;
 using Core.Computers;
 using Core.Enumerables;
-using Core.RegexMatching;
+using Core.Matching;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Core.Tests

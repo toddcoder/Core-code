@@ -6,9 +6,9 @@ using System.Text;
 using Core.Assertions;
 using Core.Dates.Now;
 using Core.Enumerables;
+using Core.Matching;
 using Core.Monads;
 using Core.Numbers;
-using Core.RegexMatching;
 using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
 using static Core.Strings.StringFunctions;
@@ -479,7 +479,7 @@ namespace Core.Strings
 
          if (!allowed.IsMatch("'[' -[']']+ ']'; f"))
          {
-            allowed = $"['{allowed}']";
+            allowed = $"['{allowed}']; f";
          }
 
          var matcher = allowed;

@@ -4,8 +4,8 @@ using System.Text;
 using System.Windows.Forms;
 using Core.Computers;
 using Core.Enumerables;
+using Core.Matching;
 using Core.Monads;
-using Core.RegexMatching;
 using Core.Strings;
 using static Core.Monads.MonadFunctions;
 
@@ -51,7 +51,7 @@ namespace Core.WinForms.Documents
       {
          this.form = form;
          this.textBox = textBox;
-         this.extension = extension.Substitute("^ '.'", "");
+         this.extension = extension.Substitute("^ '.'; f", "");
          this.documentName = documentName;
          this.fontName = fontName;
          this.fontSize = fontSize;

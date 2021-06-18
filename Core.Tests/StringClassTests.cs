@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Text;
-using Core.RegexMatching;
+using Core.Matching;
 using Core.Strings;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

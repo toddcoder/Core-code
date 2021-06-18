@@ -9,9 +9,9 @@ using Core.Applications;
 using Core.Arrays;
 using Core.Assertions;
 using Core.Exceptions;
+using Core.Matching;
 using Core.Monads;
 using Core.Numbers;
-using Core.RegexMatching;
 using Core.Strings;
 using static Core.Monads.MonadFunctions;
 

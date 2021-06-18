@@ -5,8 +5,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Core.Computers;
 using Core.Exceptions;
+using Core.Matching;
 using Core.Monads;
-using Core.RegexMatching;
 using Core.Strings;
 using static Core.Assertions.AssertionFunctions;
 

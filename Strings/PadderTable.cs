@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Core.Enumerables;
+using Core.Matching;
 using Core.Monads;
 using Core.Objects;
-using Core.RegexMatching;
 
 namespace Core.Strings
 {

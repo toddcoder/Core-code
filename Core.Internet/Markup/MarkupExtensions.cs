@@ -2,8 +2,8 @@
 using System.Text;
 using System.Xml;
 using Core.Assertions;
+using Core.Matching;
 using Core.Monads;
-using Core.RegexMatching;
 using static Core.Monads.AttemptFunctions;
 
 namespace Core.Internet.Markup
@@ -56,7 +56,7 @@ namespace Core.Internet.Markup
          text = text.Substitute("'<'; f", "&lt;");
          text = text.Substitute("'>'; f", "&gt;");
          text = text.Substitute("[dquote]; f", "&quot;");
-         text = text.Substitute("[squote]", "&apos;");
+         text = text.Substitute("[squote]; f", "&apos;");
 
          return text;
       }
@@ -79,8 +79,8 @@ namespace Core.Internet.Markup
          markup.Must().Not.BeNullOrEmpty().OrThrow();
 
          return markup
-            .Substitute("/s+ /w+ ':' /w '=' [dquote] -[dquote]+ [dquote]", "")
-            .Substitute("/s+ 'xmlns=' [dquote] -[dquote]+ [dquote]", "");
+            .Substitute("/s+ /w+ ':' /w '=' [dquote] -[dquote]+ [dquote]; f", "")
+            .Substitute("/s+ 'xmlns=' [dquote] -[dquote]+ [dquote]; f", "");
       }
    }
 }

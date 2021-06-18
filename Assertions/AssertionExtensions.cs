@@ -9,8 +9,8 @@ using Core.Assertions.Objects;
 using Core.Assertions.Strings;
 using Core.Collections;
 using Core.Computers;
+using Core.Matching;
 using Core.Monads;
-using Core.RegexMatching;
 using Core.RegularExpressions;
 using static Core.Assertions.AssertionFunctions;
 

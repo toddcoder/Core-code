@@ -5,9 +5,9 @@ using Core.Assertions;
 using Core.Collections;
 using Core.Computers;
 using Core.Exceptions;
+using Core.Matching;
 using Core.Monads;
 using Core.Objects;
-using Core.RegexMatching;
 using Core.Strings;
 using static Core.Monads.MonadFunctions;
 
@@ -70,7 +70,7 @@ namespace Core.Data.DataSources
          foreach (var signature in evaluator.Signatures)
          {
             var name = signature.Name;
-            var pattern = $"'{{{name}}}'";
+            var pattern = $"'{{{name}}}'; f";
             var value = evaluator[signature].ToNonNullString().Replace("'", "''");
             if (text.Matches(pattern).If(out var result))
             {
@@ -344,7 +344,7 @@ namespace Core.Data.DataSources
 
       protected static void changeCommandType(IDbCommand command, string commandText)
       {
-         command.CommandType = commandText.IsMatch("/s+") ? CommandType.Text : CommandType.StoredProcedure;
+         command.CommandType = commandText.IsMatch("/s+; f") ? CommandType.Text : CommandType.StoredProcedure;
       }
 
       protected void allocateCommand()

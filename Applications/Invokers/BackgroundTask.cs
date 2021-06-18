@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Threading;
 using Core.Dates;
 using Core.Dates.DateIncrements;
-using Core.RegexMatching;
+using Core.Matching;
 using Core.Strings;
 using static System.Console;
 using Timeout = System.Threading.Timeout;

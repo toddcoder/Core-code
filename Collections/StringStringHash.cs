@@ -1,5 +1,5 @@
 ﻿using Core.Assertions;
-using Core.RegexMatching;
+using Core.Matching;
 using Core.Strings;
 
 namespace Core.Collections

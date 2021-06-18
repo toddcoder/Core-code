@@ -4,8 +4,8 @@ using System.IO;
 using System.Linq;
 using Core.Assertions;
 using Core.Collections;
+using Core.Matching;
 using Core.Numbers;
-using Core.RegexMatching;
 using static Core.Strings.StringFunctions;
 
 namespace Core.Strings

@@ -12,7 +12,7 @@ using Core.Objects;
 using Core.Strings;
 using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
-using static Core.RegexMatching.RegexExtensions;
+using static Core.Matching.RegexExtensions;
 
 namespace Core.Configurations
 {

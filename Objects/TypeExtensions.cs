@@ -1,6 +1,6 @@
 ﻿using System;
+using Core.Matching;
 using Core.Monads;
-using Core.RegexMatching;
 using Core.Strings;
 using static System.Reflection.Assembly;
 using static System.Linq.Expressions.Expression;

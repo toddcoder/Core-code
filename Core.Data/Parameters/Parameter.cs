@@ -1,7 +1,7 @@
 ﻿using System;
+using Core.Matching;
 using Core.Monads;
 using Core.Objects;
-using Core.RegexMatching;
 using Core.Strings;
 using static Core.Monads.MonadFunctions;
 using Group = Core.Configurations.Group;

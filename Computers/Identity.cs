@@ -2,8 +2,8 @@
 using System.Runtime.InteropServices;
 using System.Security.Principal;
 using Core.Assertions;
+using Core.Matching;
 using Core.Monads;
-using Core.RegexMatching;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Computers

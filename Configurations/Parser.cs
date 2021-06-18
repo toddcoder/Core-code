@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using Core.DataStructures;
+using Core.Matching;
 using Core.Monads;
-using Core.RegexMatching;
 using Core.Strings;
 
 namespace Core.Configurations

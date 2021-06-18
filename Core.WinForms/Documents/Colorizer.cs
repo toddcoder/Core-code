@@ -1,7 +1,7 @@
 ﻿using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using Core.RegexMatching;
+using Core.Matching;
 using Core.WinForms.Consoles;
 
 namespace Core.WinForms.Documents

@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Core.RegexMatching;
+using Core.Matching;
 using Core.Strings;
 
 namespace Core.Computers

@@ -2,8 +2,8 @@
 using System.Linq;
 using Core.Arrays;
 using Core.Enumerables;
+using Core.Matching;
 using Core.Monads;
-using Core.RegexMatching;
 
 namespace Core.Strings
 {

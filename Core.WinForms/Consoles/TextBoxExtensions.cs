@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using Core.RegexMatching;
+using Core.Matching;
 
 namespace Core.WinForms.Consoles
 {

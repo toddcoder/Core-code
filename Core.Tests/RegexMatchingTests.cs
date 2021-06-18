@@ -1,8 +1,8 @@
 ﻿using System;
 using Core.Assertions;
+using Core.Matching;
 using Core.Monads;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Core.RegexMatching;
 using Core.Strings;
 
 namespace Core.Tests
@@ -27,14 +27,12 @@ namespace Core.Tests
       [TestMethod]
       public void UMatcherTest()
       {
-         Pattern.IsFriendly = false;
-         matcherTest("(sql); f");
+         matcherTest("(sql); u");
       }
 
       [TestMethod]
       public void FMatcherTest()
       {
-         Pattern.IsFriendly = true;
          matcherTest("/('sql'); f");
       }
 
@@ -55,7 +53,6 @@ namespace Core.Tests
       [TestMethod]
       public void FMatchOnlySubstitutionsTest()
       {
-         Pattern.IsFriendly = true;
          matchOnlySubstitutions("'sql' /(/d+); f");
       }
 
@@ -87,15 +84,13 @@ namespace Core.Tests
       [TestMethod]
       public void UMatchPatternsTest()
       {
-         Pattern.IsFriendly = false;
          matchPatternsTest(@"^\w+\(; u", @"\w+,; u",@"\w+\)l; u");
       }
 
       [TestMethod]
       public void FMatchPatternsTest()
       {
-         Pattern.IsFriendly = true;
-         matchPatternsTest("^ /w+ '('", "/w+ ','", "/w+ ')'; f");
+         matchPatternsTest("^ /w+ '('; f", "/w+ ','; f", "/w+ ')'; f");
       }
 
       [TestMethod]

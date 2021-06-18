@@ -3,10 +3,9 @@ using System.Linq;
 using Core.Assertions;
 using Core.Collections;
 using Core.Enumerables;
-using Core.RegexMatching;
+using Core.Matching;
 using Core.Strings;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using RegexExtensions = Core.RegexMatching.RegexExtensions;
 
 namespace Core.Tests
 {
@@ -16,7 +15,7 @@ namespace Core.Tests
       [TestMethod]
       public void MatcherTest()
       {
-         if (RegexExtensions.Matches("tsqlcop.sql.format.options.xml", "(sql); f").If(out var result))
+         if ("tsqlcop.sql.format.options.xml".Matches("(sql); f").If(out var result))
          {
             for (var matchIndex = 0; matchIndex < result.MatchCount; matchIndex++)
             {
@@ -31,7 +30,7 @@ namespace Core.Tests
       [TestMethod]
       public void MatchOnlySubstitutions()
       {
-         var result = RegexExtensions.Substitute("This is the full sentence with sql1 in it", "'sql' /(/d)", "sql-$1");
+         var result = "This is the full sentence with sql1 in it".Substitute("'sql' /(/d); f", "sql-$1");
          Console.WriteLine(result);
          result.Must().Equal("This is the full sentence with sql-1 in it").OrThrow();
       }
@@ -39,7 +38,7 @@ namespace Core.Tests
       [TestMethod]
       public void MatchPatternsTest()
       {
-         if (RegexExtensions.Matches("foobar(foo,baz)", "^ /w+ '('; f").If(out var result))
+         if ("foobar(foo,baz)".Matches("^ /w+ '('; f").If(out var result))
          {
             Console.Write(result);
             var lastResult = result;
@@ -60,7 +59,7 @@ namespace Core.Tests
       public void QuoteTest()
       {
          var pattern = "`quote /(-[`quote]+) `quote; f";
-         if (RegexExtensions.Matches("\"Fee fi fo fum\" said the giant.", pattern).If(out var result))
+         if ("\"Fee fi fo fum\" said the giant.".Matches(pattern).If(out var result))
          {
             Console.WriteLine(result.FirstGroup.Guillemetify());
          }

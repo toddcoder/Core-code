@@ -2,9 +2,9 @@
 using System.Threading;
 using Core.Arrays;
 using Core.Dates.Now;
+using Core.Matching;
 using Core.Monads;
 using Core.Numbers;
-using Core.RegexMatching;
 using Core.Strings;
 
 namespace Core.Dates

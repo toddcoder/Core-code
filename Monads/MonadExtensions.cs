@@ -5,8 +5,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Core.Enumerables;
+using Core.Matching;
 using Core.Objects;
-using Core.RegexMatching;
 using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
 

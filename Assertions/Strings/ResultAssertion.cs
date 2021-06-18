@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Core.Exceptions;
+using Core.Matching;
 using Core.Monads;
-using Core.RegexMatching;
 using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Assertions.Strings

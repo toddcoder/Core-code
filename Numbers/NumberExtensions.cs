@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using Core.Assertions;
 using Core.Enumerables;
-using Core.RegexMatching;
+using Core.Matching;
 using Core.Strings;
 using static System.Math;
 
@@ -133,7 +133,7 @@ namespace Core.Numbers
       {
          if (value.IsNotEmpty())
          {
-            return value.IsMatch("^ ['-+']? /d*  '.' /d* (['eE'] ['-+']? /d+)? ['fF']? $") && value != "." &&
+            return value.IsMatch("^ ['-+']? /d*  '.' /d* (['eE'] ['-+']? /d+)? ['fF']? $; f") && value != "." &&
                value != "+." && value != "-." && value != "-" && value != "+";
          }
          else

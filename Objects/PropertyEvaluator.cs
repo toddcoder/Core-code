@@ -6,8 +6,8 @@ using Core.Assertions;
 using Core.Collections;
 using Core.Enumerables;
 using Core.Exceptions;
+using Core.Matching;
 using Core.Monads;
-using Core.RegexMatching;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Objects

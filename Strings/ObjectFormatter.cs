@@ -1,5 +1,5 @@
-﻿using Core.Objects;
-using Core.RegexMatching;
+﻿using Core.Matching;
+using Core.Objects;
 
 namespace Core.Strings
 {

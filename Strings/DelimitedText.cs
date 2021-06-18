@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Core.Assertions;
+using Core.Matching;
 using Core.Monads;
 using Core.Numbers;
 using Core.Objects;
-using Core.RegexMatching;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Strings
@@ -15,32 +15,32 @@ namespace Core.Strings
    {
       public static DelimitedText AsCLike()
       {
-         Pattern beginPattern = Pattern.IsFriendly ? "[dquote]" : "[\"]";
-         Pattern exceptPattern = Pattern.IsFriendly ? @"'\' [dquote]" : "\\[\"]";
+         Pattern beginPattern = "[dquote]; f";
+         Pattern exceptPattern = @"'\' [dquote]; f";
 
          return new DelimitedText(beginPattern, exceptPattern);
       }
 
       public static DelimitedText AsSql()
       {
-         Pattern beginPattern = Pattern.IsFriendly ? "[squote]" : "'";
-         Pattern exceptPattern = Pattern.IsFriendly ? "[squote]2" : "''";
+         Pattern beginPattern = "[squote]; f";
+         Pattern exceptPattern = "[squote]2; f";
 
          return new DelimitedText(beginPattern, exceptPattern);
       }
 
       public static DelimitedText AsBasic()
       {
-         Pattern beginPattern = Pattern.IsFriendly ? "[dquote]" : "[\"]";
-         Pattern exceptPattern = Pattern.IsFriendly ? "[dquote]2" : "[\"]{2}";
+         Pattern beginPattern = "[dquote]; f";
+         Pattern exceptPattern = "[dquote]2; f";
 
          return new DelimitedText(beginPattern, exceptPattern);
       }
 
       public static DelimitedText BothQuotes()
       {
-         Pattern beginPattern = Pattern.IsFriendly ? "[dquote squote]" : "[\"']";
-         Pattern exceptPattern = Pattern.IsFriendly ? @"'\' [dquote squote]" : "\\[\"']";
+         Pattern beginPattern = "[dquote squote]; f";
+         Pattern exceptPattern = @"'\' [dquote squote]; f";
 
          return new DelimitedText(beginPattern, exceptPattern);
       }
@@ -66,8 +66,8 @@ namespace Core.Strings
          strings = new List<string>();
       }
 
-      public DelimitedText(Pattern beginPattern, Pattern endPattern, Pattern exceptPattern) : this(beginPattern, endPattern.Regex.Some(),
-         exceptPattern)
+      public DelimitedText(Pattern beginPattern, Pattern endPattern, Pattern exceptPattern) :
+         this(beginPattern, endPattern.Regex.Some(), exceptPattern)
       {
       }
 
@@ -115,22 +115,12 @@ namespace Core.Strings
 
       public IMaybe<Func<string, string>> TransformingMap { get; set; }
 
-      protected Pattern getEndPattern(char ch)
+      protected static Pattern getEndPattern(char ch) => ch switch
       {
-         if (Pattern.IsFriendly)
-         {
-            return ch switch
-            {
-               '\'' => "^ [squote]",
-               '"' => "^ [dquote]",
-               _ => $"^ '{ch}'"
-            };
-         }
-         else
-         {
-            return $"^{System.Text.RegularExpressions.Regex.Escape(ch.ToString())}";
-         }
-      }
+         '\'' => "^ [squote]; f",
+         '"' => "^ [dquote]; f",
+         _ => $"^ '{ch}'; f"
+      };
 
       public IEnumerable<(string text, int index, DelimitedTextStatus status)> Enumerable(string source)
       {
@@ -335,7 +325,7 @@ namespace Core.Strings
          Status = DelimitedTextStatus.Outside;
          var values = new List<string>();
 
-         foreach (var (text, sliceIndex, length) in pattern.SplitIntoSlices("'$' /d+").Where(s => s.Length > 0))
+         foreach (var (text, sliceIndex, length) in pattern.SplitIntoSlices("'$' /d+; f").Where(s => s.Length > 0))
          {
             if (sliceIndex == 0)
             {

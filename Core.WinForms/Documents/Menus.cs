@@ -3,8 +3,8 @@ using System.Linq;
 using System.Windows.Forms;
 using Core.Applications;
 using Core.Collections;
+using Core.Matching;
 using Core.Monads;
-using Core.RegexMatching;
 using Core.Strings;
 
 namespace Core.WinForms.Documents

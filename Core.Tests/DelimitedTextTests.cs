@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
 using Core.Enumerables;
+using Core.Matching;
 using Core.Monads;
-using Core.RegexMatching;
 using Core.Strings;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Core.Lambdas.LambdaFunctions;
@@ -157,7 +157,7 @@ namespace Core.Tests
          Pattern.IsFriendly = false;
          var source = "'foobar' AND 'foobaz' OR 'foo' AND 'bar'";
          var delimitedText = DelimitedText.AsSql();
-         var slices = delimitedText.Split(source, "/s+ 'OR' /s+").ToArray();
+         var slices = delimitedText.Split(source, "/s+ 'OR' /s+; f").ToArray();
          foreach (var slice in slices)
          {
             Console.WriteLine($"<{slice.Text}>");
@@ -174,23 +174,23 @@ namespace Core.Tests
          Pattern.IsFriendly = true;
          var source = "'foobar' AND 'foobaz' OR 'foo' AND 'bar'";
          var delimitedText = DelimitedText.AsSql();
-         delimitedText.Replace(source, "/b 'AND' | 'OR' /b", slice => slice.Text.Same("AND") ? "OR" : "AND");
+         delimitedText.Replace(source, "/b 'AND' | 'OR' /b; f", slice => slice.Text.Same("AND") ? "OR" : "AND");
          Console.WriteLine(delimitedText);
 
          source = "'foobar' && 'foobaz' || 'foo' && 'bar'";
-         delimitedText.Replace(source, "/b 'AND' | 'OR' /b", slice => slice.Text.Same("AND") ? "OR" : "AND");
+         delimitedText.Replace(source, "/b 'AND' | 'OR' /b; f", slice => slice.Text.Same("AND") ? "OR" : "AND");
          Console.WriteLine(delimitedText);
 
-         delimitedText.Replace(source, "'&&' | '||'", slice => slice.Text == "&&" ? "||" : "&&");
+         delimitedText.Replace(source, "'&&' | '||'; f", slice => slice.Text == "&&" ? "||" : "&&");
          Console.WriteLine(delimitedText);
 
          Console.WriteLine("---");
 
          delimitedText.Status = DelimitedTextStatus.Inside;
-         delimitedText.Replace(source, "/w+", slice => slice.Text.ToUpper());
+         delimitedText.Replace(source, "/w+; f", slice => slice.Text.ToUpper());
          Console.WriteLine(delimitedText);
 
-         delimitedText.Replace(source, "/w+", "?");
+         delimitedText.Replace(source, "/w+; f", "?");
          Console.WriteLine(delimitedText);
       }
 
@@ -231,7 +231,7 @@ namespace Core.Tests
          delimitedText.Status[DelimitedTextStatus.Outside] = true;
          delimitedText.Status[DelimitedTextStatus.Inside] = true;
 
-         foreach (var (text, index, status) in delimitedText.Matches(source, "'&&' | '<<' | '>>' | 'foo'"))
+         foreach (var (text, index, status) in delimitedText.Matches(source, "'&&' | '<<' | '>>' | 'foo'; f"))
          {
             switch (status)
             {

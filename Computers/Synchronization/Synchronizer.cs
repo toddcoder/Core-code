@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
 using Core.Exceptions;
+using Core.Matching;
 using Core.Monads;
-using Core.RegexMatching;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Computers.Synchronization
