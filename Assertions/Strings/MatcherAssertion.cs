@@ -10,7 +10,6 @@ using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Assertions.Strings
 {
-   [Obsolete("Use Pattern or Result assertion")]
    public class MatcherAssertion : IAssertion<Matcher>
    {
       protected Matcher matcher;

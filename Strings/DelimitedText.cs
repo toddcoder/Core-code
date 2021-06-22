@@ -15,32 +15,32 @@ namespace Core.Strings
    {
       public static DelimitedText AsCLike()
       {
-         Pattern beginPattern = "[dquote]; f";
-         Pattern exceptPattern = @"'\' [dquote]; f";
+         Pattern beginPattern = "^ [dquote]; f";
+         Pattern exceptPattern = @"^ '\' [dquote]; f";
 
          return new DelimitedText(beginPattern, exceptPattern);
       }
 
       public static DelimitedText AsSql()
       {
-         Pattern beginPattern = "[squote]; f";
-         Pattern exceptPattern = "[squote]2; f";
+         Pattern beginPattern = "^ [squote]; f";
+         Pattern exceptPattern = "^ [squote]2; f";
 
          return new DelimitedText(beginPattern, exceptPattern);
       }
 
       public static DelimitedText AsBasic()
       {
-         Pattern beginPattern = "[dquote]; f";
-         Pattern exceptPattern = "[dquote]2; f";
+         Pattern beginPattern = "^ [dquote]; f";
+         Pattern exceptPattern = "^ [dquote]2; f";
 
          return new DelimitedText(beginPattern, exceptPattern);
       }
 
       public static DelimitedText BothQuotes()
       {
-         Pattern beginPattern = "[dquote squote]; f";
-         Pattern exceptPattern = @"'\' [dquote squote]; f";
+         Pattern beginPattern = "^ [dquote squote]; f";
+         Pattern exceptPattern = @"^ '\' [dquote squote]; f";
 
          return new DelimitedText(beginPattern, exceptPattern);
       }
@@ -53,10 +53,10 @@ namespace Core.Strings
       protected Bits32<DelimitedTextStatus> status;
       protected List<string> strings;
 
-      protected DelimitedText(Pattern beginPattern, IMaybe<string> endPattern, Pattern exceptPattern)
+      protected DelimitedText(Pattern beginPattern, IMaybe<Pattern> _endPattern, Pattern exceptPattern)
       {
          this.beginPattern = beginPattern;
-         _endPattern = endPattern.Map(p => (Pattern)p);
+         this._endPattern = _endPattern;
          this.exceptPattern = exceptPattern;
          _exceptReplacement = none<string>();
 
@@ -67,11 +67,11 @@ namespace Core.Strings
       }
 
       public DelimitedText(Pattern beginPattern, Pattern endPattern, Pattern exceptPattern) :
-         this(beginPattern, endPattern.Regex.Some(), exceptPattern)
+         this(beginPattern, endPattern.Some(), exceptPattern)
       {
       }
 
-      public DelimitedText(Pattern beginPattern, Pattern exceptPattern) : this(beginPattern, none<string>(), exceptPattern)
+      public DelimitedText(Pattern beginPattern, Pattern exceptPattern) : this(beginPattern, none<Pattern>(), exceptPattern)
       {
       }
 
@@ -85,10 +85,10 @@ namespace Core.Strings
          }
       }
 
-      public IMaybe<string> EndPattern
+      public IMaybe<Pattern> EndPattern
       {
-         get => _endPattern.Map(m => m.Regex);
-         set { _endPattern = value.Map(p => (Pattern)(p.StartsWith("^") ? p : $"^{value}")); }
+         get => _endPattern;
+         set => _endPattern = value.Map(p => p.Regex.StartsWith("^") ? p : p.WithPattern(r => $"^{r}"));
       }
 
       public string ExceptPattern
@@ -171,10 +171,7 @@ namespace Core.Strings
             {
                if (current.Matches(beginPattern).If(out var result))
                {
-                  if (_endMatcher.IsNone)
-                  {
-                     _endMatcher = getEndPattern(ch).Some();
-                  }
+                  _endMatcher = _endPattern.DefaultTo(() => getEndPattern(ch)).Some();
 
                   yield return (builder.ToString(), outsideStart, DelimitedTextStatus.Outside);
                   yield return (result[0], i, DelimitedTextStatus.BeginDelimiter);

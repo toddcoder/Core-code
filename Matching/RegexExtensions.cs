@@ -47,14 +47,23 @@ namespace Core.Matching
 
       public static IEnumerable<Slice> SplitIntoSlices(this string input, Pattern pattern)
       {
-         var split = input.Split(pattern);
-         var index = 0;
-
-         foreach (var segment in split)
+         if (input.Matches(pattern).If(out var result))
          {
-            yield return new Slice { Index = index, Length = segment.Length, Text = segment };
+            var index = 0;
+            int length;
+            string text;
+            foreach (var (_, matchIndex, matchLength) in result)
+            {
+               length = matchIndex - index;
+               text = input.Drop(index).Keep(length);
+               yield return new Slice(text, index, length);
 
-            index += segment.Length;
+               index = matchIndex + matchLength;
+            }
+
+            length = input.Length - index;
+            text = input.Drop(index);
+            yield return new Slice(text, index, length);
          }
       }
 

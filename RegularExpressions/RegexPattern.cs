@@ -5,7 +5,6 @@ using Core.Strings;
 
 namespace Core.RegularExpressions
 {
-   [Obsolete("Use RegexMatching.Matcher")]
    public class RegexPattern : IEquatable<RegexPattern>
    {
       public static explicit operator RegexPattern(string source)

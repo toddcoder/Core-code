@@ -170,5 +170,7 @@ namespace Core.Matching
 
          return new Pattern(regex, newOptions, friendly);
       }
+
+      public Pattern WithPattern(Func<string, string> patternFunc) => new(patternFunc(regex), options, false);
    }
 }

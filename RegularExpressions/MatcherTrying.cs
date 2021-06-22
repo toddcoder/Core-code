@@ -5,7 +5,6 @@ using static Core.Monads.AttemptFunctions;
 
 namespace Core.RegularExpressions
 {
-   [Obsolete("Use Pattern and Results")]
    public class MatcherTrying
    {
       protected Matcher matcher;

@@ -124,8 +124,8 @@ namespace Core.Tests
       [TestMethod]
       public void BugTest()
       {
-         var pattern = "[/w '.[]']+; f";
-         var input = "Pull";
+         var pattern = @"^ '\)'; f";
+         var input = @"\)";
          if (input.Matches(pattern).IsSome)
          {
             Console.WriteLine("Matched");

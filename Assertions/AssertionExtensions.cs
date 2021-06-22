@@ -532,7 +532,6 @@ namespace Core.Assertions
          return (TypeAssertion)assertion.Named($"Type {value.Name} {name}");
       }
 
-      [Obsolete("Use Pattern or Result assertion")]
       public static MatcherAssertion Must(this Matcher value) => new(value);
 
       public static PatternAssertion Must(this Pattern value) => new(value);
@@ -548,7 +547,6 @@ namespace Core.Assertions
          return (MatcherAssertion)assertion.Named($"Matcher {name}");
       }
 
-      [Obsolete("Use Pattern or Result assertion")]
       public static MatcherAssertion Must(this (Matcher, string) tuple)
       {
          var (value, name) = tuple;

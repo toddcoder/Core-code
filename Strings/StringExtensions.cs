@@ -1973,7 +1973,6 @@ namespace Core.Strings
          return source.IsNotEmpty() ? func(source) : string.Empty;
       }
 
-      [Obsolete]
       public static string Map(this string source, Func<string> func) => source.IsNotEmpty() ? func() : string.Empty;
 
       public static string Map(this string source, string replacement) => source.IsNotEmpty() ? replacement : string.Empty;

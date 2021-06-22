@@ -28,7 +28,7 @@ namespace Core.Tests
       [TestMethod]
       public void SynchronizeFilesTest()
       {
-         var synchronizer = new Synchronizer(SOURCE_FOLDER0, TARGET_FOLDER0, ".+ '.sql' $");
+         var synchronizer = new Synchronizer(SOURCE_FOLDER0, TARGET_FOLDER0, ".+ '.sql' $; f");
 
          synchronizer.Success += (sender, args) => Console.WriteLine($"Success: {args.Message}");
          synchronizer.Failure += (sender, args) => Console.WriteLine($"Failure: {args.Message}");
@@ -41,7 +41,7 @@ namespace Core.Tests
       [TestMethod]
       public void SynchronizePickedFilesTest()
       {
-         var synchronizer = new Synchronizer(SOURCE_FOLDER1, TARGET_FOLDER1, "'.dll' $");
+         var synchronizer = new Synchronizer(SOURCE_FOLDER1, TARGET_FOLDER1, "'.dll' $; f");
 
          synchronizer.Success += (sender, args) => Console.WriteLine($"Success: {args.Message}");
          synchronizer.Failure += (sender, args) => Console.WriteLine($"Failure: {args.Message}");

@@ -15,7 +15,7 @@ namespace Core.Tests
       [TestMethod]
       public void MatcherTest()
       {
-         if ("tsqlcop.sql.format.options.xml".Matches("(sql); f").If(out var result))
+         if ("tsqlcop.sql.format.options.xml".Matches("(sql); u").If(out var result))
          {
             for (var matchIndex = 0; matchIndex < result.MatchCount; matchIndex++)
             {
