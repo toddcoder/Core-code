@@ -1,5 +1,5 @@
 ﻿using Core.Assertions;
-using Core.RegularExpressions;
+using Core.Matching;
 using Core.Strings;
 
 namespace Core.Collections
@@ -18,9 +18,9 @@ namespace Core.Collections
          var parsed = destringifier.Destringify(keyValues);
          var hash = new StringStringHash();
 
-         foreach (var keyValue in parsed.Split("/s* ',' /s*"))
+         foreach (var keyValue in parsed.Split("/s* ',' /s*; f"))
          {
-            var elements = keyValue.Split("/s* '->' /s*");
+            var elements = keyValue.Split("/s* '->' /s*; f");
             if (elements.Length == 2)
             {
                var key = destringifier.Restringify(elements[0], RestringifyQuotes.None);

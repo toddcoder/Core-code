@@ -16,9 +16,9 @@ namespace Core.Tests
       [TestMethod]
       public async Task AsyncEventTest()
       {
-         Greet += (sender, e) => Task.Run(() => Console.WriteLine("Alpha"));
-         Greet += (sender, e) => Task.Run(() => Console.WriteLine("Bravo"));
-         Greet += (sender, e) => Task.Run(() => Console.WriteLine("Charlie"));
+         Greet += (_, _) => Task.Run(() => Console.WriteLine("Alpha"));
+         Greet += (_, _) => Task.Run(() => Console.WriteLine("Bravo"));
+         Greet += (_, _) => Task.Run(() => Console.WriteLine("Charlie"));
 
          await Greet.InvokeAsync(this, EventArgs.Empty);
       }
@@ -27,7 +27,7 @@ namespace Core.Tests
       public async Task AsyncLockTest()
       {
          Console.WriteLine("Locking");
-         using (var source = new CancellationTokenSource())
+         using var source = new CancellationTokenSource();
          using (await asyncLock(source.Token))
          {
             Console.WriteLine("Unlocked");
@@ -36,7 +36,7 @@ namespace Core.Tests
          }
       }
 
-      protected void waitRandom(int affinity)
+      protected static void waitRandom(int affinity)
       {
          var random = new Random();
          var wait = random.Next(500, 20000);

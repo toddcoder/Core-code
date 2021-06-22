@@ -11,9 +11,9 @@ using Core.Assertions;
 using Core.Dates.Now;
 using Core.Enumerables;
 using Core.Exceptions;
+using Core.Matching;
 using Core.Monads;
 using Core.Numbers;
-using Core.RegularExpressions;
 using Core.Strings;
 using static System.IO.Directory;
 using static Core.Computers.ComputerFunctions;
@@ -99,10 +99,9 @@ namespace Core.Computers
       {
          get
          {
-            var matcher = new Matcher();
-            if (matcher.IsMatch(Environment.GetCommandLineArgs()[0], @"^ /(.+) '\' -['\']+ '.'('exe' | 'dll') $"))
+            if (Environment.GetCommandLineArgs()[0].Matches(@"^ /(.+) '\' -['\']+ '.'('exe' | 'dll') $; f").If(out var result))
             {
-               return ((FolderName)matcher.FirstGroup).Some();
+               return ((FolderName)result.FirstGroup).Some();
             }
             else
             {
@@ -115,7 +114,7 @@ namespace Core.Computers
 
       public static bool IsValidUnresolvedFolderName(string name)
       {
-         return FileName.IsValidUnresolvedFileName(name) || name.IsMatch(@"^ ['a-z'] ':\\' $");
+         return FileName.IsValidUnresolvedFileName(name) || name.IsMatch(@"^ ['a-z'] ':\\' $; f");
       }
 
       public static FileName operator +(FolderName folder, string file) => folder.File(file);
@@ -415,7 +414,7 @@ namespace Core.Computers
                subfolders = subfolders.Substring(1);
             }
 
-            return subfolders.Split(@"'\'");
+            return subfolders.Split(@"'\'; f");
          }
          else
          {
@@ -458,8 +457,7 @@ namespace Core.Computers
          }
          else
          {
-            var matcher = new Matcher();
-            folderSubfolders = matcher.IsMatch(folder, @"^ '\'1 /(.+) $") ? matcher[0, 1] : "";
+            folderSubfolders = folder.Matches(@"^ '\'1 /(.+) $; f").Map(result => result.FirstGroup).DefaultTo(() => string.Empty);
          }
 
          if (folderSubfolders.StartsWith(@"\"))
@@ -467,7 +465,7 @@ namespace Core.Computers
             folderSubfolders = folderSubfolders.Substring(1);
          }
 
-         initialize(folderRoot, folderSubfolders.IsEmpty() ? new string[0] : folderSubfolders.Split(@"'\'"));
+         initialize(folderRoot, folderSubfolders.IsEmpty() ? new string[0] : folderSubfolders.Split(@"'\'; f"));
       }
 
       public void CreateIfNonExistent()
@@ -503,7 +501,7 @@ namespace Core.Computers
          }
       }
 
-      public void CopyTo(FolderName targetFolder, string includePattern, string excludePattern = "", bool overwrite = true)
+      public void CopyTo(FolderName targetFolder, Pattern includePattern, string excludePattern = "", bool overwrite = true)
       {
          bool include(FileName f) => f.NameExtension.IsMatch(includePattern);
 

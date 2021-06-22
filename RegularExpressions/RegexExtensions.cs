@@ -375,8 +375,10 @@ namespace Core.RegularExpressions
          return input.MatchAll(regexPattern.Pattern, regexPattern.Options, regexPattern.Friendly);
       }
 
-      public static IMatched<Matcher.Match> MatchOne(this string input, string pattern, RegexOptions options, bool friendly = true) =>
-         new Matcher(friendly).MatchOne(input, pattern, options);
+      public static IMatched<Matcher.Match> MatchOne(this string input, string pattern, RegexOptions options, bool friendly = true)
+      {
+         return new Matcher(friendly).MatchOne(input, pattern, options);
+      }
 
       public static IMatched<Matcher.Match> MatchOne(this string input, string pattern, bool ignoreCase = false, bool multiline = false,
          bool friendly = true)

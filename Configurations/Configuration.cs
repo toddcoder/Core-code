@@ -12,7 +12,7 @@ using Core.Objects;
 using Core.Strings;
 using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
-using static Core.RegularExpressions.RegexExtensions;
+using static Core.Matching.RegexExtensions;
 
 namespace Core.Configurations
 {
@@ -133,7 +133,7 @@ namespace Core.Configurations
             var elementType = type.GetElementType();
             if (isBaseType(elementType))
             {
-               var strings = source.Split("/s* ',' /s*");
+               var strings = source.Split("/s* ',' /s*; f");
                return makeArray(elementType, strings).Some();
             }
             else

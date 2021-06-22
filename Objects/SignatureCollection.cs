@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Core.RegularExpressions;
+using Core.Matching;
 
 namespace Core.Objects
 {
@@ -7,7 +7,7 @@ namespace Core.Objects
    {
       public SignatureCollection(string signature)
       {
-         foreach (var singleSignature in signature.Split("'.'"))
+         foreach (var singleSignature in signature.Split("'.'; f"))
          {
             Add(singleSignature);
          }

@@ -1,5 +1,5 @@
-﻿using Core.Monads;
-using Core.RegularExpressions;
+﻿using Core.Matching;
+using Core.Monads;
 using Core.Strings;
 using static Core.Monads.MonadFunctions;
 
@@ -12,14 +12,14 @@ namespace Core.Objects
       protected string memberName;
       protected IMaybe<IFormatter> _formatter;
 
-      public ReflectorReplacement(int index, int length, Matcher.Group group)
+      public ReflectorReplacement(int index, int length, Group group)
       {
          this.index = index;
          this.length = length;
 
-         if (group.Text.MatchOne("^ /(/w+) /s* (/['$,:'] /s* /(.*))? $").If(out var match))
+         if (group.Text.Matches("^ /(/w+) /s* (/['$,:'] /s* /(.*))? $; f").If(out var result))
          {
-            var (mn, prefix, format) = match.Groups3();
+            var (mn, prefix, format) = result;
             memberName = mn;
             _formatter = prefix switch
             {

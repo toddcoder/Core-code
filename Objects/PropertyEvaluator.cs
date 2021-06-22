@@ -6,8 +6,8 @@ using Core.Assertions;
 using Core.Collections;
 using Core.Enumerables;
 using Core.Exceptions;
+using Core.Matching;
 using Core.Monads;
-using Core.RegularExpressions;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Objects
@@ -143,9 +143,9 @@ namespace Core.Objects
 
       public bool Contains(string signature)
       {
-         if (signature.IsMatch("[/w '.[]']+"))
+         if (signature.IsMatch("[/w '.[]']+; f"))
          {
-            if (signature.Split("'.'").All(s => s.IsMatch(Signature.REGEX_FORMAT)))
+            if (signature.Split("'.'; f").All(s => s.IsMatch(Signature.REGEX_FORMAT)))
             {
                var current = obj;
 

@@ -1,16 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Core.RegularExpressions;
+using Core.Matching;
 using Core.Strings;
 
 namespace Core.Computers
 {
    public class FolderIterator : IEnumerable<FolderName>
    {
-      string predecessor;
-      string[] folderParts;
-      bool endOnly;
+      protected string predecessor;
+      protected string[] folderParts;
+      protected bool endOnly;
 
       public FolderIterator(string pattern, bool endOnly)
       {
@@ -21,7 +21,7 @@ namespace Core.Computers
             prefix = pattern.Keep(2);
             pattern = pattern.Drop(2);
          }
-         else if (pattern.IsMatch(@"^ ['A-Za-z'] ':\'"))
+         else if (pattern.IsMatch(@"^ ['A-Za-z'] ':\'; f"))
          {
             prefix = pattern.Keep(3);
             pattern = pattern.Drop(3);
@@ -53,7 +53,7 @@ namespace Core.Computers
             if (part.StartsWith("~"))
             {
                part = part.Drop(1);
-               foreach (var folder in ((FolderName)current).Folders.Where(f => f.Name.IsMatch(part)))
+               foreach (var folder in ((FolderName)current).Folders.Where(f => f.Name.IsMatch($"{part}; f")))
                {
                   if (!endOnly || index == folderParts.Length - 1)
                   {

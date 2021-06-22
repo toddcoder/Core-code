@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using Core.DataStructures;
+using Core.Matching;
 using Core.Monads;
-using Core.RegularExpressions;
 using Core.Strings;
 
 namespace Core.Configurations
@@ -41,12 +41,12 @@ namespace Core.Configurations
 
          IResult<(string newSource, string str)> getString(string source)
          {
-            if (source.Matcher("^ /s* /[quote]").If(out var matcher))
+            if (source.Matches("^ /s* /[quote]; f").If(out var result))
             {
-               var quote = matcher.FirstGroup[0];
-               return getQuotedString(source.Drop(matcher.Length), quote);
+               var quote = result.FirstGroup[0];
+               return getQuotedString(source.Drop(result.Length), quote);
             }
-            else if (source.Matcher("^ /s* /(-[/r /n]*) ('/r/n')?").If(out matcher))
+            else if (source.Matches("^ /s* /(-[/r /n]*) ('/r/n')?; f").If(out result))
             {
                var foundReturn = false;
                var builder = new StringBuilder();
@@ -172,9 +172,9 @@ namespace Core.Configurations
 
          while (source.Length > 0)
          {
-            if (source.Matcher($"^ /s* {REGEX_KEY} /s* '['").If(out var matcher))
+            if (source.Matches($"^ /s* {REGEX_KEY} /s* '['; f").If(out var result))
             {
-               var key = matcher.FirstGroup;
+               var key = result.FirstGroup;
                var group = new Group(key);
                if (peekGroup().If(out var parentGroup))
                {
@@ -187,9 +187,9 @@ namespace Core.Configurations
 
                stack.Push(group);
 
-               source = source.Drop(matcher.Length);
+               source = source.Drop(result.Length);
             }
-            else if (source.Matcher("^ /s* ']'").If(out matcher))
+            else if (source.Matches("^ /s* ']'; f").If(out result))
             {
                if (popGroup().If(out var group))
                {
@@ -207,11 +207,11 @@ namespace Core.Configurations
                   return "Not closing on group".Failure<Configuration>();
                }
 
-               source = source.Drop(matcher.Length);
+               source = source.Drop(result.Length);
             }
-            else if (source.Matcher($"^ /s* {REGEX_KEY} '.'").If(out matcher))
+            else if (source.Matches($"^ /s* {REGEX_KEY} '.'; f").If(out result))
             {
-               var key = matcher.FirstGroup;
+               var key = result.FirstGroup;
                var group = new Group(key);
                if (peekGroup().If(out var parentGroup))
                {
@@ -222,17 +222,17 @@ namespace Core.Configurations
                   return "No parent group found".Failure<Configuration>();
                }
 
-               source = source.Drop(matcher.Length);
+               source = source.Drop(result.Length);
             }
-            else if (source.Matcher("^ /s* '#' -[/r /n]*").If(out matcher))
+            else if (source.Matches("^ /s* '#' -[/r /n]*; f").If(out result))
             {
-               source = source.Drop(matcher.Length);
+               source = source.Drop(result.Length);
             }
-            else if (source.Matcher($"^ /s* {REGEX_KEY} ':' /s*").If(out matcher))
+            else if (source.Matches($"^ /s* {REGEX_KEY} ':' /s*; f").If(out result))
             {
-               var key = matcher.FirstGroup;
-               var remainder = source.Drop(matcher.Length);
-               if (getString(source.Drop(matcher.Length)).If(out source, out var value))
+               var key = result.FirstGroup;
+               var remainder = source.Drop(result.Length);
+               if (getString(source.Drop(result.Length)).If(out source, out var value))
                {
                   var item = new Item(key, value);
                   if (peekGroup().If(out var group))
@@ -240,7 +240,7 @@ namespace Core.Configurations
                      group[item.Key] = item;
                   }
                }
-               else if (source.IsMatch("^ /s+ $"))
+               else if (source.IsMatch("^ /s+ $; f"))
                {
                   break;
                }
@@ -249,7 +249,7 @@ namespace Core.Configurations
                   return $"Didn't understand value {remainder}".Failure<Configuration>();
                }
             }
-            else if (source.IsMatch("^ /s+ $"))
+            else if (source.IsMatch("^ /s+ $; f"))
             {
                break;
             }
