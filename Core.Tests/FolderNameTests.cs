@@ -4,7 +4,7 @@ using System.Linq;
 using Core.Assertions;
 using Core.Computers;
 using Core.Enumerables;
-using Core.RegularExpressions;
+using Core.Matching;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Core.Tests
@@ -65,7 +65,7 @@ namespace Core.Tests
       {
          FolderName folder = @"C:\Enterprise\Projects\TSqlCop\SqlConformance.Library\SqlContainment";
          FolderName baseFolder = @"C:\Enterprise\Projects\TSqlCop";
-         foreach (var file in folder.LocalAndParentFiles.Where(f => f.Extension == ".cs" && f.Name.IsMatch("'sql'", true)))
+         foreach (var file in folder.LocalAndParentFiles.Where(f => f.Extension == ".cs" && f.Name.IsMatch("'sql'; f")))
          {
             var relative = baseFolder.RelativeTo(file);
             Console.WriteLine(relative);

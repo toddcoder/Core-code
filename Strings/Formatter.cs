@@ -4,15 +4,15 @@ using System.IO;
 using System.Linq;
 using Core.Assertions;
 using Core.Collections;
+using Core.Matching;
 using Core.Numbers;
-using Core.RegularExpressions;
 using static Core.Strings.StringFunctions;
 
 namespace Core.Strings
 {
    public class Formatter
    {
-      protected const string REGEX_NAME = "-(< '//') '{' /([/w '-']+) /([',:']+ -['}']+)? '}'";
+      protected const string REGEX_NAME = "-(< '//') '{' /([/w '-']+) /([',:']+ -['}']+)? '}'; fim";
 
       public static Formatter WithStandard(bool includeFolders)
       {
@@ -70,10 +70,9 @@ namespace Core.Strings
       {
          if (source.IsNotEmpty())
          {
-            var matcher = new Matcher();
-            if (matcher.IsMatch(source, REGEX_NAME, true, true))
+            if (source.Matches(REGEX_NAME).If(out var result))
             {
-               return 0.Until(matcher.MatchCount).Select(i => matcher[i, 1]).ToArray();
+               return 0.Until(result.MatchCount).Select(i => result[i, 1]).ToArray();
             }
             else
             {
@@ -114,20 +113,18 @@ namespace Core.Strings
 
       public virtual string Format(string source)
       {
-         if (source.IsNotEmpty())
+         if (source.IsNotEmpty() && source.Matches(REGEX_NAME).If(out var result))
          {
-            var matcher = new Matcher();
-            matcher.Evaluate(source, REGEX_NAME, true, true);
-            for (var i = 0; i < matcher.MatchCount; i++)
+            for (var i = 0; i < result.MatchCount; i++)
             {
-               var name = matcher[i, 1];
+               var name = result[i, 1];
                if (names.ContainsKey(name))
                {
-                  matcher[i] = getText(name, matcher[i, 2]);
+                  result[i] = getText(name, result[i, 2]);
                }
             }
 
-            return matcher.ToString().Replace("/{", "{");
+            return result.ToString().Replace("/{", "{");
          }
          else
          {

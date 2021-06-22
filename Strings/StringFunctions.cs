@@ -69,9 +69,9 @@ namespace Core.Strings
 
       public static string splitPattern(SplitType split) => split switch
       {
-         SplitType.CRLF => "/r /n",
-         SplitType.CR => "/r",
-         SplitType.LF => "/n",
+         SplitType.CRLF => "/r /n; f",
+         SplitType.CR => "/r; f",
+         SplitType.LF => "/n; f",
          _ => ""
       };
 

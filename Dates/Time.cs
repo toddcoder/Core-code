@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using Core.Arrays;
 using Core.Assertions;
 using Core.Enumerables;
+using Core.Matching;
 using Core.Monads;
 using Core.Numbers;
-using Core.RegularExpressions;
 using Core.Strings;
 using static System.Math;
 using static Core.Monads.MonadFunctions;
@@ -55,14 +55,18 @@ namespace Core.Dates
 
       protected static (int, int, int, int) parseParts(string text)
       {
-         var matcher = new Matcher();
          text = text.RemoveWhitespace();
 
-         matcher.Evaluate(text, "^ /(/d1%2) ( ':' /(/d1%2))? ( ':' /(/d1%2))? ( '.' /(/d1%3))? $");
-         matcher.Must().HaveMatchCountOf(1).OrThrow("Couldn't determine parts of time to parse");
-
-         var (hour, minute, second, millisecond) = matcher;
-         return (hour.ToInt(), minute.ToInt(), second.ToInt(), millisecond.ToInt());
+         if (text.Matches("^ /(/d1%2) ( ':' /(/d1%2))? ( ':' /(/d1%2))? ( '.' /(/d1%3))? $; f").If(out var result))
+         {
+            result.Must().HaveMatchCountOf(1).OrThrow("Couldn't determine parts of time to parse");
+            var (hour, minute, second, millisecond) = result;
+            return (hour.ToInt(), minute.ToInt(), second.ToInt(), millisecond.ToInt());
+         }
+         else
+         {
+            return (0, 0, 0, 0);
+         }
       }
 
       protected static int absoluteDifference(int value1, int value2) => Sign(value1 - value2);

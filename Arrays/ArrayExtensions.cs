@@ -4,9 +4,9 @@ using System.Linq;
 using Core.Assertions;
 using Core.Collections;
 using Core.Enumerables;
+using Core.Matching;
 using Core.Monads;
 using Core.Numbers;
-using Core.RegularExpressions;
 using Core.Strings;
 using static System.Math;
 using static Core.Monads.MonadFunctions;
@@ -160,13 +160,12 @@ namespace Core.Arrays
       public static int[] PickIndexes(this string columnIndexes)
       {
          var indexes = new List<int>();
-         var matcher = new Matcher();
 
-         foreach (var group in columnIndexes.RemoveWhitespace().Split("','"))
+         foreach (var group in columnIndexes.RemoveWhitespace().Split("','; f"))
          {
-            if (matcher.IsMatch(group, "/(/d+) '-' /(/d+)"))
+            if (group.Matches("/(/d+) '-' /(/d+); f").If(out var result))
             {
-               var (startIndex, stopIndex) = matcher;
+               var (startIndex, stopIndex) = result;
                var intStart = startIndex.ToInt();
                var intStop = stopIndex.ToInt();
                if (intStart > intStop)

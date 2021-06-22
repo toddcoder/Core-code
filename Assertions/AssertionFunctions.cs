@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 using Core.Collections;
 using Core.Enumerables;
 using Core.Exceptions;
+using Core.Matching;
 using Core.Monads;
-using Core.RegularExpressions;
 using Core.Strings;
 using static Core.Applications.Async.AsyncFunctions;
 using static Core.Monads.MonadFunctions;
@@ -26,10 +26,9 @@ namespace Core.Assertions
          static string getName(string expressionText)
          {
             var name = expressionText;
-            var matcher = new Matcher();
-            if (matcher.IsMatch(name, "'value(' .+ ').' /(.+?) ')'* $"))
+            if (name.Matches("'value(' .+ ').' /(.+?) ')'* $; f").If(out var result))
             {
-               name = matcher.FirstGroup;
+               name = result.FirstGroup;
             }
 
             return name;
@@ -241,7 +240,6 @@ namespace Core.Assertions
       }
 
       public static bool orReturn<T>(IAssertion<T> assertion) => !assertion.BeEquivalentToTrue();
-
 
       [Obsolete("Use Named extension")]
       public static Expression<Func<T>> assert<T>(Expression<Func<T>> func) => func;

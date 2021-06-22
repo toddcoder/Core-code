@@ -6,9 +6,9 @@ using Core.Collections;
 using Core.Computers;
 using Core.Enumerables;
 using Core.Exceptions;
+using Core.Matching;
 using Core.Monads;
 using Core.Objects;
-using Core.RegularExpressions;
 using Core.Strings;
 using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
@@ -133,15 +133,14 @@ namespace Core.Applications
 
       protected static string namePattern(string name)
       {
-         var matcher = new Matcher();
-         if (matcher.IsMatch(name, "['A-Z']"))
+         if (name.Matches("['A-Z']; f").If(out var result))
          {
-            for (var i = 0; i < matcher.MatchCount; i++)
+            for (var i = 0; i < result.MatchCount; i++)
             {
-               matcher[i, 0] = $"-{matcher[i, 0].ToLower()}";
+               result[i, 0] = $"-{result[i, 0].ToLower()}";
             }
 
-            return $"('{name}' | '{matcher}')";
+            return $"('{name}' | '{result}')";
          }
          else
          {
@@ -151,28 +150,28 @@ namespace Core.Applications
 
       protected static object getBoolean(string rest, string suffix)
       {
-         if (suffix == " " && !rest.IsMatch("^ /s* 'false' | 'true' | '+' | '-'"))
+         if (suffix == " " && !rest.IsMatch("^ /s* 'false' | 'true' | '+' | '-'; f"))
          {
             return true;
          }
-         else if (rest.IsMatch("^ /s* '+'"))
+         else if (rest.IsMatch("^ /s* '+'; f"))
          {
             return true;
          }
-         else if (rest.IsMatch("^ /s* '-'"))
+         else if (rest.IsMatch("^ /s* '-'; f"))
          {
             return false;
          }
          else
          {
-            return rest.Keep("^ /s* ('false' | 'true') /b").TrimStart().ToBool();
+            return rest.Keep("^ /s* ('false' | 'true') /b; f").TrimStart().ToBool();
          }
       }
 
       protected object getString(string rest, Type type)
       {
-         var source = rest.IsMatch("^ /s* [quote]") ? rest.Keep("^ /s* /([quote]) .*? /1").TrimStart().Drop(1).Drop(-1)
-            : rest.Keep("^ /s* -/s+").TrimStart();
+         var source = rest.IsMatch("^ /s* [quote]; f") ? rest.Keep("^ /s* /([quote]) .*? /1; f").TrimStart().Drop(1).Drop(-1)
+            : rest.Keep("^ /s* -/s+; f").TrimStart();
 
          if (type == typeof(string))
          {
@@ -215,27 +214,27 @@ namespace Core.Applications
 
       protected static object getInt32(string rest)
       {
-         return rest.Keep("^ /s* -/s+").TrimStart().ToInt();
+         return rest.Keep("^ /s* -/s+; f").TrimStart().ToInt();
       }
 
       protected static object getFloatingPoint(string rest, Type type)
       {
-         var source = rest.Keep("^ /s* -/s+").TrimStart();
+         var source = rest.Keep("^ /s* -/s+; f").TrimStart();
          return type == typeof(float) ? source.ToFloat() : source.ToDouble();
       }
 
       protected static object getEnum(string rest, Type type)
       {
-         var source = rest.Keep("^ /s* -/s+").TrimStart();
+         var source = rest.Keep("^ /s* -/s+; f").TrimStart();
          return Enum.Parse(type, source.Replace("-", ""), true);
       }
 
       protected static object getStringArray(string rest)
       {
-         if (rest.Matcher("^/s* '[' /s*  /(.*) /s* ']'").If(out var matcher))
+         if (rest.Matches("^/s* '[' /s*  /(.*) /s* ']'; f").If(out var result))
          {
-            var list = matcher.FirstGroup;
-            var array = list.Split("/s* ',' /s*");
+            var list = result.FirstGroup;
+            var array = list.Split("/s* ',' /s*; f");
             return array;
          }
          else
@@ -253,18 +252,16 @@ namespace Core.Applications
                prefix = "//";
             }
 
-            var matcher = new Matcher();
+            var itemPrefix = $"'{prefix}' {namePattern(name)} '{suffix}' /(.*); f";
 
-            var itemPrefix = $"'{prefix}' {namePattern(name)} '{suffix}' /(.*)";
-
-            if (matcher.IsMatch(commandLine, $"'{prefix}' {namePattern(name)} $") && type == typeof(bool))
+            if (commandLine.IsMatch($"'{prefix}' {namePattern(name)} $; f") && type == typeof(bool))
             {
                return true.Success<object>();
             }
 
-            if (matcher.IsMatch(commandLine, itemPrefix))
+            if (commandLine.Matches(itemPrefix).If(out var result))
             {
-               var rest = matcher.FirstGroup;
+               var rest = result.FirstGroup;
                if (type == typeof(bool))
                {
                   return getBoolean(rest, suffix).Success();
@@ -311,28 +308,28 @@ namespace Core.Applications
 
       protected static string removeExecutableFromCommandLine(string commandLine)
       {
-         var matcher = new Matcher();
-         return matcher.IsMatch(commandLine, "^ (.+? ('.exe' | '.dll') /s* [quote]? /s*) /s* /(.*) $") ? matcher.FirstGroup : commandLine;
+         return commandLine.Matches("^ (.+? ('.exe' | '.dll') /s* [quote]? /s*) /s* /(.*) $; f")
+            .Map(result => result.FirstGroup)
+            .DefaultTo(() => commandLine);
       }
 
       protected static Hash<char, string> getShortcuts(string source)
       {
-         return source.Split("/s* ';' /s*").Select(s =>
+         return source.Split("/s* ';' /s*; f").Select(s =>
          {
-            var pair = s.Split("/s* '=' /s*");
+            var pair = s.Split("/s* '=' /s*; f");
             return (key: pair[0][0], value: pair[1]);
          }).ToHash(i => i.key, i => i.value);
       }
 
       protected string fixCommand(string commandLine, string prefix, string suffix)
       {
-         var matcher = new Matcher();
-         if (matcher.IsMatch(commandLine, $"^ /({REGEX_PARAMETER}) /s*"))
+         if (commandLine.Matches($"^ /({REGEX_PARAMETER}) /s*; f").If(out var result))
          {
-            var command = matcher.FirstGroup;
-            matcher.FirstGroup = $"{prefix}{command}{suffix}true";
+            var command = result.FirstGroup;
+            result.FirstGroup = $"{prefix}{command}{suffix}true";
 
-            commandLine = matcher.ToString();
+            commandLine = result.ToString();
          }
 
          if (Shortcuts.IsEmpty())
@@ -340,23 +337,23 @@ namespace Core.Applications
             return commandLine;
          }
 
-         if (matcher.IsMatch(commandLine, $"'{ShortPrefix}' /['a-zA-Z0-9'] '{ShortSuffix}'"))
+         if (commandLine.Matches($"'{ShortPrefix}' /['a-zA-Z0-9'] '{ShortSuffix}'; f").If(out result))
          {
             var shortcuts = getShortcuts(Shortcuts);
-            for (var matchIndex = 0; matchIndex < matcher.MatchCount; matchIndex++)
+            for (var matchIndex = 0; matchIndex < result.MatchCount; matchIndex++)
             {
-               var key = matcher[matchIndex, 1][0];
+               var key = result[matchIndex, 1][0];
                if (shortcuts.If(key, out var replacement))
                {
-                  matcher[matchIndex, 0] = $"{prefix}{replacement}{suffix}";
+                  result[matchIndex, 0] = $"{prefix}{replacement}{suffix}";
                }
                else
                {
-                  matcher[matchIndex, 0] = "";
+                  result[matchIndex, 0] = "";
                }
             }
 
-            commandLine = matcher.ToString();
+            commandLine = result.ToString();
          }
 
          return commandLine;
@@ -364,11 +361,10 @@ namespace Core.Applications
 
       protected bool setPossibleAlias(string commandLine)
       {
-         var matcher = new Matcher();
-         if (matcher.IsMatch(commandLine, "^ /s+ /([/w '-']+) /s+ /(.*) $"))
+         if (commandLine.Matches("^ /s+ /([/w '-']+) /s+ /(.*) $; f").If(out var result))
          {
-            var aliasName = matcher.FirstGroup;
-            var command = matcher.SecondGroup;
+            var aliasName = result.FirstGroup;
+            var command = result.SecondGroup;
             aliases[aliasName] = command;
 
             return true;
@@ -381,7 +377,7 @@ namespace Core.Applications
 
       protected static IMaybe<string> getCommand(string commandLine)
       {
-         return commandLine.Matcher($"^ /({REGEX_PARAMETER}) /b").Map(matcher => matcher.FirstGroup);
+         return commandLine.Matches($"^ /({REGEX_PARAMETER}) /b; f").Map(result => result.FirstGroup);
       }
 
       protected IMaybe<string> getCommandsFromFile(string prefix, string suffix, string commandLine)
@@ -408,9 +404,9 @@ namespace Core.Applications
          }
          else
          {
-            if (commandLine.Matcher($"^ /({REGEX_PARAMETER})'{suffix}'").If(out var matcher))
+            if (commandLine.Matches($"^ /({REGEX_PARAMETER})'{suffix}'; f").If(out var result))
             {
-               var commandName = matcher.FirstGroup;
+               var commandName = result.FirstGroup;
                var remainder = commandLine.Drop(commandName.Length);
                if (this is ICommandFile commandFile)
                {
@@ -582,16 +578,15 @@ namespace Core.Applications
 
       protected static string xmlToPascal(string name)
       {
-         var matcher = new Matcher();
-         if (matcher.IsMatch(name, "'-' /(/w)"))
+         if (name.Matches("'-' /(/w); f").If(out var result))
          {
-            for (var matchIndex = 0; matchIndex < matcher.MatchCount; matchIndex++)
+            for (var matchIndex = 0; matchIndex < result.MatchCount; matchIndex++)
             {
-               var letter = matcher.FirstGroup;
-               matcher[matchIndex] = letter.ToUpper();
+               var letter = result.FirstGroup;
+               result[matchIndex] = letter.ToUpper();
             }
 
-            return matcher.ToString().ToPascal();
+            return result.ToString().ToPascal();
          }
          else
          {
@@ -609,12 +604,11 @@ namespace Core.Applications
                prefix = "//";
             }
 
-            var pattern = $"'{prefix}' /({REGEX_PARAMETER}) ('{suffix}' | ['+-'] ('{suffix}' | $) | $)";
-            var matcher = new Matcher();
-            if (matcher.IsMatch(commandLine, pattern))
+            var pattern = $"'{prefix}' /({REGEX_PARAMETER}) ('{suffix}' | ['+-'] ('{suffix}' | $) | $); f";
+            if (commandLine.Matches(pattern).If(out var result))
             {
                var isFirstMatch = true;
-               foreach (var match in matcher)
+               foreach (var match in result)
                {
                   var name = xmlToPascal(match.FirstGroup);
                   var (text, index, length) = match;

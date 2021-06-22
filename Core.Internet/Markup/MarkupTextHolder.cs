@@ -1,4 +1,4 @@
-﻿using Core.RegularExpressions;
+﻿using Core.Matching;
 using Core.Strings;
 
 namespace Core.Internet.Markup
@@ -34,7 +34,7 @@ namespace Core.Internet.Markup
 
       protected static string replaceBrackets(string text)
       {
-         return text.Substitute("'`' /([/w '-']+) ':'", "<$1>").Substitute("':' /([/w '-']+) '`'", "</$1>");
+         return text.Substitute("'`' /([/w '-']+) ':'; f", "<$1>").Substitute("':' /([/w '-']+) '`'; f", "</$1>");
       }
 
       public static implicit operator MarkupTextHolder(string text) => new(text);

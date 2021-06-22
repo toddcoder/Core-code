@@ -9,9 +9,9 @@ using Core.Applications;
 using Core.Arrays;
 using Core.Assertions;
 using Core.Exceptions;
+using Core.Matching;
 using Core.Monads;
 using Core.Numbers;
-using Core.RegularExpressions;
 using Core.Strings;
 using static Core.Monads.MonadFunctions;
 
@@ -458,12 +458,12 @@ namespace Core.WinForms.Controls
          var offset = leftMargin - 2;
          foreach (var (_, line, point) in VisibleLines)
          {
-            if (line.Matcher("^ /(/t1%7)").If(out var matcher))
+            if (line.Matches("^ /(/t1%7); f").If(out var result))
             {
                using var pen = new Pen(Color.Gray) { DashStyle = DashStyle.Dot };
                drawTabLine(graphics, pen, point, offset, height);
 
-               var count = matcher.FirstGroup.Length;
+               var count = result.FirstGroup.Length;
                for (var i = 0; i < count; i++)
                {
                   if (i.Between(0).Until(SelectionTabs.Length))
@@ -649,12 +649,11 @@ namespace Core.WinForms.Controls
 
       public IEnumerable<(Rectangle rectangle, string word)> RectangleWords(Graphics graphics, bool visibleOnly = true)
       {
-         var matcher = new Matcher();
-         if (matcher.IsMatch(Text, "/w+"))
+         if (Text.Matches("/w+; f").If(out var result))
          {
-            for (var i = 0; i < matcher.MatchCount; i++)
+            for (var i = 0; i < result.MatchCount; i++)
             {
-               var (text, index, length) = matcher.GetMatch(i);
+               var (text, index, length) = result.GetMatch(i);
                var rectangle = RectangleFrom(graphics, index, length, false);
                if (includeVisibleOnly(visibleOnly, rectangle))
                {
@@ -666,12 +665,11 @@ namespace Core.WinForms.Controls
 
       public IEnumerable<(int start, int length)> Words()
       {
-         var matcher = new Matcher();
-         if (matcher.IsMatch(Text, "/w+"))
+         if (Text.Matches("/w+; f").If(out var result))
          {
-            for (var i = 0; i < matcher.MatchCount; i++)
+            for (var i = 0; i < result.MatchCount; i++)
             {
-               var (_, index, length) = matcher.GetMatch(i);
+               var (_, index, length) = result.GetMatch(i);
                yield return (index, length);
             }
          }
@@ -679,12 +677,11 @@ namespace Core.WinForms.Controls
 
       public IEnumerable<(char, Rectangle)> RectangleWhitespace(Graphics graphics, bool visibleOnly = true)
       {
-         var matcher = new Matcher();
-         if (matcher.IsMatch(Text, "[' /t']"))
+         if (Text.Matches("[' /t']; f").If(out var result))
          {
-            for (var i = 0; i < matcher.MatchCount; i++)
+            for (var i = 0; i < result.MatchCount; i++)
             {
-               var (text, index, length) = matcher.GetMatch(i);
+               var (text, index, length) = result.GetMatch(i);
                var rectangle = RectangleFrom(graphics, index, length, false);
                if (includeVisibleOnly(visibleOnly, rectangle))
                {
@@ -707,7 +704,7 @@ namespace Core.WinForms.Controls
          else
          {
             var segment = Text.Drop(start).Keep(length);
-            return segment.Matcher("/w+").Map(m => RectangleFrom(graphics, m.Index + start, m.Length, false));
+            return segment.Matches("/w+; f").Map(result => RectangleFrom(graphics, result.Index + start, result.Length, false));
          }
       }
 
@@ -726,7 +723,7 @@ namespace Core.WinForms.Controls
             }
 
             i++;
-            return text.Drop(i).Matcher("/w+").Map(m => RectangleFrom(graphics, m.Index + i, m.Length, false));
+            return text.Drop(i).Matches("/w+; f").Map(result => RectangleFrom(graphics, result.Index + i, result.Length, false));
          }
          else
          {

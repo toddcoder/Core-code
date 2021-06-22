@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using Core.Assertions;
 using Core.Enumerables;
-using Core.RegularExpressions;
+using Core.Matching;
 using Core.Strings;
 using static System.Math;
 
@@ -42,7 +42,7 @@ namespace Core.Numbers
       {
          if (value.IsNotEmpty())
          {
-            if (value.IsMatch("^ ['-+']? /d* '.'? /d* (['eE'] ['-+']? /d+)? $"))
+            if (value.IsMatch("^ ['-+']? /d* '.'? /d* (['eE'] ['-+']? /d+)? $; f"))
             {
                return value != "." && value != "+." && value != "-." && value != "-" && value != "+";
             }
@@ -79,7 +79,7 @@ namespace Core.Numbers
 
       public static bool IsIntegral(this object value) => (value as string)?.IsIntegral() ?? value.GetType().IsIntegral();
 
-      public static bool IsIntegral(this string value) => value.IsNotEmpty() && (value.IsMatch("^ ['+-']? /d+ $") || value.IsHex());
+      public static bool IsIntegral(this string value) => value.IsNotEmpty() && (value.IsMatch("^ ['+-']? /d+ $; f") || value.IsHex());
 
       public static bool IsFloat(this Type type)
       {
@@ -99,7 +99,7 @@ namespace Core.Numbers
       {
          if (value.IsNotEmpty())
          {
-            return value.IsMatch("^ ['-+']? /d*  '.' /d* (['eE'] ['-+']? /d+)? $") && value != "." && value != "+." &&
+            return value.IsMatch("^ ['-+']? /d*  '.' /d* (['eE'] ['-+']? /d+)? $; f") && value != "." && value != "+." &&
                value != "-." && value != "-" && value != "+";
          }
          else
@@ -116,7 +116,7 @@ namespace Core.Numbers
       {
          if (value.IsNotEmpty())
          {
-            return value.IsMatch("^ ['-+']? /d*  '.' /d* (['eE'] ['-+']? /d+)? ['dD']? $") && value != "." &&
+            return value.IsMatch("^ ['-+']? /d*  '.' /d* (['eE'] ['-+']? /d+)? ['dD']? $; f") && value != "." &&
                value != "+." && value != "-." && value != "-" && value != "+";
          }
          else
@@ -133,7 +133,7 @@ namespace Core.Numbers
       {
          if (value.IsNotEmpty())
          {
-            return value.IsMatch("^ ['-+']? /d*  '.' /d* (['eE'] ['-+']? /d+)? ['fF']? $") && value != "." &&
+            return value.IsMatch("^ ['-+']? /d*  '.' /d* (['eE'] ['-+']? /d+)? ['fF']? $; f") && value != "." &&
                value != "+." && value != "-." && value != "-" && value != "+";
          }
          else
@@ -150,7 +150,7 @@ namespace Core.Numbers
       {
          if (value.IsNotEmpty())
          {
-            return value.IsMatch("^ ['-+']? /d*  '.' /d* (['eE'] ['-+']? /d+)? ['mM']? $") && value != "." &&
+            return value.IsMatch("^ ['-+']? /d*  '.' /d* (['eE'] ['-+']? /d+)? ['mM']? $; f") && value != "." &&
                value != "+." && value != "-." && value != "-" && value != "-";
          }
          else
@@ -159,7 +159,7 @@ namespace Core.Numbers
          }
       }
 
-      public static bool IsHex(this string value) => value.IsMatch("^ ('0x' | '#') ['0-9a-fA-F']+ $");
+      public static bool IsHex(this string value) => value.IsMatch("^ ('0x' | '#') ['0-9a-fA-F']+ $; f");
 
       public static bool IsEven(this int value) => Abs(value) % 2 == 0;
 

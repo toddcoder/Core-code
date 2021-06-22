@@ -5,8 +5,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Core.Enumerables;
+using Core.Matching;
 using Core.Objects;
-using Core.RegularExpressions;
 using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
 
@@ -33,7 +33,7 @@ namespace Core.Monads
 
       public static IMaybe<Type> UnderlyingTypeOf(this Type type)
       {
-         if (type.Name.IsMatch("^ ('IMaybe' | 'Some' | 'None') '`1'"))
+         if (type.Name.IsMatch("^ ('IMaybe' | 'Some' | 'None') '`1'; f"))
          {
             return type.GetGenericArguments().FirstOrNone();
          }

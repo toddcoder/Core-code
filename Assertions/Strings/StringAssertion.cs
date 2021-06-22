@@ -5,8 +5,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Core.Computers;
 using Core.Exceptions;
+using Core.Matching;
 using Core.Monads;
-using Core.RegularExpressions;
 using Core.Strings;
 using static Core.Assertions.AssertionFunctions;
 
@@ -46,7 +46,7 @@ namespace Core.Assertions.Strings
          }
       }
 
-      static string format(string s) => $"\"{s.Elliptical(80, ' ')}\"";
+      private static string format(string s) => $"\"{s.Elliptical(80, ' ')}\"";
 
       protected StringAssertion add(Func<bool> constraintFunction, string message)
       {
@@ -126,14 +126,9 @@ namespace Core.Assertions.Strings
          return add(() => subject.EndsWith(substring), $"$name must end with {format(substring)}");
       }
 
-      public StringAssertion Match(string pattern, bool ignoreCase = false, bool multiline = false)
+      public StringAssertion Match(string pattern)
       {
-         return add(() => subject.IsMatch(pattern, ignoreCase, multiline, false), $"$name must $not match regex {format(pattern)}");
-      }
-
-      public StringAssertion MatchFriendly(string pattern, bool ignoreCase = false, bool multiline = false)
-      {
-         return add(() => subject.IsMatch(pattern, ignoreCase, multiline), $"$name must $not match regex {format(pattern)} friendly");
+         return add(() => subject.IsMatch(pattern), $"$name must $not match regex {format(pattern)}");
       }
 
       public StringAssertion BeAValidFileName()

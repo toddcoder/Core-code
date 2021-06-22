@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
 using Core.Exceptions;
+using Core.Matching;
 using Core.Monads;
-using Core.RegularExpressions;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Computers.Synchronization
@@ -11,7 +11,7 @@ namespace Core.Computers.Synchronization
    {
       protected FolderName sourceFolder;
       protected FolderName targetFolder;
-      protected string pattern;
+      protected Pattern pattern;
       protected bool move;
       protected bool recursive;
 
@@ -21,13 +21,18 @@ namespace Core.Computers.Synchronization
       public event EventHandler<FolderArgs> NewFolderSuccess;
       public event EventHandler<FailedFolderArgs> NewFolderFailure;
 
-      public Synchronizer(FolderName sourceFolder, FolderName targetFolder, string pattern = "^ .* $", bool move = false, bool recursive = true)
+      public Synchronizer(FolderName sourceFolder, FolderName targetFolder, Pattern pattern, bool move = false, bool recursive = true)
       {
          this.sourceFolder = sourceFolder;
          this.targetFolder = targetFolder;
          this.pattern = pattern;
          this.move = move;
          this.recursive = recursive;
+      }
+
+      public Synchronizer(FolderName sourceFolder, FolderName targetFolder, bool move = false, bool recursive = true) :
+         this(sourceFolder, targetFolder, "^ .* $; f", move, recursive)
+      {
       }
 
       public void Synchronize() => handleFolder(sourceFolder, targetFolder);
@@ -59,11 +64,11 @@ namespace Core.Computers.Synchronization
       protected void handleFile(FileName sourceFile, FolderName currentTargetFolder)
       {
          var targetFile = currentTargetFolder + sourceFile;
-         if (copyIfNeeded(sourceFile, targetFile).If(out var file, out var anyException))
+         if (copyIfNeeded(sourceFile, targetFile).If(out var file, out var _exception))
          {
             Success?.Invoke(this, new FileArgs(file, targetFile, $"{sourceFile} {(move ? "moved" : "copied")} to {targetFile}"));
          }
-         else if (anyException.If(out var exception))
+         else if (_exception.If(out var exception))
          {
             Failure?.Invoke(this, new FailedFileArgs(sourceFile, targetFile, exception));
          }

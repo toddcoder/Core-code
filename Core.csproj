@@ -125,6 +125,8 @@
     <Compile Include="Assertions\Objects\ObjectAssertion.cs" />
     <Compile Include="Assertions\Objects\TypeAssertion.cs" />
     <Compile Include="Assertions\Strings\MatcherAssertion.cs" />
+    <Compile Include="Assertions\Strings\PatternAssertion.cs" />
+    <Compile Include="Assertions\Strings\ResultAssertion.cs" />
     <Compile Include="Assertions\Strings\StringAssertion.cs" />
     <Compile Include="Booleans\BooleanExtensions.cs" />
     <Compile Include="Collections\AutoHash.cs" />
@@ -220,13 +222,6 @@
     <Compile Include="Dates\Relative\DateOperations\RelativeMonth.cs" />
     <Compile Include="Dates\Relative\DateOperations\RelativeYear.cs" />
     <Compile Include="Dates\Relative\LastDayOfMonth.cs" />
-    <Compile Include="Dates\Relative\Parsers\AbsoluteParser.cs" />
-    <Compile Include="Dates\Relative\Parsers\ForwardAndBackwardParser.cs" />
-    <Compile Include="Dates\Relative\Parsers\Parser.cs" />
-    <Compile Include="Dates\Relative\Parsers\RelativeParser.cs" />
-    <Compile Include="Dates\Relative\Parsers\SpecialDayParser.cs" />
-    <Compile Include="Dates\Relative\Parsers\SpecialMonthParser.cs" />
-    <Compile Include="Dates\Relative\Parsers\ThisParser.cs" />
     <Compile Include="Dates\Relative\Relation.cs" />
     <Compile Include="Dates\Second.cs" />
     <Compile Include="Dates\Time.cs" />
@@ -326,11 +321,13 @@
     <Compile Include="Objects\TypeExtensions.cs" />
     <Compile Include="Objects\TypeFunctions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RegexMatching\Group.cs" />
-    <Compile Include="RegexMatching\Match.cs" />
-    <Compile Include="RegexMatching\Matcher.cs" />
-    <Compile Include="RegexMatching\RegexExtensions.cs" />
-    <Compile Include="RegexMatching\Result.cs" />
+    <Compile Include="Matching\Group.cs" />
+    <Compile Include="Matching\Match.cs" />
+    <Compile Include="Matching\Pattern.cs" />
+    <Compile Include="Matching\RegexExtensions.cs" />
+    <Compile Include="Matching\Result.cs" />
+    <Compile Include="Matching\Scraper.cs" />
+    <Compile Include="Matching\Source.cs" />
     <Compile Include="Regex\Matcher.cs" />
     <Compile Include="Regex\RegexExtensions.cs" />
     <Compile Include="Regex\RegexPattern.cs" />
@@ -338,34 +335,33 @@
     <Compile Include="Regex\Splitter.cs" />
     <Compile Include="RegularExpressions\Matcher.cs" />
     <Compile Include="RegularExpressions\MatcherTrying.cs" />
-    <Compile Include="RegularExpressions\Parsers\AtomicGroupParser.cs" />
-    <Compile Include="RegularExpressions\Parsers\BaseParser.cs" />
-    <Compile Include="RegularExpressions\Parsers\CapturingGroupParser.cs" />
-    <Compile Include="RegularExpressions\Parsers\ClassParser.cs" />
-    <Compile Include="RegularExpressions\Parsers\CommentParser.cs" />
-    <Compile Include="RegularExpressions\Parsers\ConditionalParser.cs" />
-    <Compile Include="RegularExpressions\Parsers\EndOfClassParser.cs" />
-    <Compile Include="RegularExpressions\Parsers\GroupReferenceParser.cs" />
-    <Compile Include="RegularExpressions\Parsers\InsideRangeParser.cs" />
-    <Compile Include="RegularExpressions\Parsers\LookAroundParser.cs" />
-    <Compile Include="RegularExpressions\Parsers\NamedBackReferenceParser.cs" />
-    <Compile Include="RegularExpressions\Parsers\NamedCapturingGroupParser.cs" />
-    <Compile Include="RegularExpressions\Parsers\NamedClassParser.cs" />
-    <Compile Include="RegularExpressions\Parsers\NonCapturingGroupParser.cs" />
-    <Compile Include="RegularExpressions\Parsers\NumericQuantification2Parser.cs" />
-    <Compile Include="RegularExpressions\Parsers\NumericQuantificationParser.cs" />
-    <Compile Include="RegularExpressions\Parsers\OptionGroupParser.cs" />
-    <Compile Include="RegularExpressions\Parsers\OutsideRangeParser.cs" />
-    <Compile Include="RegularExpressions\Parsers\OverrideParser.cs" />
-    <Compile Include="RegularExpressions\Parsers\Parser.cs" />
-    <Compile Include="RegularExpressions\Parsers\ParserExtensions.cs" />
-    <Compile Include="RegularExpressions\Parsers\QuoteParser.cs" />
-    <Compile Include="RegularExpressions\Parsers\RemainderParser.cs" />
-    <Compile Include="RegularExpressions\Parsers\SlashClassParser.cs" />
-    <Compile Include="RegularExpressions\Parsers\SpanBreakParser.cs" />
-    <Compile Include="RegularExpressions\Parsers\StringParser.cs" />
-    <Compile Include="RegularExpressions\Parsers\UnmodifiedParser.cs" />
-    <Compile Include="RegularExpressions\Parsers\VariableParser.cs" />
+    <Compile Include="Matching\Parsers\AtomicGroupParser.cs" />
+    <Compile Include="Matching\Parsers\BaseParser.cs" />
+    <Compile Include="Matching\Parsers\CapturingGroupParser.cs" />
+    <Compile Include="Matching\Parsers\ClassParser.cs" />
+    <Compile Include="Matching\Parsers\CommentParser.cs" />
+    <Compile Include="Matching\Parsers\ConditionalParser.cs" />
+    <Compile Include="Matching\Parsers\EndOfClassParser.cs" />
+    <Compile Include="Matching\Parsers\GroupReferenceParser.cs" />
+    <Compile Include="Matching\Parsers\InsideRangeParser.cs" />
+    <Compile Include="Matching\Parsers\LookAroundParser.cs" />
+    <Compile Include="Matching\Parsers\NamedBackReferenceParser.cs" />
+    <Compile Include="Matching\Parsers\NamedCapturingGroupParser.cs" />
+    <Compile Include="Matching\Parsers\NamedClassParser.cs" />
+    <Compile Include="Matching\Parsers\NonCapturingGroupParser.cs" />
+    <Compile Include="Matching\Parsers\NumericQuantification2Parser.cs" />
+    <Compile Include="Matching\Parsers\NumericQuantificationParser.cs" />
+    <Compile Include="Matching\Parsers\OptionGroupParser.cs" />
+    <Compile Include="Matching\Parsers\OutsideRangeParser.cs" />
+    <Compile Include="Matching\Parsers\OverrideParser.cs" />
+    <Compile Include="Matching\Parsers\Parser.cs" />
+    <Compile Include="Matching\Parsers\ParserExtensions.cs" />
+    <Compile Include="Matching\Parsers\QuoteParser.cs" />
+    <Compile Include="Matching\Parsers\RemainderParser.cs" />
+    <Compile Include="Matching\Parsers\SlashClassParser.cs" />
+    <Compile Include="Matching\Parsers\SpanBreakParser.cs" />
+    <Compile Include="Matching\Parsers\StringParser.cs" />
+    <Compile Include="Matching\Parsers\UnmodifiedParser.cs" />
     <Compile Include="RegularExpressions\RegexPattern.cs" />
     <Compile Include="RegularExpressions\RegexExtensions.cs" />
     <Compile Include="RegularExpressions\RegexResult.cs" />
@@ -373,7 +369,7 @@
     <Compile Include="RegularExpressions\Source.cs" />
     <Compile Include="RegularExpressions\Splitter.cs" />
     <Compile Include="Strings\CharacterExtensions.cs" />
-    <Compile Include="Strings\CSV.cs" />
+    <Compile Include="Strings\Csv.cs" />
     <Compile Include="Strings\Formatter.cs" />
     <Compile Include="Strings\DelimitedTextStatus.cs" />
     <Compile Include="Strings\IStringStream.cs" />
@@ -421,6 +417,9 @@
   <ItemGroup>
     <None Include="Core.snk" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Dates\Relative\Parsers\" />
+    <Folder Include="RegularExpressions\Parsers\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

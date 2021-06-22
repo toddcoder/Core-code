@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Linq;
 using Core.Applications;
 using Core.Enumerables;
-using Core.Monads;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Core.Tests
@@ -42,10 +40,7 @@ namespace Core.Tests
       public void Main(bool push = false, bool pull = false, bool show = false, int code = 0, double amount = 0,
          AttributeTargets attributeTargets = AttributeTargets.All, string text = "", bool recursive = true, string[] array = null)
       {
-         if (array == null)
-         {
-            array = new string[0];
-         }
+         array ??= new string[0];
 
          var command = "?";
          if (pull)

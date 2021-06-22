@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Linq;
 using Core.Enumerables;
+using Core.Matching;
 using Core.Monads;
 using Core.Strings;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Core.Lambdas.LambdaFunctions;
-using static Core.RegularExpressions.RegexExtensions;
 
 namespace Core.Tests
 {
@@ -15,7 +15,7 @@ namespace Core.Tests
       [TestMethod]
       public void BasicDelimitedTextTest()
       {
-         var delimitedText = DelimitedText.AsSql(friendly: false);
+         var delimitedText = DelimitedText.AsSql();
          delimitedText.ExceptReplacement = "'".Some();
          var source = "SELECT foobar as 'can''t';";
          Console.WriteLine(source);
@@ -45,7 +45,7 @@ namespace Core.Tests
       [TestMethod]
       public void UnusualDelimiterTest()
       {
-         var delimitedText = new DelimitedText("'('", "')'", @"'\)'");
+         var delimitedText = new DelimitedText("^ '('; f", "^ ')'; f", @"^ '\)'; f");
          foreach (var (text, _, _) in delimitedText.Enumerable("foo(bar)baz").Where(i => i.status == DelimitedTextStatus.Outside))
          {
             Console.Write(text);
@@ -55,12 +55,13 @@ namespace Core.Tests
       [TestMethod]
       public void SwapTest()
       {
+         Pattern.IsFriendly = false;
          var delimitedText = DelimitedText.AsSql();
          var source = "'a = b' != 'b = a'";
          var result = delimitedText.Enumerable(source)
             .Where(t => t.status == DelimitedTextStatus.Outside && t.text.Contains("="))
             .ToArray();
-         if (result.Length == 1 && result[0].text.FindByRegex("/s+ ['!=<>'] '=' /s+").If(out var slice))
+         if (result.Length == 1 && result[0].text.FindByRegex("/s+ ['!=<>'] '=' /s+; f").If(out var slice))
          {
             var index = slice.Index + result[0].index;
             var length = slice.Length;
@@ -73,6 +74,7 @@ namespace Core.Tests
       [TestMethod]
       public void EmptyStringTest()
       {
+         Pattern.IsFriendly = false;
          var delimitedText = DelimitedText.AsSql();
          var source = "'a', '', 'b'";
          foreach (var (text, _, _) in delimitedText.Enumerable(source).Where(t => t.status == DelimitedTextStatus.Inside))
@@ -92,6 +94,7 @@ namespace Core.Tests
       [TestMethod]
       public void Transforming1Test()
       {
+         Pattern.IsFriendly = false;
          var delimitedText = DelimitedText.AsSql();
          var result = delimitedText.Transform("a BETWEEN 0 AND 100", "$0 BETWEEN $1 AND $2", "$0 >= $1 AND $0 <= $2");
          Console.WriteLine(result);
@@ -100,6 +103,7 @@ namespace Core.Tests
       [TestMethod]
       public void Transforming2Test()
       {
+         Pattern.IsFriendly = false;
          var delimitedText = DelimitedText.AsSql();
          var result = delimitedText.Transform("'9/1/2020' BETWEEN '1/1/2020' AND '12/31/2020'", "$0 BETWEEN $1 AND $2", "$0 >= $1 AND $0 <= $2");
          Console.WriteLine(result);
@@ -108,6 +112,7 @@ namespace Core.Tests
       [TestMethod]
       public void Transforming3Test()
       {
+         Pattern.IsFriendly = false;
          var delimitedText = DelimitedText.AsSql();
          var result = delimitedText.Transform("(111 + 123       - 153) / 3", "($0+$1-$2) / 3", "sum('$0', '$1', '$2') / n('$0', '$1', '$2')");
          Console.WriteLine(result);
@@ -124,12 +129,13 @@ namespace Core.Tests
       [TestMethod]
       public void SlicerTest()
       {
+         Pattern.IsFriendly = false;
          var source = "'foobar' ELSE-1 'ELSE-1'";
          var delimitedText = DelimitedText.AsSql();
 
          foreach (var (text, index, _) in delimitedText.Enumerable(source).Where(t => t.status == DelimitedTextStatus.Outside))
          {
-            foreach (var (_, sliceIndex, length) in text.FindAllByRegex("/b 'ELSE' ['-+']"))
+            foreach (var (_, sliceIndex, length) in text.FindAllByRegex("/b 'ELSE' ['-+']; f"))
             {
                var fullIndex = index + sliceIndex;
                delimitedText[fullIndex, length] = "ELSE -";
@@ -139,16 +145,17 @@ namespace Core.Tests
          Console.WriteLine(delimitedText);
 
          delimitedText.Status[DelimitedTextStatus.Inside] = true;
-         delimitedText.Replace(source, "/b 'ELSE' ['-+'] /d+", "?");
+         delimitedText.Replace(source, "/b 'ELSE' ['-+'] /d+; f", "?");
          Console.WriteLine(delimitedText);
       }
 
       [TestMethod]
       public void SplitTest()
       {
+         Pattern.IsFriendly = false;
          var source = "'foobar' AND 'foobaz' OR 'foo' AND 'bar'";
-         var delimitedText = DelimitedText.AsSql(true);
-         var slices = delimitedText.Split(source, "/s+ 'OR' /s+").ToArray();
+         var delimitedText = DelimitedText.AsSql();
+         var slices = delimitedText.Split(source, "/s+ 'OR' /s+; f").ToArray();
          foreach (var slice in slices)
          {
             Console.WriteLine($"<{slice.Text}>");
@@ -162,25 +169,26 @@ namespace Core.Tests
       [TestMethod]
       public void ReplacementTest()
       {
+         Pattern.IsFriendly = true;
          var source = "'foobar' AND 'foobaz' OR 'foo' AND 'bar'";
-         var delimitedText = DelimitedText.AsSql(true);
-         delimitedText.Replace(source, "/b 'AND' | 'OR' /b", slice => slice.Text.Same("AND") ? "OR" : "AND");
+         var delimitedText = DelimitedText.AsSql();
+         delimitedText.Replace(source, "/b 'AND' | 'OR' /b; f", slice => slice.Text.Same("AND") ? "OR" : "AND");
          Console.WriteLine(delimitedText);
 
          source = "'foobar' && 'foobaz' || 'foo' && 'bar'";
-         delimitedText.Replace(source, "/b 'AND' | 'OR' /b", slice => slice.Text.Same("AND") ? "OR" : "AND");
+         delimitedText.Replace(source, "/b 'AND' | 'OR' /b; f", slice => slice.Text.Same("AND") ? "OR" : "AND");
          Console.WriteLine(delimitedText);
 
-         delimitedText.Replace(source, "'&&' | '||'", slice => slice.Text == "&&" ? "||" : "&&");
+         delimitedText.Replace(source, "'&&' | '||'; f", slice => slice.Text == "&&" ? "||" : "&&");
          Console.WriteLine(delimitedText);
 
          Console.WriteLine("---");
 
          delimitedText.Status = DelimitedTextStatus.Inside;
-         delimitedText.Replace(source, "/w+", slice => slice.Text.ToUpper());
+         delimitedText.Replace(source, "/w+; f", slice => slice.Text.ToUpper());
          Console.WriteLine(delimitedText);
 
-         delimitedText.Replace(source, "/w+", "?");
+         delimitedText.Replace(source, "/w+; f", "?");
          Console.WriteLine(delimitedText);
       }
 
@@ -188,7 +196,7 @@ namespace Core.Tests
       public void EnumerationTest()
       {
          var source = "'foobar' AND 'foobaz' OR 'foo' AND 'bar'";
-         var delimitedText = DelimitedText.AsSql(true);
+         var delimitedText = DelimitedText.AsSql();
          foreach (var (index, _) in delimitedText.Substrings(source, "AND"))
          {
             delimitedText[index, 3] = "&&";
@@ -201,26 +209,23 @@ namespace Core.Tests
 
          foreach (var (index, status) in delimitedText.Substrings(source, "'"))
          {
-            switch (status)
+            delimitedText[index, 1] = status switch
             {
-               case DelimitedTextStatus.BeginDelimiter:
-                  delimitedText[index, 1] = "<<";
-                  break;
-               case DelimitedTextStatus.EndDelimiter:
-                  delimitedText[index, 1] = ">>";
-                  break;
-            }
+               DelimitedTextStatus.BeginDelimiter => "<<",
+               DelimitedTextStatus.EndDelimiter => ">>",
+               _ => delimitedText[index, 1]
+            };
          }
 
          Console.WriteLine(delimitedText);
 
          source = delimitedText.ToString();
-         delimitedText.BeginPattern = "'<<'";
-         delimitedText.EndPattern = "'>>'".Some();
+         delimitedText.BeginPattern = "'<<'; f";
+         delimitedText.EndPattern = ((Pattern)"'>>'; f").Some();
          delimitedText.Status[DelimitedTextStatus.Outside] = true;
          delimitedText.Status[DelimitedTextStatus.Inside] = true;
 
-         foreach (var (text, index, status) in delimitedText.Matches(source, "'&&' | '<<' | '>>' | 'foo'"))
+         foreach (var (text, index, status) in delimitedText.Matches(source, "'&&' | '<<' | '>>' | 'foo'; f"))
          {
             switch (status)
             {
@@ -243,6 +248,7 @@ namespace Core.Tests
       [TestMethod]
       public void DestringifyingAndRestringifyingTest()
       {
+         Pattern.IsFriendly = false;
          var source = "'a' and 'b' equals 'a' plus 'b'";
          var delimitedText = DelimitedText.AsSql();
 
@@ -265,6 +271,7 @@ namespace Core.Tests
       [TestMethod]
       public void EmbeddedStringsTest()
       {
+         Pattern.IsFriendly = false;
          var source = "find -P\"^ 'A'\" -F '.'";
          var delimitedText = DelimitedText.BothQuotes();
          foreach (var (text, _, status) in delimitedText.Enumerable(source))
