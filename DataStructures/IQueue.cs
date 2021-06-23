@@ -10,7 +10,7 @@ namespace Core.DataStructures
 
       bool Contains(T item);
 
-      IResult<T[]> ToArray(int arrayIndex = 0);
+      Result<T[]> ToArray(int arrayIndex = 0);
 
       Maybe<T> Dequeue();
 

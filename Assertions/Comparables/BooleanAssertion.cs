@@ -101,11 +101,11 @@ namespace Core.Assertions.Comparables
          return forceConvert<bool, TException, TResult>(this, args);
       }
 
-      public IResult<bool> OrFailure() => orFailure(this);
+      public Result<bool> OrFailure() => orFailure(this);
 
-      public IResult<bool> OrFailure(string message) => orFailure(this, message);
+      public Result<bool> OrFailure(string message) => orFailure(this, message);
 
-      public IResult<bool> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
+      public Result<bool> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
 
       public Maybe<bool> OrNone() => orNone(this);
 

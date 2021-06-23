@@ -21,7 +21,7 @@ namespace Core.Computers
    {
       public class Try
       {
-         public static IResult<FileName> FromString(string file)
+         public static Result<FileName> FromString(string file)
          {
             return file.Must().BeAValidFileName().OrFailure().Map(f => (FileName)f);
          }
@@ -526,7 +526,7 @@ namespace Core.Computers
          }
       }
 
-      public IResult<FileName> Next()
+      public Result<FileName> Next()
       {
          try
          {
@@ -966,7 +966,7 @@ namespace Core.Computers
 
       public FileNameTrying TryTo => new(this);
 
-      public IResult<object> NewObject(string typeName, params object[] args) => tryTo(() =>
+      public Result<object> NewObject(string typeName, params object[] args) => tryTo(() =>
       {
          var assembly = Assembly.LoadFile(fullPath);
          var type = assembly.GetType(typeName, true);

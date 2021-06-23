@@ -419,7 +419,7 @@ namespace Core.Arrays
          return result.ToArray();
       }
 
-      public static IResult<int> Assign<T>(this T[] array, out T var0, out T var1)
+      public static Result<int> Assign<T>(this T[] array, out T var0, out T var1)
       {
          var0 = var1 = default;
          if (array.Length >= 2)
@@ -435,7 +435,7 @@ namespace Core.Arrays
          }
       }
 
-      public static IResult<int> Assign<T>(this T[] array, out T var0, out T var1, out T var2)
+      public static Result<int> Assign<T>(this T[] array, out T var0, out T var1, out T var2)
       {
          var2 = default;
          var result = Assign(array, out var0, out var1);
@@ -451,7 +451,7 @@ namespace Core.Arrays
          }
       }
 
-      public static IResult<int> Assign<T>(this T[] array, out T var0, out T var1, out T var2, out T var3)
+      public static Result<int> Assign<T>(this T[] array, out T var0, out T var1, out T var2, out T var3)
       {
          var3 = default;
          var result = Assign(array, out var0, out var1, out var2);
@@ -467,7 +467,7 @@ namespace Core.Arrays
          }
       }
 
-      public static IResult<int> Assign<T>(this T[] array, out T var0, out T var1, out T var2, out T var3,
+      public static Result<int> Assign<T>(this T[] array, out T var0, out T var1, out T var2, out T var3,
          out T var4)
       {
          var4 = default;
@@ -484,7 +484,7 @@ namespace Core.Arrays
          }
       }
 
-      public static IResult<int> Assign<T>(this T[] array, out T var0, out T var1, out T var2, out T var3,
+      public static Result<int> Assign<T>(this T[] array, out T var0, out T var1, out T var2, out T var3,
          out T var4, out T var5)
       {
          var5 = default;
@@ -501,7 +501,7 @@ namespace Core.Arrays
          }
       }
 
-      public static IResult<int> Assign<T>(this T[] array, out T var0, out T var1, out T var2, out T var3,
+      public static Result<int> Assign<T>(this T[] array, out T var0, out T var1, out T var2, out T var3,
          out T var4, out T var5, out T var6)
       {
          var6 = default;

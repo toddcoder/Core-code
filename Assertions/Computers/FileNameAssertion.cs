@@ -151,11 +151,11 @@ namespace Core.Assertions.Computers
          return forceConvert<FileName, TException, TResult>(this, args);
       }
 
-      public IResult<FileName> OrFailure() => orFailure(this);
+      public Result<FileName> OrFailure() => orFailure(this);
 
-      public IResult<FileName> OrFailure(string message) => orFailure(this, message);
+      public Result<FileName> OrFailure(string message) => orFailure(this, message);
 
-      public IResult<FileName> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
+      public Result<FileName> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
 
       public Maybe<FileName> OrNone() => orNone(this);
 

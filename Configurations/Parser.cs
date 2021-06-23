@@ -17,7 +17,7 @@ namespace Core.Configurations
          this.source = source;
       }
 
-      public IResult<Configuration> Parse()
+      public Result<Configuration> Parse()
       {
          var rootGroup = new Group("_$root");
          var stack = new MaybeStack<IConfigurationItem>();
@@ -39,7 +39,7 @@ namespace Core.Configurations
                select parentGroup;
          }
 
-         IResult<(string newSource, string str)> getString(string source)
+         Result<(string newSource, string str)> getString(string source)
          {
             if (source.Matches("^ /s* /[quote]; f").If(out var result))
             {
@@ -84,7 +84,7 @@ namespace Core.Configurations
             }
          }
 
-         static IResult<(string newSource, string str)> getQuotedString(string source, char quote)
+         static Result<(string newSource, string str)> getQuotedString(string source, char quote)
          {
             var escaped = false;
             var builder = new StringBuilder();

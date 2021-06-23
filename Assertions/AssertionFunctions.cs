@@ -70,7 +70,7 @@ namespace Core.Assertions
          return maybe.Map(v => v.ToNonNullString()).DefaultTo(() => $"none<{typeof(T).Name}>");
       }
 
-      public static string resultImage<T>(IResult<T> result)
+      public static string resultImage<T>(Result<T> result)
       {
          return result.Map(v => v.ToNonNullString()).Recover(e => $"failure<{typeof(T).Name}>({e.Message})");
       }
@@ -199,17 +199,17 @@ namespace Core.Assertions
          return convert<T, TResult>(assertion);
       }
 
-      public static IResult<T> orFailure<T>(IAssertion<T> assertion)
+      public static Result<T> orFailure<T>(IAssertion<T> assertion)
       {
          return assertion.Constraints.FirstOrNone(c => !c.IsTrue()).Map(c => c.Message.Failure<T>()).DefaultTo(() => assertion.Value.Success());
       }
 
-      public static IResult<T> orFailure<T>(IAssertion<T> assertion, string message)
+      public static Result<T> orFailure<T>(IAssertion<T> assertion, string message)
       {
          return assertion.Constraints.Any(c => !c.IsTrue()) ? message.Failure<T>() : assertion.Value.Success();
       }
 
-      public static IResult<T> orFailure<T>(IAssertion<T> assertion, Func<string> messageFunc)
+      public static Result<T> orFailure<T>(IAssertion<T> assertion, Func<string> messageFunc)
       {
          return assertion.Constraints.Any(c => !c.IsTrue()) ? messageFunc().Failure<T>() : assertion.Value.Success();
       }

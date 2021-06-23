@@ -44,13 +44,13 @@ namespace Core.Monads
       }
 
       [DebuggerStepThrough]
-      public static IResult<TResult> SelectMany<T, TResult>(this Maybe<T> maybe, Func<T, IResult<TResult>> projection)
+      public static Result<TResult> SelectMany<T, TResult>(this Maybe<T> maybe, Func<T, Result<TResult>> projection)
       {
          return maybe.Map(projection).DefaultTo(() => "Value not provided".Failure<TResult>());
       }
 
       [DebuggerStepThrough]
-      public static IResult<TResult> Select<T, TResult>(this IResult<T> result, Func<T, TResult> func)
+      public static Result<TResult> Select<T, TResult>(this Result<T> result, Func<T, TResult> func)
       {
          if (result.If(out var value, out var exception))
          {
@@ -62,11 +62,11 @@ namespace Core.Monads
          }
       }
 
-      public static IResult<T> Success<T>(this T value) => value is null ? "Value cannot be null".Failure<T>() : new Success<T>(value);
+      public static Result<T> Success<T>(this T value) => value is null ? "Value cannot be null".Failure<T>() : new Success<T>(value);
 
-      public static IResult<T> Failure<T>(this string message) => failure<T>(new Exception(message));
+      public static Result<T> Failure<T>(this string message) => failure<T>(new Exception(message));
 
-      public static IResult<T> Failure<T, TException>(this object firstItem, params object[] args) where TException : Exception
+      public static Result<T> Failure<T, TException>(this object firstItem, params object[] args) where TException : Exception
       {
          var list = new List<object> { firstItem };
          list.AddRange(args);
@@ -88,7 +88,7 @@ namespace Core.Monads
          return failedMatch<T>((TException)typeof(TException).Create(list.ToArray()));
       }
 
-      public static IResult<T> Result<T>(this bool test, Func<T> ifFunc, string exceptionMessage)
+      public static Result<T> Result<T>(this bool test, Func<T> ifFunc, string exceptionMessage)
       {
          if (test)
          {
@@ -100,7 +100,7 @@ namespace Core.Monads
          }
       }
 
-      public static IResult<T> Result<T>(this bool test, Func<T> ifFunc, Func<string> exceptionMessage)
+      public static Result<T> Result<T>(this bool test, Func<T> ifFunc, Func<string> exceptionMessage)
       {
          if (test)
          {
@@ -112,7 +112,7 @@ namespace Core.Monads
          }
       }
 
-      public static IResult<T> Result<T>(this bool test, Func<IResult<T>> ifFunc, string exceptionMessage)
+      public static Result<T> Result<T>(this bool test, Func<Result<T>> ifFunc, string exceptionMessage)
       {
          if (test)
          {
@@ -124,7 +124,7 @@ namespace Core.Monads
          }
       }
 
-      public static IResult<T> Result<T>(this bool test, Func<IResult<T>> ifFunc,
+      public static Result<T> Result<T>(this bool test, Func<Result<T>> ifFunc,
          Func<string> exceptionMessage)
       {
          if (test)
@@ -162,7 +162,7 @@ namespace Core.Monads
          return matched;
       }
 
-      public static IResult<T> Tap<T>(this IResult<T> result, Action<IResult<T>> action) => tryTo(() =>
+      public static Result<T> Tap<T>(this Result<T> result, Action<Result<T>> action) => tryTo(() =>
       {
          action(result);
          return result;
@@ -190,7 +190,7 @@ namespace Core.Monads
          }
       }
 
-      public static IEnumerable<T> WhereIsSuccessful<T>(this IEnumerable<IResult<T>> enumerable)
+      public static IEnumerable<T> WhereIsSuccessful<T>(this IEnumerable<Result<T>> enumerable)
       {
          foreach (var result in enumerable)
          {
@@ -202,7 +202,7 @@ namespace Core.Monads
       }
 
       public static IEnumerable<(T item, TResult result)> WhereIsSuccessful<T, TResult>(this IEnumerable<T> enumerable,
-         Func<T, IResult<TResult>> predicate)
+         Func<T, Result<TResult>> predicate)
       {
          foreach (var item in enumerable)
          {
@@ -277,13 +277,13 @@ namespace Core.Monads
          return result.Some<IEnumerable<T>>();
       }
 
-      public static IEnumerable<IResult<T>> All<T>(this IEnumerable<IResult<T>> enumerable, Action<T> success = null,
+      public static IEnumerable<Result<T>> All<T>(this IEnumerable<Result<T>> enumerable, Action<T> success = null,
          Action<Exception> failure = null)
       {
          return new ResultIterator<T>(enumerable, success, failure).All();
       }
 
-      public static IEnumerable<T> Successes<T>(this IEnumerable<IResult<T>> enumerable, Action<T> success = null,
+      public static IEnumerable<T> Successes<T>(this IEnumerable<Result<T>> enumerable, Action<T> success = null,
          Action<Exception> failure = null)
       {
          return new ResultIterator<T>(enumerable, success, failure).SuccessesOnly();
@@ -295,7 +295,7 @@ namespace Core.Monads
          return new MatchedIterator<T>(enumerable, matched, notMatched, failure).MatchesOnly();
       }
 
-      public static IEnumerable<Exception> Failures<T>(this IEnumerable<IResult<T>> enumerable,
+      public static IEnumerable<Exception> Failures<T>(this IEnumerable<Result<T>> enumerable,
          Action<T> success = null, Action<Exception> failure = null)
       {
          return new ResultIterator<T>(enumerable, success, failure).FailuresOnly();
@@ -307,19 +307,19 @@ namespace Core.Monads
          return new MatchedIterator<T>(enumerable, matched, notMatched, failure).FailuresOnly();
       }
 
-      public static (IEnumerable<T> enumerable, Maybe<Exception> exception) SuccessesFirst<T>(this IEnumerable<IResult<T>> enumerable,
+      public static (IEnumerable<T> enumerable, Maybe<Exception> exception) SuccessesFirst<T>(this IEnumerable<Result<T>> enumerable,
          Action<T> success = null, Action<Exception> failure = null)
       {
          return new ResultIterator<T>(enumerable, success, failure).SuccessesThenFailure();
       }
 
-      public static IResult<IEnumerable<T>> IfAllSuccesses<T>(this IEnumerable<IResult<T>> enumerable,
+      public static Result<IEnumerable<T>> IfAllSuccesses<T>(this IEnumerable<Result<T>> enumerable,
          Action<T> success = null, Action<Exception> failure = null)
       {
          return new ResultIterator<T>(enumerable, success, failure).IfAllSuccesses();
       }
 
-      public static IResult<TResult> ForAny<TSource, TResult>(this IEnumerable<TSource> enumerable,
+      public static Result<TResult> ForAny<TSource, TResult>(this IEnumerable<TSource> enumerable,
          Func<TSource, TResult> func) => tryTo(() =>
       {
          var firstItem = none<TResult>();
@@ -341,13 +341,13 @@ namespace Core.Monads
          return firstItem.Result("Enumerable empty");
       });
 
-      public static IResult<TResult> ForAny<TSource, TResult>(this IResult<IEnumerable<TSource>> enumerable,
+      public static Result<TResult> ForAny<TSource, TResult>(this Result<IEnumerable<TSource>> enumerable,
          Func<TSource, TResult> func)
       {
          return enumerable.Map(e => e.ForAny(func));
       }
 
-      public static IResult<TResult> ForAny<TSource, TResult>(this IEnumerable<TSource> enumerable,
+      public static Result<TResult> ForAny<TSource, TResult>(this IEnumerable<TSource> enumerable,
          Action<TSource> action, TResult result) => tryTo(() =>
       {
          foreach (var item in enumerable)
@@ -365,13 +365,13 @@ namespace Core.Monads
          return result.Success();
       });
 
-      public static IResult<TResult> ForAny<TSource, TResult>(this IResult<IEnumerable<TSource>> enumerable,
+      public static Result<TResult> ForAny<TSource, TResult>(this Result<IEnumerable<TSource>> enumerable,
          Action<TSource> action, TResult result)
       {
          return enumerable.Map(e => e.ForAny(action, result));
       }
 
-      public static IResult<TResult> ForAny<TSource, TResult>(this IEnumerable<TSource> enumerable,
+      public static Result<TResult> ForAny<TSource, TResult>(this IEnumerable<TSource> enumerable,
          Action<TSource> action, Func<TResult> result) => tryTo(() =>
       {
          foreach (var item in enumerable)
@@ -389,15 +389,15 @@ namespace Core.Monads
          return result().Success();
       });
 
-      public static IResult<TResult> ForAny<TSource, TResult>(this IResult<IEnumerable<TSource>> enumerable,
+      public static Result<TResult> ForAny<TSource, TResult>(this Result<IEnumerable<TSource>> enumerable,
          Action<TSource> action, Func<TResult> result)
       {
          return enumerable.Map(e => e.ForAny(action, result));
       }
 
-      public static IResult<T> Flat<T>(this IResult<IResult<T>> result) => result.Recover(failure<T>);
+      public static Result<T> Flat<T>(this Result<Result<T>> result) => result.Recover(failure<T>);
 
-      public static T ThrowIfFailed<T>(this IResult<T> result)
+      public static T ThrowIfFailed<T>(this Result<T> result)
       {
          if (result.If(out var value, out var exception))
          {
@@ -409,7 +409,7 @@ namespace Core.Monads
          }
       }
 
-      public static void ForEach<T>(this IResult<IEnumerable<T>> enumerable, Action<T> ifSuccess,
+      public static void ForEach<T>(this Result<IEnumerable<T>> enumerable, Action<T> ifSuccess,
          Action<Exception> ifFailure)
       {
          if (enumerable.If(out var e, out var exception))
@@ -524,7 +524,7 @@ namespace Core.Monads
          }
       }
 
-      public static bool If<T1, T2>(this IResult<(T1, T2)> result, out T1 v1, out T2 v2)
+      public static bool If<T1, T2>(this Result<(T1, T2)> result, out T1 v1, out T2 v2)
       {
          if (result.If(out var value))
          {
@@ -542,7 +542,7 @@ namespace Core.Monads
          }
       }
 
-      public static bool If<T1, T2>(this IResult<(T1, T2)> result, out T1 v1, out T2 v2, out Exception exception)
+      public static bool If<T1, T2>(this Result<(T1, T2)> result, out T1 v1, out T2 v2, out Exception exception)
       {
          if (result.If(out var value, out exception))
          {
@@ -561,7 +561,7 @@ namespace Core.Monads
          }
       }
 
-      public static bool If<T1, T2, T3>(this IResult<(T1, T2, T3)> result, out T1 v1, out T2 v2, out T3 v3)
+      public static bool If<T1, T2, T3>(this Result<(T1, T2, T3)> result, out T1 v1, out T2 v2, out T3 v3)
       {
          if (result.If(out var value))
          {
@@ -581,7 +581,7 @@ namespace Core.Monads
          }
       }
 
-      public static bool If<T1, T2, T3>(this IResult<(T1, T2, T3)> result, out T1 v1, out T2 v2, out T3 v3, out Exception exception)
+      public static bool If<T1, T2, T3>(this Result<(T1, T2, T3)> result, out T1 v1, out T2 v2, out T3 v3, out Exception exception)
       {
          if (result.If(out var value, out exception))
          {
@@ -601,7 +601,7 @@ namespace Core.Monads
          }
       }
 
-      public static bool If<T1, T2, T3, T4>(this IResult<(T1, T2, T3, T4)> result, out T1 v1, out T2 v2, out T3 v3,
+      public static bool If<T1, T2, T3, T4>(this Result<(T1, T2, T3, T4)> result, out T1 v1, out T2 v2, out T3 v3,
          out T4 v4)
       {
          if (result.If(out var value))
@@ -624,7 +624,7 @@ namespace Core.Monads
          }
       }
 
-      public static bool If<T1, T2, T3, T4>(this IResult<(T1, T2, T3, T4)> result, out T1 v1, out T2 v2, out T3 v3,
+      public static bool If<T1, T2, T3, T4>(this Result<(T1, T2, T3, T4)> result, out T1 v1, out T2 v2, out T3 v3,
          out T4 v4, out Exception exception)
       {
          if (result.If(out var value, out exception))
@@ -891,7 +891,7 @@ namespace Core.Monads
          }
       }
 
-      public static bool ValueOrOriginal<T1, T2>(this IResult<(T1, T2)> result, out T1 v1, out T2 v2, out IResult<(T1, T2)> original)
+      public static bool ValueOrOriginal<T1, T2>(this Result<(T1, T2)> result, out T1 v1, out T2 v2, out Result<(T1, T2)> original)
       {
          if (result.ValueOrOriginal(out var tuple, out original))
          {
@@ -909,8 +909,8 @@ namespace Core.Monads
          }
       }
 
-      public static bool ValueOrOriginal<T1, T2, T3>(this IResult<(T1, T2, T3)> result, out T1 v1, out T2 v2, out T3 v3,
-         out IResult<(T1, T2, T3)> original)
+      public static bool ValueOrOriginal<T1, T2, T3>(this Result<(T1, T2, T3)> result, out T1 v1, out T2 v2, out T3 v3,
+         out Result<(T1, T2, T3)> original)
       {
          if (result.ValueOrOriginal(out var tuple, out original))
          {
@@ -930,8 +930,8 @@ namespace Core.Monads
          }
       }
 
-      public static bool ValueOrOriginal<T1, T2, T3, T4>(this IResult<(T1, T2, T3, T4)> result, out T1 v1, out T2 v2, out T3 v3, out T4 v4,
-         out IResult<(T1, T2, T3, T4)> original)
+      public static bool ValueOrOriginal<T1, T2, T3, T4>(this Result<(T1, T2, T3, T4)> result, out T1 v1, out T2 v2, out T3 v3, out T4 v4,
+         out Result<(T1, T2, T3, T4)> original)
       {
          if (result.ValueOrOriginal(out var tuple, out original))
          {
@@ -1077,7 +1077,7 @@ namespace Core.Monads
          }
       }
 
-      public static bool ValueOrCast<T1, T2, TResult>(this IResult<(T1, T2)> result, out T1 v1, out T2 v2, out IResult<TResult> castAs)
+      public static bool ValueOrCast<T1, T2, TResult>(this Result<(T1, T2)> result, out T1 v1, out T2 v2, out Result<TResult> castAs)
       {
          if (result.ValueOrCast(out var tuple, out castAs))
          {
@@ -1095,8 +1095,8 @@ namespace Core.Monads
          }
       }
 
-      public static bool ValueOrCast<T1, T2, T3, TResult>(this IResult<(T1, T2, T3)> result, out T1 v1, out T2 v2, out T3 v3,
-         out IResult<TResult> castAs)
+      public static bool ValueOrCast<T1, T2, T3, TResult>(this Result<(T1, T2, T3)> result, out T1 v1, out T2 v2, out T3 v3,
+         out Result<TResult> castAs)
       {
          if (result.ValueOrCast(out var tuple, out castAs))
          {
@@ -1116,8 +1116,8 @@ namespace Core.Monads
          }
       }
 
-      public static bool ValueOrCast<T1, T2, T3, T4, TResult>(this IResult<(T1, T2, T3, T4)> result, out T1 v1, out T2 v2, out T3 v3, out T4 v4,
-         out IResult<TResult> castAs)
+      public static bool ValueOrCast<T1, T2, T3, T4, TResult>(this Result<(T1, T2, T3, T4)> result, out T1 v1, out T2 v2, out T3 v3, out T4 v4,
+         out Result<TResult> castAs)
       {
          if (result.ValueOrCast(out var tuple, out castAs))
          {
@@ -1274,7 +1274,7 @@ namespace Core.Monads
          }
       }
 
-      public static IEnumerable<T> SuccessfulValue<T>(this IEnumerable<IResult<T>> enumerable)
+      public static IEnumerable<T> SuccessfulValue<T>(this IEnumerable<Result<T>> enumerable)
       {
          foreach (var result in enumerable)
          {
@@ -1309,9 +1309,9 @@ namespace Core.Monads
          return interrupted<T>((TException)typeof(TException).Create(list.ToArray()));
       }
 
-      public static ICompletion<T> Completion<T>(this IResult<T> result) => result.Map(v => v.Completed()).Recover(interrupted<T>);
+      public static ICompletion<T> Completion<T>(this Result<T> result) => result.Map(v => v.Completed()).Recover(interrupted<T>);
 
-      public static ICompletion<T> Completion<T>(this IResult<T> result, CancellationToken token)
+      public static ICompletion<T> Completion<T>(this Result<T> result, CancellationToken token)
       {
          return result.Map(v => v.Completed(token)).Recover(interrupted<T>);
       }
@@ -1372,7 +1372,7 @@ namespace Core.Monads
          }
       }
 
-      public static IResult<T> Result<T>(this ICompletion<T> completion)
+      public static Result<T> Result<T>(this ICompletion<T> completion)
       {
          if (completion.If(out var value, out var _exception))
          {
@@ -1420,13 +1420,13 @@ namespace Core.Monads
          });
       }
 
-      public static IResult<T> MaxOrFail<T>(this IEnumerable<T> enumerable, Func<string> exceptionMessage) => tryTo(() =>
+      public static Result<T> MaxOrFail<T>(this IEnumerable<T> enumerable, Func<string> exceptionMessage) => tryTo(() =>
       {
          var array = enumerable.ToArray();
          return assert(array.Length > 0, () => array.Max(), exceptionMessage);
       });
 
-      public static IResult<T> MaxOrFail<T, TMax>(this IEnumerable<T> enumerable, Func<T, TMax> maxOnFunc, Func<string> exceptionMessage)
+      public static Result<T> MaxOrFail<T, TMax>(this IEnumerable<T> enumerable, Func<T, TMax> maxOnFunc, Func<string> exceptionMessage)
       {
          return tryTo(() =>
          {
@@ -1439,13 +1439,13 @@ namespace Core.Monads
          });
       }
 
-      public static IResult<T> MinOrFail<T>(this IEnumerable<T> enumerable, Func<string> exceptionMessage) => tryTo(() =>
+      public static Result<T> MinOrFail<T>(this IEnumerable<T> enumerable, Func<string> exceptionMessage) => tryTo(() =>
       {
          var array = enumerable.ToArray();
          return assert(array.Length > 0, () => array.Min(), exceptionMessage);
       });
 
-      public static IResult<T> MinOrFail<T, TMin>(this IEnumerable<T> enumerable, Func<T, TMin> minOnFunc, Func<string> exceptionMessage)
+      public static Result<T> MinOrFail<T, TMin>(this IEnumerable<T> enumerable, Func<T, TMin> minOnFunc, Func<string> exceptionMessage)
       {
          return tryTo(() =>
          {
@@ -1520,32 +1520,32 @@ namespace Core.Monads
          return maybe.Map(t => func(t.Item1, t.Item2, t.Item3, t.Item4));
       }
 
-      public static IResult<TResult> Map<T1, T2, TResult>(this IResult<(T1, T2)> result, Func<T1, T2, TResult> func)
+      public static Result<TResult> Map<T1, T2, TResult>(this Result<(T1, T2)> result, Func<T1, T2, TResult> func)
       {
          return result.Map(t => func(t.Item1, t.Item2));
       }
 
-      public static IResult<TResult> Map<T1, T2, TResult>(this IResult<(T1, T2)> result, Func<T1, T2, IResult<TResult>> func)
+      public static Result<TResult> Map<T1, T2, TResult>(this Result<(T1, T2)> result, Func<T1, T2, Result<TResult>> func)
       {
          return result.Map(t => func(t.Item1, t.Item2));
       }
 
-      public static IResult<TResult> Map<T1, T2, T3, TResult>(this IResult<(T1, T2, T3)> result, Func<T1, T2, T3, TResult> func)
+      public static Result<TResult> Map<T1, T2, T3, TResult>(this Result<(T1, T2, T3)> result, Func<T1, T2, T3, TResult> func)
       {
          return result.Map(t => func(t.Item1, t.Item2, t.Item3));
       }
 
-      public static IResult<TResult> Map<T1, T2, T3, TResult>(this IResult<(T1, T2, T3)> result, Func<T1, T2, T3, IResult<TResult>> func)
+      public static Result<TResult> Map<T1, T2, T3, TResult>(this Result<(T1, T2, T3)> result, Func<T1, T2, T3, Result<TResult>> func)
       {
          return result.Map(t => func(t.Item1, t.Item2, t.Item3));
       }
 
-      public static IResult<TResult> Map<T1, T2, T3, T4, TResult>(this IResult<(T1, T2, T3, T4)> result, Func<T1, T2, T3, T4, TResult> func)
+      public static Result<TResult> Map<T1, T2, T3, T4, TResult>(this Result<(T1, T2, T3, T4)> result, Func<T1, T2, T3, T4, TResult> func)
       {
          return result.Map(t => func(t.Item1, t.Item2, t.Item3, t.Item4));
       }
 
-      public static IResult<TResult> Map<T1, T2, T3, T4, TResult>(this IResult<(T1, T2, T3, T4)> result, Func<T1, T2, T3, T4, IResult<TResult>> func)
+      public static Result<TResult> Map<T1, T2, T3, T4, TResult>(this Result<(T1, T2, T3, T4)> result, Func<T1, T2, T3, T4, Result<TResult>> func)
       {
          return result.Map(t => func(t.Item1, t.Item2, t.Item3, t.Item4));
       }

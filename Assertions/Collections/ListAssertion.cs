@@ -123,11 +123,11 @@ namespace Core.Assertions.Collections
          return forceConvert<List<T>, TException, TResult>(this, args);
       }
 
-      public IResult<List<T>> OrFailure() => orFailure(this);
+      public Result<List<T>> OrFailure() => orFailure(this);
 
-      public IResult<List<T>> OrFailure(string message) => orFailure(this, message);
+      public Result<List<T>> OrFailure(string message) => orFailure(this, message);
 
-      public IResult<List<T>> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
+      public Result<List<T>> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
 
       public Maybe<List<T>> OrNone() => orNone(this);
 

@@ -99,11 +99,11 @@ namespace Core.Assertions.Strings
 
       public TResult Force<TException, TResult>(params object[] args) where TException : Exception => Force<TResult>();
 
-      public IResult<Matcher> OrFailure() => orFailure(this);
+      public Result<Matcher> OrFailure() => orFailure(this);
 
-      public IResult<Matcher> OrFailure(string message) => orFailure(this, message);
+      public Result<Matcher> OrFailure(string message) => orFailure(this, message);
 
-      public IResult<Matcher> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
+      public Result<Matcher> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
 
       public Maybe<Matcher> OrNone() => orNone(this);
 

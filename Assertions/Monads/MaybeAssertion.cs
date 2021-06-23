@@ -126,11 +126,11 @@ namespace Core.Assertions.Monads
          return forceConvert<T, TimeoutException, TResult>(this);
       }
 
-      public IResult<T> OrFailure() => orFailure(this);
+      public Result<T> OrFailure() => orFailure(this);
 
-      public IResult<T> OrFailure(string message) => orFailure(this, message);
+      public Result<T> OrFailure(string message) => orFailure(this, message);
 
-      public IResult<T> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
+      public Result<T> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
 
       public Maybe<T> OrNone() => orNone(this);
 

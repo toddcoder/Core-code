@@ -125,11 +125,11 @@ namespace Core.Assertions.Comparables
          return forceConvert<TEnum, TException, TResult>(this);
       }
 
-      public IResult<TEnum> OrFailure() => orFailure(this);
+      public Result<TEnum> OrFailure() => orFailure(this);
 
-      public IResult<TEnum> OrFailure(string message) => orFailure(this, message);
+      public Result<TEnum> OrFailure(string message) => orFailure(this, message);
 
-      public IResult<TEnum> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
+      public Result<TEnum> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
 
       public Maybe<TEnum> OrNone() => orNone(this);
 

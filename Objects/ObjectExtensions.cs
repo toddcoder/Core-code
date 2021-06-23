@@ -66,7 +66,7 @@ namespace Core.Objects
 
       public static int HashCode(this object obj, string signature) => PropertyEvaluator.GetValue(obj, signature).GetHashCode();
 
-      public static IResult<T> CastAs<T>(this object obj) => tryTo(() =>
+      public static Result<T> CastAs<T>(this object obj) => tryTo(() =>
       {
          if (obj is T o)
          {
@@ -108,7 +108,7 @@ namespace Core.Objects
          return date is DateTime || DateTime.TryParse(date.ToString(), out _);
       }
 
-      public static IResult<string> FormatObject(this object obj, string format) => GetReflector(obj).Map(rf => rf.Format(format));
+      public static Result<string> FormatObject(this object obj, string format) => GetReflector(obj).Map(rf => rf.Format(format));
 
       public static string FormatAs(this object obj, string format)
       {

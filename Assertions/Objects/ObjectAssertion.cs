@@ -99,11 +99,11 @@ namespace Core.Assertions.Objects
          return (TResult)Force<TException>(args);
       }
 
-      public IResult<object> OrFailure() => orFailure(this);
+      public Result<object> OrFailure() => orFailure(this);
 
-      public IResult<object> OrFailure(string message) => orFailure(this, message);
+      public Result<object> OrFailure(string message) => orFailure(this, message);
 
-      public IResult<object> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
+      public Result<object> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
 
       public Maybe<object> OrNone() => orNone(this);
 

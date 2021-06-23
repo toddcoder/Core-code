@@ -37,7 +37,7 @@ namespace Core.Data
 
       public static void RegisterSetup(string name, Func<DataGroups, string, ISetup> func) => setups[name] = func;
 
-      public static IResult<Func<DataGroups, string, ISetup>> Setup(string setupType) => setups.Require(setupType);
+      public static Result<Func<DataGroups, string, ISetup>> Setup(string setupType) => setups.Require(setupType);
 
       protected DataGroups dataGroups;
       protected StringHash<Adapter<T>> adapters;
@@ -69,17 +69,17 @@ namespace Core.Data
          this.isValidAdapterName = isValidAdapterName;
       }
 
-      protected IResult<string> validAdapterName(string adapterName)
+      protected Result<string> validAdapterName(string adapterName)
       {
          return isValidAdapterName(adapterName).Result(() => adapterName, $"Adapter name {adapterName} is invalid");
       }
 
-      protected IResult<string> adapterExists(string adapterName)
+      protected Result<string> adapterExists(string adapterName)
       {
          return dataGroups.AdaptersGroup.RequireGroup(adapterName).Map(_ => adapterName);
       }
 
-      public IResult<Adapter<T>> Adapter(string adapterName, T entity, string setupType = "sql")
+      public Result<Adapter<T>> Adapter(string adapterName, T entity, string setupType = "sql")
       {
          if (adapters.ContainsKey(adapterName))
          {
@@ -97,7 +97,7 @@ namespace Core.Data
             select adapter;
       }
 
-      protected IResult<Adapter<T>> getAdapter(T entity, string child, Func<DataGroups, string, ISetup> setup) => tryTo(() =>
+      protected Result<Adapter<T>> getAdapter(T entity, string child, Func<DataGroups, string, ISetup> setup) => tryTo(() =>
       {
          var adapter = adapters.Find(child, an => new Adapter<T>(entity, setup(dataGroups, an)), true);
          adapter.Entity = entity;
@@ -105,12 +105,12 @@ namespace Core.Data
          return adapter.Success();
       });
 
-      protected IResult<Adapter<T>> getAdapter(Func<T> alwaysUse, string child, Func<DataGroups, string, ISetup> setup)
+      protected Result<Adapter<T>> getAdapter(Func<T> alwaysUse, string child, Func<DataGroups, string, ISetup> setup)
       {
          return tryTo(() => adapters.Find(child, an => new Adapter<T>(alwaysUse(), setup(dataGroups, an)), true).Success());
       }
 
-      public IResult<TResult> Execute<TResult>(string adapterName, T entity, Func<T, TResult> map, string setupType = "sql")
+      public Result<TResult> Execute<TResult>(string adapterName, T entity, Func<T, TResult> map, string setupType = "sql")
       {
          if (adapters.ContainsKey(adapterName))
          {
@@ -129,7 +129,7 @@ namespace Core.Data
             select result;
       }
 
-      public IResult<T> Execute(string adapterName, T entity, string setupType = "sql")
+      public Result<T> Execute(string adapterName, T entity, string setupType = "sql")
       {
          if (adapters.ContainsKey(adapterName))
          {
@@ -147,7 +147,7 @@ namespace Core.Data
             select obj;
       }
 
-      public IResult<Adapter<T>> Adapter(string adapterName, Func<T> entityFunc, string setupType = "sql")
+      public Result<Adapter<T>> Adapter(string adapterName, Func<T> entityFunc, string setupType = "sql")
       {
          if (adapters.ContainsKey(adapterName))
          {
@@ -165,7 +165,7 @@ namespace Core.Data
             select adapter;
       }
 
-      public IResult<T> Execute(string adapterName, Func<T> entityFunc, string setupType = "sql")
+      public Result<T> Execute(string adapterName, Func<T> entityFunc, string setupType = "sql")
       {
          if (adapters.ContainsKey(adapterName))
          {
@@ -199,7 +199,7 @@ namespace Core.Data
          validAdapters.Add(adapterName);
       }
 
-      public IResult<IBulkCopyTarget> BulkCopy(string sourceAdapterName, string targetAdapterName, Func<T> entityFunc,
+      public Result<IBulkCopyTarget> BulkCopy(string sourceAdapterName, string targetAdapterName, Func<T> entityFunc,
          string sourceSetupType = "sql")
       {
          return
@@ -209,7 +209,7 @@ namespace Core.Data
             select target;
       }
 
-      public IResult<IBulkCopyTarget> BulkCopy(string sourceAdapterName, string targetAdapterName, T entity,
+      public Result<IBulkCopyTarget> BulkCopy(string sourceAdapterName, string targetAdapterName, T entity,
          string sourceSetupType = "sql")
       {
          return
@@ -219,12 +219,12 @@ namespace Core.Data
             select target;
       }
 
-      public IEnumerable<IResult<T>> ExecuteAll(T entity, string setupType = "sql")
+      public IEnumerable<Result<T>> ExecuteAll(T entity, string setupType = "sql")
       {
          return validAdapters.Select(key => Execute(key, entity, setupType));
       }
 
-      public IEnumerable<IResult<T>> ExecuteAll(Func<string, T> map, string setupType = "sql")
+      public IEnumerable<Result<T>> ExecuteAll(Func<string, T> map, string setupType = "sql")
       {
          return validAdapters
             .Select(name => new { Name = name, Entity = tryTo(() => map(name)) })

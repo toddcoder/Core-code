@@ -177,11 +177,11 @@ namespace Core.Assertions.Strings
 
       public TResult Force<TException, TResult>(params object[] args) where TException : Exception => Force<TResult>();
 
-      public IResult<string> OrFailure() => orFailure(this);
+      public Result<string> OrFailure() => orFailure(this);
 
-      public IResult<string> OrFailure(string message) => orFailure(this, message);
+      public Result<string> OrFailure(string message) => orFailure(this, message);
 
-      public IResult<string> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
+      public Result<string> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
 
       public Maybe<string> OrNone() => orNone(this);
 

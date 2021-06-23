@@ -86,11 +86,11 @@ namespace Core.Assertions.Collections
 
       public TResult Force<TException, TResult>(params object[] args) where TException : Exception => throw "Not implemented".Throws();
 
-      public IResult<T> OrFailure() => orFailure(this);
+      public Result<T> OrFailure() => orFailure(this);
 
-      public IResult<T> OrFailure(string message) => orFailure(this, message);
+      public Result<T> OrFailure(string message) => orFailure(this, message);
 
-      public IResult<T> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
+      public Result<T> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
 
       public Maybe<T> OrNone() => orNone(this);
 

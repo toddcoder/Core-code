@@ -139,7 +139,7 @@ namespace Core.Matching
 
       public bool ContainsKey(string key) => variables.ContainsKey(key);
 
-      public IResult<Hash<string, string>> AnyHash() => variables.Success<Hash<string, string>>();
+      public Result<Hash<string, string>> AnyHash() => variables.Success<Hash<string, string>>();
 
       public IMatched<Scraper> Push(Pattern pattern)
       {

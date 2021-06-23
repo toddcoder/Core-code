@@ -26,7 +26,7 @@ namespace Core.Strings.Text
          this.ignoreCase = ignoreCase;
       }
 
-      public IResult<DifferenceModel> BuildModel()
+      public Result<DifferenceModel> BuildModel()
       {
          var differ = new DifferenceBuilder(oldText, newText, ignoreWhiteSpace, ignoreCase);
          if (differ.Build().ValueOrCast<DifferenceModel>(out var result, out var asDifferenceModel))

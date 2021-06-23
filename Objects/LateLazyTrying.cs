@@ -16,7 +16,7 @@ namespace Core.Objects
          this.lateLazy = lateLazy;
       }
 
-      public IResult<T> ActivateWith(Func<T> activator) => tryTo(() =>
+      public Result<T> ActivateWith(Func<T> activator) => tryTo(() =>
       {
          lateLazy.ActivateWith(activator);
          return lateLazy.Value.Success();
@@ -27,7 +27,7 @@ namespace Core.Objects
          return await runAsync(t => ActivateWith(activator).Completion(t), token);
       }
 
-      public IResult<T> Value => tryTo(() => lateLazy.Value);
+      public Result<T> Value => tryTo(() => lateLazy.Value);
 
       public bool IsActivated => lateLazy.IsActivated;
 

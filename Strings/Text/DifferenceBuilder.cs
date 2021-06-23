@@ -39,7 +39,7 @@ namespace Core.Strings.Text
          }
       }
 
-      protected IResult<Unit> buildModifications()
+      protected Result<Unit> buildModifications()
       {
          var oldSize = oldModification.HashedItems.Length;
          var newSize = newModification.HashedItems.Length;
@@ -50,7 +50,7 @@ namespace Core.Strings.Text
          return buildModifications(0, oldSize, 0, newSize, forwardDiagonal, reverseDiagonal);
       }
 
-      protected IResult<Unit> buildModifications(int oldStart, int oldEnd, int newStart, int newEnd, int[] forwardDiagonal, int[] reverseDiagonal)
+      protected Result<Unit> buildModifications(int oldStart, int oldEnd, int newStart, int newEnd, int[] forwardDiagonal, int[] reverseDiagonal)
       {
          while (oldStart < oldEnd && newStart < newEnd && oldModification.HashedItems[oldStart] == newModification.HashedItems[newStart])
          {
@@ -137,7 +137,7 @@ namespace Core.Strings.Text
          return Unit.Success();
       }
 
-      protected static IResult<EditLengthResult> calculateEditLength(int[] oldItems, int oldStart, int oldEnd, int[] newItems, int newStart,
+      protected static Result<EditLengthResult> calculateEditLength(int[] oldItems, int oldStart, int oldEnd, int[] newItems, int newStart,
          int newEnd,
          int[] forwardDiagonal, int[] reverseDiagonal)
       {
@@ -269,7 +269,7 @@ namespace Core.Strings.Text
          newModification = new Modification(newText);
       }
 
-      public IResult<DifferenceResult> Build()
+      public Result<DifferenceResult> Build()
       {
          var itemHash = new Hash<string, int>();
          var lineDiffs = new List<DifferenceBlock>();

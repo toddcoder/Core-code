@@ -9,6 +9,6 @@ namespace Core.Dates
    {
       public static DateTime date(string source) => Parse(source);
 
-      public static IResult<DateTime> attemptDate(string source) => tryTo(() => date(source));
+      public static Result<DateTime> attemptDate(string source) => tryTo(() => date(source));
    }
 }

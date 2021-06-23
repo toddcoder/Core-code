@@ -9,7 +9,7 @@ namespace Core.Monads
 
       public static Maybe<Unit> Some() => Value.Some();
 
-      public static IResult<Unit> Success() => Value.Success();
+      public static Result<Unit> Success() => Value.Success();
 
       public static IMatched<Unit> Matched() => Value.Matched();
 

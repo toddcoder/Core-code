@@ -13,7 +13,7 @@ namespace Core.Data.Fields
       protected StringHash<Field> fields;
       protected List<string> ordered;
 
-      public static IResult<Fields> FromGroup(Maybe<Group> fieldsGroup) => tryTo(() => new Fields(fieldsGroup));
+      public static Result<Fields> FromGroup(Maybe<Group> fieldsGroup) => tryTo(() => new Fields(fieldsGroup));
 
       public Fields()
       {

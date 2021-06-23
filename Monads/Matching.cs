@@ -80,6 +80,6 @@ namespace Core.Monads
 
 		public TResult Get() => action.Required("Action not set")();
 
-		public IResult<TResult> Result() => action.Result("Action not set").Map(a => a());
+		public Result<TResult> Result() => action.Result("Action not set").Map(a => a());
 	}
 }

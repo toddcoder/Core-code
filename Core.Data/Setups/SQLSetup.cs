@@ -14,7 +14,7 @@ namespace Core.Data.Setups
 {
    public class SqlSetup : ISetup, ISetupWithInfo
    {
-      public static IResult<SqlSetup> FromDataGroups(DataGroups dataGroups, string adapterName)
+      public static Result<SqlSetup> FromDataGroups(DataGroups dataGroups, string adapterName)
       {
          var connectionsGroup = dataGroups.ConnectionsGroup;
          var commandsGroup = dataGroups.CommandsGroup;
@@ -41,7 +41,7 @@ namespace Core.Data.Setups
             };
       }
 
-      public static IResult<SqlSetup> FromConfiguration(Configuration configuration, string adapterName)
+      public static Result<SqlSetup> FromConfiguration(Configuration configuration, string adapterName)
       {
          return
             from dataGraphs in configuration.DataGroups().Result("Data graphs unavailable")

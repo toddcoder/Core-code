@@ -25,7 +25,7 @@ namespace Core.Computers
    {
       public class Try
       {
-         public static IResult<FolderName> FromString(string folder)
+         public static Result<FolderName> FromString(string folder)
          {
             return folder.Must().BeAValidFolderName().OrFailure().Map(f => (FolderName)f);
          }

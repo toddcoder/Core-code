@@ -58,7 +58,7 @@ namespace Core.Objects
          }
       }
 
-      public static IResult<Type> TypeOf(this string source)
+      public static Result<Type> TypeOf(this string source)
       {
          try
          {
@@ -107,6 +107,6 @@ namespace Core.Objects
          }
       }
 
-      public static IResult<object> New(this Type type, params object[] args) => tryTo(() => Activator.CreateInstance(type, array(args)));
+      public static Result<object> New(this Type type, params object[] args) => tryTo(() => Activator.CreateInstance(type, array(args)));
    }
 }

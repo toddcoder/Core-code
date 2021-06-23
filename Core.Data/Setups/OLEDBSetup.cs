@@ -18,7 +18,7 @@ namespace Core.Data.Setups
 
       public static void RegisterType(string type, Func<IConnectionString> func) => registeredTypes[type] = func;
 
-      public static IResult<OleDbSetup> FromDataGroups(DataGroups dataGroups, string adapterName, Maybe<FileName> file)
+      public static Result<OleDbSetup> FromDataGroups(DataGroups dataGroups, string adapterName, Maybe<FileName> file)
       {
          var result =
             from adapterGroup in dataGroups.AdaptersGroup.RequireGroup(adapterName)

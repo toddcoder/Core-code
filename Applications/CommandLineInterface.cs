@@ -121,7 +121,7 @@ namespace Core.Applications
          aliasFile.Lines = aliases.Select(kv => $"{kv.Key}~{kv.Value}").ToArray();
       }
 
-      protected IResult<(MethodInfo, EntryPointType)> getEntryPoint()
+      protected Result<(MethodInfo, EntryPointType)> getEntryPoint()
       {
          return GetType()
             .GetMethods()
@@ -243,7 +243,7 @@ namespace Core.Applications
          }
       }
 
-      protected IResult<object> retrieveItem(string name, Type type, Maybe<object> _defaultValue, string prefix, string suffix, string commandLine)
+      protected Result<object> retrieveItem(string name, Type type, Maybe<object> _defaultValue, string prefix, string suffix, string commandLine)
       {
          return tryTo(() =>
          {
@@ -594,7 +594,7 @@ namespace Core.Applications
          }
       }
 
-      protected IResult<object> fillObject(object emptyObject, string prefix, string suffix, string commandLine)
+      protected Result<object> fillObject(object emptyObject, string prefix, string suffix, string commandLine)
       {
          try
          {

@@ -11,7 +11,7 @@ namespace Core.Data.Configurations
 
       public Group AdaptersGroup { get; set; }
 
-      public IResult<string> Command(string adapterName)
+      public Result<string> Command(string adapterName)
       {
          if (AdaptersGroup.GetGroup(adapterName).If(out var adapterGroup))
          {

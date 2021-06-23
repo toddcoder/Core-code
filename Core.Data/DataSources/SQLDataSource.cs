@@ -147,7 +147,7 @@ namespace Core.Data.DataSources
 
       public bool ContainsKey(string key) => attributes.ContainsKey(key);
 
-      public IResult<Hash<string, string>> AnyHash() => attributes.Success<Hash<string, string>>();
+      public Result<Hash<string, string>> AnyHash() => attributes.Success<Hash<string, string>>();
 
       public override IDbConnection GetConnection()
       {

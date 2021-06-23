@@ -16,7 +16,7 @@ namespace Core.Monads
 
       public abstract T Required(string message);
 
-      public abstract IResult<T> Result(string message);
+      public abstract Result<T> Result(string message);
 
       public abstract Maybe<T> Or(Maybe<T> other);
 

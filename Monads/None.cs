@@ -24,7 +24,7 @@ namespace Core.Monads
 
       public override T Required(string message) => throw new ApplicationException(message);
 
-      public override IResult<T> Result(string message) => message.Failure<T>();
+      public override Result<T> Result(string message) => message.Failure<T>();
 
       public override Maybe<T> Or(Maybe<T> other) => other;
 

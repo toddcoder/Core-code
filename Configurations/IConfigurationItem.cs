@@ -10,10 +10,10 @@ namespace Core.Configurations
 
       Maybe<string> GetValue(string key);
 
-      IResult<string> RequireValue(string key);
+      Result<string> RequireValue(string key);
 
       Maybe<Group> GetGroup(string key);
 
-      IResult<Group> RequireGroup(string key);
+      Result<Group> RequireGroup(string key);
    }
 }

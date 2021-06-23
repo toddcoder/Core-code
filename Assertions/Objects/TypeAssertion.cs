@@ -148,11 +148,11 @@ namespace Core.Assertions.Objects
          return forceConvert<Type, TException, TResult>(this, args);
       }
 
-      public IResult<Type> OrFailure() => orFailure(this);
+      public Result<Type> OrFailure() => orFailure(this);
 
-      public IResult<Type> OrFailure(string message) => orFailure(this, message);
+      public Result<Type> OrFailure(string message) => orFailure(this, message);
 
-      public IResult<Type> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
+      public Result<Type> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
 
       public Maybe<Type> OrNone() => orNone(this);
 

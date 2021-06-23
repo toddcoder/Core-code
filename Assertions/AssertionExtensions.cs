@@ -305,10 +305,10 @@ namespace Core.Assertions
          return (MaybeAssertion<T>)assertion.Named($"Optional of {typeof(T).Name} {name}");
       }
 
-      public static ResultAssertion<T> Must<T>(this IResult<T> value) => new(value);
+      public static ResultAssertion<T> Must<T>(this Result<T> value) => new(value);
 
       [Obsolete("Use value version")]
-      public static ResultAssertion<T> Must<T>(this Expression<Func<IResult<T>>> expression)
+      public static ResultAssertion<T> Must<T>(this Expression<Func<Result<T>>> expression)
       {
          var (name, value) = resolve(expression);
          var assertion = value.Must();
@@ -316,7 +316,7 @@ namespace Core.Assertions
          return (ResultAssertion<T>)assertion.Named($"Result of {typeof(T).Name} {name}");
       }
 
-      public static ResultAssertion<T> Must<T>(this (IResult<T>, string) tuple)
+      public static ResultAssertion<T> Must<T>(this (Result<T>, string) tuple)
       {
          var (value, name) = tuple;
          var assertion = value.Must();

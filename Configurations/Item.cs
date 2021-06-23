@@ -18,11 +18,11 @@ namespace Core.Configurations
 
       public Maybe<string> GetValue(string key) => maybe(key.Same(Key), () => Value);
 
-      public IResult<string> RequireValue(string key) => assert(key.Same(Key), () => Value, () => $"Key '{key}' doesn't match item key");
+      public Result<string> RequireValue(string key) => assert(key.Same(Key), () => Value, () => $"Key '{key}' doesn't match item key");
 
       public Maybe<Group> GetGroup(string key) => none<Group>();
 
-      public IResult<Group> RequireGroup(string key) => "Not a group".Failure<Group>();
+      public Result<Group> RequireGroup(string key) => "Not a group".Failure<Group>();
 
       public string Value { get; }
 

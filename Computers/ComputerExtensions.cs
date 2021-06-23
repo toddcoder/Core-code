@@ -26,7 +26,7 @@ namespace Core.Computers
          }
       }
 
-      public static IResult<FileName> LocalAndParentFiles(this IEnumerable<FolderName> folders, Predicate<FileName> predicate)
+      public static Result<FileName> LocalAndParentFiles(this IEnumerable<FolderName> folders, Predicate<FileName> predicate)
       {
          foreach (var folder in folders)
          {
@@ -61,7 +61,7 @@ namespace Core.Computers
          }
       }
 
-      public static IResult<FolderName> LocalAndParentFolders(this IEnumerable<FolderName> folders, Predicate<FolderName> predicate)
+      public static Result<FolderName> LocalAndParentFolders(this IEnumerable<FolderName> folders, Predicate<FolderName> predicate)
       {
          foreach (var folder in folders)
          {

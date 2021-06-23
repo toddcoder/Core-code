@@ -10,17 +10,17 @@ namespace Core.Objects
    {
       public static T Create<T>() => Create<T>(null);
 
-      public static IResult<T> TryCreate<T>() => tryTo(Create<T>);
+      public static Result<T> TryCreate<T>() => tryTo(Create<T>);
 
       public static T Create<T>(params object[] args) => (T)typeof(T).Create(args);
 
-      public static IResult<T> TryCreate<T>(params object[] args) => tryTo(() => Create<T>(args));
+      public static Result<T> TryCreate<T>(params object[] args) => tryTo(() => Create<T>(args));
 
       public static object Create(this Type type) => type.Create(null);
 
-      public static IResult<object> TryCreate(this Type type) => tryTo(() => Create(type));
+      public static Result<object> TryCreate(this Type type) => tryTo(() => Create(type));
 
-      public static IResult<T> TryCreate<T>(this Type type) where T : new()
+      public static Result<T> TryCreate<T>(this Type type) where T : new()
       {
          return
             from obj in tryTo(type.Create)
@@ -53,9 +53,9 @@ namespace Core.Objects
          }
       }
 
-      public static IResult<object> TryCreate(this Type type, params object[] args) => tryTo(() => Create(type, args));
+      public static Result<object> TryCreate(this Type type, params object[] args) => tryTo(() => Create(type, args));
 
-      public static IResult<T> TryCreate<T>(this Type type, params object[] args)
+      public static Result<T> TryCreate<T>(this Type type, params object[] args)
       {
          return
             from obj in tryTo(() => type.Create(args))
@@ -65,9 +65,9 @@ namespace Core.Objects
 
       public static object Create(this string typeName) => Type.GetType(typeName, true, true).Create();
 
-      public static IResult<object> TryCreate(this string typeName) => tryTo(() => Create(typeName));
+      public static Result<object> TryCreate(this string typeName) => tryTo(() => Create(typeName));
 
-      public static IResult<T> TryCreate<T>(this string typeName) where T : new()
+      public static Result<T> TryCreate<T>(this string typeName) where T : new()
       {
          return
             from obj in tryTo(typeName.Create)
@@ -77,9 +77,9 @@ namespace Core.Objects
 
       public static object Create(this string typeName, params object[] args) => Type.GetType(typeName, true, true).Create(args);
 
-      public static IResult<object> TryCreate(this string typeName, params object[] args) => tryTo(() => Create(typeName, args));
+      public static Result<object> TryCreate(this string typeName, params object[] args) => tryTo(() => Create(typeName, args));
 
-      public static IResult<T> TryCreate<T>(this string typeName, params object[] args)
+      public static Result<T> TryCreate<T>(this string typeName, params object[] args)
       {
          return
             from obj in tryTo(() => typeName.Create(args))

@@ -33,7 +33,7 @@ namespace Core.Data
 
       public bool ContainsKey(string key) => data.ContainsKey(key);
 
-      public IResult<Hash<string, string>> AnyHash() => data.AsHash.Success();
+      public Result<Hash<string, string>> AnyHash() => data.AsHash.Success();
 
       public string Type { get; set; }
 

@@ -24,7 +24,7 @@ namespace Core.Configurations
          return parser.Parse().ForceValue();
       }
 
-      public static IResult<Configuration> FromString(string source)
+      public static Result<Configuration> FromString(string source)
       {
          var parser = new Parser(source);
          return parser.Parse();
@@ -218,7 +218,7 @@ namespace Core.Configurations
          return type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.SetProperty | BindingFlags.GetProperty);
       }
 
-      public static IResult<Configuration> Serialize(Type type, object obj, string name)
+      public static Result<Configuration> Serialize(Type type, object obj, string name)
       {
          if (type.IsValueType)
          {
@@ -299,7 +299,7 @@ namespace Core.Configurations
          }
       }
 
-      public static IResult<Configuration> Serialize<T>(T obj, string name) where T : class, new() => tryTo(() => Serialize(typeof(T), obj, name));
+      public static Result<Configuration> Serialize<T>(T obj, string name) where T : class, new() => tryTo(() => Serialize(typeof(T), obj, name));
 
       protected Group root;
 
@@ -314,15 +314,15 @@ namespace Core.Configurations
 
       public Maybe<string> GetValue(string key) => root.GetValue(key);
 
-      public IResult<string> RequireValue(string key) => root.RequireValue(key);
+      public Result<string> RequireValue(string key) => root.RequireValue(key);
 
       public Maybe<Group> GetGroup(string key) => root.GetGroup(key);
 
-      public IResult<Group> RequireGroup(string key) => root.RequireGroup(key);
+      public Result<Group> RequireGroup(string key) => root.RequireGroup(key);
 
       public bool ContainsKey(string key) => root.ContainsKey(key);
 
-      public IResult<Hash<string, IConfigurationItem>> AnyHash() => root.AnyHash();
+      public Result<Hash<string, IConfigurationItem>> AnyHash() => root.AnyHash();
 
       protected static object getObject(Type type, Group group)
       {
@@ -339,7 +339,7 @@ namespace Core.Configurations
          }
       }
 
-      public IResult<object> Deserialize(Type type)
+      public Result<object> Deserialize(Type type)
       {
          try
          {
@@ -380,7 +380,7 @@ namespace Core.Configurations
          }
       }
 
-      public IResult<T> Deserialize<T>() where T : class, new()
+      public Result<T> Deserialize<T>() where T : class, new()
       {
          return
             from obj in tryTo(() => Deserialize(typeof(T)))

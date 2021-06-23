@@ -129,11 +129,11 @@ namespace Core.Assertions.Computers
          return forceConvert<FolderName, TException, TResult>(this, args);
       }
 
-      public IResult<FolderName> OrFailure() => orFailure(this);
+      public Result<FolderName> OrFailure() => orFailure(this);
 
-      public IResult<FolderName> OrFailure(string message) => orFailure(this, message);
+      public Result<FolderName> OrFailure(string message) => orFailure(this, message);
 
-      public IResult<FolderName> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
+      public Result<FolderName> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
 
       public Maybe<FolderName> OrNone() => orNone(this);
 

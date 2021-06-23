@@ -66,13 +66,13 @@ namespace Core.Monads
 
       public override Maybe<TRight> MaybeFromRight() => value.Some();
 
-      public override IResult<TLeft> ResultFromLeft(string exceptionMessage) => exceptionMessage.Failure<TLeft>();
+      public override Result<TLeft> ResultFromLeft(string exceptionMessage) => exceptionMessage.Failure<TLeft>();
 
-      public override IResult<TLeft> ResultFromLeft(Func<TRight, string> exceptionMessage) => exceptionMessage(value).Failure<TLeft>();
+      public override Result<TLeft> ResultFromLeft(Func<TRight, string> exceptionMessage) => exceptionMessage(value).Failure<TLeft>();
 
-      public override IResult<TRight> ResultFromRight(string exceptionMessage) => value.Success();
+      public override Result<TRight> ResultFromRight(string exceptionMessage) => value.Success();
 
-      public override IResult<TRight> ResultFromRight(Func<TLeft, string> exceptionMessage) => value.Success();
+      public override Result<TRight> ResultFromRight(Func<TLeft, string> exceptionMessage) => value.Success();
 
       public override Either<TLeft, TRight> OnLeft(Action<TLeft> action) => this;
 

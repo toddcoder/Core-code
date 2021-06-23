@@ -1099,63 +1099,63 @@ namespace Core.Strings
          return source.IsNotEmpty() ? maybe(bool.TryParse(source, out var result), () => result) : none<bool>();
       }
 
-      public static IResult<bool> Boolean(this string source) => tryTo(() => bool.Parse(source));
+      public static Result<bool> Boolean(this string source) => tryTo(() => bool.Parse(source));
 
       public static Maybe<byte> AsByte(this string source)
       {
          return source.IsNotEmpty() ? maybe(byte.TryParse(source, out var result), () => result) : none<byte>();
       }
 
-      public static IResult<byte> Byte(this string source) => tryTo(() => byte.Parse(source));
+      public static Result<byte> Byte(this string source) => tryTo(() => byte.Parse(source));
 
       public static Maybe<int> AsInt(this string source)
       {
          return source.IsNotEmpty() ? maybe(int.TryParse(source, out var result), () => result) : none<int>();
       }
 
-      public static IResult<int> Int32(this string source) => tryTo(() => int.Parse(source));
+      public static Result<int> Int32(this string source) => tryTo(() => int.Parse(source));
 
       public static Maybe<long> AsLong(this string source)
       {
          return source.IsNotEmpty() ? maybe(long.TryParse(source, out var result), () => result) : none<long>();
       }
 
-      public static IResult<long> Int64(this string source) => tryTo(() => long.Parse(source));
+      public static Result<long> Int64(this string source) => tryTo(() => long.Parse(source));
 
       public static Maybe<float> AsFloat(this string source)
       {
          return source.IsNotEmpty() ? maybe(float.TryParse(source, out var result), () => result) : none<float>();
       }
 
-      public static IResult<float> Single(this string source) => tryTo(() => float.Parse(source));
+      public static Result<float> Single(this string source) => tryTo(() => float.Parse(source));
 
       public static Maybe<double> AsDouble(this string source)
       {
          return source.IsNotEmpty() ? maybe(double.TryParse(source, out var result), () => result) : none<double>();
       }
 
-      public static IResult<double> Double(this string source) => tryTo(() => double.Parse(source));
+      public static Result<double> Double(this string source) => tryTo(() => double.Parse(source));
 
       public static Maybe<decimal> AsDecimal(this string source)
       {
          return source.IsNotEmpty() ? maybe(decimal.TryParse(source, out var result), () => result) : none<decimal>();
       }
 
-      public static IResult<decimal> Decimal(this string source) => tryTo(() => decimal.Parse(source));
+      public static Result<decimal> Decimal(this string source) => tryTo(() => decimal.Parse(source));
 
       public static Maybe<DateTime> AsDateTime(this string source)
       {
          return source.IsNotEmpty() ? maybe(System.DateTime.TryParse(source, out var result), () => result) : none<DateTime>();
       }
 
-      public static IResult<DateTime> DateTime(this string source) => tryTo(() => System.DateTime.Parse(source));
+      public static Result<DateTime> DateTime(this string source) => tryTo(() => System.DateTime.Parse(source));
 
       public static Maybe<Guid> AsGuid(this string source)
       {
          return source.IsNotEmpty() ? maybe(System.Guid.TryParse(source, out var guid), () => guid) : none<Guid>();
       }
 
-      public static IResult<Guid> Guid(this string source) => tryTo(() => System.Guid.Parse(source));
+      public static Result<Guid> Guid(this string source) => tryTo(() => System.Guid.Parse(source));
 
       public static string ToBase64(this string source, Encoding encoding)
       {
@@ -1211,12 +1211,12 @@ namespace Core.Strings
          }
       }
 
-      public static IResult<object> Enumeration(this string value, Type enumerationType, bool ignoreCase = true)
+      public static Result<object> Enumeration(this string value, Type enumerationType, bool ignoreCase = true)
       {
          return tryTo(() => Enum.Parse(enumerationType, value, ignoreCase));
       }
 
-      public static IResult<T> Enumeration<T>(this string value, bool ignoreCase = true) where T : struct
+      public static Result<T> Enumeration<T>(this string value, bool ignoreCase = true) where T : struct
       {
          try
          {
@@ -1382,7 +1382,7 @@ namespace Core.Strings
          }
       }
 
-      public static IResult<object> AsObject(this string value)
+      public static Result<object> AsObject(this string value)
       {
          if (value.IsEmpty())
          {
@@ -1442,7 +1442,7 @@ namespace Core.Strings
          }
       }
 
-      public static IResult<Type> Type(this string value)
+      public static Result<Type> Type(this string value)
       {
          if (value.IsEmpty())
          {
@@ -1486,7 +1486,7 @@ namespace Core.Strings
          }
       }
 
-      public static IResult<object> Parsed(this string value, Type type)
+      public static Result<object> Parsed(this string value, Type type)
       {
          if (value.IsEmpty())
          {
@@ -2125,7 +2125,7 @@ namespace Core.Strings
          return builder.ToString();
       }
 
-      public static IResult<long> ByteSize(this string source)
+      public static Result<long> ByteSize(this string source)
       {
          if (source.IsEmpty())
          {

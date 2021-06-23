@@ -11,7 +11,7 @@ namespace Core.Data
 {
    public class Command
    {
-      public static IResult<Command> FromGroup(Group commandGroup)
+      public static Result<Command> FromGroup(Group commandGroup)
       {
          var name = commandGroup.Key;
          return
@@ -19,7 +19,7 @@ namespace Core.Data
             select new Command { Name = name, Text = values.text, CommandTimeout = values.timeout };
       }
 
-      protected static IResult<(string text, TimeSpan timeout)> getValues(Group commandGroup)
+      protected static Result<(string text, TimeSpan timeout)> getValues(Group commandGroup)
       {
          try
          {

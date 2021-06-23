@@ -39,7 +39,7 @@ namespace Core.DataStructures
 
       public bool Contains(T item) => list.Contains(item);
 
-      public IResult<T[]> ToArray(int arrayIndex = 0)
+      public Result<T[]> ToArray(int arrayIndex = 0)
       {
          return
             from assertion in arrayIndex.Must().BeBetween(0).Until(Count).OrFailure()

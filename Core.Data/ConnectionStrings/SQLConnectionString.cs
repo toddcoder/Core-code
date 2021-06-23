@@ -33,7 +33,7 @@ namespace Core.Data.ConnectionStrings
          }
       }
 
-      public static IResult<SqlConnectionString> FromConnection(Connection connection)
+      public static Result<SqlConnectionString> FromConnection(Connection connection)
       {
          if (connection.If("connection", out var connectionString))
          {

@@ -15,12 +15,12 @@ namespace Core.Assertions.Monads
 
       public static bool operator |(ResultAssertion<T> x, ICanBeTrue y) => or(x, y);
 
-      protected IResult<T> result;
+      protected Result<T> result;
       protected List<Constraint> constraints;
       protected bool not;
       protected string name;
 
-      public ResultAssertion(IResult<T> result)
+      public ResultAssertion(Result<T> result)
       {
          this.result = result;
          constraints = new List<Constraint>();
@@ -44,7 +44,7 @@ namespace Core.Assertions.Monads
             case T otherT:
                constraints.Add(new Constraint(() => constraintFunction(otherT), message, not, name, resultImage(result)));
                break;
-            case IResult<T> anyValue:
+            case Result<T> anyValue:
                if (anyValue.If(out var value, out var exception))
                {
                   constraints.Add(new Constraint(() => constraintFunction(value), message, not, name, resultImage(result)));
@@ -76,7 +76,7 @@ namespace Core.Assertions.Monads
 
       public ResultAssertion<T> BeFailed() => add(() => result.IsFailed, "$name be $not be failed");
 
-      public ResultAssertion<T> EqualToValueOf(IResult<T> otherResult)
+      public ResultAssertion<T> EqualToValueOf(Result<T> otherResult)
       {
          return add(() => result.EqualToValueOf(otherResult), $"Value of $name must $not equal to value of {resultImage(otherResult)}");
       }
@@ -119,11 +119,11 @@ namespace Core.Assertions.Monads
          return forceConvert<T, TimeoutException, TResult>(this);
       }
 
-      public IResult<T> OrFailure() => orFailure(this);
+      public Result<T> OrFailure() => orFailure(this);
 
-      public IResult<T> OrFailure(string message) => orFailure(this, message);
+      public Result<T> OrFailure(string message) => orFailure(this, message);
 
-      public IResult<T> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
+      public Result<T> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
 
       public Maybe<T> OrNone() => orNone(this);
 

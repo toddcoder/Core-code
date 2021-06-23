@@ -47,9 +47,9 @@ namespace Core.Enumerables
 
       public static IEnumerable<IEnumerable<T>> Pivot<T>(this IEnumerable<IEnumerable<T>> source) => source.Pivot(() => default);
 
-      public static IResult<T[]> ToResultOfArray<T>(this IEnumerable<T> enumerable) => tryTo(enumerable.ToArray);
+      public static Result<T[]> ToResultOfArray<T>(this IEnumerable<T> enumerable) => tryTo(enumerable.ToArray);
 
-      public static IResult<List<T>> ToResultOfList<T>(this IEnumerable<T> enumerable) => tryTo(enumerable.ToList);
+      public static Result<List<T>> ToResultOfList<T>(this IEnumerable<T> enumerable) => tryTo(enumerable.ToList);
 
       public static IEnumerable<int> UpTo(this int from, int to, int by = 1)
       {
@@ -175,7 +175,7 @@ namespace Core.Enumerables
          }
       }
 
-      public static IResult<T> FirstOrFail<T>(this IEnumerable<T> enumerable, string failureMessage = "Default value")
+      public static Result<T> FirstOrFail<T>(this IEnumerable<T> enumerable, string failureMessage = "Default value")
       {
          try
          {
@@ -191,7 +191,7 @@ namespace Core.Enumerables
          }
       }
 
-      public static IResult<T> FirstOrFail<T>(this IEnumerable<T> enumerable, Predicate<T> predicate, string failureMessage = "Default value")
+      public static Result<T> FirstOrFail<T>(this IEnumerable<T> enumerable, Predicate<T> predicate, string failureMessage = "Default value")
       {
          try
          {
@@ -207,7 +207,7 @@ namespace Core.Enumerables
          }
       }
 
-      public static IResult<(T1, T2)> FirstOrFail<T1, T2>(this IEnumerable<(T1, T2)> enumerable, Func<T1, T2, bool> predicate,
+      public static Result<(T1, T2)> FirstOrFail<T1, T2>(this IEnumerable<(T1, T2)> enumerable, Func<T1, T2, bool> predicate,
          string failureMessage = "Default value")
       {
          try
@@ -224,7 +224,7 @@ namespace Core.Enumerables
          }
       }
 
-      public static IResult<(T1, T2, T3)> FirstOrFail<T1, T2, T3>(this IEnumerable<(T1, T2, T3)> enumerable, Func<T1, T2, T3, bool> predicate,
+      public static Result<(T1, T2, T3)> FirstOrFail<T1, T2, T3>(this IEnumerable<(T1, T2, T3)> enumerable, Func<T1, T2, T3, bool> predicate,
          string failureMessage = "Default value")
       {
          try
@@ -241,7 +241,7 @@ namespace Core.Enumerables
          }
       }
 
-      public static IResult<(T1, T2, T3, T4)> FirstOrFail<T1, T2, T3, T4>(this IEnumerable<(T1, T2, T3, T4)> enumerable,
+      public static Result<(T1, T2, T3, T4)> FirstOrFail<T1, T2, T3, T4>(this IEnumerable<(T1, T2, T3, T4)> enumerable,
          Func<T1, T2, T3, T4, bool> predicate, string failureMessage = "Default value")
       {
          try
@@ -258,7 +258,7 @@ namespace Core.Enumerables
          }
       }
 
-      public static IResult<T> FirstOrFail<T>(this IEnumerable<T> enumerable, Func<string> failureMessage)
+      public static Result<T> FirstOrFail<T>(this IEnumerable<T> enumerable, Func<string> failureMessage)
       {
          try
          {
@@ -274,7 +274,7 @@ namespace Core.Enumerables
          }
       }
 
-      public static IResult<T> FirstOrFail<T>(this IEnumerable<T> enumerable, Predicate<T> predicate, Func<string> failureMessage)
+      public static Result<T> FirstOrFail<T>(this IEnumerable<T> enumerable, Predicate<T> predicate, Func<string> failureMessage)
       {
          try
          {
@@ -290,7 +290,7 @@ namespace Core.Enumerables
          }
       }
 
-      public static IResult<(T1, T2)> FirstOrFail<T1, T2>(this IEnumerable<(T1, T2)> enumerable, Func<T1, T2, bool> predicate,
+      public static Result<(T1, T2)> FirstOrFail<T1, T2>(this IEnumerable<(T1, T2)> enumerable, Func<T1, T2, bool> predicate,
          Func<string> failureMessage)
       {
          try
@@ -307,7 +307,7 @@ namespace Core.Enumerables
          }
       }
 
-      public static IResult<(T1, T2, T3)> FirstOrFail<T1, T2, T3>(this IEnumerable<(T1, T2, T3)> enumerable, Func<T1, T2, T3, bool> predicate,
+      public static Result<(T1, T2, T3)> FirstOrFail<T1, T2, T3>(this IEnumerable<(T1, T2, T3)> enumerable, Func<T1, T2, T3, bool> predicate,
          Func<string> failureMessage)
       {
          try
@@ -324,7 +324,7 @@ namespace Core.Enumerables
          }
       }
 
-      public static IResult<(T1, T2, T3, T4)> FirstOrFail<T1, T2, T3, T4>(this IEnumerable<(T1, T2, T3, T4)> enumerable,
+      public static Result<(T1, T2, T3, T4)> FirstOrFail<T1, T2, T3, T4>(this IEnumerable<(T1, T2, T3, T4)> enumerable,
          Func<T1, T2, T3, T4, bool> predicate, Func<string> failureMessage)
       {
          try
@@ -341,7 +341,7 @@ namespace Core.Enumerables
          }
       }
 
-      public static IResult<T> LastOrFail<T>(this IEnumerable<T> enumerable, string failureMessage = "Default value")
+      public static Result<T> LastOrFail<T>(this IEnumerable<T> enumerable, string failureMessage = "Default value")
       {
          try
          {
@@ -357,7 +357,7 @@ namespace Core.Enumerables
          }
       }
 
-      public static IResult<T> LastOrFail<T>(this IEnumerable<T> enumerable, Predicate<T> predicate, string failureMessage = "Default value")
+      public static Result<T> LastOrFail<T>(this IEnumerable<T> enumerable, Predicate<T> predicate, string failureMessage = "Default value")
       {
          try
          {
@@ -373,7 +373,7 @@ namespace Core.Enumerables
          }
       }
 
-      public static IResult<(T1, T2)> LastOrFail<T1, T2>(this IEnumerable<(T1, T2)> enumerable, Func<T1, T2, bool> predicate,
+      public static Result<(T1, T2)> LastOrFail<T1, T2>(this IEnumerable<(T1, T2)> enumerable, Func<T1, T2, bool> predicate,
          string failureMessage = "Default value")
       {
          try
@@ -390,7 +390,7 @@ namespace Core.Enumerables
          }
       }
 
-      public static IResult<(T1, T2, T3)> LastOrFail<T1, T2, T3>(this IEnumerable<(T1, T2, T3)> enumerable, Func<T1, T2, T3, bool> predicate,
+      public static Result<(T1, T2, T3)> LastOrFail<T1, T2, T3>(this IEnumerable<(T1, T2, T3)> enumerable, Func<T1, T2, T3, bool> predicate,
          string failureMessage = "Default value")
       {
          try
@@ -407,7 +407,7 @@ namespace Core.Enumerables
          }
       }
 
-      public static IResult<T> LastOrFail<T>(this IEnumerable<T> enumerable, Func<string> failureMessage)
+      public static Result<T> LastOrFail<T>(this IEnumerable<T> enumerable, Func<string> failureMessage)
       {
          try
          {
@@ -423,7 +423,7 @@ namespace Core.Enumerables
          }
       }
 
-      public static IResult<T> LastOrFail<T>(this IEnumerable<T> enumerable, Predicate<T> predicate, Func<string> failureMessage)
+      public static Result<T> LastOrFail<T>(this IEnumerable<T> enumerable, Predicate<T> predicate, Func<string> failureMessage)
       {
          return tryTo(() =>
          {
@@ -438,7 +438,7 @@ namespace Core.Enumerables
          });
       }
 
-      public static IResult<(T1, T2)> LastOrFail<T1, T2>(this IEnumerable<(T1, T2)> enumerable, Func<T1, T2, bool> predicate,
+      public static Result<(T1, T2)> LastOrFail<T1, T2>(this IEnumerable<(T1, T2)> enumerable, Func<T1, T2, bool> predicate,
          Func<string> failureMessage)
       {
          return tryTo(() =>
@@ -454,7 +454,7 @@ namespace Core.Enumerables
          });
       }
 
-      public static IResult<(T1, T2, T3)> LastOrFail<T1, T2, T3>(this IEnumerable<(T1, T2, T3)> enumerable, Func<T1, T2, T3, bool> predicate,
+      public static Result<(T1, T2, T3)> LastOrFail<T1, T2, T3>(this IEnumerable<(T1, T2, T3)> enumerable, Func<T1, T2, T3, bool> predicate,
          Func<string> failureMessage)
       {
          return tryTo(() =>
@@ -470,7 +470,7 @@ namespace Core.Enumerables
          });
       }
 
-      public static IResult<(T1, T2, T3, T4)> LastOrFail<T1, T2, T3, T4>(this IEnumerable<(T1, T2, T3, T4)> enumerable,
+      public static Result<(T1, T2, T3, T4)> LastOrFail<T1, T2, T3, T4>(this IEnumerable<(T1, T2, T3, T4)> enumerable,
          Func<T1, T2, T3, T4, bool> predicate, Func<string> failureMessage)
       {
          return tryTo(() =>
@@ -1203,7 +1203,7 @@ namespace Core.Enumerables
          return enumerable.FirstOrNone(i => i is TResult).CastAs<TResult>();
       }
 
-      public static IResult<TResult> FirstOrFailAs<T, TResult>(this IEnumerable<T> enumerable)
+      public static Result<TResult> FirstOrFailAs<T, TResult>(this IEnumerable<T> enumerable)
       {
          return enumerable.FirstOrFail(i => i is TResult).CastAs<TResult>();
       }

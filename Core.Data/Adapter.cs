@@ -17,9 +17,9 @@ namespace Core.Data
    public class Adapter<T> : IEnumerable<T>
       where T : class
    {
-      public static IResult<Adapter<T>> FromSetup(ISetup setup, T entity) => tryTo(() => new Adapter<T>(entity, setup));
+      public static Result<Adapter<T>> FromSetup(ISetup setup, T entity) => tryTo(() => new Adapter<T>(entity, setup));
 
-      public static IResult<Adapter<T>> FromSetupObject(T entity)
+      public static Result<Adapter<T>> FromSetupObject(T entity)
       {
          if (entity is ISetupObject setupObject)
          {

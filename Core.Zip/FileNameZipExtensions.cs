@@ -27,9 +27,9 @@ namespace Core.Zip
 
       public static FolderName Unzip(this FileName file) => file.Unzip(file.Name);
 
-      public static IResult<FolderName> TryToUnzip(this FileName file, string folderName) => tryTo(() => file.Unzip(folderName));
+      public static Result<FolderName> TryToUnzip(this FileName file, string folderName) => tryTo(() => file.Unzip(folderName));
 
-      public static IResult<FolderName> TryToUnzip(this FileName file) => file.TryToUnzip(file.Name);
+      public static Result<FolderName> TryToUnzip(this FileName file) => file.TryToUnzip(file.Name);
 
       public static async Task<ICompletion<FolderName>> UnzipAsync(this FileName file, string folderName, CancellationToken token)
       {

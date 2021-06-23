@@ -127,7 +127,7 @@ namespace Core.WinForms.Documents
          parent.DropDownItems.RemoveAt(index);
       }
 
-      protected static IResult<Keys> shortcutKeys(string text)
+      protected static Result<Keys> shortcutKeys(string text)
       {
          if (text.Matches("^ /(['^%|']+)? /(/w+) $; f").If(out var result))
          {
@@ -203,7 +203,7 @@ namespace Core.WinForms.Documents
 
       public bool ContainsKey(string key) => menuItems.ContainsKey(MenuName(key));
 
-      public IResult<Hash<string, ToolStripMenuItem>> AnyHash() => menuItems.ToHash(i => i.Key, i => (ToolStripMenuItem)i.Value).Success();
+      public Result<Hash<string, ToolStripMenuItem>> AnyHash() => menuItems.ToHash(i => i.Key, i => (ToolStripMenuItem)i.Value).Success();
 
       public Maybe<Submenus> Submenus(string parentText) => this.Map(parentText, p => new Submenus(p));
    }

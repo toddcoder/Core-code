@@ -8,7 +8,7 @@ namespace Core.Data.Setups
 {
    public class TextSetup : ISetup
    {
-      public static IResult<TextSetup> FromDataGroups(DataGroups dataGroups, string adapterName, string fileName)
+      public static Result<TextSetup> FromDataGroups(DataGroups dataGroups, string adapterName, string fileName)
       {
          var connectionsGroup = dataGroups.ConnectionsGroup;
          var commandsGroup = dataGroups.CommandsGroup;

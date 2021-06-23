@@ -11,32 +11,32 @@ namespace Core.RegularExpressions
 
       public MatcherTrying(Matcher matcher) => this.matcher = matcher;
 
-      public IResult<bool> IsMatch(string input, string pattern, RegexOptions options)
+      public Result<bool> IsMatch(string input, string pattern, RegexOptions options)
       {
          return tryTo(() => matcher.IsMatch(input, pattern, options));
       }
 
-      public IResult<bool> IsMatch(string input, string pattern, bool ignoreCase = false, bool multiline = false)
+      public Result<bool> IsMatch(string input, string pattern, bool ignoreCase = false, bool multiline = false)
       {
          return tryTo(() => matcher.IsMatch(input, pattern, ignoreCase, multiline));
       }
 
-      public IResult<bool> IsMatch(string input, RegexPattern regexPattern)
+      public Result<bool> IsMatch(string input, RegexPattern regexPattern)
       {
          return tryTo(() => matcher.IsMatch(input, regexPattern));
       }
 
-      public IResult<Unit> Evaluate(string input, string pattern, RegexOptions options)
+      public Result<Unit> Evaluate(string input, string pattern, RegexOptions options)
       {
          return tryTo(() => matcher.Evaluate(input, pattern, options));
       }
 
-      public IResult<Unit> Evaluate(string input, string pattern, bool ignoreCase = false, bool multiline = false)
+      public Result<Unit> Evaluate(string input, string pattern, bool ignoreCase = false, bool multiline = false)
       {
          return tryTo(() => matcher.Evaluate(input, pattern, ignoreCase, multiline));
       }
 
-      public IResult<Unit> Evaluate(string input, RegexPattern regexPattern)
+      public Result<Unit> Evaluate(string input, RegexPattern regexPattern)
       {
          return tryTo(() => matcher.Evaluate(input, regexPattern));
       }

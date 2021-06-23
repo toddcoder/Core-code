@@ -38,11 +38,11 @@ namespace Core.Assertions
 
       TResult Force<TException, TResult>(params object[] args) where TException : Exception;
 
-      IResult<T> OrFailure();
+      Result<T> OrFailure();
 
-      IResult<T> OrFailure(string message);
+      Result<T> OrFailure(string message);
 
-      IResult<T> OrFailure(Func<string> messageFunc);
+      Result<T> OrFailure(Func<string> messageFunc);
 
       Maybe<T> OrNone();
 

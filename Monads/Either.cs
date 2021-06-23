@@ -28,13 +28,13 @@ namespace Core.Monads
 
       public abstract Maybe<TRight> MaybeFromRight();
 
-      public abstract IResult<TLeft> ResultFromLeft(string exceptionMessage);
+      public abstract Result<TLeft> ResultFromLeft(string exceptionMessage);
 
-      public abstract IResult<TLeft> ResultFromLeft(Func<TRight, string> exceptionMessage);
+      public abstract Result<TLeft> ResultFromLeft(Func<TRight, string> exceptionMessage);
 
-      public abstract IResult<TRight> ResultFromRight(string exceptionMessage);
+      public abstract Result<TRight> ResultFromRight(string exceptionMessage);
 
-      public abstract IResult<TRight> ResultFromRight(Func<TLeft, string> exceptionMessage);
+      public abstract Result<TRight> ResultFromRight(Func<TLeft, string> exceptionMessage);
 
       public abstract Either<TLeft, TRight> OnLeft(Action<TLeft> action);
 

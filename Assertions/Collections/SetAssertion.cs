@@ -126,11 +126,11 @@ namespace Core.Assertions.Collections
          return forceConvert<Set<T>, TException, TResult>(this, args);
       }
 
-      public IResult<Set<T>> OrFailure() => orFailure(this);
+      public Result<Set<T>> OrFailure() => orFailure(this);
 
-      public IResult<Set<T>> OrFailure(string message) => orFailure(this, message);
+      public Result<Set<T>> OrFailure(string message) => orFailure(this, message);
 
-      public IResult<Set<T>> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
+      public Result<Set<T>> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
 
       public Maybe<Set<T>> OrNone() => orNone(this);
 

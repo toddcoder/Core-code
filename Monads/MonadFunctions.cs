@@ -16,14 +16,14 @@ namespace Core.Monads
 
       public static Maybe<T> none<T>() => new None<T>();
 
-      public static IResult<T> success<T>(T value) => new Success<T>(value);
+      public static Result<T> success<T>(T value) => new Success<T>(value);
 
-      public static IResult<TParent> successAs<TChild, TParent>(TChild value) where TChild : class, TParent where TParent : class
+      public static Result<TParent> successAs<TChild, TParent>(TChild value) where TChild : class, TParent where TParent : class
       {
          return new Success<TParent>(value);
       }
 
-      public static IResult<T> failure<T>(Exception exception) => new Failure<T>(exception);
+      public static Result<T> failure<T>(Exception exception) => new Failure<T>(exception);
 
       public static IMatched<TParent> matched<TChild, TParent>(TChild value) where TChild : TParent
       {
@@ -71,7 +71,7 @@ namespace Core.Monads
 
       public static ICompletion<T> interrupted<T>(Exception exception) => new Interrupted<T>(exception);
 
-      public static IResult<T> assert<T>(bool test, Func<T> ifTrue, Func<string> ifFalse)
+      public static Result<T> assert<T>(bool test, Func<T> ifTrue, Func<string> ifFalse)
       {
          try
          {
@@ -83,7 +83,7 @@ namespace Core.Monads
          }
       }
 
-      public static IResult<T> assert<T>(bool test, Func<IResult<T>> ifTrue, Func<string> ifFalse)
+      public static Result<T> assert<T>(bool test, Func<Result<T>> ifTrue, Func<string> ifFalse)
       {
          try
          {
@@ -95,7 +95,7 @@ namespace Core.Monads
          }
       }
 
-      public static IResult<Unit> assert(bool test, Func<string> ifFalse)
+      public static Result<Unit> assert(bool test, Func<string> ifFalse)
       {
          try
          {

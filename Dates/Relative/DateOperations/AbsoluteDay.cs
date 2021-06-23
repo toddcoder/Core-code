@@ -9,7 +9,7 @@ namespace Core.Dates.Relative.DateOperations
 
       public override OperationType Type => OperationType.Day;
 
-      public override IResult<DateTime> Operate(DateTime dateTime)
+      public override Result<DateTime> Operate(DateTime dateTime)
       {
          return amount.IsDay().AndYear(dateTime.Year).AndMonthValid(dateTime.Month);
       }

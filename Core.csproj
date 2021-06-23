@@ -261,7 +261,7 @@
     <Compile Include="Monads\IMatched.cs" />
     <Compile Include="Monads\Maybe.cs" />
     <Compile Include="Monads\Interrupted.cs" />
-    <Compile Include="Monads\IResult.cs" />
+    <Compile Include="Monads\Result.cs" />
     <Compile Include="Monads\Left.cs" />
     <Compile Include="Monads\Matched.cs" />
     <Compile Include="Monads\MatchedIterator.cs" />
