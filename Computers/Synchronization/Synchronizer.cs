@@ -78,7 +78,7 @@ namespace Core.Computers.Synchronization
          }
       }
 
-      protected IMatched<FileName> copyIfNeeded(FileName sourceFile, FileName targetFile)
+      protected Matched<FileName> copyIfNeeded(FileName sourceFile, FileName targetFile)
       {
          try
          {
@@ -109,7 +109,7 @@ namespace Core.Computers.Synchronization
          }
       }
 
-      protected IMatched<FileName> copy(FileName sourceFile, FileName targetFile)
+      protected Matched<FileName> copy(FileName sourceFile, FileName targetFile)
       {
          var targetFileFolder = targetFile.Folder;
          var _wasCreated = targetFileFolder.TryTo.WasCreated();

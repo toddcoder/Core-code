@@ -41,7 +41,7 @@ namespace Core.Monads
 
       public abstract Result<T> Always(Action action);
 
-      public abstract IMatched<T> Match();
+      public abstract Matched<T> Match();
 
       public abstract bool If(out T value);
 

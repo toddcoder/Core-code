@@ -167,7 +167,7 @@ namespace Core.Matching
          }
       }
 
-      public static IMatched<MatchResult> Matched(this string input, Pattern pattern) => pattern.MatchedBy(input);
+      public static Matched<MatchResult> Matched(this string input, Pattern pattern) => pattern.MatchedBy(input);
 
       public static Maybe<MatchResult> Matches(this string input, Pattern pattern)
       {

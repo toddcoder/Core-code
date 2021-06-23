@@ -632,7 +632,7 @@ namespace Core.Enumerables
          }
       }
 
-      public static IMatched<T> FirstOrNotMatched<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate)
+      public static Matched<T> FirstOrNotMatched<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate)
       {
          try
          {
@@ -661,7 +661,7 @@ namespace Core.Enumerables
          }
       }
 
-      public static IMatched<(T1, T2)> FirstOrNotMatched<T1, T2>(this IEnumerable<(T1, T2)> enumerable, Func<T1, T2, bool> predicate)
+      public static Matched<(T1, T2)> FirstOrNotMatched<T1, T2>(this IEnumerable<(T1, T2)> enumerable, Func<T1, T2, bool> predicate)
       {
          try
          {
@@ -690,7 +690,7 @@ namespace Core.Enumerables
          }
       }
 
-      public static IMatched<(T1, T2, T3)> FirstOrNotMatched<T1, T2, T3>(this IEnumerable<(T1, T2, T3)> enumerable, Func<T1, T2, T3, bool> predicate)
+      public static Matched<(T1, T2, T3)> FirstOrNotMatched<T1, T2, T3>(this IEnumerable<(T1, T2, T3)> enumerable, Func<T1, T2, T3, bool> predicate)
       {
          try
          {
@@ -719,7 +719,7 @@ namespace Core.Enumerables
          }
       }
 
-      public static IMatched<(T1, T2, T3, T4)> FirstOrNotMatched<T1, T2, T3, T4>(this IEnumerable<(T1, T2, T3, T4)> enumerable,
+      public static Matched<(T1, T2, T3, T4)> FirstOrNotMatched<T1, T2, T3, T4>(this IEnumerable<(T1, T2, T3, T4)> enumerable,
          Func<T1, T2, T3, T4, bool> predicate)
       {
          try
@@ -749,7 +749,7 @@ namespace Core.Enumerables
          }
       }
 
-      public static IMatched<T> LastOrNotMatched<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate)
+      public static Matched<T> LastOrNotMatched<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate)
       {
          try
          {
@@ -778,7 +778,7 @@ namespace Core.Enumerables
          }
       }
 
-      public static IMatched<(T1, T2)> LastOrNotMatched<T1, T2>(this IEnumerable<(T1, T2)> enumerable, Func<T1, T2, bool> predicate)
+      public static Matched<(T1, T2)> LastOrNotMatched<T1, T2>(this IEnumerable<(T1, T2)> enumerable, Func<T1, T2, bool> predicate)
       {
          try
          {
@@ -807,7 +807,7 @@ namespace Core.Enumerables
          }
       }
 
-      public static IMatched<(T1, T2, T3)> LastOrNotMatched<T1, T2, T3>(this IEnumerable<(T1, T2, T3)> enumerable, Func<T1, T2, T3, bool> predicate)
+      public static Matched<(T1, T2, T3)> LastOrNotMatched<T1, T2, T3>(this IEnumerable<(T1, T2, T3)> enumerable, Func<T1, T2, T3, bool> predicate)
       {
          try
          {
@@ -836,7 +836,7 @@ namespace Core.Enumerables
          }
       }
 
-      public static IMatched<(T1, T2, T3, T4)> LastOrNotMatched<T1, T2, T3, T4>(this IEnumerable<(T1, T2, T3, T4)> enumerable,
+      public static Matched<(T1, T2, T3, T4)> LastOrNotMatched<T1, T2, T3, T4>(this IEnumerable<(T1, T2, T3, T4)> enumerable,
          Func<T1, T2, T3, T4, bool> predicate)
       {
          try
@@ -866,7 +866,7 @@ namespace Core.Enumerables
          }
       }
 
-      public static IMatched<T> FirstOrNotMatched<T>(this IEnumerable<T> enumerable)
+      public static Matched<T> FirstOrNotMatched<T>(this IEnumerable<T> enumerable)
       {
          try
          {
@@ -895,7 +895,7 @@ namespace Core.Enumerables
          }
       }
 
-      public static IMatched<T> LastOrNotMatched<T>(this IEnumerable<T> enumerable)
+      public static Matched<T> LastOrNotMatched<T>(this IEnumerable<T> enumerable)
       {
          try
          {
@@ -1208,7 +1208,7 @@ namespace Core.Enumerables
          return enumerable.FirstOrFail(i => i is TResult).CastAs<TResult>();
       }
 
-      public static IMatched<TResult> FirstOrNotMatchedAs<T, TResult>(this IEnumerable<T> enumerable)
+      public static Matched<TResult> FirstOrNotMatchedAs<T, TResult>(this IEnumerable<T> enumerable)
       {
          return enumerable.FirstOrNotMatched(i => i is TResult).CastAs<TResult>();
       }

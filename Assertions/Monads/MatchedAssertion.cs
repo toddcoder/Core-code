@@ -15,12 +15,12 @@ namespace Core.Assertions.Monads
 
       public static bool operator |(MatchedAssertion<T> x, ICanBeTrue y) => or(x, y);
 
-      protected IMatched<T> matched;
+      protected Matched<T> matched;
       protected List<Constraint> constraints;
       protected bool not;
       protected string name;
 
-      public MatchedAssertion(IMatched<T> matched)
+      public MatchedAssertion(Matched<T> matched)
       {
          this.matched = matched;
          constraints = new List<Constraint>();
@@ -48,7 +48,7 @@ namespace Core.Assertions.Monads
 
       public MatchedAssertion<T> BeFailedMatch() => add(() => matched.IsFailedMatch, "$name must be $not a failed match");
 
-      public MatchedAssertion<T> EqualToValueOf(IMatched<T> otherMatched)
+      public MatchedAssertion<T> EqualToValueOf(Matched<T> otherMatched)
       {
          return add(() => matched.EqualToValueOf(otherMatched), $"Value of $name must $not equal value of {matchedImage(otherMatched)}");
       }

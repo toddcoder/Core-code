@@ -5,12 +5,12 @@ namespace Core.Monads
 {
    public class MatchedIterator<T>
    {
-      IEnumerable<IMatched<T>> enumerable;
+      IEnumerable<Matched<T>> enumerable;
       Maybe<Action<T>> matched;
       Maybe<Action> notMatched;
       Maybe<Action<Exception>> failure;
 
-      public MatchedIterator(IEnumerable<IMatched<T>> enumerable, Action<T> matched = null, Action notMatched = null,
+      public MatchedIterator(IEnumerable<Matched<T>> enumerable, Action<T> matched = null, Action notMatched = null,
          Action<Exception> failure = null)
       {
          this.enumerable = enumerable;
@@ -19,7 +19,7 @@ namespace Core.Monads
          this.failure = failure.Some();
       }
 
-      void handle(IMatched<T> match)
+      void handle(Matched<T> match)
       {
          if (match.If(out var value, out var exception) && matched.If(out var action))
          {
@@ -35,7 +35,7 @@ namespace Core.Monads
          }
       }
 
-      public IEnumerable<IMatched<T>> All()
+      public IEnumerable<Matched<T>> All()
       {
          foreach (var match in enumerable)
          {

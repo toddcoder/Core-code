@@ -258,7 +258,7 @@
     <Compile Include="Monads\FullStackException.cs" />
     <Compile Include="Monads\Completion.cs" />
     <Compile Include="Monads\IHasValue.cs" />
-    <Compile Include="Monads\IMatched.cs" />
+    <Compile Include="Monads\Matched.cs" />
     <Compile Include="Monads\Maybe.cs" />
     <Compile Include="Monads\Interrupted.cs" />
     <Compile Include="Monads\Result.cs" />

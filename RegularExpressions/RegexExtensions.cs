@@ -359,34 +359,34 @@ namespace Core.RegularExpressions
          input.IfMatches(regexPattern.Pattern, ifTrue, ifFalse, regexPattern.Options, regexPattern.Friendly);
       }
 
-      public static IMatched<Matcher.Match[]> MatchAll(this string input, string pattern, RegexOptions options, bool friendly = true)
+      public static Matched<Matcher.Match[]> MatchAll(this string input, string pattern, RegexOptions options, bool friendly = true)
       {
          return new Matcher(friendly).MatchAll(input, pattern, options);
       }
 
-      public static IMatched<Matcher.Match[]> MatchAll(this string input, string pattern, bool ignoreCase = false, bool multiline = false,
+      public static Matched<Matcher.Match[]> MatchAll(this string input, string pattern, bool ignoreCase = false, bool multiline = false,
          bool friendly = true)
       {
          return new Matcher(friendly).MatchAll(input, pattern, ignoreCase, multiline);
       }
 
-      public static IMatched<Matcher.Match[]> MatchAll(this string input, RegexPattern regexPattern)
+      public static Matched<Matcher.Match[]> MatchAll(this string input, RegexPattern regexPattern)
       {
          return input.MatchAll(regexPattern.Pattern, regexPattern.Options, regexPattern.Friendly);
       }
 
-      public static IMatched<Matcher.Match> MatchOne(this string input, string pattern, RegexOptions options, bool friendly = true)
+      public static Matched<Matcher.Match> MatchOne(this string input, string pattern, RegexOptions options, bool friendly = true)
       {
          return new Matcher(friendly).MatchOne(input, pattern, options);
       }
 
-      public static IMatched<Matcher.Match> MatchOne(this string input, string pattern, bool ignoreCase = false, bool multiline = false,
+      public static Matched<Matcher.Match> MatchOne(this string input, string pattern, bool ignoreCase = false, bool multiline = false,
          bool friendly = true)
       {
          return new Matcher(friendly).MatchOne(input, pattern, ignoreCase, multiline);
       }
 
-      public static IMatched<Matcher.Match> MatchOne(this string input, RegexPattern regexPattern)
+      public static Matched<Matcher.Match> MatchOne(this string input, RegexPattern regexPattern)
       {
          return input.MatchOne(regexPattern.Pattern, regexPattern.Options, regexPattern.Friendly);
       }

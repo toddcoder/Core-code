@@ -127,7 +127,7 @@ namespace Core.Data
          return entity;
       }
 
-      public IMatched<T> ExecuteMatched()
+      public Matched<T> ExecuteMatched()
       {
          try
          {

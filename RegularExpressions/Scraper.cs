@@ -34,7 +34,7 @@ namespace Core.RegularExpressions
          variables = new StringHash<string>(true);
       }
 
-      protected IMatched<Scraper> match(string pattern, bool ignoreCase, bool multiline, string[] names)
+      protected Matched<Scraper> match(string pattern, bool ignoreCase, bool multiline, string[] names)
       {
          try
          {
@@ -66,27 +66,27 @@ namespace Core.RegularExpressions
          }
       }
 
-      public IMatched<Scraper> Match(RegexPattern pattern, params string[] names)
+      public Matched<Scraper> Match(RegexPattern pattern, params string[] names)
       {
          return match(pattern.Pattern, pattern.IgnoreCase, pattern.Multiline, names);
       }
 
-      public IMatched<Scraper> Match(string pattern, params string[] names)
+      public Matched<Scraper> Match(string pattern, params string[] names)
       {
          return Match((RegexPattern)pattern, names);
       }
 
-      public IMatched<Scraper> Match(string pattern, bool ignoreCase, bool multiline, params string[] names)
+      public Matched<Scraper> Match(string pattern, bool ignoreCase, bool multiline, params string[] names)
       {
          return match(pattern, ignoreCase, multiline, names);
       }
 
-      public IMatched<Scraper> Match(string pattern, Bits32<RegexOptions> options, params string[] names)
+      public Matched<Scraper> Match(string pattern, Bits32<RegexOptions> options, params string[] names)
       {
          return match(pattern, options[RegexOptions.IgnoreCase], options[RegexOptions.Multiline], names);
       }
 
-      protected IMatched<Scraper> match(string pattern, bool ignoreCase, bool multiline, Func<string, string> nameFunc)
+      protected Matched<Scraper> match(string pattern, bool ignoreCase, bool multiline, Func<string, string> nameFunc)
       {
          try
          {
@@ -117,27 +117,27 @@ namespace Core.RegularExpressions
          }
       }
 
-      public IMatched<Scraper> Match(RegexPattern pattern, Func<string, string> nameFunc)
+      public Matched<Scraper> Match(RegexPattern pattern, Func<string, string> nameFunc)
       {
          return match(pattern.Pattern, pattern.IgnoreCase, pattern.Multiline, nameFunc);
       }
 
-      public IMatched<Scraper> Match(string pattern, Func<string, string> nameFunc)
+      public Matched<Scraper> Match(string pattern, Func<string, string> nameFunc)
       {
          return Match((RegexPattern)pattern, nameFunc);
       }
 
-      public IMatched<Scraper> Match(string pattern, bool ignoreCase, bool multiline, Func<string, string> nameFunc)
+      public Matched<Scraper> Match(string pattern, bool ignoreCase, bool multiline, Func<string, string> nameFunc)
       {
          return match(pattern, ignoreCase, multiline, nameFunc);
       }
 
-      public IMatched<Scraper> Match(string pattern, Bits32<RegexOptions> options, Func<string, string> nameFunc)
+      public Matched<Scraper> Match(string pattern, Bits32<RegexOptions> options, Func<string, string> nameFunc)
       {
          return match(pattern, options[RegexOptions.IgnoreCase], options[RegexOptions.Multiline], nameFunc);
       }
 
-      protected IMatched<Scraper> split(string pattern, RegexOptions options, Func<string, string> nameFunc)
+      protected Matched<Scraper> split(string pattern, RegexOptions options, Func<string, string> nameFunc)
       {
          try
          {
@@ -161,17 +161,17 @@ namespace Core.RegularExpressions
          }
       }
 
-      public IMatched<Scraper> Split(RegexPattern pattern, Func<string, string> nameFunc)
+      public Matched<Scraper> Split(RegexPattern pattern, Func<string, string> nameFunc)
       {
          return split(pattern.Pattern, pattern.Options, nameFunc);
       }
 
-      public IMatched<Scraper> Split(string pattern, Func<string, string> nameFunc)
+      public Matched<Scraper> Split(string pattern, Func<string, string> nameFunc)
       {
          return Split((RegexPattern)pattern, nameFunc);
       }
 
-      public IMatched<Scraper> Split(string pattern, bool ignoreCase, bool multiline, Func<string, string> nameFunc)
+      public Matched<Scraper> Split(string pattern, bool ignoreCase, bool multiline, Func<string, string> nameFunc)
       {
          Bits32<RegexOptions> options = RegexOptions.None;
          options[RegexOptions.IgnoreCase] = ignoreCase;
@@ -180,12 +180,12 @@ namespace Core.RegularExpressions
          return split(pattern, options, nameFunc);
       }
 
-      public IMatched<Scraper> Split(string pattern, RegexOptions options, Func<string, string> nameFunc)
+      public Matched<Scraper> Split(string pattern, RegexOptions options, Func<string, string> nameFunc)
       {
          return split(pattern, options, nameFunc);
       }
 
-      protected IMatched<Scraper> skip(string pattern, bool ignoreCase, bool multiline)
+      protected Matched<Scraper> skip(string pattern, bool ignoreCase, bool multiline)
       {
          try
          {
@@ -210,18 +210,18 @@ namespace Core.RegularExpressions
          }
       }
 
-      public IMatched<Scraper> Skip(RegexPattern pattern) => skip(pattern.Pattern, pattern.IgnoreCase, pattern.Multiline);
+      public Matched<Scraper> Skip(RegexPattern pattern) => skip(pattern.Pattern, pattern.IgnoreCase, pattern.Multiline);
 
-      public IMatched<Scraper> Skip(string pattern) => Skip((RegexPattern)pattern);
+      public Matched<Scraper> Skip(string pattern) => Skip((RegexPattern)pattern);
 
-      public IMatched<Scraper> Skip(string pattern, bool ignoreCase, bool multiline) => skip(pattern, ignoreCase, multiline);
+      public Matched<Scraper> Skip(string pattern, bool ignoreCase, bool multiline) => skip(pattern, ignoreCase, multiline);
 
-      public IMatched<Scraper> Skip(string pattern, Bits32<RegexOptions> options)
+      public Matched<Scraper> Skip(string pattern, Bits32<RegexOptions> options)
       {
          return skip(pattern, options[RegexOptions.IgnoreCase], options[RegexOptions.Multiline]);
       }
 
-      public IMatched<Scraper> Skip(int count)
+      public Matched<Scraper> Skip(int count)
       {
          try
          {
@@ -245,7 +245,7 @@ namespace Core.RegularExpressions
 
       public Result<Hash<string, string>> AnyHash() => variables.Success<Hash<string, string>>();
 
-      protected IMatched<Scraper> push(string pattern, bool ignoreCase, bool multiline)
+      protected Matched<Scraper> push(string pattern, bool ignoreCase, bool multiline)
       {
          try
          {
@@ -268,21 +268,21 @@ namespace Core.RegularExpressions
          }
       }
 
-      public IMatched<Scraper> Push(RegexPattern regexPattern)
+      public Matched<Scraper> Push(RegexPattern regexPattern)
       {
          return push(regexPattern.Pattern, regexPattern.IgnoreCase, regexPattern.Multiline);
       }
 
-      public IMatched<Scraper> Push(string pattern) => Push((RegexPattern)pattern);
+      public Matched<Scraper> Push(string pattern) => Push((RegexPattern)pattern);
 
-      public IMatched<Scraper> Push(string pattern, bool ignoreCase, bool multiline) => push(pattern, ignoreCase, multiline);
+      public Matched<Scraper> Push(string pattern, bool ignoreCase, bool multiline) => push(pattern, ignoreCase, multiline);
 
-      public IMatched<Scraper> Push(string pattern, Bits32<RegexOptions> options)
+      public Matched<Scraper> Push(string pattern, Bits32<RegexOptions> options)
       {
          return push(pattern, options[RegexOptions.IgnoreCase], options[RegexOptions.Multiline]);
       }
 
-      public IMatched<Scraper> Pop()
+      public Matched<Scraper> Pop()
       {
          if (scraperStack.Pop().If(out var scraper))
          {

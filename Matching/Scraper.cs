@@ -28,7 +28,7 @@ namespace Core.Matching
          variables = new StringHash<string>(true);
       }
 
-      public IMatched<Scraper> Match(Pattern pattern, params string[] names)
+      public Matched<Scraper> Match(Pattern pattern, params string[] names)
       {
          if (!source.More)
          {
@@ -57,7 +57,7 @@ namespace Core.Matching
          }
       }
 
-      public IMatched<Scraper> Match(Pattern pattern, Func<string, string> nameFunc)
+      public Matched<Scraper> Match(Pattern pattern, Func<string, string> nameFunc)
       {
          if (!source.More)
          {
@@ -85,7 +85,7 @@ namespace Core.Matching
          }
       }
 
-      public IMatched<Scraper> Split(Pattern pattern, Func<string, string> nameFunc)
+      public Matched<Scraper> Split(Pattern pattern, Func<string, string> nameFunc)
       {
          if (!source.More)
          {
@@ -102,7 +102,7 @@ namespace Core.Matching
          return this.Match();
       }
 
-      public IMatched<Scraper> Skip(Pattern pattern)
+      public Matched<Scraper> Skip(Pattern pattern)
       {
          if (!source.More)
          {
@@ -124,7 +124,7 @@ namespace Core.Matching
          }
       }
 
-      public IMatched<Scraper> Skip(int count)
+      public Matched<Scraper> Skip(int count)
       {
          if (!source.More)
          {
@@ -141,7 +141,7 @@ namespace Core.Matching
 
       public Result<Hash<string, string>> AnyHash() => variables.Success<Hash<string, string>>();
 
-      public IMatched<Scraper> Push(Pattern pattern)
+      public Matched<Scraper> Push(Pattern pattern)
       {
          if (pattern.MatchedBy(source.Current).If(out var result, out var _exception))
          {
@@ -161,7 +161,7 @@ namespace Core.Matching
          }
       }
 
-      public IMatched<Scraper> Pop()
+      public Matched<Scraper> Pop()
       {
          if (scraperStack.Pop().If(out var scraper))
          {

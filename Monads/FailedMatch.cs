@@ -4,7 +4,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads
 {
-   public class FailedMatch<T> : IMatched<T>, IEquatable<FailedMatch<T>>
+   public class FailedMatch<T> : Matched<T>, IEquatable<FailedMatch<T>>
    {
       public static implicit operator bool(FailedMatch<T> _) => false;
 
@@ -17,37 +17,37 @@ namespace Core.Monads
 
       public Exception Exception => exception;
 
-      public override IMatched<T> Do(Action<T> ifMatched, Action ifNotOrFailed)
+      public override Matched<T> Do(Action<T> ifMatched, Action ifNotOrFailed)
       {
          ifNotOrFailed();
          return this;
       }
 
-      public override IMatched<T> Do(Action<T> ifMatched, Action ifNotMatched, Action<Exception> ifFailedMatch)
+      public override Matched<T> Do(Action<T> ifMatched, Action ifNotMatched, Action<Exception> ifFailedMatch)
       {
          ifFailedMatch(exception);
          return this;
       }
 
-      public override IMatched<TOther> ExceptionAs<TOther>() => failedMatch<TOther>(exception);
+      public override Matched<TOther> ExceptionAs<TOther>() => failedMatch<TOther>(exception);
 
-      public override IMatched<T> Or(IMatched<T> other) => other;
+      public override Matched<T> Or(Matched<T> other) => other;
 
-      public override IMatched<T> Or(Func<IMatched<T>> other) => other();
+      public override Matched<T> Or(Func<Matched<T>> other) => other();
 
-      public override IMatched<TResult> SelectMany<TResult>(Func<T, IMatched<TResult>> projection)
+      public override Matched<TResult> SelectMany<TResult>(Func<T, Matched<TResult>> projection)
       {
          return failedMatch<TResult>(exception);
       }
 
-      public override IMatched<T2> SelectMany<T1, T2>(Func<T, IMatched<T1>> func, Func<T, T1, T2> projection)
+      public override Matched<T2> SelectMany<T1, T2>(Func<T, Matched<T1>> func, Func<T, T1, T2> projection)
       {
          return failedMatch<T2>(exception);
       }
 
-      public override IMatched<TResult> SelectMany<TResult>(Func<T, TResult> func) => failedMatch<TResult>(exception);
+      public override Matched<TResult> SelectMany<TResult>(Func<T, TResult> func) => failedMatch<TResult>(exception);
 
-      public override IMatched<TResult> Select<TResult>(IMatched<T> result, Func<T, TResult> func)
+      public override Matched<TResult> Select<TResult>(Matched<T> result, Func<T, TResult> func)
       {
          return failedMatch<TResult>(exception);
       }
@@ -66,7 +66,7 @@ namespace Core.Monads
          return true;
       }
 
-      public override bool ValueOrOriginal(out T value, out IMatched<T> original)
+      public override bool ValueOrOriginal(out T value, out Matched<T> original)
       {
          value = default;
          original = this;
@@ -74,7 +74,7 @@ namespace Core.Monads
          return false;
       }
 
-      public override bool ValueOrCast<TMatched>(out T value, out IMatched<TMatched> matched)
+      public override bool ValueOrCast<TMatched>(out T value, out Matched<TMatched> matched)
       {
          value = default;
          matched = failedMatch<TMatched>(exception);
@@ -96,15 +96,15 @@ namespace Core.Monads
          return true;
       }
 
-      public override bool Else<TOther>(out IMatched<TOther> result)
+      public override bool Else<TOther>(out Matched<TOther> result)
       {
          result = failedMatch<TOther>(exception);
          return true;
       }
 
-      public override IMatched<TOther> Unmatched<TOther>() => failedMatch<TOther>(exception);
+      public override Matched<TOther> Unmatched<TOther>() => failedMatch<TOther>(exception);
 
-      public override bool WasMatched(out IMatched<T> matched)
+      public override bool WasMatched(out Matched<T> matched)
       {
          matched = this;
          return false;
@@ -114,9 +114,9 @@ namespace Core.Monads
 
       public override T ForceValue() => throw exception;
 
-      public override IMatched<T> UnmatchedOnly() => throw exception;
+      public override Matched<T> UnmatchedOnly() => throw exception;
 
-      public override IMatched<TOther> UnmatchedOnly<TOther>() => throw exception;
+      public override Matched<TOther> UnmatchedOnly<TOther>() => throw exception;
 
       public override void Deconstruct(out Maybe<T> value, out Maybe<Exception> exception)
       {
@@ -124,21 +124,21 @@ namespace Core.Monads
          exception = this.exception.Some();
       }
 
-      public override bool EqualToValueOf(IMatched<T> otherMatched) => false;
+      public override bool EqualToValueOf(Matched<T> otherMatched) => false;
 
       public override bool ValueEqualTo(T otherValue) => false;
 
-      public override IMatched<TResult> CastAs<TResult>() => failedMatch<TResult>(exception);
+      public override Matched<TResult> CastAs<TResult>() => failedMatch<TResult>(exception);
 
-      public override IMatched<T> Where(Predicate<T> predicate) => this;
+      public override Matched<T> Where(Predicate<T> predicate) => this;
 
-      public override IMatched<T> Where(Predicate<T> predicate, string exceptionMessage) => this;
+      public override Matched<T> Where(Predicate<T> predicate, string exceptionMessage) => this;
 
-      public override IMatched<T> Where(Predicate<T> predicate, Func<string> exceptionMessage) => this;
+      public override Matched<T> Where(Predicate<T> predicate, Func<string> exceptionMessage) => this;
 
-      public override IMatched<T> ExceptionMessage(string message) => new FailedMatch<T>(new FullStackException(message, exception));
+      public override Matched<T> ExceptionMessage(string message) => new FailedMatch<T>(new FullStackException(message, exception));
 
-      public override IMatched<T> ExceptionMessage(Func<Exception, string> message)
+      public override Matched<T> ExceptionMessage(Func<Exception, string> message)
       {
          return new FailedMatch<T>(new FullStackException(message(exception), exception));
       }
@@ -149,23 +149,23 @@ namespace Core.Monads
 
       public override bool IsFailedMatch => true;
 
-      public override IMatched<TResult> Map<TResult>(Func<T, IMatched<TResult>> ifMatched) => failedMatch<TResult>(exception);
+      public override Matched<TResult> Map<TResult>(Func<T, Matched<TResult>> ifMatched) => failedMatch<TResult>(exception);
 
-      public override IMatched<TResult> Map<TResult>(Func<T, TResult> ifMatched) => failedMatch<TResult>(exception);
+      public override Matched<TResult> Map<TResult>(Func<T, TResult> ifMatched) => failedMatch<TResult>(exception);
 
-      public override IMatched<TResult> Map<TResult>(Func<T, IMatched<TResult>> ifMatched, Func<IMatched<TResult>> ifNotMatched)
+      public override Matched<TResult> Map<TResult>(Func<T, Matched<TResult>> ifMatched, Func<Matched<TResult>> ifNotMatched)
       {
          return failedMatch<TResult>(exception);
       }
 
-      public override IMatched<TResult> Map<TResult>(Func<T, IMatched<TResult>> ifMatched, Func<Exception,
-         IMatched<TResult>> ifFailedMatch)
+      public override Matched<TResult> Map<TResult>(Func<T, Matched<TResult>> ifMatched, Func<Exception,
+         Matched<TResult>> ifFailedMatch)
       {
          return ifFailedMatch(exception);
       }
 
-      public override IMatched<TResult> Map<TResult>(Func<T, IMatched<TResult>> ifMatched,
-         Func<IMatched<TResult>> ifNotMatched, Func<Exception, IMatched<TResult>> ifFailedMatch)
+      public override Matched<TResult> Map<TResult>(Func<T, Matched<TResult>> ifMatched,
+         Func<Matched<TResult>> ifNotMatched, Func<Exception, Matched<TResult>> ifFailedMatch)
       {
          return ifFailedMatch(exception);
       }
@@ -178,11 +178,11 @@ namespace Core.Monads
 
       public override TResult FlatMap<TResult>(Func<T, TResult> ifMatched, Func<TResult> ifNotOrFailed) => ifNotOrFailed();
 
-      public override IMatched<T> If(Action<T> action) => this;
+      public override Matched<T> If(Action<T> action) => this;
 
-      public override IMatched<T> Else(Action action) => this;
+      public override Matched<T> Else(Action action) => this;
 
-      public override IMatched<T> Else(Action<Exception> action)
+      public override Matched<T> Else(Action<Exception> action)
       {
          action(exception);
          return this;

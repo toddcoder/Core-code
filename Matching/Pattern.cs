@@ -107,7 +107,7 @@ namespace Core.Matching
 
       public bool Friendly => friendly;
 
-      public IMatched<MatchResult> MatchedBy(string input)
+      public Matched<MatchResult> MatchedBy(string input)
       {
          try
          {

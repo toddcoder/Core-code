@@ -78,7 +78,7 @@ namespace Core.Objects
          }
       });
 
-      public static IMatched<T> MatchAs<T>(this object obj)
+      public static Matched<T> MatchAs<T>(this object obj)
       {
          try
          {

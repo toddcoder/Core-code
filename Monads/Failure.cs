@@ -90,7 +90,7 @@ namespace Core.Monads
          return this;
       }
 
-      public override IMatched<T> Match() => failedMatch<T>(exception);
+      public override Matched<T> Match() => failedMatch<T>(exception);
 
       public override bool If(out T value)
       {

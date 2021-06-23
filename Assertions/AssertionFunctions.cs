@@ -75,7 +75,7 @@ namespace Core.Assertions
          return result.Map(v => v.ToNonNullString()).Recover(e => $"failure<{typeof(T).Name}>({e.Message})");
       }
 
-      public static string matchedImage<T>(IMatched<T> matched)
+      public static string matchedImage<T>(Matched<T> matched)
       {
          if (matched.If(out var value, out var anyException))
          {

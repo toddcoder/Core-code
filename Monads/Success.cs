@@ -128,7 +128,7 @@ namespace Core.Monads
          return this;
       }
 
-      public override IMatched<T> Match() => value.Match();
+      public override Matched<T> Match() => value.Match();
 
       public override bool If(out T value)
       {

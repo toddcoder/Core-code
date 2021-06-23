@@ -318,34 +318,34 @@ namespace Core.Regex
          input.IfMatches(regexPattern.Pattern, ifTrue, ifFalse, regexPattern.Options);
       }
 
-      public static IMatched<RegularExpressions.Matcher.Match[]> MatchAll(this string input, string pattern, RegexOptions options)
+      public static Matched<RegularExpressions.Matcher.Match[]> MatchAll(this string input, string pattern, RegexOptions options)
       {
          return new Matcher().MatchAll(input, pattern, options);
       }
 
-      public static IMatched<RegularExpressions.Matcher.Match[]> MatchAll(this string input, string pattern, bool ignoreCase = false,
+      public static Matched<RegularExpressions.Matcher.Match[]> MatchAll(this string input, string pattern, bool ignoreCase = false,
          bool multiline = false)
       {
          return new Matcher().MatchAll(input, pattern, ignoreCase, multiline);
       }
 
-      public static IMatched<RegularExpressions.Matcher.Match[]> MatchAll(this string input, RegexPattern regexPattern)
+      public static Matched<RegularExpressions.Matcher.Match[]> MatchAll(this string input, RegexPattern regexPattern)
       {
          return new Matcher().MatchAll(input, regexPattern);
       }
 
-      public static IMatched<RegularExpressions.Matcher.Match> MatchOne(this string input, string pattern, RegexOptions options)
+      public static Matched<RegularExpressions.Matcher.Match> MatchOne(this string input, string pattern, RegexOptions options)
       {
          return new Matcher().MatchOne(input, pattern, options);
       }
 
-      public static IMatched<RegularExpressions.Matcher.Match> MatchOne(this string input, string pattern, bool ignoreCase = false,
+      public static Matched<RegularExpressions.Matcher.Match> MatchOne(this string input, string pattern, bool ignoreCase = false,
          bool multiline = false)
       {
          return new Matcher().MatchOne(input, pattern, ignoreCase, multiline);
       }
 
-      public static IMatched<RegularExpressions.Matcher.Match> MatchOne(this string input, RegexPattern regexPattern)
+      public static Matched<RegularExpressions.Matcher.Match> MatchOne(this string input, RegexPattern regexPattern)
       {
          return new Matcher().MatchOne(input, regexPattern);
       }

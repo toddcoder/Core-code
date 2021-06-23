@@ -25,21 +25,21 @@ namespace Core.Monads
 
       public static Result<T> failure<T>(Exception exception) => new Failure<T>(exception);
 
-      public static IMatched<TParent> matched<TChild, TParent>(TChild value) where TChild : TParent
+      public static Matched<TParent> matched<TChild, TParent>(TChild value) where TChild : TParent
       {
          return new Match<TParent>(value);
       }
 
-      public static IMatched<TParent> matchedAs<TChild, TParent>(TChild value) where TChild : class where TParent : class
+      public static Matched<TParent> matchedAs<TChild, TParent>(TChild value) where TChild : class where TParent : class
       {
          return new Match<TParent>(value as TParent);
       }
 
-      public static IMatched<T> noMatch<T>() => new NoMatch<T>();
+      public static Matched<T> noMatch<T>() => new NoMatch<T>();
 
-      public static IMatched<T> failedMatch<T>(Exception exception) => new FailedMatch<T>(exception);
+      public static Matched<T> failedMatch<T>(Exception exception) => new FailedMatch<T>(exception);
 
-      public static IMatched<T> isMatched<T>(bool test, Func<T> result)
+      public static Matched<T> isMatched<T>(bool test, Func<T> result)
       {
          try
          {
@@ -51,7 +51,7 @@ namespace Core.Monads
          }
       }
 
-      public static IMatched<T> isMatched<T>(bool test, Func<IMatched<T>> result)
+      public static Matched<T> isMatched<T>(bool test, Func<Matched<T>> result)
       {
          try
          {

@@ -174,7 +174,7 @@ namespace Core.RegularExpressions
 
       public bool IsMatch(string input, RegexPattern regexPattern) => IsMatch(input, regexPattern.Pattern, regexPattern.Options);
 
-      public IMatched<Match[]> MatchAll(string input, string pattern, RegexOptions options)
+      public Matched<Match[]> MatchAll(string input, string pattern, RegexOptions options)
       {
          try
          {
@@ -186,12 +186,12 @@ namespace Core.RegularExpressions
          }
       }
 
-      public IMatched<Match[]> MatchAll(string input, string pattern, bool ignoreCase = false, bool multiline = false)
+      public Matched<Match[]> MatchAll(string input, string pattern, bool ignoreCase = false, bool multiline = false)
       {
          return MatchAll(input, pattern, GetOptions(ignoreCase, multiline));
       }
 
-      public IMatched<Match[]> MatchAll(string input, RegexPattern regexPattern) => MatchAll(input, regexPattern.Pattern, regexPattern.Options);
+      public Matched<Match[]> MatchAll(string input, RegexPattern regexPattern) => MatchAll(input, regexPattern.Pattern, regexPattern.Options);
 
       public Maybe<Match[]> MatchMaybe(string input, string pattern, RegexOptions options)
       {
@@ -217,7 +217,7 @@ namespace Core.RegularExpressions
 
       public Maybe<Match> MatchOneMaybe(string input, RegexPattern regexPattern) => MatchOneMaybe(input, regexPattern.Pattern, regexPattern.Options);
 
-      public IMatched<Match> MatchOne(string input, string pattern, RegexOptions options)
+      public Matched<Match> MatchOne(string input, string pattern, RegexOptions options)
       {
          try
          {
@@ -229,12 +229,12 @@ namespace Core.RegularExpressions
          }
       }
 
-      public IMatched<Match> MatchOne(string input, string pattern, bool ignoreCase = false, bool multiline = false)
+      public Matched<Match> MatchOne(string input, string pattern, bool ignoreCase = false, bool multiline = false)
       {
          return MatchOne(input, pattern, GetOptions(ignoreCase, multiline));
       }
 
-      public IMatched<Match> MatchOne(string input, RegexPattern regexPattern) => MatchOne(input, regexPattern.Pattern, regexPattern.Options);
+      public Matched<Match> MatchOne(string input, RegexPattern regexPattern) => MatchOne(input, regexPattern.Pattern, regexPattern.Options);
 
       public string FirstMatch
       {
