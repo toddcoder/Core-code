@@ -35,7 +35,7 @@ namespace Core.Monads
          return new Match<TParent>(value as TParent);
       }
 
-      public static IMatched<T> notMatched<T>() => new NoMatch<T>();
+      public static IMatched<T> noMatch<T>() => new NoMatch<T>();
 
       public static IMatched<T> failedMatch<T>(Exception exception) => new FailedMatch<T>(exception);
 
@@ -43,7 +43,7 @@ namespace Core.Monads
       {
          try
          {
-            return test ? result().Matched() : notMatched<T>();
+            return test ? result().Match() : noMatch<T>();
          }
          catch (Exception exception)
          {
@@ -55,7 +55,7 @@ namespace Core.Monads
       {
          try
          {
-            return test ? result() : notMatched<T>();
+            return test ? result() : noMatch<T>();
          }
          catch (Exception exception)
          {

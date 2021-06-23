@@ -178,7 +178,7 @@ namespace Core.RegularExpressions
       {
          try
          {
-            return IsMatch(input, pattern, options) ? matches.Matched() : notMatched<Match[]>();
+            return IsMatch(input, pattern, options) ? matches.Match() : noMatch<Match[]>();
          }
          catch (Exception exception)
          {
@@ -221,7 +221,7 @@ namespace Core.RegularExpressions
       {
          try
          {
-            return IsMatch(input, pattern, options) ? matches[0].Matched() : notMatched<Match>();
+            return IsMatch(input, pattern, options) ? matches[0].Match() : noMatch<Match>();
          }
          catch (Exception exception)
          {

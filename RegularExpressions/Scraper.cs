@@ -40,7 +40,7 @@ namespace Core.RegularExpressions
          {
             if (!source.More)
             {
-               return notMatched<Scraper>();
+               return noMatch<Scraper>();
             }
 
             if (matcher.IsMatch(source.Current, pattern, ignoreCase, multiline))
@@ -53,11 +53,11 @@ namespace Core.RegularExpressions
                }
 
                source.Advance(matcher.Length);
-               return this.Matched();
+               return this.Match();
             }
             else
             {
-               return notMatched<Scraper>();
+               return noMatch<Scraper>();
             }
          }
          catch (Exception exception)
@@ -92,7 +92,7 @@ namespace Core.RegularExpressions
          {
             if (!source.More)
             {
-               return notMatched<Scraper>();
+               return noMatch<Scraper>();
             }
 
             if (matcher.IsMatch(source.Current, pattern, ignoreCase, multiline))
@@ -104,11 +104,11 @@ namespace Core.RegularExpressions
                }
 
                source.Advance(matcher.Length);
-               return this.Matched();
+               return this.Match();
             }
             else
             {
-               return notMatched<Scraper>();
+               return noMatch<Scraper>();
             }
          }
          catch (Exception exception)
@@ -143,7 +143,7 @@ namespace Core.RegularExpressions
          {
             if (!source.More)
             {
-               return notMatched<Scraper>();
+               return noMatch<Scraper>();
             }
 
             var split = source.Current.Split(pattern, options, friendly);
@@ -153,7 +153,7 @@ namespace Core.RegularExpressions
             }
 
             source.Advance(source.Current.Length);
-            return this.Matched();
+            return this.Match();
          }
          catch (Exception exception)
          {
@@ -191,17 +191,17 @@ namespace Core.RegularExpressions
          {
             if (!source.More)
             {
-               return notMatched<Scraper>();
+               return noMatch<Scraper>();
             }
 
             if (matcher.IsMatch(source.Current, pattern, ignoreCase, multiline))
             {
                source.Advance(matcher.Length);
-               return this.Matched();
+               return this.Match();
             }
             else
             {
-               return notMatched<Scraper>();
+               return noMatch<Scraper>();
             }
          }
          catch (Exception exception)
@@ -227,11 +227,11 @@ namespace Core.RegularExpressions
          {
             if (!source.More)
             {
-               return notMatched<Scraper>();
+               return noMatch<Scraper>();
             }
 
             source.Advance(count);
-            return this.Matched();
+            return this.Match();
          }
          catch (Exception exception)
          {
@@ -255,11 +255,11 @@ namespace Core.RegularExpressions
                source.Advance(matcher.Length);
                scraperStack.Push(this);
 
-               return scraper.Matched();
+               return scraper.Match();
             }
             else
             {
-               return notMatched<Scraper>();
+               return noMatch<Scraper>();
             }
          }
          catch (Exception exception)
@@ -293,7 +293,7 @@ namespace Core.RegularExpressions
                   poppedVariables[variable] = value;
                }
 
-               return scraper.Matched();
+               return scraper.Match();
             }
             else
             {

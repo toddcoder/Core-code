@@ -84,11 +84,11 @@ namespace Core.Objects
          {
             if (obj is T o)
             {
-               return o.Matched();
+               return o.Match();
             }
             else
             {
-               return notMatched<T>();
+               return noMatch<T>();
             }
          }
          catch (Exception exception)

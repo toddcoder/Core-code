@@ -32,7 +32,7 @@ namespace Core.Matching
       {
          if (!source.More)
          {
-            return notMatched<Scraper>();
+            return noMatch<Scraper>();
          }
 
          if (pattern.MatchedBy(source.Current).If(out var result, out var _exception))
@@ -45,7 +45,7 @@ namespace Core.Matching
             }
 
             source.Advance(result.Length);
-            return this.Matched();
+            return this.Match();
          }
          else if (_exception.If(out var exception))
          {
@@ -53,7 +53,7 @@ namespace Core.Matching
          }
          else
          {
-            return notMatched<Scraper>();
+            return noMatch<Scraper>();
          }
       }
 
@@ -61,7 +61,7 @@ namespace Core.Matching
       {
          if (!source.More)
          {
-            return notMatched<Scraper>();
+            return noMatch<Scraper>();
          }
 
          if (pattern.MatchedBy(source.Current).If(out var result, out var _exception))
@@ -73,7 +73,7 @@ namespace Core.Matching
             }
 
             source.Advance(result.Length);
-            return this.Matched();
+            return this.Match();
          }
          else if (_exception.If(out var exception))
          {
@@ -81,7 +81,7 @@ namespace Core.Matching
          }
          else
          {
-            return notMatched<Scraper>();
+            return noMatch<Scraper>();
          }
       }
 
@@ -89,7 +89,7 @@ namespace Core.Matching
       {
          if (!source.More)
          {
-            return notMatched<Scraper>();
+            return noMatch<Scraper>();
          }
 
          var split = source.Current.Split(pattern);
@@ -99,20 +99,20 @@ namespace Core.Matching
          }
 
          source.Advance(source.Current.Length);
-         return this.Matched();
+         return this.Match();
       }
 
       public IMatched<Scraper> Skip(Pattern pattern)
       {
          if (!source.More)
          {
-            return notMatched<Scraper>();
+            return noMatch<Scraper>();
          }
 
          if (pattern.MatchedBy(source.Current).If(out var result, out var _exception))
          {
             source.Advance(result.Length);
-            return this.Matched();
+            return this.Match();
          }
          else if (_exception.If(out var exception))
          {
@@ -120,7 +120,7 @@ namespace Core.Matching
          }
          else
          {
-            return notMatched<Scraper>();
+            return noMatch<Scraper>();
          }
       }
 
@@ -128,11 +128,11 @@ namespace Core.Matching
       {
          if (!source.More)
          {
-            return notMatched<Scraper>();
+            return noMatch<Scraper>();
          }
 
          source.Advance(count);
-         return this.Matched();
+         return this.Match();
       }
 
       public string this[string key] => variables[key];
@@ -149,7 +149,7 @@ namespace Core.Matching
             source.Advance(result.Length);
             scraperStack.Push(this);
 
-            return scraper.Matched();
+            return scraper.Match();
          }
          else if (_exception.If(out var exception))
          {
@@ -157,7 +157,7 @@ namespace Core.Matching
          }
          else
          {
-            return notMatched<Scraper>();
+            return noMatch<Scraper>();
          }
       }
 
@@ -172,7 +172,7 @@ namespace Core.Matching
                   poppedVariables[variable] = value;
                }
 
-               return scraper.Matched();
+               return scraper.Match();
             }
             else
             {

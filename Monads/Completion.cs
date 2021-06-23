@@ -95,5 +95,10 @@ namespace Core.Monads
 
       public abstract Completion<T> Where(Predicate<T> predicate, Func<string> exceptionMessage);
 
+      public Completion<T> Tap(Action<Completion<T>> action)
+      {
+         action(this);
+         return this;
+      }
    }
 }

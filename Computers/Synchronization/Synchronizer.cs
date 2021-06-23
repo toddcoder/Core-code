@@ -95,7 +95,7 @@ namespace Core.Computers.Synchronization
                }
                else
                {
-                  return notMatched<FileName>();
+                  return noMatch<FileName>();
                }
             }
             else
@@ -132,7 +132,7 @@ namespace Core.Computers.Synchronization
             {
                if (sourceFile.TryTo.Delete().If(out _, out exception))
                {
-                  return targetFile.Matched();
+                  return targetFile.Match();
                }
                else
                {
@@ -141,7 +141,7 @@ namespace Core.Computers.Synchronization
             }
             else
             {
-               return targetFile.Matched();
+               return targetFile.Match();
             }
          }
          else

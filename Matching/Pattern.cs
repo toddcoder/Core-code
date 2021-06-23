@@ -142,11 +142,11 @@ namespace Core.Matching
 
             if (matches.Length > 0)
             {
-               return new MatchResult(matches, indexesToNames, namesToIndexes, slicer, input).Matched();
+               return new MatchResult(matches, indexesToNames, namesToIndexes, slicer, input).Match();
             }
             else
             {
-               return notMatched<MatchResult>();
+               return noMatch<MatchResult>();
             }
          }
          catch (Exception exception)

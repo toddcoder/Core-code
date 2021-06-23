@@ -1,4 +1,5 @@
 ﻿using System;
+using static Core.Monads.AttemptFunctions;
 
 namespace Core.Monads
 {
@@ -80,5 +81,10 @@ namespace Core.Monads
 
       public abstract Result<T> ExceptionMessage(Func<Exception, string> message);
 
+      public Result<T> Tap(Action<Result<T>> action) => tryTo(() =>
+      {
+         action(this);
+         return this;
+      });
    }
 }

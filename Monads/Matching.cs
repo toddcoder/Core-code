@@ -48,7 +48,7 @@ namespace Core.Monads
 		{
 			if (matched.If(out var value))
          {
-            return mapping(value).Matched();
+            return mapping(value).Match();
          }
          else
          {

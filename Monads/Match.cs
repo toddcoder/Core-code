@@ -37,12 +37,12 @@ namespace Core.Monads
 
       public override IMatched<T2> SelectMany<T1, T2>(Func<T, IMatched<T1>> func, Func<T, T1, T2> projection)
       {
-         return func(value).Map(t1 => projection(value, t1).Matched(), notMatched<T2>, failedMatch<T2>);
+         return func(value).Map(t1 => projection(value, t1).Match(), noMatch<T2>, failedMatch<T2>);
       }
 
-      public override IMatched<TResult> SelectMany<TResult>(Func<T, TResult> func) => func(value).Matched();
+      public override IMatched<TResult> SelectMany<TResult>(Func<T, TResult> func) => func(value).Match();
 
-      public override IMatched<TResult> Select<TResult>(IMatched<T> result, Func<T, TResult> func) => func(value).Matched();
+      public override IMatched<TResult> Select<TResult>(IMatched<T> result, Func<T, TResult> func) => func(value).Match();
 
       public override bool If(out T value)
       {
@@ -90,11 +90,11 @@ namespace Core.Monads
 
       public override bool Else<TOther>(out IMatched<TOther> result)
       {
-         result = notMatched<TOther>();
+         result = noMatch<TOther>();
          return false;
       }
 
-      public override IMatched<TOther> Unmatched<TOther>() => notMatched<TOther>();
+      public override IMatched<TOther> Unmatched<TOther>() => noMatch<TOther>();
 
       public override bool WasMatched(out IMatched<T> matched)
       {
@@ -108,9 +108,9 @@ namespace Core.Monads
 
       public override T ForceValue() => value;
 
-      public override IMatched<T> UnmatchedOnly() => notMatched<T>();
+      public override IMatched<T> UnmatchedOnly() => noMatch<T>();
 
-      public override IMatched<TOther> UnmatchedOnly<TOther>() => notMatched<TOther>();
+      public override IMatched<TOther> UnmatchedOnly<TOther>() => noMatch<TOther>();
 
       public override void Deconstruct(out Maybe<T> value, out Maybe<Exception> exception)
       {
@@ -126,7 +126,7 @@ namespace Core.Monads
       {
          if (value is TResult result)
          {
-            return result.Matched();
+            return result.Match();
          }
          else
          {
@@ -134,7 +134,7 @@ namespace Core.Monads
          }
       }
 
-      public override IMatched<T> Where(Predicate<T> predicate) => predicate(value) ? this : notMatched<T>();
+      public override IMatched<T> Where(Predicate<T> predicate) => predicate(value) ? this : noMatch<T>();
 
       public override IMatched<T> Where(Predicate<T> predicate, string exceptionMessage) =>
          predicate(value) ? this : exceptionMessage.FailedMatch<T>();
@@ -156,7 +156,7 @@ namespace Core.Monads
 
       public override IMatched<TResult> Map<TResult>(Func<T, IMatched<TResult>> ifMatched) => ifMatched(value);
 
-      public override IMatched<TResult> Map<TResult>(Func<T, TResult> ifMatched) => ifMatched(value).Matched();
+      public override IMatched<TResult> Map<TResult>(Func<T, TResult> ifMatched) => ifMatched(value).Match();
 
       public override IMatched<TResult> Map<TResult>(Func<T, IMatched<TResult>> ifMatched, Func<IMatched<TResult>> ifNotMatched)
       {

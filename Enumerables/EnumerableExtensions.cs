@@ -640,20 +640,20 @@ namespace Core.Enumerables
 
             if (first is null)
             {
-               return notMatched<T>();
+               return noMatch<T>();
             }
             else if (first.Equals(default))
             {
-               return notMatched<T>();
+               return noMatch<T>();
             }
             else
             {
-               return first.Matched();
+               return first.Match();
             }
          }
          catch (InvalidOperationException)
          {
-            return notMatched<T>();
+            return noMatch<T>();
          }
          catch (Exception exception)
          {
@@ -669,20 +669,20 @@ namespace Core.Enumerables
 
             if (first.AnyNull())
             {
-               return notMatched<(T1, T2)>();
+               return noMatch<(T1, T2)>();
             }
             else if (first.Equals(default))
             {
-               return notMatched<(T1, T2)>();
+               return noMatch<(T1, T2)>();
             }
             else
             {
-               return first.Matched();
+               return first.Match();
             }
          }
          catch (InvalidOperationException)
          {
-            return notMatched<(T1, T2)>();
+            return noMatch<(T1, T2)>();
          }
          catch (Exception exception)
          {
@@ -698,20 +698,20 @@ namespace Core.Enumerables
 
             if (first.AnyNull())
             {
-               return notMatched<(T1, T2, T3)>();
+               return noMatch<(T1, T2, T3)>();
             }
             else if (first.Equals(default))
             {
-               return notMatched<(T1, T2, T3)>();
+               return noMatch<(T1, T2, T3)>();
             }
             else
             {
-               return first.Matched();
+               return first.Match();
             }
          }
          catch (InvalidOperationException)
          {
-            return notMatched<(T1, T2, T3)>();
+            return noMatch<(T1, T2, T3)>();
          }
          catch (Exception exception)
          {
@@ -728,20 +728,20 @@ namespace Core.Enumerables
 
             if (first.AnyNull())
             {
-               return notMatched<(T1, T2, T3, T4)>();
+               return noMatch<(T1, T2, T3, T4)>();
             }
             else if (first.Equals(default))
             {
-               return notMatched<(T1, T2, T3, T4)>();
+               return noMatch<(T1, T2, T3, T4)>();
             }
             else
             {
-               return first.Matched();
+               return first.Match();
             }
          }
          catch (InvalidOperationException)
          {
-            return notMatched<(T1, T2, T3, T4)>();
+            return noMatch<(T1, T2, T3, T4)>();
          }
          catch (Exception exception)
          {
@@ -757,20 +757,20 @@ namespace Core.Enumerables
 
             if (last is null)
             {
-               return notMatched<T>();
+               return noMatch<T>();
             }
             else if (last.Equals(default))
             {
-               return notMatched<T>();
+               return noMatch<T>();
             }
             else
             {
-               return last.Matched();
+               return last.Match();
             }
          }
          catch (InvalidOperationException)
          {
-            return notMatched<T>();
+            return noMatch<T>();
          }
          catch (Exception exception)
          {
@@ -786,20 +786,20 @@ namespace Core.Enumerables
 
             if (last.AnyNull())
             {
-               return notMatched<(T1, T2)>();
+               return noMatch<(T1, T2)>();
             }
             else if (last.Equals(default))
             {
-               return notMatched<(T1, T2)>();
+               return noMatch<(T1, T2)>();
             }
             else
             {
-               return last.Matched();
+               return last.Match();
             }
          }
          catch (InvalidOperationException)
          {
-            return notMatched<(T1, T2)>();
+            return noMatch<(T1, T2)>();
          }
          catch (Exception exception)
          {
@@ -815,20 +815,20 @@ namespace Core.Enumerables
 
             if (last.AnyNull())
             {
-               return notMatched<(T1, T2, T3)>();
+               return noMatch<(T1, T2, T3)>();
             }
             else if (last.Equals(default))
             {
-               return notMatched<(T1, T2, T3)>();
+               return noMatch<(T1, T2, T3)>();
             }
             else
             {
-               return last.Matched();
+               return last.Match();
             }
          }
          catch (InvalidOperationException)
          {
-            return notMatched<(T1, T2, T3)>();
+            return noMatch<(T1, T2, T3)>();
          }
          catch (Exception exception)
          {
@@ -845,20 +845,20 @@ namespace Core.Enumerables
 
             if (last.AnyNull())
             {
-               return notMatched<(T1, T2, T3, T4)>();
+               return noMatch<(T1, T2, T3, T4)>();
             }
             else if (last.Equals(default))
             {
-               return notMatched<(T1, T2, T3, T4)>();
+               return noMatch<(T1, T2, T3, T4)>();
             }
             else
             {
-               return last.Matched();
+               return last.Match();
             }
          }
          catch (InvalidOperationException)
          {
-            return notMatched<(T1, T2, T3, T4)>();
+            return noMatch<(T1, T2, T3, T4)>();
          }
          catch (Exception exception)
          {
@@ -874,20 +874,20 @@ namespace Core.Enumerables
 
             if (first is null)
             {
-               return notMatched<T>();
+               return noMatch<T>();
             }
             else if (first.Equals(default))
             {
-               return notMatched<T>();
+               return noMatch<T>();
             }
             else
             {
-               return first.Matched();
+               return first.Match();
             }
          }
          catch (InvalidOperationException)
          {
-            return notMatched<T>();
+            return noMatch<T>();
          }
          catch (Exception exception)
          {
@@ -903,20 +903,20 @@ namespace Core.Enumerables
 
             if (last is null)
             {
-               return notMatched<T>();
+               return noMatch<T>();
             }
             else if (last.Equals(default))
             {
-               return notMatched<T>();
+               return noMatch<T>();
             }
             else
             {
-               return last.Matched();
+               return last.Match();
             }
          }
          catch (InvalidOperationException)
          {
-            return notMatched<T>();
+            return noMatch<T>();
          }
          catch (Exception exception)
          {

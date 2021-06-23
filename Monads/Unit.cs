@@ -11,7 +11,7 @@ namespace Core.Monads
 
       public static Result<Unit> Success() => Value.Success();
 
-      public static IMatched<Unit> Matched() => Value.Matched();
+      public static IMatched<Unit> Matched() => Value.Match();
 
       public static Completion<Unit> Completed() => Value.Completed();
 

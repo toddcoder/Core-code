@@ -134,7 +134,7 @@ namespace Core.Data
             RecordsAffected = DataSource.Execute(entity, Command, Parameters, Fields);
             HasRows = DataSource.HasRows;
 
-            return HasRows ? entity.Matched() : notMatched<T>();
+            return HasRows ? entity.Match() : noMatch<T>();
          }
          catch (Exception exception)
          {

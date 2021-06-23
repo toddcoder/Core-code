@@ -74,9 +74,9 @@ namespace Core.Monads
          return failure<T>((TException)typeof(TException).Create(list.ToArray()));
       }
 
-      public static IMatched<T> Matched<T>(this T matches) => matches is null ? "Matches cannot be null".FailedMatch<T>() : new Match<T>(matches);
+      public static IMatched<T> Match<T>(this T matches) => matches is null ? "Matches cannot be null".FailedMatch<T>() : new Match<T>(matches);
 
-      public static IMatched<T> MatchedUnlessNull<T>(this T obj) => obj is null ? notMatched<T>() : obj.Matched();
+      public static IMatched<T> MatchUnlessNull<T>(this T obj) => obj is null ? noMatch<T>() : obj.Match();
 
       public static IMatched<T> FailedMatch<T>(this string message) => new FailedMatch<T>(new ApplicationException(message));
 
@@ -143,11 +143,11 @@ namespace Core.Monads
          {
             if (test)
             {
-               return ifFunc().Matched();
+               return ifFunc().Match();
             }
             else
             {
-               return notMatched<T>();
+               return noMatch<T>();
             }
          }
          catch (Exception exception)
@@ -155,18 +155,6 @@ namespace Core.Monads
             return failedMatch<T>(exception);
          }
       }
-
-      public static IMatched<T> Tap<T>(this IMatched<T> matched, Action<IMatched<T>> action)
-      {
-         action(matched);
-         return matched;
-      }
-
-      public static Result<T> Tap<T>(this Result<T> result, Action<Result<T>> action) => tryTo(() =>
-      {
-         action(result);
-         return result;
-      });
 
       public static IEnumerable<T> WhereIsSome<T>(this IEnumerable<Maybe<T>> enumerable)
       {

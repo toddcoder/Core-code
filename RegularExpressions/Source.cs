@@ -34,6 +34,6 @@ namespace Core.RegularExpressions
          index += amount;
       }
 
-      public IMatched<Unit> Matched() => More ? Unit.Matched() : notMatched<Unit>();
+      public IMatched<Unit> Matched() => More ? Unit.Matched() : noMatch<Unit>();
    }
 }
