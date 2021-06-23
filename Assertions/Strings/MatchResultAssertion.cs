@@ -9,14 +9,14 @@ using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Assertions.Strings
 {
-   public class ResultAssertion : IAssertion<MatchResult>
+   public class MatchResultAssertion : IAssertion<MatchResult>
    {
       protected MatchResult result;
       protected List<Constraint> constraints;
       protected bool not;
       protected string name;
 
-      public ResultAssertion(MatchResult result)
+      public MatchResultAssertion(MatchResult result)
       {
          this.result = result;
 
@@ -25,7 +25,7 @@ namespace Core.Assertions.Strings
          name = "Result";
       }
 
-      public ResultAssertion Not
+      public MatchResultAssertion Not
       {
          get
          {
@@ -46,7 +46,7 @@ namespace Core.Assertions.Strings
          return this;
       }
 
-      protected ResultAssertion add(Func<bool> constraintFunction, string message)
+      protected MatchResultAssertion add(Func<bool> constraintFunction, string message)
       {
          constraints.Add(new Constraint(constraintFunction, message, not, name, Value));
          not = false;
@@ -54,12 +54,12 @@ namespace Core.Assertions.Strings
          return this;
       }
 
-      public ResultAssertion HaveMatchCountOf(int matchCount)
+      public MatchResultAssertion HaveMatchCountOf(int matchCount)
       {
          return add(() => result.MatchCount >= matchCount, $"$name must $not have a match count of at least {matchCount}");
       }
 
-      public ResultAssertion HaveGroupCountOf(int groupCount)
+      public MatchResultAssertion HaveGroupCountOf(int groupCount)
       {
          return HaveMatchCountOf(1)
             .add(() => result.GroupCount(0) >= groupCount, $"$name must $not have a group count of at least {groupCount}");
