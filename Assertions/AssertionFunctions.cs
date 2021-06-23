@@ -91,7 +91,7 @@ namespace Core.Assertions
          }
       }
 
-      public static string completionImage<T>(ICompletion<T> completion)
+      public static string completionImage<T>(Completion<T> completion)
       {
          if (completion.If(out var value, out var _exception))
          {
@@ -219,7 +219,7 @@ namespace Core.Assertions
          return maybe(assertion.Constraints.All(c => c.IsTrue()), () => assertion.Value);
       }
 
-      public static async Task<ICompletion<T>> orFailureAsync<T>(IAssertion<T> assertion, CancellationToken token)
+      public static async Task<Completion<T>> orFailureAsync<T>(IAssertion<T> assertion, CancellationToken token)
       {
          return await runAsync(t =>
             assertion.Constraints
@@ -228,12 +228,12 @@ namespace Core.Assertions
                .DefaultTo(() => assertion.Value.Completed(t)), token);
       }
 
-      public static async Task<ICompletion<T>> orFailureAsync<T>(IAssertion<T> assertion, string message, CancellationToken token)
+      public static async Task<Completion<T>> orFailureAsync<T>(IAssertion<T> assertion, string message, CancellationToken token)
       {
          return await runAsync(t => assertion.Constraints.Any(c => !c.IsTrue()) ? message.Interrupted<T>() : assertion.Value.Completed(t), token);
       }
 
-      public static async Task<ICompletion<T>> orFailureAsync<T>(IAssertion<T> assertion, Func<string> messageFunc, CancellationToken token)
+      public static async Task<Completion<T>> orFailureAsync<T>(IAssertion<T> assertion, Func<string> messageFunc, CancellationToken token)
       {
          return await runAsync(t => assertion.Constraints.Any(c => !c.IsTrue()) ? messageFunc().Interrupted<T>() : assertion.Value.Completed(t),
             token);

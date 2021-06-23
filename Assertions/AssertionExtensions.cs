@@ -343,10 +343,10 @@ namespace Core.Assertions
          return (MatchedAssertion<T>)assertion.Named($"Match of {typeof(T).Name} {name}");
       }
 
-      public static CompletionAssertion<T> Must<T>(this ICompletion<T> value) => new(value);
+      public static CompletionAssertion<T> Must<T>(this Completion<T> value) => new(value);
 
       [Obsolete("Use value version")]
-      public static CompletionAssertion<T> Must<T>(this Expression<Func<ICompletion<T>>> expression)
+      public static CompletionAssertion<T> Must<T>(this Expression<Func<Completion<T>>> expression)
       {
          var (name, value) = resolve(expression);
          var assertion = value.Must();
@@ -354,7 +354,7 @@ namespace Core.Assertions
          return (CompletionAssertion<T>)assertion.Named($"Async Result of {typeof(T).Name} {name}");
       }
 
-      public static CompletionAssertion<T> Must<T>(this (ICompletion<T>, string) tuple)
+      public static CompletionAssertion<T> Must<T>(this (Completion<T>, string) tuple)
       {
          var (value, name) = tuple;
          var assertion = value.Must();

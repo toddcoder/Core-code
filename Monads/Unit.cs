@@ -13,9 +13,9 @@ namespace Core.Monads
 
       public static IMatched<Unit> Matched() => Value.Matched();
 
-      public static ICompletion<Unit> Completed() => Value.Completed();
+      public static Completion<Unit> Completed() => Value.Completed();
 
-      public static ICompletion<Unit> Completed(CancellationToken token)
+      public static Completion<Unit> Completed(CancellationToken token)
       {
          if (token.IsCancellationRequested)
          {

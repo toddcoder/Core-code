@@ -15,12 +15,12 @@ namespace Core.Assertions.Monads
 
       public static bool operator |(CompletionAssertion<T> x, ICanBeTrue y) => or(x, y);
 
-      protected ICompletion<T> completion;
+      protected Completion<T> completion;
       protected List<Constraint> constraints;
       protected bool not;
       protected string name;
 
-      public CompletionAssertion(ICompletion<T> completion)
+      public CompletionAssertion(Completion<T> completion)
       {
          this.completion = completion;
          constraints = new List<Constraint>();
@@ -48,7 +48,7 @@ namespace Core.Assertions.Monads
 
       public CompletionAssertion<T> BeInterrupted() => add(() => completion.IfInterrupted(out _), "$name must be $not interrupted");
 
-      public CompletionAssertion<T> ValueEqualTo(ICompletion<T> otherCompletion)
+      public CompletionAssertion<T> ValueEqualTo(Completion<T> otherCompletion)
       {
          return add(() => completion.ValueEqualTo(otherCompletion), $"Value of $name must $not equal value of {completionImage(otherCompletion)}");
       }
@@ -99,11 +99,11 @@ namespace Core.Assertions.Monads
 
       public Maybe<T> OrNone() => orNone(this);
 
-      public async Task<ICompletion<T>> OrFailureAsync(CancellationToken token) => await orFailureAsync(this, token);
+      public async Task<Completion<T>> OrFailureAsync(CancellationToken token) => await orFailureAsync(this, token);
 
-      public async Task<ICompletion<T>> OrFailureAsync(string message, CancellationToken token) => await orFailureAsync(this, message, token);
+      public async Task<Completion<T>> OrFailureAsync(string message, CancellationToken token) => await orFailureAsync(this, message, token);
 
-      public async Task<ICompletion<T>> OrFailureAsync(Func<string> messageFunc, CancellationToken token)
+      public async Task<Completion<T>> OrFailureAsync(Func<string> messageFunc, CancellationToken token)
       {
          return await orFailureAsync(this, messageFunc, token);
       }

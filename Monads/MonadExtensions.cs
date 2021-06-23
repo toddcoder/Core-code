@@ -236,7 +236,7 @@ namespace Core.Monads
          }
       }
 
-      public static IEnumerable<T> WhereIsCompleted<T>(this IEnumerable<ICompletion<T>> enumerable)
+      public static IEnumerable<T> WhereIsCompleted<T>(this IEnumerable<Completion<T>> enumerable)
       {
          foreach (var completion in enumerable)
          {
@@ -248,7 +248,7 @@ namespace Core.Monads
       }
 
       public static IEnumerable<(T item, TCompletion completion)> WhereIsCompleted<T, TCompletion>(this IEnumerable<T> enumerable,
-         Func<T, ICompletion<TCompletion>> predicate)
+         Func<T, Completion<TCompletion>> predicate)
       {
          foreach (var item in enumerable)
          {
@@ -769,7 +769,7 @@ namespace Core.Monads
          }
       }
 
-      public static bool If<T1, T2>(this ICompletion<(T1, T2)> completion, out T1 v1, out T2 v2)
+      public static bool If<T1, T2>(this Completion<(T1, T2)> completion, out T1 v1, out T2 v2)
       {
          if (completion.If(out var value))
          {
@@ -787,7 +787,7 @@ namespace Core.Monads
          }
       }
 
-      public static bool If<T1, T2>(this ICompletion<(T1, T2)> completion, out T1 v1, out T2 v2, out Maybe<Exception> anyException)
+      public static bool If<T1, T2>(this Completion<(T1, T2)> completion, out T1 v1, out T2 v2, out Maybe<Exception> anyException)
       {
          if (completion.If(out var value, out anyException))
          {
@@ -805,7 +805,7 @@ namespace Core.Monads
          }
       }
 
-      public static bool If<T1, T2, T3>(this ICompletion<(T1, T2, T3)> completion, out T1 v1, out T2 v2, out T3 v3)
+      public static bool If<T1, T2, T3>(this Completion<(T1, T2, T3)> completion, out T1 v1, out T2 v2, out T3 v3)
       {
          if (completion.If(out var value))
          {
@@ -825,7 +825,7 @@ namespace Core.Monads
          }
       }
 
-      public static bool If<T1, T2, T3>(this ICompletion<(T1, T2, T3)> completion, out T1 v1, out T2 v2, out T3 v3,
+      public static bool If<T1, T2, T3>(this Completion<(T1, T2, T3)> completion, out T1 v1, out T2 v2, out T3 v3,
          out Maybe<Exception> anyException)
       {
          if (completion.If(out var value, out anyException))
@@ -846,7 +846,7 @@ namespace Core.Monads
          }
       }
 
-      public static bool If<T1, T2, T3, T4>(this ICompletion<(T1, T2, T3, T4)> completion, out T1 v1, out T2 v2, out T3 v3, out T4 v4)
+      public static bool If<T1, T2, T3, T4>(this Completion<(T1, T2, T3, T4)> completion, out T1 v1, out T2 v2, out T3 v3, out T4 v4)
       {
          if (completion.If(out var value))
          {
@@ -868,7 +868,7 @@ namespace Core.Monads
          }
       }
 
-      public static bool If<T1, T2, T3, T4>(this ICompletion<(T1, T2, T3, T4)> completion, out T1 v1, out T2 v2, out T3 v3, out T4 v4,
+      public static bool If<T1, T2, T3, T4>(this Completion<(T1, T2, T3, T4)> completion, out T1 v1, out T2 v2, out T3 v3, out T4 v4,
          out Maybe<Exception> anyException)
       {
          if (completion.If(out var value, out anyException))
@@ -1015,7 +1015,7 @@ namespace Core.Monads
          }
       }
 
-      public static bool ValueOrOriginal<T1, T2>(this ICompletion<(T1, T2)> completion, out T1 v1, out T2 v2, out ICompletion<(T1, T2)> original)
+      public static bool ValueOrOriginal<T1, T2>(this Completion<(T1, T2)> completion, out T1 v1, out T2 v2, out Completion<(T1, T2)> original)
       {
          if (completion.ValueOrOriginal(out var tuple, out original))
          {
@@ -1033,8 +1033,8 @@ namespace Core.Monads
          }
       }
 
-      public static bool ValueOrOriginal<T1, T2, T3>(this ICompletion<(T1, T2, T3)> completion, out T1 v1, out T2 v2, out T3 v3,
-         out ICompletion<(T1, T2, T3)> original)
+      public static bool ValueOrOriginal<T1, T2, T3>(this Completion<(T1, T2, T3)> completion, out T1 v1, out T2 v2, out T3 v3,
+         out Completion<(T1, T2, T3)> original)
       {
          if (completion.ValueOrOriginal(out var tuple, out original))
          {
@@ -1054,8 +1054,8 @@ namespace Core.Monads
          }
       }
 
-      public static bool ValueOrOriginal<T1, T2, T3, T4>(this ICompletion<(T1, T2, T3, T4)> completion, out T1 v1, out T2 v2, out T3 v3, out T4 v4,
-         out ICompletion<(T1, T2, T3, T4)> original)
+      public static bool ValueOrOriginal<T1, T2, T3, T4>(this Completion<(T1, T2, T3, T4)> completion, out T1 v1, out T2 v2, out T3 v3, out T4 v4,
+         out Completion<(T1, T2, T3, T4)> original)
       {
          if (completion.ValueOrOriginal(out var tuple, out original))
          {
@@ -1201,7 +1201,7 @@ namespace Core.Monads
          }
       }
 
-      public static bool ValueOrCast<T1, T2, TResult>(this ICompletion<(T1, T2)> completion, out T1 v1, out T2 v2, out ICompletion<TResult> castAs)
+      public static bool ValueOrCast<T1, T2, TResult>(this Completion<(T1, T2)> completion, out T1 v1, out T2 v2, out Completion<TResult> castAs)
       {
          if (completion.ValueOrCast(out var tuple, out castAs))
          {
@@ -1219,8 +1219,8 @@ namespace Core.Monads
          }
       }
 
-      public static bool ValueOrCast<T1, T2, T3, TResult>(this ICompletion<(T1, T2, T3)> completion, out T1 v1, out T2 v2, out T3 v3,
-         out ICompletion<TResult> castAs)
+      public static bool ValueOrCast<T1, T2, T3, TResult>(this Completion<(T1, T2, T3)> completion, out T1 v1, out T2 v2, out T3 v3,
+         out Completion<TResult> castAs)
       {
          if (completion.ValueOrCast(out var tuple, out castAs))
          {
@@ -1240,8 +1240,8 @@ namespace Core.Monads
          }
       }
 
-      public static bool ValueOrCast<T1, T2, T3, T4, TResult>(this ICompletion<(T1, T2, T3, T4)> completion, out T1 v1, out T2 v2, out T3 v3,
-         out T4 v4, out ICompletion<TResult> castAs)
+      public static bool ValueOrCast<T1, T2, T3, T4, TResult>(this Completion<(T1, T2, T3, T4)> completion, out T1 v1, out T2 v2, out T3 v3,
+         out T4 v4, out Completion<TResult> castAs)
       {
          if (completion.ValueOrCast(out var tuple, out castAs))
          {
@@ -1285,9 +1285,9 @@ namespace Core.Monads
          }
       }
 
-      public static ICompletion<T> Completed<T>(this T value) => value is null ? "value cannot be null".Interrupted<T>() : new Completed<T>(value);
+      public static Completion<T> Completed<T>(this T value) => value is null ? "value cannot be null".Interrupted<T>() : new Completed<T>(value);
 
-      public static ICompletion<T> Completed<T>(this T value, CancellationToken token)
+      public static Completion<T> Completed<T>(this T value, CancellationToken token)
       {
          if (token.IsCancellationRequested)
          {
@@ -1299,9 +1299,9 @@ namespace Core.Monads
          }
       }
 
-      public static ICompletion<T> Interrupted<T>(this string message) => new Interrupted<T>(new ApplicationException(message));
+      public static Completion<T> Interrupted<T>(this string message) => new Interrupted<T>(new ApplicationException(message));
 
-      public static ICompletion<T> Interrupted<T, TException>(this object firstItem, params object[] args) where TException : Exception
+      public static Completion<T> Interrupted<T, TException>(this object firstItem, params object[] args) where TException : Exception
       {
          var list = new List<object> { firstItem };
          list.AddRange(args);
@@ -1309,31 +1309,31 @@ namespace Core.Monads
          return interrupted<T>((TException)typeof(TException).Create(list.ToArray()));
       }
 
-      public static ICompletion<T> Completion<T>(this Result<T> result) => result.Map(v => v.Completed()).Recover(interrupted<T>);
+      public static Completion<T> Completion<T>(this Result<T> result) => result.Map(v => v.Completed()).Recover(interrupted<T>);
 
-      public static ICompletion<T> Completion<T>(this Result<T> result, CancellationToken token)
+      public static Completion<T> Completion<T>(this Result<T> result, CancellationToken token)
       {
          return result.Map(v => v.Completed(token)).Recover(interrupted<T>);
       }
 
-      public static ICompletion<T> Completion<T>(this IMatched<T> matched)
+      public static Completion<T> Completion<T>(this IMatched<T> matched)
       {
          return matched.FlatMap(v => v.Completed(), cancelled<T>, interrupted<T>);
       }
 
-      public static ICompletion<T> Completion<T>(this IMatched<T> matched, CancellationToken token)
+      public static Completion<T> Completion<T>(this IMatched<T> matched, CancellationToken token)
       {
          return matched.FlatMap(v => v.Completed(token), cancelled<T>, interrupted<T>);
       }
 
-      public static ICompletion<T> Completion<T>(this Maybe<T> maybe) => maybe.Map(v => v.Completed()).DefaultTo(cancelled<T>);
+      public static Completion<T> Completion<T>(this Maybe<T> maybe) => maybe.Map(v => v.Completed()).DefaultTo(cancelled<T>);
 
-      public static ICompletion<T> Completion<T>(this Maybe<T> maybe, CancellationToken token)
+      public static Completion<T> Completion<T>(this Maybe<T> maybe, CancellationToken token)
       {
          return maybe.Map(v => v.Completed(token)).DefaultTo(cancelled<T>);
       }
 
-      private static ICompletion<T> cancelledOrInterrupted<T>(Exception exception) => exception switch
+      private static Completion<T> cancelledOrInterrupted<T>(Exception exception) => exception switch
       {
          OperationCanceledException => cancelled<T>(),
          ObjectDisposedException => cancelled<T>(),
@@ -1342,7 +1342,7 @@ namespace Core.Monads
          _ => interrupted<T>(exception)
       };
 
-      public static async Task<ICompletion<T3>> SelectMany<T1, T2, T3>(this Task<ICompletion<T1>> source, Func<T1, Task<ICompletion<T2>>> func,
+      public static async Task<Completion<T3>> SelectMany<T1, T2, T3>(this Task<Completion<T1>> source, Func<T1, Task<Completion<T2>>> func,
          Func<T1, T2, T3> projection)
       {
          var t = await source;
@@ -1372,7 +1372,7 @@ namespace Core.Monads
          }
       }
 
-      public static Result<T> Result<T>(this ICompletion<T> completion)
+      public static Result<T> Result<T>(this Completion<T> completion)
       {
          if (completion.If(out var value, out var _exception))
          {
@@ -1575,35 +1575,35 @@ namespace Core.Monads
          return result.Map(t => func(t.Item1, t.Item2, t.Item3, t.Item4));
       }
 
-      public static ICompletion<TResult> Map<T1, T2, TResult>(this ICompletion<(T1, T2)> completion, Func<T1, T2, TResult> func)
+      public static Completion<TResult> Map<T1, T2, TResult>(this Completion<(T1, T2)> completion, Func<T1, T2, TResult> func)
       {
          return completion.Map(t => func(t.Item1, t.Item2));
       }
 
-      public static ICompletion<TResult> Map<T1, T2, TResult>(this ICompletion<(T1, T2)> completion, Func<T1, T2, ICompletion<TResult>> func)
+      public static Completion<TResult> Map<T1, T2, TResult>(this Completion<(T1, T2)> completion, Func<T1, T2, Completion<TResult>> func)
       {
          return completion.Map(t => func(t.Item1, t.Item2));
       }
 
-      public static ICompletion<TResult> Map<T1, T2, T3, TResult>(this ICompletion<(T1, T2, T3)> completion, Func<T1, T2, T3, TResult> func)
+      public static Completion<TResult> Map<T1, T2, T3, TResult>(this Completion<(T1, T2, T3)> completion, Func<T1, T2, T3, TResult> func)
       {
          return completion.Map(t => func(t.Item1, t.Item2, t.Item3));
       }
 
-      public static ICompletion<TResult> Map<T1, T2, T3, TResult>(this ICompletion<(T1, T2, T3)> completion,
-         Func<T1, T2, T3, ICompletion<TResult>> func)
+      public static Completion<TResult> Map<T1, T2, T3, TResult>(this Completion<(T1, T2, T3)> completion,
+         Func<T1, T2, T3, Completion<TResult>> func)
       {
          return completion.Map(t => func(t.Item1, t.Item2, t.Item3));
       }
 
-      public static ICompletion<TResult> Map<T1, T2, T3, T4, TResult>(this ICompletion<(T1, T2, T3, T4)> completion,
+      public static Completion<TResult> Map<T1, T2, T3, T4, TResult>(this Completion<(T1, T2, T3, T4)> completion,
          Func<T1, T2, T3, T4, TResult> func)
       {
          return completion.Map(t => func(t.Item1, t.Item2, t.Item3, t.Item4));
       }
 
-      public static ICompletion<TResult> Map<T1, T2, T3, T4, TResult>(this ICompletion<(T1, T2, T3, T4)> completion,
-         Func<T1, T2, T3, T4, ICompletion<TResult>> func)
+      public static Completion<TResult> Map<T1, T2, T3, T4, TResult>(this Completion<(T1, T2, T3, T4)> completion,
+         Func<T1, T2, T3, T4, Completion<TResult>> func)
       {
          return completion.Map(t => func(t.Item1, t.Item2, t.Item3, t.Item4));
       }

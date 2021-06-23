@@ -22,7 +22,7 @@ namespace Core.Objects
          return lateLazy.Value.Success();
       });
 
-      public async Task<ICompletion<T>> ActivateWithAsync(Func<T> activator, CancellationToken token)
+      public async Task<Completion<T>> ActivateWithAsync(Func<T> activator, CancellationToken token)
       {
          return await runAsync(t => ActivateWith(activator).Completion(t), token);
       }

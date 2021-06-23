@@ -131,11 +131,11 @@ namespace Core.Assertions.Collections
 
       public Maybe<List<T>> OrNone() => orNone(this);
 
-      public async Task<ICompletion<List<T>>> OrFailureAsync(CancellationToken token) => await orFailureAsync(this, token);
+      public async Task<Completion<List<T>>> OrFailureAsync(CancellationToken token) => await orFailureAsync(this, token);
 
-      public async Task<ICompletion<List<T>>> OrFailureAsync(string message, CancellationToken token) => await orFailureAsync(this, message, token);
+      public async Task<Completion<List<T>>> OrFailureAsync(string message, CancellationToken token) => await orFailureAsync(this, message, token);
 
-      public async Task<ICompletion<List<T>>> OrFailureAsync(Func<string> messageFunc, CancellationToken token)
+      public async Task<Completion<List<T>>> OrFailureAsync(Func<string> messageFunc, CancellationToken token)
       {
          return await orFailureAsync(this, messageFunc, token);
       }

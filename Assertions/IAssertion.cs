@@ -46,11 +46,11 @@ namespace Core.Assertions
 
       Maybe<T> OrNone();
 
-      Task<ICompletion<T>> OrFailureAsync(CancellationToken token);
+      Task<Completion<T>> OrFailureAsync(CancellationToken token);
 
-      Task<ICompletion<T>> OrFailureAsync(string message, CancellationToken token);
+      Task<Completion<T>> OrFailureAsync(string message, CancellationToken token);
 
-      Task<ICompletion<T>> OrFailureAsync(Func<string> messageFunc, CancellationToken token);
+      Task<Completion<T>> OrFailureAsync(Func<string> messageFunc, CancellationToken token);
 
       bool OrReturn();
    }

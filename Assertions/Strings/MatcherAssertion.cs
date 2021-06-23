@@ -107,11 +107,11 @@ namespace Core.Assertions.Strings
 
       public Maybe<Matcher> OrNone() => orNone(this);
 
-      public async Task<ICompletion<Matcher>> OrFailureAsync(CancellationToken token) => await orFailureAsync(this, token);
+      public async Task<Completion<Matcher>> OrFailureAsync(CancellationToken token) => await orFailureAsync(this, token);
 
-      public async Task<ICompletion<Matcher>> OrFailureAsync(string message, CancellationToken token) => await orFailureAsync(this, message, token);
+      public async Task<Completion<Matcher>> OrFailureAsync(string message, CancellationToken token) => await orFailureAsync(this, message, token);
 
-      public async Task<ICompletion<Matcher>> OrFailureAsync(Func<string> messageFunc, CancellationToken token)
+      public async Task<Completion<Matcher>> OrFailureAsync(Func<string> messageFunc, CancellationToken token)
       {
          return await orFailureAsync(this, messageFunc, token);
       }

@@ -17,7 +17,7 @@ namespace Core.Monads
          }
       }
 
-      public static ICompletion<T> tryToComplete<T>(Func<T> func)
+      public static Completion<T> tryToComplete<T>(Func<T> func)
       {
          try
          {
@@ -29,7 +29,7 @@ namespace Core.Monads
          }
       }
 
-      public static ICompletion<T> tryToComplete<T>(Func<Result<T>> func) => func().Completion();
+      public static Completion<T> tryToComplete<T>(Func<Result<T>> func) => func().Completion();
 
       public static Result<T> tryTo<T>(Func<Result<T>> func)
       {
@@ -43,7 +43,7 @@ namespace Core.Monads
          }
       }
 
-      public static ICompletion<T> tryToComplete<T>(Func<ICompletion<T>> func)
+      public static Completion<T> tryToComplete<T>(Func<Completion<T>> func)
       {
          try
          {

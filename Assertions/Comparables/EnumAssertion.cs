@@ -133,11 +133,11 @@ namespace Core.Assertions.Comparables
 
       public Maybe<TEnum> OrNone() => orNone(this);
 
-      public async Task<ICompletion<TEnum>> OrFailureAsync(CancellationToken token) => await orFailureAsync(this, token);
+      public async Task<Completion<TEnum>> OrFailureAsync(CancellationToken token) => await orFailureAsync(this, token);
 
-      public async Task<ICompletion<TEnum>> OrFailureAsync(string message, CancellationToken token) => await orFailureAsync(this, message, token);
+      public async Task<Completion<TEnum>> OrFailureAsync(string message, CancellationToken token) => await orFailureAsync(this, message, token);
 
-      public async Task<ICompletion<TEnum>> OrFailureAsync(Func<string> messageFunc, CancellationToken token)
+      public async Task<Completion<TEnum>> OrFailureAsync(Func<string> messageFunc, CancellationToken token)
       {
          return await orFailureAsync(this, messageFunc, token);
       }

@@ -159,11 +159,11 @@ namespace Core.Assertions.Computers
 
       public Maybe<FileName> OrNone() => orNone(this);
 
-      public async Task<ICompletion<FileName>> OrFailureAsync(CancellationToken token) => await orFailureAsync(this, token);
+      public async Task<Completion<FileName>> OrFailureAsync(CancellationToken token) => await orFailureAsync(this, token);
 
-      public async Task<ICompletion<FileName>> OrFailureAsync(string message, CancellationToken token) => await orFailureAsync(this, message, token);
+      public async Task<Completion<FileName>> OrFailureAsync(string message, CancellationToken token) => await orFailureAsync(this, message, token);
 
-      public async Task<ICompletion<FileName>> OrFailureAsync(Func<string> messageFunc, CancellationToken token)
+      public async Task<Completion<FileName>> OrFailureAsync(Func<string> messageFunc, CancellationToken token)
       {
          return await orFailureAsync(this, messageFunc, token);
       }

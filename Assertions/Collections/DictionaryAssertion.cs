@@ -155,15 +155,15 @@ namespace Core.Assertions.Collections
 
       public Maybe<Dictionary<TKey, TValue>> OrNone() => orNone(this);
 
-      public async Task<ICompletion<Dictionary<TKey, TValue>>> OrFailureAsync(CancellationToken token) =>
+      public async Task<Completion<Dictionary<TKey, TValue>>> OrFailureAsync(CancellationToken token) =>
          await orFailureAsync(this, token);
 
-      public async Task<ICompletion<Dictionary<TKey, TValue>>> OrFailureAsync(string message, CancellationToken token)
+      public async Task<Completion<Dictionary<TKey, TValue>>> OrFailureAsync(string message, CancellationToken token)
       {
          return await orFailureAsync(this, message, token);
       }
 
-      public async Task<ICompletion<Dictionary<TKey, TValue>>> OrFailureAsync(Func<string> messageFunc, CancellationToken token)
+      public async Task<Completion<Dictionary<TKey, TValue>>> OrFailureAsync(Func<string> messageFunc, CancellationToken token)
       {
          return await orFailureAsync(this, messageFunc, token);
       }

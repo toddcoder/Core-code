@@ -39,12 +39,12 @@ namespace Core.Computers
          return "File not found".Failure<FileName>();
       }
 
-      public static async Task<ICompletion<FileName>> LocalAndParentFilesAsync(this IEnumerable<FolderName> folders, Predicate<FileName> predicate)
+      public static async Task<Completion<FileName>> LocalAndParentFilesAsync(this IEnumerable<FolderName> folders, Predicate<FileName> predicate)
       {
          return await runFromResultAsync(() => folders.LocalAndParentFiles(predicate));
       }
 
-      public static async Task<ICompletion<FileName>> LocalAndParentFilesAsync(this IEnumerable<FolderName> folders, Predicate<FileName> predicate,
+      public static async Task<Completion<FileName>> LocalAndParentFilesAsync(this IEnumerable<FolderName> folders, Predicate<FileName> predicate,
          CancellationToken token)
       {
          return await runFromResultAsync(t => folders.LocalAndParentFiles(predicate), token);
@@ -74,12 +74,12 @@ namespace Core.Computers
          return "Folder not found".Failure<FolderName>();
       }
 
-      public static async Task<ICompletion<FolderName>> LocalAndParentFoldersAsync(this IEnumerable<FolderName> folders,
+      public static async Task<Completion<FolderName>> LocalAndParentFoldersAsync(this IEnumerable<FolderName> folders,
          Predicate<FolderName> predicate)
       {
          return await runFromResultAsync(() => folders.LocalAndParentFolders(predicate));
       }
-      public static async Task<ICompletion<FolderName>> LocalAndParentFoldersAsync(this IEnumerable<FolderName> folders,
+      public static async Task<Completion<FolderName>> LocalAndParentFoldersAsync(this IEnumerable<FolderName> folders,
          Predicate<FolderName> predicate, CancellationToken token)
       {
          return await runFromResultAsync(t => folders.LocalAndParentFolders(predicate), token);

@@ -256,7 +256,7 @@
     <Compile Include="Monads\Failure.cs" />
     <Compile Include="Monads\FailureEventArgs.cs" />
     <Compile Include="Monads\FullStackException.cs" />
-    <Compile Include="Monads\ICompletion.cs" />
+    <Compile Include="Monads\Completion.cs" />
     <Compile Include="Monads\IHasValue.cs" />
     <Compile Include="Monads\IMatched.cs" />
     <Compile Include="Monads\Maybe.cs" />
