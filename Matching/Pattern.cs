@@ -107,7 +107,7 @@ namespace Core.Matching
 
       public bool Friendly => friendly;
 
-      public IMatched<Result> MatchedBy(string input)
+      public IMatched<MatchResult> MatchedBy(string input)
       {
          try
          {
@@ -142,16 +142,16 @@ namespace Core.Matching
 
             if (matches.Length > 0)
             {
-               return new Result(matches, indexesToNames, namesToIndexes, slicer, input).Matched();
+               return new MatchResult(matches, indexesToNames, namesToIndexes, slicer, input).Matched();
             }
             else
             {
-               return notMatched<Result>();
+               return notMatched<MatchResult>();
             }
          }
          catch (Exception exception)
          {
-            return failedMatch<Result>(exception);
+            return failedMatch<MatchResult>(exception);
          }
       }
 

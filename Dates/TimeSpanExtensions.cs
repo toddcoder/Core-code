@@ -120,7 +120,7 @@ namespace Core.Dates
             select span;
       }
 
-      private static IResult<TimeSpan> getSpan(Result result)
+      private static IResult<TimeSpan> getSpan(MatchResult result)
       {
          var value = result.FirstGroup;
          var unit = result.SecondGroup;

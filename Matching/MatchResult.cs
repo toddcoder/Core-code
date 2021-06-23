@@ -11,9 +11,9 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Matching
 {
-   public class Result : IEnumerable<Match>
+   public class MatchResult : IEnumerable<Match>
    {
-      public static Result Empty
+      public static MatchResult Empty
       {
          get => new(Array.Empty<Match>(), new Hash<int, string>(), new StringHash<int>(true), new Slicer(string.Empty), string.Empty);
       }
@@ -24,7 +24,7 @@ namespace Core.Matching
       protected Slicer slicer;
       protected string input;
 
-      internal Result(Match[] matches, Hash<int, string> indexesToNames, StringHash<int> namesToIndexes, Slicer slicer, string input)
+      internal MatchResult(Match[] matches, Hash<int, string> indexesToNames, StringHash<int> namesToIndexes, Slicer slicer, string input)
       {
          this.matches = matches;
          this.indexesToNames = indexesToNames;
@@ -385,7 +385,7 @@ namespace Core.Matching
 
       public string Unmatched => input.Drop(Index + Length);
 
-      public IMatched<Result> MatchedBy(Pattern pattern) => pattern.MatchedBy(Unmatched);
+      public IMatched<MatchResult> MatchedBy(Pattern pattern) => pattern.MatchedBy(Unmatched);
 
       public string[] Groups(int matchIndex) => getMatch(matchIndex).Groups.Select(g => g.GetSlice(slicer)).ToArray();
    }

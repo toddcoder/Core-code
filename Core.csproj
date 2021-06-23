@@ -325,7 +325,7 @@
     <Compile Include="Matching\Match.cs" />
     <Compile Include="Matching\Pattern.cs" />
     <Compile Include="Matching\RegexExtensions.cs" />
-    <Compile Include="Matching\Result.cs" />
+    <Compile Include="Matching\MatchResult.cs" />
     <Compile Include="Matching\Scraper.cs" />
     <Compile Include="Matching\Source.cs" />
     <Compile Include="Regex\Matcher.cs" />

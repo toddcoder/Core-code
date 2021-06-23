@@ -536,7 +536,7 @@ namespace Core.Assertions
 
       public static PatternAssertion Must(this Pattern value) => new(value);
 
-      public static ResultAssertion Must(this Result value) => new(value);
+      public static ResultAssertion Must(this MatchResult value) => new(value);
 
       [Obsolete("Use value version")]
       public static MatcherAssertion Must(this Expression<Func<Matcher>> expression)
@@ -563,7 +563,7 @@ namespace Core.Assertions
          return (PatternAssertion)assertion.Named($"Pattern {name}");
       }
 
-      public static ResultAssertion Must(this (Result, string) tuple)
+      public static ResultAssertion Must(this (MatchResult, string) tuple)
       {
          var (value, name) = tuple;
          var assertion = value.Must();
