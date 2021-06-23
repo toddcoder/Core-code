@@ -70,7 +70,7 @@ namespace Core.Dates
 
       public static TimeSpan ToTimeSpan(this string source, TimeSpan defaultValue) => source.TimeSpan().Recover(_ => defaultValue);
 
-      public static IMaybe<TimeSpan> AsTimeSpan(this string source)
+      public static Maybe<TimeSpan> AsTimeSpan(this string source)
       {
          var intervals = source.Split("/s* (',' | 'and') /s*; f");
          var spans = intervals.Where(i => i.IsNotEmpty()).Select(getSpan);
@@ -91,7 +91,7 @@ namespace Core.Dates
          return newSpan.Some();
       }
 
-      public static IResult<TimeSpan> TimeSpan(this string source)
+      public static Result<TimeSpan> TimeSpan(this string source)
       {
          var intervals = source.Split("/s* (',' | 'and') /s*; f");
          var spans = intervals.Where(i => i.IsNotEmpty()).Select(getSpan);
@@ -112,7 +112,7 @@ namespace Core.Dates
          return newSpan.Success();
       }
 
-      private static IResult<TimeSpan> getSpan(string source)
+      private static Result<TimeSpan> getSpan(string source)
       {
          return
             from result in source.Matches(REGEX_TIMER_INTERVAL).Result($"Can't match {source}")
@@ -120,7 +120,7 @@ namespace Core.Dates
             select span;
       }
 
-      private static IResult<TimeSpan> getSpan(Result result)
+      private static Result<TimeSpan> getSpan(MatchResult result)
       {
          var value = result.FirstGroup;
          var unit = result.SecondGroup;

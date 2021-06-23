@@ -21,7 +21,7 @@ namespace Core.Data.ConnectionStrings
          return user.IsNotEmpty() && password.IsNotEmpty() ? $"{baseValue}User ID={user}; Password={password}" : baseValue;
       }
 
-      public static string GetConnectionString(string server, string database, string application, IMaybe<string> _user, IMaybe<string> _password)
+      public static string GetConnectionString(string server, string database, string application, Maybe<string> _user, Maybe<string> _password)
       {
          if (_user.If(out var user) && _password.If(out var password))
          {
@@ -33,7 +33,7 @@ namespace Core.Data.ConnectionStrings
          }
       }
 
-      public static IResult<SqlConnectionString> FromConnection(Connection connection)
+      public static Result<SqlConnectionString> FromConnection(Connection connection)
       {
          if (connection.If("connection", out var connectionString))
          {

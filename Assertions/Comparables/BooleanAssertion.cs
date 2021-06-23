@@ -101,19 +101,19 @@ namespace Core.Assertions.Comparables
          return forceConvert<bool, TException, TResult>(this, args);
       }
 
-      public IResult<bool> OrFailure() => orFailure(this);
+      public Result<bool> OrFailure() => orFailure(this);
 
-      public IResult<bool> OrFailure(string message) => orFailure(this, message);
+      public Result<bool> OrFailure(string message) => orFailure(this, message);
 
-      public IResult<bool> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
+      public Result<bool> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
 
-      public IMaybe<bool> OrNone() => orNone(this);
+      public Maybe<bool> OrNone() => orNone(this);
 
-      public async Task<ICompletion<bool>> OrFailureAsync(CancellationToken token) => await orFailureAsync(this, token);
+      public async Task<Completion<bool>> OrFailureAsync(CancellationToken token) => await orFailureAsync(this, token);
 
-      public async Task<ICompletion<bool>> OrFailureAsync(string message, CancellationToken token) => await orFailureAsync(this, message, token);
+      public async Task<Completion<bool>> OrFailureAsync(string message, CancellationToken token) => await orFailureAsync(this, message, token);
 
-      public async Task<ICompletion<bool>> OrFailureAsync(Func<string> messageFunc, CancellationToken token)
+      public async Task<Completion<bool>> OrFailureAsync(Func<string> messageFunc, CancellationToken token)
       {
          return await orFailureAsync(this, messageFunc, token);
       }

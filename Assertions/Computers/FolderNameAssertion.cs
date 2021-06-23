@@ -129,20 +129,20 @@ namespace Core.Assertions.Computers
          return forceConvert<FolderName, TException, TResult>(this, args);
       }
 
-      public IResult<FolderName> OrFailure() => orFailure(this);
+      public Result<FolderName> OrFailure() => orFailure(this);
 
-      public IResult<FolderName> OrFailure(string message) => orFailure(this, message);
+      public Result<FolderName> OrFailure(string message) => orFailure(this, message);
 
-      public IResult<FolderName> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
+      public Result<FolderName> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
 
-      public IMaybe<FolderName> OrNone() => orNone(this);
+      public Maybe<FolderName> OrNone() => orNone(this);
 
-      public async Task<ICompletion<FolderName>> OrFailureAsync(CancellationToken token) => await orFailureAsync(this, token);
+      public async Task<Completion<FolderName>> OrFailureAsync(CancellationToken token) => await orFailureAsync(this, token);
 
-      public async Task<ICompletion<FolderName>> OrFailureAsync(string message, CancellationToken token) =>
+      public async Task<Completion<FolderName>> OrFailureAsync(string message, CancellationToken token) =>
          await orFailureAsync(this, message, token);
 
-      public async Task<ICompletion<FolderName>> OrFailureAsync(Func<string> messageFunc, CancellationToken token)
+      public async Task<Completion<FolderName>> OrFailureAsync(Func<string> messageFunc, CancellationToken token)
       {
          return await orFailureAsync(this, messageFunc, token);
       }

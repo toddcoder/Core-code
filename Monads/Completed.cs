@@ -5,7 +5,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads
 {
-   public class Completed<T> : ICompletion<T>, IEquatable<Completed<T>>
+   public class Completed<T> : Completion<T>, IEquatable<Completed<T>>
    {
       public static implicit operator bool(Completed<T> _) => true;
 
@@ -15,88 +15,88 @@ namespace Core.Monads
 
       public T Value => value;
 
-      public ICompletion<TResult> Map<TResult>(Func<T, ICompletion<TResult>> ifCompleted) => ifCompleted(value);
+      public override Completion<TResult> Map<TResult>(Func<T, Completion<TResult>> ifCompleted) => ifCompleted(value);
 
-      public ICompletion<TResult> Map<TResult>(Func<T, TResult> ifCompleted) => ifCompleted(value).Completed();
+      public override Completion<TResult> Map<TResult>(Func<T, TResult> ifCompleted) => ifCompleted(value).Completed();
 
-      public ICompletion<TResult> Map<TResult>(Func<T, ICompletion<TResult>> ifCompleted, Func<ICompletion<TResult>> ifCancelled)
+      public override Completion<TResult> Map<TResult>(Func<T, Completion<TResult>> ifCompleted, Func<Completion<TResult>> ifCancelled)
       {
          return ifCompleted(value);
       }
 
-      public ICompletion<TResult> Map<TResult>(Func<T, ICompletion<TResult>> ifCompleted,
-         Func<Exception, ICompletion<TResult>> ifInterrupted)
+      public override Completion<TResult> Map<TResult>(Func<T, Completion<TResult>> ifCompleted,
+         Func<Exception, Completion<TResult>> ifInterrupted)
       {
          return ifCompleted(value);
       }
 
-      public ICompletion<TResult> Map<TResult>(Func<T, ICompletion<TResult>> ifCompleted, Func<ICompletion<TResult>> ifCancelled,
-         Func<Exception, ICompletion<TResult>> ifInterrupted)
+      public override Completion<TResult> Map<TResult>(Func<T, Completion<TResult>> ifCompleted, Func<Completion<TResult>> ifCancelled,
+         Func<Exception, Completion<TResult>> ifInterrupted)
       {
          return ifCompleted(value);
       }
 
-      public TResult FlatMap<TResult>(Func<T, TResult> ifCompleted, Func<TResult> ifCancelled, Func<Exception, TResult> ifInterrupted)
+      public override TResult FlatMap<TResult>(Func<T, TResult> ifCompleted, Func<TResult> ifCancelled, Func<Exception, TResult> ifInterrupted)
       {
          return ifCompleted(value);
       }
 
-      public TResult FlatMap<TResult>(Func<T, TResult> ifCompleted, Func<TResult> ifNotCompleted) => ifCompleted(value);
+      public override TResult FlatMap<TResult>(Func<T, TResult> ifCompleted, Func<TResult> ifNotCompleted) => ifCompleted(value);
 
-      public ICompletion<T> If(Action<T> action)
+      public override Completion<T> If(Action<T> action)
       {
          action(value);
          return this;
       }
 
-      public ICompletion<T> Else(Action action) => this;
+      public override Completion<T> Else(Action action) => this;
 
-      public ICompletion<T> Else(Action<Exception> action) => this;
+      public override Completion<T> Else(Action<Exception> action) => this;
 
-      public ICompletion<T> Do(Action<T> ifCompleted, Action ifNotCompleted)
+      public override Completion<T> Do(Action<T> ifCompleted, Action ifNotCompleted)
       {
          ifCompleted(value);
          return this;
       }
 
-      public ICompletion<T> Do(Action<T> ifCompleted, Action ifCancelled, Action<Exception> ifInterrupted)
+      public override Completion<T> Do(Action<T> ifCompleted, Action ifCancelled, Action<Exception> ifInterrupted)
       {
          ifCompleted(value);
          return this;
       }
 
-      public ICompletion<TOther> InterruptedAs<TOther>() => throw "There is no exception".Throws();
+      public override Completion<TOther> InterruptedAs<TOther>() => throw "There is no exception".Throws();
 
-      public ICompletion<T> Or(ICompletion<T> other) => this;
+      public override Completion<T> Or(Completion<T> other) => this;
 
-      public ICompletion<T> Or(Func<ICompletion<T>> other) => this;
+      public override Completion<T> Or(Func<Completion<T>> other) => this;
 
-      public ICompletion<TResult> SelectMany<TResult>(Func<T, ICompletion<TResult>> projection) => projection(value);
+      public override Completion<TResult> SelectMany<TResult>(Func<T, Completion<TResult>> projection) => projection(value);
 
-      public ICompletion<T2> SelectMany<T1, T2>(Func<T, ICompletion<T1>> func, Func<T, T1, T2> projection)
+      public override Completion<T2> SelectMany<T1, T2>(Func<T, Completion<T1>> func, Func<T, T1, T2> projection)
       {
          return func(value).Map(t1 => projection(value, t1).Completed(), cancelled<T2>, interrupted<T2>);
       }
 
-      public ICompletion<TResult> SelectMany<TResult>(Func<T, TResult> func) => func(value).Completed();
+      public override Completion<TResult> SelectMany<TResult>(Func<T, TResult> func) => func(value).Completed();
 
-      public ICompletion<TResult> Select<TResult>(ICompletion<T> result, Func<T, TResult> func) => func(value).Completed();
+      public override Completion<TResult> Select<TResult>(Completion<T> result, Func<T, TResult> func) => func(value).Completed();
 
-      public bool If(out T value)
+      public override bool If(out T value)
       {
          value = this.value;
          return true;
       }
 
-      public bool IfCancelled() => false;
+      public override bool IfCancelled() => false;
 
-      public bool IfInterrupted(out Exception exception)
+      public override bool IfInterrupted(out Exception exception)
       {
          exception = default;
          return false;
       }
 
-      public bool If(out T value, out IMaybe<Exception> _exception)
+      public override bool If(out T value, out Maybe<Exception> _exception)
       {
          value = this.value;
          _exception = none<Exception>();
@@ -104,61 +104,61 @@ namespace Core.Monads
          return true;
       }
 
-      public bool IfNot(out IMaybe<Exception> _exception)
+      public override bool IfNot(out Maybe<Exception> _exception)
       {
          _exception = none<Exception>();
          return false;
       }
 
-      public bool Else<TOther>(out ICompletion<TOther> result)
+      public override bool Else<TOther>(out Completion<TOther> result)
       {
          result = default;
          return false;
       }
 
-      public ICompletion<TOther> NotCompleted<TOther>() => cancelled<TOther>();
+      public  override Completion<TOther> NotCompleted<TOther>() => cancelled<TOther>();
 
-      public bool IsCompleted(out ICompletion<T> completed)
+      public override  bool IsCompleted(out Completion<T> completed)
       {
          completed = this;
          return true;
       }
 
-      public bool NotCompleted(out ICompletion<T> notCompleted)
+      public  override bool NotCompleted(out Completion<T> notCompleted)
       {
          notCompleted = this;
          return false;
       }
 
-      public void Force()
+      public override  void Force()
       {
       }
 
-      public T ForceValue() => value;
+      public  override T ForceValue() => value;
 
-      public ICompletion<T> CancelledOnly() => cancelled<T>();
+      public override  Completion<T> CancelledOnly() => cancelled<T>();
 
-      public ICompletion<TOther> CancelledOnly<TOther>() => cancelled<TOther>();
+      public override Completion<TOther> CancelledOnly<TOther>() => cancelled<TOther>();
 
-      public ICompletion<TOther> NotCompletedOnly<TOther>() => cancelled<TOther>();
+      public override Completion<TOther> NotCompletedOnly<TOther>() => cancelled<TOther>();
 
-      public void Deconstruct(out IMaybe<T> value, out IMaybe<Exception> _exception)
+      public override void Deconstruct(out Maybe<T> value, out Maybe<Exception> _exception)
       {
          value = this.value.Some();
          _exception = none<Exception>();
       }
 
-      public ICompletion<T> OnCompleted(Action<T> action)
+      public override Completion<T> OnCompleted(Action<T> action)
       {
          action(value);
          return this;
       }
 
-      public ICompletion<T> OnCancelled(Action action) => this;
+      public override Completion<T> OnCancelled(Action action) => this;
 
-      public ICompletion<T> OnInterrupted(Action<Exception> action) => this;
+      public override Completion<T> OnInterrupted(Action<Exception> action) => this;
 
-      public bool ValueOrOriginal(out T value, out ICompletion<T> original)
+      public override bool ValueOrOriginal(out T value, out Completion<T> original)
       {
          value = this.value;
          original = this;
@@ -166,7 +166,7 @@ namespace Core.Monads
          return true;
       }
 
-      public bool ValueOrCast<TCompletion>(out T value, out ICompletion<TCompletion> completion)
+      public override bool ValueOrCast<TCompletion>(out T value, out Completion<TCompletion> completion)
       {
          value = this.value;
          completion = "Do not use this".Interrupted<TCompletion>();
@@ -174,13 +174,13 @@ namespace Core.Monads
          return true;
       }
 
-      public bool ValueEqualTo(ICompletion<T> otherCompletion) => otherCompletion.If(out var otherValue) && EqualToValueOf(otherValue);
+      public override bool ValueEqualTo(Completion<T> otherCompletion) => otherCompletion.If(out var otherValue) && EqualToValueOf(otherValue);
 
-      public bool EqualToValueOf(T otherValue) => value.Equals(otherValue);
+      public override bool EqualToValueOf(T otherValue) => value.Equals(otherValue);
 
-      public ICompletion<object> AsObject() => value.Completed<object>();
+      public Completion<object> AsObject() => value.Completed<object>();
 
-      public ICompletion<TResult> CastAs<TResult>()
+      public override Completion<TResult> CastAs<TResult>()
       {
          if (value is TResult result)
          {
@@ -192,11 +192,11 @@ namespace Core.Monads
          }
       }
 
-      public ICompletion<T> Where(Predicate<T> predicate) => predicate(value) ? this : cancelled<T>();
+      public override Completion<T> Where(Predicate<T> predicate) => predicate(value) ? this : cancelled<T>();
 
-      public ICompletion<T> Where(Predicate<T> predicate, string exceptionMessage) => predicate(value) ? this : exceptionMessage.Interrupted<T>();
+      public override Completion<T> Where(Predicate<T> predicate, string exceptionMessage) => predicate(value) ? this : exceptionMessage.Interrupted<T>();
 
-      public ICompletion<T> Where(Predicate<T> predicate, Func<string> exceptionMessage)
+      public override Completion<T> Where(Predicate<T> predicate, Func<string> exceptionMessage)
       {
          return predicate(value) ? this : exceptionMessage().Interrupted<T>();
       }

@@ -14,7 +14,7 @@ namespace Core.Objects
       protected const BindingFlags GET_FIELD_BINDINGS = BASE_BINDINGS | BindingFlags.GetField;
       protected const BindingFlags SET_FIELD_BINDINGS = BASE_BINDINGS | BindingFlags.SetField;
 
-      public static IResult<Invoker> From(object obj) =>
+      public static Result<Invoker> From(object obj) =>
          from nonNull in obj.Must().Not.BeNull().OrFailure()
          from type in nonNull.GetType().Success()
          select new Invoker(nonNull, type);

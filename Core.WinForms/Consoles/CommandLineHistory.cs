@@ -38,9 +38,9 @@ namespace Core.WinForms.Consoles
          position = lines.Count;
       }
 
-      public IMaybe<string> Current => maybe(position.Between(0).Until(lines.Count), () => lines[position]);
+      public Maybe<string> Current => maybe(position.Between(0).Until(lines.Count), () => lines[position]);
 
-      public IMaybe<string> Forward()
+      public Maybe<string> Forward()
       {
          if (position + 1 < lines.Count)
          {
@@ -53,7 +53,7 @@ namespace Core.WinForms.Consoles
          }
       }
 
-      public IMaybe<string> Backward()
+      public Maybe<string> Backward()
       {
          if (position > 0)
          {

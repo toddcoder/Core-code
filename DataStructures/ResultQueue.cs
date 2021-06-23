@@ -11,12 +11,12 @@ namespace Core.DataStructures
          this.queue = queue;
       }
 
-      public IResult<T> Dequeue(string message) => queue.Dequeue().Result(message);
+      public Result<T> Dequeue(string message) => queue.Dequeue().Result(message);
 
-      public IResult<T> Dequeue() => Dequeue("Empty queue");
+      public Result<T> Dequeue() => Dequeue("Empty queue");
 
-      public IResult<T> Peek(string message) => queue.Peek().Result(message);
+      public Result<T> Peek(string message) => queue.Peek().Result(message);
 
-      public IResult<T> Peek() => Peek("Empty queue");
+      public Result<T> Peek() => Peek("Empty queue");
    }
 }

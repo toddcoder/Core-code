@@ -5,6 +5,6 @@ namespace Core.Data.Setups
 {
    public interface ISetupWithInfo
    {
-      IMaybe<SqlInfoMessageEventHandler> Handler { get; }
+      Maybe<SqlInfoMessageEventHandler> Handler { get; }
    }
 }

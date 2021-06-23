@@ -30,9 +30,9 @@ namespace Core.Data.DataSources
          _ => throw $"Doesn't support {type}".Throws()
       };
 
-      protected IMaybe<FileName> associatedFile;
+      protected Maybe<FileName> associatedFile;
 
-      public OleDbDataSource(string connectionString, IMaybe<FileName> associatedFile) : base(connectionString, "30 seconds".ToTimeSpan())
+      public OleDbDataSource(string connectionString, Maybe<FileName> associatedFile) : base(connectionString, "30 seconds".ToTimeSpan())
       {
          ConnectionString = getFileConnectionString(associatedFile);
          this.associatedFile = associatedFile;

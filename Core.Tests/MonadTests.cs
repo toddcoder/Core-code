@@ -21,7 +21,7 @@ namespace Core.Tests
          this.interrupt = interrupt;
       }
 
-      public async Task<ICompletion<long>> CountAsync(CancellationTokenSource source)
+      public async Task<Completion<long>> CountAsync(CancellationTokenSource source)
       {
          return await runAsync(t =>
          {
@@ -105,11 +105,11 @@ namespace Core.Tests
          }
       }
 
-      protected static async Task<ICompletion<int>> getOne(CancellationToken token) => await runAsync(t => 1.Completed(), token);
+      protected static async Task<Completion<int>> getOne(CancellationToken token) => await runAsync(t => 1.Completed(), token);
 
-      protected static async Task<ICompletion<int>> getTwo(CancellationToken token) => await runAsync(t => 2.Completed(), token);
+      protected static async Task<Completion<int>> getTwo(CancellationToken token) => await runAsync(t => 2.Completed(), token);
 
-      protected static async Task<ICompletion<int>> getThree(CancellationToken token) => await runAsync(t => 3.Completed(), token);
+      protected static async Task<Completion<int>> getThree(CancellationToken token) => await runAsync(t => 3.Completed(), token);
 
       [TestMethod]
       public void RunAsyncTest()

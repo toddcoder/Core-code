@@ -38,19 +38,19 @@ namespace Core.Assertions
 
       TResult Force<TException, TResult>(params object[] args) where TException : Exception;
 
-      IResult<T> OrFailure();
+      Result<T> OrFailure();
 
-      IResult<T> OrFailure(string message);
+      Result<T> OrFailure(string message);
 
-      IResult<T> OrFailure(Func<string> messageFunc);
+      Result<T> OrFailure(Func<string> messageFunc);
 
-      IMaybe<T> OrNone();
+      Maybe<T> OrNone();
 
-      Task<ICompletion<T>> OrFailureAsync(CancellationToken token);
+      Task<Completion<T>> OrFailureAsync(CancellationToken token);
 
-      Task<ICompletion<T>> OrFailureAsync(string message, CancellationToken token);
+      Task<Completion<T>> OrFailureAsync(string message, CancellationToken token);
 
-      Task<ICompletion<T>> OrFailureAsync(Func<string> messageFunc, CancellationToken token);
+      Task<Completion<T>> OrFailureAsync(Func<string> messageFunc, CancellationToken token);
 
       bool OrReturn();
    }

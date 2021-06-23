@@ -33,7 +33,7 @@ namespace Core.Threading
          }
       }
 
-      public IMaybe<Action<int>> Dequeue(int affinity)
+      public Maybe<Action<int>> Dequeue(int affinity)
       {
          affinity.Must().BeBetween(0).Until(affinityCount).OrThrow();
 

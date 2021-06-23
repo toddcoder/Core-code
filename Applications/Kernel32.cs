@@ -35,7 +35,7 @@ namespace Core.Applications
       private static extern IntPtr CreateFileW(string fileName, uint desiredAccess, uint shareMode, IntPtr securityAttributes,
          uint creationDisposition, uint flagsAndAttributes, IntPtr templateFile);
 
-      private static IResult<FileStream> fileStream(string fileName, uint fileAccessMode, uint fileShareMode, FileAccess fileAccess) =>
+      private static Result<FileStream> fileStream(string fileName, uint fileAccessMode, uint fileShareMode, FileAccess fileAccess) =>
          tryTo(
             () =>
             {
@@ -52,17 +52,17 @@ namespace Core.Applications
                }
             });
 
-      internal static IResult<Unit> initializeOutStream() =>
+      internal static Result<Unit> initializeOutStream() =>
          from fs in fileStream("CONOUT$", GENERIC_WRITE, FILE_SHARE_WRITE, FileAccess.Write)
          from writer in getTextWriter(fs)
          select Unit.Value;
 
-      internal static IResult<Unit> initializeInStream() =>
+      internal static Result<Unit> initializeInStream() =>
          from fs in fileStream("CONIN$", GENERIC_READ, FILE_SHARE_READ, FileAccess.Read)
          from reader in getTextReader(fs)
          select Unit.Value;
 
-      private static IResult<TextWriter> getTextWriter(FileStream fileStream) => tryTo(() =>
+      private static Result<TextWriter> getTextWriter(FileStream fileStream) => tryTo(() =>
       {
          var writer = new StreamWriter(fileStream) { AutoFlush = true };
          Console.SetOut(writer);
@@ -71,7 +71,7 @@ namespace Core.Applications
          return writer.Success<TextWriter>();
       });
 
-      private static IResult<TextReader> getTextReader(FileStream fileStream) => tryTo(() =>
+      private static Result<TextReader> getTextReader(FileStream fileStream) => tryTo(() =>
       {
          var reader = new StreamReader(fileStream);
          Console.SetIn(reader);

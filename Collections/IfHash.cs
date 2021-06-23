@@ -10,6 +10,6 @@ namespace Core.Collections
 
       internal IfHash(IHash<TKey, TValue> hash) => this.hash = hash.Must().Not.BeNull().Force<IHash<TKey, TValue>>();
 
-      public IMaybe<TValue> this[TKey key] => maybe(hash.ContainsKey(key), () => hash[key]);
+      public Maybe<TValue> this[TKey key] => maybe(hash.ContainsKey(key), () => hash[key]);
    }
 }

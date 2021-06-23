@@ -16,13 +16,13 @@ namespace Core.Computers
 
       public FolderName FolderName => folderName;
 
-      public IResult<FolderName> CopyTo(FolderName targetFolder, bool overwrite) => tryTo(() =>
+      public Result<FolderName> CopyTo(FolderName targetFolder, bool overwrite) => tryTo(() =>
       {
          folderName.CopyTo(targetFolder, overwrite);
          return targetFolder;
       });
 
-      public IResult<FolderName> CopyTo(FolderName targetFolder, string includePattern, string excludePattern, bool overwrite)
+      public Result<FolderName> CopyTo(FolderName targetFolder, string includePattern, string excludePattern, bool overwrite)
       {
          return tryTo(() =>
          {
@@ -33,75 +33,75 @@ namespace Core.Computers
          }).OnFailure(_ => folderName.FileSuccess -= FileSuccess);
       }
 
-      public IResult<FolderName> Delete() => tryTo(() =>
+      public Result<FolderName> Delete() => tryTo(() =>
       {
          folderName.Delete();
          return folderName;
       });
 
-      public IResult<FolderName> DeleteAll() => tryTo(() =>
+      public Result<FolderName> DeleteAll() => tryTo(() =>
       {
          folderName.DeleteAll();
          return folderName;
       });
 
-      public IResult<FolderName> DeleteFiles() => tryTo(() =>
+      public Result<FolderName> DeleteFiles() => tryTo(() =>
       {
          folderName.DeleteFiles();
          return folderName;
       });
 
-      public IResult<FolderName> MoveTo(FolderName targetFolder) => tryTo(() =>
+      public Result<FolderName> MoveTo(FolderName targetFolder) => tryTo(() =>
       {
          folderName.MoveTo(targetFolder);
          return targetFolder;
       });
 
-      public IResult<FileName[]> Files => tryTo(() => folderName.Files.ToArray());
+      public Result<FileName[]> Files => tryTo(() => folderName.Files.ToArray());
 
-      public IResult<FolderName[]> Folders => tryTo(() => folderName.Folders.ToArray());
+      public Result<FolderName[]> Folders => tryTo(() => folderName.Folders.ToArray());
 
-      public IResult<int> FileCount => tryTo(() => folderName.FileCount);
+      public Result<int> FileCount => tryTo(() => folderName.FileCount);
 
-      public IResult<FolderName> this[string subfolder] => tryTo(() =>
+      public Result<FolderName> this[string subfolder] => tryTo(() =>
       {
          var name = folderName[subfolder];
          return name.Must().Exist().OrFailure();
       });
 
-      public IResult<FolderName> Subfolder(string name) => tryTo(() => folderName.Subfolder(name));
+      public Result<FolderName> Subfolder(string name) => tryTo(() => folderName.Subfolder(name));
 
-      public IResult<FolderName> CreateIfNonExistent()
+      public Result<FolderName> CreateIfNonExistent()
       {
          return
             from unit in tryTo(() => folderName.CreateIfNonExistent())
             select folderName;
       }
 
-      public IResult<FolderName> Guarantee() => tryTo(() => folderName.Guarantee());
+      public Result<FolderName> Guarantee() => tryTo(() => folderName.Guarantee());
 
-      public IResult<FolderName> Parent => folderName.Parent.Result($"{folderName} doesn't have a parent");
+      public Result<FolderName> Parent => folderName.Parent.Result($"{folderName} doesn't have a parent");
 
-      public IResult<FolderName> SetAsCurrent() => tryTo(() =>
+      public Result<FolderName> SetAsCurrent() => tryTo(() =>
       {
          FolderName.Current = folderName;
          return FolderName.Current;
       });
 
-      public IResult<string> RelativeTo(FileName file) => tryTo(() => folderName.RelativeTo(file));
+      public Result<string> RelativeTo(FileName file) => tryTo(() => folderName.RelativeTo(file));
 
-      public IResult<string> RelativeTo(FolderName folder) => tryTo(() => folderName.RelativeTo(folder));
+      public Result<string> RelativeTo(FolderName folder) => tryTo(() => folderName.RelativeTo(folder));
 
-      public IResult<FolderName> AbsoluteFolder(string relativePath) => tryTo(() => folderName.AbsoluteFolder(relativePath));
+      public Result<FolderName> AbsoluteFolder(string relativePath) => tryTo(() => folderName.AbsoluteFolder(relativePath));
 
-      public IResult<FileName> AbsoluteFile(string relativePath) => tryTo(() => folderName.AbsoluteFile(relativePath));
+      public Result<FileName> AbsoluteFile(string relativePath) => tryTo(() => folderName.AbsoluteFile(relativePath));
 
-      public IResult<string> AbsoluteString(string relativePath) => tryTo(() => folderName.AbsoluteString(relativePath));
+      public Result<string> AbsoluteString(string relativePath) => tryTo(() => folderName.AbsoluteString(relativePath));
 
-      public IResult<bool> WasCreated() => tryTo(() => folderName.WasCreated());
+      public Result<bool> WasCreated() => tryTo(() => folderName.WasCreated());
 
-      public IResult<bool> Exists() => tryTo(() => folderName.Exists());
+      public Result<bool> Exists() => tryTo(() => folderName.Exists());
 
-      public IResult<FolderName> Existing() => Exists().Map(_ => folderName);
+      public Result<FolderName> Existing() => Exists().Map(_ => folderName);
    }
 }

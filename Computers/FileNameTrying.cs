@@ -12,7 +12,7 @@ namespace Core.Computers
 
       public FileNameTrying(FileName fileName) => this.fileName = fileName;
 
-      public IResult<FileName> Delete() => tryTo(() =>
+      public Result<FileName> Delete() => tryTo(() =>
       {
          fileName.Delete();
          return fileName;
@@ -20,101 +20,101 @@ namespace Core.Computers
 
       public FileName FileName => fileName;
 
-      public IResult<FileName> CopyTo(FileName target, bool overwrite = false) => tryTo(() =>
+      public Result<FileName> CopyTo(FileName target, bool overwrite = false) => tryTo(() =>
       {
          fileName.CopyTo(target, overwrite);
          return target;
       });
 
-      public IResult<FileName> CopyTo(FolderName targetFolder, bool overwrite = false) => tryTo(() =>
+      public Result<FileName> CopyTo(FolderName targetFolder, bool overwrite = false) => tryTo(() =>
       {
          fileName.CopyTo(targetFolder, overwrite);
          return targetFolder.File(fileName.NameExtension);
       });
 
-      public IResult<FileName> MoveTo(FileName target, bool overwrite = false) => tryTo(() =>
+      public Result<FileName> MoveTo(FileName target, bool overwrite = false) => tryTo(() =>
       {
          fileName.MoveTo(target, overwrite);
          return target;
       });
 
-      public IResult<FileName> MoveTo(FolderName targetFolder, bool overwrite = false, bool unique = false)
+      public Result<FileName> MoveTo(FolderName targetFolder, bool overwrite = false, bool unique = false)
       {
          return tryTo(() => fileName.MoveTo(targetFolder, overwrite, unique));
       }
 
-      public IResult<bool> Exists() => tryTo(() => fileName.Exists());
+      public Result<bool> Exists() => tryTo(() => fileName.Exists());
 
-      public IResult<FileName> Existing() => Exists().Map(_ => fileName);
+      public Result<FileName> Existing() => Exists().Map(_ => fileName);
 
-      public IResult<string> Text => tryTo(() => fileName.Text);
+      public Result<string> Text => tryTo(() => fileName.Text);
 
-      public IResult<Unit> SetText(string text) => tryTo(() => fileName.Text = text).Unit;
+      public Result<Unit> SetText(string text) => tryTo(() => fileName.Text = text).Unit;
 
-      public IResult<byte[]> Bytes => tryTo(() => fileName.Bytes);
+      public Result<byte[]> Bytes => tryTo(() => fileName.Bytes);
 
-      public IResult<Unit> SetBytes(byte[] bytes) => tryTo(() => fileName.Bytes = bytes).Unit;
+      public Result<Unit> SetBytes(byte[] bytes) => tryTo(() => fileName.Bytes = bytes).Unit;
 
-      public IResult<string[]> Lines => tryTo(() => fileName.Lines);
+      public Result<string[]> Lines => tryTo(() => fileName.Lines);
 
-      public IResult<DateTime> CreationTime => tryTo(() => fileName.CreationTime);
+      public Result<DateTime> CreationTime => tryTo(() => fileName.CreationTime);
 
-      public IResult<Unit> SetCreationTime(DateTime creationTime) => tryTo(() => { fileName.CreationTime = creationTime; });
+      public Result<Unit> SetCreationTime(DateTime creationTime) => tryTo(() => { fileName.CreationTime = creationTime; });
 
-      public IResult<DateTime> LastAccessTime => tryTo(() => fileName.LastAccessTime);
+      public Result<DateTime> LastAccessTime => tryTo(() => fileName.LastAccessTime);
 
-      public IResult<Unit> SetLastAccessTime(DateTime lastAccessTime) => tryTo(() => { fileName.LastAccessTime = lastAccessTime; });
+      public Result<Unit> SetLastAccessTime(DateTime lastAccessTime) => tryTo(() => { fileName.LastAccessTime = lastAccessTime; });
 
-      public IResult<DateTime> LastWriteTime => tryTo(() => fileName.LastWriteTime);
+      public Result<DateTime> LastWriteTime => tryTo(() => fileName.LastWriteTime);
 
-      public IResult<Unit> SetLastWriteTime(DateTime lastWriteTime) => tryTo(() => { fileName.LastWriteTime = lastWriteTime; });
+      public Result<Unit> SetLastWriteTime(DateTime lastWriteTime) => tryTo(() => { fileName.LastWriteTime = lastWriteTime; });
 
-      public IResult<string> Execute(string arguments, bool wait = true, bool useShellExecute = false, bool createNoWindow = true)
+      public Result<string> Execute(string arguments, bool wait = true, bool useShellExecute = false, bool createNoWindow = true)
       {
          return tryTo(() => fileName.Execute(arguments, wait, useShellExecute, createNoWindow));
       }
 
-      public IResult<string> Execute(FileName passedFileName, bool wait = true, bool useShellExecute = false,
+      public Result<string> Execute(FileName passedFileName, bool wait = true, bool useShellExecute = false,
          bool createNoWindow = true)
       {
          return tryTo(() => fileName.Execute(passedFileName, wait, useShellExecute, createNoWindow));
       }
 
-      public IResult<long> Length => tryTo(() => fileName.Length);
+      public Result<long> Length => tryTo(() => fileName.Length);
 
-      public IResult<string> Size => tryTo(() => fileName.Size);
+      public Result<string> Size => tryTo(() => fileName.Size);
 
-      public IResult<FileName> Rename(string name = null, string extension = null, bool overwrite = false, bool unique = false)
+      public Result<FileName> Rename(string name = null, string extension = null, bool overwrite = false, bool unique = false)
       {
          return tryTo(() => fileName.Rename(name, extension, overwrite, unique));
       }
 
-      public IResult<FileNameMappedReader> Reader() => tryTo(() => fileName.Reader());
+      public Result<FileNameMappedReader> Reader() => tryTo(() => fileName.Reader());
 
-      public IResult<FileStream> WritingStream() => tryTo(() => fileName.WritingStream());
+      public Result<FileStream> WritingStream() => tryTo(() => fileName.WritingStream());
 
-      public IResult<FileStream> AppendingStream() => tryTo(() => fileName.AppendingStream());
+      public Result<FileStream> AppendingStream() => tryTo(() => fileName.AppendingStream());
 
-      public IResult<FileStream> ReadingStream() => tryTo(() => fileName.ReadingStream());
+      public Result<FileStream> ReadingStream() => tryTo(() => fileName.ReadingStream());
 
-      public IResult<FileStream> ReadWriteStream() => tryTo(() => fileName.ReadWriteStream());
+      public Result<FileStream> ReadWriteStream() => tryTo(() => fileName.ReadWriteStream());
 
-      public IResult<TextReader> TextReader() =>
+      public Result<TextReader> TextReader() =>
          from readingStream in ReadingStream()
          from reader in tryTo(() => (TextReader)new StreamReader(readingStream))
          select reader;
 
-      public IResult<TextWriter> TextWriter() =>
+      public Result<TextWriter> TextWriter() =>
          from writingStream in WritingStream()
          from writer in tryTo(() => (TextWriter)new StreamWriter(writingStream))
          select writer;
 
-      public IResult<string> GetText(Encoding encoding) => tryTo(() => fileName.GetText(encoding));
+      public Result<string> GetText(Encoding encoding) => tryTo(() => fileName.GetText(encoding));
 
-      public IResult<Unit> SetText(string text, Encoding encoding) => tryTo(() => fileName.SetText(text, encoding));
+      public Result<Unit> SetText(string text, Encoding encoding) => tryTo(() => fileName.SetText(text, encoding));
 
-      public IResult<string[]> SetLines(string[] lines) => tryTo(() => fileName.Lines = lines);
+      public Result<string[]> SetLines(string[] lines) => tryTo(() => fileName.Lines = lines);
 
-      public IResult<Unit> CreateIfNonexistent() => tryTo(() => fileName.CreateIfNonexistent());
+      public Result<Unit> CreateIfNonexistent() => tryTo(() => fileName.CreateIfNonexistent());
    }
 }

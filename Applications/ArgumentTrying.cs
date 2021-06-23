@@ -10,7 +10,7 @@ namespace Core.Applications
 
       public ArgumentTrying(Argument argument) => this.argument = argument;
 
-      public IResult<FileName> FileName
+      public Result<FileName> FileName
       {
          get
          {
@@ -22,7 +22,7 @@ namespace Core.Applications
          }
       }
 
-      public IResult<FolderName> FolderName
+      public Result<FolderName> FolderName
       {
          get
          {

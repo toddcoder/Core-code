@@ -10,7 +10,7 @@ namespace Core.Dates
       public static implicit operator Timeout(TimeSpan timeoutPeriod) => new Timeout(timeoutPeriod);
 
       TimeSpan timeoutPeriod;
-      IMaybe<DateTime> targetDateTime;
+      Maybe<DateTime> targetDateTime;
 
       public Timeout(TimeSpan timeoutPeriod)
       {
@@ -49,6 +49,6 @@ namespace Core.Dates
          }
       }
 
-      public IMaybe<DateTime> TargetDateTime => targetDateTime;
+      public Maybe<DateTime> TargetDateTime => targetDateTime;
    }
 }

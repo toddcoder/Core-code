@@ -10,7 +10,7 @@ namespace Core.Data.Parameters
 {
    public class Parameters : IEnumerable<Parameter>, IHash<string, Parameter>
    {
-      public static IResult<Parameters> FromGroup(IMaybe<Group> parametersGroup) => tryTo(() => new Parameters(parametersGroup));
+      public static Result<Parameters> FromGroup(Maybe<Group> parametersGroup) => tryTo(() => new Parameters(parametersGroup));
 
       protected StringHash<Parameter> parameters;
 
@@ -24,7 +24,7 @@ namespace Core.Data.Parameters
          }
       }
 
-      public Parameters(IMaybe<Group> _parametersGroup) : this()
+      public Parameters(Maybe<Group> _parametersGroup) : this()
       {
          if (_parametersGroup.If(out var parametersGroup))
          {
@@ -43,7 +43,7 @@ namespace Core.Data.Parameters
 
       public bool ContainsKey(string key) => parameters.ContainsKey(key);
 
-      public IResult<Hash<string, Parameter>> AnyHash() => parameters.AsHash.Success();
+      public Result<Hash<string, Parameter>> AnyHash() => parameters.AsHash.Success();
 
       public int Count => parameters.Count;
 

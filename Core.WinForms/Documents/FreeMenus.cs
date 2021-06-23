@@ -7,11 +7,11 @@ namespace Core.WinForms.Documents
 {
    public class FreeMenus : Menus
    {
-      public IMaybe<Document> Document { get; set; } = none<Document>();
+      public Maybe<Document> Document { get; set; } = none<Document>();
 
-      public IMaybe<Form> Form { get; set; } = none<Form>();
+      public Maybe<Form> Form { get; set; } = none<Form>();
 
-      public IMaybe<EventHandler> SaveAll { get; set; } = none<EventHandler>();
+      public Maybe<EventHandler> SaveAll { get; set; } = none<EventHandler>();
 
       public void StandardContextEdit()
       {

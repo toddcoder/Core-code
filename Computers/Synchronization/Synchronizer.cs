@@ -78,7 +78,7 @@ namespace Core.Computers.Synchronization
          }
       }
 
-      protected IMatched<FileName> copyIfNeeded(FileName sourceFile, FileName targetFile)
+      protected Matched<FileName> copyIfNeeded(FileName sourceFile, FileName targetFile)
       {
          try
          {
@@ -95,7 +95,7 @@ namespace Core.Computers.Synchronization
                }
                else
                {
-                  return notMatched<FileName>();
+                  return noMatch<FileName>();
                }
             }
             else
@@ -109,7 +109,7 @@ namespace Core.Computers.Synchronization
          }
       }
 
-      protected IMatched<FileName> copy(FileName sourceFile, FileName targetFile)
+      protected Matched<FileName> copy(FileName sourceFile, FileName targetFile)
       {
          var targetFileFolder = targetFile.Folder;
          var _wasCreated = targetFileFolder.TryTo.WasCreated();
@@ -132,7 +132,7 @@ namespace Core.Computers.Synchronization
             {
                if (sourceFile.TryTo.Delete().If(out _, out exception))
                {
-                  return targetFile.Matched();
+                  return targetFile.Match();
                }
                else
                {
@@ -141,7 +141,7 @@ namespace Core.Computers.Synchronization
             }
             else
             {
-               return targetFile.Matched();
+               return targetFile.Match();
             }
          }
          else

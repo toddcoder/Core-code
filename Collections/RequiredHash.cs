@@ -12,6 +12,6 @@ namespace Core.Collections
          this.hash = hash.Must().Force<IHash<TKey, TValue>>();
       }
 
-      public IResult<TValue> this[TKey key] => hash.Must().HaveKeyOf(key).OrFailure().Map(d => d[key]);
+      public Result<TValue> this[TKey key] => hash.Must().HaveKeyOf(key).OrFailure().Map(d => d[key]);
    }
 }

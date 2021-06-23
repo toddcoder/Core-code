@@ -32,7 +32,7 @@ namespace Core.Matching.Parsers
 
       public override string Pattern => @"^\s*(-)?\s*/(" + REGEX_IDENTIFIER + @")\b";
 
-      public override IMaybe<string> Parse(string source, ref int index)
+      public override Maybe<string> Parse(string source, ref int index)
       {
          var negative = tokens[1] == "-";
          var word = tokens[2];

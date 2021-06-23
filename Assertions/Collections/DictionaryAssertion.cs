@@ -147,23 +147,23 @@ namespace Core.Assertions.Collections
          return forceConvert<Dictionary<TKey, TValue>, TException, TResult>(this, args);
       }
 
-      public IResult<Dictionary<TKey, TValue>> OrFailure() => orFailure(this);
+      public Result<Dictionary<TKey, TValue>> OrFailure() => orFailure(this);
 
-      public IResult<Dictionary<TKey, TValue>> OrFailure(string message) => orFailure(this, message);
+      public Result<Dictionary<TKey, TValue>> OrFailure(string message) => orFailure(this, message);
 
-      public IResult<Dictionary<TKey, TValue>> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
+      public Result<Dictionary<TKey, TValue>> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
 
-      public IMaybe<Dictionary<TKey, TValue>> OrNone() => orNone(this);
+      public Maybe<Dictionary<TKey, TValue>> OrNone() => orNone(this);
 
-      public async Task<ICompletion<Dictionary<TKey, TValue>>> OrFailureAsync(CancellationToken token) =>
+      public async Task<Completion<Dictionary<TKey, TValue>>> OrFailureAsync(CancellationToken token) =>
          await orFailureAsync(this, token);
 
-      public async Task<ICompletion<Dictionary<TKey, TValue>>> OrFailureAsync(string message, CancellationToken token)
+      public async Task<Completion<Dictionary<TKey, TValue>>> OrFailureAsync(string message, CancellationToken token)
       {
          return await orFailureAsync(this, message, token);
       }
 
-      public async Task<ICompletion<Dictionary<TKey, TValue>>> OrFailureAsync(Func<string> messageFunc, CancellationToken token)
+      public async Task<Completion<Dictionary<TKey, TValue>>> OrFailureAsync(Func<string> messageFunc, CancellationToken token)
       {
          return await orFailureAsync(this, messageFunc, token);
       }

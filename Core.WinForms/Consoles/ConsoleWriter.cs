@@ -9,7 +9,7 @@ namespace Core.WinForms.Consoles
 	public class TextBoxWriter : TextWriter
 	{
 		protected TextBoxConsole console;
-		protected IMaybe<StringBuilder> _buffer;
+		protected Maybe<StringBuilder> _buffer;
 
 		public TextBoxWriter(TextBoxConsole console)
 		{

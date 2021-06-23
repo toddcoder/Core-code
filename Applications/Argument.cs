@@ -8,8 +8,8 @@ namespace Core.Applications
    {
       protected string text;
       protected int index;
-      protected IMaybe<FileName> fileName;
-      protected IMaybe<FolderName> folderName;
+      protected Maybe<FileName> fileName;
+      protected Maybe<FolderName> folderName;
 
       public Argument(string text, int index)
       {
@@ -21,7 +21,7 @@ namespace Core.Applications
 
       public string Text => text;
 
-      public IMaybe<FileName> FileName
+      public Maybe<FileName> FileName
       {
          get
          {
@@ -39,7 +39,7 @@ namespace Core.Applications
          }
       }
 
-      public IMaybe<FolderName> FolderName
+      public Maybe<FolderName> FolderName
       {
          get
          {

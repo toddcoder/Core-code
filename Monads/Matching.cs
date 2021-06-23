@@ -5,10 +5,10 @@ namespace Core.Monads
 {
 	public class Matching<T, TResult>
 	{
-		IMatched<T> matched;
-		IMaybe<Func<TResult>> action;
+		Matched<T> matched;
+		Maybe<Func<TResult>> action;
 
-		public Matching(IMatched<T> matched)
+		public Matching(Matched<T> matched)
 		{
 			this.matched = matched;
 			action = MonadFunctions.none<Func<TResult>>();
@@ -44,11 +44,11 @@ namespace Core.Monads
          return this;
 		}
 
-		public IMatched<TResult> Map(Func<T, TResult> mapping)
+		public Matched<TResult> Map(Func<T, TResult> mapping)
 		{
 			if (matched.If(out var value))
          {
-            return mapping(value).Matched();
+            return mapping(value).Match();
          }
          else
          {
@@ -56,7 +56,7 @@ namespace Core.Monads
          }
       }
 
-		public IMatched<TResult> Map(Func<T, IMatched<TResult>> mapping)
+		public Matched<TResult> Map(Func<T, Matched<TResult>> mapping)
 		{
 			if (matched.If(out var value))
          {
@@ -80,6 +80,6 @@ namespace Core.Monads
 
 		public TResult Get() => action.Required("Action not set")();
 
-		public IResult<TResult> Result() => action.Result("Action not set").Map(a => a());
+		public Result<TResult> Result() => action.Result("Action not set").Map(a => a());
 	}
 }

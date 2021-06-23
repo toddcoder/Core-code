@@ -16,7 +16,7 @@ namespace Core.Enumerables
          protected int stop;
          protected int increment;
          protected Func<int, int, bool> endingPredicate;
-         protected IMaybe<int> _current;
+         protected Maybe<int> _current;
 
          public RangeEnumerator(int start, int stop, int increment, Func<int, int, bool> endingPredicate)
          {
@@ -67,9 +67,9 @@ namespace Core.Enumerables
       }
 
       protected int start;
-      protected IMaybe<int> _stop;
+      protected Maybe<int> _stop;
       protected int increment;
-      protected IMaybe<Func<int, int, bool>> _endingPredicate;
+      protected Maybe<Func<int, int, bool>> _endingPredicate;
       protected bool inclusive;
 
       public Range(int start)

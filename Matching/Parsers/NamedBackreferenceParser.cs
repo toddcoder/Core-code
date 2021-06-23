@@ -6,6 +6,6 @@ namespace Core.Matching.Parsers
    {
       public override string Pattern => $@"^\s*/<({REGEX_IDENTIFIER})>";
 
-      public override IMaybe<string> Parse(string source, ref int index) => $@"\k<{tokens[1]}>".Some();
+      public override Maybe<string> Parse(string source, ref int index) => $@"\k<{tokens[1]}>".Some();
    }
 }

@@ -8,12 +8,12 @@ namespace Core.DataStructures
 
       internal ResultStack(MaybeStack<T> stack) => this.stack = stack;
 
-      public IResult<T> Peek(string message) => stack.Peek().Result(message);
+      public Result<T> Peek(string message) => stack.Peek().Result(message);
 
-      public IResult<T> Peek() => Peek("Empty stack");
+      public Result<T> Peek() => Peek("Empty stack");
 
-      public IResult<T> Pop(string message) => stack.Pop().Result(message);
+      public Result<T> Pop(string message) => stack.Pop().Result(message);
 
-      public IResult<T> Pop() => Pop("Empty stack");
+      public Result<T> Pop() => Pop("Empty stack");
    }
 }

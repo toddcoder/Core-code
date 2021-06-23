@@ -25,7 +25,7 @@ namespace Core.DataStructures
 
       public bool Contains(T item) => stack.Contains(item);
 
-      public IResult<T[]> ToArray(int arrayIndex = 0)
+      public Result<T[]> ToArray(int arrayIndex = 0)
       {
          return
             from assertion in arrayIndex.Must().BeBetween(0).Until(Count).OrFailure()
@@ -39,7 +39,7 @@ namespace Core.DataStructures
             select array;
       }
 
-      public IResult<T> Item(int index)
+      public Result<T> Item(int index)
       {
          return
             from assertion in index.Must().BeBetween(0).Until(Count).OrFailure()
@@ -47,9 +47,9 @@ namespace Core.DataStructures
             select item;
       }
 
-      public IMaybe<T> Peek() => maybe(IsNotEmpty, () => stack.Peek());
+      public Maybe<T> Peek() => maybe(IsNotEmpty, () => stack.Peek());
 
-      public IMaybe<T> Pop() => maybe(IsNotEmpty, () => stack.Pop());
+      public Maybe<T> Pop() => maybe(IsNotEmpty, () => stack.Pop());
 
       public void Push(T item) => stack.Push(item);
 

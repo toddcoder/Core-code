@@ -7,7 +7,7 @@ namespace Core.Matching.Parsers
    {
       public override string Pattern => @"^\s*`(quote|apos)\b";
 
-      public override IMaybe<string> Parse(string source, ref int index) => tokens[1].ToLower() switch
+      public override Maybe<string> Parse(string source, ref int index) => tokens[1].ToLower() switch
       {
          "quote" => "\"".Some(),
          "apos" => "'".Some(),

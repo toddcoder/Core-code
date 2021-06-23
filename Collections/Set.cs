@@ -22,7 +22,7 @@ namespace Core.Collections
       public static Set<T> operator ^(Set<T> set1, IEnumerable<T> set2) => set1.Except(set2, true);
 
       protected HashSet<T> content;
-      protected IMaybe<IEqualityComparer<T>> _equalityComparer;
+      protected Maybe<IEqualityComparer<T>> _equalityComparer;
 
       public Set()
       {

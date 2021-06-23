@@ -46,14 +46,14 @@ namespace Core.Strings
       }
 
       protected Pattern beginPattern;
-      protected IMaybe<Pattern> _endPattern;
+      protected Maybe<Pattern> _endPattern;
       protected Pattern exceptPattern;
-      protected IMaybe<string> _exceptReplacement;
+      protected Maybe<string> _exceptReplacement;
       protected LateLazy<Slicer> slicer;
       protected Bits32<DelimitedTextStatus> status;
       protected List<string> strings;
 
-      protected DelimitedText(Pattern beginPattern, IMaybe<Pattern> _endPattern, Pattern exceptPattern)
+      protected DelimitedText(Pattern beginPattern, Maybe<Pattern> _endPattern, Pattern exceptPattern)
       {
          this.beginPattern = beginPattern;
          this._endPattern = _endPattern;
@@ -85,7 +85,7 @@ namespace Core.Strings
          }
       }
 
-      public IMaybe<Pattern> EndPattern
+      public Maybe<Pattern> EndPattern
       {
          get => _endPattern;
          set => _endPattern = value.Map(p => p.Regex.StartsWith("^") ? p : p.WithPattern(r => $"^{r}"));
@@ -101,7 +101,7 @@ namespace Core.Strings
          }
       }
 
-      public IMaybe<string> ExceptReplacement
+      public Maybe<string> ExceptReplacement
       {
          get => _exceptReplacement;
          set => _exceptReplacement = value;
@@ -113,7 +113,7 @@ namespace Core.Strings
          set => status = value;
       }
 
-      public IMaybe<Func<string, string>> TransformingMap { get; set; }
+      public Maybe<Func<string, string>> TransformingMap { get; set; }
 
       protected static Pattern getEndPattern(char ch) => ch switch
       {

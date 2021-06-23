@@ -24,7 +24,7 @@ namespace Core.DataStructures
 
       public bool Contains(T item) => queue.Contains(item);
 
-      public IResult<T[]> ToArray(int arrayIndex = 0)
+      public Result<T[]> ToArray(int arrayIndex = 0)
       {
          return
             from assertion in arrayIndex.Must().BeBetween(0).Until(Count).OrFailure()
@@ -38,7 +38,7 @@ namespace Core.DataStructures
             select array;
       }
 
-      public IResult<T> Item(int index)
+      public Result<T> Item(int index)
       {
          return
             from assertion in index.Must().BeBetween(0).Until(Count).OrFailure()
@@ -46,7 +46,7 @@ namespace Core.DataStructures
             select item;
       }
 
-      public IMaybe<T> Dequeue() => maybe(IsNotEmpty, () => queue.Dequeue());
+      public Maybe<T> Dequeue() => maybe(IsNotEmpty, () => queue.Dequeue());
 
       public void Enqueue(T item) => queue.Enqueue(item);
 
@@ -58,7 +58,7 @@ namespace Core.DataStructures
 
       IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-      public IMaybe<T> Peek() => maybe(IsNotEmpty, () => queue.Peek());
+      public Maybe<T> Peek() => maybe(IsNotEmpty, () => queue.Peek());
 
       public T[] ToArray() => queue.ToArray();
 

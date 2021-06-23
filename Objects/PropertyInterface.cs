@@ -32,7 +32,7 @@ namespace Core.Objects
          isConvertible = getIsConvertible(PropertyType);
       }
 
-      public IMaybe<object> GetValue(object entity)
+      public Maybe<object> GetValue(object entity)
       {
          evaluator = GetEvaluator(entity);
          return ((IHash<string, object>)evaluator).Map(Signature);

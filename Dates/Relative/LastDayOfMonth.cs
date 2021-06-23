@@ -10,6 +10,6 @@ namespace Core.Dates.Relative
 
       public override OperationType Type => OperationType.Day;
 
-      public override IResult<DateTime> Operate(DateTime dateTime) => dateTime.LastOfMonth().Success();
+      public override Result<DateTime> Operate(DateTime dateTime) => dateTime.LastOfMonth().Success();
    }
 }

@@ -126,19 +126,19 @@ namespace Core.Assertions.Collections
          return forceConvert<Set<T>, TException, TResult>(this, args);
       }
 
-      public IResult<Set<T>> OrFailure() => orFailure(this);
+      public Result<Set<T>> OrFailure() => orFailure(this);
 
-      public IResult<Set<T>> OrFailure(string message) => orFailure(this, message);
+      public Result<Set<T>> OrFailure(string message) => orFailure(this, message);
 
-      public IResult<Set<T>> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
+      public Result<Set<T>> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
 
-      public IMaybe<Set<T>> OrNone() => orNone(this);
+      public Maybe<Set<T>> OrNone() => orNone(this);
 
-      public async Task<ICompletion<Set<T>>> OrFailureAsync(CancellationToken token) => await orFailureAsync(this, token);
+      public async Task<Completion<Set<T>>> OrFailureAsync(CancellationToken token) => await orFailureAsync(this, token);
 
-      public async Task<ICompletion<Set<T>>> OrFailureAsync(string message, CancellationToken token) => await orFailureAsync(this, message, token);
+      public async Task<Completion<Set<T>>> OrFailureAsync(string message, CancellationToken token) => await orFailureAsync(this, message, token);
 
-      public async Task<ICompletion<Set<T>>> OrFailureAsync(Func<string> messageFunc, CancellationToken token)
+      public async Task<Completion<Set<T>>> OrFailureAsync(Func<string> messageFunc, CancellationToken token)
       {
          return await orFailureAsync(this, messageFunc, token);
       }

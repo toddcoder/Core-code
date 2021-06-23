@@ -11,7 +11,6 @@ using Core.Collections;
 using Core.Computers;
 using Core.Matching;
 using Core.Monads;
-using Core.RegularExpressions;
 using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Assertions
@@ -286,10 +285,10 @@ namespace Core.Assertions
          return (ObjectAssertion)assertion.Named($"{(value == null ? "Object" : value.GetType().Name)} {name}");
       }
 
-      public static MaybeAssertion<T> Must<T>(this IMaybe<T> value) => new(value);
+      public static MaybeAssertion<T> Must<T>(this Maybe<T> value) => new(value);
 
       [Obsolete("Use value version")]
-      public static MaybeAssertion<T> Must<T>(this Expression<Func<IMaybe<T>>> expression)
+      public static MaybeAssertion<T> Must<T>(this Expression<Func<Maybe<T>>> expression)
       {
          var (name, value) = resolve(expression);
          var assertion = value.Must();
@@ -297,7 +296,7 @@ namespace Core.Assertions
          return (MaybeAssertion<T>)assertion.Named($"Optional of {typeof(T).Name} {name}");
       }
 
-      public static MaybeAssertion<T> Must<T>(this (IMaybe<T>, string) tuple)
+      public static MaybeAssertion<T> Must<T>(this (Maybe<T>, string) tuple)
       {
          var (value, name) = tuple;
          var assertion = value.Must();
@@ -305,10 +304,10 @@ namespace Core.Assertions
          return (MaybeAssertion<T>)assertion.Named($"Optional of {typeof(T).Name} {name}");
       }
 
-      public static ResultAssertion<T> Must<T>(this IResult<T> value) => new(value);
+      public static ResultAssertion<T> Must<T>(this Result<T> value) => new(value);
 
       [Obsolete("Use value version")]
-      public static ResultAssertion<T> Must<T>(this Expression<Func<IResult<T>>> expression)
+      public static ResultAssertion<T> Must<T>(this Expression<Func<Result<T>>> expression)
       {
          var (name, value) = resolve(expression);
          var assertion = value.Must();
@@ -316,7 +315,7 @@ namespace Core.Assertions
          return (ResultAssertion<T>)assertion.Named($"Result of {typeof(T).Name} {name}");
       }
 
-      public static ResultAssertion<T> Must<T>(this (IResult<T>, string) tuple)
+      public static ResultAssertion<T> Must<T>(this (Result<T>, string) tuple)
       {
          var (value, name) = tuple;
          var assertion = value.Must();
@@ -324,10 +323,10 @@ namespace Core.Assertions
          return (ResultAssertion<T>)assertion.Named($"Result of {typeof(T).Name} {name}");
       }
 
-      public static MatchedAssertion<T> Must<T>(this IMatched<T> value) => new(value);
+      public static MatchedAssertion<T> Must<T>(this Matched<T> value) => new(value);
 
       [Obsolete("Use value version")]
-      public static MatchedAssertion<T> Must<T>(this Expression<Func<IMatched<T>>> expression)
+      public static MatchedAssertion<T> Must<T>(this Expression<Func<Matched<T>>> expression)
       {
          var (name, value) = resolve(expression);
          var assertion = value.Must();
@@ -335,7 +334,7 @@ namespace Core.Assertions
          return (MatchedAssertion<T>)assertion.Named($"Match of {typeof(T).Name} {name}");
       }
 
-      public static MatchedAssertion<T> Must<T>(this (IMatched<T>, string) tuple)
+      public static MatchedAssertion<T> Must<T>(this (Matched<T>, string) tuple)
       {
          var (value, name) = tuple;
          var assertion = value.Must();
@@ -343,10 +342,10 @@ namespace Core.Assertions
          return (MatchedAssertion<T>)assertion.Named($"Match of {typeof(T).Name} {name}");
       }
 
-      public static CompletionAssertion<T> Must<T>(this ICompletion<T> value) => new(value);
+      public static CompletionAssertion<T> Must<T>(this Completion<T> value) => new(value);
 
       [Obsolete("Use value version")]
-      public static CompletionAssertion<T> Must<T>(this Expression<Func<ICompletion<T>>> expression)
+      public static CompletionAssertion<T> Must<T>(this Expression<Func<Completion<T>>> expression)
       {
          var (name, value) = resolve(expression);
          var assertion = value.Must();
@@ -354,7 +353,7 @@ namespace Core.Assertions
          return (CompletionAssertion<T>)assertion.Named($"Async Result of {typeof(T).Name} {name}");
       }
 
-      public static CompletionAssertion<T> Must<T>(this (ICompletion<T>, string) tuple)
+      public static CompletionAssertion<T> Must<T>(this (Completion<T>, string) tuple)
       {
          var (value, name) = tuple;
          var assertion = value.Must();
@@ -532,28 +531,9 @@ namespace Core.Assertions
          return (TypeAssertion)assertion.Named($"Type {value.Name} {name}");
       }
 
-      public static MatcherAssertion Must(this Matcher value) => new(value);
-
       public static PatternAssertion Must(this Pattern value) => new(value);
 
-      public static ResultAssertion Must(this Result value) => new(value);
-
-      [Obsolete("Use value version")]
-      public static MatcherAssertion Must(this Expression<Func<Matcher>> expression)
-      {
-         var (name, value) = resolve(expression);
-         var assertion = value.Must();
-
-         return (MatcherAssertion)assertion.Named($"Matcher {name}");
-      }
-
-      public static MatcherAssertion Must(this (Matcher, string) tuple)
-      {
-         var (value, name) = tuple;
-         var assertion = value.Must();
-
-         return (MatcherAssertion)assertion.Named($"Matcher {name}");
-      }
+      public static MatchResultAssertion Must(this MatchResult value) => new(value);
 
       public static PatternAssertion Must(this (Pattern, string) tuple)
       {
@@ -563,12 +543,12 @@ namespace Core.Assertions
          return (PatternAssertion)assertion.Named($"Pattern {name}");
       }
 
-      public static ResultAssertion Must(this (Result, string) tuple)
+      public static MatchResultAssertion Must(this (MatchResult, string) tuple)
       {
          var (value, name) = tuple;
          var assertion = value.Must();
 
-         return (ResultAssertion)assertion.Named($"Result {name}");
+         return (MatchResultAssertion)assertion.Named($"Result {name}");
       }
 
       public static TypedAssertion<T> MustOfType<T>(this T value) => new(value);

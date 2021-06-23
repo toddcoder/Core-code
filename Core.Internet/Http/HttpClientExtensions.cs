@@ -9,7 +9,7 @@ namespace Core.Internet.Http
 {
    public static class HttpClientExtensions
    {
-      public static async Task<ICompletion<string>> StringAsync(this HttpClient httpClient, string url, CancellationToken token)
+      public static async Task<Completion<string>> StringAsync(this HttpClient httpClient, string url, CancellationToken token)
       {
          try
          {

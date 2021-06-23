@@ -124,9 +124,8 @@
     <Compile Include="Assertions\Monads\ResultAssertion.cs" />
     <Compile Include="Assertions\Objects\ObjectAssertion.cs" />
     <Compile Include="Assertions\Objects\TypeAssertion.cs" />
-    <Compile Include="Assertions\Strings\MatcherAssertion.cs" />
     <Compile Include="Assertions\Strings\PatternAssertion.cs" />
-    <Compile Include="Assertions\Strings\ResultAssertion.cs" />
+    <Compile Include="Assertions\Strings\MatchResultAssertion.cs" />
     <Compile Include="Assertions\Strings\StringAssertion.cs" />
     <Compile Include="Booleans\BooleanExtensions.cs" />
     <Compile Include="Collections\AutoHash.cs" />
@@ -256,14 +255,14 @@
     <Compile Include="Monads\Failure.cs" />
     <Compile Include="Monads\FailureEventArgs.cs" />
     <Compile Include="Monads\FullStackException.cs" />
-    <Compile Include="Monads\ICompletion.cs" />
+    <Compile Include="Monads\Completion.cs" />
     <Compile Include="Monads\IHasValue.cs" />
-    <Compile Include="Monads\IMatched.cs" />
-    <Compile Include="Monads\IMaybe.cs" />
-    <Compile Include="Monads\Interrupted.cs" />
-    <Compile Include="Monads\IResult.cs" />
-    <Compile Include="Monads\Left.cs" />
     <Compile Include="Monads\Matched.cs" />
+    <Compile Include="Monads\Maybe.cs" />
+    <Compile Include="Monads\Interrupted.cs" />
+    <Compile Include="Monads\Result.cs" />
+    <Compile Include="Monads\Left.cs" />
+    <Compile Include="Monads\Match.cs" />
     <Compile Include="Monads\MatchedIterator.cs" />
     <Compile Include="Monads\Matching.cs" />
     <Compile Include="Monads\MatchingContext.cs" />
@@ -271,7 +270,7 @@
     <Compile Include="Monads\MonadExtensions.cs" />
     <Compile Include="Monads\MonadFunctions.cs" />
     <Compile Include="Monads\None.cs" />
-    <Compile Include="Monads\NotMatched.cs" />
+    <Compile Include="Monads\NoMatch.cs" />
     <Compile Include="Monads\ResultIterator.cs" />
     <Compile Include="Monads\Right.cs" />
     <Compile Include="Monads\Some.cs" />
@@ -325,16 +324,9 @@
     <Compile Include="Matching\Match.cs" />
     <Compile Include="Matching\Pattern.cs" />
     <Compile Include="Matching\RegexExtensions.cs" />
-    <Compile Include="Matching\Result.cs" />
+    <Compile Include="Matching\MatchResult.cs" />
     <Compile Include="Matching\Scraper.cs" />
     <Compile Include="Matching\Source.cs" />
-    <Compile Include="Regex\Matcher.cs" />
-    <Compile Include="Regex\RegexExtensions.cs" />
-    <Compile Include="Regex\RegexPattern.cs" />
-    <Compile Include="Regex\Scraper.cs" />
-    <Compile Include="Regex\Splitter.cs" />
-    <Compile Include="RegularExpressions\Matcher.cs" />
-    <Compile Include="RegularExpressions\MatcherTrying.cs" />
     <Compile Include="Matching\Parsers\AtomicGroupParser.cs" />
     <Compile Include="Matching\Parsers\BaseParser.cs" />
     <Compile Include="Matching\Parsers\CapturingGroupParser.cs" />
@@ -362,12 +354,6 @@
     <Compile Include="Matching\Parsers\SpanBreakParser.cs" />
     <Compile Include="Matching\Parsers\StringParser.cs" />
     <Compile Include="Matching\Parsers\UnmodifiedParser.cs" />
-    <Compile Include="RegularExpressions\RegexPattern.cs" />
-    <Compile Include="RegularExpressions\RegexExtensions.cs" />
-    <Compile Include="RegularExpressions\RegexResult.cs" />
-    <Compile Include="RegularExpressions\Scraper.cs" />
-    <Compile Include="RegularExpressions\Source.cs" />
-    <Compile Include="RegularExpressions\Splitter.cs" />
     <Compile Include="Strings\CharacterExtensions.cs" />
     <Compile Include="Strings\Csv.cs" />
     <Compile Include="Strings\Formatter.cs" />
@@ -419,7 +405,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Dates\Relative\Parsers\" />
-    <Folder Include="RegularExpressions\Parsers\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

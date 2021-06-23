@@ -8,7 +8,7 @@ namespace Core.Matching.Parsers
    {
       public override string Pattern => @"^\s*(/)?(['""])";
 
-      public override IMaybe<string> Parse(string source, ref int index)
+      public override Maybe<string> Parse(string source, ref int index)
       {
          var enclose = tokens[1] == "/";
          var quote = tokens[2][0];

@@ -10,7 +10,7 @@ namespace Core.WinForms.Consoles
    {
       protected Form form;
       protected TextBoxConsole console;
-      protected IMaybe<Control> _previouslyFocused;
+      protected Maybe<Control> _previouslyFocused;
 
       public TextBoxReader(Form form, TextBoxConsole console)
       {

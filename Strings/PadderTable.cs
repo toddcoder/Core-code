@@ -12,7 +12,7 @@ namespace Core.Strings
    {
       protected struct PadderItem
       {
-         public IMaybe<int> Length;
+         public Maybe<int> Length;
          public PadType PadType;
       }
 

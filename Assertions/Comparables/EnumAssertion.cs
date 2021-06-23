@@ -125,19 +125,19 @@ namespace Core.Assertions.Comparables
          return forceConvert<TEnum, TException, TResult>(this);
       }
 
-      public IResult<TEnum> OrFailure() => orFailure(this);
+      public Result<TEnum> OrFailure() => orFailure(this);
 
-      public IResult<TEnum> OrFailure(string message) => orFailure(this, message);
+      public Result<TEnum> OrFailure(string message) => orFailure(this, message);
 
-      public IResult<TEnum> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
+      public Result<TEnum> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
 
-      public IMaybe<TEnum> OrNone() => orNone(this);
+      public Maybe<TEnum> OrNone() => orNone(this);
 
-      public async Task<ICompletion<TEnum>> OrFailureAsync(CancellationToken token) => await orFailureAsync(this, token);
+      public async Task<Completion<TEnum>> OrFailureAsync(CancellationToken token) => await orFailureAsync(this, token);
 
-      public async Task<ICompletion<TEnum>> OrFailureAsync(string message, CancellationToken token) => await orFailureAsync(this, message, token);
+      public async Task<Completion<TEnum>> OrFailureAsync(string message, CancellationToken token) => await orFailureAsync(this, message, token);
 
-      public async Task<ICompletion<TEnum>> OrFailureAsync(Func<string> messageFunc, CancellationToken token)
+      public async Task<Completion<TEnum>> OrFailureAsync(Func<string> messageFunc, CancellationToken token)
       {
          return await orFailureAsync(this, messageFunc, token);
       }
