@@ -17,7 +17,7 @@ namespace Core.Monads
 
       public T Value => value;
 
-      public bool If(out T value, out Exception exception)
+      public override bool If(out T value, out Exception exception)
       {
          value = this.value;
          exception = null;
@@ -25,7 +25,7 @@ namespace Core.Monads
          return true;
       }
 
-      public bool ValueOrOriginal(out T value, out IResult<T> original)
+      public override bool ValueOrOriginal(out T value, out IResult<T> original)
       {
          value = this.value;
          original = this;
@@ -33,7 +33,7 @@ namespace Core.Monads
          return true;
       }
 
-      public bool ValueOrCast<TResult>(out T value, out IResult<TResult> result)
+      public override bool ValueOrCast<TResult>(out T value, out IResult<TResult> result)
       {
          value = this.value;
          result = "Do not use this".Failure<TResult>();
@@ -41,14 +41,14 @@ namespace Core.Monads
          return true;
       }
 
-      public bool IsSuccessful => true;
+      public override bool IsSuccessful => true;
 
-      public bool IsFailed => false;
+      public override bool IsFailed => false;
 
-      public IResult<TOther> ExceptionAs<TOther>() => throw "There is no exception".Throws();
+      public override IResult<TOther> ExceptionAs<TOther>() => throw "There is no exception".Throws();
 
       [DebuggerStepThrough]
-      public IResult<TResult> Map<TResult>(Func<T, IResult<TResult>> ifSuccessful)
+      public override IResult<TResult> Map<TResult>(Func<T, IResult<TResult>> ifSuccessful)
       {
          try
          {
@@ -61,7 +61,7 @@ namespace Core.Monads
       }
 
       [DebuggerStepThrough]
-      public IResult<TResult> Map<TResult>(Func<T, TResult> ifSuccessful)
+      public override IResult<TResult> Map<TResult>(Func<T, TResult> ifSuccessful)
       {
          try
          {
@@ -74,7 +74,7 @@ namespace Core.Monads
       }
 
       [DebuggerStepThrough]
-      public IResult<TResult> SelectMany<TResult>(Func<T, IResult<TResult>> projection)
+      public override IResult<TResult> SelectMany<TResult>(Func<T, IResult<TResult>> projection)
       {
          try
          {
@@ -87,10 +87,13 @@ namespace Core.Monads
       }
 
       [DebuggerStepThrough]
-      public IResult<T2> SelectMany<T1, T2>(Func<T, IResult<T1>> func, Func<T, T1, T2> projection) => func(value).Map(t1 => projection(value, t1));
+      public override IResult<T2> SelectMany<T1, T2>(Func<T, IResult<T1>> func, Func<T, T1, T2> projection)
+      {
+         return func(value).Map(t1 => projection(value, t1));
+      }
 
       [DebuggerStepThrough]
-      public IResult<TResult> SelectMany<TResult>(Func<T, TResult> func)
+      public override IResult<TResult> SelectMany<TResult>(Func<T, TResult> func)
       {
          try
          {
@@ -103,43 +106,43 @@ namespace Core.Monads
       }
 
       [DebuggerStepThrough]
-      public T Recover(Func<Exception, T> recovery) => value;
+      public override T Recover(Func<Exception, T> recovery) => value;
 
       [DebuggerStepThrough]
-      public IResult<T> Or(IResult<T> other) => this;
+      public override IResult<T> Or(IResult<T> other) => this;
 
       [DebuggerStepThrough]
-      public IResult<T> Or(Func<IResult<T>> other) => this;
+      public override IResult<T> Or(Func<IResult<T>> other) => this;
 
       [DebuggerStepThrough]
-      public IResult<T> Or(T other) => this;
+      public override IResult<T> Or(T other) => this;
 
       [DebuggerStepThrough]
-      public IResult<T> Or(Func<T> other) => this;
+      public override IResult<T> Or(Func<T> other) => this;
 
-      public IResult<Unit> Unit => Monads.Unit.Success();
+      public override IResult<Unit> Unit => Monads.Unit.Success();
 
-      public IResult<T> Always(Action action)
+      public override IResult<T> Always(Action action)
       {
          tryTo(action);
          return this;
       }
 
-      public IMatched<T> Match() => value.Matched();
+      public override IMatched<T> Match() => value.Matched();
 
-      public bool If(out T value)
+      public override bool If(out T value)
       {
          value = this.value;
          return true;
       }
 
-      public bool IfNot(out Exception exception)
+      public override bool IfNot(out Exception exception)
       {
          exception = null;
          return false;
       }
 
-      public bool IfNot(out T value, out Exception exception)
+      public override bool IfNot(out T value, out Exception exception)
       {
          value = this.value;
          exception = null;
@@ -147,13 +150,13 @@ namespace Core.Monads
          return false;
       }
 
-      public void Force()
+      public override void Force()
       {
       }
 
-      public T ForceValue() => value;
+      public override T ForceValue() => value;
 
-      public IResult<T> OnSuccess(Action<T> action)
+      public override IResult<T> OnSuccess(Action<T> action)
       {
          try
          {
@@ -166,30 +169,30 @@ namespace Core.Monads
          return this;
       }
 
-      public IResult<T> OnFailure(Action<Exception> action) => this;
+      public override IResult<T> OnFailure(Action<Exception> action) => this;
 
-      public void Deconstruct(out Maybe<T> value, out Exception exception)
+      public override void Deconstruct(out Maybe<T> value, out Exception exception)
       {
          value = this.value.Some();
          exception = default;
       }
 
-      public IResult<T> Assert(Predicate<T> predicate, Func<string> exceptionMessage)
+      public override IResult<T> Assert(Predicate<T> predicate, Func<string> exceptionMessage)
       {
          return predicate(value) ? this : exceptionMessage().Failure<T>();
       }
 
-      public Maybe<T> Maybe() => value.Some();
+      public override Maybe<T> Maybe() => value.Some();
 
-      public bool EqualToValueOf(IResult<T> otherResult) => otherResult.If(out var otherValue) && ValueEqualTo(otherValue);
+      public override bool EqualToValueOf(IResult<T> otherResult) => otherResult.If(out var otherValue) && ValueEqualTo(otherValue);
 
-      public bool ValueEqualTo(T otherValue) => value.Equals(otherValue);
+      public override bool ValueEqualTo(T otherValue) => value.Equals(otherValue);
 
-      public IResult<T> Otherwise(Func<Exception, T> func) => this;
+      public override IResult<T> Otherwise(Func<Exception, T> func) => this;
 
-      public IResult<T> Otherwise(Func<Exception, IResult<T>> func) => this;
+      public override IResult<T> Otherwise(Func<Exception, IResult<T>> func) => this;
 
-      public IResult<TResult> CastAs<TResult>()
+      public override IResult<TResult> CastAs<TResult>()
       {
          if (value is TResult result)
          {
@@ -201,13 +204,14 @@ namespace Core.Monads
          }
       }
 
-      public IResult<T> Where(Predicate<T> predicate, string exceptionMessage) => predicate(value) ? this : exceptionMessage.Failure<T>();
+      public override IResult<T> Where(Predicate<T> predicate, string exceptionMessage) => predicate(value) ? this : exceptionMessage.Failure<T>();
 
-      public IResult<T> Where(Predicate<T> predicate, Func<string> exceptionMessage) => predicate(value) ? this : exceptionMessage().Failure<T>();
+      public override IResult<T> Where(Predicate<T> predicate, Func<string> exceptionMessage) =>
+         predicate(value) ? this : exceptionMessage().Failure<T>();
 
-      public IResult<T> ExceptionMessage(string message) => this;
+      public override IResult<T> ExceptionMessage(string message) => this;
 
-      public IResult<T> ExceptionMessage(Func<Exception, string> message) => this;
+      public override IResult<T> ExceptionMessage(Func<Exception, string> message) => this;
 
       public bool Equals(Success<T> other)
       {

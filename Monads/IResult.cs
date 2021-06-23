@@ -2,82 +2,83 @@
 
 namespace Core.Monads
 {
-   public interface IResult<T>
+   public abstract class IResult<T>
    {
-      bool If(out T value, out Exception exception);
+      public abstract bool If(out T value, out Exception exception);
 
-      bool ValueOrOriginal(out T value, out IResult<T> original);
+      public abstract bool ValueOrOriginal(out T value, out IResult<T> original);
 
-      bool ValueOrCast<TResult>(out T value, out IResult<TResult> result);
+      public abstract bool ValueOrCast<TResult>(out T value, out IResult<TResult> result);
 
-      bool IsSuccessful { get; }
+      public abstract bool IsSuccessful { get; }
 
-      bool IsFailed { get; }
+      public abstract bool IsFailed { get; }
 
-      IResult<TOther> ExceptionAs<TOther>();
+      public abstract IResult<TOther> ExceptionAs<TOther>();
 
-      IResult<TResult> Map<TResult>(Func<T, IResult<TResult>> ifSuccessful);
+      public abstract IResult<TResult> Map<TResult>(Func<T, IResult<TResult>> ifSuccessful);
 
-      IResult<TResult> Map<TResult>(Func<T, TResult> ifSuccessful);
+      public abstract IResult<TResult> Map<TResult>(Func<T, TResult> ifSuccessful);
 
-      IResult<TResult> SelectMany<TResult>(Func<T, IResult<TResult>> projection);
+      public abstract IResult<TResult> SelectMany<TResult>(Func<T, IResult<TResult>> projection);
 
-      IResult<T2> SelectMany<T1, T2>(Func<T, IResult<T1>> func, Func<T, T1, T2> projection);
+      public abstract IResult<T2> SelectMany<T1, T2>(Func<T, IResult<T1>> func, Func<T, T1, T2> projection);
 
-      IResult<TResult> SelectMany<TResult>(Func<T, TResult> func);
+      public abstract IResult<TResult> SelectMany<TResult>(Func<T, TResult> func);
 
-      T Recover(Func<Exception, T> recovery);
+      public abstract T Recover(Func<Exception, T> recovery);
 
-      IResult<T> Or(IResult<T> other);
+      public abstract IResult<T> Or(IResult<T> other);
 
-      IResult<T> Or(Func<IResult<T>> other);
+      public abstract IResult<T> Or(Func<IResult<T>> other);
 
-      IResult<T> Or(T other);
+      public abstract IResult<T> Or(T other);
 
-      IResult<T> Or(Func<T> other);
+      public abstract IResult<T> Or(Func<T> other);
 
-      IResult<Unit> Unit { get; }
+      public abstract IResult<Unit> Unit { get; }
 
-      IResult<T> Always(Action action);
+      public abstract IResult<T> Always(Action action);
 
-      IMatched<T> Match();
+      public abstract IMatched<T> Match();
 
-      bool If(out T value);
+      public abstract bool If(out T value);
 
-      bool IfNot(out Exception exception);
+      public abstract bool IfNot(out Exception exception);
 
-      bool IfNot(out T value, out Exception exception);
+      public abstract bool IfNot(out T value, out Exception exception);
 
-      void Force();
+      public abstract void Force();
 
-      T ForceValue();
+      public abstract T ForceValue();
 
-      IResult<T> OnSuccess(Action<T> action);
+      public abstract IResult<T> OnSuccess(Action<T> action);
 
-      IResult<T> OnFailure(Action<Exception> action);
+      public abstract IResult<T> OnFailure(Action<Exception> action);
 
-	   void Deconstruct(out Maybe<T> value, out Exception exception);
+      public abstract void Deconstruct(out Maybe<T> value, out Exception exception);
 
-	   IResult<T> Assert(Predicate<T> predicate, Func<string> exceptionMessage);
+      public abstract IResult<T> Assert(Predicate<T> predicate, Func<string> exceptionMessage);
 
-      Maybe<T> Maybe();
+      public abstract Maybe<T> Maybe();
 
-      bool EqualToValueOf(IResult<T> otherResult);
+      public abstract bool EqualToValueOf(IResult<T> otherResult);
 
-      bool ValueEqualTo(T otherValue);
+      public abstract bool ValueEqualTo(T otherValue);
 
-      IResult<T> Otherwise(Func<Exception, T> func);
+      public abstract IResult<T> Otherwise(Func<Exception, T> func);
 
-      IResult<T> Otherwise(Func<Exception, IResult<T>> func);
+      public abstract IResult<T> Otherwise(Func<Exception, IResult<T>> func);
 
-      IResult<TResult> CastAs<TResult>();
+      public abstract IResult<TResult> CastAs<TResult>();
 
-      IResult<T> Where(Predicate<T> predicate, string exceptionMessage);
+      public abstract IResult<T> Where(Predicate<T> predicate, string exceptionMessage);
 
-      IResult<T> Where(Predicate<T> predicate, Func<string> exceptionMessage);
+      public abstract IResult<T> Where(Predicate<T> predicate, Func<string> exceptionMessage);
 
-      IResult<T> ExceptionMessage(string message);
+      public abstract IResult<T> ExceptionMessage(string message);
 
-      IResult<T> ExceptionMessage(Func<Exception, string> message);
+      public abstract IResult<T> ExceptionMessage(Func<Exception, string> message);
+
    }
 }
