@@ -1,6 +1,7 @@
 ﻿using System;
 using Core.Applications;
 using Core.Enumerables;
+using Core.Matching;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Core.Tests
@@ -150,6 +151,42 @@ namespace Core.Tests
       }
    }
 
+   internal class TestProgram : CommandProcessor
+   {
+      public TestProgram() : base("test")
+      {
+      }
+
+      [Command("find")]
+      public void Find()
+      {
+         if (Text.Matches(Pattern).If(out var result))
+         {
+            Console.WriteLine($"{Count}: {result.FirstMatch}");
+         }
+         else
+         {
+            Console.WriteLine("No match");
+         }
+      }
+
+      [Switch("source")]
+      public string Text { get; set; }
+
+      [Switch("pattern", "p")]
+      public string Pattern { get; set; }
+
+      [Switch("count", "c")]
+      public int Count { get; set; }
+
+      public override void Initialize()
+      {
+         Text = string.Empty;
+         Pattern = string.Empty;
+         Count = 0;
+      }
+   }
+
    [TestClass]
    public class ApplicationTests
    {
@@ -233,6 +270,13 @@ namespace Core.Tests
          var resources = new Resources<ApplicationTests>();
          var result = resources.String("Tests.Foobar.txt");
          Console.WriteLine(result);
+      }
+
+      [TestMethod]
+      public void CommandProcessorTest()
+      {
+         var processor = new TestProgram();
+         processor.Run("find -p \"/(-/s+)\" -c 153 --source foobar");
       }
    }
 }

@@ -27,15 +27,13 @@ namespace Core.Applications
 
       public event ConsoleCancelEventHandler CancelKeyPress;
 
-      public CommandProcessor(string application, IWriter standardWriter, IWriter exceptionWriter)
+      public CommandProcessor(string application)
       {
          application.Must().Not.BeNullOrEmpty().OrThrow();
-         standardWriter.Must().Not.BeNull().OrThrow();
-         exceptionWriter.Must().Not.BeNull().OrThrow();
 
          this.application = application;
-         StandardWriter = standardWriter;
-         ExceptionWriter = exceptionWriter;
+         StandardWriter = getStandardWriter();
+         ExceptionWriter = getExceptionWriter();
 
          Prefix = "--";
          ShortCut = "-";
@@ -44,13 +42,7 @@ namespace Core.Applications
          Console.CancelKeyPress += CancelKeyPress;
       }
 
-      public CommandProcessor(string application, IWriter standardWriter) : this(application, standardWriter, getExceptionWriter())
-      {
-      }
-
-      public CommandProcessor(string application) : this(application, getStandardWriter())
-      {
-      }
+      public abstract void Initialize();
 
       public IWriter StandardWriter { get; set; }
 
@@ -86,12 +78,22 @@ namespace Core.Applications
       {
          try
          {
+            Initialize();
             commandLine = removeExecutableFromCommandLine(commandLine);
             if (splitCommandFromRest(commandLine).If(out var command, out var rest))
             {
-               if (this.MethodsUsing<CommandAttribute>().FirstOrNone(t => command == t.attribute.Name).If(out var methodInfo, out var attribute))
+               if (rest.IsEmpty())
                {
-                  executeMethod(methodInfo, attribute, rest);
+                  FileName file = @$"~\AppData\Local\{Application}\{command}.cli";
+                  if (!file.Exists())
+                  {
+                     ExceptionWriter.WriteLine($"Command file {file} doesn't exist");
+                  }
+               }
+
+               if (this.MethodsUsing<CommandAttribute>().FirstOrNone(t => command == t.attribute.Name).If(out var methodInfo, out _))
+               {
+                  executeMethod(methodInfo, rest);
                }
             }
             else
@@ -110,13 +112,12 @@ namespace Core.Applications
          return this.PropertiesUsing<SwitchAttribute>().ToArray();
       }
 
-      protected void executeMethod(MethodInfo methodInfo, CommandAttribute attribute, string rest)
+      protected void executeMethod(MethodInfo methodInfo, string rest)
       {
          var switchAttributes = getSwitchAttributes();
          while (rest.IsNotEmpty() && rest.Matches($"^ /s* /('{Prefix}' | '{ShortCut}') /([/w '-']+) '{Suffix}' /(.*) $").If(out var result))
          {
             var (prefix, name, value) = result;
-            name = name.ToPascal();
             if (fillFromPrefix(switchAttributes, prefix, name, value).If(out var remainder))
             {
                rest = remainder;
@@ -140,8 +141,8 @@ namespace Core.Applications
          if (prefix == Prefix)
          {
             return
-               from tuple in switchAttributes.FirstOrNone(t => t.propertyInfo.Name == name)
-               from remainder in fillProperty(tuple.propertyInfo, value)
+               from tuple in switchAttributes.FirstOrNone((_, a) => a.Name == name)
+               from remainder in fillProperty(tuple.Item1, value)
                select remainder;
          }
          else
@@ -156,8 +157,8 @@ namespace Core.Applications
          if (prefix == ShortCut)
          {
             return
-               from tuple in switchAttributes.FirstOrNone(t => t.propertyInfo.Name == name)
-               from remainder in fillProperty(tuple.propertyInfo, value)
+               from tuple in switchAttributes.FirstOrNone((_, a) => a.ShortCut.Map(s => s.Same(name)).DefaultTo(() => false))
+               from remainder in fillProperty(tuple.Item1, value)
                select remainder;
          }
          else
@@ -177,31 +178,35 @@ namespace Core.Applications
             _object = obj.Some();
             stringToReturn = remainder;
          }
-         else if (type == typeof(string) || type == typeof(FileName) || type == typeof(FolderName) || type == typeof(Maybe<FileName>) ||
-            type == typeof(Maybe<FolderName>))
+         else if ((type == typeof(string) || type == typeof(FileName) || type == typeof(FolderName) || type == typeof(Maybe<FileName>) ||
+            type == typeof(Maybe<FolderName>)) && getString(value, type).If(out var valueRemainder))
          {
-            var (obj, remainder) = getString(value, type);
+            var (obj, remainder) = valueRemainder;
             _object = obj.Some();
             stringToReturn = remainder;
          }
-         else if (type == typeof(int) && getInt32(value).If(out var iValue, out var remainder))
+         else if (type == typeof(int) && getInt32(value).If(out valueRemainder))
          {
-            _object = iValue.Some<object>();
+            var (obj, remainder) = valueRemainder;
+            _object = obj.Some();
             stringToReturn = remainder;
          }
-         else if ((type == typeof(double) || type == typeof(float)) && getFloatingPoint(value, type).If(out var oValue, out remainder))
+         else if ((type == typeof(double) || type == typeof(float)) && getFloatingPoint(value, type).If(out valueRemainder))
          {
-            _object = oValue.Some();
+            var (obj, remainder) = valueRemainder;
+            _object = obj.Some();
             stringToReturn = remainder;
          }
-         else if (type.IsEnum && getEnum(value, type).If(out var eValue, out remainder))
+         else if (type.IsEnum && getEnum(value, type).If(out valueRemainder))
          {
-            _object = eValue.Some();
+            var (obj, remainder) = valueRemainder;
+            _object = obj.Some();
             stringToReturn = remainder;
          }
-         else if (type == typeof(string[]) && getStringArray(value).If(out var array, out remainder))
+         else if (type == typeof(string[]) && getStringArray(value).If(out valueRemainder))
          {
-            _object = array.Some<object>();
+            var (obj, remainder) = valueRemainder;
+            _object = obj.Some();
             stringToReturn = remainder;
          }
 
@@ -216,36 +221,36 @@ namespace Core.Applications
          }
       }
 
-      protected static (object value, string remainder) getBoolean(string rest)
+      protected static ValueRemainder getBoolean(string rest)
       {
          if (rest.IsMatch("^ /s* $; f"))
          {
-            return (true, string.Empty);
+            return new ValueRemainder(true, string.Empty);
          }
          else if (rest.Matches("^ /s* /('true' | 'false' | '+' | '-') /b; fi").If(out var result))
          {
-            return (result.FirstGroup.AnySame("true", "+"), rest.Drop(result.Length));
+            return new ValueRemainder(result.FirstGroup.AnySame("true", "+"), rest.Drop(result.Length));
          }
          else
          {
-            return (true, rest);
+            return new ValueRemainder(true, rest);
          }
       }
 
-      protected static Maybe<(int value, string remainder)> getInt32(string rest)
+      protected static Maybe<ValueRemainder> getInt32(string rest)
       {
          if (rest.Matches("^ /s* /('-'? [/d '_']+); f").If(out var result) && result.FirstGroup.Replace("_", "").AsInt().If(out var value))
          {
             var remainder = rest.Drop(result.Length);
-            return (value, remainder).Some();
+            return new ValueRemainder(value, remainder).Some();
          }
          else
          {
-            return none<(int, string)>();
+            return none<ValueRemainder>();
          }
       }
 
-      protected static Maybe<(object value, string remainder)> getFloatingPoint(string rest, Type type)
+      protected static Maybe<ValueRemainder> getFloatingPoint(string rest, Type type)
       {
          if (rest.Matches("^ /s* /('-'? [/d '_']+ '.' [/d '_']+); f").If(out var result))
          {
@@ -253,79 +258,93 @@ namespace Core.Applications
             var remainder = rest.Drop(result.Length);
             if (type == typeof(double) && source.AsDouble().If(out var dValue))
             {
-               return (dValue, remainder).Some<(object, string)>();
+               return new ValueRemainder(dValue, remainder).Some();
             }
             else if (type == typeof(float) && source.AsFloat().If(out var fValue))
             {
-               return (fValue, remainder).Some<(object, string)>();
+               return new ValueRemainder(fValue, remainder).Some();
             }
          }
 
-         return none<(object, string)>();
+         return none<ValueRemainder>();
       }
 
-      protected static (object value, string remainder) getString(string rest, Type type)
+      protected static Maybe<ValueRemainder> getString(string rest, Type type)
       {
-         var source = rest.IsMatch("^ /s* `quote; f") ? rest.Keep("^ /s* /(`quote) .*? /1; f").TrimStart().Drop(1).Drop(-1)
-            : rest.Keep("^ /s* -/s+; f").TrimStart();
-         var remainder = rest.Drop(source.Length);
-         if (type == typeof(string))
+         string source;
+         string remainder;
+         if (rest.Matches("^ /s* /(`quote) /(.*?) /1; f").If(out var result))
          {
-            return (source, remainder);
+            source = result.SecondGroup;
+            remainder = rest.Drop(result.Length);
          }
-         else if (type == typeof(Maybe<string>))
+         else if (rest.Matches("^ /s* /(-/s+); f").If(out result))
          {
-            return (maybe(source.IsNotEmpty(), () => source), remainder);
-         }
-         else if (type == typeof(FolderName))
-         {
-            return ((FolderName)source, remainder);
-         }
-         else if (type == typeof(FileName))
-         {
-            return ((FileName)source, remainder);
-         }
-         else if (type == typeof(Maybe<FolderName>))
-         {
-            return (maybe(source.IsNotEmpty(), () => (FolderName)source), remainder);
-         }
-         else if (type == typeof(Maybe<FileName>))
-         {
-            return (maybe(source.IsNotEmpty(), () => (FileName)source), remainder);
+            source = result.FirstGroup;
+            remainder = rest.Drop(result.Length);
          }
          else
          {
-            return (rest, string.Empty);
+            source = rest;
+            remainder = string.Empty;
+         }
+         if (type == typeof(string))
+         {
+            return new ValueRemainder(source, remainder).Some();
+         }
+         else if (type == typeof(Maybe<string>))
+         {
+            return new ValueRemainder(maybe(source.IsNotEmpty(), () => source), remainder).Some();
+         }
+         else if (type == typeof(FolderName))
+         {
+            return new ValueRemainder((FolderName)source, remainder).Some();
+         }
+         else if (type == typeof(FileName))
+         {
+            return new ValueRemainder((FileName)source, remainder).Some();
+         }
+         else if (type == typeof(Maybe<FolderName>))
+         {
+            return new ValueRemainder(maybe(source.IsNotEmpty(), () => (FolderName)source), remainder).Some();
+         }
+         else if (type == typeof(Maybe<FileName>))
+         {
+            return new ValueRemainder(maybe(source.IsNotEmpty(), () => (FileName)source), remainder).Some();
+         }
+         else
+         {
+            return none<ValueRemainder>();
          }
       }
 
-      protected static Maybe<(object value, string remainder)> getEnum(string rest, Type type)
+      protected static Maybe<ValueRemainder> getEnum(string rest, Type type)
       {
          if (rest.Matches("^ /s* /(-/s+); f").If(out var result))
          {
             var source = result.FirstGroup;
             var remainder = rest.Drop(result.Length);
 
-            return source.AsEnumeration(type).Map(e => (e, remainder));
+            return source.AsEnumeration(type).Map(e => new ValueRemainder(e, remainder));
          }
          else
          {
-            return none<(object, string)>();
+            return none<ValueRemainder>();
          }
       }
 
-      protected static Maybe<(string[] array, string remainder)> getStringArray(string rest)
+      protected static Maybe<ValueRemainder> getStringArray(string rest)
       {
          if (rest.Matches("^/s* '[' /s*  /(.*) /s* ']'; f").If(out var result))
          {
             var list = result.FirstGroup;
             var array = list.Split("/s* ',' /s*; f");
             var remainder = rest.Drop(result.Length);
-            return (array, remainder).Some();
+            return new ValueRemainder(array, remainder).Some();
          }
          else
          {
-            return none<(string[], string)>();
+            return none<ValueRemainder>();
          }
       }
 

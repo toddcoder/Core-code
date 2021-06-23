@@ -18,7 +18,7 @@ namespace Core.Applications
       {
       }
 
-      public SwitchAttribute(string name, string help) : this(name, none<string>(), help.Some())
+      public SwitchAttribute(string name, string shortCut) : this(name, shortCut.Some(), none<string>())
       {
       }
 

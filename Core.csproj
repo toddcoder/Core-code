@@ -13,6 +13,7 @@
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
     <TargetFrameworkProfile />
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -90,6 +91,7 @@
     <Compile Include="Applications\SpecialFirst.cs" />
     <Compile Include="Applications\SwitchAttribute.cs" />
     <Compile Include="Applications\User32.cs" />
+    <Compile Include="Applications\ValueRemainder.cs" />
     <Compile Include="Applications\VirtualKey.cs" />
     <Compile Include="Applications\WindowsFunctions.cs" />
     <Compile Include="Applications\Writers\ActionWriter.cs" />
