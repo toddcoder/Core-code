@@ -43,5 +43,20 @@ namespace Core.Monads
       public abstract Maybe<TResult> CastAs<TResult>();
 
       public abstract Maybe<T> Where(Predicate<T> predicate);
+
+      public Maybe<TResult> SelectMany<TResult>(Func<T, Maybe<TResult>> projection) => Map(projection);
+
+      public Maybe<T2> SelectMany<T1, T2>(Func<T, Maybe<T1>> func, Func<T, T1, T2> projection)
+      {
+         return Map(outer => func(outer).Map(inner => projection(outer, inner)));
+      }
+
+      public Maybe<TResult> Select<TResult>(Func<T, TResult> func) => Map(func);
+
+      public Maybe<T> Tap(Action<Maybe<T>> action)
+      {
+         action(this);
+         return this;
+      }
    }
 }

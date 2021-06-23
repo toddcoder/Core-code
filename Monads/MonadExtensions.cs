@@ -43,24 +43,11 @@ namespace Core.Monads
          }
       }
 
-      public static Maybe<TResult> SelectMany<T, TResult>(this Maybe<T> maybe, Func<T, Maybe<TResult>> projection)
-      {
-         return maybe.Map(projection);
-      }
-
       [DebuggerStepThrough]
       public static IResult<TResult> SelectMany<T, TResult>(this Maybe<T> maybe, Func<T, IResult<TResult>> projection)
       {
          return maybe.Map(projection).DefaultTo(() => "Value not provided".Failure<TResult>());
       }
-
-      public static Maybe<T3> SelectMany<T1, T2, T3>(this Maybe<T1> first, Func<T1, Maybe<T2>> func,
-         Func<T1, T2, T3> projection)
-      {
-         return first.Map(outer => func(outer).Map(inner => projection(outer, inner)));
-      }
-
-      public static Maybe<TResult> Select<T, TResult>(this Maybe<T> maybe, Func<T, TResult> func) => maybe.Map(func);
 
       [DebuggerStepThrough]
       public static IResult<TResult> Select<T, TResult>(this IResult<T> result, Func<T, TResult> func)
@@ -73,12 +60,6 @@ namespace Core.Monads
          {
             return failure<TResult>(exception);
          }
-      }
-
-      public static bool Assign<T>(this Maybe<T> maybe, out T value)
-      {
-         value = maybe.DefaultTo(() => default);
-         return maybe.IsSome;
       }
 
       public static IResult<T> Success<T>(this T value) => value is null ? "Value cannot be null".Failure<T>() : new Success<T>(value);
@@ -173,12 +154,6 @@ namespace Core.Monads
          {
             return failedMatch<T>(exception);
          }
-      }
-
-      public static Maybe<T> Tap<T>(this Maybe<T> maybe, Action<Maybe<T>> action)
-      {
-         action(maybe);
-         return maybe;
       }
 
       public static IMatched<T> Tap<T>(this IMatched<T> matched, Action<IMatched<T>> action)
