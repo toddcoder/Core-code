@@ -4,11 +4,11 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads
 {
-   public class NotMatched<T> : IMatched<T>, IEquatable<NotMatched<T>>
+   public class NoMatch<T> : IMatched<T>, IEquatable<NoMatch<T>>
    {
-      public static implicit operator bool(NotMatched<T> _) => false;
+      public static implicit operator bool(NoMatch<T> _) => false;
 
-      internal NotMatched()
+      internal NoMatch()
       {
       }
 
@@ -174,9 +174,9 @@ namespace Core.Monads
 
       public override IMatched<T> Else(Action<Exception> action) => this;
 
-      public bool Equals(NotMatched<T> other) => true;
+      public bool Equals(NoMatch<T> other) => true;
 
-      public override bool Equals(object obj) => obj is NotMatched<T>;
+      public override bool Equals(object obj) => obj is NoMatch<T>;
 
       public override int GetHashCode() => false.GetHashCode();
 

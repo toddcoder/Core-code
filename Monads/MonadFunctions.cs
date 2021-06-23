@@ -35,7 +35,7 @@ namespace Core.Monads
          return new Match<TParent>(value as TParent);
       }
 
-      public static IMatched<T> notMatched<T>() => new NotMatched<T>();
+      public static IMatched<T> notMatched<T>() => new NoMatch<T>();
 
       public static IMatched<T> failedMatch<T>(Exception exception) => new FailedMatch<T>(exception);
 

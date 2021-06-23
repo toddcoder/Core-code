@@ -271,7 +271,7 @@
     <Compile Include="Monads\MonadExtensions.cs" />
     <Compile Include="Monads\MonadFunctions.cs" />
     <Compile Include="Monads\None.cs" />
-    <Compile Include="Monads\NotMatched.cs" />
+    <Compile Include="Monads\NoMatch.cs" />
     <Compile Include="Monads\ResultIterator.cs" />
     <Compile Include="Monads\Right.cs" />
     <Compile Include="Monads\Some.cs" />
