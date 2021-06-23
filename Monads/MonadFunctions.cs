@@ -27,12 +27,12 @@ namespace Core.Monads
 
       public static IMatched<TParent> matched<TChild, TParent>(TChild value) where TChild : TParent
       {
-         return new Matched<TParent>(value);
+         return new Match<TParent>(value);
       }
 
       public static IMatched<TParent> matchedAs<TChild, TParent>(TChild value) where TChild : class where TParent : class
       {
-         return new Matched<TParent>(value as TParent);
+         return new Match<TParent>(value as TParent);
       }
 
       public static IMatched<T> notMatched<T>() => new NotMatched<T>();

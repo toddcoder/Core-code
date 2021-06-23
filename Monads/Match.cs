@@ -5,13 +5,13 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads
 {
-   public class Matched<T> : IMatched<T>, IEquatable<Matched<T>>
+   public class Match<T> : IMatched<T>, IEquatable<Match<T>>
    {
-      public static implicit operator bool(Matched<T> _) => true;
+      public static implicit operator bool(Match<T> _) => true;
 
       protected T value;
 
-      internal Matched(T value) => this.value = value;
+      internal Match(T value) => this.value = value;
 
       public T Value => value;
 
@@ -192,12 +192,12 @@ namespace Core.Monads
 
       public override IMatched<T> Else(Action<Exception> action) => this;
 
-      public bool Equals(Matched<T> other)
+      public bool Equals(Match<T> other)
       {
          return other is not null && ReferenceEquals(this, other) || EqualityComparer<T>.Default.Equals(value, other.value);
       }
 
-      public override bool Equals(object obj) => obj is Matched<T> other && Equals(other);
+      public override bool Equals(object obj) => obj is Match<T> other && Equals(other);
 
       public override int GetHashCode() => value.GetHashCode();
 
