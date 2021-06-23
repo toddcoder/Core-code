@@ -11,8 +11,8 @@ namespace Core.Objects
 {
    public class DataContainer : StringHash<object>
    {
-      protected IMaybe<Action> _beforeExecute;
-      protected IMaybe<Action> _afterExecute;
+      protected Maybe<Action> _beforeExecute;
+      protected Maybe<Action> _afterExecute;
 
       public DataContainer() : base(true)
       {
@@ -31,7 +31,7 @@ namespace Core.Objects
 
       public string Format { get; set; }
 
-      protected IMaybe<Action> initializeAction(string key) => this.Map(key, o => o.IfCast<Action>());
+      protected Maybe<Action> initializeAction(string key) => this.Map(key, o => o.IfCast<Action>());
 
       public void BeforeExecute()
       {

@@ -14,7 +14,7 @@ namespace Core.Applications
 
       private static string errorMessage() => new Win32Exception(Marshal.GetLastWin32Error()).Message;
 
-      public static IResult<Unit> consoleNew(bool alwaysCreateNewConsole = true)
+      public static Result<Unit> consoleNew(bool alwaysCreateNewConsole = true)
       {
          if (alwaysCreateNewConsole ? !Kernel32.consoleAllocate() : !Kernel32.consoleAttach())
          {

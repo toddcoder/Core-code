@@ -75,7 +75,7 @@ namespace Core.Computers
       protected IntPtr tokenHandle;
       protected IntPtr dupTokenHandle;
       protected bool impersonating;
-      protected IMaybe<WindowsImpersonationContext> _impersonatedUser;
+      protected Maybe<WindowsImpersonationContext> _impersonatedUser;
 
       public Identity()
       {
@@ -152,7 +152,7 @@ namespace Core.Computers
          }
       }
 
-      protected static IMaybe<WindowsImpersonationContext> getContext(WindowsIdentity identity) => identity.Impersonate().Some();
+      protected static Maybe<WindowsImpersonationContext> getContext(WindowsIdentity identity) => identity.Impersonate().Some();
 
       protected void unimpersonate()
       {

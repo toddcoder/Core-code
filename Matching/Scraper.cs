@@ -28,11 +28,11 @@ namespace Core.Matching
          variables = new StringHash<string>(true);
       }
 
-      public IMatched<Scraper> Match(Pattern pattern, params string[] names)
+      public Matched<Scraper> Match(Pattern pattern, params string[] names)
       {
          if (!source.More)
          {
-            return notMatched<Scraper>();
+            return noMatch<Scraper>();
          }
 
          if (pattern.MatchedBy(source.Current).If(out var result, out var _exception))
@@ -45,7 +45,7 @@ namespace Core.Matching
             }
 
             source.Advance(result.Length);
-            return this.Matched();
+            return this.Match();
          }
          else if (_exception.If(out var exception))
          {
@@ -53,15 +53,15 @@ namespace Core.Matching
          }
          else
          {
-            return notMatched<Scraper>();
+            return noMatch<Scraper>();
          }
       }
 
-      public IMatched<Scraper> Match(Pattern pattern, Func<string, string> nameFunc)
+      public Matched<Scraper> Match(Pattern pattern, Func<string, string> nameFunc)
       {
          if (!source.More)
          {
-            return notMatched<Scraper>();
+            return noMatch<Scraper>();
          }
 
          if (pattern.MatchedBy(source.Current).If(out var result, out var _exception))
@@ -73,7 +73,7 @@ namespace Core.Matching
             }
 
             source.Advance(result.Length);
-            return this.Matched();
+            return this.Match();
          }
          else if (_exception.If(out var exception))
          {
@@ -81,15 +81,15 @@ namespace Core.Matching
          }
          else
          {
-            return notMatched<Scraper>();
+            return noMatch<Scraper>();
          }
       }
 
-      public IMatched<Scraper> Split(Pattern pattern, Func<string, string> nameFunc)
+      public Matched<Scraper> Split(Pattern pattern, Func<string, string> nameFunc)
       {
          if (!source.More)
          {
-            return notMatched<Scraper>();
+            return noMatch<Scraper>();
          }
 
          var split = source.Current.Split(pattern);
@@ -99,20 +99,20 @@ namespace Core.Matching
          }
 
          source.Advance(source.Current.Length);
-         return this.Matched();
+         return this.Match();
       }
 
-      public IMatched<Scraper> Skip(Pattern pattern)
+      public Matched<Scraper> Skip(Pattern pattern)
       {
          if (!source.More)
          {
-            return notMatched<Scraper>();
+            return noMatch<Scraper>();
          }
 
          if (pattern.MatchedBy(source.Current).If(out var result, out var _exception))
          {
             source.Advance(result.Length);
-            return this.Matched();
+            return this.Match();
          }
          else if (_exception.If(out var exception))
          {
@@ -120,28 +120,28 @@ namespace Core.Matching
          }
          else
          {
-            return notMatched<Scraper>();
+            return noMatch<Scraper>();
          }
       }
 
-      public IMatched<Scraper> Skip(int count)
+      public Matched<Scraper> Skip(int count)
       {
          if (!source.More)
          {
-            return notMatched<Scraper>();
+            return noMatch<Scraper>();
          }
 
          source.Advance(count);
-         return this.Matched();
+         return this.Match();
       }
 
       public string this[string key] => variables[key];
 
       public bool ContainsKey(string key) => variables.ContainsKey(key);
 
-      public IResult<Hash<string, string>> AnyHash() => variables.Success<Hash<string, string>>();
+      public Result<Hash<string, string>> AnyHash() => variables.Success<Hash<string, string>>();
 
-      public IMatched<Scraper> Push(Pattern pattern)
+      public Matched<Scraper> Push(Pattern pattern)
       {
          if (pattern.MatchedBy(source.Current).If(out var result, out var _exception))
          {
@@ -149,7 +149,7 @@ namespace Core.Matching
             source.Advance(result.Length);
             scraperStack.Push(this);
 
-            return scraper.Matched();
+            return scraper.Match();
          }
          else if (_exception.If(out var exception))
          {
@@ -157,11 +157,11 @@ namespace Core.Matching
          }
          else
          {
-            return notMatched<Scraper>();
+            return noMatch<Scraper>();
          }
       }
 
-      public IMatched<Scraper> Pop()
+      public Matched<Scraper> Pop()
       {
          if (scraperStack.Pop().If(out var scraper))
          {
@@ -172,7 +172,7 @@ namespace Core.Matching
                   poppedVariables[variable] = value;
                }
 
-               return scraper.Matched();
+               return scraper.Match();
             }
             else
             {

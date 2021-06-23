@@ -10,7 +10,7 @@ namespace Core.Collections.Expiring
    {
       Hash<TKey, TValue> cache;
       Hash<TKey, ExpirationPolicy<TValue>> expirationPolicies;
-      IMaybe<Timer> anyTimer;
+      Maybe<Timer> anyTimer;
       object locker;
       Func<ExpirationPolicy<TValue>> newPolicy;
 
@@ -124,7 +124,7 @@ namespace Core.Collections.Expiring
          }
       }
 
-      public IResult<Hash<TKey, TValue>> AnyHash() => cache.Success();
+      public Result<Hash<TKey, TValue>> AnyHash() => cache.Success();
 
       public void Remove(TKey key)
       {

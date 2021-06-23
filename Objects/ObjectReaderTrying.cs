@@ -11,40 +11,40 @@ namespace Core.Objects
 
       public ObjectReaderTrying(ObjectReader reader) => this.reader = reader;
 
-      public IResult<TResult> Invoke<T, TResult>(Expression<Func<T, TResult>> expression) => tryTo(() => reader.Invoke(expression));
+      public Result<TResult> Invoke<T, TResult>(Expression<Func<T, TResult>> expression) => tryTo(() => reader.Invoke(expression));
 
-      public IResult<TResult> Invoke<T1, T2, TResult>(Expression<Func<T1, T2, TResult>> expression) => tryTo(() => reader.Invoke(expression));
+      public Result<TResult> Invoke<T1, T2, TResult>(Expression<Func<T1, T2, TResult>> expression) => tryTo(() => reader.Invoke(expression));
 
-      public IResult<TResult> Invoke<T1, T2, T3, TResult>(Expression<Func<T1, T2, T3, TResult>> expression) => tryTo(() => reader.Invoke(expression));
+      public Result<TResult> Invoke<T1, T2, T3, TResult>(Expression<Func<T1, T2, T3, TResult>> expression) => tryTo(() => reader.Invoke(expression));
 
-      public IResult<TResult> Invoke<T1, T2, T3, T4, TResult>(Expression<Func<T1, T2, T3, T4, TResult>> expression)
+      public Result<TResult> Invoke<T1, T2, T3, T4, TResult>(Expression<Func<T1, T2, T3, T4, TResult>> expression)
       {
          return tryTo(() => reader.Invoke(expression));
       }
 
-      public IResult<TResult> Invoke<T1, T2, T3, T4, T5, TResult>(Expression<Func<T1, T2, T3, T4, T5, TResult>> expression)
+      public Result<TResult> Invoke<T1, T2, T3, T4, T5, TResult>(Expression<Func<T1, T2, T3, T4, T5, TResult>> expression)
       {
          return tryTo(() => reader.Invoke(expression));
       }
 
-      public IResult<TResult> Invoke<T1, T2, T3, T4, T5, T6, TResult>(Expression<Func<T1, T2, T3, T4, T5, T6,
+      public Result<TResult> Invoke<T1, T2, T3, T4, T5, T6, TResult>(Expression<Func<T1, T2, T3, T4, T5, T6,
          TResult>> expression)
       {
          return tryTo(() => reader.Invoke(expression));
       }
 
-      public IResult<Unit> Do<T>(Expression<Action<T>> expression) => tryTo(() => reader.Do(expression));
+      public Result<Unit> Do<T>(Expression<Action<T>> expression) => tryTo(() => reader.Do(expression));
 
-      public IResult<Unit> Do<T1, T2>(Expression<Action<T1, T2>> expression) => tryTo(() => reader.Do(expression));
+      public Result<Unit> Do<T1, T2>(Expression<Action<T1, T2>> expression) => tryTo(() => reader.Do(expression));
 
-      public IResult<Unit> Do<T1, T2, T3>(Expression<Action<T1, T2, T3>> expression) => tryTo(() => reader.Do(expression));
+      public Result<Unit> Do<T1, T2, T3>(Expression<Action<T1, T2, T3>> expression) => tryTo(() => reader.Do(expression));
 
-      public IResult<Unit> Do<T1, T2, T3, T4>(Expression<Action<T1, T2, T3, T4>> expression) => tryTo(() => reader.Do(expression));
+      public Result<Unit> Do<T1, T2, T3, T4>(Expression<Action<T1, T2, T3, T4>> expression) => tryTo(() => reader.Do(expression));
 
-      public IResult<Unit> Do<T1, T2, T3, T4, T5>(Expression<Action<T1, T2, T3, T4, T5>> expression) => tryTo(() => reader.Do(expression));
+      public Result<Unit> Do<T1, T2, T3, T4, T5>(Expression<Action<T1, T2, T3, T4, T5>> expression) => tryTo(() => reader.Do(expression));
 
-      public IResult<Unit> Do<T1, T2, T3, T4, T5, T6>(Expression<Action<T1, T2, T3, T4, T5, T6>> expression) => tryTo(() => reader.Do(expression));
+      public Result<Unit> Do<T1, T2, T3, T4, T5, T6>(Expression<Action<T1, T2, T3, T4, T5, T6>> expression) => tryTo(() => reader.Do(expression));
 
-      public IResult<T> Assign<T>(string name) => tryTo(() => reader.Assign<T>(name));
+      public Result<T> Assign<T>(string name) => tryTo(() => reader.Assign<T>(name));
    }
 }

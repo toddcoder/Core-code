@@ -52,7 +52,7 @@ namespace Core.Dates
          set => date = value.Date;
       }
 
-      public IResult<DateTime> SetYear(int year) => tryTo(() => date = new Year(date, year).Date);
+      public Result<DateTime> SetYear(int year) => tryTo(() => date = new Year(date, year).Date);
 
       public Month Month
       {
@@ -60,7 +60,7 @@ namespace Core.Dates
          set => date = value.Date;
       }
 
-      public IResult<DateTime> SetMonth(int month)
+      public Result<DateTime> SetMonth(int month)
       {
          var newDate = month.Must().BeBetween(1).And(12).OrFailure().Map(m => new Month(date, m).Date);
          return newDate.OnSuccess(d => date = d);
@@ -72,13 +72,13 @@ namespace Core.Dates
          set => date = value.Date;
       }
 
-      public IResult<DateTime> SetDay(int day)
+      public Result<DateTime> SetDay(int day)
       {
          var newDate = day.Must().BeBetween(1).And(date.LastOfMonth().Day).OrFailure().Map(d => new Day(date, d).Date);
          return newDate.OnSuccess(d => date = d);
       }
 
-      public IResult<DateTime> SetToLastDay() => SetDay(date.LastOfMonth().Day);
+      public Result<DateTime> SetToLastDay() => SetDay(date.LastOfMonth().Day);
 
       public Hour Hour
       {
@@ -86,7 +86,7 @@ namespace Core.Dates
          set => date = value.Date;
       }
 
-      public IResult<DateTime> SetHour(int hour)
+      public Result<DateTime> SetHour(int hour)
       {
          var newDate = hour.Must().BeBetween(0).Until(24).OrFailure().Map(h => new Hour(date, h).Date);
          return newDate.OnSuccess(d => date = d);
@@ -98,7 +98,7 @@ namespace Core.Dates
          set => date = value.Date;
       }
 
-      public IResult<DateTime> SetMinute(int minute)
+      public Result<DateTime> SetMinute(int minute)
       {
          var newDate = minute.Must().BeBetween(0).Until(60).OrFailure().Map(m => new Minute(date, m).Date);
          return newDate.OnSuccess(d => date = d);
@@ -110,7 +110,7 @@ namespace Core.Dates
          set => date = value.Date;
       }
 
-      public IResult<DateTime> SetSecond(int second)
+      public Result<DateTime> SetSecond(int second)
       {
          var newDate = second.Must().BeBetween(0).Until(60).OrFailure().Map(s => new Second(date, s).Date);
          return newDate.OnSuccess(d => date = d);
@@ -122,7 +122,7 @@ namespace Core.Dates
          set => date = value.Date;
       }
 
-      public IResult<DateTime> SetMillisecond(int millisecond)
+      public Result<DateTime> SetMillisecond(int millisecond)
       {
          var newDate = millisecond.Must().BeBetween(0).Until(1000).OrFailure().Map(m => new Millisecond(date, m).Date);
          return newDate.OnSuccess(d => date = d);

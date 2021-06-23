@@ -15,7 +15,7 @@ namespace Core.Dates
 
       public class ValidDate
       {
-         protected static IResult<DateTime> valid(int year, int month, int day)
+         protected static Result<DateTime> valid(int year, int month, int day)
          {
             if (year <= 0)
             {
@@ -32,11 +32,11 @@ namespace Core.Dates
             }
          }
 
-         public IResult<int> Year { get; set; }
+         public Result<int> Year { get; set; }
 
-         public IResult<int> Month { get; set; }
+         public Result<int> Month { get; set; }
 
-         public IResult<int> Day { get; set; }
+         public Result<int> Day { get; set; }
 
          public ValidDate()
          {
@@ -45,7 +45,7 @@ namespace Core.Dates
             Day = "Day not set".Failure<int>();
          }
 
-         protected IResult<DateTime> validate()
+         protected Result<DateTime> validate()
          {
             if (Year.ValueOrCast<DateTime>(out var year, out var original) && Month.ValueOrCast(out var month, out original) &&
                Day.ValueOrCast(out var day, out original))
@@ -58,37 +58,37 @@ namespace Core.Dates
             }
          }
 
-         public IResult<ValidDate> AndYear(int year) => (Month.IsSuccessful || Day.IsSuccessful).Result(() =>
+         public Result<ValidDate> AndYear(int year) => (Month.IsSuccessful || Day.IsSuccessful).Result(() =>
          {
             Year = year.Success();
             return this;
          }, "Month or day must be set");
 
-         public IResult<DateTime> AndYearValid(int year)
+         public Result<DateTime> AndYearValid(int year)
          {
             Year = year.Success();
             return validate();
          }
 
-         public IResult<ValidDate> AndMonth(int month) => (Year.IsSuccessful || Day.IsSuccessful).Result(() =>
+         public Result<ValidDate> AndMonth(int month) => (Year.IsSuccessful || Day.IsSuccessful).Result(() =>
          {
             Month = month.Success();
             return this;
          }, "Year or day must be set");
 
-         public IResult<DateTime> AndMonthValid(int month)
+         public Result<DateTime> AndMonthValid(int month)
          {
             Month = month.Success();
             return validate();
          }
 
-         public IResult<ValidDate> AndDay(int day) => (Year.IsSuccessful || Month.IsSuccessful).Result(() =>
+         public Result<ValidDate> AndDay(int day) => (Year.IsSuccessful || Month.IsSuccessful).Result(() =>
          {
             Day = day.Success();
             return this;
          }, "Year or month must be set");
 
-         public IResult<DateTime> AndDayValid(int day)
+         public Result<DateTime> AndDayValid(int day)
          {
             Day = day.Success();
             return validate();
@@ -97,33 +97,33 @@ namespace Core.Dates
 
       public static ValidDate IsYear(this int year) => new() { Year = year.Success() };
 
-      public static IResult<ValidDate> AndYear(this IResult<ValidDate> validDate, int year)
+      public static Result<ValidDate> AndYear(this Result<ValidDate> validDate, int year)
       {
          return validDate.Map(vd => vd.AndYear(year));
       }
 
-      public static IResult<DateTime> AndYearValid(this IResult<ValidDate> validDate, int year)
+      public static Result<DateTime> AndYearValid(this Result<ValidDate> validDate, int year)
       {
          return validDate.Map(vd => vd.AndYearValid(year));
       }
 
       public static ValidDate IsMonth(this int month) => new() { Month = month.Success() };
 
-      public static IResult<ValidDate> AndMonth(this IResult<ValidDate> validDate, int month)
+      public static Result<ValidDate> AndMonth(this Result<ValidDate> validDate, int month)
       {
          return validDate.Map(vd => vd.AndMonth(month));
       }
 
-      public static IResult<DateTime> AndMonthValid(this IResult<ValidDate> validDate, int month)
+      public static Result<DateTime> AndMonthValid(this Result<ValidDate> validDate, int month)
       {
          return validDate.Map(vd => vd.AndMonthValid(month));
       }
 
       public static ValidDate IsDay(this int day) => new() { Day = day.Success() };
 
-      public static IResult<ValidDate> AndDay(this IResult<ValidDate> validDate, int day) => validDate.Map(vd => vd.AndDay(day));
+      public static Result<ValidDate> AndDay(this Result<ValidDate> validDate, int day) => validDate.Map(vd => vd.AndDay(day));
 
-      public static IResult<DateTime> AndDayValid(this IResult<ValidDate> validDate, int day)
+      public static Result<DateTime> AndDayValid(this Result<ValidDate> validDate, int day)
       {
          return validDate.Map(vd => vd.AndDayValid(day));
       }
@@ -169,7 +169,7 @@ namespace Core.Dates
 
       public static DateEnumerator To(this DateTime beginDate, DateTime endDate) => new(beginDate, endDate);
 
-      public static IResult<string> MonthName(this int month)
+      public static Result<string> MonthName(this int month)
       {
          switch (month)
          {
@@ -202,7 +202,7 @@ namespace Core.Dates
          }
       }
 
-      public static IResult<int> MonthNumber(this string name) => name.ToLower() switch
+      public static Result<int> MonthNumber(this string name) => name.ToLower() switch
       {
          "january" or "jan" => 1.Success(),
          "february" or "feb" => 2.Success(),
@@ -219,7 +219,7 @@ namespace Core.Dates
          _ => $"Didn't understand {name}".Failure<int>()
       };
 
-      public static IResult<DateTime> RelativeTo(this DateTime date, string pattern)
+      public static Result<DateTime> RelativeTo(this DateTime date, string pattern)
       {
          if (pattern.IsMatch("^ ['//|'] /s* ['//|'] /s* ['//|'] $; f"))
          {

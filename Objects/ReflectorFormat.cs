@@ -57,12 +57,12 @@ namespace Core.Objects
          public string Source { get; }
       }
 
-      public static IResult<ReflectorFormat> GetReflector(object obj) =>
+      public static Result<ReflectorFormat> GetReflector(object obj) =>
          from nonNullObject in obj.Must().Not.BeNull().OrFailure()
          from type in tryTo(nonNullObject.GetType)
          select new ReflectorFormat(nonNullObject, type);
 
-      protected static IResult<Replacements> getReplacements(string source)
+      protected static Result<Replacements> getReplacements(string source)
       {
          if (source.Matches(@"-(< '\') '{' /(-['}']+) '}'; f").If(out var result))
          {
@@ -81,7 +81,7 @@ namespace Core.Objects
          return matches.Select(match => new ReflectorReplacement(match.Index, match.Length, match.Groups[1]));
       }
 
-      protected static IResult<MemberData> getMembers(Type type, string template)
+      protected static Result<MemberData> getMembers(Type type, string template)
       {
          var members = new Hash<string, Pair>();
          const MemberTypes memberTypes = Field | Property;
@@ -130,7 +130,7 @@ namespace Core.Objects
          });
       }
 
-      protected static IResult<MemberData> failedFind(Type type, string memberName)
+      protected static Result<MemberData> failedFind(Type type, string memberName)
       {
          return $"Member {memberName} in type {type} couldn't be found".Failure<MemberData>();
       }
@@ -144,12 +144,12 @@ namespace Core.Objects
          this.type = type;
       }
 
-      public IResult<string> Format(string template) =>
+      public Result<string> Format(string template) =>
          tryTo(() => from memberData in getMembers(type, template)
             from formatted in getText(memberData)
             select formatted.Substitute(@"'\{'; f", "{"));
 
-      protected IResult<string> getText(MemberData memberData) => tryTo(() =>
+      protected Result<string> getText(MemberData memberData) => tryTo(() =>
       {
          var slicer = new Slicer(memberData.Source);
 
@@ -161,7 +161,7 @@ namespace Core.Objects
          return slicer.ToString();
       });
 
-      protected IResult<object> getValue(MemberInfo info) => info switch
+      protected Result<object> getValue(MemberInfo info) => info switch
       {
          FieldInfo fieldInfo => fieldInfo.GetValue(obj).Success(),
          PropertyInfo propertyInfo => propertyInfo.GetValue(obj).Success(),

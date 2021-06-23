@@ -4,46 +4,46 @@ namespace Core.Monads
 {
    public static class MonadFunctions
    {
-      public static IMaybe<TParent> some<TChild, TParent>(TChild value) where TChild : TParent
+      public static Maybe<TParent> some<TChild, TParent>(TChild value) where TChild : TParent
       {
          return new Some<TParent>(value);
       }
 
-      public static IMaybe<TParent> someAs<TChild, TParent>(TChild value) where TChild : class, TParent where TParent : class
+      public static Maybe<TParent> someAs<TChild, TParent>(TChild value) where TChild : class, TParent where TParent : class
       {
          return new Some<TParent>(value);
       }
 
-      public static IMaybe<T> none<T>() => new None<T>();
+      public static Maybe<T> none<T>() => new None<T>();
 
-      public static IResult<T> success<T>(T value) => new Success<T>(value);
+      public static Result<T> success<T>(T value) => new Success<T>(value);
 
-      public static IResult<TParent> successAs<TChild, TParent>(TChild value) where TChild : class, TParent where TParent : class
+      public static Result<TParent> successAs<TChild, TParent>(TChild value) where TChild : class, TParent where TParent : class
       {
          return new Success<TParent>(value);
       }
 
-      public static IResult<T> failure<T>(Exception exception) => new Failure<T>(exception);
+      public static Result<T> failure<T>(Exception exception) => new Failure<T>(exception);
 
-      public static IMatched<TParent> matched<TChild, TParent>(TChild value) where TChild : TParent
+      public static Matched<TParent> matched<TChild, TParent>(TChild value) where TChild : TParent
       {
-         return new Matched<TParent>(value);
+         return new Match<TParent>(value);
       }
 
-      public static IMatched<TParent> matchedAs<TChild, TParent>(TChild value) where TChild : class where TParent : class
+      public static Matched<TParent> matchedAs<TChild, TParent>(TChild value) where TChild : class where TParent : class
       {
-         return new Matched<TParent>(value as TParent);
+         return new Match<TParent>(value as TParent);
       }
 
-      public static IMatched<T> notMatched<T>() => new NotMatched<T>();
+      public static Matched<T> noMatch<T>() => new NoMatch<T>();
 
-      public static IMatched<T> failedMatch<T>(Exception exception) => new FailedMatch<T>(exception);
+      public static Matched<T> failedMatch<T>(Exception exception) => new FailedMatch<T>(exception);
 
-      public static IMatched<T> isMatched<T>(bool test, Func<T> result)
+      public static Matched<T> isMatched<T>(bool test, Func<T> result)
       {
          try
          {
-            return test ? result().Matched() : notMatched<T>();
+            return test ? result().Match() : noMatch<T>();
          }
          catch (Exception exception)
          {
@@ -51,11 +51,11 @@ namespace Core.Monads
          }
       }
 
-      public static IMatched<T> isMatched<T>(bool test, Func<IMatched<T>> result)
+      public static Matched<T> isMatched<T>(bool test, Func<Matched<T>> result)
       {
          try
          {
-            return test ? result() : notMatched<T>();
+            return test ? result() : noMatch<T>();
          }
          catch (Exception exception)
          {
@@ -63,15 +63,15 @@ namespace Core.Monads
          }
       }
 
-      public static IMaybe<T> maybe<T>(bool test, Func<T> ifTrue) => test ? ifTrue().Some() : none<T>();
+      public static Maybe<T> maybe<T>(bool test, Func<T> ifTrue) => test ? ifTrue().Some() : none<T>();
 
-      public static IMaybe<T> maybe<T>(bool test, Func<IMaybe<T>> ifTrue) => test ? ifTrue() : none<T>();
+      public static Maybe<T> maybe<T>(bool test, Func<Maybe<T>> ifTrue) => test ? ifTrue() : none<T>();
 
-      public static ICompletion<T> cancelled<T>() => new Cancelled<T>();
+      public static Completion<T> cancelled<T>() => new Cancelled<T>();
 
-      public static ICompletion<T> interrupted<T>(Exception exception) => new Interrupted<T>(exception);
+      public static Completion<T> interrupted<T>(Exception exception) => new Interrupted<T>(exception);
 
-      public static IResult<T> assert<T>(bool test, Func<T> ifTrue, Func<string> ifFalse)
+      public static Result<T> assert<T>(bool test, Func<T> ifTrue, Func<string> ifFalse)
       {
          try
          {
@@ -83,7 +83,7 @@ namespace Core.Monads
          }
       }
 
-      public static IResult<T> assert<T>(bool test, Func<IResult<T>> ifTrue, Func<string> ifFalse)
+      public static Result<T> assert<T>(bool test, Func<Result<T>> ifTrue, Func<string> ifFalse)
       {
          try
          {
@@ -95,7 +95,7 @@ namespace Core.Monads
          }
       }
 
-      public static IResult<Unit> assert(bool test, Func<string> ifFalse)
+      public static Result<Unit> assert(bool test, Func<string> ifFalse)
       {
          try
          {

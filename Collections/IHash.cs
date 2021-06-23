@@ -8,6 +8,6 @@ namespace Core.Collections
 
       bool ContainsKey(TKey key);
 
-      IResult<Hash<TKey, TValue>> AnyHash();
+      Result<Hash<TKey, TValue>> AnyHash();
    }
 }

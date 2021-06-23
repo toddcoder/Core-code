@@ -13,7 +13,7 @@ namespace Core.Data.Fields
       protected StringHash<Field> fields;
       protected List<string> ordered;
 
-      public static IResult<Fields> FromGroup(IMaybe<Group> fieldsGroup) => tryTo(() => new Fields(fieldsGroup));
+      public static Result<Fields> FromGroup(Maybe<Group> fieldsGroup) => tryTo(() => new Fields(fieldsGroup));
 
       public Fields()
       {
@@ -29,7 +29,7 @@ namespace Core.Data.Fields
          }
       }
 
-      public Fields(IMaybe<Group> _fieldsGroup) : this()
+      public Fields(Maybe<Group> _fieldsGroup) : this()
       {
          if (_fieldsGroup.If(out var fieldsGraph))
          {
@@ -46,9 +46,9 @@ namespace Core.Data.Fields
          ordered.Add(field.Name);
       }
 
-      public IMaybe<Field> this[string name] => fields.Map(name);
+      public Maybe<Field> this[string name] => fields.Map(name);
 
-      public IMaybe<Field> Ordered(int index) => fields.Map(ordered[index]);
+      public Maybe<Field> Ordered(int index) => fields.Map(ordered[index]);
 
       public void DeterminePropertyTypes(object entity)
       {

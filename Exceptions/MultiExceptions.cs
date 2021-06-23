@@ -17,7 +17,7 @@ namespace Core.Exceptions
 
       public void Add(string exceptionMessage) => Add(new ApplicationException(exceptionMessage));
 
-      public void Add<T>(IResult<T> result)
+      public void Add<T>(Result<T> result)
       {
          if (result.IfNot(out var exception))
          {

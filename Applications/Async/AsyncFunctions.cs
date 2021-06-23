@@ -16,12 +16,12 @@ namespace Core.Applications.Async
          return new ReleaseDisposable(semaphore);
       }
 
-      public static async Task<ICompletion<T>> runAsync<T>(Func<CancellationToken, ICompletion<T>> func, CancellationTokenSource source)
+      public static async Task<Completion<T>> runAsync<T>(Func<CancellationToken, Completion<T>> func, CancellationTokenSource source)
       {
          return await runAsync(func, source.Token);
       }
 
-      public static async Task<ICompletion<T>> runAsync<T>(Func<CancellationToken, ICompletion<T>> func, CancellationToken token)
+      public static async Task<Completion<T>> runAsync<T>(Func<CancellationToken, Completion<T>> func, CancellationToken token)
       {
          try
          {
@@ -37,12 +37,12 @@ namespace Core.Applications.Async
          }
       }
 
-      public static async Task<ICompletion<T>> runAsync<T>(Func<CancellationToken, T> func, CancellationTokenSource source)
+      public static async Task<Completion<T>> runAsync<T>(Func<CancellationToken, T> func, CancellationTokenSource source)
       {
          return await runAsync(func, source.Token);
       }
 
-      public static async Task<ICompletion<T>> runAsync<T>(Func<CancellationToken, T> func, CancellationToken token)
+      public static async Task<Completion<T>> runAsync<T>(Func<CancellationToken, T> func, CancellationToken token)
       {
          try
          {
@@ -58,7 +58,7 @@ namespace Core.Applications.Async
          }
       }
 
-      public static async Task<ICompletion<T>> runWithSourceAsync<T>(Func<CancellationToken, ICompletion<T>> func)
+      public static async Task<Completion<T>> runWithSourceAsync<T>(Func<CancellationToken, Completion<T>> func)
       {
          using (var source = new CancellationTokenSource())
          {
@@ -77,7 +77,7 @@ namespace Core.Applications.Async
          }
       }
 
-      public static async Task<ICompletion<T>> withWithSourceAsync<T>(Func<CancellationToken, Task<ICompletion<T>>> func)
+      public static async Task<Completion<T>> withWithSourceAsync<T>(Func<CancellationToken, Task<Completion<T>>> func)
       {
          using (var source = new CancellationTokenSource())
          {
@@ -96,7 +96,7 @@ namespace Core.Applications.Async
          }
       }
 
-      public static async Task<ICompletion<Unit>> runAsync(Action<CancellationToken> action, CancellationTokenSource source)
+      public static async Task<Completion<Unit>> runAsync(Action<CancellationToken> action, CancellationTokenSource source)
       {
          try
          {
@@ -113,7 +113,7 @@ namespace Core.Applications.Async
          }
       }
 
-      public static async Task<ICompletion<Unit>> runAsync(Action action, CancellationToken token)
+      public static async Task<Completion<Unit>> runAsync(Action action, CancellationToken token)
       {
          try
          {
@@ -130,7 +130,7 @@ namespace Core.Applications.Async
          }
       }
 
-      public static async Task<ICompletion<T>> runAsync<T>(Func<Task<ICompletion<T>>> func)
+      public static async Task<Completion<T>> runAsync<T>(Func<Task<Completion<T>>> func)
       {
          try
          {
@@ -142,7 +142,7 @@ namespace Core.Applications.Async
          }
       }
 
-      public static async Task<ICompletion<T>> runFromResultAsync<T>(Func<IResult<T>> func)
+      public static async Task<Completion<T>> runFromResultAsync<T>(Func<Result<T>> func)
       {
          try
          {
@@ -158,12 +158,12 @@ namespace Core.Applications.Async
          }
       }
 
-      public static async Task<ICompletion<T>> runFromResultAsync<T>(Func<CancellationToken, IResult<T>> func, CancellationTokenSource source)
+      public static async Task<Completion<T>> runFromResultAsync<T>(Func<CancellationToken, Result<T>> func, CancellationTokenSource source)
       {
          return await runFromResultAsync(func, source.Token);
       }
 
-      public static async Task<ICompletion<T>> runFromResultAsync<T>(Func<CancellationToken, IResult<T>> func, CancellationToken token)
+      public static async Task<Completion<T>> runFromResultAsync<T>(Func<CancellationToken, Result<T>> func, CancellationToken token)
       {
          try
          {
@@ -179,11 +179,11 @@ namespace Core.Applications.Async
          }
       }
 
-      public static async Task<ICompletion<T>> runInterrupted<T>(Exception exception) => await Task.Run(() => interrupted<T>(exception));
+      public static async Task<Completion<T>> runInterrupted<T>(Exception exception) => await Task.Run(() => interrupted<T>(exception));
 
-      public static async Task<ICompletion<T>> runInterrupted<T>(string message) => await Task.Run(message.Interrupted<T>);
+      public static async Task<Completion<T>> runInterrupted<T>(string message) => await Task.Run(message.Interrupted<T>);
 
-      public static async Task<ICompletion<T>> runCancelled<T>() => await Task.Run(cancelled<T>);
+      public static async Task<Completion<T>> runCancelled<T>() => await Task.Run(cancelled<T>);
 
       public static Task<TResult> taskFromFunction<TResult>(Func<TResult> func, CancellationToken token)
       {

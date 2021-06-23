@@ -12,18 +12,18 @@ namespace Core.Objects
 
       public PropertyEvaluator Evaluator => evaluator;
 
-      public IResult<object> this[string signature] => tryTo(() => evaluator[signature]);
+      public Result<object> this[string signature] => tryTo(() => evaluator[signature]);
 
-      public IResult<object> Set(string signature, object value) => tryTo(() => evaluator[signature] = value);
+      public Result<object> Set(string signature, object value) => tryTo(() => evaluator[signature] = value);
 
-      public IResult<object> this[Signature signature] => tryTo(() => evaluator[signature]);
+      public Result<object> this[Signature signature] => tryTo(() => evaluator[signature]);
 
-      public IResult<object> Set(Signature signature, object value) => tryTo(() => evaluator[signature] = value);
+      public Result<object> Set(Signature signature, object value) => tryTo(() => evaluator[signature] = value);
 
-      public IResult<Type> Type(string signature) => tryTo(() => evaluator.Type(signature));
+      public Result<Type> Type(string signature) => tryTo(() => evaluator.Type(signature));
 
-      public IResult<Type> Type(Signature signature) => tryTo(() => evaluator.Type(signature));
+      public Result<Type> Type(Signature signature) => tryTo(() => evaluator.Type(signature));
 
-      public IResult<bool> Contains(string signature) => tryTo(() => evaluator.Contains(signature));
+      public Result<bool> Contains(string signature) => tryTo(() => evaluator.Contains(signature));
    }
 }

@@ -7,7 +7,7 @@ namespace Core.Matching.Parsers
    {
       public override string Pattern => @"^\s*(\d+)(\s*%\s*)?(\d*)";
 
-      public override IMaybe<string> Parse(string source, ref int index)
+      public override Maybe<string> Parse(string source, ref int index)
       {
          var number1 = tokens[1];
          var separator = tokens[2].IsNotEmpty() ? "," : "";

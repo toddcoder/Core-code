@@ -27,7 +27,7 @@ namespace Core.Matching
          return regex.Replace(input, replacement, count);
       }
 
-      public static string Replace(this string input, Pattern pattern, Action<Result> replacer)
+      public static string Replace(this string input, Pattern pattern, Action<MatchResult> replacer)
       {
          if (pattern.MatchedBy(input).If(out var result, out _))
          {
@@ -167,9 +167,9 @@ namespace Core.Matching
          }
       }
 
-      public static IMatched<Result> Matched(this string input, Pattern pattern) => pattern.MatchedBy(input);
+      public static Matched<MatchResult> Matched(this string input, Pattern pattern) => pattern.MatchedBy(input);
 
-      public static IMaybe<Result> Matches(this string input, Pattern pattern)
+      public static Maybe<MatchResult> Matches(this string input, Pattern pattern)
       {
          if (pattern.MatchedBy(input).If(out var result))
          {
@@ -177,7 +177,7 @@ namespace Core.Matching
          }
          else
          {
-            return none<Result>();
+            return none<MatchResult>();
          }
       }
 

@@ -4,9 +4,9 @@ namespace Core.Monads
 {
    public class MatchingContext<T>
    {
-      protected readonly IMatched<T> matched;
+      protected readonly Matched<T> matched;
 
-      public MatchingContext(IMatched<T> matched) => this.matched = matched;
+      public MatchingContext(Matched<T> matched) => this.matched = matched;
 
       public Matching<T, TResult> IfMatched<TResult>(Func<T, TResult> ifMatched)
       {
@@ -23,12 +23,12 @@ namespace Core.Monads
          return new Matching<T, TResult>(matched).IfFailedMatch(ifFailedMatch);
       }
 
-      public IMatched<TResult> Map<TResult>(Func<T, TResult> mapping)
+      public Matched<TResult> Map<TResult>(Func<T, TResult> mapping)
       {
          return new Matching<T, TResult>(matched).Map(mapping);
       }
 
-      public IMatched<TResult> Map<TResult>(Func<T, IMatched<TResult>> mapping)
+      public Matched<TResult> Map<TResult>(Func<T, Matched<TResult>> mapping)
       {
          return new Matching<T, TResult>(matched).Map(mapping);
       }

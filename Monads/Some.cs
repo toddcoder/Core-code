@@ -4,7 +4,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads
 {
-   public class Some<T> : IMaybe<T>, IEquatable<Some<T>>
+   public class Some<T> : Maybe<T>, IEquatable<Some<T>>
    {
       public static implicit operator bool(Some<T> _) => true;
 
@@ -14,67 +14,61 @@ namespace Core.Monads
 
       public T Value => value;
 
-      public bool IsSome => true;
+      public override bool IsSome => true;
 
-      public bool IsNone => false;
+      public override bool IsNone => false;
 
-      public T DefaultTo(Func<T> func) => value;
+      public override T DefaultTo(Func<T> func) => value;
 
-      public IMaybe<TResult> Map<TResult>(Func<T, TResult> ifSome) => ifSome(value).Some();
+      public override Maybe<TResult> Map<TResult>(Func<T, TResult> ifSome) => ifSome(value).Some();
 
-      public IMaybe<TResult> Map<TResult>(Func<T, IMaybe<TResult>> ifSome) => ifSome(value);
+      public override Maybe<TResult> Map<TResult>(Func<T, Maybe<TResult>> ifSome) => ifSome(value);
 
-      public IMaybe<T> If(Action<T> action)
-      {
-         action(value);
-         return this;
-      }
+      public override T Required(string message) => value;
 
-      public T Required(string message) => value;
+      public override Result<T> Result(string message) => value.Success();
 
-      public IResult<T> Result(string message) => value.Success();
+      public override Maybe<T> Or(Maybe<T> other) => this;
 
-      public IMaybe<T> Or(IMaybe<T> other) => this;
+      public override Maybe<T> Or(Func<Maybe<T>> other) => this;
 
-      public IMaybe<T> Or(Func<IMaybe<T>> other) => this;
+      public override Maybe<T> Or(Func<T> other) => this;
 
-      public IMaybe<T> Or(Func<T> other) => this;
+      public override Maybe<T> Or(T other) => this;
 
-      public IMaybe<T> Or(T other) => this;
-
-      public bool If(out T value)
+      public override bool If(out T value)
       {
          value = this.value;
          return true;
       }
 
-      public bool Else(out T value)
+      public override bool Else(out T value)
       {
          value = this.value;
          return false;
       }
 
-      public void Force(string message)
+      public override void Force(string message)
       {
       }
 
-      public void Deconstruct(out bool isSome, out T value)
+      public override void Deconstruct(out bool isSome, out T value)
       {
          isSome = true;
          value = this.value;
       }
 
-      public IMaybe<T> IfThen(Action<T> action)
+      public override Maybe<T> IfThen(Action<T> action)
       {
          action(value);
          return this;
       }
 
-      public bool EqualToValueOf(IMaybe<T> otherMaybe) => otherMaybe.If(out var otherValue) && ValueEqualTo(otherValue);
+      public override bool EqualToValueOf(Maybe<T> otherMaybe) => otherMaybe.If(out var otherValue) && ValueEqualTo(otherValue);
 
-      public bool ValueEqualTo(T otherValue) => value.Equals(otherValue);
+      public override bool ValueEqualTo(T otherValue) => value.Equals(otherValue);
 
-      public IMaybe<TResult> CastAs<TResult>()
+      public override Maybe<TResult> CastAs<TResult>()
       {
          if (value is TResult result)
          {
@@ -86,9 +80,7 @@ namespace Core.Monads
          }
       }
 
-      public IMaybe<T> Where(Predicate<T> predicate) => predicate(value) ? this : none<T>();
-
-      public bool HasValue => true;
+      public override Maybe<T> Where(Predicate<T> predicate) => predicate(value) ? this : none<T>();
 
       public bool Equals(Some<T> other)
       {

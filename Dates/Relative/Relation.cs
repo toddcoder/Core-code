@@ -34,7 +34,7 @@ namespace Core.Dates.Relative
 
       static int safeDay(DateTime date, int month) => Min(date.Day, month.LastOfMonth(date.Year));
 
-      public IResult<DateTime> Month(DateTime date)
+      public Result<DateTime> Month(DateTime date)
       {
          if (isRelative)
          {
@@ -50,7 +50,7 @@ namespace Core.Dates.Relative
          }
       }
 
-      public IResult<DateTime> Day(DateTime date)
+      public Result<DateTime> Day(DateTime date)
       {
          if (isRelative)
          {

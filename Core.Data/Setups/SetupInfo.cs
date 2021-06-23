@@ -6,7 +6,7 @@ namespace Core.Data.Setups
    public class SetupInfo
    {
       protected string connection;
-      protected IMaybe<string> command;
+      protected Maybe<string> command;
       protected string adapter;
 
       public string Connection
@@ -41,7 +41,7 @@ namespace Core.Data.Setups
          adapter = "";
       }
 
-      public SetupInfo(string connectionName, string adapterName, IMaybe<string> commandName)
+      public SetupInfo(string connectionName, string adapterName, Maybe<string> commandName)
       {
          connection = connectionName;
          adapter = adapterName;

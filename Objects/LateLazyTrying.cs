@@ -16,21 +16,21 @@ namespace Core.Objects
          this.lateLazy = lateLazy;
       }
 
-      public IResult<T> ActivateWith(Func<T> activator) => tryTo(() =>
+      public Result<T> ActivateWith(Func<T> activator) => tryTo(() =>
       {
          lateLazy.ActivateWith(activator);
          return lateLazy.Value.Success();
       });
 
-      public async Task<ICompletion<T>> ActivateWithAsync(Func<T> activator, CancellationToken token)
+      public async Task<Completion<T>> ActivateWithAsync(Func<T> activator, CancellationToken token)
       {
          return await runAsync(t => ActivateWith(activator).Completion(t), token);
       }
 
-      public IResult<T> Value => tryTo(() => lateLazy.Value);
+      public Result<T> Value => tryTo(() => lateLazy.Value);
 
       public bool IsActivated => lateLazy.IsActivated;
 
-      public IMaybe<T> AnyValue => lateLazy.AnyValue;
+      public Maybe<T> AnyValue => lateLazy.AnyValue;
    }
 }

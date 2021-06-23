@@ -32,7 +32,7 @@ namespace Core.Data.Parameters
          };
       }
 
-      protected static IMaybe<Type> getType(string typeName)
+      protected static Maybe<Type> getType(string typeName)
       {
          return maybe(typeName.IsNotEmpty(), () => System.Type.GetType(typeName, true, true));
       }
@@ -56,14 +56,14 @@ namespace Core.Data.Parameters
          Default = none<string>();
       }
 
-      public IMaybe<Type> Type { get; set; }
+      public Maybe<Type> Type { get; set; }
 
-      public IMaybe<int> Size { get; set; }
+      public Maybe<int> Size { get; set; }
 
       public bool Output { get; set; }
 
-      public IMaybe<string> Value { get; set; }
+      public Maybe<string> Value { get; set; }
 
-      public IMaybe<string> Default { get; set; }
+      public Maybe<string> Default { get; set; }
    }
 }

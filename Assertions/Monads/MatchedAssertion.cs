@@ -15,12 +15,12 @@ namespace Core.Assertions.Monads
 
       public static bool operator |(MatchedAssertion<T> x, ICanBeTrue y) => or(x, y);
 
-      protected IMatched<T> matched;
+      protected Matched<T> matched;
       protected List<Constraint> constraints;
       protected bool not;
       protected string name;
 
-      public MatchedAssertion(IMatched<T> matched)
+      public MatchedAssertion(Matched<T> matched)
       {
          this.matched = matched;
          constraints = new List<Constraint>();
@@ -48,7 +48,7 @@ namespace Core.Assertions.Monads
 
       public MatchedAssertion<T> BeFailedMatch() => add(() => matched.IsFailedMatch, "$name must be $not a failed match");
 
-      public MatchedAssertion<T> EqualToValueOf(IMatched<T> otherMatched)
+      public MatchedAssertion<T> EqualToValueOf(Matched<T> otherMatched)
       {
          return add(() => matched.EqualToValueOf(otherMatched), $"Value of $name must $not equal value of {matchedImage(otherMatched)}");
       }
@@ -91,19 +91,19 @@ namespace Core.Assertions.Monads
          return forceConvert<T, TimeoutException, TResult>(this);
       }
 
-      public IResult<T> OrFailure() => orFailure(this);
+      public Result<T> OrFailure() => orFailure(this);
 
-      public IResult<T> OrFailure(string message) => orFailure(this, message);
+      public Result<T> OrFailure(string message) => orFailure(this, message);
 
-      public IResult<T> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
+      public Result<T> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
 
-      public IMaybe<T> OrNone() => orNone(this);
+      public Maybe<T> OrNone() => orNone(this);
 
-      public async Task<ICompletion<T>> OrFailureAsync(CancellationToken token) => await orFailureAsync(this, token);
+      public async Task<Completion<T>> OrFailureAsync(CancellationToken token) => await orFailureAsync(this, token);
 
-      public async Task<ICompletion<T>> OrFailureAsync(string message, CancellationToken token) => await orFailureAsync(this, message, token);
+      public async Task<Completion<T>> OrFailureAsync(string message, CancellationToken token) => await orFailureAsync(this, message, token);
 
-      public async Task<ICompletion<T>> OrFailureAsync(Func<string> messageFunc, CancellationToken token)
+      public async Task<Completion<T>> OrFailureAsync(Func<string> messageFunc, CancellationToken token)
       {
          return await orFailureAsync(this, messageFunc, token);
       }

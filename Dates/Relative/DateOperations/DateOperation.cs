@@ -38,6 +38,6 @@ namespace Core.Dates.Relative.DateOperations
          return -2;
       }
 
-      public abstract IResult<DateTime> Operate(DateTime dateTime);
+      public abstract Result<DateTime> Operate(DateTime dateTime);
    }
 }

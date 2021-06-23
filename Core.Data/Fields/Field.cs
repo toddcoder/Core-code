@@ -21,7 +21,7 @@ namespace Core.Data.Fields
          return new Field(name, signature, optional) { Type = type };
       }
 
-      protected static IMaybe<Type> getType(string typeName)
+      protected static Maybe<Type> getType(string typeName)
       {
          if (typeName.IsEmpty())
          {
@@ -54,7 +54,7 @@ namespace Core.Data.Fields
 
       public bool Optional { get; set; }
 
-      public IMaybe<Type> Type { get; set; }
+      public Maybe<Type> Type { get; set; }
 
       public override Type PropertyType => Type.DefaultTo(() => base.PropertyType);
    }

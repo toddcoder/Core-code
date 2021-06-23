@@ -136,7 +136,7 @@ namespace Core.Collections
          }
       }
 
-      public IResult<Hash<TKey, TValue>> AnyHash() => this.Success();
+      public Result<Hash<TKey, TValue>> AnyHash() => this.Success();
 
       public TValue Find(TKey key, Func<TKey, TValue> defaultValue, bool addIfNotFound = false)
       {
@@ -277,7 +277,7 @@ namespace Core.Collections
          return result;
       }
 
-      public IMaybe<TValue> Replace(TKey key, TValue newValue)
+      public Maybe<TValue> Replace(TKey key, TValue newValue)
       {
          var oldValue = this.Map(key);
          this[key] = newValue;
@@ -285,7 +285,7 @@ namespace Core.Collections
          return oldValue;
       }
 
-      public IMaybe<TValue> OneTime(TKey key)
+      public Maybe<TValue> OneTime(TKey key)
       {
          if (ContainsKey(key))
          {

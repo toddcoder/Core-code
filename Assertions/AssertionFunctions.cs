@@ -65,17 +65,17 @@ namespace Core.Assertions
          return hash.AnyHash().If(out var h) ? dictionaryImage(h) : hash.ToString();
       }
 
-      public static string maybeImage<T>(IMaybe<T> maybe)
+      public static string maybeImage<T>(Maybe<T> maybe)
       {
          return maybe.Map(v => v.ToNonNullString()).DefaultTo(() => $"none<{typeof(T).Name}>");
       }
 
-      public static string resultImage<T>(IResult<T> result)
+      public static string resultImage<T>(Result<T> result)
       {
          return result.Map(v => v.ToNonNullString()).Recover(e => $"failure<{typeof(T).Name}>({e.Message})");
       }
 
-      public static string matchedImage<T>(IMatched<T> matched)
+      public static string matchedImage<T>(Matched<T> matched)
       {
          if (matched.If(out var value, out var anyException))
          {
@@ -91,7 +91,7 @@ namespace Core.Assertions
          }
       }
 
-      public static string completionImage<T>(ICompletion<T> completion)
+      public static string completionImage<T>(Completion<T> completion)
       {
          if (completion.If(out var value, out var _exception))
          {
@@ -199,27 +199,27 @@ namespace Core.Assertions
          return convert<T, TResult>(assertion);
       }
 
-      public static IResult<T> orFailure<T>(IAssertion<T> assertion)
+      public static Result<T> orFailure<T>(IAssertion<T> assertion)
       {
          return assertion.Constraints.FirstOrNone(c => !c.IsTrue()).Map(c => c.Message.Failure<T>()).DefaultTo(() => assertion.Value.Success());
       }
 
-      public static IResult<T> orFailure<T>(IAssertion<T> assertion, string message)
+      public static Result<T> orFailure<T>(IAssertion<T> assertion, string message)
       {
          return assertion.Constraints.Any(c => !c.IsTrue()) ? message.Failure<T>() : assertion.Value.Success();
       }
 
-      public static IResult<T> orFailure<T>(IAssertion<T> assertion, Func<string> messageFunc)
+      public static Result<T> orFailure<T>(IAssertion<T> assertion, Func<string> messageFunc)
       {
          return assertion.Constraints.Any(c => !c.IsTrue()) ? messageFunc().Failure<T>() : assertion.Value.Success();
       }
 
-      public static IMaybe<T> orNone<T>(IAssertion<T> assertion)
+      public static Maybe<T> orNone<T>(IAssertion<T> assertion)
       {
          return maybe(assertion.Constraints.All(c => c.IsTrue()), () => assertion.Value);
       }
 
-      public static async Task<ICompletion<T>> orFailureAsync<T>(IAssertion<T> assertion, CancellationToken token)
+      public static async Task<Completion<T>> orFailureAsync<T>(IAssertion<T> assertion, CancellationToken token)
       {
          return await runAsync(t =>
             assertion.Constraints
@@ -228,12 +228,12 @@ namespace Core.Assertions
                .DefaultTo(() => assertion.Value.Completed(t)), token);
       }
 
-      public static async Task<ICompletion<T>> orFailureAsync<T>(IAssertion<T> assertion, string message, CancellationToken token)
+      public static async Task<Completion<T>> orFailureAsync<T>(IAssertion<T> assertion, string message, CancellationToken token)
       {
          return await runAsync(t => assertion.Constraints.Any(c => !c.IsTrue()) ? message.Interrupted<T>() : assertion.Value.Completed(t), token);
       }
 
-      public static async Task<ICompletion<T>> orFailureAsync<T>(IAssertion<T> assertion, Func<string> messageFunc, CancellationToken token)
+      public static async Task<Completion<T>> orFailureAsync<T>(IAssertion<T> assertion, Func<string> messageFunc, CancellationToken token)
       {
          return await runAsync(t => assertion.Constraints.Any(c => !c.IsTrue()) ? messageFunc().Interrupted<T>() : assertion.Value.Completed(t),
             token);

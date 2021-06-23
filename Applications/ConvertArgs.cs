@@ -13,6 +13,6 @@ namespace Core.Applications
 
       public string Source { get; }
 
-      public IMaybe<object> Result { get; set; } = none<object>();
+      public Maybe<object> Result { get; set; } = none<object>();
    }
 }

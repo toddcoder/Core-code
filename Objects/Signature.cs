@@ -24,7 +24,7 @@ namespace Core.Objects
 
       public string Name { get; set; }
 
-      public IMaybe<int> Index { get; set; }
+      public Maybe<int> Index { get; set; }
 
       public override string ToString() => Index.Map(i => $"{Name}[{i}]").DefaultTo(() => Name);
    }

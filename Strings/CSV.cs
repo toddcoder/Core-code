@@ -134,7 +134,7 @@ namespace Core.Strings
          return entity;
       }
 
-      public IMaybe<T> FirstObject<T>(params string[] signatures) where T : new() => maybe(records.Count > 0, () =>
+      public Maybe<T> FirstObject<T>(params string[] signatures) where T : new() => maybe(records.Count > 0, () =>
       {
          var evaluator = new PropertyEvaluator(new T());
          return getObject<T>(evaluator, records[0], signatures);

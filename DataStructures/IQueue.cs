@@ -10,13 +10,13 @@ namespace Core.DataStructures
 
       bool Contains(T item);
 
-      IResult<T[]> ToArray(int arrayIndex = 0);
+      Result<T[]> ToArray(int arrayIndex = 0);
 
-      IMaybe<T> Dequeue();
+      Maybe<T> Dequeue();
 
       void Enqueue(T item);
 
-      IMaybe<T> Peek();
+      Maybe<T> Peek();
 
       bool IsEmpty { get; }
 

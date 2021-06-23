@@ -13,11 +13,11 @@ namespace Core.Collections
 
          public T Value { get; }
 
-         public IMaybe<Item> Next { get; set; } = none<Item>();
+         public Maybe<Item> Next { get; set; } = none<Item>();
       }
 
-      protected IMaybe<Item> _head;
-      protected IMaybe<Item> _tail;
+      protected Maybe<Item> _head;
+      protected Maybe<Item> _tail;
 
       public OneUseLinkedList()
       {
@@ -50,7 +50,7 @@ namespace Core.Collections
          }
       }
 
-      public IMaybe<T> Shift() => _head.Map(item =>
+      public Maybe<T> Shift() => _head.Map(item =>
       {
          var value = item.Value;
          if (_head.If(out var head))
@@ -78,9 +78,9 @@ namespace Core.Collections
 
       IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-      public IMaybe<T> Head => _head.Map(item => item.Value);
+      public Maybe<T> Head => _head.Map(item => item.Value);
 
-      public IMaybe<T> Tail => _tail.Map(item => item.Value);
+      public Maybe<T> Tail => _tail.Map(item => item.Value);
 
       public bool More => _head.IsSome;
    }

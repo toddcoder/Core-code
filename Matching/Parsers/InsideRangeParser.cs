@@ -8,7 +8,7 @@ namespace Core.Matching.Parsers
    {
       public override string Pattern => $@"^\s*/({REGEX_IDENTIFIER})\b";
 
-      public override IMaybe<string> Parse(string source, ref int index)
+      public override Maybe<string> Parse(string source, ref int index)
       {
          var word = tokens[1];
          var result = OutsideRangeParser.GetRange(word);

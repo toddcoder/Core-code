@@ -27,11 +27,11 @@ namespace Core.Configurations
          set => items[key] = value;
       }
 
-      public IMaybe<string> GetValue(string key) => items.Map(key).Map(i => i.GetValue(key));
+      public Maybe<string> GetValue(string key) => items.Map(key).Map(i => i.GetValue(key));
 
-      public IResult<string> RequireValue(string key) => items.Require(key).Map(i => i.RequireValue(key));
+      public Result<string> RequireValue(string key) => items.Require(key).Map(i => i.RequireValue(key));
 
-      public IMaybe<Group> GetGroup(string key)
+      public Maybe<Group> GetGroup(string key)
       {
          if (items.If(key, out var item) && item is Group group)
          {
@@ -43,11 +43,11 @@ namespace Core.Configurations
          }
       }
 
-      public IResult<Group> RequireGroup(string key) => GetGroup(key).Result($"Key {key} not found");
+      public Result<Group> RequireGroup(string key) => GetGroup(key).Result($"Key {key} not found");
 
       public bool ContainsKey(string key) => items.ContainsKey(key);
 
-      public IResult<Hash<string, IConfigurationItem>> AnyHash() => items.AsHash.Success();
+      public Result<Hash<string, IConfigurationItem>> AnyHash() => items.AsHash.Success();
 
       public IEnumerable<(string key, string value)> Values()
       {

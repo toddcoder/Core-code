@@ -2,6 +2,6 @@
 {
    public static class MatchingExtensions
    {
-      public static MatchingContext<T> Matching<T>(this IMatched<T> matched) => new(matched);
+      public static MatchingContext<T> Matching<T>(this Matched<T> matched) => new(matched);
    }
 }

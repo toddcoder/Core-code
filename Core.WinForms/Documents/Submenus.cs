@@ -19,7 +19,7 @@ namespace Core.WinForms.Documents
 
       public bool ContainsKey(string key) => parent.DropDownItems.ContainsKey(Menus.SubmenuName(parentText, key));
 
-      public IResult<Hash<string, ToolStripMenuItem>> AnyHash() => "Not implemented".Failure<Hash<string, ToolStripMenuItem>>();
+      public Result<Hash<string, ToolStripMenuItem>> AnyHash() => "Not implemented".Failure<Hash<string, ToolStripMenuItem>>();
 
       ToolStripMenuItem IHash<string, ToolStripMenuItem>.this[string text]
       {

@@ -10,7 +10,7 @@ namespace Core.Strings.Text
    {
       protected List<DifferenceItem> subItems;
 
-      public DifferenceItem(string text, DifferenceType type, IMaybe<int> position)
+      public DifferenceItem(string text, DifferenceType type, Maybe<int> position)
       {
          Text = text;
          Type = type;
@@ -38,7 +38,7 @@ namespace Core.Strings.Text
       [Equatable]
       public DifferenceType Type { get; set; }
 
-      public IMaybe<int> Position { get; }
+      public Maybe<int> Position { get; }
 
       [Equatable]
       public string Text { get; }

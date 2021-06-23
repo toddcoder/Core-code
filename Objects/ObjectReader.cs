@@ -13,18 +13,18 @@ namespace Core.Objects
 {
    public class ObjectReader
    {
-      public static IResult<ObjectReader> ReadObject(object obj) =>
+      public static Result<ObjectReader> ReadObject(object obj) =>
          from nonNull in obj.Must().Not.BeNull().OrFailure()
          from type in obj.GetType().Success()
          from values in getValues(obj, type)
          select new ObjectReader(values);
 
-      protected static IResult<Hash<string, object>> getValues(object obj, Type type) =>
+      protected static Result<Hash<string, object>> getValues(object obj, Type type) =>
          from members in getMembers(type)
          from values in getValues(obj, members)
          select values;
 
-      protected static IResult<IEnumerable<MemberInfo>> getMembers(Type type)
+      protected static Result<IEnumerable<MemberInfo>> getMembers(Type type)
       {
          const MemberTypes memberTypes = Field | Property;
          const BindingFlags bindingFlags = BindingFlags.Instance | GetField | GetProperty | NonPublic | Public;
@@ -34,7 +34,7 @@ namespace Core.Objects
             select members;
       }
 
-      protected static IResult<object> getValue(object obj, MemberInfo memberInfo)
+      protected static Result<object> getValue(object obj, MemberInfo memberInfo)
       {
          return memberInfo switch
          {
@@ -44,7 +44,7 @@ namespace Core.Objects
          };
       }
 
-      protected static IResult<Hash<string, object>> getValues(object obj, IEnumerable<MemberInfo> memberInfos)
+      protected static Result<Hash<string, object>> getValues(object obj, IEnumerable<MemberInfo> memberInfos)
       {
          var hash = new Hash<string, object>();
 

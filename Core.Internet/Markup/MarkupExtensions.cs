@@ -14,7 +14,7 @@ namespace Core.Internet.Markup
       private const string TEXT_EMPTY_ELEMENT = "<$1/>";
       private const string REGEX_HEADER = "/s* '<?' -['?']+ '?>'; mf";
 
-      private static IResult<string> fromStream(Stream stream, Encoding encoding) => tryTo(() =>
+      private static Result<string> fromStream(Stream stream, Encoding encoding) => tryTo(() =>
       {
          stream.Position = 0;
          using var reader = new StreamReader(stream, encoding);

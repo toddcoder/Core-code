@@ -15,12 +15,12 @@ namespace Core.Assertions.Monads
 
       public static bool operator |(MaybeAssertion<T> x, ICanBeTrue y) => or(x, y);
 
-      protected IMaybe<T> maybe;
+      protected Maybe<T> maybe;
       protected List<Constraint> constraints;
       protected bool not;
       protected string name;
 
-      public MaybeAssertion(IMaybe<T> maybe)
+      public MaybeAssertion(Maybe<T> maybe)
       {
          this.maybe = maybe;
          constraints = new List<Constraint>();
@@ -53,7 +53,7 @@ namespace Core.Assertions.Monads
             case T otherT:
                constraints.Add(new Constraint(() => constraintFunction(otherT), message, not, name, maybeImage(maybe)));
                break;
-            case IMaybe<T> anyValue:
+            case Maybe<T> anyValue:
                if (anyValue.If(out var value))
                {
                   constraints.Add(new Constraint(() => constraintFunction(value), message, not, name, maybeImage(maybe)));
@@ -83,7 +83,7 @@ namespace Core.Assertions.Monads
 
       public MaybeAssertion<T> HaveValue() => add(() => maybe.IsSome, "$name must $not have a value");
 
-      public MaybeAssertion<T> EqualToValueOf(IMaybe<T> otherMaybe)
+      public MaybeAssertion<T> EqualToValueOf(Maybe<T> otherMaybe)
       {
          return add(() => maybe.EqualToValueOf(otherMaybe), $"Value of $name must $not equal to value of {maybeImage(otherMaybe)}");
       }
@@ -126,19 +126,19 @@ namespace Core.Assertions.Monads
          return forceConvert<T, TimeoutException, TResult>(this);
       }
 
-      public IResult<T> OrFailure() => orFailure(this);
+      public Result<T> OrFailure() => orFailure(this);
 
-      public IResult<T> OrFailure(string message) => orFailure(this, message);
+      public Result<T> OrFailure(string message) => orFailure(this, message);
 
-      public IResult<T> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
+      public Result<T> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
 
-      public IMaybe<T> OrNone() => orNone(this);
+      public Maybe<T> OrNone() => orNone(this);
 
-      public async Task<ICompletion<T>> OrFailureAsync(CancellationToken token) => await orFailureAsync(this, token);
+      public async Task<Completion<T>> OrFailureAsync(CancellationToken token) => await orFailureAsync(this, token);
 
-      public async Task<ICompletion<T>> OrFailureAsync(string message, CancellationToken token) => await orFailureAsync(this, message, token);
+      public async Task<Completion<T>> OrFailureAsync(string message, CancellationToken token) => await orFailureAsync(this, message, token);
 
-      public async Task<ICompletion<T>> OrFailureAsync(Func<string> messageFunc, CancellationToken token)
+      public async Task<Completion<T>> OrFailureAsync(Func<string> messageFunc, CancellationToken token)
       {
          return await orFailureAsync(this, messageFunc, token);
       }

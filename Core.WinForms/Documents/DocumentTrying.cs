@@ -13,22 +13,22 @@ namespace Core.WinForms.Documents
 
       public Document Document => document;
 
-      public IResult<Unit> RenderMainMenu() => tryTo(() => document.RenderMainMenu());
+      public Result<Unit> RenderMainMenu() => tryTo(() => document.RenderMainMenu());
 
-      public IResult<Unit> RenderContextMenu() => tryTo(() => document.RenderContextMenu());
+      public Result<Unit> RenderContextMenu() => tryTo(() => document.RenderContextMenu());
 
-      public IResult<Unit> RenderContextMenu(Control control) => tryTo(() => document.RenderContextMenu(control));
+      public Result<Unit> RenderContextMenu(Control control) => tryTo(() => document.RenderContextMenu(control));
 
-      public IResult<Unit> New() => tryTo(() => document.New());
+      public Result<Unit> New() => tryTo(() => document.New());
 
-      public IResult<Unit> Open() => tryTo(() => document.Open());
+      public Result<Unit> Open() => tryTo(() => document.Open());
 
-      public IResult<Unit> Open(FileName fileName) => tryTo(() => document.Open(fileName));
+      public Result<Unit> Open(FileName fileName) => tryTo(() => document.Open(fileName));
 
-      public IResult<Unit> Save() => tryTo(() => document.Save());
+      public Result<Unit> Save() => tryTo(() => document.Save());
 
-      public IResult<Unit> SaveAs() => tryTo(() => document.SaveAs());
+      public Result<Unit> SaveAs() => tryTo(() => document.SaveAs());
 
-      public IResult<Unit> Close(FormClosingEventArgs e) => tryTo(() => document.Close(e));
+      public Result<Unit> Close(FormClosingEventArgs e) => tryTo(() => document.Close(e));
    }
 }

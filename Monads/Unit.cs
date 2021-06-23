@@ -7,15 +7,15 @@ namespace Core.Monads
    {
       public static Unit Value => new Unit();
 
-      public static IMaybe<Unit> Some() => Value.Some();
+      public static Maybe<Unit> Some() => Value.Some();
 
-      public static IResult<Unit> Success() => Value.Success();
+      public static Result<Unit> Success() => Value.Success();
 
-      public static IMatched<Unit> Matched() => Value.Matched();
+      public static Matched<Unit> Matched() => Value.Match();
 
-      public static ICompletion<Unit> Completed() => Value.Completed();
+      public static Completion<Unit> Completed() => Value.Completed();
 
-      public static ICompletion<Unit> Completed(CancellationToken token)
+      public static Completion<Unit> Completed(CancellationToken token)
       {
          if (token.IsCancellationRequested)
          {

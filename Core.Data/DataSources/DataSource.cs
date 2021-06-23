@@ -30,10 +30,10 @@ namespace Core.Data.DataSources
          _ => DbType.Object
       };
 
-      protected IMaybe<IDbConnection> _connection;
+      protected Maybe<IDbConnection> _connection;
       protected TimeSpan commandTimeout;
       protected Fields.Fields fields;
-      protected IMaybe<IActive> _activeObject;
+      protected Maybe<IActive> _activeObject;
 
       public event EventHandler<CancelEventArgs> NextRow;
 
@@ -51,7 +51,7 @@ namespace Core.Data.DataSources
 
       public int ResultIndex { get; set; }
 
-      public IMaybe<IDbCommand> Command { get; set; }
+      public Maybe<IDbCommand> Command { get; set; }
 
       public string ConnectionString { get; set; }
 
@@ -171,7 +171,7 @@ namespace Core.Data.DataSources
          }
       }
 
-      public IMaybe<IDataReader> Reader { get; set; }
+      public Maybe<IDataReader> Reader { get; set; }
 
       internal void BeginReading(object entity, string command, Parameters.Parameters parameters, Fields.Fields inFields)
       {
@@ -237,7 +237,7 @@ namespace Core.Data.DataSources
          }
       }
 
-      internal IMaybe<object> NextReading(object entity)
+      internal Maybe<object> NextReading(object entity)
       {
          if (Reader.If(out var reader) && reader.Read())
          {
@@ -400,7 +400,7 @@ namespace Core.Data.DataSources
          }
       }
 
-      protected string getFileConnectionString(IMaybe<FileName> associatedFile)
+      protected string getFileConnectionString(Maybe<FileName> associatedFile)
       {
          if (associatedFile.If(out var file))
          {

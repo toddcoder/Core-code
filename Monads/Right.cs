@@ -56,23 +56,23 @@ namespace Core.Monads
          return rightMap(value);
       }
 
-      public override void Deconstruct(out IMaybe<TLeft> left, out IMaybe<TRight> right)
+      public override void Deconstruct(out Maybe<TLeft> left, out Maybe<TRight> right)
       {
          left = none<TLeft>();
          right = value.Some();
       }
 
-      public override IMaybe<TLeft> MaybeFromLeft() => none<TLeft>();
+      public override Maybe<TLeft> MaybeFromLeft() => none<TLeft>();
 
-      public override IMaybe<TRight> MaybeFromRight() => value.Some();
+      public override Maybe<TRight> MaybeFromRight() => value.Some();
 
-      public override IResult<TLeft> ResultFromLeft(string exceptionMessage) => exceptionMessage.Failure<TLeft>();
+      public override Result<TLeft> ResultFromLeft(string exceptionMessage) => exceptionMessage.Failure<TLeft>();
 
-      public override IResult<TLeft> ResultFromLeft(Func<TRight, string> exceptionMessage) => exceptionMessage(value).Failure<TLeft>();
+      public override Result<TLeft> ResultFromLeft(Func<TRight, string> exceptionMessage) => exceptionMessage(value).Failure<TLeft>();
 
-      public override IResult<TRight> ResultFromRight(string exceptionMessage) => value.Success();
+      public override Result<TRight> ResultFromRight(string exceptionMessage) => value.Success();
 
-      public override IResult<TRight> ResultFromRight(Func<TLeft, string> exceptionMessage) => value.Success();
+      public override Result<TRight> ResultFromRight(Func<TLeft, string> exceptionMessage) => value.Success();
 
       public override Either<TLeft, TRight> OnLeft(Action<TLeft> action) => this;
 

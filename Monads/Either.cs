@@ -22,19 +22,19 @@ namespace Core.Monads
       public abstract Either<TLeftResult, TRightResult> Map<TLeftResult, TRightResult>(Func<TLeft, Either<TLeftResult, TRightResult>> leftMap,
          Func<TRight, Either<TLeftResult, TRightResult>> rightMap);
 
-      public abstract void Deconstruct(out IMaybe<TLeft> left, out IMaybe<TRight> right);
+      public abstract void Deconstruct(out Maybe<TLeft> left, out Maybe<TRight> right);
 
-      public abstract IMaybe<TLeft> MaybeFromLeft();
+      public abstract Maybe<TLeft> MaybeFromLeft();
 
-      public abstract IMaybe<TRight> MaybeFromRight();
+      public abstract Maybe<TRight> MaybeFromRight();
 
-      public abstract IResult<TLeft> ResultFromLeft(string exceptionMessage);
+      public abstract Result<TLeft> ResultFromLeft(string exceptionMessage);
 
-      public abstract IResult<TLeft> ResultFromLeft(Func<TRight, string> exceptionMessage);
+      public abstract Result<TLeft> ResultFromLeft(Func<TRight, string> exceptionMessage);
 
-      public abstract IResult<TRight> ResultFromRight(string exceptionMessage);
+      public abstract Result<TRight> ResultFromRight(string exceptionMessage);
 
-      public abstract IResult<TRight> ResultFromRight(Func<TLeft, string> exceptionMessage);
+      public abstract Result<TRight> ResultFromRight(Func<TLeft, string> exceptionMessage);
 
       public abstract Either<TLeft, TRight> OnLeft(Action<TLeft> action);
 

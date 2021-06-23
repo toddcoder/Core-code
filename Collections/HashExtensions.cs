@@ -38,12 +38,12 @@ namespace Core.Collections
          }
       }
 
-      public static IResult<TValue> Require<TKey, TValue>(this IHash<TKey, TValue> hash, TKey key)
+      public static Result<TValue> Require<TKey, TValue>(this IHash<TKey, TValue> hash, TKey key)
       {
          return hash.Require(key, $"Value for key {key} not found");
       }
 
-      public static IResult<TValue> Require<TKey, TValue>(this IHash<TKey, TValue> hash, TKey key, string message)
+      public static Result<TValue> Require<TKey, TValue>(this IHash<TKey, TValue> hash, TKey key, string message)
       {
          if (hash.ContainsKey(key))
          {
@@ -92,19 +92,19 @@ namespace Core.Collections
          }
       }
 
-      public static IMaybe<TValue> Map<TKey, TValue>(this IHash<TKey, TValue> hash, TKey key)
+      public static Maybe<TValue> Map<TKey, TValue>(this IHash<TKey, TValue> hash, TKey key)
       {
          return maybe(hash.ContainsKey(key), () => hash[key]);
       }
 
-      public static IMaybe<TResult> Map<TKey, TValue, TResult>(this IHash<TKey, TValue> hash, TKey key,
+      public static Maybe<TResult> Map<TKey, TValue, TResult>(this IHash<TKey, TValue> hash, TKey key,
          Func<TValue, TResult> func)
       {
          return maybe(hash.ContainsKey(key), () => func(hash[key]));
       }
 
-      public static IMaybe<TResult> Map<TKey, TValue, TResult>(this IHash<TKey, TValue> hash, TKey key,
-         Func<TValue, IMaybe<TResult>> func)
+      public static Maybe<TResult> Map<TKey, TValue, TResult>(this IHash<TKey, TValue> hash, TKey key,
+         Func<TValue, Maybe<TResult>> func)
       {
          return maybe(hash.ContainsKey(key), () => func(hash[key]));
       }
@@ -136,7 +136,7 @@ namespace Core.Collections
          return hash.ContainsKey(key) ? hash[key] : defaultValue;
       }
 
-      public static IMaybe<TValue> Get<TKey, TValue>(this IHash<TKey, TValue> hash, TKey key)
+      public static Maybe<TValue> Get<TKey, TValue>(this IHash<TKey, TValue> hash, TKey key)
       {
          return maybe(hash.ContainsKey(key), () => hash[key]);
       }
@@ -232,8 +232,8 @@ namespace Core.Collections
          return result;
       }
 
-      public static IResult<Hash<TKey, TValue>> TryToHash<TKey, TValue, T>(this IEnumerable<T> enumerable, Func<T, TKey> keySelector,
-         Func<T, IResult<TValue>> valueSelector)
+      public static Result<Hash<TKey, TValue>> TryToHash<TKey, TValue, T>(this IEnumerable<T> enumerable, Func<T, TKey> keySelector,
+         Func<T, Result<TValue>> valueSelector)
       {
          var result = new Hash<TKey, TValue>();
          foreach (var item in enumerable)
@@ -251,8 +251,8 @@ namespace Core.Collections
          return result.Success();
       }
 
-      public static IResult<StringHash<TValue>> TryToStringHash<TValue, T>(this IEnumerable<T> enumerable, Func<T, string> keySelector,
-         Func<T, IResult<TValue>> valueSelector, bool ignoreCase)
+      public static Result<StringHash<TValue>> TryToStringHash<TValue, T>(this IEnumerable<T> enumerable, Func<T, string> keySelector,
+         Func<T, Result<TValue>> valueSelector, bool ignoreCase)
       {
          var result = new StringHash<TValue>(ignoreCase);
          foreach (var item in enumerable)
@@ -270,8 +270,8 @@ namespace Core.Collections
          return result.Success();
       }
 
-      public static IResult<Hash<TKey, TValue>> TryToHash<TKey, TValue, T>(this IEnumerable<T> enumerable, Func<T, TKey> keySelector,
-         Func<T, IResult<TValue>> valueSelector, IEqualityComparer<TKey> comparer)
+      public static Result<Hash<TKey, TValue>> TryToHash<TKey, TValue, T>(this IEnumerable<T> enumerable, Func<T, TKey> keySelector,
+         Func<T, Result<TValue>> valueSelector, IEqualityComparer<TKey> comparer)
       {
          var result = new Hash<TKey, TValue>(comparer);
          foreach (var item in enumerable)
@@ -289,8 +289,8 @@ namespace Core.Collections
          return result.Success();
       }
 
-      public static IResult<Hash<TKey, TValue>> TryToHash<TKey, TValue, T>(this IEnumerable<T> enumerable, Func<T, IResult<TKey>> keySelector,
-         Func<T, IResult<TValue>> valueSelector)
+      public static Result<Hash<TKey, TValue>> TryToHash<TKey, TValue, T>(this IEnumerable<T> enumerable, Func<T, Result<TKey>> keySelector,
+         Func<T, Result<TValue>> valueSelector)
       {
          var result = new Hash<TKey, TValue>();
          foreach (var item in enumerable)
@@ -312,8 +312,8 @@ namespace Core.Collections
          return result.Success();
       }
 
-      public static IResult<StringHash<TValue>> TryToStringHash<TValue, T>(this IEnumerable<T> enumerable, Func<T, IResult<string>> keySelector,
-         Func<T, IResult<TValue>> valueSelector, bool ignoreCase)
+      public static Result<StringHash<TValue>> TryToStringHash<TValue, T>(this IEnumerable<T> enumerable, Func<T, Result<string>> keySelector,
+         Func<T, Result<TValue>> valueSelector, bool ignoreCase)
       {
          var result = new StringHash<TValue>(ignoreCase);
          foreach (var item in enumerable)
@@ -335,8 +335,8 @@ namespace Core.Collections
          return result.Success();
       }
 
-      public static IResult<Hash<TKey, TValue>> TryToHash<TKey, TValue, T>(this IEnumerable<T> enumerable, Func<T, IResult<TKey>> keySelector,
-         Func<T, IResult<TValue>> valueSelector, IEqualityComparer<TKey> comparer)
+      public static Result<Hash<TKey, TValue>> TryToHash<TKey, TValue, T>(this IEnumerable<T> enumerable, Func<T, Result<TKey>> keySelector,
+         Func<T, Result<TValue>> valueSelector, IEqualityComparer<TKey> comparer)
       {
          var result = new Hash<TKey, TValue>(comparer);
          foreach (var item in enumerable)
@@ -358,7 +358,7 @@ namespace Core.Collections
          return result.Success();
       }
 
-      public static IResult<Hash<TKey, TValue>> TryToHash<TKey, TValue, T>(this IEnumerable<T> enumerable, Func<T, TKey> keySelector,
+      public static Result<Hash<TKey, TValue>> TryToHash<TKey, TValue, T>(this IEnumerable<T> enumerable, Func<T, TKey> keySelector,
          Func<T, TValue> valueSelector)
       {
          var result = new Hash<TKey, TValue>();
@@ -377,7 +377,7 @@ namespace Core.Collections
          return result.Success();
       }
 
-      public static IResult<StringHash<TValue>> TryToStringHash<TValue, T>(this IEnumerable<T> enumerable, Func<T, string> keySelector,
+      public static Result<StringHash<TValue>> TryToStringHash<TValue, T>(this IEnumerable<T> enumerable, Func<T, string> keySelector,
          Func<T, TValue> valueSelector, bool ignoreCase)
       {
          var result = new StringHash<TValue>(ignoreCase);
@@ -396,7 +396,7 @@ namespace Core.Collections
          return result.Success();
       }
 
-      public static IResult<Hash<TKey, TValue>> TryToHash<TKey, TValue, T>(this IEnumerable<T> enumerable, Func<T, TKey> keySelector,
+      public static Result<Hash<TKey, TValue>> TryToHash<TKey, TValue, T>(this IEnumerable<T> enumerable, Func<T, TKey> keySelector,
          Func<T, TValue> valueSelector, IEqualityComparer<TKey> comparer)
       {
          var result = new Hash<TKey, TValue>(comparer);

@@ -9,7 +9,7 @@ namespace Core.Io
 {
    public static class StreamExtensions
    {
-      public static IResult<string> FromStream(this Stream stream, Encoding encoding)
+      public static Result<string> FromStream(this Stream stream, Encoding encoding)
       {
          try
          {

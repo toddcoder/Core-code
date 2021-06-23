@@ -21,7 +21,7 @@ namespace Core.Computers
    {
       public class Try
       {
-         public static IResult<FileName> FromString(string file)
+         public static Result<FileName> FromString(string file)
          {
             return file.Must().BeAValidFileName().OrFailure().Map(f => (FileName)f);
          }
@@ -84,7 +84,7 @@ namespace Core.Computers
          return folder.File(UniqueName(folder, name), extension);
       }
 
-      public static IMaybe<string> ResolvedFileName(string name)
+      public static Maybe<string> ResolvedFileName(string name)
       {
          try
          {
@@ -407,7 +407,7 @@ namespace Core.Computers
 
       public bool Valid { get; private set; }
 
-      public IMaybe<FileName> Parent
+      public Maybe<FileName> Parent
       {
          get
          {
@@ -457,7 +457,7 @@ namespace Core.Computers
          setFullPath();
       }
 
-      public IMaybe<FileName> Truncated(int limit)
+      public Maybe<FileName> Truncated(int limit)
       {
          if (limit < 3)
          {
@@ -526,7 +526,7 @@ namespace Core.Computers
          }
       }
 
-      public IResult<FileName> Next()
+      public Result<FileName> Next()
       {
          try
          {
@@ -966,7 +966,7 @@ namespace Core.Computers
 
       public FileNameTrying TryTo => new(this);
 
-      public IResult<object> NewObject(string typeName, params object[] args) => tryTo(() =>
+      public Result<object> NewObject(string typeName, params object[] args) => tryTo(() =>
       {
          var assembly = Assembly.LoadFile(fullPath);
          var type = assembly.GetType(typeName, true);
@@ -988,7 +988,7 @@ namespace Core.Computers
 
       public bool IsNotEmpty => !IsEmpty;
 
-      public IMaybe<FileName> Indexed(int maximumIndex = 1000)
+      public Maybe<FileName> Indexed(int maximumIndex = 1000)
       {
          for (var index = 0; index < maximumIndex; index++)
          {

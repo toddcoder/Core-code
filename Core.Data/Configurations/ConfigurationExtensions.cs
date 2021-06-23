@@ -5,7 +5,7 @@ namespace Core.Data.Configurations
 {
    public static class ConfigurationExtensions
    {
-      public static IMaybe<DataGroups> DataGroups(this Configuration configuration)
+      public static Maybe<DataGroups> DataGroups(this Configuration configuration)
       {
          return
             from connectionsGroup in configuration.GetGroup("connections")

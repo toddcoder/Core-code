@@ -9,14 +9,14 @@ using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Assertions.Strings
 {
-   public class ResultAssertion : IAssertion<Result>
+   public class MatchResultAssertion : IAssertion<MatchResult>
    {
-      protected Result result;
+      protected MatchResult result;
       protected List<Constraint> constraints;
       protected bool not;
       protected string name;
 
-      public ResultAssertion(Result result)
+      public MatchResultAssertion(MatchResult result)
       {
          this.result = result;
 
@@ -25,7 +25,7 @@ namespace Core.Assertions.Strings
          name = "Result";
       }
 
-      public ResultAssertion Not
+      public MatchResultAssertion Not
       {
          get
          {
@@ -36,17 +36,17 @@ namespace Core.Assertions.Strings
 
       public bool BeEquivalentToTrue() => beEquivalentToTrue(this);
 
-      public Result Value => result;
+      public MatchResult Value => result;
 
       public IEnumerable<Constraint> Constraints => constraints;
 
-      public IAssertion<Result> Named(string name)
+      public IAssertion<MatchResult> Named(string name)
       {
          this.name = name;
          return this;
       }
 
-      protected ResultAssertion add(Func<bool> constraintFunction, string message)
+      protected MatchResultAssertion add(Func<bool> constraintFunction, string message)
       {
          constraints.Add(new Constraint(constraintFunction, message, not, name, Value));
          not = false;
@@ -54,12 +54,12 @@ namespace Core.Assertions.Strings
          return this;
       }
 
-      public ResultAssertion HaveMatchCountOf(int matchCount)
+      public MatchResultAssertion HaveMatchCountOf(int matchCount)
       {
          return add(() => result.MatchCount >= matchCount, $"$name must $not have a match count of at least {matchCount}");
       }
 
-      public ResultAssertion HaveGroupCountOf(int groupCount)
+      public MatchResultAssertion HaveGroupCountOf(int groupCount)
       {
          return HaveMatchCountOf(1)
             .add(() => result.GroupCount(0) >= groupCount, $"$name must $not have a group count of at least {groupCount}");
@@ -71,15 +71,15 @@ namespace Core.Assertions.Strings
 
       public void OrThrow(Func<string> messageFunc) => orThrow(this, messageFunc);
 
-      public void OrThrow<TException>(params object[] args) where TException : Exception => orThrow<TException, Result>(this, args);
+      public void OrThrow<TException>(params object[] args) where TException : Exception => orThrow<TException, MatchResult>(this, args);
 
-      public Result Force() => force(this);
+      public MatchResult Force() => force(this);
 
-      public Result Force(string message) => force(this, message);
+      public MatchResult Force(string message) => force(this, message);
 
-      public Result Force(Func<string> messageFunc) => force(this, messageFunc);
+      public MatchResult Force(Func<string> messageFunc) => force(this, messageFunc);
 
-      public Result Force<TException>(params object[] args) where TException : Exception => force<TException, Result>(this, args);
+      public MatchResult Force<TException>(params object[] args) where TException : Exception => force<TException, MatchResult>(this, args);
 
       public TResult Force<TResult>() => throw "Can't convert Result to another type".Throws();
 
@@ -89,19 +89,19 @@ namespace Core.Assertions.Strings
 
       public TResult Force<TException, TResult>(params object[] args) where TException : Exception => Force<TResult>();
 
-      public IResult<Result> OrFailure() => orFailure(this);
+      public Result<MatchResult> OrFailure() => orFailure(this);
 
-      public IResult<Result> OrFailure(string message) => orFailure(this, message);
+      public Result<MatchResult> OrFailure(string message) => orFailure(this, message);
 
-      public IResult<Result> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
+      public Result<MatchResult> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
 
-      public IMaybe<Result> OrNone() => orNone(this);
+      public Maybe<MatchResult> OrNone() => orNone(this);
 
-      public async Task<ICompletion<Result>> OrFailureAsync(CancellationToken token) => await orFailureAsync(this, token);
+      public async Task<Completion<MatchResult>> OrFailureAsync(CancellationToken token) => await orFailureAsync(this, token);
 
-      public async Task<ICompletion<Result>> OrFailureAsync(string message, CancellationToken token) => await orFailureAsync(this, message, token);
+      public async Task<Completion<MatchResult>> OrFailureAsync(string message, CancellationToken token) => await orFailureAsync(this, message, token);
 
-      public async Task<ICompletion<Result>> OrFailureAsync(Func<string> messageFunc, CancellationToken token)
+      public async Task<Completion<MatchResult>> OrFailureAsync(Func<string> messageFunc, CancellationToken token)
       {
          return await orFailureAsync(this, messageFunc, token);
       }

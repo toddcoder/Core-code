@@ -30,7 +30,7 @@ namespace Core.Data
 
       public object Entity { get; set; }
 
-      public IMaybe<T> Next() => dataSource.NextReading(entityFunc()).Map(obj => (T)obj);
+      public Maybe<T> Next() => dataSource.NextReading(entityFunc()).Map(obj => (T)obj);
 
       void IDisposable.Dispose()
       {

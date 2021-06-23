@@ -129,11 +129,11 @@ namespace Core.Strings
 
       public void Clear() => rows.Clear();
 
-      public IMaybe<char> HeaderFoot { get; set; }
+      public Maybe<char> HeaderFoot { get; set; }
 
       public string ColumnSeparator { get; set; }
 
-      public IMaybe<char> RowSeparator { get; set; }
+      public Maybe<char> RowSeparator { get; set; }
 
       public TableMaker Add(params object[] items)
       {
