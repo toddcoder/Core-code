@@ -259,7 +259,7 @@
     <Compile Include="Monads\ICompletion.cs" />
     <Compile Include="Monads\IHasValue.cs" />
     <Compile Include="Monads\IMatched.cs" />
-    <Compile Include="Monads\IMaybe.cs" />
+    <Compile Include="Monads\Maybe.cs" />
     <Compile Include="Monads\Interrupted.cs" />
     <Compile Include="Monads\IResult.cs" />
     <Compile Include="Monads\Left.cs" />
