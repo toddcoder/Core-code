@@ -57,7 +57,7 @@ namespace Core.Strings.Text
       }
 
       protected static void buildItems(DifferenceResult result, List<DifferenceItem> oldItems, List<DifferenceItem> newItems,
-         IMaybe<ItemBuilder> _subItemBuilder)
+         Maybe<ItemBuilder> _subItemBuilder)
       {
          var oldPosition = 0;
          var newPosition = 0;

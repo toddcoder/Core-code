@@ -44,7 +44,7 @@ namespace Core.Assertions
 
       IResult<T> OrFailure(Func<string> messageFunc);
 
-      IMaybe<T> OrNone();
+      Maybe<T> OrNone();
 
       Task<ICompletion<T>> OrFailureAsync(CancellationToken token);
 

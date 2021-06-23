@@ -33,7 +33,7 @@ namespace Core.Data
          };
       }
 
-      public static IMaybe<SqlInfoMessageEventHandler> Handler { get; set; } = none<SqlInfoMessageEventHandler>();
+      public static Maybe<SqlInfoMessageEventHandler> Handler { get; set; } = none<SqlInfoMessageEventHandler>();
 
       public static void RegisterSetup(string name, Func<DataGroups, string, ISetup> func) => setups[name] = func;
 

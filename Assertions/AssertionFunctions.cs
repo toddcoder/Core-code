@@ -65,7 +65,7 @@ namespace Core.Assertions
          return hash.AnyHash().If(out var h) ? dictionaryImage(h) : hash.ToString();
       }
 
-      public static string maybeImage<T>(IMaybe<T> maybe)
+      public static string maybeImage<T>(Maybe<T> maybe)
       {
          return maybe.Map(v => v.ToNonNullString()).DefaultTo(() => $"none<{typeof(T).Name}>");
       }
@@ -214,7 +214,7 @@ namespace Core.Assertions
          return assertion.Constraints.Any(c => !c.IsTrue()) ? messageFunc().Failure<T>() : assertion.Value.Success();
       }
 
-      public static IMaybe<T> orNone<T>(IAssertion<T> assertion)
+      public static Maybe<T> orNone<T>(IAssertion<T> assertion)
       {
          return maybe(assertion.Constraints.All(c => c.IsTrue()), () => assertion.Value);
       }

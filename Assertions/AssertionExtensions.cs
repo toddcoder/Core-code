@@ -286,10 +286,10 @@ namespace Core.Assertions
          return (ObjectAssertion)assertion.Named($"{(value == null ? "Object" : value.GetType().Name)} {name}");
       }
 
-      public static MaybeAssertion<T> Must<T>(this IMaybe<T> value) => new(value);
+      public static MaybeAssertion<T> Must<T>(this Maybe<T> value) => new(value);
 
       [Obsolete("Use value version")]
-      public static MaybeAssertion<T> Must<T>(this Expression<Func<IMaybe<T>>> expression)
+      public static MaybeAssertion<T> Must<T>(this Expression<Func<Maybe<T>>> expression)
       {
          var (name, value) = resolve(expression);
          var assertion = value.Must();
@@ -297,7 +297,7 @@ namespace Core.Assertions
          return (MaybeAssertion<T>)assertion.Named($"Optional of {typeof(T).Name} {name}");
       }
 
-      public static MaybeAssertion<T> Must<T>(this (IMaybe<T>, string) tuple)
+      public static MaybeAssertion<T> Must<T>(this (Maybe<T>, string) tuple)
       {
          var (value, name) = tuple;
          var assertion = value.Must();

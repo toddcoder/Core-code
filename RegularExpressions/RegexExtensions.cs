@@ -269,19 +269,19 @@ namespace Core.RegularExpressions
 
       public static string FriendlyString(this string input) => $"'{input.Replace("'", "\\'")}'";
 
-      public static IMaybe<Matcher> Matcher(this string input, string pattern, bool ignoreCase = false, bool multiline = false, bool friendly = true)
+      public static Maybe<Matcher> Matcher(this string input, string pattern, bool ignoreCase = false, bool multiline = false, bool friendly = true)
       {
          var matcher = new Matcher(friendly);
          return maybe(matcher.IsMatch(input, pattern, ignoreCase, multiline), () => matcher);
       }
 
-      public static IMaybe<Matcher> Matcher(this string input, string pattern, RegexOptions options, bool friendly = true)
+      public static Maybe<Matcher> Matcher(this string input, string pattern, RegexOptions options, bool friendly = true)
       {
          var matcher = new Matcher(friendly);
          return maybe(matcher.IsMatch(input, pattern, options), () => matcher);
       }
 
-      public static IMaybe<Matcher> Matcher(this string input, RegexPattern regexPattern)
+      public static Maybe<Matcher> Matcher(this string input, RegexPattern regexPattern)
       {
          return input.Matcher(regexPattern.Pattern, regexPattern.Options, regexPattern.Friendly);
       }

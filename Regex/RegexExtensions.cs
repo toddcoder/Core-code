@@ -231,19 +231,19 @@ namespace Core.Regex
          return input.Split4(regexPattern.Pattern, regexPattern.Options);
       }
 
-      public static IMaybe<Matcher> Matcher(this string input, string pattern, bool ignoreCase = false, bool multiline = false)
+      public static Maybe<Matcher> Matcher(this string input, string pattern, bool ignoreCase = false, bool multiline = false)
       {
          var matcher = new Matcher();
          return maybe(matcher.IsMatch(input, pattern, ignoreCase, multiline), () => matcher);
       }
 
-      public static IMaybe<Matcher> Matcher(this string input, string pattern, RegexOptions options)
+      public static Maybe<Matcher> Matcher(this string input, string pattern, RegexOptions options)
       {
          var matcher = new Matcher();
          return maybe(matcher.IsMatch(input, pattern, options), () => matcher);
       }
 
-      public static IMaybe<Matcher> Matcher(this string input, RegexPattern regexPattern)
+      public static Maybe<Matcher> Matcher(this string input, RegexPattern regexPattern)
       {
          return input.Matcher(regexPattern.Pattern, regexPattern.Options);
       }

@@ -31,7 +31,7 @@ namespace Core.Numbers
          .FirstOrDefault();
 
       protected List<Pair> pairs;
-      protected IMaybe<T> _left;
+      protected Maybe<T> _left;
 
       public Comparison(T left, T right)
       {

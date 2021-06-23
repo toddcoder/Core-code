@@ -131,7 +131,7 @@ namespace Core.Assertions.Comparables
 
       public IResult<TEnum> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
 
-      public IMaybe<TEnum> OrNone() => orNone(this);
+      public Maybe<TEnum> OrNone() => orNone(this);
 
       public async Task<ICompletion<TEnum>> OrFailureAsync(CancellationToken token) => await orFailureAsync(this, token);
 

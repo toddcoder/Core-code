@@ -153,7 +153,7 @@ namespace Core.Assertions.Collections
 
       public IResult<Dictionary<TKey, TValue>> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
 
-      public IMaybe<Dictionary<TKey, TValue>> OrNone() => orNone(this);
+      public Maybe<Dictionary<TKey, TValue>> OrNone() => orNone(this);
 
       public async Task<ICompletion<Dictionary<TKey, TValue>>> OrFailureAsync(CancellationToken token) =>
          await orFailureAsync(this, token);

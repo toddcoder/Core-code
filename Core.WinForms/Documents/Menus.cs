@@ -94,7 +94,7 @@ namespace Core.WinForms.Documents
          }
       }
 
-      public IMaybe<Delegate> ReplaceHandler(string parentText, string text, EventHandler handler) =>
+      public Maybe<Delegate> ReplaceHandler(string parentText, string text, EventHandler handler) =>
          from submenus in Submenus(parentText)
          from item in submenus.Map(text)
          from d in item.ClearEvent("Click").IfThen(_ => item.Click += handler)
@@ -205,6 +205,6 @@ namespace Core.WinForms.Documents
 
       public IResult<Hash<string, ToolStripMenuItem>> AnyHash() => menuItems.ToHash(i => i.Key, i => (ToolStripMenuItem)i.Value).Success();
 
-      public IMaybe<Submenus> Submenus(string parentText) => this.Map(parentText, p => new Submenus(p));
+      public Maybe<Submenus> Submenus(string parentText) => this.Map(parentText, p => new Submenus(p));
    }
 }

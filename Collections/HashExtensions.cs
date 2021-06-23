@@ -92,19 +92,19 @@ namespace Core.Collections
          }
       }
 
-      public static IMaybe<TValue> Map<TKey, TValue>(this IHash<TKey, TValue> hash, TKey key)
+      public static Maybe<TValue> Map<TKey, TValue>(this IHash<TKey, TValue> hash, TKey key)
       {
          return maybe(hash.ContainsKey(key), () => hash[key]);
       }
 
-      public static IMaybe<TResult> Map<TKey, TValue, TResult>(this IHash<TKey, TValue> hash, TKey key,
+      public static Maybe<TResult> Map<TKey, TValue, TResult>(this IHash<TKey, TValue> hash, TKey key,
          Func<TValue, TResult> func)
       {
          return maybe(hash.ContainsKey(key), () => func(hash[key]));
       }
 
-      public static IMaybe<TResult> Map<TKey, TValue, TResult>(this IHash<TKey, TValue> hash, TKey key,
-         Func<TValue, IMaybe<TResult>> func)
+      public static Maybe<TResult> Map<TKey, TValue, TResult>(this IHash<TKey, TValue> hash, TKey key,
+         Func<TValue, Maybe<TResult>> func)
       {
          return maybe(hash.ContainsKey(key), () => func(hash[key]));
       }
@@ -136,7 +136,7 @@ namespace Core.Collections
          return hash.ContainsKey(key) ? hash[key] : defaultValue;
       }
 
-      public static IMaybe<TValue> Get<TKey, TValue>(this IHash<TKey, TValue> hash, TKey key)
+      public static Maybe<TValue> Get<TKey, TValue>(this IHash<TKey, TValue> hash, TKey key)
       {
          return maybe(hash.ContainsKey(key), () => hash[key]);
       }

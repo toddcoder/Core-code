@@ -139,7 +139,7 @@ namespace Core.Enumerables
          }
       }
 
-      public static IMaybe<T> FirstOrNone<T>(this IEnumerable<T> enumerable)
+      public static Maybe<T> FirstOrNone<T>(this IEnumerable<T> enumerable)
       {
          var first = enumerable.FirstOrDefault();
 
@@ -157,7 +157,7 @@ namespace Core.Enumerables
          }
       }
 
-      public static IMaybe<T> LastOrNone<T>(this IEnumerable<T> enumerable)
+      public static Maybe<T> LastOrNone<T>(this IEnumerable<T> enumerable)
       {
          var last = enumerable.LastOrDefault();
 
@@ -486,7 +486,7 @@ namespace Core.Enumerables
          });
       }
 
-      public static IMaybe<T> FirstOrNone<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate)
+      public static Maybe<T> FirstOrNone<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate)
       {
          var first = enumerable.FirstOrDefault(predicate);
 
@@ -504,7 +504,7 @@ namespace Core.Enumerables
          }
       }
 
-      public static IMaybe<(T1, T2)> FirstOrNone<T1, T2>(this IEnumerable<(T1, T2)> enumerable, Func<T1, T2, bool> predicate)
+      public static Maybe<(T1, T2)> FirstOrNone<T1, T2>(this IEnumerable<(T1, T2)> enumerable, Func<T1, T2, bool> predicate)
       {
          var first = enumerable.FirstOrDefault(i => predicate(i.Item1, i.Item2));
 
@@ -522,7 +522,7 @@ namespace Core.Enumerables
          }
       }
 
-      public static IMaybe<(T1, T2, T3)> FirstOrNone<T1, T2, T3>(this IEnumerable<(T1, T2, T3)> enumerable, Func<T1, T2, T3, bool> predicate)
+      public static Maybe<(T1, T2, T3)> FirstOrNone<T1, T2, T3>(this IEnumerable<(T1, T2, T3)> enumerable, Func<T1, T2, T3, bool> predicate)
       {
          var first = enumerable.FirstOrDefault(i => predicate(i.Item1, i.Item2, i.Item3));
 
@@ -540,7 +540,7 @@ namespace Core.Enumerables
          }
       }
 
-      public static IMaybe<(T1, T2, T3, T4)> FirstOrNone<T1, T2, T3, T4>(this IEnumerable<(T1, T2, T3, T4)> enumerable,
+      public static Maybe<(T1, T2, T3, T4)> FirstOrNone<T1, T2, T3, T4>(this IEnumerable<(T1, T2, T3, T4)> enumerable,
          Func<T1, T2, T3, T4, bool> predicate)
       {
          var first = enumerable.FirstOrDefault(i => predicate(i.Item1, i.Item2, i.Item3, i.Item4));
@@ -559,7 +559,7 @@ namespace Core.Enumerables
          }
       }
 
-      public static IMaybe<T> LastOrNone<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate)
+      public static Maybe<T> LastOrNone<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate)
       {
          var last = enumerable.LastOrDefault(predicate);
 
@@ -577,7 +577,7 @@ namespace Core.Enumerables
          }
       }
 
-      public static IMaybe<(T1, T2)> LastOrNone<T1, T2>(this IEnumerable<(T1, T2)> enumerable, Func<T1, T2, bool> predicate)
+      public static Maybe<(T1, T2)> LastOrNone<T1, T2>(this IEnumerable<(T1, T2)> enumerable, Func<T1, T2, bool> predicate)
       {
          var last = enumerable.LastOrDefault(i => predicate(i.Item1, i.Item2));
 
@@ -595,7 +595,7 @@ namespace Core.Enumerables
          }
       }
 
-      public static IMaybe<(T1, T2, T3)> LastOrNone<T1, T2, T3>(this IEnumerable<(T1, T2, T3)> enumerable, Func<T1, T2, T3, bool> predicate)
+      public static Maybe<(T1, T2, T3)> LastOrNone<T1, T2, T3>(this IEnumerable<(T1, T2, T3)> enumerable, Func<T1, T2, T3, bool> predicate)
       {
          var last = enumerable.LastOrDefault(i => predicate(i.Item1, i.Item2, i.Item3));
 
@@ -613,7 +613,7 @@ namespace Core.Enumerables
          }
       }
 
-      public static IMaybe<(T1, T2, T3, T4)> LastOrNone<T1, T2, T3, T4>(this IEnumerable<(T1, T2, T3, T4)> enumerable,
+      public static Maybe<(T1, T2, T3, T4)> LastOrNone<T1, T2, T3, T4>(this IEnumerable<(T1, T2, T3, T4)> enumerable,
          Func<T1, T2, T3, T4, bool> predicate)
       {
          var last = enumerable.LastOrDefault(i => predicate(i.Item1, i.Item2, i.Item3, i.Item4));
@@ -1078,7 +1078,7 @@ namespace Core.Enumerables
          return (isTrue, isFalse);
       }
 
-      public static IMaybe<int> IndexOfMax<T>(this IEnumerable<T> enumerable) where T : IComparable<T>
+      public static Maybe<int> IndexOfMax<T>(this IEnumerable<T> enumerable) where T : IComparable<T>
       {
          var index = none<int>();
          var currentIndex = 0;
@@ -1105,7 +1105,7 @@ namespace Core.Enumerables
          return index;
       }
 
-      public static IMaybe<int> IndexOfMax<TSource, TResult>(this IEnumerable<TSource> enumerable, Func<TSource, TResult> mappingFunc)
+      public static Maybe<int> IndexOfMax<TSource, TResult>(this IEnumerable<TSource> enumerable, Func<TSource, TResult> mappingFunc)
          where TResult : IComparable<TResult>
       {
          var index = none<int>();
@@ -1134,7 +1134,7 @@ namespace Core.Enumerables
          return index;
       }
 
-      public static IMaybe<int> IndexOfMin<T>(this IEnumerable<T> enumerable) where T : IComparable<T>
+      public static Maybe<int> IndexOfMin<T>(this IEnumerable<T> enumerable) where T : IComparable<T>
       {
          var index = none<int>();
          var currentIndex = 0;
@@ -1161,7 +1161,7 @@ namespace Core.Enumerables
          return index;
       }
 
-      public static IMaybe<int> IndexOfMin<TSource, TResult>(this IEnumerable<TSource> enumerable, Func<TSource, TResult> mappingFunc)
+      public static Maybe<int> IndexOfMin<TSource, TResult>(this IEnumerable<TSource> enumerable, Func<TSource, TResult> mappingFunc)
          where TResult : IComparable<TResult>
       {
          var index = none<int>();
@@ -1198,7 +1198,7 @@ namespace Core.Enumerables
          return list;
       }
 
-      public static IMaybe<TResult> FirstOrNoneAs<T, TResult>(this IEnumerable<T> enumerable)
+      public static Maybe<TResult> FirstOrNoneAs<T, TResult>(this IEnumerable<T> enumerable)
       {
          return enumerable.FirstOrNone(i => i is TResult).CastAs<TResult>();
       }
@@ -1278,7 +1278,7 @@ namespace Core.Enumerables
          return true;
       }
 
-      public static IEnumerable<(T1, IMaybe<T2>)> AllMatched<T1, T2>(this IEnumerable<T1> leftEnumerable, IEnumerable<T2> rightEnumerable,
+      public static IEnumerable<(T1, Maybe<T2>)> AllMatched<T1, T2>(this IEnumerable<T1> leftEnumerable, IEnumerable<T2> rightEnumerable,
          Func<T1, T2, bool> matcher)
       {
          var rightArray = rightEnumerable.ToArray();

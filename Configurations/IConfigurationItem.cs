@@ -8,11 +8,11 @@ namespace Core.Configurations
 
       IConfigurationItem this[string key] { get; }
 
-      IMaybe<string> GetValue(string key);
+      Maybe<string> GetValue(string key);
 
       IResult<string> RequireValue(string key);
 
-      IMaybe<Group> GetGroup(string key);
+      Maybe<Group> GetGroup(string key);
 
       IResult<Group> RequireGroup(string key);
    }

@@ -49,9 +49,9 @@ namespace Core.Monads
 
       bool IfInterrupted(out Exception exception);
 
-      bool If(out T value, out IMaybe<Exception> _exception);
+      bool If(out T value, out Maybe<Exception> _exception);
 
-      bool IfNot(out IMaybe<Exception> _exception);
+      bool IfNot(out Maybe<Exception> _exception);
 
       bool Else<TOther>(out ICompletion<TOther> result);
 
@@ -71,7 +71,7 @@ namespace Core.Monads
 
       ICompletion<TOther> NotCompletedOnly<TOther>();
 
-      void Deconstruct(out IMaybe<T> value, out IMaybe<Exception> _exception);
+      void Deconstruct(out Maybe<T> value, out Maybe<Exception> _exception);
 
       ICompletion<T> OnCompleted(Action<T> action);
 

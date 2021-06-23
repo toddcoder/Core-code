@@ -177,7 +177,7 @@ namespace Core.Applications
          {
             return source;
          }
-         else if (type == typeof(IMaybe<string>))
+         else if (type == typeof(Maybe<string>))
          {
             return maybe(source.IsNotEmpty(), () => source);
          }
@@ -189,11 +189,11 @@ namespace Core.Applications
          {
             return (FileName)source;
          }
-         else if (type == typeof(IMaybe<FolderName>))
+         else if (type == typeof(Maybe<FolderName>))
          {
             return maybe(source.IsNotEmpty(), () => (FolderName)source);
          }
-         else if (type == typeof(IMaybe<FileName>))
+         else if (type == typeof(Maybe<FileName>))
          {
             return maybe(source.IsNotEmpty(), () => (FileName)source);
          }
@@ -243,7 +243,7 @@ namespace Core.Applications
          }
       }
 
-      protected IResult<object> retrieveItem(string name, Type type, IMaybe<object> _defaultValue, string prefix, string suffix, string commandLine)
+      protected IResult<object> retrieveItem(string name, Type type, Maybe<object> _defaultValue, string prefix, string suffix, string commandLine)
       {
          return tryTo(() =>
          {
@@ -375,12 +375,12 @@ namespace Core.Applications
          }
       }
 
-      protected static IMaybe<string> getCommand(string commandLine)
+      protected static Maybe<string> getCommand(string commandLine)
       {
          return commandLine.Matches($"^ /({REGEX_PARAMETER}) /b; f").Map(result => result.FirstGroup);
       }
 
-      protected IMaybe<string> getCommandsFromFile(string prefix, string suffix, string commandLine)
+      protected Maybe<string> getCommandsFromFile(string prefix, string suffix, string commandLine)
       {
          var opensCommandFile = $"{prefix}cmd{suffix}";
          if (commandLine.StartsWith(opensCommandFile))
@@ -625,8 +625,8 @@ namespace Core.Applications
                      {
                         evaluator[name] = getBoolean(rest, suffix);
                      }
-                     else if (type == typeof(string) || type == typeof(IMaybe<string>) || type == typeof(FileName) || type == typeof(FolderName) ||
-                        type == typeof(IMaybe<FileName>) || type == typeof(IMaybe<FolderName>))
+                     else if (type == typeof(string) || type == typeof(Maybe<string>) || type == typeof(FileName) || type == typeof(FolderName) ||
+                        type == typeof(Maybe<FileName>) || type == typeof(Maybe<FolderName>))
                      {
                         evaluator[name] = getString(rest, type);
                      }

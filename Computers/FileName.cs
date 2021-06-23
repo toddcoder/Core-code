@@ -84,7 +84,7 @@ namespace Core.Computers
          return folder.File(UniqueName(folder, name), extension);
       }
 
-      public static IMaybe<string> ResolvedFileName(string name)
+      public static Maybe<string> ResolvedFileName(string name)
       {
          try
          {
@@ -407,7 +407,7 @@ namespace Core.Computers
 
       public bool Valid { get; private set; }
 
-      public IMaybe<FileName> Parent
+      public Maybe<FileName> Parent
       {
          get
          {
@@ -457,7 +457,7 @@ namespace Core.Computers
          setFullPath();
       }
 
-      public IMaybe<FileName> Truncated(int limit)
+      public Maybe<FileName> Truncated(int limit)
       {
          if (limit < 3)
          {
@@ -988,7 +988,7 @@ namespace Core.Computers
 
       public bool IsNotEmpty => !IsEmpty;
 
-      public IMaybe<FileName> Indexed(int maximumIndex = 1000)
+      public Maybe<FileName> Indexed(int maximumIndex = 1000)
       {
          for (var index = 0; index < maximumIndex; index++)
          {

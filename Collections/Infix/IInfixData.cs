@@ -6,8 +6,8 @@ namespace Core.Collections.Infix
    {
       TValue Value { get; }
 
-      IMaybe<TInfix> Infix { get; }
+      Maybe<TInfix> Infix { get; }
 
-      void Deconstruct(out TValue value, out IMaybe<TInfix> infix);
+      void Deconstruct(out TValue value, out Maybe<TInfix> infix);
    }
 }

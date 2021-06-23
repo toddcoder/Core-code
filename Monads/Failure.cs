@@ -131,7 +131,7 @@ namespace Core.Monads
          return this;
       }
 
-      public void Deconstruct(out IMaybe<T> value, out Exception exception)
+      public void Deconstruct(out Maybe<T> value, out Exception exception)
       {
          value = none<T>();
          exception = this.exception;
@@ -139,7 +139,7 @@ namespace Core.Monads
 
       public IResult<T> Assert(Predicate<T> predicate, Func<string> exceptionMessage) => this;
 
-      public IMaybe<T> Maybe() => none<T>();
+      public Maybe<T> Maybe() => none<T>();
 
       public bool EqualToValueOf(IResult<T> otherResult) => false;
 

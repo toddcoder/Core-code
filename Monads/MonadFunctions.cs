@@ -4,17 +4,17 @@ namespace Core.Monads
 {
    public static class MonadFunctions
    {
-      public static IMaybe<TParent> some<TChild, TParent>(TChild value) where TChild : TParent
+      public static Maybe<TParent> some<TChild, TParent>(TChild value) where TChild : TParent
       {
          return new Some<TParent>(value);
       }
 
-      public static IMaybe<TParent> someAs<TChild, TParent>(TChild value) where TChild : class, TParent where TParent : class
+      public static Maybe<TParent> someAs<TChild, TParent>(TChild value) where TChild : class, TParent where TParent : class
       {
          return new Some<TParent>(value);
       }
 
-      public static IMaybe<T> none<T>() => new None<T>();
+      public static Maybe<T> none<T>() => new None<T>();
 
       public static IResult<T> success<T>(T value) => new Success<T>(value);
 
@@ -63,9 +63,9 @@ namespace Core.Monads
          }
       }
 
-      public static IMaybe<T> maybe<T>(bool test, Func<T> ifTrue) => test ? ifTrue().Some() : none<T>();
+      public static Maybe<T> maybe<T>(bool test, Func<T> ifTrue) => test ? ifTrue().Some() : none<T>();
 
-      public static IMaybe<T> maybe<T>(bool test, Func<IMaybe<T>> ifTrue) => test ? ifTrue() : none<T>();
+      public static Maybe<T> maybe<T>(bool test, Func<Maybe<T>> ifTrue) => test ? ifTrue() : none<T>();
 
       public static ICompletion<T> cancelled<T>() => new Cancelled<T>();
 

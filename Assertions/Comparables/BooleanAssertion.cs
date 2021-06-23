@@ -107,7 +107,7 @@ namespace Core.Assertions.Comparables
 
       public IResult<bool> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
 
-      public IMaybe<bool> OrNone() => orNone(this);
+      public Maybe<bool> OrNone() => orNone(this);
 
       public async Task<ICompletion<bool>> OrFailureAsync(CancellationToken token) => await orFailureAsync(this, token);
 

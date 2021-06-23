@@ -7,6 +7,6 @@ namespace Core.Matching.Parsers
    {
       public override string Pattern => @"^\s*(/\s*)?@";
 
-      public override IMaybe<string> Parse(string source, ref int index) => (tokens[1].IsNotEmpty() ? "(.*)$" : ".*$").Some();
+      public override Maybe<string> Parse(string source, ref int index) => (tokens[1].IsNotEmpty() ? "(.*)$" : ".*$").Some();
    }
 }

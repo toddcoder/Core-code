@@ -31,6 +31,6 @@ namespace Core.Objects
 
       public bool IsActivated => lateLazy.IsActivated;
 
-      public IMaybe<T> AnyValue => lateLazy.AnyValue;
+      public Maybe<T> AnyValue => lateLazy.AnyValue;
    }
 }

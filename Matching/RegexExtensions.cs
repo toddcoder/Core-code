@@ -169,7 +169,7 @@ namespace Core.Matching
 
       public static IMatched<Result> Matched(this string input, Pattern pattern) => pattern.MatchedBy(input);
 
-      public static IMaybe<Result> Matches(this string input, Pattern pattern)
+      public static Maybe<Result> Matches(this string input, Pattern pattern)
       {
          if (pattern.MatchedBy(input).If(out var result))
          {

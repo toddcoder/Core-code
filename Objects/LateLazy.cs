@@ -12,8 +12,8 @@ namespace Core.Objects
 
       protected bool overriding;
       protected string errorMessage;
-      protected IMaybe<T> _value;
-      protected IMaybe<Func<T>> _activator;
+      protected Maybe<T> _value;
+      protected Maybe<Func<T>> _activator;
 
       public LateLazy(bool overriding = false, string errorMessage = DEFAULT_ERROR_MESSAGE)
       {
@@ -60,7 +60,7 @@ namespace Core.Objects
 
       public bool IsActivated => _value.IsSome;
 
-      public IMaybe<T> AnyValue => _value;
+      public Maybe<T> AnyValue => _value;
 
       public LateLazyTrying<T> TryTo => new(this);
 

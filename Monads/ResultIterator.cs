@@ -7,8 +7,8 @@ namespace Core.Monads
    internal class ResultIterator<T>
    {
       IEnumerable<IResult<T>> enumerable;
-      IMaybe<Action<T>> success;
-      IMaybe<Action<Exception>> failure;
+      Maybe<Action<T>> success;
+      Maybe<Action<Exception>> failure;
 
       public ResultIterator(IEnumerable<IResult<T>> enumerable, Action<T> ifSuccess = null, Action<Exception> ifFailure = null)
       {
@@ -74,7 +74,7 @@ namespace Core.Monads
          return list;
       }
 
-      public (IEnumerable<T> enumerable, IMaybe<Exception> exception) SuccessesThenFailure()
+      public (IEnumerable<T> enumerable, Maybe<Exception> exception) SuccessesThenFailure()
       {
          var list = new List<T>();
 

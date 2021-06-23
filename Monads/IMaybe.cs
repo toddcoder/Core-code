@@ -2,46 +2,46 @@
 
 namespace Core.Monads
 {
-   public interface IMaybe<T>
+   public abstract class Maybe<T>
    {
-      bool IsSome { get; }
+      public abstract bool IsSome { get; }
 
-      bool IsNone { get; }
+      public abstract bool IsNone { get; }
 
-      T DefaultTo(Func<T> func);
+      public abstract T DefaultTo(Func<T> func);
 
-      IMaybe<TResult> Map<TResult>(Func<T, TResult> ifSome);
+      public abstract Maybe<TResult> Map<TResult>(Func<T, TResult> ifSome);
 
-      IMaybe<TResult> Map<TResult>(Func<T, IMaybe<TResult>> ifSome);
+      public abstract Maybe<TResult> Map<TResult>(Func<T, Maybe<TResult>> ifSome);
 
-      T Required(string message);
+      public abstract T Required(string message);
 
-      IResult<T> Result(string message);
+      public abstract IResult<T> Result(string message);
 
-      IMaybe<T> Or(IMaybe<T> other);
+      public abstract Maybe<T> Or(Maybe<T> other);
 
-      IMaybe<T> Or(Func<IMaybe<T>> other);
+      public abstract Maybe<T> Or(Func<Maybe<T>> other);
 
-      IMaybe<T> Or(Func<T> other);
+      public abstract Maybe<T> Or(Func<T> other);
 
-      IMaybe<T> Or(T other);
+      public abstract Maybe<T> Or(T other);
 
-      bool If(out T value);
+      public abstract bool If(out T value);
 
-      bool Else(out T value);
+      public abstract bool Else(out T value);
 
-      void Force(string message);
+      public abstract void Force(string message);
 
-      void Deconstruct(out bool isSome, out T value);
+      public abstract void Deconstruct(out bool isSome, out T value);
 
-      IMaybe<T> IfThen(Action<T> action);
+      public abstract Maybe<T> IfThen(Action<T> action);
 
-      bool EqualToValueOf(IMaybe<T> otherMaybe);
+      public abstract bool EqualToValueOf(Maybe<T> otherMaybe);
 
-      bool ValueEqualTo(T otherValue);
+      public abstract bool ValueEqualTo(T otherValue);
 
-      IMaybe<TResult> CastAs<TResult>();
+      public abstract Maybe<TResult> CastAs<TResult>();
 
-      IMaybe<T> Where(Predicate<T> predicate);
+      public abstract Maybe<T> Where(Predicate<T> predicate);
    }
 }

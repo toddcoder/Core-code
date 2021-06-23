@@ -23,7 +23,7 @@ namespace Core.Configurations
          var stack = new MaybeStack<IConfigurationItem>();
          stack.Push(rootGroup);
 
-         IMaybe<Group> peekGroup()
+         Maybe<Group> peekGroup()
          {
             return
                from parentItem in stack.Peek()
@@ -31,7 +31,7 @@ namespace Core.Configurations
                select parentGroup;
          }
 
-         IMaybe<Group> popGroup()
+         Maybe<Group> popGroup()
          {
             return
                from parentItem in stack.Pop()

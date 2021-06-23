@@ -47,9 +47,9 @@ namespace Core.DataStructures
             select item;
       }
 
-      public IMaybe<T> Peek() => maybe(IsNotEmpty, () => stack.Peek());
+      public Maybe<T> Peek() => maybe(IsNotEmpty, () => stack.Peek());
 
-      public IMaybe<T> Pop() => maybe(IsNotEmpty, () => stack.Pop());
+      public Maybe<T> Pop() => maybe(IsNotEmpty, () => stack.Pop());
 
       public void Push(T item) => stack.Push(item);
 

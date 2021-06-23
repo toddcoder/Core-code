@@ -50,7 +50,7 @@ namespace Core.Configurations
          return newArray;
       }
 
-      protected static IMaybe<object> makeArray(Type elementType, Group[] groups)
+      protected static Maybe<object> makeArray(Type elementType, Group[] groups)
       {
          var length = groups.Length;
          var newArray = Array.CreateInstance(elementType, length);
@@ -71,7 +71,7 @@ namespace Core.Configurations
          return newArray.Some<object>();
       }
 
-      protected static IMaybe<object> getConversion(Type type, string source)
+      protected static Maybe<object> getConversion(Type type, string source)
       {
          string sourceWithoutQuotes()
          {
@@ -312,11 +312,11 @@ namespace Core.Configurations
 
       public IConfigurationItem this[string key] => root[key];
 
-      public IMaybe<string> GetValue(string key) => root.GetValue(key);
+      public Maybe<string> GetValue(string key) => root.GetValue(key);
 
       public IResult<string> RequireValue(string key) => root.RequireValue(key);
 
-      public IMaybe<Group> GetGroup(string key) => root.GetGroup(key);
+      public Maybe<Group> GetGroup(string key) => root.GetGroup(key);
 
       public IResult<Group> RequireGroup(string key) => root.RequireGroup(key);
 

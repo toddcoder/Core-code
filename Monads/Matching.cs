@@ -6,7 +6,7 @@ namespace Core.Monads
 	public class Matching<T, TResult>
 	{
 		IMatched<T> matched;
-		IMaybe<Func<TResult>> action;
+		Maybe<Func<TResult>> action;
 
 		public Matching(IMatched<T> matched)
 		{

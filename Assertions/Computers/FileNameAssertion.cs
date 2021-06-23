@@ -157,7 +157,7 @@ namespace Core.Assertions.Computers
 
       public IResult<FileName> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
 
-      public IMaybe<FileName> OrNone() => orNone(this);
+      public Maybe<FileName> OrNone() => orNone(this);
 
       public async Task<ICompletion<FileName>> OrFailureAsync(CancellationToken token) => await orFailureAsync(this, token);
 

@@ -16,11 +16,11 @@ namespace Core.Configurations
 
       public IConfigurationItem this[string key] => this;
 
-      public IMaybe<string> GetValue(string key) => maybe(key.Same(Key), () => Value);
+      public Maybe<string> GetValue(string key) => maybe(key.Same(Key), () => Value);
 
       public IResult<string> RequireValue(string key) => assert(key.Same(Key), () => Value, () => $"Key '{key}' doesn't match item key");
 
-      public IMaybe<Group> GetGroup(string key) => none<Group>();
+      public Maybe<Group> GetGroup(string key) => none<Group>();
 
       public IResult<Group> RequireGroup(string key) => "Not a group".Failure<Group>();
 

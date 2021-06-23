@@ -71,7 +71,7 @@ namespace Core.Monads
          return false;
       }
 
-      public bool If(out T value, out IMaybe<Exception> exception)
+      public bool If(out T value, out Maybe<Exception> exception)
       {
          value = default;
          exception = none<Exception>();
@@ -79,7 +79,7 @@ namespace Core.Monads
          return false;
       }
 
-      public bool IfNot(out IMaybe<Exception> anyException)
+      public bool IfNot(out Maybe<Exception> anyException)
       {
          anyException = none<Exception>();
          return true;
@@ -109,7 +109,7 @@ namespace Core.Monads
 
       public IMatched<TOther> UnmatchedOnly<TOther>() => notMatched<TOther>();
 
-      public void Deconstruct(out IMaybe<T> value, out IMaybe<Exception> exception)
+      public void Deconstruct(out Maybe<T> value, out Maybe<Exception> exception)
       {
          value = none<T>();
          exception = none<Exception>();

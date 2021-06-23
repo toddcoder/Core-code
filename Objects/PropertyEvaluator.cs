@@ -16,7 +16,7 @@ namespace Core.Objects
    {
       public static void SetValue(object obj, string signature, object value) => new PropertyEvaluator(obj) { [signature] = value };
 
-      public static IMaybe<object> GetValue(object obj, string signature)
+      public static Maybe<object> GetValue(object obj, string signature)
       {
          var evaluator = new PropertyEvaluator(obj);
          return ((IHash<string, object>)evaluator).Map(signature, o => o);
@@ -217,7 +217,7 @@ namespace Core.Objects
          return info.GetCustomAttributes(true).OfType<TAttribute>().Any();
       }
 
-      public IMaybe<T> ValueAtAttribute<TAttribute, T>() where TAttribute : Attribute
+      public Maybe<T> ValueAtAttribute<TAttribute, T>() where TAttribute : Attribute
       {
          var properties = type
             .GetProperties(BindingFlags.Instance | BindingFlags.Public)
@@ -240,12 +240,12 @@ namespace Core.Objects
             .Select(i => new Signature(i.Name));
       }
 
-      public IMaybe<TAttribute> Attribute<TAttribute>(string signature) where TAttribute : Attribute
+      public Maybe<TAttribute> Attribute<TAttribute>(string signature) where TAttribute : Attribute
       {
          return Attribute<TAttribute>(new Signature(signature));
       }
 
-      public IMaybe<TAttribute> Attribute<TAttribute>(Signature signature) where TAttribute : Attribute
+      public Maybe<TAttribute> Attribute<TAttribute>(Signature signature) where TAttribute : Attribute
       {
          var info = ObjectInfo.PropertyInfo(obj, signature);
          return info.Map(i => i.GetCustomAttributes(true).OfType<TAttribute>().FirstOrNone());

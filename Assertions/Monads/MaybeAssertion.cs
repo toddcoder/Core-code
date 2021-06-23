@@ -15,12 +15,12 @@ namespace Core.Assertions.Monads
 
       public static bool operator |(MaybeAssertion<T> x, ICanBeTrue y) => or(x, y);
 
-      protected IMaybe<T> maybe;
+      protected Maybe<T> maybe;
       protected List<Constraint> constraints;
       protected bool not;
       protected string name;
 
-      public MaybeAssertion(IMaybe<T> maybe)
+      public MaybeAssertion(Maybe<T> maybe)
       {
          this.maybe = maybe;
          constraints = new List<Constraint>();
@@ -53,7 +53,7 @@ namespace Core.Assertions.Monads
             case T otherT:
                constraints.Add(new Constraint(() => constraintFunction(otherT), message, not, name, maybeImage(maybe)));
                break;
-            case IMaybe<T> anyValue:
+            case Maybe<T> anyValue:
                if (anyValue.If(out var value))
                {
                   constraints.Add(new Constraint(() => constraintFunction(value), message, not, name, maybeImage(maybe)));
@@ -83,7 +83,7 @@ namespace Core.Assertions.Monads
 
       public MaybeAssertion<T> HaveValue() => add(() => maybe.IsSome, "$name must $not have a value");
 
-      public MaybeAssertion<T> EqualToValueOf(IMaybe<T> otherMaybe)
+      public MaybeAssertion<T> EqualToValueOf(Maybe<T> otherMaybe)
       {
          return add(() => maybe.EqualToValueOf(otherMaybe), $"Value of $name must $not equal to value of {maybeImage(otherMaybe)}");
       }
@@ -132,7 +132,7 @@ namespace Core.Assertions.Monads
 
       public IResult<T> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
 
-      public IMaybe<T> OrNone() => orNone(this);
+      public Maybe<T> OrNone() => orNone(this);
 
       public async Task<ICompletion<T>> OrFailureAsync(CancellationToken token) => await orFailureAsync(this, token);
 

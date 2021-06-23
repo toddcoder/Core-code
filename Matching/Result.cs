@@ -37,27 +37,27 @@ namespace Core.Matching
 
       public Match[] Matches => matches;
 
-      protected IMaybe<Match> getMatchMaybe(int index) => maybe(index.Between(0).Until(matches.Length), () => matches[index]);
+      protected Maybe<Match> getMatchMaybe(int index) => maybe(index.Between(0).Until(matches.Length), () => matches[index]);
 
-      protected static IMaybe<Group> getGroupMaybe(IMaybe<Match> match, int index)
+      protected static Maybe<Group> getGroupMaybe(Maybe<Match> match, int index)
       {
          return match.Map(m => maybe(index.Between(0).Until(m.Groups.Length), () => m.Groups[index]));
       }
 
       public int Index => matches.Length == 0 ? -1 : matches[0].Index;
 
-      public IMaybe<int> IndexOf(int matchIndex) => getMatchMaybe(matchIndex).Map(m => m.Index);
+      public Maybe<int> IndexOf(int matchIndex) => getMatchMaybe(matchIndex).Map(m => m.Index);
 
-      public IMaybe<int> IndexOf(int matchIndex, int groupIndex)
+      public Maybe<int> IndexOf(int matchIndex, int groupIndex)
       {
          return getGroupMaybe(getMatchMaybe(matchIndex), groupIndex).Map(g => g.Index);
       }
 
       public int Length => matches.Length == 0 ? 0 : matches[0].Length;
 
-      public IMaybe<int> LengthOf(int matchIndex) => getMatchMaybe(matchIndex).Map(m => m.Length);
+      public Maybe<int> LengthOf(int matchIndex) => getMatchMaybe(matchIndex).Map(m => m.Length);
 
-      public IMaybe<int> LengthOf(int matchIndex, int groupIndex)
+      public Maybe<int> LengthOf(int matchIndex, int groupIndex)
       {
          return getGroupMaybe(getMatchMaybe(matchIndex), groupIndex).Map(g => g.Length);
       }
@@ -84,9 +84,9 @@ namespace Core.Matching
 
       public int GroupCount(int index) => getMatch(index).Groups.Length;
 
-      public IMaybe<string> NameFromIndex(int index) => indexesToNames.Map(index);
+      public Maybe<string> NameFromIndex(int index) => indexesToNames.Map(index);
 
-      public IMaybe<int> IndexFromName(string name) => namesToIndexes.Map(name);
+      public Maybe<int> IndexFromName(string name) => namesToIndexes.Map(name);
 
       public int MatchCount => matches.Length;
 
@@ -110,7 +110,7 @@ namespace Core.Matching
          }
       }
 
-      public IMaybe<string> Maybe(int matchIndex, int groupIndex)
+      public Maybe<string> Maybe(int matchIndex, int groupIndex)
       {
          var value = this[matchIndex, groupIndex];
          return maybe(value.IsNotEmpty(), () => value);
@@ -122,7 +122,7 @@ namespace Core.Matching
          set => getMatch(matchIndex).SetSlice(slicer, value);
       }
 
-      public IMaybe<string> Maybe(int matchIndex)
+      public Maybe<string> Maybe(int matchIndex)
       {
          var value = this[matchIndex];
          return maybe(value.IsNotEmpty(), () => value);

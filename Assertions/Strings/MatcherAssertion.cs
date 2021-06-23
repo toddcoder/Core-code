@@ -105,7 +105,7 @@ namespace Core.Assertions.Strings
 
       public IResult<Matcher> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
 
-      public IMaybe<Matcher> OrNone() => orNone(this);
+      public Maybe<Matcher> OrNone() => orNone(this);
 
       public async Task<ICompletion<Matcher>> OrFailureAsync(CancellationToken token) => await orFailureAsync(this, token);
 

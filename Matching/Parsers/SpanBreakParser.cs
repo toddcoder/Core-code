@@ -9,7 +9,7 @@ namespace Core.Matching.Parsers
    {
       public override string Pattern => @"^\s*(-\s*)?(/\s*)?\{";
 
-      public override IMaybe<string> Parse(string source, ref int index)
+      public override Maybe<string> Parse(string source, ref int index)
       {
          var builder = new StringBuilder();
          var not = tokens[1].IsNotEmpty();

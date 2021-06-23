@@ -73,9 +73,9 @@ namespace Core.DataStructures
          }
       }
 
-      public IMaybe<T> Peek() => maybe(IsNotEmpty, () => list[0]);
+      public Maybe<T> Peek() => maybe(IsNotEmpty, () => list[0]);
 
-      public IMaybe<T> Dequeue()
+      public Maybe<T> Dequeue()
       {
          if (list.Count == 0)
          {

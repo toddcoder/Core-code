@@ -92,7 +92,7 @@ namespace Core.Applications
          }
       }
 
-      public IMaybe<Argument> Argument(int index) => maybe(Exists(index), () => arguments[index]);
+      public Maybe<Argument> Argument(int index) => maybe(Exists(index), () => arguments[index]);
 
       public IEnumerator<Argument> GetEnumerator()
       {

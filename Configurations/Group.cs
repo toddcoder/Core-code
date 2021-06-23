@@ -27,11 +27,11 @@ namespace Core.Configurations
          set => items[key] = value;
       }
 
-      public IMaybe<string> GetValue(string key) => items.Map(key).Map(i => i.GetValue(key));
+      public Maybe<string> GetValue(string key) => items.Map(key).Map(i => i.GetValue(key));
 
       public IResult<string> RequireValue(string key) => items.Require(key).Map(i => i.RequireValue(key));
 
-      public IMaybe<Group> GetGroup(string key)
+      public Maybe<Group> GetGroup(string key)
       {
          if (items.If(key, out var item) && item is Group group)
          {

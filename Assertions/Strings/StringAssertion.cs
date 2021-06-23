@@ -183,7 +183,7 @@ namespace Core.Assertions.Strings
 
       public IResult<string> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
 
-      public IMaybe<string> OrNone() => orNone(this);
+      public Maybe<string> OrNone() => orNone(this);
 
       public async Task<ICompletion<string>> OrFailureAsync(CancellationToken token) => await orFailureAsync(this, token);
 

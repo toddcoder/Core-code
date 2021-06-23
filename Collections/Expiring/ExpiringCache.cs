@@ -10,7 +10,7 @@ namespace Core.Collections.Expiring
    {
       Hash<TKey, TValue> cache;
       Hash<TKey, ExpirationPolicy<TValue>> expirationPolicies;
-      IMaybe<Timer> anyTimer;
+      Maybe<Timer> anyTimer;
       object locker;
       Func<ExpirationPolicy<TValue>> newPolicy;
 

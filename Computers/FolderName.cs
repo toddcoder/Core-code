@@ -95,7 +95,7 @@ namespace Core.Computers
 
       public static FolderName Configurations => CorporateBase["Configurations"];
 
-      public static IMaybe<FolderName> ExecutableFolder
+      public static Maybe<FolderName> ExecutableFolder
       {
          get
          {
@@ -219,7 +219,7 @@ namespace Core.Computers
 
       public FolderName this[string subfolder] => new(root, subfolders.Append(subfolder));
 
-      public IMaybe<FolderName> Parent
+      public Maybe<FolderName> Parent
       {
          get
          {
@@ -244,7 +244,7 @@ namespace Core.Computers
          }
       }
 
-      public IMaybe<FolderName> Parents(int count)
+      public Maybe<FolderName> Parents(int count)
       {
          if (count > 0)
          {
@@ -912,24 +912,24 @@ namespace Core.Computers
 
       public bool IsNotEmpty => !IsEmpty;
 
-      public IMaybe<FileName> ExistingFile(string nameExtension, bool parallel = false)
+      public Maybe<FileName> ExistingFile(string nameExtension, bool parallel = false)
       {
          var files = parallel ? getFilesParallel(fullPath) : getFiles(fullPath);
          return files.Where(f => f.NameExtension == nameExtension).FirstOrNone();
       }
 
-      public IMaybe<FileName> ExistingFile(string nameExtension, CancellationToken token)
+      public Maybe<FileName> ExistingFile(string nameExtension, CancellationToken token)
       {
          return getFilesParallel(fullPath, token).Where(f => f.NameExtension == nameExtension).FirstOrNone();
       }
 
-      public IMaybe<FolderName> ExistingFolderName(string name, bool parallel)
+      public Maybe<FolderName> ExistingFolderName(string name, bool parallel)
       {
          var folders = parallel ? getFoldersParallel(fullPath) : getFolders(fullPath);
          return folders.Where(f => f.Name == name).FirstOrNone();
       }
 
-      public IMaybe<FolderName> ExistingFolderName(string name, CancellationToken token)
+      public Maybe<FolderName> ExistingFolderName(string name, CancellationToken token)
       {
          return getFoldersParallel(fullPath, token).Where(f => f.Name == name).FirstOrNone();
       }

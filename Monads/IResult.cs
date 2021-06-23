@@ -56,11 +56,11 @@ namespace Core.Monads
 
       IResult<T> OnFailure(Action<Exception> action);
 
-	   void Deconstruct(out IMaybe<T> value, out Exception exception);
+	   void Deconstruct(out Maybe<T> value, out Exception exception);
 
 	   IResult<T> Assert(Predicate<T> predicate, Func<string> exceptionMessage);
 
-      IMaybe<T> Maybe();
+      Maybe<T> Maybe();
 
       bool EqualToValueOf(IResult<T> otherResult);
 

@@ -7,7 +7,7 @@ namespace Core.Monads
    {
       public static Unit Value => new Unit();
 
-      public static IMaybe<Unit> Some() => Value.Some();
+      public static Maybe<Unit> Some() => Value.Some();
 
       public static IResult<Unit> Success() => Value.Success();
 

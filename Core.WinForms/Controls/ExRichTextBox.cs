@@ -691,7 +691,7 @@ namespace Core.WinForms.Controls
          }
       }
 
-      public IMaybe<Rectangle> WordAtSelection(Graphics graphics, int start, int length)
+      public Maybe<Rectangle> WordAtSelection(Graphics graphics, int start, int length)
       {
          if (length == 0)
          {
@@ -708,7 +708,7 @@ namespace Core.WinForms.Controls
          }
       }
 
-      public IMaybe<Rectangle> WordAtSelection(Graphics graphics, int start)
+      public Maybe<Rectangle> WordAtSelection(Graphics graphics, int start)
       {
          var text = Text;
          if (text.IsEmpty() || start >= text.Length)
@@ -731,7 +731,7 @@ namespace Core.WinForms.Controls
          }
       }
 
-      public IMaybe<Rectangle> WordAtCurrentSelection(Graphics graphics)
+      public Maybe<Rectangle> WordAtCurrentSelection(Graphics graphics)
       {
          return WordAtSelection(graphics, SelectionStart, SelectionLength);
       }

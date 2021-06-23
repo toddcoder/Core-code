@@ -4,21 +4,21 @@ namespace Core.Data.Setups
 {
    public class OleDbSetupInfo : SetupInfo
    {
-      protected IMaybe<string> file;
+      protected Maybe<string> file;
 
-      public OleDbSetupInfo(IMaybe<string> file) => this.file = file;
+      public OleDbSetupInfo(Maybe<string> file) => this.file = file;
 
       public OleDbSetupInfo() : this(file: MonadFunctions.none<string>())
       {
       }
 
-      public OleDbSetupInfo(string connectionName, string adapterName, IMaybe<string> commandName, IMaybe<string> file) : base(connectionName,
+      public OleDbSetupInfo(string connectionName, string adapterName, Maybe<string> commandName, Maybe<string> file) : base(connectionName,
          adapterName, commandName)
       {
          this.file = file;
       }
 
-      public IMaybe<string> File
+      public Maybe<string> File
       {
          get => file;
          set => file = value;

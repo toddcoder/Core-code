@@ -70,7 +70,7 @@ namespace Core.Dates
 
       public static TimeSpan ToTimeSpan(this string source, TimeSpan defaultValue) => source.TimeSpan().Recover(_ => defaultValue);
 
-      public static IMaybe<TimeSpan> AsTimeSpan(this string source)
+      public static Maybe<TimeSpan> AsTimeSpan(this string source)
       {
          var intervals = source.Split("/s* (',' | 'and') /s*; f");
          var spans = intervals.Where(i => i.IsNotEmpty()).Select(getSpan);

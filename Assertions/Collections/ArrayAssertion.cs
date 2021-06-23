@@ -129,7 +129,7 @@ namespace Core.Assertions.Collections
 
       public IResult<T[]> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
 
-      public IMaybe<T[]> OrNone() => orNone(this);
+      public Maybe<T[]> OrNone() => orNone(this);
 
       public async Task<ICompletion<T[]>> OrFailureAsync(CancellationToken token) => await orFailureAsync(this, token);
 

@@ -14,11 +14,11 @@ namespace Core.Monads
 {
    public static class MonadExtensions
    {
-      public static IMaybe<T> Some<T>(this T obj) => obj is null ? none<T>() : new Some<T>(obj);
+      public static Maybe<T> Some<T>(this T obj) => obj is null ? none<T>() : new Some<T>(obj);
 
       public static bool NotNull<T>(this T obj, out T value) => obj.Some().If(out value);
 
-      public static IMaybe<Type> UnderlyingType(this object obj)
+      public static Maybe<Type> UnderlyingType(this object obj)
       {
          if (obj is null)
          {
@@ -31,7 +31,7 @@ namespace Core.Monads
          }
       }
 
-      public static IMaybe<Type> UnderlyingTypeOf(this Type type)
+      public static Maybe<Type> UnderlyingTypeOf(this Type type)
       {
          if (type.Name.IsMatch("^ ('IMaybe' | 'Some' | 'None') '`1'; f"))
          {
@@ -43,24 +43,24 @@ namespace Core.Monads
          }
       }
 
-      public static IMaybe<TResult> SelectMany<T, TResult>(this IMaybe<T> maybe, Func<T, IMaybe<TResult>> projection)
+      public static Maybe<TResult> SelectMany<T, TResult>(this Maybe<T> maybe, Func<T, Maybe<TResult>> projection)
       {
          return maybe.Map(projection);
       }
 
       [DebuggerStepThrough]
-      public static IResult<TResult> SelectMany<T, TResult>(this IMaybe<T> maybe, Func<T, IResult<TResult>> projection)
+      public static IResult<TResult> SelectMany<T, TResult>(this Maybe<T> maybe, Func<T, IResult<TResult>> projection)
       {
          return maybe.Map(projection).DefaultTo(() => "Value not provided".Failure<TResult>());
       }
 
-      public static IMaybe<T3> SelectMany<T1, T2, T3>(this IMaybe<T1> first, Func<T1, IMaybe<T2>> func,
+      public static Maybe<T3> SelectMany<T1, T2, T3>(this Maybe<T1> first, Func<T1, Maybe<T2>> func,
          Func<T1, T2, T3> projection)
       {
          return first.Map(outer => func(outer).Map(inner => projection(outer, inner)));
       }
 
-      public static IMaybe<TResult> Select<T, TResult>(this IMaybe<T> maybe, Func<T, TResult> func) => maybe.Map(func);
+      public static Maybe<TResult> Select<T, TResult>(this Maybe<T> maybe, Func<T, TResult> func) => maybe.Map(func);
 
       [DebuggerStepThrough]
       public static IResult<TResult> Select<T, TResult>(this IResult<T> result, Func<T, TResult> func)
@@ -75,7 +75,7 @@ namespace Core.Monads
          }
       }
 
-      public static bool Assign<T>(this IMaybe<T> maybe, out T value)
+      public static bool Assign<T>(this Maybe<T> maybe, out T value)
       {
          value = maybe.DefaultTo(() => default);
          return maybe.IsSome;
@@ -175,7 +175,7 @@ namespace Core.Monads
          }
       }
 
-      public static IMaybe<T> Tap<T>(this IMaybe<T> maybe, Action<IMaybe<T>> action)
+      public static Maybe<T> Tap<T>(this Maybe<T> maybe, Action<Maybe<T>> action)
       {
          action(maybe);
          return maybe;
@@ -193,7 +193,7 @@ namespace Core.Monads
          return result;
       });
 
-      public static IEnumerable<T> WhereIsSome<T>(this IEnumerable<IMaybe<T>> enumerable)
+      public static IEnumerable<T> WhereIsSome<T>(this IEnumerable<Maybe<T>> enumerable)
       {
          foreach (var maybe in enumerable)
          {
@@ -204,7 +204,7 @@ namespace Core.Monads
          }
       }
 
-      public static IEnumerable<(T item, TMaybe maybe)> WhereIsSome<T, TMaybe>(this IEnumerable<T> enumerable, Func<T, IMaybe<TMaybe>> predicate)
+      public static IEnumerable<(T item, TMaybe maybe)> WhereIsSome<T, TMaybe>(this IEnumerable<T> enumerable, Func<T, Maybe<TMaybe>> predicate)
       {
          foreach (var item in enumerable)
          {
@@ -284,7 +284,7 @@ namespace Core.Monads
          }
       }
 
-      public static IMaybe<IEnumerable<T>> AllAreSome<T>(this IEnumerable<IMaybe<T>> enumerable)
+      public static Maybe<IEnumerable<T>> AllAreSome<T>(this IEnumerable<Maybe<T>> enumerable)
       {
          var result = new List<T>();
          foreach (var anyValue in enumerable)
@@ -332,7 +332,7 @@ namespace Core.Monads
          return new MatchedIterator<T>(enumerable, matched, notMatched, failure).FailuresOnly();
       }
 
-      public static (IEnumerable<T> enumerable, IMaybe<Exception> exception) SuccessesFirst<T>(this IEnumerable<IResult<T>> enumerable,
+      public static (IEnumerable<T> enumerable, Maybe<Exception> exception) SuccessesFirst<T>(this IEnumerable<IResult<T>> enumerable,
          Action<T> success = null, Action<Exception> failure = null)
       {
          return new ResultIterator<T>(enumerable, success, failure).SuccessesThenFailure();
@@ -486,9 +486,9 @@ namespace Core.Monads
          }
       }
 
-      public static IMaybe<T> IfCast<T>(this object obj) => obj is T t ? t.Some() : none<T>();
+      public static Maybe<T> IfCast<T>(this object obj) => obj is T t ? t.Some() : none<T>();
 
-      public static bool If<T1, T2>(this IMaybe<(T1, T2)> some, out T1 v1, out T2 v2)
+      public static bool If<T1, T2>(this Maybe<(T1, T2)> some, out T1 v1, out T2 v2)
       {
          if (some.If(out var value))
          {
@@ -506,7 +506,7 @@ namespace Core.Monads
          }
       }
 
-      public static bool If<T1, T2, T3>(this IMaybe<(T1, T2, T3)> some, out T1 v1, out T2 v2, out T3 v3)
+      public static bool If<T1, T2, T3>(this Maybe<(T1, T2, T3)> some, out T1 v1, out T2 v2, out T3 v3)
       {
          if (some.If(out var value))
          {
@@ -526,7 +526,7 @@ namespace Core.Monads
          }
       }
 
-      public static bool If<T1, T2, T3, T4>(this IMaybe<(T1, T2, T3, T4)> some, out T1 v1, out T2 v2, out T3 v3,
+      public static bool If<T1, T2, T3, T4>(this Maybe<(T1, T2, T3, T4)> some, out T1 v1, out T2 v2, out T3 v3,
          out T4 v4)
       {
          if (some.If(out var value))
@@ -690,7 +690,7 @@ namespace Core.Monads
          }
       }
 
-      public static bool If<T1, T2>(this IMatched<(T1, T2)> matched, out T1 v1, out T2 v2, out IMaybe<Exception> anyException)
+      public static bool If<T1, T2>(this IMatched<(T1, T2)> matched, out T1 v1, out T2 v2, out Maybe<Exception> anyException)
       {
          if (matched.If(out var value, out anyException))
          {
@@ -728,7 +728,7 @@ namespace Core.Monads
          }
       }
 
-      public static bool If<T1, T2, T3>(this IMatched<(T1, T2, T3)> matched, out T1 v1, out T2 v2, out T3 v3, out IMaybe<Exception> anyException)
+      public static bool If<T1, T2, T3>(this IMatched<(T1, T2, T3)> matched, out T1 v1, out T2 v2, out T3 v3, out Maybe<Exception> anyException)
       {
          if (matched.If(out var value, out anyException))
          {
@@ -772,7 +772,7 @@ namespace Core.Monads
       }
 
       public static bool If<T1, T2, T3, T4>(this IMatched<(T1, T2, T3, T4)> matched, out T1 v1, out T2 v2, out T3 v3,
-         out T4 v4, out IMaybe<Exception> anyException)
+         out T4 v4, out Maybe<Exception> anyException)
       {
          if (matched.If(out var value, out anyException))
          {
@@ -812,7 +812,7 @@ namespace Core.Monads
          }
       }
 
-      public static bool If<T1, T2>(this ICompletion<(T1, T2)> completion, out T1 v1, out T2 v2, out IMaybe<Exception> anyException)
+      public static bool If<T1, T2>(this ICompletion<(T1, T2)> completion, out T1 v1, out T2 v2, out Maybe<Exception> anyException)
       {
          if (completion.If(out var value, out anyException))
          {
@@ -851,7 +851,7 @@ namespace Core.Monads
       }
 
       public static bool If<T1, T2, T3>(this ICompletion<(T1, T2, T3)> completion, out T1 v1, out T2 v2, out T3 v3,
-         out IMaybe<Exception> anyException)
+         out Maybe<Exception> anyException)
       {
          if (completion.If(out var value, out anyException))
          {
@@ -894,7 +894,7 @@ namespace Core.Monads
       }
 
       public static bool If<T1, T2, T3, T4>(this ICompletion<(T1, T2, T3, T4)> completion, out T1 v1, out T2 v2, out T3 v3, out T4 v4,
-         out IMaybe<Exception> anyException)
+         out Maybe<Exception> anyException)
       {
          if (completion.If(out var value, out anyException))
          {
@@ -1288,7 +1288,7 @@ namespace Core.Monads
          }
       }
 
-      public static IEnumerable<T> SomeValue<T>(this IEnumerable<IMaybe<T>> enumerable)
+      public static IEnumerable<T> SomeValue<T>(this IEnumerable<Maybe<T>> enumerable)
       {
          foreach (var source in enumerable)
          {
@@ -1351,9 +1351,9 @@ namespace Core.Monads
          return matched.FlatMap(v => v.Completed(token), cancelled<T>, interrupted<T>);
       }
 
-      public static ICompletion<T> Completion<T>(this IMaybe<T> maybe) => maybe.Map(v => v.Completed()).DefaultTo(cancelled<T>);
+      public static ICompletion<T> Completion<T>(this Maybe<T> maybe) => maybe.Map(v => v.Completed()).DefaultTo(cancelled<T>);
 
-      public static ICompletion<T> Completion<T>(this IMaybe<T> maybe, CancellationToken token)
+      public static ICompletion<T> Completion<T>(this Maybe<T> maybe, CancellationToken token)
       {
          return maybe.Map(v => v.Completed(token)).DefaultTo(cancelled<T>);
       }
@@ -1413,13 +1413,13 @@ namespace Core.Monads
          }
       }
 
-      public static IMaybe<T> MaxOrNone<T>(this IEnumerable<T> enumerable)
+      public static Maybe<T> MaxOrNone<T>(this IEnumerable<T> enumerable)
       {
          var array = enumerable.ToArray();
          return maybe(array.Length > 0, () => array.Max());
       }
 
-      public static IMaybe<T> MaxOrNone<T, TMax>(this IEnumerable<T> enumerable, Func<T, TMax> maxOnFunc)
+      public static Maybe<T> MaxOrNone<T, TMax>(this IEnumerable<T> enumerable, Func<T, TMax> maxOnFunc)
       {
          var array = enumerable.ToArray();
          return maybe(array.Length > 0, () =>
@@ -1429,13 +1429,13 @@ namespace Core.Monads
          });
       }
 
-      public static IMaybe<T> MinOrNone<T>(this IEnumerable<T> enumerable)
+      public static Maybe<T> MinOrNone<T>(this IEnumerable<T> enumerable)
       {
          var array = enumerable.ToArray();
          return maybe(array.Length > 0, () => array.Min());
       }
 
-      public static IMaybe<T> MinOrNone<T, TMin>(this IEnumerable<T> enumerable, Func<T, TMin> minOnFunc)
+      public static Maybe<T> MinOrNone<T, TMin>(this IEnumerable<T> enumerable, Func<T, TMin> minOnFunc)
       {
          var array = enumerable.ToArray();
          return maybe(array.Length > 0, () =>
@@ -1515,32 +1515,32 @@ namespace Core.Monads
          });
       }
 
-      public static IMaybe<TResult> Map<T1, T2, TResult>(this IMaybe<(T1, T2)> maybe, Func<T1, T2, TResult> func)
+      public static Maybe<TResult> Map<T1, T2, TResult>(this Maybe<(T1, T2)> maybe, Func<T1, T2, TResult> func)
       {
          return maybe.Map(t => func(t.Item1, t.Item2));
       }
 
-      public static IMaybe<TResult> Map<T1, T2, TResult>(this IMaybe<(T1, T2)> maybe, Func<T1, T2, IMaybe<TResult>> func)
+      public static Maybe<TResult> Map<T1, T2, TResult>(this Maybe<(T1, T2)> maybe, Func<T1, T2, Maybe<TResult>> func)
       {
          return maybe.Map(t => func(t.Item1, t.Item2));
       }
 
-      public static IMaybe<TResult> Map<T1, T2, T3, TResult>(this IMaybe<(T1, T2, T3)> maybe, Func<T1, T2, T3, TResult> func)
+      public static Maybe<TResult> Map<T1, T2, T3, TResult>(this Maybe<(T1, T2, T3)> maybe, Func<T1, T2, T3, TResult> func)
       {
          return maybe.Map(t => func(t.Item1, t.Item2, t.Item3));
       }
 
-      public static IMaybe<TResult> Map<T1, T2, T3, TResult>(this IMaybe<(T1, T2, T3)> maybe, Func<T1, T2, T3, IMaybe<TResult>> func)
+      public static Maybe<TResult> Map<T1, T2, T3, TResult>(this Maybe<(T1, T2, T3)> maybe, Func<T1, T2, T3, Maybe<TResult>> func)
       {
          return maybe.Map(t => func(t.Item1, t.Item2, t.Item3));
       }
 
-      public static IMaybe<TResult> Map<T1, T2, T3, T4, TResult>(this IMaybe<(T1, T2, T3, T4)> maybe, Func<T1, T2, T3, T4, TResult> func)
+      public static Maybe<TResult> Map<T1, T2, T3, T4, TResult>(this Maybe<(T1, T2, T3, T4)> maybe, Func<T1, T2, T3, T4, TResult> func)
       {
          return maybe.Map(t => func(t.Item1, t.Item2, t.Item3, t.Item4));
       }
 
-      public static IMaybe<TResult> Map<T1, T2, T3, T4, TResult>(this IMaybe<(T1, T2, T3, T4)> maybe, Func<T1, T2, T3, T4, IMaybe<TResult>> func)
+      public static Maybe<TResult> Map<T1, T2, T3, T4, TResult>(this Maybe<(T1, T2, T3, T4)> maybe, Func<T1, T2, T3, T4, Maybe<TResult>> func)
       {
          return maybe.Map(t => func(t.Item1, t.Item2, t.Item3, t.Item4));
       }
@@ -1633,22 +1633,22 @@ namespace Core.Monads
          return completion.Map(t => func(t.Item1, t.Item2, t.Item3, t.Item4));
       }
 
-      public static IMaybe<T> SomeIf<T>(this Func<bool> boolExpression, Func<T> value)
+      public static Maybe<T> SomeIf<T>(this Func<bool> boolExpression, Func<T> value)
       {
          return boolExpression() ? value().Some() : none<T>();
       }
 
-      public static IMaybe<T> SomeIf<T>(this Func<bool> boolExpression, Func<IMaybe<T>> value)
+      public static Maybe<T> SomeIf<T>(this Func<bool> boolExpression, Func<Maybe<T>> value)
       {
          return boolExpression() ? value() : none<T>();
       }
 
-      public static IMaybe<T> SomeIf<T>(this bool boolExpression, Func<T> value)
+      public static Maybe<T> SomeIf<T>(this bool boolExpression, Func<T> value)
       {
          return boolExpression ? value().Some() : none<T>();
       }
 
-      public static IMaybe<T> SomeIf<T>(this bool boolExpression, Func<IMaybe<T>> value)
+      public static Maybe<T> SomeIf<T>(this bool boolExpression, Func<Maybe<T>> value)
       {
          return boolExpression ? value() : none<T>();
       }

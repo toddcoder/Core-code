@@ -89,13 +89,13 @@ namespace Core.Data.Setups
          loadAttributes(setupObject.Attributes);
       }
 
-      internal SqlSetup(IMaybe<Group> attributesGroup)
+      internal SqlSetup(Maybe<Group> attributesGroup)
       {
          attributes = new StringHash<string>(true);
          loadAttributes(attributesGroup);
       }
 
-      protected void loadAttributes(IMaybe<Group> _attributesGroup)
+      protected void loadAttributes(Maybe<Group> _attributesGroup)
       {
          if (_attributesGroup.If(out var attributesGroup))
          {
@@ -141,6 +141,6 @@ namespace Core.Data.Setups
 
       public TimeSpan CommandTimeout { get; set; }
 
-      public IMaybe<SqlInfoMessageEventHandler> Handler { get; set; } = none<SqlInfoMessageEventHandler>();
+      public Maybe<SqlInfoMessageEventHandler> Handler { get; set; } = none<SqlInfoMessageEventHandler>();
    }
 }

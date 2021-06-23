@@ -19,7 +19,7 @@ namespace Core.WinForms.Documents
 
       public static string[] SetWindowsText(string text) => text.Split(PATTERN_CRLF);
 
-      public static IMaybe<string> ClipboardText()
+      public static Maybe<string> ClipboardText()
       {
          return maybe(Clipboard.ContainsText(TextDataFormat.Text), () => Clipboard.GetText(TextDataFormat.Text));
       }
@@ -29,7 +29,7 @@ namespace Core.WinForms.Documents
       protected string extension;
       protected string documentName;
       protected string formName;
-      protected IMaybe<FileName> _file;
+      protected Maybe<FileName> _file;
       protected bool isDirty;
       protected OpenFileDialog openFileDialog;
       protected SaveFileDialog saveFileDialog;
@@ -37,7 +37,7 @@ namespace Core.WinForms.Documents
       protected string fontName;
       protected float fontSize;
       protected bool displayFileName;
-      protected IMaybe<Colorizer> _colorizer;
+      protected Maybe<Colorizer> _colorizer;
       protected string filter;
       protected bool keepClean;
 
@@ -117,7 +117,7 @@ namespace Core.WinForms.Documents
          DisplayFileName();
       }
 
-      public IMaybe<Colorizer> Colorizer
+      public Maybe<Colorizer> Colorizer
       {
          get => _colorizer;
          set => _colorizer = value;
@@ -194,7 +194,7 @@ namespace Core.WinForms.Documents
          textBox.ScrollBars = RichTextBoxScrollBars.Both;
       }
 
-      public IMaybe<string> FileName => _file.Map(f => f.ToString());
+      public Maybe<string> FileName => _file.Map(f => f.ToString());
 
       public bool IsDirty => isDirty;
 

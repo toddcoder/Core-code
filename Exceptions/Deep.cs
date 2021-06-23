@@ -26,7 +26,7 @@ namespace Core.Exceptions
          }
       }
 
-      private static IMaybe<string[]> getCallStack(StackTrace stack, string format)
+      private static Maybe<string[]> getCallStack(StackTrace stack, string format)
       {
          if (stack.FrameCount != 0)
          {
@@ -61,24 +61,24 @@ namespace Core.Exceptions
          }
       }
 
-      public static IMaybe<string[]> CallStack(string format = "{string}", int skip = 2)
+      public static Maybe<string[]> CallStack(string format = "{string}", int skip = 2)
       {
          return getCallStack(new StackTrace(skip, true), format);
       }
 
-      public static IMaybe<string[]> CallStack(string format) => CallStack(format, 2);
+      public static Maybe<string[]> CallStack(string format) => CallStack(format, 2);
 
-      public static IMaybe<string[]> CallStack(this Exception exception, string format, int skip)
+      public static Maybe<string[]> CallStack(this Exception exception, string format, int skip)
       {
          return getCallStack(new StackTrace(exception, skip, true), format);
       }
 
-      public static IMaybe<string[]> CallStack(this Exception exception, string format)
+      public static Maybe<string[]> CallStack(this Exception exception, string format)
       {
          return exception.CallStack(format, 1);
       }
 
-      public static IMaybe<string[]> CallStack(this Exception exception) => exception.CallStack("{string}", 0);
+      public static Maybe<string[]> CallStack(this Exception exception) => exception.CallStack("{string}", 0);
 
       public static string DeepStack(this Exception exception, string format = "{level}:{stack}:\r\n{inner}", int level = 0)
       {

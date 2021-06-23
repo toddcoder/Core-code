@@ -12,7 +12,7 @@ namespace Core.Objects
 {
    public static class TypeExtensions
    {
-      public static IMaybe<object> DefaultValue(this Type type)
+      public static Maybe<object> DefaultValue(this Type type)
       {
          return maybe(type is not null, () =>
          {
@@ -21,7 +21,7 @@ namespace Core.Objects
          });
       }
 
-      public static IMaybe<object> DefaultValue(this string typeName, bool defaultStringToEmpty = false)
+      public static Maybe<object> DefaultValue(this string typeName, bool defaultStringToEmpty = false)
       {
          if (typeName.StartsWith("$"))
          {

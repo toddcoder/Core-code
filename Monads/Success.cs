@@ -168,7 +168,7 @@ namespace Core.Monads
 
       public IResult<T> OnFailure(Action<Exception> action) => this;
 
-      public void Deconstruct(out IMaybe<T> value, out Exception exception)
+      public void Deconstruct(out Maybe<T> value, out Exception exception)
       {
          value = this.value.Some();
          exception = default;
@@ -179,7 +179,7 @@ namespace Core.Monads
          return predicate(value) ? this : exceptionMessage().Failure<T>();
       }
 
-      public IMaybe<T> Maybe() => value.Some();
+      public Maybe<T> Maybe() => value.Some();
 
       public bool EqualToValueOf(IResult<T> otherResult) => otherResult.If(out var otherValue) && ValueEqualTo(otherValue);
 

@@ -56,15 +56,15 @@ namespace Core.Monads
          return leftMap(value);
       }
 
-      public override void Deconstruct(out IMaybe<TLeft> left, out IMaybe<TRight> right)
+      public override void Deconstruct(out Maybe<TLeft> left, out Maybe<TRight> right)
       {
          left = value.Some();
          right = none<TRight>();
       }
 
-      public override IMaybe<TLeft> MaybeFromLeft() => value.Some();
+      public override Maybe<TLeft> MaybeFromLeft() => value.Some();
 
-      public override IMaybe<TRight> MaybeFromRight() => none<TRight>();
+      public override Maybe<TRight> MaybeFromRight() => none<TRight>();
 
       public override IResult<TLeft> ResultFromLeft(string exceptionMessage) => value.Success();
 

@@ -22,7 +22,7 @@ namespace Core.Matching.Parsers
 
       public override string Pattern => @"^\s*(-)?\s*(/)?\[";
 
-      public override IMaybe<string> Parse(string source, ref int index)
+      public override Maybe<string> Parse(string source, ref int index)
       {
          var negative = tokens[1] == "-";
          var enclose = tokens[2] == "/";

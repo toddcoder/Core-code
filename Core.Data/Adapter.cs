@@ -142,7 +142,7 @@ namespace Core.Data
          }
       }
 
-      public IMaybe<T> ExecuteMaybe()
+      public Maybe<T> ExecuteMaybe()
       {
          try
          {

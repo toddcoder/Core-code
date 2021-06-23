@@ -89,7 +89,7 @@ namespace Core.RegularExpressions
 
       public static void SetVariable(string variableName, string pattern) => variables[variableName] = pattern;
 
-      public static IMaybe<string> GetVariable(string variableName) => variables.Map(variableName);
+      public static Maybe<string> GetVariable(string variableName) => variables.Map(variableName);
 
       protected bool friendly;
       protected Match[] matches;
@@ -114,18 +114,18 @@ namespace Core.RegularExpressions
 
       public int Index => matches.Length == 0 ? -1 : matches[0].Index;
 
-      public IMaybe<int> IndexOf(int matchIndex) => getMatchMaybe(matchIndex).Map(m => m.Index);
+      public Maybe<int> IndexOf(int matchIndex) => getMatchMaybe(matchIndex).Map(m => m.Index);
 
-      public IMaybe<int> IndexOf(int matchIndex, int groupIndex)
+      public Maybe<int> IndexOf(int matchIndex, int groupIndex)
       {
          return getGroupMaybe(getMatchMaybe(matchIndex), groupIndex).Map(g => g.Index);
       }
 
       public int Length => matches.Length == 0 ? 0 : matches[0].Length;
 
-      public IMaybe<int> LengthOf(int matchIndex) => getMatchMaybe(matchIndex).Map(m => m.Length);
+      public Maybe<int> LengthOf(int matchIndex) => getMatchMaybe(matchIndex).Map(m => m.Length);
 
-      public IMaybe<int> LengthOf(int matchIndex, int groupIndex)
+      public Maybe<int> LengthOf(int matchIndex, int groupIndex)
       {
          return getGroupMaybe(getMatchMaybe(matchIndex), groupIndex).Map(g => g.Length);
       }
@@ -193,29 +193,29 @@ namespace Core.RegularExpressions
 
       public IMatched<Match[]> MatchAll(string input, RegexPattern regexPattern) => MatchAll(input, regexPattern.Pattern, regexPattern.Options);
 
-      public IMaybe<Match[]> MatchMaybe(string input, string pattern, RegexOptions options)
+      public Maybe<Match[]> MatchMaybe(string input, string pattern, RegexOptions options)
       {
          return IsMatch(input, pattern, options) ? matches.Some() : none<Match[]>();
       }
 
-      public IMaybe<Match[]> MatchMaybe(string input, string pattern, bool ignoreCase = false, bool multiline = false)
+      public Maybe<Match[]> MatchMaybe(string input, string pattern, bool ignoreCase = false, bool multiline = false)
       {
          return MatchMaybe(input, pattern, GetOptions(ignoreCase, multiline));
       }
 
-      public IMaybe<Match[]> MatchMaybe(string input, RegexPattern regexPattern) => MatchMaybe(input, regexPattern.Pattern, regexPattern.Options);
+      public Maybe<Match[]> MatchMaybe(string input, RegexPattern regexPattern) => MatchMaybe(input, regexPattern.Pattern, regexPattern.Options);
 
-      public IMaybe<Match> MatchOneMaybe(string input, string pattern, RegexOptions options)
+      public Maybe<Match> MatchOneMaybe(string input, string pattern, RegexOptions options)
       {
          return IsMatch(input, pattern, options) ? matches[0].Some() : none<Match>();
       }
 
-      public IMaybe<Match> MatchOneMaybe(string input, string pattern, bool ignoreCase = false, bool multiline = false)
+      public Maybe<Match> MatchOneMaybe(string input, string pattern, bool ignoreCase = false, bool multiline = false)
       {
          return MatchOneMaybe(input, pattern, GetOptions(ignoreCase, multiline));
       }
 
-      public IMaybe<Match> MatchOneMaybe(string input, RegexPattern regexPattern) => MatchOneMaybe(input, regexPattern.Pattern, regexPattern.Options);
+      public Maybe<Match> MatchOneMaybe(string input, RegexPattern regexPattern) => MatchOneMaybe(input, regexPattern.Pattern, regexPattern.Options);
 
       public IMatched<Match> MatchOne(string input, string pattern, RegexOptions options)
       {
@@ -392,7 +392,7 @@ namespace Core.RegularExpressions
          }
       }
 
-      public IMaybe<string> Maybe(int matchIndex, int groupIndex)
+      public Maybe<string> Maybe(int matchIndex, int groupIndex)
       {
          var value = this[matchIndex, groupIndex];
          return maybe(value.IsNotEmpty(), () => value);
@@ -404,7 +404,7 @@ namespace Core.RegularExpressions
          set => getMatch(matchIndex).SetSlice(slicer, value);
       }
 
-      public IMaybe<string> Maybe(int matchIndex)
+      public Maybe<string> Maybe(int matchIndex)
       {
          var value = this[matchIndex];
          return maybe(value.IsNotEmpty(), () => value);
@@ -437,7 +437,7 @@ namespace Core.RegularExpressions
          return match.Groups[groupIndex];
       }
 
-      protected static IMaybe<Group> getGroupMaybe(IMaybe<Match> match, int index)
+      protected static Maybe<Group> getGroupMaybe(Maybe<Match> match, int index)
       {
          return match.Map(m => maybe(index.Between(0).Until(m.Groups.Length), () => m.Groups[index]));
       }
@@ -450,13 +450,13 @@ namespace Core.RegularExpressions
          return matches[matchIndex];
       }
 
-      protected IMaybe<Match> getMatchMaybe(int index) => maybe(index.Between(0).Until(matches.Length), () => matches[index]);
+      protected Maybe<Match> getMatchMaybe(int index) => maybe(index.Between(0).Until(matches.Length), () => matches[index]);
 
       public int GroupCount(int index) => getMatch(index).Groups.Length;
 
-      public IMaybe<string> NameFromIndex(int index) => indexesToNames.Map(index);
+      public Maybe<string> NameFromIndex(int index) => indexesToNames.Map(index);
 
-      public IMaybe<int> IndexFromName(string name) => namesToIndexes.Map(name);
+      public Maybe<int> IndexFromName(string name) => namesToIndexes.Map(name);
 
       public IEnumerator<Match> GetEnumerator()
       {

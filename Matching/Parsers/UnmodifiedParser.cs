@@ -6,6 +6,6 @@ namespace Core.Matching.Parsers
    {
       public override string Pattern => @"^\s*([*?.+,|^$){}0-9])";
 
-      public override IMaybe<string> Parse(string source, ref int index) => tokens[1].Some();
+      public override Maybe<string> Parse(string source, ref int index) => tokens[1].Some();
    }
 }

@@ -61,7 +61,7 @@ namespace Core.Tests
          if ("foobar(foo,baz)".Matches(pattern1).If(out var result))
          {
             Console.Write(result.FirstMatch);
-            IMaybe<Exception> _exception;
+            Maybe<Exception> _exception;
             var lastResult = result;
             while (result.MatchedBy(pattern2).If(out result, out _exception))
             {

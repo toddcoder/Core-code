@@ -59,9 +59,9 @@ namespace Core.Monads
 
       bool ValueOrCast<TMatched>(out T value, out IMatched<TMatched> matched);
 
-      bool If(out T value, out IMaybe<Exception> exception);
+      bool If(out T value, out Maybe<Exception> exception);
 
-      bool IfNot(out IMaybe<Exception> anyException);
+      bool IfNot(out Maybe<Exception> anyException);
 
       bool Else<TOther>(out IMatched<TOther> result);
 
@@ -77,7 +77,7 @@ namespace Core.Monads
 
       IMatched<TOther> UnmatchedOnly<TOther>();
 
-	   void Deconstruct(out IMaybe<T> value, out IMaybe<Exception> exception);
+	   void Deconstruct(out Maybe<T> value, out Maybe<Exception> exception);
 
       bool EqualToValueOf(IMatched<T> otherMatched);
 

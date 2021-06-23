@@ -6,9 +6,9 @@ namespace Core.Monads
    public class MatchedIterator<T>
    {
       IEnumerable<IMatched<T>> enumerable;
-      IMaybe<Action<T>> matched;
-      IMaybe<Action> notMatched;
-      IMaybe<Action<Exception>> failure;
+      Maybe<Action<T>> matched;
+      Maybe<Action> notMatched;
+      Maybe<Action<Exception>> failure;
 
       public MatchedIterator(IEnumerable<IMatched<T>> enumerable, Action<T> matched = null, Action notMatched = null,
          Action<Exception> failure = null)

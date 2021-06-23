@@ -94,7 +94,7 @@ namespace Core.Monads
          return true;
       }
 
-      public bool If(out T value, out IMaybe<Exception> _exception)
+      public bool If(out T value, out Maybe<Exception> _exception)
       {
          value = default;
          _exception = exception.Some();
@@ -102,7 +102,7 @@ namespace Core.Monads
          return false;
       }
 
-      public bool IfNot(out IMaybe<Exception> _exception)
+      public bool IfNot(out Maybe<Exception> _exception)
       {
          _exception = exception.Some();
          return true;
@@ -138,7 +138,7 @@ namespace Core.Monads
 
       public ICompletion<TOther> NotCompletedOnly<TOther>() => new Interrupted<TOther>(exception);
 
-      public void Deconstruct(out IMaybe<T> value, out IMaybe<Exception> _exception)
+      public void Deconstruct(out Maybe<T> value, out Maybe<Exception> _exception)
       {
          value = default;
          _exception = exception.Some();

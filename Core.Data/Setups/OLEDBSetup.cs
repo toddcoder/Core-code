@@ -18,7 +18,7 @@ namespace Core.Data.Setups
 
       public static void RegisterType(string type, Func<IConnectionString> func) => registeredTypes[type] = func;
 
-      public static IResult<OleDbSetup> FromDataGroups(DataGroups dataGroups, string adapterName, IMaybe<FileName> file)
+      public static IResult<OleDbSetup> FromDataGroups(DataGroups dataGroups, string adapterName, Maybe<FileName> file)
       {
          var result =
             from adapterGroup in dataGroups.AdaptersGroup.RequireGroup(adapterName)
@@ -55,9 +55,9 @@ namespace Core.Data.Setups
          }
       }
 
-      protected IMaybe<FileName> file;
+      protected Maybe<FileName> file;
 
-      public OleDbSetup(IMaybe<FileName> file)
+      public OleDbSetup(Maybe<FileName> file)
       {
          this.file = file;
       }

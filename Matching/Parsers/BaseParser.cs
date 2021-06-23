@@ -28,7 +28,7 @@ namespace Core.Matching.Parsers
 
       protected static string escape(string text) => RRegex.Escape(text).Replace("]", @"\]");
 
-      public IMaybe<string> Scan(string source, ref int index)
+      public Maybe<string> Scan(string source, ref int index)
       {
          static IEnumerable<System.Text.RegularExpressions.Group> getGroups(System.Text.RegularExpressions.Match match)
          {
@@ -66,6 +66,6 @@ namespace Core.Matching.Parsers
          }
       }
 
-      public abstract IMaybe<string> Parse(string source, ref int index);
+      public abstract Maybe<string> Parse(string source, ref int index);
    }
 }

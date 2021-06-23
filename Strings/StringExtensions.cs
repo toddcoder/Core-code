@@ -103,7 +103,7 @@ namespace Core.Strings
          return source.Drop(startIndex).Keep(length);
       }
 
-      public static string Slice(this string source, IMaybe<int> startIndex, IMaybe<int> stopIndex)
+      public static string Slice(this string source, Maybe<int> startIndex, Maybe<int> stopIndex)
       {
          return source.Slice(startIndex.DefaultTo(() => 0), stopIndex.DefaultTo(() => source.Length - 1));
       }
@@ -1094,63 +1094,63 @@ namespace Core.Strings
          }
       }
 
-      public static IMaybe<bool> AsBool(this string source)
+      public static Maybe<bool> AsBool(this string source)
       {
          return source.IsNotEmpty() ? maybe(bool.TryParse(source, out var result), () => result) : none<bool>();
       }
 
       public static IResult<bool> Boolean(this string source) => tryTo(() => bool.Parse(source));
 
-      public static IMaybe<byte> AsByte(this string source)
+      public static Maybe<byte> AsByte(this string source)
       {
          return source.IsNotEmpty() ? maybe(byte.TryParse(source, out var result), () => result) : none<byte>();
       }
 
       public static IResult<byte> Byte(this string source) => tryTo(() => byte.Parse(source));
 
-      public static IMaybe<int> AsInt(this string source)
+      public static Maybe<int> AsInt(this string source)
       {
          return source.IsNotEmpty() ? maybe(int.TryParse(source, out var result), () => result) : none<int>();
       }
 
       public static IResult<int> Int32(this string source) => tryTo(() => int.Parse(source));
 
-      public static IMaybe<long> AsLong(this string source)
+      public static Maybe<long> AsLong(this string source)
       {
          return source.IsNotEmpty() ? maybe(long.TryParse(source, out var result), () => result) : none<long>();
       }
 
       public static IResult<long> Int64(this string source) => tryTo(() => long.Parse(source));
 
-      public static IMaybe<float> AsFloat(this string source)
+      public static Maybe<float> AsFloat(this string source)
       {
          return source.IsNotEmpty() ? maybe(float.TryParse(source, out var result), () => result) : none<float>();
       }
 
       public static IResult<float> Single(this string source) => tryTo(() => float.Parse(source));
 
-      public static IMaybe<double> AsDouble(this string source)
+      public static Maybe<double> AsDouble(this string source)
       {
          return source.IsNotEmpty() ? maybe(double.TryParse(source, out var result), () => result) : none<double>();
       }
 
       public static IResult<double> Double(this string source) => tryTo(() => double.Parse(source));
 
-      public static IMaybe<decimal> AsDecimal(this string source)
+      public static Maybe<decimal> AsDecimal(this string source)
       {
          return source.IsNotEmpty() ? maybe(decimal.TryParse(source, out var result), () => result) : none<decimal>();
       }
 
       public static IResult<decimal> Decimal(this string source) => tryTo(() => decimal.Parse(source));
 
-      public static IMaybe<DateTime> AsDateTime(this string source)
+      public static Maybe<DateTime> AsDateTime(this string source)
       {
          return source.IsNotEmpty() ? maybe(System.DateTime.TryParse(source, out var result), () => result) : none<DateTime>();
       }
 
       public static IResult<DateTime> DateTime(this string source) => tryTo(() => System.DateTime.Parse(source));
 
-      public static IMaybe<Guid> AsGuid(this string source)
+      public static Maybe<Guid> AsGuid(this string source)
       {
          return source.IsNotEmpty() ? maybe(System.Guid.TryParse(source, out var guid), () => guid) : none<Guid>();
       }
@@ -1199,7 +1199,7 @@ namespace Core.Strings
 
       public static T ToEnumeration<T>(this string value, T defaultValue) where T : struct => value.ToEnumeration(true, defaultValue);
 
-      public static IMaybe<T> AsEnumeration<T>(this string value, bool ignoreCase = true) where T : struct
+      public static Maybe<T> AsEnumeration<T>(this string value, bool ignoreCase = true) where T : struct
       {
          try
          {
@@ -1233,7 +1233,7 @@ namespace Core.Strings
          return source.Map(s => s.Matches("^ [quote] /(.*?) [quote] $; f").Map(result => result.FirstGroup).DefaultTo(() => s));
       }
 
-      public static IMaybe<object> ToObject(this string value)
+      public static Maybe<object> ToObject(this string value)
       {
          if (value == null)
          {
@@ -1294,7 +1294,7 @@ namespace Core.Strings
          }
       }
 
-      public static IMaybe<Type> ToType(this string value)
+      public static Maybe<Type> ToType(this string value)
       {
          if (value.IsEmpty())
          {
@@ -1338,7 +1338,7 @@ namespace Core.Strings
          }
       }
 
-      public static IMaybe<object> ToParsed(this string value, Type type)
+      public static Maybe<object> ToParsed(this string value, Type type)
       {
          if (value.IsEmpty())
          {
@@ -1532,7 +1532,7 @@ namespace Core.Strings
 
       public static string ToNonNullString(this object value) => value?.ToString() ?? string.Empty;
 
-      public static IMaybe<string> ToIMaybeString(this object value) => maybe(value != null, value.ToString);
+      public static Maybe<string> ToIMaybeString(this object value) => maybe(value != null, value.ToString);
 
       public static string ToLiteral(this object value)
       {
@@ -1572,38 +1572,38 @@ namespace Core.Strings
          }
       }
 
-      public static IMaybe<int> ExtractInt(this string source)
+      public static Maybe<int> ExtractInt(this string source)
       {
          return maybe(source.IsNotEmpty(), () => source.Matches("/(['+-']? /d+); f")).Map(result => result[0, 1].ToInt());
       }
 
-      public static IMaybe<double> ExtractDouble(this string source)
+      public static Maybe<double> ExtractDouble(this string source)
       {
          return maybe(source.IsNotEmpty(), () => source.Matches("/(['+-']? /d* '.' /d* (['eE'] ['-+']? /d+)?); f")).Map(result => result[0, 1].ToDouble());
       }
 
-      public static IMaybe<char> First(this string source) => maybe(source.IsNotEmpty(), () => source[0]);
+      public static Maybe<char> First(this string source) => maybe(source.IsNotEmpty(), () => source[0]);
 
-      public static IMaybe<char> Last(this string source) => maybe(source.IsNotEmpty(), () => source[source.Length - 1]);
+      public static Maybe<char> Last(this string source) => maybe(source.IsNotEmpty(), () => source[source.Length - 1]);
 
-      public static IMaybe<string> Left(this string source, int length)
+      public static Maybe<string> Left(this string source, int length)
       {
          var minLength = length.MinOf(source.Length);
          return maybe(minLength > 0, () => source.Keep(minLength));
       }
 
-      public static IMaybe<string> Right(this string source, int length)
+      public static Maybe<string> Right(this string source, int length)
       {
          var minLength = Math.Min(length, source.Length);
          return maybe(source.IsNotEmpty() && minLength > 0, () => source.Drop(source.Length - minLength).Keep(minLength));
       }
 
-      public static IMaybe<string> Sub(this string source, int index, int length)
+      public static Maybe<string> Sub(this string source, int index, int length)
       {
          return maybe(source.IsNotEmpty() && length > 0 && index >= 0 && index + length - 1 < source.Length, () => source.Drop(index).Keep(length));
       }
 
-      public static IMaybe<string> Sub(this string source, int index)
+      public static Maybe<string> Sub(this string source, int index)
       {
          return maybe(source.IsNotEmpty() && index >= 0 && index < source.Length, () => source.Drop(index));
       }
@@ -2012,9 +2012,9 @@ namespace Core.Strings
          return builder.ToString();
       }
 
-      public static IMaybe<int> FromHex(this string source)
+      public static Maybe<int> FromHex(this string source)
       {
-         IMaybe<int> matches()
+         Maybe<int> matches()
          {
             return source.Matches("^ '0x' /(['0-9a-fA-F']+) $; f").Map(m => int.Parse(m.FirstGroup, NumberStyles.HexNumber));
          }
@@ -2022,7 +2022,7 @@ namespace Core.Strings
          return maybe(source.IsNotEmpty(), matches);
       }
 
-      public static IMaybe<string> GetSignature(this string parameterName)
+      public static Maybe<string> GetSignature(this string parameterName)
       {
          return maybe(parameterName.IsNotEmpty(), () => parameterName.Matches("^ '@' /(.*) $; f").Map(m => m.FirstGroup.SnakeToCamelCase(true)));
       }
@@ -2163,7 +2163,7 @@ namespace Core.Strings
          }
       }
 
-      public static IMaybe<long> AsByteSize(this string source) => source.ByteSize().Map(l => l.Some()).Recover(_ => none<long>());
+      public static Maybe<long> AsByteSize(this string source) => source.ByteSize().Map(l => l.Some()).Recover(_ => none<long>());
 
       public static long ToByteSize(this string source, long defaultValue = 0)
       {
@@ -2183,7 +2183,7 @@ namespace Core.Strings
          return result.Center(allowedLength).Elliptical(allowedLength, ' ');
       }
 
-      public static IMaybe<int> Find(this string source, string substring, int startIndex = 0, bool ignoreCase = false)
+      public static Maybe<int> Find(this string source, string substring, int startIndex = 0, bool ignoreCase = false)
       {
          if (source.IsNotEmpty() && substring.IsNotEmpty())
          {
@@ -2198,7 +2198,7 @@ namespace Core.Strings
          }
       }
 
-      public static IMaybe<int> FindBackward(this string source, string substring, int startIndex = -1, bool ignoreCase = false)
+      public static Maybe<int> FindBackward(this string source, string substring, int startIndex = -1, bool ignoreCase = false)
       {
          if (source.IsNotEmpty() && substring.IsNotEmpty())
          {
@@ -2218,7 +2218,7 @@ namespace Core.Strings
          }
       }
 
-      public static IMaybe<Slice> FindByRegex(this string source, Pattern pattern)
+      public static Maybe<Slice> FindByRegex(this string source, Pattern pattern)
       {
          if (source.Matches(pattern).If(out var result))
          {
@@ -2332,7 +2332,7 @@ namespace Core.Strings
          return split(source).ToArray().ToString("");
       }
 
-      public static IMaybe<bool> IsExactlyEqualTo(this string left, string right)
+      public static Maybe<bool> IsExactlyEqualTo(this string left, string right)
       {
          if (left == right)
          {

@@ -46,7 +46,7 @@ namespace Core.DataStructures
             select item;
       }
 
-      public IMaybe<T> Dequeue() => maybe(IsNotEmpty, () => queue.Dequeue());
+      public Maybe<T> Dequeue() => maybe(IsNotEmpty, () => queue.Dequeue());
 
       public void Enqueue(T item) => queue.Enqueue(item);
 
@@ -58,7 +58,7 @@ namespace Core.DataStructures
 
       IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-      public IMaybe<T> Peek() => maybe(IsNotEmpty, () => queue.Peek());
+      public Maybe<T> Peek() => maybe(IsNotEmpty, () => queue.Peek());
 
       public T[] ToArray() => queue.ToArray();
 
