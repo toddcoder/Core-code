@@ -2,97 +2,97 @@
 
 namespace Core.Monads
 {
-   public interface IMatched<T>
+   public abstract class IMatched<T>
    {
-      bool IsMatched { get; }
+      public abstract bool IsMatched { get; }
 
-      bool IsNotMatched { get; }
+      public abstract bool IsNotMatched { get; }
 
-      bool IsFailedMatch { get; }
+      public abstract bool IsFailedMatch { get; }
 
-      IMatched<TResult> Map<TResult>(Func<T, IMatched<TResult>> ifMatched);
+      public abstract IMatched<TResult> Map<TResult>(Func<T, IMatched<TResult>> ifMatched);
 
-      IMatched<TResult> Map<TResult>(Func<T, TResult> ifMatched);
+      public abstract IMatched<TResult> Map<TResult>(Func<T, TResult> ifMatched);
 
-      IMatched<TResult> Map<TResult>(Func<T, IMatched<TResult>> ifMatched, Func<IMatched<TResult>> ifNotMatched);
+      public abstract IMatched<TResult> Map<TResult>(Func<T, IMatched<TResult>> ifMatched, Func<IMatched<TResult>> ifNotMatched);
 
-      IMatched<TResult> Map<TResult>(Func<T, IMatched<TResult>> ifMatched, Func<Exception, IMatched<TResult>> ifFailedMatch);
+      public abstract IMatched<TResult> Map<TResult>(Func<T, IMatched<TResult>> ifMatched, Func<Exception, IMatched<TResult>> ifFailedMatch);
 
-      IMatched<TResult> Map<TResult>(Func<T, IMatched<TResult>> ifMatched, Func<IMatched<TResult>> ifNotMatched,
+      public abstract IMatched<TResult> Map<TResult>(Func<T, IMatched<TResult>> ifMatched, Func<IMatched<TResult>> ifNotMatched,
          Func<Exception, IMatched<TResult>> ifFailedMatch);
 
-      TResult FlatMap<TResult>(Func<T, TResult> ifMatched, Func<TResult> ifNotMatched, Func<Exception, TResult> ifFailedMatch);
+      public abstract TResult FlatMap<TResult>(Func<T, TResult> ifMatched, Func<TResult> ifNotMatched, Func<Exception, TResult> ifFailedMatch);
 
-      TResult FlatMap<TResult>(Func<T, TResult> ifMatched, Func<TResult> ifNotOrFailed);
+      public abstract TResult FlatMap<TResult>(Func<T, TResult> ifMatched, Func<TResult> ifNotOrFailed);
 
-      IMatched<T> If(Action<T> action);
+      public abstract IMatched<T> If(Action<T> action);
 
-      IMatched<T> Else(Action action);
+      public abstract IMatched<T> Else(Action action);
 
-      IMatched<T> Else(Action<Exception> action);
+      public abstract IMatched<T> Else(Action<Exception> action);
 
-      IMatched<T> Do(Action<T> ifMatched, Action ifNotOrFailed);
+      public abstract IMatched<T> Do(Action<T> ifMatched, Action ifNotOrFailed);
 
-      IMatched<T> Do(Action<T> ifMatched, Action ifNotMatched, Action<Exception> ifFailedMatch);
+      public abstract IMatched<T> Do(Action<T> ifMatched, Action ifNotMatched, Action<Exception> ifFailedMatch);
 
-      IMatched<TOther> ExceptionAs<TOther>();
+      public abstract IMatched<TOther> ExceptionAs<TOther>();
 
-      IMatched<T> Or(IMatched<T> other);
+      public abstract IMatched<T> Or(IMatched<T> other);
 
-      IMatched<T> Or(Func<IMatched<T>> other);
+      public abstract IMatched<T> Or(Func<IMatched<T>> other);
 
-      IMatched<TResult> SelectMany<TResult>(Func<T, IMatched<TResult>> projection);
+      public abstract IMatched<TResult> SelectMany<TResult>(Func<T, IMatched<TResult>> projection);
 
-      IMatched<T2> SelectMany<T1, T2>(Func<T, IMatched<T1>> func, Func<T, T1, T2> projection);
+      public abstract IMatched<T2> SelectMany<T1, T2>(Func<T, IMatched<T1>> func, Func<T, T1, T2> projection);
 
-      IMatched<TResult> SelectMany<TResult>(Func<T, TResult> func);
+      public abstract IMatched<TResult> SelectMany<TResult>(Func<T, TResult> func);
 
-      IMatched<TResult> Select<TResult>(IMatched<T> result, Func<T, TResult> func);
+      public abstract IMatched<TResult> Select<TResult>(IMatched<T> result, Func<T, TResult> func);
 
-      bool If(out T value);
+      public abstract bool If(out T value);
 
-      bool IfNotMatched();
+      public abstract bool IfNotMatched();
 
-      bool Failed(out Exception exception);
+      public abstract bool Failed(out Exception exception);
 
-      bool ValueOrOriginal(out T value, out IMatched<T> original);
+      public abstract bool ValueOrOriginal(out T value, out IMatched<T> original);
 
-      bool ValueOrCast<TMatched>(out T value, out IMatched<TMatched> matched);
+      public abstract bool ValueOrCast<TMatched>(out T value, out IMatched<TMatched> matched);
 
-      bool If(out T value, out Maybe<Exception> exception);
+      public abstract bool If(out T value, out Maybe<Exception> exception);
 
-      bool IfNot(out Maybe<Exception> anyException);
+      public abstract bool IfNot(out Maybe<Exception> anyException);
 
-      bool Else<TOther>(out IMatched<TOther> result);
+      public abstract bool Else<TOther>(out IMatched<TOther> result);
 
-      IMatched<TOther> Unmatched<TOther>();
+      public abstract IMatched<TOther> Unmatched<TOther>();
 
-      bool WasMatched(out IMatched<T> matched);
+      public abstract bool WasMatched(out IMatched<T> matched);
 
-      void Force();
+      public abstract void Force();
 
-      T ForceValue();
+      public abstract T ForceValue();
 
-      IMatched<T> UnmatchedOnly();
+      public abstract IMatched<T> UnmatchedOnly();
 
-      IMatched<TOther> UnmatchedOnly<TOther>();
+      public abstract IMatched<TOther> UnmatchedOnly<TOther>();
 
-	   void Deconstruct(out Maybe<T> value, out Maybe<Exception> exception);
+      public abstract void Deconstruct(out Maybe<T> value, out Maybe<Exception> exception);
 
-      bool EqualToValueOf(IMatched<T> otherMatched);
+      public abstract bool EqualToValueOf(IMatched<T> otherMatched);
 
-      bool ValueEqualTo(T otherValue);
+      public abstract bool ValueEqualTo(T otherValue);
 
-      IMatched<TResult> CastAs<TResult>();
+      public abstract IMatched<TResult> CastAs<TResult>();
 
-      IMatched<T> Where(Predicate<T> predicate);
+      public abstract IMatched<T> Where(Predicate<T> predicate);
 
-      IMatched<T> Where(Predicate<T> predicate, string exceptionMessage);
+      public abstract IMatched<T> Where(Predicate<T> predicate, string exceptionMessage);
 
-      IMatched<T> Where(Predicate<T> predicate, Func<string> exceptionMessage);
+      public abstract IMatched<T> Where(Predicate<T> predicate, Func<string> exceptionMessage);
 
-      IMatched<T> ExceptionMessage(string message);
+      public abstract IMatched<T> ExceptionMessage(string message);
 
-      IMatched<T> ExceptionMessage(Func<Exception, string> message);
+      public abstract IMatched<T> ExceptionMessage(Func<Exception, string> message);
    }
 }
