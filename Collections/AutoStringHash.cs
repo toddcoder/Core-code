@@ -28,4 +28,28 @@ namespace Core.Collections
       {
       }
    }
+
+   public class AutoStringHash : AutoStringHash<string>
+   {
+      public AutoStringHash(bool ignoreCase) : base(ignoreCase)
+      {
+      }
+
+      public AutoStringHash(bool ignoreCase, int capacity) : base(ignoreCase, capacity)
+      {
+      }
+
+      public AutoStringHash(bool ignoreCase, IDictionary<string, string> dictionary) : base(ignoreCase, dictionary)
+      {
+      }
+
+      public AutoStringHash(bool ignoreCase, Func<string, string> defaultLambda, bool autoAddDefault = false) : base(ignoreCase, defaultLambda,
+         autoAddDefault)
+      {
+      }
+
+      public AutoStringHash(bool ignoreCase, string defaultValue, bool autoAddDefault = false) : base(ignoreCase, defaultValue, autoAddDefault)
+      {
+      }
+   }
 }

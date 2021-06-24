@@ -26,4 +26,19 @@ namespace Core.Collections
 
       public Hash<string, TValue> AsHash => this;
    }
+
+   public class StringHash : StringHash<string>
+   {
+      public StringHash(bool ignoreCase) : base(ignoreCase)
+      {
+      }
+
+      public StringHash(bool ignoreCase, int capacity) : base(ignoreCase, capacity)
+      {
+      }
+
+      public StringHash(bool ignoreCase, IDictionary<string, string> dictionary) : base(ignoreCase, dictionary)
+      {
+      }
+   }
 }

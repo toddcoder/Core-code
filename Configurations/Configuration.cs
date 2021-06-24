@@ -389,5 +389,17 @@ namespace Core.Configurations
       }
 
       public override string ToString() => root.ToString(true);
+
+      public Result<StringHash> ToStringHash()
+      {
+         try
+         {
+            return root.Values().ToHash(t => t.key, t => t.value).ToStringHash(true).Success();
+         }
+         catch (Exception exception)
+         {
+            return failure<StringHash>(exception);
+         }
+      }
    }
 }
