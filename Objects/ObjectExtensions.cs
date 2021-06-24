@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Core.Matching;
@@ -154,6 +155,46 @@ namespace Core.Objects
          {
             var formatter = new Formatter { ["object"] = obj?.ToString() ?? "", ["e"] = exception.Message };
             throw new ApplicationException(formatter.Format(message()));
+         }
+      }
+
+      public static IEnumerable<(PropertyInfo propertyInfo, TAttribute attribute)> PropertiesUsing<TAttribute>(this object obj, bool inherit = true)
+         where TAttribute : Attribute
+      {
+         if (obj is null)
+         {
+            yield break;
+         }
+
+         foreach (var propertyInfo in obj.GetType().GetProperties())
+         {
+            foreach (var userAttribute in propertyInfo.GetCustomAttributes(inherit))
+            {
+               if (userAttribute is TAttribute attribute)
+               {
+                  yield return (propertyInfo, attribute);
+               }
+            }
+         }
+      }
+
+      public static IEnumerable<(MethodInfo methodInfo, TAttribute attribute)> MethodsUsing<TAttribute>(this object obj, bool inherit = true)
+         where TAttribute : Attribute
+      {
+         if (obj is null)
+         {
+            yield break;
+         }
+
+         foreach (var methodInfo in obj.GetType().GetMethods())
+         {
+            foreach (var customAttribute in methodInfo.GetCustomAttributes(inherit))
+            {
+               if (customAttribute is TAttribute attribute)
+               {
+                  yield return (methodInfo, attribute);
+               }
+            }
          }
       }
    }

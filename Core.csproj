@@ -13,6 +13,7 @@
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
     <TargetFrameworkProfile />
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -66,6 +67,12 @@
     <Compile Include="Applications\CancelTasks.cs" />
     <Compile Include="Applications\CommandLine.cs" />
     <Compile Include="Applications\CommandLineInterface.cs" />
+    <Compile Include="Applications\CommandProcessing\CommandAttribute.cs" />
+    <Compile Include="Applications\CommandProcessing\CommandProcessor.cs" />
+    <Compile Include="Applications\CommandProcessing\CommandHelpAttribute.cs" />
+    <Compile Include="Applications\CommandProcessing\ShortCutAttribute.cs" />
+    <Compile Include="Applications\CommandProcessing\SwitchAttribute.cs" />
+    <Compile Include="Applications\CommandProcessing\SwitchHelpAttribute.cs" />
     <Compile Include="Applications\ConsoleFunctions.cs" />
     <Compile Include="Applications\ConsoleProgress.cs" />
     <Compile Include="Applications\ConvertArgs.cs" />
@@ -87,6 +94,7 @@
     <Compile Include="Applications\RetryArgs.cs" />
     <Compile Include="Applications\SpecialFirst.cs" />
     <Compile Include="Applications\User32.cs" />
+    <Compile Include="Applications\ValueRemainder.cs" />
     <Compile Include="Applications\VirtualKey.cs" />
     <Compile Include="Applications\WindowsFunctions.cs" />
     <Compile Include="Applications\Writers\ActionWriter.cs" />

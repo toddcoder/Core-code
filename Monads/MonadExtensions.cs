@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Core.Enumerables;
 using Core.Matching;
 using Core.Objects;
+using Core.Strings;
 using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
 
@@ -17,6 +18,8 @@ namespace Core.Monads
       public static Maybe<T> Some<T>(this T obj) => obj is null ? none<T>() : new Some<T>(obj);
 
       public static bool NotNull<T>(this T obj, out T value) => obj.Some().If(out value);
+
+      public static Maybe<string> SomeIfNotEmpty(this string text) => maybe(text.IsNotEmpty(), text.Some);
 
       public static Maybe<Type> UnderlyingType(this object obj)
       {
