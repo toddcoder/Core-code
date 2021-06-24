@@ -139,7 +139,7 @@ namespace Core.Applications.CommandProcessing
          var commandHelps = getCommandHelps().ToStringHash(t => t.methodName, t => (t.command, t.attribute), true);
          var switches = getSwitchAttributes()
             .Select(t => (switchName: t.attribute.Name, propertyName: t.propertyInfo.Name))
-            .ToStringHash(t => t.switchName, t => t.propertyName, true);
+            .ToStringHash(t => t.switchName, t => t.propertyName, false);
          var switchHelps = getSwitchHelpAttributes()
             .Select(t => (t.propertyInfo.Name, t.attribute))
             .ToStringHash(t => t.Name, t => t.attribute.HelpText, true);
