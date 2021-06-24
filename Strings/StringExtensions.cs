@@ -932,6 +932,8 @@ namespace Core.Strings
          return string.Compare(source, comparison, StringComparison.OrdinalIgnoreCase) == 0;
       }
 
+      public static bool AnySame(this string source, params string[] comparisons) => comparisons.Any(source.Same);
+
       public static bool IsGUID(this string source)
       {
          return !source.IsEmpty() && source.IsMatch("^ '{'? [/l /d]8 '-' [/l /d]4 '-' [/l /d]4 '-' [/l /d]4 '-' [/l /d]12 '}'? $; f");
@@ -1209,6 +1211,11 @@ namespace Core.Strings
          {
             return none<T>();
          }
+      }
+
+      public static Maybe<object> AsEnumeration(this string value, Type enumerationType, bool ignoreCase = true)
+      {
+         return value.Enumeration(enumerationType, ignoreCase).Maybe();
       }
 
       public static Result<object> Enumeration(this string value, Type enumerationType, bool ignoreCase = true)

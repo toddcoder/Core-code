@@ -1,6 +1,8 @@
 ﻿using System;
 using Core.Applications;
+using Core.Applications.CommandProcessing;
 using Core.Enumerables;
+using Core.Matching;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Core.Tests
@@ -150,6 +152,42 @@ namespace Core.Tests
       }
    }
 
+   internal class TestProgram : CommandProcessor
+   {
+      public TestProgram() : base("test")
+      {
+      }
+
+      [Command("find"), CommandHelp("Find text using pattern", "source", "pattern", "count?")]
+      public void Find()
+      {
+         if (Text.Matches(Pattern).If(out var result))
+         {
+            Console.WriteLine($"{Count}: {result.FirstMatch}");
+         }
+         else
+         {
+            Console.WriteLine("No match");
+         }
+      }
+
+      [Switch("source"), SwitchHelp("string")]
+      public string Text { get; set; }
+
+      [Switch("pattern"), ShortCut("p"), SwitchHelp("pattern")]
+      public string Pattern { get; set; }
+
+      [Switch("count"), ShortCut("c"), SwitchHelp("int")]
+      public int Count { get; set; }
+
+      public override void Initialize()
+      {
+         Text = string.Empty;
+         Pattern = string.Empty;
+         Count = 0;
+      }
+   }
+
    [TestClass]
    public class ApplicationTests
    {
@@ -233,6 +271,20 @@ namespace Core.Tests
          var resources = new Resources<ApplicationTests>();
          var result = resources.String("Tests.Foobar.txt");
          Console.WriteLine(result);
+      }
+
+      [TestMethod]
+      public void CommandProcessorTest()
+      {
+         var processor = new TestProgram();
+         processor.Run("find -p \"/(-/s+)\" -c 153 --source foobar");
+      }
+
+      [TestMethod]
+      public void CommandHelpTest()
+      {
+         var processor = new TestProgram();
+         processor.Run("help");
       }
    }
 }
