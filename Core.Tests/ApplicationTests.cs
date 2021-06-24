@@ -1,5 +1,6 @@
 ﻿using System;
 using Core.Applications;
+using Core.Applications.CommandProcessing;
 using Core.Enumerables;
 using Core.Matching;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -157,7 +158,7 @@ namespace Core.Tests
       {
       }
 
-      [Command("find")]
+      [Command("find"), CommandHelp("Find text using pattern", "source", "pattern", "count?")]
       public void Find()
       {
          if (Text.Matches(Pattern).If(out var result))
@@ -170,13 +171,13 @@ namespace Core.Tests
          }
       }
 
-      [Switch("source")]
+      [Switch("source"), SwitchHelp("string")]
       public string Text { get; set; }
 
-      [Switch("pattern", "p")]
+      [Switch("pattern"), ShortCut("p"), SwitchHelp("pattern")]
       public string Pattern { get; set; }
 
-      [Switch("count", "c")]
+      [Switch("count"), ShortCut("c"), SwitchHelp("int")]
       public int Count { get; set; }
 
       public override void Initialize()
@@ -277,6 +278,13 @@ namespace Core.Tests
       {
          var processor = new TestProgram();
          processor.Run("find -p \"/(-/s+)\" -c 153 --source foobar");
+      }
+
+      [TestMethod]
+      public void CommandHelpTest()
+      {
+         var processor = new TestProgram();
+         processor.Run("help");
       }
    }
 }

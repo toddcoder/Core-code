@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Core.Applications.Writers;
 using Core.Assertions;
+using Core.Collections;
 using Core.Computers;
 using Core.Enumerables;
 using Core.Matching;
@@ -11,7 +13,7 @@ using Core.Objects;
 using Core.Strings;
 using static Core.Monads.MonadFunctions;
 
-namespace Core.Applications
+namespace Core.Applications.CommandProcessing
 {
    public abstract class CommandProcessor : IDisposable
    {
@@ -71,7 +73,14 @@ namespace Core.Applications
 
       protected static Maybe<(string command, string rest)> splitCommandFromRest(string commandLine)
       {
-         return commandLine.Matches("^ /([/w '-']+) /s+ /(.+) $").Map(result => (result.FirstGroup, result.SecondGroup));
+         if (commandLine.IsMatch("^ 'help' $; f"))
+         {
+            return ("help", "").Some();
+         }
+         else
+         {
+            return commandLine.Matches("^ /([/w '-']+) /s+ /(.+) $; f").Map(result => (result.FirstGroup, result.SecondGroup));
+         }
       }
 
       public void Run(string commandLine)
@@ -80,30 +89,111 @@ namespace Core.Applications
          {
             Initialize();
             commandLine = removeExecutableFromCommandLine(commandLine);
-            if (splitCommandFromRest(commandLine).If(out var command, out var rest))
+            run(commandLine, true);
+         }
+         catch (Exception exception)
+         {
+            HandleException(exception);
+         }
+      }
+
+      private void run(string commandLine, bool seekCommandFile)
+      {
+         if (splitCommandFromRest(commandLine).If(out var command, out var rest))
+         {
+            if (command == "help")
             {
-               if (rest.IsEmpty())
+               generateHelp();
+            }
+            else if (rest.IsEmpty())
+            {
+               if (seekCommandFile)
                {
                   FileName file = @$"~\AppData\Local\{Application}\{command}.cli";
                   if (!file.Exists())
                   {
                      ExceptionWriter.WriteLine($"Command file {file} doesn't exist");
                   }
-               }
 
-               if (this.MethodsUsing<CommandAttribute>().FirstOrNone(t => command == t.attribute.Name).If(out var methodInfo, out _))
+                  var text = file.Text;
+                  run(text, false);
+               }
+               else
                {
-                  executeMethod(methodInfo, rest);
+                  ExceptionWriter.WriteLine($"No switches provided for {command}");
                }
             }
-            else
+            else if (this.MethodsUsing<CommandAttribute>().FirstOrNone(t => command == t.attribute.Name).If(out var methodInfo, out _))
             {
-               HandleException("Command couldn't be determined");
+               executeMethod(methodInfo, rest);
             }
          }
-         catch (Exception exception)
+         else
          {
-            HandleException(exception);
+            HandleException("Command couldn't be determined");
+         }
+      }
+
+      protected void generateHelp()
+      {
+         var commandHelps = getCommandHelps().ToStringHash(t => t.methodName, t => (t.command, t.attribute), true);
+         var switches = getSwitchAttributes()
+            .Select(t => (switchName: t.attribute.Name, propertyName: t.propertyInfo.Name))
+            .ToStringHash(t => t.switchName, t => t.propertyName, true);
+         var switchHelps = getSwitchHelpAttributes()
+            .Select(t => (t.propertyInfo.Name, t.attribute))
+            .ToStringHash(t => t.Name, t => t.attribute.HelpText, true);
+         var shortCuts = getShortCutAttributes()
+            .Select(t => (t.propertyInfo.Name, t.attribute))
+            .ToStringHash(t => t.Name, t => t.attribute.Name, true);
+
+         Console.WriteLine("Help");
+         foreach (var (methodInfo, commandHelpAttribute) in getCommandHelpAttributes())
+         {
+            if (commandHelps.If(methodInfo.Name, out var tuple))
+            {
+               Console.Write($"   {tuple.command}: {commandHelpAttribute.HelpText}");
+               foreach (var @switch in commandHelpAttribute.Switches)
+               {
+                  Console.Write(" ");
+                  var optional = @switch.EndsWith("?");
+                  var name = optional ? @switch.Drop(-1) : @switch;
+                  if (switches.If(name, out var propertyName))
+                  {
+                     if (optional)
+                     {
+                        Console.Write("[");
+                     }
+
+                     var _shortCut = shortCuts.Map(propertyName);
+
+                     if (_shortCut.IsSome)
+                     {
+                        Console.Write("(");
+                     }
+
+                     Console.Write(Prefix);
+                     Console.Write(name);
+
+                     if (_shortCut.If(out var shortCut))
+                     {
+                        Console.Write($" | {ShortCut}{shortCut})");
+                     }
+
+                     Console.Write(Suffix);
+                     if (switchHelps.If(propertyName, out var switchHelp))
+                     {
+                        Console.Write($"<{switchHelp}>");
+                     }
+
+                     if (optional)
+                     {
+                        Console.Write("]");
+                     }
+                  }
+               }
+               Console.WriteLine();
+            }
          }
       }
 
@@ -112,9 +202,39 @@ namespace Core.Applications
          return this.PropertiesUsing<SwitchAttribute>().ToArray();
       }
 
+      protected (PropertyInfo propertyInfo, ShortCutAttribute attribute)[] getShortCutAttributes()
+      {
+         return this.PropertiesUsing<ShortCutAttribute>().ToArray();
+      }
+
+      protected (MethodInfo methodInfo, CommandHelpAttribute attribute)[] getCommandHelpAttributes()
+      {
+         return this.MethodsUsing<CommandHelpAttribute>().ToArray();
+      }
+
+      protected (PropertyInfo propertyInfo, SwitchHelpAttribute attribute)[] getSwitchHelpAttributes()
+      {
+         return this.PropertiesUsing<SwitchHelpAttribute>().ToArray();
+      }
+
+      protected IEnumerable<(string methodName, string command, CommandHelpAttribute attribute)> getCommandHelps()
+      {
+         var commandHelpAttributes = getCommandHelpAttributes()
+            .Select(t => (t.methodInfo.Name, t.attribute))
+            .ToStringHash(t => t.Name, t => t.attribute, true);
+         foreach (var (methodInfo, commandAttribute) in this.MethodsUsing<CommandAttribute>())
+         {
+            if (commandHelpAttributes.If(methodInfo.Name, out var attribute))
+            {
+               yield return (methodInfo.Name, commandAttribute.Name, attribute);
+            }
+         }
+      }
+
       protected void executeMethod(MethodInfo methodInfo, string rest)
       {
          var switchAttributes = getSwitchAttributes();
+         var shortCutAttributes = getShortCutAttributes();
          while (rest.IsNotEmpty() && rest.Matches($"^ /s* /('{Prefix}' | '{ShortCut}') /([/w '-']+) '{Suffix}' /(.*) $").If(out var result))
          {
             var (prefix, name, value) = result;
@@ -122,7 +242,7 @@ namespace Core.Applications
             {
                rest = remainder;
             }
-            else if (fillFromShortCut(switchAttributes, prefix, name, value).If(out remainder))
+            else if (fillFromShortCut(shortCutAttributes, prefix, name, value).If(out remainder))
             {
                rest = remainder;
             }
@@ -151,13 +271,14 @@ namespace Core.Applications
          }
       }
 
-      protected Maybe<string> fillFromShortCut((PropertyInfo propertyInfo, SwitchAttribute attribute)[] switchAttributes, string prefix, string name,
+      protected Maybe<string> fillFromShortCut((PropertyInfo propertyInfo, ShortCutAttribute attribute)[] switchAttributes, string prefix,
+         string name,
          string value)
       {
          if (prefix == ShortCut)
          {
             return
-               from tuple in switchAttributes.FirstOrNone((_, a) => a.ShortCut.Map(s => s.Same(name)).DefaultTo(() => false))
+               from tuple in switchAttributes.FirstOrNone((_, a) => a.Name == name)
                from remainder in fillProperty(tuple.Item1, value)
                select remainder;
          }
@@ -288,6 +409,7 @@ namespace Core.Applications
             source = rest;
             remainder = string.Empty;
          }
+
          if (type == typeof(string))
          {
             return new ValueRemainder(source, remainder).Some();
