@@ -401,5 +401,9 @@ namespace Core.Configurations
             return failure<StringHash>(exception);
          }
       }
+
+      public IEnumerable<(string key, string value)> Values() => root.Values();
+
+      public IEnumerable<(string key, Group group)> Groups() => root.Groups();
    }
 }
