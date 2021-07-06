@@ -29,7 +29,11 @@ namespace Core.Configurations
       public override string ToString()
       {
          var value = Value.ReplaceAll(("\t", @"\t"), ("\r", @"\r"), ("\n", @"\n"), ("\\", @"\\"));
-         if (value.StartsWith(@"""") && value.EndsWith(@""""))
+         if (value.IsEmpty())
+         {
+            return $"{Key}: \"{value}\"";
+         }
+         else if (value.StartsWith(@"""") && value.EndsWith(@""""))
          {
             var innerValue = value.Drop(1).Drop(-1).Replace(@"""", @"\""");
             return $"{Key}: \"{innerValue}\"";

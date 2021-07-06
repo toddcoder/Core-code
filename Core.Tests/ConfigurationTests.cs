@@ -3,10 +3,12 @@ using System;
 using System.Linq;
 using Core.Applications;
 using Core.Assertions;
+using Core.Collections;
 using Core.Computers;
 using Core.Configurations;
 using Core.Enumerables;
 using Core.Monads;
+using static Core.Strings.StringFunctions;
 
 namespace Core.Tests
 {
@@ -249,6 +251,88 @@ namespace Core.Tests
          else
          {
             Console.WriteLine(exception.Message);
+         }
+      }
+
+      [TestMethod]
+      public void HashToConfigurationTest()
+      {
+         var hash = new StringHash(true)
+         {
+            ["alpha"] = "Alpha",
+            ["bravo"] = "Beta",
+            ["charlie"] = "Kappa",
+            ["delta"] = "Delta",
+            ["echo"] = "Eta",
+            ["foxtrot"] = "Phi"
+         };
+         if (hash.ToConfiguration().If(out var configuration, out var exception))
+         {
+            Console.WriteLine(configuration);
+         }
+         else
+         {
+            Console.WriteLine($"Exception: {exception.Message}");
+         }
+      }
+
+      [TestMethod]
+      public void SerializeStringHashTest()
+      {
+         var hash = new StringHash(true)
+         {
+            ["alpha"] = "Alpha",
+            ["bravo"] = "Beta",
+            ["charlie"] = "Kappa",
+            ["delta"] = "Delta",
+            ["echo"] = "Eta",
+            ["foxtrot"] = "Phi"
+         };
+         var _result =
+            from configuration in hash.ToConfiguration()
+            let file = (FileName)$@"C:\Temp\{uniqueID()}.txt"
+            from _ in file.TryTo.SetText(configuration.ToString())
+            from source in file.TryTo.Text
+            from configuration2 in Configuration.FromString(source)
+            from hash2 in configuration2.ToStringHash()
+            select hash2;
+         if (_result.If(out var result, out var exception))
+         {
+            foreach (var (key, value) in result)
+            {
+               Console.WriteLine($"{key}: {value}");
+            }
+         }
+         else
+         {
+            Console.WriteLine($"Exception: {exception.Message}");
+         }
+      }
+
+      [TestMethod]
+      public void EmptyStringItemTest()
+      {
+         var hash = new StringHash(true) { ["release"] = "", ["build"] = "http" };
+         if (hash.ToConfiguration().If(out var configuration, out var exception))
+         {
+            var source = configuration.ToString();
+            Console.WriteLine(source);
+            Console.WriteLine(configuration["release"]);
+            Console.WriteLine(configuration["build"]);
+
+            if (Configuration.FromString(source).If(out configuration, out exception))
+            {
+               Console.WriteLine(configuration["release"]);
+               Console.WriteLine(configuration["build"]);
+            }
+            else
+            {
+               Console.WriteLine($"Exception: {exception.Message}");
+            }
+         }
+         else
+         {
+            Console.WriteLine($"Exception: {exception.Message}");
          }
       }
    }

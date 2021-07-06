@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Core.Configurations;
 using Core.Exceptions;
 using Core.Monads;
 using Core.Strings;
 using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
+using static Core.Strings.StringFunctions;
 
 namespace Core.Collections
 {
@@ -65,6 +67,11 @@ namespace Core.Collections
          return new(hash.IgnoreCase, hash) { Default = DefaultType.Value, DefaultValue = defaultValue };
       }
 
+      public static AutoStringHash ToAutoStringHash(this StringHash hash, string defaultValue)
+      {
+         return new(hash.IgnoreCase, hash) { Default = DefaultType.Value, DefaultValue = defaultValue };
+      }
+
       public static AutoHash<TKey, TValue> ToAutoHash<TKey, TValue>(this Hash<TKey, TValue> hash,
          Func<TKey, TValue> defaultLambda)
       {
@@ -72,6 +79,11 @@ namespace Core.Collections
       }
 
       public static AutoStringHash<TValue> ToAutoStringHash<TValue>(this StringHash<TValue> hash, Func<string, TValue> defaultLambda)
+      {
+         return new(hash.IgnoreCase, hash) { Default = DefaultType.Lambda, DefaultLambda = defaultLambda };
+      }
+
+      public static AutoStringHash ToAutoStringHash(this StringHash hash, Func<string, string> defaultLambda)
       {
          return new(hash.IgnoreCase, hash) { Default = DefaultType.Lambda, DefaultLambda = defaultLambda };
       }
@@ -157,6 +169,11 @@ namespace Core.Collections
          return new(ignoreCase, dictionary);
       }
 
+      public static StringHash ToStringHash(this Dictionary<string, string> dictionary, bool ignoreCase)
+      {
+         return new(ignoreCase, dictionary);
+      }
+
       public static Hash<TKey, TValue> ToHash<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, IEqualityComparer<TKey> comparer)
       {
          return new(dictionary, comparer);
@@ -179,6 +196,18 @@ namespace Core.Collections
          foreach (var item in enumerable)
          {
             result[keySelector(item)] = item;
+         }
+
+         return result;
+      }
+
+      public static StringHash ToStringHash<TValue>(this IEnumerable<TValue> enumerable, Func<TValue, string> keySelector,
+         Func<TValue, string> valueSelector, bool ignoreCase)
+      {
+         var result = new StringHash(ignoreCase);
+         foreach (var item in enumerable)
+         {
+            result[keySelector(item)] = valueSelector(item);
          }
 
          return result;
@@ -416,5 +445,31 @@ namespace Core.Collections
       }
 
       public static IEnumerator<T> AsEnumerator<T>(this IEnumerable enumerable) => ((IEnumerable<T>)enumerable).GetEnumerator();
+
+      public static Result<Configuration> ToConfiguration<TKey, TValue>(this IHash<TKey, TValue> hash)
+      {
+         try
+         {
+            if (hash.AnyHash().ValueOrCast(out var internalHash, out Result<Configuration> asConfiguration))
+            {
+               var group = new Group(uniqueID());
+               foreach (var (key, value) in internalHash)
+               {
+                  var keyAsString = key.ToString();
+                  group[keyAsString] = new Item(keyAsString, value.ToString());
+               }
+
+               return new Configuration(group).Success();
+            }
+            else
+            {
+               return asConfiguration;
+            }
+         }
+         catch (Exception exception)
+         {
+            return failure<Configuration>(exception);
+         }
+      }
    }
 }
