@@ -308,5 +308,32 @@ namespace Core.Tests
             Console.WriteLine($"Exception: {exception.Message}");
          }
       }
+
+      [TestMethod]
+      public void EmptyStringItemTest()
+      {
+         var hash = new StringHash(true) { ["release"] = "", ["build"] = "http" };
+         if (hash.ToConfiguration().If(out var configuration, out var exception))
+         {
+            var source = configuration.ToString();
+            Console.WriteLine(source);
+            Console.WriteLine(configuration["release"]);
+            Console.WriteLine(configuration["build"]);
+
+            if (Configuration.FromString(source).If(out configuration, out exception))
+            {
+               Console.WriteLine(configuration["release"]);
+               Console.WriteLine(configuration["build"]);
+            }
+            else
+            {
+               Console.WriteLine($"Exception: {exception.Message}");
+            }
+         }
+         else
+         {
+            Console.WriteLine($"Exception: {exception.Message}");
+         }
+      }
    }
 }
