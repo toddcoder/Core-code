@@ -8,5 +8,10 @@ namespace Core.Collections
       {
          return ignoreCase ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal;
       }
+
+      public static StringComparison stringComparison(bool ignoreCase)
+      {
+         return ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+      }
    }
 }

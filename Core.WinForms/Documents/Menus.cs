@@ -12,12 +12,14 @@ namespace Core.WinForms.Documents
    public class Menus : IHash<string, ToolStripMenuItem>
    {
       protected StringHash<ToolStripItem> menuItems;
+      protected Hash<ToolStripItem, Func<string>> dynamicTextItems;
       protected StringHash<int> tabIndexes;
       protected int tabIndex;
 
       public Menus()
       {
          menuItems = new StringHash<ToolStripItem>(true);
+         dynamicTextItems = new Hash<ToolStripItem, Func<string>>();
          tabIndexes = new StringHash<int>(true);
          tabIndex = 0;
       }
@@ -69,8 +71,7 @@ namespace Core.WinForms.Documents
          }
       }
 
-      public void Menu(string parentText, string text, EventHandler handler, string shortcut = "", bool isChecked = false,
-         int index = -1)
+      public void Menu(string parentText, string text, EventHandler handler, string shortcut = "", bool isChecked = false, int index = -1)
       {
          var parent = getParent(parentText);
          var item = new ToolStripMenuItem(text) { Name = SubmenuName(parentText, text), Checked = isChecked };
@@ -84,6 +85,25 @@ namespace Core.WinForms.Documents
          {
             parent.DropDownItems.Insert(index, item);
          }
+      }
+
+      public void Menu(string parentText, Func<string> textFunc, EventHandler handler, string shortcut = "", bool isChecked = false, int index = -1)
+      {
+         var parent = getParent(parentText);
+         var text = textFunc();
+         var item = new ToolStripMenuItem(text) { Name = SubmenuName(parentText, text), Checked = isChecked };
+         item.Click += handler;
+         setShortcut(item, shortcut);
+         if (index == -1)
+         {
+            parent.DropDownItems.Add(item);
+         }
+         else
+         {
+            parent.DropDownItems.Insert(index, item);
+         }
+
+         dynamicTextItems[item] = textFunc;
       }
 
       public void AddHandler(string parentText, string text, EventHandler handler)
@@ -118,12 +138,26 @@ namespace Core.WinForms.Documents
       {
          var parent = getParent(parentText);
          var name = SubmenuName(parentText, text);
-         parent.DropDownItems.RemoveByKey(name);
+
+         var item = parent.DropDownItems[name];
+         if (item != null && dynamicTextItems.ContainsKey(item))
+         {
+            dynamicTextItems.Remove(item);
+         }
+
+         parent.DropDownItems.Remove(item);
       }
 
       public void RemoveMenu(string parentText, int index)
       {
          var parent = getParent(parentText);
+
+         var item = parent.DropDownItems[index];
+         if (item != null && dynamicTextItems.ContainsKey(item))
+         {
+            dynamicTextItems.Remove(item);
+         }
+
          parent.DropDownItems.RemoveAt(index);
       }
 
@@ -180,7 +214,7 @@ namespace Core.WinForms.Documents
 
       public void CreateContextMenu(Control control)
       {
-         var menuContext = new ContextMenuStrip { Name = "menuContext" + control.Name };
+         var menuContext = new ContextMenuStrip { Name = $"menuContext{control.Name}" };
          var items = getMenuItems();
          menuContext.Items.AddRange(items);
          control.ContextMenuStrip = menuContext;
@@ -206,5 +240,13 @@ namespace Core.WinForms.Documents
       public Result<Hash<string, ToolStripMenuItem>> AnyHash() => menuItems.ToHash(i => i.Key, i => (ToolStripMenuItem)i.Value).Success();
 
       public Maybe<Submenus> Submenus(string parentText) => this.Map(parentText, p => new Submenus(p));
+
+      public void RefreshText()
+      {
+         foreach (var (item, func) in dynamicTextItems)
+         {
+            item.Text = func();
+         }
+      }
    }
 }
