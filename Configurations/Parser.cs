@@ -8,7 +8,7 @@ namespace Core.Configurations
 {
    internal class Parser
    {
-      protected const string REGEX_KEY = "/(['$@']? [/w] [/w '-']*)";
+      protected const string REGEX_KEY = "/(['$@']? [/w '?'] [/w '-']*)";
 
       protected string source;
 
@@ -170,11 +170,13 @@ namespace Core.Configurations
             return "Open string".Failure<(string, string)>();
          }
 
+         string getKey(string keySource) => keySource == "?" ? $"__key_{StringFunctions.uniqueID()}" : keySource;
+
          while (source.Length > 0)
          {
             if (source.Matches($"^ /s* {REGEX_KEY} /s* '['; f").If(out var result))
             {
-               var key = result.FirstGroup;
+               var key = getKey(result.FirstGroup);
                var group = new Group(key);
                if (peekGroup().If(out var parentGroup))
                {
@@ -211,7 +213,7 @@ namespace Core.Configurations
             }
             else if (source.Matches($"^ /s* {REGEX_KEY} '.'; f").If(out result))
             {
-               var key = result.FirstGroup;
+               var key = getKey(result.FirstGroup);
                var group = new Group(key);
                if (peekGroup().If(out var parentGroup))
                {
@@ -230,7 +232,7 @@ namespace Core.Configurations
             }
             else if (source.Matches($"^ /s* {REGEX_KEY} ':' /s*; f").If(out result))
             {
-               var key = result.FirstGroup;
+               var key = getKey(result.FirstGroup);
                var remainder = source.Drop(result.Length);
                if (getString(source.Drop(result.Length)).If(out source, out var value))
                {
