@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using Core.Collections;
 using Core.Matching;
 using Core.Strings;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -86,6 +87,24 @@ namespace Core.Tests
          {
             Console.WriteLine($"<{text}>");
          }
+      }
+
+      [TestMethod]
+      public void FormatterTest()
+      {
+         var text = "Please refresh the DB on [{environment}] in preparation for {releaseType} {release} - deployment for testing";
+         var formatter = new Formatter { ["environment"] = "estream01ua", ["releaseType"] = "Patch", ["release"] = "r-6.24.0" };
+         var formatted = formatter.Format(text);
+         Console.WriteLine(formatted);
+
+         var replacements = new StringHash(true) { ["environment"] = "estream01ua", ["releaseType"] = "Patch", ["release"] = "r-6.24.0" };
+         formatter = new Formatter(replacements);
+         formatted = formatter.Format(text);
+         Console.WriteLine(formatted);
+
+         text = "no replacements";
+         formatted = formatter.Format(text);
+         Console.WriteLine(formatted);
       }
    }
 }
