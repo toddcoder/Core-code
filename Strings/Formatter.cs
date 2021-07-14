@@ -85,11 +85,11 @@ namespace Core.Strings
          }
       }
 
-      protected AutoStringHash<string> names;
+      protected AutoStringHash names;
 
-      public Formatter() => names = new AutoStringHash<string>(true, _ => "");
+      public Formatter() => names = new AutoStringHash(true, _ => "");
 
-      public Formatter(Dictionary<string, string> initializers) => names = new AutoStringHash<string>(true, initializers);
+      public Formatter(Dictionary<string, string> initializers) => names = new AutoStringHash(true, initializers);
 
       public Formatter(Formatter formatter)
       {
@@ -109,7 +109,7 @@ namespace Core.Strings
 
       public string[] Values => names.Select(item => item.Value).ToArray();
 
-      public Hash<string, string> Replacements => names;
+      public AutoStringHash Replacements => names;
 
       public virtual string Format(string source)
       {
