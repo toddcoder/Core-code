@@ -101,6 +101,10 @@ namespace Core.Tests
          formatter = new Formatter(replacements);
          formatted = formatter.Format(text);
          Console.WriteLine(formatted);
+
+         text = "no replacements";
+         formatted = formatter.Format(text);
+         Console.WriteLine(formatted);
       }
    }
 }

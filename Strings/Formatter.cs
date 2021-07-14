@@ -128,7 +128,7 @@ namespace Core.Strings
          }
          else
          {
-            return "";
+            return source;
          }
       }
 
