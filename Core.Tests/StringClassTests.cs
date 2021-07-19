@@ -106,5 +106,18 @@ namespace Core.Tests
          formatted = formatter.Format(text);
          Console.WriteLine(formatted);
       }
+
+      [TestMethod]
+      public void FormatterSlashTest()
+      {
+         var formatter = new Formatter { ["remedy"] = "CRQ26075" };
+         var text = "https://smartit.eprod.com/smartit/app/#/search/{remedy}";
+         var formattedText = formatter.Format(text);
+         Console.WriteLine(formattedText);
+
+         text = "https://smartit.eprod.com/smartit/app/#/search//{remedy}";
+         formattedText = formatter.Format(text);
+         Console.WriteLine(formattedText);
+      }
    }
 }

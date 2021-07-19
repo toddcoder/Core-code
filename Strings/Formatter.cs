@@ -5,14 +5,15 @@ using System.Linq;
 using Core.Assertions;
 using Core.Collections;
 using Core.Matching;
+using Core.Monads;
 using Core.Numbers;
 using static Core.Strings.StringFunctions;
 
 namespace Core.Strings
 {
-   public class Formatter
+   public class Formatter : IHash<string, string>
    {
-      protected const string REGEX_NAME = "-(< '//') '{' /([/w '-']+) /([',:']+ -['}']+)? '}'; fim";
+      protected const string REGEX_NAME = "/('//'0%2) '{' /([/w '-']+) /([',:']+ -['}']+)? '}'; fim";
 
       public static Formatter WithStandard(bool includeFolders)
       {
@@ -87,7 +88,7 @@ namespace Core.Strings
 
       protected AutoStringHash names;
 
-      public Formatter() => names = new AutoStringHash(true, _ => "");
+      public Formatter() => names = new AutoStringHash(true, _ => string.Empty);
 
       public Formatter(Dictionary<string, string> initializers) => names = new AutoStringHash(true, initializers);
 
@@ -105,6 +106,10 @@ namespace Core.Strings
          set => names[name] = value;
       }
 
+      public bool ContainsKey(string key) => names.ContainsKey(key);
+
+      public Result<Hash<string, string>> AnyHash() => names.Success<Hash<string, string>>();
+
       public string[] Names => names.Select(item => item.Key).ToArray();
 
       public string[] Values => names.Select(item => item.Value).ToArray();
@@ -113,18 +118,36 @@ namespace Core.Strings
 
       public virtual string Format(string source)
       {
-         if (source.IsNotEmpty() && source.Matches(REGEX_NAME).If(out var result))
+         if (source.IsNotEmpty())
          {
-            for (var i = 0; i < result.MatchCount; i++)
+            if (source.Matches(REGEX_NAME).If(out var result))
             {
-               var name = result[i, 1];
-               if (names.ContainsKey(name))
+               for (var i = 0; i < result.MatchCount; i++)
                {
-                  result[i] = getText(name, result[i, 2]);
-               }
-            }
+                  var match = result.GetMatch(i);
+                  var slashes = match.FirstGroup;
+                  var name = match.SecondGroup;
+                  var formatString = match.ThirdGroup;
 
-            return result.ToString().Replace("/{", "{");
+                  if (names.ContainsKey(name))
+                  {
+                     var text = getText(name, formatString);
+                     result[i] = slashes switch
+                     {
+                        "" => text,
+                        "/" => result[i].Drop(1),
+                        "//" => $"/{text}",
+                        _ => result[i]
+                     };
+                  }
+               }
+
+               return result.ToString();
+            }
+            else
+            {
+               return source;
+            }
          }
          else
          {
@@ -136,20 +159,16 @@ namespace Core.Strings
       {
          if (names.If(name, out var text))
          {
-            if (format.IsNotEmpty())
+            if (format.IsNotEmpty() && text.ToObject().If(out var obj))
             {
-               var anObject = text.ToObject();
-               if (anObject.If(out var obj))
-               {
-                  text = string.Format($"{{0{format}}}", obj);
-               }
+               text = string.Format($"{{0{format}}}", obj);
             }
 
             return text;
          }
          else
          {
-            return "";
+            return string.Empty;
          }
       }
 
