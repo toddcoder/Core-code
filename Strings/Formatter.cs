@@ -13,8 +13,7 @@ namespace Core.Strings
 {
    public class Formatter : IHash<string, string>
    {
-      protected const string REGEX_NAME = "-(< '//') '{' /([/w '-']+) /([',:']+ -['}']+)? '}'; fim";
-      protected const string ALT_REGEX_NAME = "'////{' /([/w '-']+) /([',:']+ -['}']+)? '}'; fim";
+      protected const string REGEX_NAME = "/('//'0%2) '{' /([/w '-']+) /([',:']+ -['}']+)? '}'; fim";
 
       public static Formatter WithStandard(bool includeFolders)
       {
@@ -76,10 +75,6 @@ namespace Core.Strings
             {
                return 0.Until(result.MatchCount).Select(i => result[i, 1]).ToArray();
             }
-            else if (source.Matches(ALT_REGEX_NAME).If(out result))
-            {
-               return 0.Until(result.MatchCount).Select(i => result[i, 1]).ToArray();
-            }
             else
             {
                return new string[0];
@@ -129,27 +124,25 @@ namespace Core.Strings
             {
                for (var i = 0; i < result.MatchCount; i++)
                {
-                  var name = result[i, 1];
+                  var match = result.GetMatch(i);
+                  var slashes = match.FirstGroup;
+                  var name = match.SecondGroup;
+                  var formatString = match.ThirdGroup;
+
                   if (names.ContainsKey(name))
                   {
-                     result[i] = getText(name, result[i, 2]);
+                     var text = getText(name, formatString);
+                     result[i] = slashes switch
+                     {
+                        "" => text,
+                        "/" => result[i].Drop(1),
+                        "//" => $"/{text}",
+                        _ => result[i]
+                     };
                   }
                }
 
-               return result.ToString().Replace("/{", "{");
-            }
-            else if (source.Matches(ALT_REGEX_NAME).If(out result))
-            {
-               for (var i = 0; i < result.MatchCount; i++)
-               {
-                  var name = result[i, 1];
-                  if (names.ContainsKey(name))
-                  {
-                     result[i] = $"/{getText(name, result[i, 2])}";
-                  }
-               }
-
-               return result.ToString().Replace("/{", "{");
+               return result.ToString();
             }
             else
             {
