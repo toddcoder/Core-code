@@ -119,5 +119,16 @@ namespace Core.Tests
          formattedText = formatter.Format(text);
          Console.WriteLine(formattedText);
       }
+
+      [TestMethod]
+      public void SourceLineTest()
+      {
+         var text = "alpha\rbravo\rcharlie\n\ndelta\r\necho";
+         var source = new Source(text);
+         while (source.NextLine().If(out var line))
+         {
+            Console.WriteLine($"'{line}'");
+         }
+      }
    }
 }

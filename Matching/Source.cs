@@ -22,6 +22,31 @@ namespace Core.Matching
 
       public string Current => source.Drop(index);
 
+      public Maybe<string> NextLine()
+      {
+         if (More)
+         {
+            var current = Current;
+            string line;
+            if (current.Matches("^ /(.*?) (/r /n | /r | /n); fm").If(out var result))
+            {
+               line = result.FirstGroup;
+                Advance(result.Length);
+            }
+            else
+            {
+               line = current;
+               Advance(line.Length);
+            }
+
+            return line.Some();
+         }
+         else
+         {
+            return none<string>();
+         }
+      }
+
       public bool More => index < length;
 
       public int Index => index;
