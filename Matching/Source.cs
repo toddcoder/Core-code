@@ -7,6 +7,7 @@ namespace Core.Matching
 {
    public class Source
    {
+      protected const string REGEX_NEXT_LINE = "^ /(.*?) (/r /n | /r | /n); fm";
       protected string source;
       protected int index;
       protected int length;
@@ -22,16 +23,37 @@ namespace Core.Matching
 
       public string Current => source.Drop(index);
 
+      public Maybe<string> NextLine(Pattern pattern)
+      {
+         if (More)
+         {
+            var current = Current;
+            if (current.IsMatch(pattern) && current.Matches(REGEX_NEXT_LINE).If(out var result))
+            {
+               Advance(result.Length);
+               return result.FirstGroup.Some();
+            }
+            else
+            {
+               return none<string>();
+            }
+         }
+         else
+         {
+            return none<string>();
+         }
+      }
+
       public Maybe<string> NextLine()
       {
          if (More)
          {
             var current = Current;
             string line;
-            if (current.Matches("^ /(.*?) (/r /n | /r | /n); fm").If(out var result))
+            if (current.Matches(REGEX_NEXT_LINE).If(out var result))
             {
                line = result.FirstGroup;
-                Advance(result.Length);
+               Advance(result.Length);
             }
             else
             {

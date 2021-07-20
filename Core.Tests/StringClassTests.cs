@@ -130,5 +130,29 @@ namespace Core.Tests
             Console.WriteLine($"'{line}'");
          }
       }
+
+      [TestMethod]
+      public void SourceLine2Test()
+      {
+         var text = ":alpha\n:bravo\n-charlie\n-delta\n-echo\nfoxtrot";
+         var source = new Source(text);
+
+         while (source.NextLine("^ ':'").If(out var line))
+         {
+            Console.WriteLine($": -> '{line}'");
+         }
+         Console.WriteLine("========");
+
+         while (source.NextLine("^ '-'").If(out var line))
+         {
+            Console.WriteLine($"- -> '{line}'");
+         }
+         Console.WriteLine("========");
+
+         while (source.NextLine().If(out var line))
+         {
+            Console.WriteLine($"  -> '{line}'");
+         }
+      }
    }
 }
