@@ -44,6 +44,24 @@ namespace Core.Matching
          }
       }
 
+      public Maybe<(MatchResult result, string line)> NextLineMatch(Pattern pattern)
+      {
+         if (More)
+         {
+            var (line, lineLength) = Current.Matches(REGEX_NEXT_LINE)
+               .Map(result => (result.FirstGroup, result.Length))
+               .DefaultTo(() => (Current, Current.Length));
+
+            if (line.Matches(pattern).If(out var lineResult))
+            {
+               Advance(lineLength);
+               return (lineResult, line).Some();
+            }
+         }
+
+         return none<(MatchResult, string)>();
+      }
+
       public Maybe<string> NextLine()
       {
          if (More)
