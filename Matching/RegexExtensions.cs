@@ -181,9 +181,9 @@ namespace Core.Matching
          }
       }
 
-      public static Pattern Matcher(this string pattern, bool ignoreCase, bool multiline, bool friendly)
+      public static Pattern Pattern(this string pattern, bool ignoreCase, bool multiline, bool friendly)
       {
-         if (!ignoreCase && !multiline && Pattern.IsFriendly)
+         if (!ignoreCase && !multiline && Matching.Pattern.IsFriendly)
          {
             return pattern;
          }
@@ -197,7 +197,18 @@ namespace Core.Matching
 
       public static string Escape(this string input)
       {
-         return Pattern.IsFriendly ? input.Replace("/", "//") : RRegex.Escape(input).Replace("]", @"\]");
+         return Matching.Pattern.IsFriendly ? input.Replace("/", "//") : RRegex.Escape(input).Replace("]", @"\]");
+      }
+
+      public static IEnumerable<Match> AllMatches(this string input, Pattern pattern)
+      {
+         if (input.Matches(pattern).If(out var result))
+         {
+            foreach (var match in result)
+            {
+               yield return match;
+            }
+         }
       }
    }
 }
