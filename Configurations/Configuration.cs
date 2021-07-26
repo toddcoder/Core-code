@@ -314,6 +314,8 @@ namespace Core.Configurations
 
       public Maybe<string> GetValue(string key) => root.GetValue(key);
 
+      public string[] GetArray(string key) => GetValue(key).Map(s => s.Split("/s* ',' /s*; f")).DefaultTo(() => new[] { key });
+
       public Result<string> RequireValue(string key) => root.RequireValue(key);
 
       public Maybe<Group> GetGroup(string key) => root.GetGroup(key);
