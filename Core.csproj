@@ -331,7 +331,7 @@
     <Compile Include="Matching\Group.cs" />
     <Compile Include="Matching\Match.cs" />
     <Compile Include="Matching\Pattern.cs" />
-    <Compile Include="Matching\RegexExtensions.cs" />
+    <Compile Include="Matching\MatchingExtensions.cs" />
     <Compile Include="Matching\MatchResult.cs" />
     <Compile Include="Matching\Scraper.cs" />
     <Compile Include="Matching\Source.cs" />

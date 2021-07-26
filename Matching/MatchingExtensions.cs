@@ -8,7 +8,7 @@ using RRegex = System.Text.RegularExpressions.Regex;
 
 namespace Core.Matching
 {
-   public static class RegexExtensions
+   public static class MatchingExtensions
    {
       public static bool IsMatch(this string input, Pattern pattern)
       {
