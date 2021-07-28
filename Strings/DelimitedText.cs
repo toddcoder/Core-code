@@ -29,6 +29,14 @@ namespace Core.Strings
          return new DelimitedText(beginPattern, exceptPattern);
       }
 
+      public static DelimitedText AsFriendlyPattern()
+      {
+         Pattern beginPattern = "^ [squote]; f";
+         Pattern exceptPattern = "^ '//' [squote]; f";
+
+         return new DelimitedText(beginPattern, exceptPattern);
+      }
+
       public static DelimitedText AsBasic()
       {
          Pattern beginPattern = "^ [dquote]; f";

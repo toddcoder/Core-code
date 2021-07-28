@@ -13,7 +13,7 @@ namespace Core.Strings
 {
    public class Formatter : IHash<string, string>
    {
-      protected const string REGEX_NAME = "/('//'0%2) '{' /([/w '-']+) /([',:']+ -['}']+)? '}'; fim";
+      protected const string REGEX_NAME = "/('//'0%2) '{' /([/w '.-']+) /([',:']+ -['}']+)? '}'; fim";
 
       public static Formatter WithStandard(bool includeFolders)
       {

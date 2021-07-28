@@ -10,7 +10,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Core.Tests
 {
    [TestClass]
-   public class RegexTests
+   public class MatchingTests
    {
       [TestMethod]
       public void MatcherTest()

@@ -12,7 +12,7 @@ using Core.Objects;
 using Core.Strings;
 using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
-using static Core.Matching.RegexExtensions;
+using static Core.Matching.MatchingExtensions;
 
 namespace Core.Configurations
 {
@@ -76,7 +76,7 @@ namespace Core.Configurations
          string sourceWithoutQuotes()
          {
             var withoutQuotes = source.StartsWith(@"""") && source.EndsWith(@"""") ? source.Drop(1).Drop(-1) : source;
-            var unescaped = withoutQuotes.ReplaceAll(("/tb/", "\t"), ("/cr/", "\r"), ("/lf/", "\n"), ("/bs/", "\\"));
+            var unescaped = withoutQuotes.ReplaceAll(("`t", "\t"), ("`r", "\r"), ("`", "\n"), ("``", "`"));
             return unescaped;
          }
 
@@ -164,7 +164,7 @@ namespace Core.Configurations
       {
          static string encloseInQuotes(string text)
          {
-            var escaped = text.ReplaceAll(("\t", "/tb/"), ("\r", "/cr/"), ("\n", "/lf/"), ("\\", "/bs/"));
+            var escaped = text.ReplaceAll(("`", "``"), ("\t", "`t"), ("\r", "`r"), ("\n", "`n"));
             return $"\"{escaped}\"";
          }
 
@@ -313,6 +313,8 @@ namespace Core.Configurations
       public IConfigurationItem this[string key] => root[key];
 
       public Maybe<string> GetValue(string key) => root.GetValue(key);
+
+      public string[] GetArray(string key) => GetValue(key).Map(s => s.Split("/s* ',' /s*; f")).DefaultTo(() => new[] { key });
 
       public Result<string> RequireValue(string key) => root.RequireValue(key);
 

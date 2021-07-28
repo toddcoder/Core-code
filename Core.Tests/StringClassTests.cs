@@ -4,6 +4,7 @@ using Core.Collections;
 using Core.Matching;
 using Core.Strings;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static Core.Monads.MonadExtensions;
 
 namespace Core.Tests
 {
@@ -118,6 +119,54 @@ namespace Core.Tests
          text = "https://smartit.eprod.com/smartit/app/#/search//{remedy}";
          formattedText = formatter.Format(text);
          Console.WriteLine(formattedText);
+      }
+
+      [TestMethod]
+      public void SourceLineTest()
+      {
+         var text = "alpha\rbravo\rcharlie\n\ndelta\r\necho";
+         var source = new Source(text);
+         while (source.NextLine().If(out var line))
+         {
+            Console.WriteLine($"'{line}'");
+         }
+      }
+
+      [TestMethod]
+      public void SourceLine2Test()
+      {
+         var text = ":alpha\n:bravo\n-charlie\n-delta\n-echo\nfoxtrot";
+         var source = new Source(text);
+
+         while (source.NextLine("^ ':'").If(out var line))
+         {
+            Console.WriteLine($": -> '{line}'");
+         }
+         Console.WriteLine("========");
+
+         while (source.NextLine("^ '-'").If(out var line))
+         {
+            Console.WriteLine($"- -> '{line}'");
+         }
+         Console.WriteLine("========");
+
+         while (source.NextLine().If(out var line))
+         {
+            Console.WriteLine($"  -> '{line}'");
+         }
+      }
+
+      [TestMethod]
+      public void SourceLine3Test()
+      {
+         var text = "[a -> alpha]This is line 1\n[b -> bravo]This is line 2\n[c -> charlie]This is line 3";
+         var source = new Source(text);
+         while (source.NextLineMatch("^ '[' /(/w) /s* '->' /s* /(/w+) ']'").If(out var result, out var line))
+         {
+            var (tag, value) = result;
+            var remainder = line.Drop(result.Length);
+            Console.WriteLine($"[ {tag} -> {value} ] {remainder}");
+         }
       }
    }
 }

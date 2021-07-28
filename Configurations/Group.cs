@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Core.Collections;
+using Core.Matching;
 using Core.Monads;
 using Core.Strings;
 using static Core.Monads.MonadFunctions;
@@ -29,6 +29,8 @@ namespace Core.Configurations
       }
 
       public Maybe<string> GetValue(string key) => items.Map(key).Map(i => i.GetValue(key));
+
+      public string[] GetArray(string key) => GetValue(key).Map(s => s.Split("/s* ',' /s*; f")).DefaultTo(() => new[] { key });
 
       public Result<string> RequireValue(string key) => items.Require(key).Map(i => i.RequireValue(key));
 

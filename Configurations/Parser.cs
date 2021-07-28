@@ -3,6 +3,7 @@ using Core.DataStructures;
 using Core.Matching;
 using Core.Monads;
 using Core.Strings;
+using static Core.Strings.StringFunctions;
 
 namespace Core.Configurations
 {
@@ -94,10 +95,10 @@ namespace Core.Configurations
                var current = source[i];
                switch (current)
                {
-                  case '\\':
+                  case '`':
                      if (escaped)
                      {
-                        builder.Append(@"\");
+                        builder.Append("`");
                         escaped = false;
                      }
                      else
@@ -170,7 +171,7 @@ namespace Core.Configurations
             return "Open string".Failure<(string, string)>();
          }
 
-         string getKey(string keySource) => keySource == "?" ? $"__key_{StringFunctions.uniqueID()}" : keySource;
+         static string getKey(string keySource) => keySource == "?" ? $"__key_{uniqueID()}" : keySource;
 
          while (source.Length > 0)
          {

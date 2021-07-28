@@ -28,7 +28,7 @@ namespace Core.Configurations
 
       public override string ToString()
       {
-         var value = Value.ReplaceAll(("\t", @"\t"), ("\r", @"\r"), ("\n", @"\n"), ("\\", @"\\"));
+         var value = Value.ReplaceAll(("\t", @"`t"), ("\r", @"`r"), ("\n", @"`n"));
          if (value.IsEmpty())
          {
             return $"{Key}: \"{value}\"";

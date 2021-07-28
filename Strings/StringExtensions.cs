@@ -1586,7 +1586,8 @@ namespace Core.Strings
 
       public static Maybe<double> ExtractDouble(this string source)
       {
-         return maybe(source.IsNotEmpty(), () => source.Matches("/(['+-']? /d* '.' /d* (['eE'] ['-+']? /d+)?); f")).Map(result => result[0, 1].ToDouble());
+         return maybe(source.IsNotEmpty(), () => source.Matches("/(['+-']? /d* '.' /d* (['eE'] ['-+']? /d+)?); f"))
+            .Map(result => result[0, 1].ToDouble());
       }
 
       public static Maybe<char> First(this string source) => maybe(source.IsNotEmpty(), () => source[0]);
@@ -1974,6 +1975,8 @@ namespace Core.Strings
 
          return source;
       }
+
+      public static string DropKeep(this string source, Slice slice) => source.Drop(slice.Index).Keep(slice.Length);
 
       public static string Map(this string source, Func<string, string> func)
       {
