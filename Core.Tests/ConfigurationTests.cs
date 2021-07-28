@@ -194,7 +194,7 @@ namespace Core.Tests
       public void DeserializationTest()
       {
          var source = @"enum: Bravo; intValue: 153; stringValue: foobar; file: C:\temp\temp.txt; doubles: 1.0, 5.0, 3.0; isTrue: true; " +
-            @"escape: ""\r \t \\ foobar""";
+            @"escape: ""`r `t \ foobar""";
          if (Configuration.FromString(source).If(out var configuration, out var exception))
          {
             if (configuration.Deserialize<Test>().If(out var obj, out exception))

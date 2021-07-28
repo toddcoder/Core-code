@@ -76,7 +76,7 @@ namespace Core.Configurations
          string sourceWithoutQuotes()
          {
             var withoutQuotes = source.StartsWith(@"""") && source.EndsWith(@"""") ? source.Drop(1).Drop(-1) : source;
-            var unescaped = withoutQuotes.ReplaceAll(("/tb/", "\t"), ("/cr/", "\r"), ("/lf/", "\n"), ("/bs/", "\\"));
+            var unescaped = withoutQuotes.ReplaceAll(("`t", "\t"), ("`r", "\r"), ("`", "\n"), ("``", "`"));
             return unescaped;
          }
 
@@ -164,7 +164,7 @@ namespace Core.Configurations
       {
          static string encloseInQuotes(string text)
          {
-            var escaped = text.ReplaceAll(("\t", "/tb/"), ("\r", "/cr/"), ("\n", "/lf/"), ("\\", "/bs/"));
+            var escaped = text.ReplaceAll(("`", "``"), ("\t", "`t"), ("\r", "`r"), ("\n", "`n"));
             return $"\"{escaped}\"";
          }
 
