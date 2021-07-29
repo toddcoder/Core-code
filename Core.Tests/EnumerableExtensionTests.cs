@@ -95,5 +95,32 @@ namespace Core.Tests
          var right2 = array(5, 3, 1, 3);
          left.AllMatch(right2, (s, i) => s.Length == i).Must().BeTrue().OrThrow();
       }
+
+      [TestMethod]
+      public void IntegerEnumerableTest1()
+      {
+         foreach (var i in 10.Times())
+         {
+            Console.Write($"{i,3}");
+         }
+      }
+
+      [TestMethod]
+      public void IntegerEnumerableTest2()
+      {
+         foreach (var i in 10.To(20))
+         {
+            Console.Write($"{i,3}");
+         }
+      }
+
+      [TestMethod]
+      public void IntegerEnumerableTest3()
+      {
+         foreach (var i in 20.To(10).By(2))
+         {
+            Console.Write($"{i,3}");
+         }
+      }
    }
 }

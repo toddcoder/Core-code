@@ -241,6 +241,7 @@
     <Compile Include="Enumerables\DateTimeRange.cs" />
     <Compile Include="Enumerables\EnumerableExtensions.cs" />
     <Compile Include="Enumerables\Int32Range.cs" />
+    <Compile Include="Enumerables\IntegerEnumerable.cs" />
     <Compile Include="Enumerables\IntIterator.cs" />
     <Compile Include="Enumerables\Iterator.cs" />
     <Compile Include="Enumerables\Range.cs" />

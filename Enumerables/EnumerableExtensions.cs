@@ -1300,5 +1300,9 @@ namespace Core.Enumerables
       public static Set<T> ToSet<T>(this IEnumerable<T> enumerable) => new(enumerable);
 
       public static StringSet ToStringSet(this IEnumerable<string> enumerable, bool ignoreCase) => new(ignoreCase, enumerable);
+
+      public static IntegerEnumerable Times(this int size) => new(size);
+
+      public static IntegerEnumerable To(this int start, int stop) => new IntegerEnumerable(stop).From(start);
    }
 }
