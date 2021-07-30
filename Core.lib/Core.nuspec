@@ -8,7 +8,7 @@
     <owners>Enterprise Products</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Common core code</description>
-    <releaseNotes>new IntegerEnumerable class</releaseNotes>
+    <releaseNotes>new Markup Assembly with Rtf</releaseNotes>
     <copyright>Copyright 2021</copyright>
     <tags>Core Async Types Monads Strings WinForms Internet Io Data Regex</tags>
   </metadata>
