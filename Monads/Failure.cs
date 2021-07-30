@@ -70,16 +70,16 @@ namespace Core.Monads
       [DebuggerStepThrough]
       public override T Recover(Func<Exception, T> recovery) => recovery(exception);
 
-      [DebuggerStepThrough]
+      [DebuggerStepThrough, Obsolete("Use |")]
       public override Result<T> Or(Result<T> other) => other;
 
-      [DebuggerStepThrough]
+      [DebuggerStepThrough, Obsolete("Use |")]
       public override Result<T> Or(Func<Result<T>> other) => tryTo(other);
 
-      [DebuggerStepThrough]
+      [DebuggerStepThrough, Obsolete("Use |")]
       public override Result<T> Or(T other) => other.Success();
 
-      [DebuggerStepThrough]
+      [DebuggerStepThrough, Obsolete("Use |")]
       public override Result<T> Or(Func<T> other) => tryTo(other);
 
       public override Result<Unit> Unit => failure<Unit>(exception);

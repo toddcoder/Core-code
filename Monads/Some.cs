@@ -28,12 +28,16 @@ namespace Core.Monads
 
       public override Result<T> Result(string message) => value.Success();
 
+      [Obsolete("Use |")]
       public override Maybe<T> Or(Maybe<T> other) => this;
 
+      [Obsolete("Use |")]
       public override Maybe<T> Or(Func<Maybe<T>> other) => this;
 
+      [Obsolete("Use |")]
       public override Maybe<T> Or(Func<T> other) => this;
 
+      [Obsolete("Use |")]
       public override Maybe<T> Or(T other) => this;
 
       public override bool If(out T value)

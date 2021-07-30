@@ -4,6 +4,22 @@ namespace Core.Monads
 {
    public abstract class Maybe<T>
    {
+      public static Maybe<T> operator |(Maybe<T> left, Maybe<T> right)
+      {
+         if (left.IsSome)
+         {
+            return left;
+         }
+         else if (right.IsSome)
+         {
+            return right;
+         }
+         else
+         {
+            return new None<T>();
+         }
+      }
+
       public abstract bool IsSome { get; }
 
       public abstract bool IsNone { get; }
@@ -18,12 +34,16 @@ namespace Core.Monads
 
       public abstract Result<T> Result(string message);
 
+      [Obsolete("Use |")]
       public abstract Maybe<T> Or(Maybe<T> other);
 
+      [Obsolete("Use |")]
       public abstract Maybe<T> Or(Func<Maybe<T>> other);
 
+      [Obsolete("Use |")]
       public abstract Maybe<T> Or(Func<T> other);
 
+      [Obsolete("Use |")]
       public abstract Maybe<T> Or(T other);
 
       public abstract bool If(out T value);
