@@ -108,16 +108,16 @@ namespace Core.Monads
       [DebuggerStepThrough]
       public override T Recover(Func<Exception, T> recovery) => value;
 
-      [DebuggerStepThrough]
+      [DebuggerStepThrough, Obsolete("Use |")]
       public override Result<T> Or(Result<T> other) => this;
 
-      [DebuggerStepThrough]
+      [DebuggerStepThrough, Obsolete("Use |")]
       public override Result<T> Or(Func<Result<T>> other) => this;
 
-      [DebuggerStepThrough]
+      [DebuggerStepThrough, Obsolete("Use |")]
       public override Result<T> Or(T other) => this;
 
-      [DebuggerStepThrough]
+      [DebuggerStepThrough, Obsolete("Use |")]
       public override Result<T> Or(Func<T> other) => this;
 
       public override Result<Unit> Unit => Monads.Unit.Success();

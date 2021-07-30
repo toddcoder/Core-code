@@ -4,6 +4,8 @@ namespace Core.Monads
 {
    public abstract class Completion<T>
    {
+      public static implicit operator Completion<T>(T value) => value.Completed();
+
       public abstract Completion<TResult> Map<TResult>(Func<T, Completion<TResult>> ifCompleted);
 
       public abstract Completion<TResult> Map<TResult>(Func<T, TResult> ifCompleted);

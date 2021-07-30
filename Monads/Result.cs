@@ -5,6 +5,24 @@ namespace Core.Monads
 {
    public abstract class Result<T>
    {
+      public static Result<T> operator |(Result<T> left, Result<T> right)
+      {
+         if (left.IsSuccessful)
+         {
+            return left;
+         }
+         else if (right.IsSuccessful)
+         {
+            return right;
+         }
+         else
+         {
+            return left;
+         }
+      }
+
+      public static implicit operator Result<T>(T value) => value.Success();
+
       public abstract bool If(out T value, out Exception exception);
 
       public abstract bool ValueOrOriginal(out T value, out Result<T> original);
@@ -29,12 +47,16 @@ namespace Core.Monads
 
       public abstract T Recover(Func<Exception, T> recovery);
 
+      [Obsolete("Use |")]
       public abstract Result<T> Or(Result<T> other);
 
+      [Obsolete("Use |")]
       public abstract Result<T> Or(Func<Result<T>> other);
 
+      [Obsolete("Use |")]
       public abstract Result<T> Or(T other);
 
+      [Obsolete("Use |")]
       public abstract Result<T> Or(Func<T> other);
 
       public abstract Result<Unit> Unit { get; }

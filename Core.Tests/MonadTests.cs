@@ -7,6 +7,7 @@ using Core.Monads;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Core.Applications.Async.AsyncFunctions;
 using static Core.Lambdas.LambdaFunctions;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Tests
 {
@@ -23,7 +24,7 @@ namespace Core.Tests
 
       public async Task<Completion<long>> CountAsync(CancellationTokenSource source)
       {
-         return await runAsync(t =>
+         return await runAsync(_ =>
          {
             long result = 0;
 
@@ -105,11 +106,11 @@ namespace Core.Tests
          }
       }
 
-      protected static async Task<Completion<int>> getOne(CancellationToken token) => await runAsync(t => 1.Completed(), token);
+      protected static async Task<Completion<int>> getOne(CancellationToken token) => await runAsync(_ => 1.Completed(), token);
 
-      protected static async Task<Completion<int>> getTwo(CancellationToken token) => await runAsync(t => 2.Completed(), token);
+      protected static async Task<Completion<int>> getTwo(CancellationToken token) => await runAsync(_ => 2.Completed(), token);
 
-      protected static async Task<Completion<int>> getThree(CancellationToken token) => await runAsync(t => 3.Completed(), token);
+      protected static async Task<Completion<int>> getThree(CancellationToken token) => await runAsync(_ => 3.Completed(), token);
 
       [TestMethod]
       public void RunAsyncTest()
@@ -180,6 +181,53 @@ namespace Core.Tests
          {
             Console.WriteLine(text);
          }
+      }
+
+      [TestMethod]
+      public void MaybeOrTest()
+      {
+         var some1 = 1.Some();
+         var some2 = 2.Some();
+         var none = none<int>();
+
+         var or1 = some1 | none;
+         var or2 = none | some2;
+         var or3 = none | none;
+         var or4 = some1 | some2;
+         var or5 = some2 | some1;
+
+         Console.WriteLine($"some1 | none  = {or1}");
+         Console.WriteLine($"none  | some2 = {or2}");
+         Console.WriteLine($"none  | none  = {or3}");
+         Console.WriteLine($"some1 | some2 = {or4}");
+         Console.WriteLine($"some2 | some1 = {or5}");
+      }
+
+      [TestMethod]
+      public void ResultOrTest()
+      {
+         var success1 = 1.Success();
+         var success2 = 2.Success();
+         var failure = "Divide by zero".Failure<int>();
+
+         var or1 = success1 | failure;
+         var or2 = failure | success2;
+         var or3 = failure | failure;
+         var or4 = success1 | success2;
+         var or5 = success2 | success1;
+
+         Console.WriteLine($"success1 | failure  = {or1}");
+         Console.WriteLine($"failure  | success2 = {or2}");
+         Console.WriteLine($"failure  | failure  = {or3}");
+         Console.WriteLine($"success1 | success2 = {or4}");
+         Console.WriteLine($"success2 | success1 = {or5}");
+      }
+
+      [TestMethod]
+      public void ImplicitMaybeTest()
+      {
+         Maybe<string> maybe = "foobar";
+         Console.WriteLine(maybe);
       }
    }
 }
