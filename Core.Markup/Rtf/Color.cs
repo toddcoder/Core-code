@@ -18,6 +18,11 @@ namespace Core.Markup.Rtf
          color = (red << 16) + (green << 8) + blue;
       }
 
+      public Color(int color)
+      {
+         this.color = color;
+      }
+
       public Color(string hex)
       {
          hex.Must().HaveLengthOfExactly(6).OrThrow("String parameter hex should be of length 6.");

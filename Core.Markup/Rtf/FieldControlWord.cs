@@ -4,15 +4,6 @@ namespace Core.Markup.Rtf
 {
    public class FieldControlWord : Renderable
    {
-      public enum FieldType
-      {
-         None = 0,
-         Page,
-         NumPages,
-         Date,
-         Time,
-      }
-
       protected static AutoHash<FieldType, string> controlWords;
 
       static FieldControlWord()

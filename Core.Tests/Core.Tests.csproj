@@ -49,6 +49,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationTests.cs" />
@@ -72,6 +73,7 @@
     <Compile Include="MatchingTests.cs" />
     <Compile Include="MonadTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RtfTests.cs" />
     <Compile Include="SetTests.cs" />
     <Compile Include="StringClassTests.cs" />
     <Compile Include="StringExtensionTests.cs" />
@@ -88,6 +90,10 @@
     <ProjectReference Include="..\Core.Data\Core.Data.csproj">
       <Project>{5d564fef-44e1-47a1-ad5c-b0f3ca6be2c5}</Project>
       <Name>Core.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Core.Markup\Core.Markup.csproj">
+      <Project>{f8a07ac2-ae74-4681-ae71-784dc4e75d97}</Project>
+      <Name>Core.Markup</Name>
     </ProjectReference>
     <ProjectReference Include="..\Core.Zip\Core.Zip.csproj">
       <Project>{5fe6a366-b033-4072-b041-12255f83d139}</Project>

@@ -82,6 +82,18 @@ namespace Core.Markup.Rtf
          return Color(rtfColor);
       }
 
+      public ColorDescriptor Color(byte red, byte green, byte blue) => Color(new Color(red, green, blue));
+
+      public ColorDescriptor Color(int color) => Color(new Color(color));
+
+      public ColorDescriptor Color(string colorName)
+      {
+         var systemColor = System.Drawing.Color.FromName(colorName);
+         var color = new Color(systemColor);
+
+         return Color(color);
+      }
+
       public Table Table(int rowCount, int colCount, float fontSize)
       {
          var baseValue = paperOrientation == PaperOrientation.Portrait ? paperSize.PaperWidthInPoints(paperOrientation)

@@ -555,7 +555,7 @@ namespace Core.Markup.Rtf
 
                if (this[i, j].BackgroundColor.If(out var backgroundColor))
                {
-                  result.Append($@"\clcbpat{backgroundColor}");
+                  result.Append($@"\clcbpat{backgroundColor.Value}");
                }
                else if (i == 0 && HeaderBackgroundColor.If(out var headerBackgroundColor))
                {

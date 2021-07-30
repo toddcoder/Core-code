@@ -162,7 +162,11 @@ namespace Core.Markup.Rtf
          set => _fontSize = value;
       }
 
-      public FontStyle FontStyle => fontStyle;
+      public FontStyle FontStyle
+      {
+         get => fontStyle;
+         set => fontStyle = value;
+      }
 
       public Maybe<ColorDescriptor> ForegroundColor
       {

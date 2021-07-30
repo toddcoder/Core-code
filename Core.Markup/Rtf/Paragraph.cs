@@ -134,7 +134,7 @@ namespace Core.Markup.Rtf
          return fnt;
       }
 
-      public void ControlWord(int position, FieldControlWord.FieldType type)
+      public void ControlWord(int position, FieldType type)
       {
          allowControlWord.Must().BeTrue().OrThrow("ControlWord is not allowed.");
 
