@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Data", "Core.Data\Core
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Zip", "Core.Zip\Core.Zip.csproj", "{5FE6A366-B033-4072-B041-12255F83D139}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Markup", "Core.Markup\Core.Markup.csproj", "{F8A07AC2-AE74-4681-AE71-784DC4E75D97}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{5FE6A366-B033-4072-B041-12255F83D139}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5FE6A366-B033-4072-B041-12255F83D139}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5FE6A366-B033-4072-B041-12255F83D139}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8A07AC2-AE74-4681-AE71-784DC4E75D97}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8A07AC2-AE74-4681-AE71-784DC4E75D97}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8A07AC2-AE74-4681-AE71-784DC4E75D97}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8A07AC2-AE74-4681-AE71-784DC4E75D97}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

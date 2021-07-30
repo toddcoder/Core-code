@@ -24,7 +24,7 @@ namespace Core.Tests
 
       public async Task<Completion<long>> CountAsync(CancellationTokenSource source)
       {
-         return await runAsync(t =>
+         return await runAsync(_ =>
          {
             long result = 0;
 
@@ -106,11 +106,11 @@ namespace Core.Tests
          }
       }
 
-      protected static async Task<Completion<int>> getOne(CancellationToken token) => await runAsync(t => 1.Completed(), token);
+      protected static async Task<Completion<int>> getOne(CancellationToken token) => await runAsync(_ => 1.Completed(), token);
 
-      protected static async Task<Completion<int>> getTwo(CancellationToken token) => await runAsync(t => 2.Completed(), token);
+      protected static async Task<Completion<int>> getTwo(CancellationToken token) => await runAsync(_ => 2.Completed(), token);
 
-      protected static async Task<Completion<int>> getThree(CancellationToken token) => await runAsync(t => 3.Completed(), token);
+      protected static async Task<Completion<int>> getThree(CancellationToken token) => await runAsync(_ => 3.Completed(), token);
 
       [TestMethod]
       public void RunAsyncTest()
@@ -221,6 +221,13 @@ namespace Core.Tests
          Console.WriteLine($"failure  | failure  = {or3}");
          Console.WriteLine($"success1 | success2 = {or4}");
          Console.WriteLine($"success2 | success1 = {or5}");
+      }
+
+      [TestMethod]
+      public void ImplicitMaybeTest()
+      {
+         Maybe<string> maybe = "foobar";
+         Console.WriteLine(maybe);
       }
    }
 }
