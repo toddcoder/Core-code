@@ -314,11 +314,15 @@ namespace Core.Configurations
 
       public Maybe<string> GetValue(string key) => root.GetValue(key);
 
+      public string ValueAt(string key) => GetValue(key).Required($"Couldn't find value '{key}'");
+
       public string[] GetArray(string key) => GetValue(key).Map(s => s.Split("/s* ',' /s*; f")).DefaultTo(() => new[] { key });
 
       public Result<string> RequireValue(string key) => root.RequireValue(key);
 
       public Maybe<Group> GetGroup(string key) => root.GetGroup(key);
+
+      public Group GroupAt(string key) => GetGroup(key).Required($"Couldn't find group at '{key}'");
 
       public Result<Group> RequireGroup(string key) => root.RequireGroup(key);
 
