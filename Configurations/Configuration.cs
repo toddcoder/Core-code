@@ -303,7 +303,7 @@ namespace Core.Configurations
 
       protected Group root;
 
-      internal Configuration(Group root)
+      public Configuration(Group root)
       {
          this.root = root;
       }
