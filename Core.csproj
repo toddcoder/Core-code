@@ -161,7 +161,6 @@
     <Compile Include="Collections\Infix\IInfixData.cs" />
     <Compile Include="Collections\Infix\InfixData.cs" />
     <Compile Include="Collections\Infix\InfixList.cs" />
-    <Compile Include="Collections\OneUseLinkedList.cs" />
     <Compile Include="Collections\OrderedSet.cs" />
     <Compile Include="Collections\RequiredHash.cs" />
     <Compile Include="Collections\Set.cs" />

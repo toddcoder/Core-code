@@ -13,7 +13,7 @@ namespace Core.Configurations
    {
       protected StringHash<IConfigurationItem> items;
 
-      internal Group(string key)
+      public Group(string key)
       {
          Key = key;
 
