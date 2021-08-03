@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -16,7 +17,7 @@ using static Core.Matching.MatchingExtensions;
 
 namespace Core.Configurations
 {
-   public class Configuration : IHash<string, IConfigurationItem>, IConfigurationItem
+   public class Configuration : IHash<string, IConfigurationItem>, IConfigurationItem, IEnumerable<IConfigurationItem>
    {
       public static implicit operator Configuration(string source)
       {
@@ -394,7 +395,11 @@ namespace Core.Configurations
             select cast;
       }
 
+      public IEnumerator<IConfigurationItem> GetEnumerator() => root.GetEnumerator();
+
       public override string ToString() => root.ToString(true);
+
+      IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
       public Result<StringHash> ToStringHash()
       {

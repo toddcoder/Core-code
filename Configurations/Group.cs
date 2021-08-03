@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Core.Collections;
@@ -9,7 +10,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Configurations
 {
-   public class Group : IConfigurationItem, IHash<string, IConfigurationItem>
+   public class Group : IConfigurationItem, IHash<string, IConfigurationItem>, IEnumerable<IConfigurationItem>
    {
       protected StringHash<IConfigurationItem> items;
 
@@ -107,5 +108,9 @@ namespace Core.Configurations
       }
 
       public string ToString(bool ignoreSelf) => ToString(0, ignoreSelf);
+
+      public IEnumerator<IConfigurationItem> GetEnumerator() => items.Values.GetEnumerator();
+
+      IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
    }
 }
