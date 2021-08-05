@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Core.Collections;
@@ -9,7 +10,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Configurations
 {
-   public class Group : IConfigurationItem, IHash<string, IConfigurationItem>
+   public class Group : IConfigurationItem, IHash<string, IConfigurationItem>, IEnumerable<IConfigurationItem>
    {
       protected StringHash<IConfigurationItem> items;
 
@@ -30,6 +31,8 @@ namespace Core.Configurations
 
       public Maybe<string> GetValue(string key) => items.Map(key).Map(i => i.GetValue(key));
 
+      public string ValueAt(string key) => GetValue(key).Required($"Couldn't find value '{key}'");
+
       public string[] GetArray(string key) => GetValue(key).Map(s => s.Split("/s* ',' /s*; f")).DefaultTo(() => new[] { key });
 
       public Result<string> RequireValue(string key) => items.Require(key).Map(i => i.RequireValue(key));
@@ -45,6 +48,8 @@ namespace Core.Configurations
             return none<Group>();
          }
       }
+
+      public Group GroupAt(string key) => GetGroup(key).Required($"Couldn't find group at '{key}'");
 
       public Result<Group> RequireGroup(string key) => GetGroup(key).Result($"Key {key} not found");
 
@@ -103,5 +108,9 @@ namespace Core.Configurations
       }
 
       public string ToString(bool ignoreSelf) => ToString(0, ignoreSelf);
+
+      public IEnumerator<IConfigurationItem> GetEnumerator() => items.Values.GetEnumerator();
+
+      IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
    }
 }

@@ -11,6 +11,7 @@ using Core.Matching;
 using Core.Monads;
 using Core.Objects;
 using Core.Strings;
+using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Applications.CommandProcessing
@@ -125,12 +126,23 @@ namespace Core.Applications.CommandProcessing
             }
             else if (this.MethodsUsing<CommandAttribute>().FirstOrNone(t => command == t.attribute.Name).If(out var methodInfo, out _))
             {
-               executeMethod(methodInfo, rest);
+               var result = executeMethod(methodInfo, rest);
+               if (result.IfNot(out var exception))
+               {
+                  HandleException(exception);
+               }
             }
          }
          else
          {
             HandleException("Command couldn't be determined");
+         }
+
+         if (Test)
+         {
+            Console.WriteLine();
+            Console.Write("Hit any key to exit");
+            var _ = Console.ReadKey();
          }
       }
 
@@ -192,6 +204,7 @@ namespace Core.Applications.CommandProcessing
                      }
                   }
                }
+
                Console.WriteLine();
             }
          }
@@ -199,7 +212,12 @@ namespace Core.Applications.CommandProcessing
 
       protected (PropertyInfo propertyInfo, SwitchAttribute attribute)[] getSwitchAttributes()
       {
-         return this.PropertiesUsing<SwitchAttribute>().ToArray();
+         return this.PropertiesUsing<SwitchAttribute>().Where(t => !t.attribute.Flag).ToArray();
+      }
+
+      public (PropertyInfo, SwitchAttribute attribute)[] getFlaggedSwitchAttributes()
+      {
+         return this.PropertiesUsing<SwitchAttribute>().Where(t => t.attribute.Flag).ToArray();
       }
 
       protected (PropertyInfo propertyInfo, ShortCutAttribute attribute)[] getShortCutAttributes()
@@ -231,242 +249,211 @@ namespace Core.Applications.CommandProcessing
          }
       }
 
-      protected void executeMethod(MethodInfo methodInfo, string rest)
+      protected IEnumerable<(string prefix, string name, Maybe<string> _value)> switchData(string source)
+      {
+         var delimitedText = DelimitedText.BothQuotes();
+         var noStrings = delimitedText.Destringify(source, true);
+
+         while (noStrings.Matches($"^ /s* /('{Prefix}' | '{ShortCut}') /(/w [/w '-']*) /b; f").If(out var result))
+         {
+            var (prefix, name) = result;
+            noStrings = noStrings.Drop(result.Length);
+            if (noStrings.IsEmpty() || noStrings.IsMatch($"^ /s* ('{Prefix}' | '{ShortCut}'); f"))
+            {
+               yield return (prefix, name, none<string>());
+            }
+            else if (noStrings.Matches("^ /s* /([quote]) /(-[quote]*) /1; f").If(out result))
+            {
+               var value = delimitedText.Restringify(result.SecondGroup, RestringifyQuotes.None);
+
+               yield return (prefix, name, value);
+
+               noStrings = noStrings.Drop(result.Length);
+            }
+            else if (noStrings.Matches("^ /s* /(-/s+); f").If(out result))
+            {
+               yield return (prefix, name, result.FirstGroup);
+
+               noStrings = noStrings.Drop(result.Length);
+            }
+         }
+      }
+
+      protected Result<Unit> executeMethod(MethodInfo methodInfo, string rest)
       {
          var switchAttributes = getSwitchAttributes();
          var shortCutAttributes = getShortCutAttributes();
-         while (rest.IsNotEmpty() && rest.Matches($"^ /s* /('{Prefix}' | '{ShortCut}') /([/w '-']+) '{Suffix}' /(.*) $").If(out var result))
+         foreach (var (prefix, name, _value) in switchData(rest))
          {
-            var (prefix, name, value) = result;
-            if (fillFromPrefix(switchAttributes, prefix, name, value).If(out var remainder))
+            if (prefix == Prefix)
             {
-               rest = remainder;
+               var result = fill(switchAttributes, name, _value);
+               if (result.IsNone)
+               {
+                  return $"Switch {name} not successful".Failure<Unit>();
+               }
             }
-            else if (fillFromShortCut(shortCutAttributes, prefix, name, value).If(out remainder))
+            else if (prefix == ShortCut)
             {
-               rest = remainder;
+               var result = fill(shortCutAttributes, name, _value);
+               if (result.IsNone)
+               {
+                  return $"Shortcut {name} not successful".Failure<Unit>();
+               }
             }
             else
             {
-               break;
+               return $"{name} not proceeded by {Prefix} or {ShortCut}".Failure<Unit>();
             }
          }
 
-         methodInfo.Invoke(this, new object[0]);
+         return tryTo(() => { methodInfo.Invoke(this, Array.Empty<object>()); });
       }
 
-      protected Maybe<string> fillFromPrefix((PropertyInfo propertyInfo, SwitchAttribute attribute)[] switchAttributes, string prefix, string name,
-         string value)
+      protected Maybe<Unit> fill((PropertyInfo propertyInfo, SwitchAttribute attribute)[] switchAttributes, string name, Maybe<string> _value)
       {
-         if (prefix == Prefix)
-         {
-            return
-               from tuple in switchAttributes.FirstOrNone((_, a) => a.Name == name)
-               from remainder in fillProperty(tuple.Item1, value)
-               select remainder;
-         }
-         else
-         {
-            return none<string>();
-         }
+         return
+            from propertyInfo in switchAttributes.FirstOrNone((_, a) => a.Name == name).Select(t => t.Item1)
+            from filled in fillProperty(propertyInfo, _value)
+            select filled;
       }
 
-      protected Maybe<string> fillFromShortCut((PropertyInfo propertyInfo, ShortCutAttribute attribute)[] switchAttributes, string prefix,
-         string name,
-         string value)
+      protected Maybe<Unit> fill((PropertyInfo propertyInfo, ShortCutAttribute attribute)[] shortCutAttributes, string name, Maybe<string> _value)
       {
-         if (prefix == ShortCut)
-         {
-            return
-               from tuple in switchAttributes.FirstOrNone((_, a) => a.Name == name)
-               from remainder in fillProperty(tuple.Item1, value)
-               select remainder;
-         }
-         else
-         {
-            return none<string>();
-         }
+         return
+            from propertyInfo in shortCutAttributes.FirstOrNone((_, a) => a.Name == name).Select(t => t.Item1)
+            from filled in fillProperty(propertyInfo, _value)
+            select filled;
       }
 
-      protected Maybe<string> fillProperty(PropertyInfo propertyInfo, string value)
+      protected Maybe<Unit> fillProperty(PropertyInfo propertyInfo, Maybe<string> _value)
       {
          var type = propertyInfo.PropertyType;
          var _object = none<object>();
-         var stringToReturn = string.Empty;
-         if (type == typeof(bool))
+         if (_value.If(out var value))
          {
-            var (obj, remainder) = getBoolean(value);
-            _object = obj.Some();
-            stringToReturn = remainder;
-         }
-         else if ((type == typeof(string) || type == typeof(FileName) || type == typeof(FolderName) || type == typeof(Maybe<FileName>) ||
-            type == typeof(Maybe<FolderName>)) && getString(value, type).If(out var valueRemainder))
-         {
-            var (obj, remainder) = valueRemainder;
-            _object = obj.Some();
-            stringToReturn = remainder;
-         }
-         else if (type == typeof(int) && getInt32(value).If(out valueRemainder))
-         {
-            var (obj, remainder) = valueRemainder;
-            _object = obj.Some();
-            stringToReturn = remainder;
-         }
-         else if ((type == typeof(double) || type == typeof(float)) && getFloatingPoint(value, type).If(out valueRemainder))
-         {
-            var (obj, remainder) = valueRemainder;
-            _object = obj.Some();
-            stringToReturn = remainder;
-         }
-         else if (type.IsEnum && getEnum(value, type).If(out valueRemainder))
-         {
-            var (obj, remainder) = valueRemainder;
-            _object = obj.Some();
-            stringToReturn = remainder;
-         }
-         else if (type == typeof(string[]) && getStringArray(value).If(out valueRemainder))
-         {
-            var (obj, remainder) = valueRemainder;
-            _object = obj.Some();
-            stringToReturn = remainder;
-         }
-
-         if (_object.If(out var objValue))
-         {
-            propertyInfo.SetValue(this, objValue);
-            return stringToReturn.Some();
-         }
-         else
-         {
-            return none<string>();
-         }
-      }
-
-      protected static ValueRemainder getBoolean(string rest)
-      {
-         if (rest.IsMatch("^ /s* $; f"))
-         {
-            return new ValueRemainder(true, string.Empty);
-         }
-         else if (rest.Matches("^ /s* /('true' | 'false' | '+' | '-') /b; fi").If(out var result))
-         {
-            return new ValueRemainder(result.FirstGroup.AnySame("true", "+"), rest.Drop(result.Length));
-         }
-         else
-         {
-            return new ValueRemainder(true, rest);
-         }
-      }
-
-      protected static Maybe<ValueRemainder> getInt32(string rest)
-      {
-         if (rest.Matches("^ /s* /('-'? [/d '_']+); f").If(out var result) && result.FirstGroup.Replace("_", "").AsInt().If(out var value))
-         {
-            var remainder = rest.Drop(result.Length);
-            return new ValueRemainder(value, remainder).Some();
-         }
-         else
-         {
-            return none<ValueRemainder>();
-         }
-      }
-
-      protected static Maybe<ValueRemainder> getFloatingPoint(string rest, Type type)
-      {
-         if (rest.Matches("^ /s* /('-'? [/d '_']+ '.' [/d '_']+); f").If(out var result))
-         {
-            var source = result.FirstGroup.Replace("_", "");
-            var remainder = rest.Drop(result.Length);
-            if (type == typeof(double) && source.AsDouble().If(out var dValue))
+            if (type == typeof(bool))
             {
-               return new ValueRemainder(dValue, remainder).Some();
+               _object = getBoolean(value);
             }
-            else if (type == typeof(float) && source.AsFloat().If(out var fValue))
+            else if (type == typeof(string) || type == typeof(FileName) || type == typeof(FolderName) || type == typeof(Maybe<FileName>) ||
+               type == typeof(Maybe<FolderName>))
             {
-               return new ValueRemainder(fValue, remainder).Some();
+               _object = getString(value, type);
+            }
+            else if (type == typeof(int))
+            {
+               _object = getInt32(value);
+            }
+            else if (type == typeof(double) || type == typeof(float))
+            {
+               _object = getFloatingPoint(value, type);
+            }
+            else if (type.IsEnum)
+            {
+               _object = getEnum(value, type);
+            }
+            else if (type == typeof(string[]))
+            {
+               _object = getStringArray(value);
+            }
+
+            if (_object.If(out var objValue))
+            {
+               propertyInfo.SetValue(this, objValue);
+               return Unit.Value;
+            }
+            else
+            {
+               return none<Unit>();
             }
          }
-
-         return none<ValueRemainder>();
+         else
+         {
+            propertyInfo.SetValue(this, true);
+            return Unit.Value;
+         }
       }
 
-      protected static Maybe<ValueRemainder> getString(string rest, Type type)
+      protected static Maybe<object> getBoolean(string value)
       {
-         string source;
-         string remainder;
-         if (rest.Matches("^ /s* /(`quote) /(.*?) /1; f").If(out var result))
+         if (value.IsMatch("^ /s* $; f"))
          {
-            source = result.SecondGroup;
-            remainder = rest.Drop(result.Length);
+            return true.Some<object>();
          }
-         else if (rest.Matches("^ /s* /(-/s+); f").If(out result))
+         else if (value.Matches("^ /s* /('true' | 'false' | '+' | '-') /b; fi").If(out var result))
          {
-            source = result.FirstGroup;
-            remainder = rest.Drop(result.Length);
+            return result.FirstGroup.AnySame("true", "+").Some<object>();
          }
          else
          {
-            source = rest;
-            remainder = string.Empty;
+            return true.Some<object>();
          }
+      }
 
+      protected static Maybe<object> getInt32(string value) => value.AsInt().Map(i => (object)i);
+
+      protected static Maybe<object> getFloatingPoint(string value, Type type)
+      {
+         if (type == typeof(double))
+         {
+            return value.AsDouble().Map(d => (object)d);
+         }
+         else if (type == typeof(float))
+         {
+            return value.AsFloat().Map(f => (object)f);
+         }
+         else
+         {
+            return none<object>();
+         }
+      }
+
+      protected static Maybe<object> getString(string value, Type type)
+      {
          if (type == typeof(string))
          {
-            return new ValueRemainder(source, remainder).Some();
+            return value.Some<object>();
          }
          else if (type == typeof(Maybe<string>))
          {
-            return new ValueRemainder(maybe(source.IsNotEmpty(), () => source), remainder).Some();
+            return maybe(value.IsNotEmpty(), () => (object)value);
          }
          else if (type == typeof(FolderName))
          {
-            return new ValueRemainder((FolderName)source, remainder).Some();
+            return value.Some<object>();
          }
          else if (type == typeof(FileName))
          {
-            return new ValueRemainder((FileName)source, remainder).Some();
+            return value.Some<object>();
          }
          else if (type == typeof(Maybe<FolderName>))
          {
-            return new ValueRemainder(maybe(source.IsNotEmpty(), () => (FolderName)source), remainder).Some();
+            return maybe(value.IsNotEmpty(), () => (object)(FolderName)value);
          }
          else if (type == typeof(Maybe<FileName>))
          {
-            return new ValueRemainder(maybe(source.IsNotEmpty(), () => (FileName)source), remainder).Some();
+            return maybe(value.IsNotEmpty(), () => (object)(FileName)value);
          }
          else
          {
-            return none<ValueRemainder>();
+            return none<object>();
          }
       }
 
-      protected static Maybe<ValueRemainder> getEnum(string rest, Type type)
-      {
-         if (rest.Matches("^ /s* /(-/s+); f").If(out var result))
-         {
-            var source = result.FirstGroup;
-            var remainder = rest.Drop(result.Length);
+      protected static Maybe<object> getEnum(string value, Type type) => value.AsEnumeration(type);
 
-            return source.AsEnumeration(type).Map(e => new ValueRemainder(e, remainder));
-         }
-         else
-         {
-            return none<ValueRemainder>();
-         }
-      }
-
-      protected static Maybe<ValueRemainder> getStringArray(string rest)
+      protected static Maybe<object> getStringArray(string value)
       {
-         if (rest.Matches("^/s* '[' /s*  /(.*) /s* ']'; f").If(out var result))
+         if (value.Matches("^/s* '[' /s*  /(.*) /s* ']'; f").If(out var result))
          {
             var list = result.FirstGroup;
             var array = list.Split("/s* ',' /s*; f");
-            var remainder = rest.Drop(result.Length);
-            return new ValueRemainder(array, remainder).Some();
+            return array.Some().Map(a => (object)a);
          }
          else
          {
-            return none<ValueRemainder>();
+            return none<object>();
          }
       }
 
