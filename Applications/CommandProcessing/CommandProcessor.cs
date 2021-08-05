@@ -132,6 +132,13 @@ namespace Core.Applications.CommandProcessing
          {
             HandleException("Command couldn't be determined");
          }
+
+         if (Test)
+         {
+            Console.WriteLine();
+            Console.Write("Hit any key to exit");
+            var _ = Console.ReadKey();
+         }
       }
 
       protected void generateHelp()
@@ -252,7 +259,7 @@ namespace Core.Applications.CommandProcessing
             }
          }
 
-         methodInfo.Invoke(this, new object[0]);
+         methodInfo.Invoke(this, Array.Empty<object>());
       }
 
       protected Maybe<string> fillFromPrefix((PropertyInfo propertyInfo, SwitchAttribute attribute)[] switchAttributes, string prefix, string name,
