@@ -14,7 +14,7 @@ namespace Core.Tests
          Recursive = true;
          Text = string.Empty;
          AttributeTargets = AttributeTargets.All;
-         Array = new string[0];
+         Array = System.Array.Empty<string>();
       }
 
       public bool Push { get; set; }
@@ -42,7 +42,7 @@ namespace Core.Tests
       public void Main(bool push = false, bool pull = false, bool show = false, int code = 0, double amount = 0,
          AttributeTargets attributeTargets = AttributeTargets.All, string text = "", bool recursive = true, string[] array = null)
       {
-         array ??= new string[0];
+         array ??= Array.Empty<string>();
 
          var command = "?";
          if (pull)
@@ -104,7 +104,7 @@ namespace Core.Tests
          Recursive = true;
          Text = string.Empty;
          AttributeTargets = AttributeTargets.All;
-         Array = new string[0];
+         Array = System.Array.Empty<string>();
       }
 
       public bool Push { get; set; }
@@ -180,11 +180,15 @@ namespace Core.Tests
       [Switch("count"), ShortCut("c"), SwitchHelp("int")]
       public int Count { get; set; }
 
+      [Switch("ignore-case"), ShortCut("i"), SwitchHelp("ignore case")]
+      public bool IgnoreCase { get; set; }
+
       public override void Initialize()
       {
          Text = string.Empty;
          Pattern = string.Empty;
          Count = 0;
+         IgnoreCase = false;
       }
    }
 
@@ -277,7 +281,7 @@ namespace Core.Tests
       public void CommandProcessorTest()
       {
          var processor = new TestProgram();
-         processor.Run("find -p \"/(-/s+)\" -c 153 --source foobar");
+         processor.Run("find -p \"/(-/s+)\" -c 153 --ignore-case --source foobar");
       }
 
       [TestMethod]
