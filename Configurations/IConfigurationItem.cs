@@ -1,4 +1,5 @@
-﻿using Core.Monads;
+﻿using System.Collections.Generic;
+using Core.Monads;
 
 namespace Core.Configurations
 {
@@ -12,8 +13,16 @@ namespace Core.Configurations
 
       Result<string> RequireValue(string key);
 
+      string ValueAt(string key);
+
+      public IEnumerable<(string key, string value)> Values();
+
       Maybe<Group> GetGroup(string key);
 
       Result<Group> RequireGroup(string key);
+
+      Group GroupAt(string key);
+
+      public IEnumerable<(string key, Group group)> Groups();
    }
 }
