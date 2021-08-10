@@ -349,6 +349,10 @@ namespace Core.Applications.CommandProcessing
             {
                _object = getFloatingPoint(value, type);
             }
+            else if (type == typeof(DateTime))
+            {
+               _object = getDate(value);
+            }
             else if (type.IsEnum)
             {
                _object = getEnum(value, type);
@@ -408,6 +412,8 @@ namespace Core.Applications.CommandProcessing
             return none<object>();
          }
       }
+
+      protected static Maybe<object> getDate(string value) => value.AsDateTime().Map(d => (object)d);
 
       protected static Maybe<object> getString(string value, Type type)
       {

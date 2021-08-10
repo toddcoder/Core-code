@@ -1,4 +1,6 @@
-﻿using Core.Monads;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Core.Monads;
 using Core.Strings;
 using static Core.Monads.MonadFunctions;
 
@@ -20,11 +22,15 @@ namespace Core.Configurations
 
       public string ValueAt(string key) => GetValue(key).Required($"Couldn't find value '{key}'");
 
+      public IEnumerable<(string key, string value)> Values() => Enumerable.Empty<(string, string)>();
+
       public Result<string> RequireValue(string key) => assert(key.Same(Key), () => Value, () => $"Key '{key}' doesn't match item key");
 
       public Maybe<Group> GetGroup(string key) => none<Group>();
 
       public Group GroupAt(string key) => GetGroup(key).Required($"Couldn't find group at '{key}'");
+
+      public IEnumerable<(string key, Group group)> Groups() => Enumerable.Empty<(string, Group)>();
 
       public Result<Group> RequireGroup(string key) => "Not a group".Failure<Group>();
 
