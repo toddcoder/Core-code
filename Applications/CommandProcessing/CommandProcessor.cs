@@ -78,7 +78,7 @@ namespace Core.Applications.CommandProcessing
          {
             return ("help", "").Some();
          }
-         else if (commandLine.IsMatch("^ [/w '-'] $; f"))
+         else if (commandLine.IsMatch("^ /s* [/w '-']+ /s* $; f"))
          {
             return (commandLine, "");
          }
