@@ -37,6 +37,8 @@ namespace Core.Configurations
 
       public Result<string> RequireValue(string key) => items.Require(key).Map(i => i.RequireValue(key));
 
+      public string At(string key) => GetValue(key).DefaultTo(() => "");
+
       public Maybe<Group> GetGroup(string key)
       {
          if (items.If(key, out var item) && item is Group group)

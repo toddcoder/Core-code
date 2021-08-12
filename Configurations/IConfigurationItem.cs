@@ -17,6 +17,8 @@ namespace Core.Configurations
 
       public IEnumerable<(string key, string value)> Values();
 
+      string At(string key);
+
       Maybe<Group> GetGroup(string key);
 
       Result<Group> RequireGroup(string key);

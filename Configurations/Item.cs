@@ -24,6 +24,8 @@ namespace Core.Configurations
 
       public IEnumerable<(string key, string value)> Values() => Enumerable.Empty<(string, string)>();
 
+      public string At(string key) => GetValue(key).DefaultTo(() => "");
+
       public Result<string> RequireValue(string key) => assert(key.Same(Key), () => Value, () => $"Key '{key}' doesn't match item key");
 
       public Maybe<Group> GetGroup(string key) => none<Group>();
