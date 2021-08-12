@@ -16,7 +16,7 @@ namespace Core.Markup.Parser
 
       public override Result<int> Parse(ParsingState state)
       {
-         return TODO_IMPLEMENT_ME;
+         return 0;
       }
    }
 }
