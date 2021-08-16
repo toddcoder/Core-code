@@ -1,4 +1,5 @@
 ﻿using Core.Monads;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Markup.Parser
 {
@@ -53,6 +54,8 @@ namespace Core.Markup.Parser
                }
             }
          }
+
+         return nil;
       }
    }
 }

@@ -92,10 +92,12 @@ namespace Core.Matching
          _peekLength = nil;
          if (More)
          {
-            var line = Current.Matches(REGEX_NEXT_LINE).Map(result => result.FirstGroup).DefaultTo(() => Current);
+            var (line, lineLength) = Current.Matches(REGEX_NEXT_LINE)
+               .Map(result => (result.FirstGroup, result.Length))
+               .DefaultTo(() => (Current, Current.Length));
             if (line.Matches(pattern).If(out var lineResult))
             {
-               _peekLength = line.Length;
+               _peekLength = lineLength;
                return (lineResult, line);
             }
          }

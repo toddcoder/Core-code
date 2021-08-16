@@ -1,6 +1,7 @@
 ﻿using Core.Markup.Code;
 using Core.Matching;
 using Core.Monads;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Markup.Parser
 {
@@ -16,6 +17,8 @@ namespace Core.Markup.Parser
       public Matched<Document> Parse()
       {
          var document = new Document();
+
+         return nil;
       }
    }
 }

@@ -79,5 +79,15 @@ namespace Core.Tests
          var left = 'a'.Either<int, char>().DefaultToLeft(() => 'a');
          Console.WriteLine($"{left}: {left.GetType().Name}");
       }
+
+      [TestMethod]
+      public void ImplicitTest()
+      {
+         Either<int, char> either = 'a'.Right();
+         Console.WriteLine(either);
+
+         either = 10.Left();
+         Console.WriteLine(either);
+      }
    }
 }

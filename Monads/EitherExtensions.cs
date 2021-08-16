@@ -9,5 +9,9 @@
       public static Either<TLeft, TRight> Either<TLeft, TRight>(this TLeft left) => left.Left<TLeft, TRight>();
 
       public static Either<TLeft, TRight> Either<TLeft, TRight>(this TRight right) => right.Right<TLeft, TRight>();
+
+      public static LeftHand<T> Left<T>(this T value) => new(value);
+
+      public static RightHand<T> Right<T>(this T value) => new(value);
    }
 }
