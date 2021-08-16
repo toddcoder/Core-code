@@ -8,9 +8,11 @@ namespace Core.Matching
    public class Source
    {
       protected const string REGEX_NEXT_LINE = "^ /(.*?) (/r /n | /r | /n); fm";
+
       protected string source;
       protected int index;
       protected int length;
+      protected Maybe<int> _peekLength;
 
       public Source(string source)
       {
@@ -19,6 +21,7 @@ namespace Core.Matching
 
          index = 0;
          length = this.source.Length;
+         _peekLength = nil;
       }
 
       public string Current => source.Drop(index);
@@ -31,16 +34,38 @@ namespace Core.Matching
             if (current.IsMatch(pattern) && current.Matches(REGEX_NEXT_LINE).If(out var result))
             {
                Advance(result.Length);
-               return result.FirstGroup.Some();
+               return result.FirstGroup;
             }
             else
             {
-               return none<string>();
+               return nil;
             }
          }
          else
          {
-            return none<string>();
+            return nil;
+         }
+      }
+
+      public Maybe<string> PeekNextLine(Pattern pattern)
+      {
+         _peekLength = nil;
+         if (More)
+         {
+            var current = Current;
+            if (current.IsMatch(pattern) && current.Matches(REGEX_NEXT_LINE).If(out var result))
+            {
+               _peekLength = result.FirstGroup.Length;
+               return result.FirstGroup;
+            }
+            else
+            {
+               return nil;
+            }
+         }
+         else
+         {
+            return nil;
          }
       }
 
@@ -55,11 +80,27 @@ namespace Core.Matching
             if (line.Matches(pattern).If(out var lineResult))
             {
                Advance(lineLength);
-               return (lineResult, line).Some();
+               return (lineResult, line);
             }
          }
 
-         return none<(MatchResult, string)>();
+         return nil;
+      }
+
+      public Maybe<(MatchResult result, string line)> PeekNextLineMatch(Pattern pattern)
+      {
+         _peekLength = nil;
+         if (More)
+         {
+            var line = Current.Matches(REGEX_NEXT_LINE).Map(result => result.FirstGroup).DefaultTo(() => Current);
+            if (line.Matches(pattern).If(out var lineResult))
+            {
+               _peekLength = line.Length;
+               return (lineResult, line);
+            }
+         }
+
+         return nil;
       }
 
       public Maybe<string> NextLine()
@@ -79,11 +120,36 @@ namespace Core.Matching
                Advance(line.Length);
             }
 
-            return line.Some();
+            return line;
          }
          else
          {
-            return none<string>();
+            return nil;
+         }
+      }
+
+      public Maybe<string> PeekNextLine()
+      {
+         _peekLength = nil;
+         if (More)
+         {
+            var current = Current;
+            string line;
+            if (current.Matches(REGEX_NEXT_LINE).If(out var result))
+            {
+               line = result.FirstGroup;
+            }
+            else
+            {
+               line = current;
+            }
+
+            _peekLength = line.Length;
+            return line;
+         }
+         else
+         {
+            return nil;
          }
       }
 
@@ -95,10 +161,21 @@ namespace Core.Matching
 
       public void Advance(int amount)
       {
+         _peekLength = nil;
+
          amount.Must().Not.BeLessThan(0).OrThrow();
          index += amount;
       }
 
-      public Matched<Unit> Matched() => More ? Unit.Matched() : noMatch<Unit>();
+      public void AdvanceLastPeek()
+      {
+         if (_peekLength.If(out var peekLength))
+         {
+            index += peekLength;
+            _peekLength = nil;
+         }
+      }
+
+      public Matched<Unit> Matched() => More ? Unit.Value : nil;
    }
 }

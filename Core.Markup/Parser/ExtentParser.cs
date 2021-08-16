@@ -9,13 +9,14 @@ namespace Core.Markup.Parser
 
       static ExtentParser()
       {
-         parsers=new []{new }
+         parsers = new[] { (Parser)new TextExtentParser(), new BoldItalicParser(), new StyleAndFormatParser() };
       }
 
       public override Pattern Pattern => "^ /(-['\r\n']+); f";
 
       public override Matched<Unit> Parse(ParsingState state)
       {
+         return Unit.Value;
       }
    }
 }

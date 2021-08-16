@@ -1,20 +1,21 @@
 ﻿using Core.Matching;
 using Core.Monads;
-using static Core.Monads.MonadFunctions;
 
 namespace Core.Markup.Parser
 {
    public class ParagraphParser : Parser
    {
-      protected string paragraphText;
+      protected ExtentParsers extentParsers;
 
       public ParagraphParser()
       {
-         paragraphText = string.Empty;
+         extentParsers = new ExtentParsers();
       }
+      public override Pattern Pattern => "^ '&'; f";
 
-      public override Pattern Pattern => "^&;u";
-
-      public override Matched<Unit> Parse(ParsingState state) => noMatch<Unit>();
+      public override Matched<Unit> Parse(ParsingState state)
+      {
+         return Unit.Value;
+      }
    }
 }

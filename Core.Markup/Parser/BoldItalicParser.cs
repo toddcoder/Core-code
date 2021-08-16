@@ -29,6 +29,7 @@ namespace Core.Markup.Parser
                break;
          }
 
+         state.Source.Advance(stars.Length);
          return Unit.Value;
       }
    }

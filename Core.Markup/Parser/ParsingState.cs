@@ -22,7 +22,11 @@ namespace Core.Markup.Parser
 
       public Document Document => document;
 
-      public MatchResult Result => result;
+      public MatchResult Result
+      {
+         get => result;
+         set => result = value;
+      }
 
       public bool IsBold { get; set; }
 
