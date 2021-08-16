@@ -17,6 +17,24 @@ namespace Core.Markup.Code.Containers
 
       public void Add(Block block) => blocks.Add(block);
 
+      public Block CurrentBlock
+      {
+         get
+         {
+            if (blocks.Count == 0)
+            {
+               var paragraph = new Paragraph();
+               blocks.Add(paragraph);
+
+               return paragraph;
+            }
+            else
+            {
+               return blocks[blocks.Count - 1];
+            }
+         }
+      }
+
       public IEnumerator<Block> GetEnumerator() => blocks.GetEnumerator();
 
       IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

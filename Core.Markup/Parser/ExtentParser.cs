@@ -5,8 +5,17 @@ namespace Core.Markup.Parser
 {
    public class ExtentParser : Parser
    {
-      public override Pattern Pattern => "";
+      protected static Parser[] parsers;
 
-      public override Matched<Unit> Parse(ParsingState state) => TODO_IMPLEMENT_ME;
+      static ExtentParser()
+      {
+         parsers=new []{new }
+      }
+
+      public override Pattern Pattern => "^ /(-['\r\n']+); f";
+
+      public override Matched<Unit> Parse(ParsingState state)
+      {
+      }
    }
 }

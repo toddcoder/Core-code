@@ -54,9 +54,13 @@
     <Compile Include="Code\Document.cs" />
     <Compile Include="Code\Extents\Bold.cs" />
     <Compile Include="Code\Extents\Extent.cs" />
+    <Compile Include="Code\Extents\Format.cs" />
     <Compile Include="Code\Extents\Italic.cs" />
+    <Compile Include="Code\Extents\Style.cs" />
     <Compile Include="Code\Extents\TextExtent.cs" />
+    <Compile Include="Parser\BoldItalicParser.cs" />
     <Compile Include="Parser\ExtentParser.cs" />
+    <Compile Include="Parser\FormatParser.cs" />
     <Compile Include="Parser\ParagraphParser.cs" />
     <Compile Include="Parser\Parser.cs" />
     <Compile Include="Parser\ParsingState.cs" />
