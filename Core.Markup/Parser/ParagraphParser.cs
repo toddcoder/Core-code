@@ -1,5 +1,6 @@
 ﻿using Core.Matching;
 using Core.Monads;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Markup.Parser
 {
@@ -14,9 +15,6 @@ namespace Core.Markup.Parser
 
       public override Pattern Pattern => "^&;u";
 
-      public override Matched<Unit> Parse(ParsingState state)
-      {
-         return MonadFunctions.noMatch<Unit>();
-      }
+      public override Matched<Unit> Parse(ParsingState state) => noMatch<Unit>();
    }
 }

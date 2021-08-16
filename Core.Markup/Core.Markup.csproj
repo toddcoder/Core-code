@@ -44,13 +44,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Objects\Block.cs" />
-    <Compile Include="Objects\Bold.cs" />
-    <Compile Include="Objects\Element.cs" />
-    <Compile Include="Objects\Format.cs" />
-    <Compile Include="Objects\Italic.cs" />
-    <Compile Include="Objects\Style.cs" />
-    <Compile Include="Objects\TextExtent.cs" />
+    <Compile Include="Code\Blocks\Block.cs" />
+    <Compile Include="Code\Blocks\List.cs" />
+    <Compile Include="Code\Blocks\OrderedList.cs" />
+    <Compile Include="Code\Blocks\Paragraph.cs" />
+    <Compile Include="Code\Containers\Container.cs" />
+    <Compile Include="Code\Containers\Section.cs" />
+    <Compile Include="Code\Containers\Table.cs" />
+    <Compile Include="Code\Document.cs" />
+    <Compile Include="Code\Extents\Bold.cs" />
+    <Compile Include="Code\Extents\Extent.cs" />
+    <Compile Include="Code\Extents\Italic.cs" />
+    <Compile Include="Code\Extents\TextExtent.cs" />
+    <Compile Include="Parser\ExtentParser.cs" />
     <Compile Include="Parser\ParagraphParser.cs" />
     <Compile Include="Parser\Parser.cs" />
     <Compile Include="Parser\ParsingState.cs" />
@@ -99,8 +105,6 @@
       <Name>Core</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Objects\Formatting\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
