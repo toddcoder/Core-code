@@ -4,6 +4,8 @@ namespace Core.Monads
 {
    public static class MonadFunctions
    {
+      public static readonly Nil nil = new();
+
       public static Maybe<TParent> some<TChild, TParent>(TChild value) where TChild : TParent
       {
          return new Some<TParent>(value);

@@ -8,6 +8,8 @@ namespace Core.Monads
 
       public static implicit operator Matched<T>(Exception exception) => new FailedMatch<T>(exception);
 
+      public static implicit operator Matched<T>(Nil _) => new NoMatch<T>();
+
       public abstract bool IsMatched { get; }
 
       public abstract bool IsNotMatched { get; }

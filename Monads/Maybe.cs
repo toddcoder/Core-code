@@ -22,6 +22,8 @@ namespace Core.Monads
 
       public static implicit operator Maybe<T>(T value) => value.Some();
 
+      public static implicit operator Maybe<T>(Nil _) => new None<T>();
+
       public abstract bool IsSome { get; }
 
       public abstract bool IsNone { get; }
