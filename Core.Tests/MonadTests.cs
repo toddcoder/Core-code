@@ -228,6 +228,9 @@ namespace Core.Tests
       {
          Maybe<string> maybe = "foobar";
          Console.WriteLine(maybe);
+
+         maybe = nil;
+         Console.WriteLine(maybe);
       }
 
       [TestMethod]
