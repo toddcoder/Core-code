@@ -14,9 +14,9 @@ namespace Core.Markup.Parser
 
       public override Pattern Pattern => "^&;u";
 
-      public override Result<int> Parse(ParsingState state)
+      public override Matched<Unit> Parse(ParsingState state)
       {
-         return 0;
+         return MonadFunctions.noMatch<Unit>();
       }
    }
 }

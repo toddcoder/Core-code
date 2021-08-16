@@ -7,6 +7,6 @@ namespace Core.Markup.Parser
    {
       public abstract Pattern Pattern { get; }
 
-      public abstract Result<int> Parse(ParsingState state);
+      public abstract Matched<Unit> Parse(ParsingState state);
    }
 }
