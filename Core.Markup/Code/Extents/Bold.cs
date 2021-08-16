@@ -2,11 +2,5 @@
 {
    public class Bold : Extent
    {
-      public Bold(bool active)
-      {
-         Active = active;
-      }
-
-      public bool Active { get; }
    }
 }

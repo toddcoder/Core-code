@@ -251,7 +251,7 @@
     <Compile Include="Exceptions\Deep.cs" />
     <Compile Include="Exceptions\GroupedExceptions.cs" />
     <Compile Include="Exceptions\MultiExceptions.cs" />
-    <Compile Include="Exceptions\Throwing.cs" />
+    <Compile Include="Exceptions\ExceptionExtensions.cs" />
     <Compile Include="Lambdas\LambdaExtensions.cs" />
     <Compile Include="Lambdas\LambdaFunctions.cs" />
     <Compile Include="Monads\AttemptFunctions.cs" />

@@ -26,5 +26,9 @@ namespace Core.Monads
             return Completed();
          }
       }
+
+      public static LeftHand<Unit> Left() => Value.Left();
+
+      public static RightHand<Unit> Right() => Value.Right();
    }
 }
