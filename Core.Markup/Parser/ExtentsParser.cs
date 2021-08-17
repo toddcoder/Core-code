@@ -73,19 +73,19 @@ namespace Core.Markup.Parser
          static ApplicationException fail(string specifier) => $"Specifier {specifier} not recognized".Fail();
 
          var current = state.Source.Current;
-         if (current.Matches("^ /(-[']']+) ']'").If(out var result))
+         if (current.Matches("^ /(-[']']+) ']'; f").If(out var result))
          {
             var specification = result.FirstGroup;
             state.Source.Advance(result.Length);
 
             var delimitedText = DelimitedText.AsFriendlyPattern();
             var bareText = delimitedText.Destringify(specification);
-            var specifiers = bareText.Split("/s* ',' /s*").Select(s => delimitedText.Restringify(s, RestringifyQuotes.None)).ToArray();
+            var specifiers = bareText.Split("/s* ',' /s*; f").Select(s => delimitedText.Restringify(s, RestringifyQuotes.None)).ToArray();
             var format = new Format();
 
             foreach (var specifier in specifiers)
             {
-               if (specifier.Matches("^ /(/w [/w '-']+) /s* '=' /s* /(.+) $").If(out result))
+               if (specifier.Matches("^ /(/w [/w '-']+) /s* '=' /s* /(.+) $; f").If(out result))
                {
                   var (name, value) = result;
                   switch (name)
