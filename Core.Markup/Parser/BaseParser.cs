@@ -4,6 +4,6 @@ namespace Core.Markup.Parser
 {
    public abstract class BaseParser<T>
    {
-      public abstract Match<T> Parse(ParsingState state);
+      public abstract Matched<T> Parse(ParsingState state);
    }
 }

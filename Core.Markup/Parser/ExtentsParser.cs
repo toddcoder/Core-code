@@ -11,7 +11,7 @@ namespace Core.Markup.Parser
 {
    public class ExtentsParser : BaseParser<Extent>
    {
-      public override Result<Extent> Parse(ParsingState state)
+      public override Matched<Extent> Parse(ParsingState state)
       {
          var current = state.Source.Current;
          if (current.StartsWith("***"))
@@ -39,7 +39,7 @@ namespace Core.Markup.Parser
          }
       }
 
-      protected static Result<Extent> getStyleOrFormat(ParsingState state)
+      protected static Matched<Extent> getStyleOrFormat(ParsingState state)
       {
          state.Source.Advance(1);
          var current = state.Source.Current;
@@ -54,7 +54,7 @@ namespace Core.Markup.Parser
          }
       }
 
-      protected static Result<Extent> getStyle(ParsingState state, MatchResult result)
+      protected static Matched<Extent> getStyle(ParsingState state, MatchResult result)
       {
          var styleName = result.FirstGroup;
          if (state.Formats.ContainsKey(styleName))
@@ -68,7 +68,7 @@ namespace Core.Markup.Parser
          }
       }
 
-      protected static Result<Extent> getFormat(ParsingState state)
+      protected static Matched<Extent> getFormat(ParsingState state)
       {
          static ApplicationException fail(string specifier) => $"Specifier {specifier} not recognized".Fail();
 
@@ -120,7 +120,7 @@ namespace Core.Markup.Parser
          }
       }
 
-      protected static Result<Extent> getText(ParsingState state)
+      protected static Matched<Extent> getText(ParsingState state)
       {
          var current = state.Source.Current;
          var builder = new StringBuilder();

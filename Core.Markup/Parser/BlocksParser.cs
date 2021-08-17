@@ -1,6 +1,4 @@
-﻿using System;
-using Core.Exceptions;
-using Core.Markup.Code.Blocks;
+﻿using Core.Markup.Code.Blocks;
 using Core.Monads;
 using static Core.Monads.MonadFunctions;
 
@@ -15,11 +13,13 @@ namespace Core.Markup.Parser
          extentsParser = new ExtentsParser();
       }
 
-      public override Match<Block> Parse(ParsingState state)
+      public override Matched<Block> Parse(ParsingState state)
       {
-         static Exception failSpecifier(char specifier) => $"Didn't understand specifier '{specifier}'".Fail();
+         //static Exception failSpecifier(char specifier) => $"Didn't understand specifier '{specifier}'".Fail();
 
-         if (state.Source.PeekNextLine("^ /(['&%#-']); f").If(out var line))
+         return nil;
+
+         /*if (state.Source.PeekNextLine("^ /(['&%#-']); f").If(out var line))
          {
             var specifier = line[0];
             var _block = specifier switch
@@ -44,10 +44,10 @@ namespace Core.Markup.Parser
          else
          {
             return nil;
-         }
+         }*/
       }
 
-      protected Result<Block> getParagraph(ParsingState state)
+      /*protected Result<Block> getParagraph(ParsingState state)
       {
          var paragraph = new Paragraph();
          while (state.Source.More)
@@ -80,6 +80,6 @@ namespace Core.Markup.Parser
 
       protected Result<Block> getHeader(ParsingState state)
       {
-      }
+      }*/
    }
 }
