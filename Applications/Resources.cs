@@ -21,7 +21,7 @@ namespace Core.Applications
       public Resources(string path)
       {
          type = typeof(T);
-         nameSpace = $@"{type.Namespace}\{path}.";
+         nameSpace = $@"{type.Namespace}.{path}.";
          names = type.Assembly.GetManifestResourceNames();
       }
 
