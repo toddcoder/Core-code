@@ -59,16 +59,6 @@
     <Compile Include="Code\Extents\Italic.cs" />
     <Compile Include="Code\Extents\Style.cs" />
     <Compile Include="Code\Extents\TextExtent.cs" />
-    <Compile Include="Parser\BlockParser.cs" />
-    <Compile Include="Parser\BoldItalicParser.cs" />
-    <Compile Include="Parser\DocumentParser.cs" />
-    <Compile Include="Parser\ExtentParser.cs" />
-    <Compile Include="Parser\ExtentParsers.cs" />
-    <Compile Include="Parser\StyleAndFormatParser.cs" />
-    <Compile Include="Parser\ParagraphParser.cs" />
-    <Compile Include="Parser\Parser.cs" />
-    <Compile Include="Parser\ParsingState.cs" />
-    <Compile Include="Parser\TextExtentParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rtf\Alignment.cs" />
     <Compile Include="Rtf\FieldType.cs" />
@@ -113,6 +103,9 @@
       <Project>{fe997a92-d183-4c85-9a1a-fb032311ef62}</Project>
       <Name>Core</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Parser\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

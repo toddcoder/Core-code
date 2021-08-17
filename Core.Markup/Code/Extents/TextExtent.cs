@@ -1,6 +1,6 @@
 ﻿namespace Core.Markup.Code.Extents
 {
-   public class TextExtent : Extent
+   public sealed class TextExtent : Extent
    {
       public TextExtent(string text)
       {

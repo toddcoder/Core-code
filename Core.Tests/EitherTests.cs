@@ -83,10 +83,10 @@ namespace Core.Tests
       [TestMethod]
       public void ImplicitTest()
       {
-         Either<int, char> either = 'a'.Right();
+         Either<int, char> either = 'a';
          Console.WriteLine(either);
 
-         either = 10.Left();
+         either = 10;
          Console.WriteLine(either);
       }
    }

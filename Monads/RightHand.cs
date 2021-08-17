@@ -1,5 +1,8 @@
-﻿namespace Core.Monads
+﻿using System;
+
+namespace Core.Monads
 {
+   [Obsolete]
    public class RightHand<T>
    {
       public RightHand(T right)
