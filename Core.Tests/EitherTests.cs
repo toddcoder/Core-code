@@ -10,8 +10,8 @@ namespace Core.Tests
       [TestMethod]
       public void CreatingTest()
       {
-         var _left = 'a'.Either<char, string>();
-         var _right = "a".Either<char, string>();
+         Either<char, string> _left = 'a';
+         Either<char, string> _right = "a";
          if (_left.IfLeft(out var left))
          {
             Console.WriteLine($"char {left}");
@@ -26,8 +26,8 @@ namespace Core.Tests
       [TestMethod]
       public void MappingTest()
       {
-         var left = 10.Either<int, double>();
-         var dLeft = left.Map(i => (double)i, d => (int)d);
+         Either<int, double> _left = 10;
+         var dLeft = _left.Map(i => (double)i, d => (int)d);
          if (dLeft.IfLeft(out var @double, out var @int))
          {
             Console.WriteLine($"double {@double} is good");
@@ -37,8 +37,8 @@ namespace Core.Tests
             Console.WriteLine($"Unexpected int {@int}");
          }
 
-         var right = 7.0.Either<int, double>();
-         var iRight = right.Map(i => i / 2.0, d => (int)d / 2);
+         Either<int, double> _right = 7.0;
+         var iRight = _right.Map(i => i / 2.0, d => (int)d / 2);
          if (iRight.IfLeft(out @double, out @int))
          {
             Console.WriteLine($"Unexpected double {@double}");
@@ -52,7 +52,7 @@ namespace Core.Tests
       [TestMethod]
       public void ResultTest()
       {
-         var charResult = 'a'.Either<char, int>().ResultFromLeft(i => $"Expected char; found {i}");
+         var charResult = ((Either<char, int>)'a').ResultFromLeft(i => $"Expected char; found {i}");
          if (charResult.If(out var @char, out var exception))
          {
             Console.WriteLine($"char {@char} is good");
@@ -62,7 +62,7 @@ namespace Core.Tests
             Console.WriteLine($"Exception: {exception.Message}");
          }
 
-         var intResult = 153.Either<char, int>().ResultFromLeft(i => $"Expected char; found {i}");
+         var intResult = ((Either<char, int>)153).ResultFromLeft(i => $"Expected char; found {i}");
          if (intResult.If(out @char, out exception))
          {
             Console.WriteLine($"char {@char} is good");
