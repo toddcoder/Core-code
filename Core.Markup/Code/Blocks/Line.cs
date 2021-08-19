@@ -1,7 +1,6 @@
 ﻿namespace Core.Markup.Code.Blocks
 {
-   public class Line : Block
+   public sealed class Line : Block
    {
-      
    }
 }

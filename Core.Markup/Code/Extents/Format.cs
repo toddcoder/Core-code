@@ -3,15 +3,12 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Markup.Code.Extents
 {
-   public class Format : Extent
+   public sealed class Format : Extent
    {
-      protected Maybe<string> _fontName;
-
-      protected Maybe<float> _fontSize;
-
-      protected Maybe<bool> _bold;
-
-      protected Maybe<bool> _italic;
+      private Maybe<string> _fontName;
+      private Maybe<float> _fontSize;
+      private Maybe<bool> _bold;
+      private Maybe<bool> _italic;
 
       public Format()
       {

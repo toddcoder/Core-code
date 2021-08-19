@@ -46,11 +46,10 @@
   <ItemGroup>
     <Compile Include="Code\Blocks\Block.cs" />
     <Compile Include="Code\Blocks\Line.cs" />
-    <Compile Include="Code\Blocks\List.cs" />
-    <Compile Include="Code\Blocks\NullBlock.cs" />
-    <Compile Include="Code\Blocks\OrderedList.cs" />
     <Compile Include="Code\Blocks\Paragraph.cs" />
     <Compile Include="Code\Containers\Container.cs" />
+    <Compile Include="Code\Containers\List.cs" />
+    <Compile Include="Code\Containers\OrderedList.cs" />
     <Compile Include="Code\Containers\Section.cs" />
     <Compile Include="Code\Containers\Table.cs" />
     <Compile Include="Code\Document.cs" />

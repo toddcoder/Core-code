@@ -1,6 +1,5 @@
 ﻿using Core.Markup.Code.Blocks;
 using Core.Monads;
-using static Core.Monads.MonadFunctions;
 
 namespace Core.Markup.Parser
 {
@@ -15,71 +14,53 @@ namespace Core.Markup.Parser
 
       public override Matched<Block> Parse(ParsingState state)
       {
-         //static Exception failSpecifier(char specifier) => $"Didn't understand specifier '{specifier}'".Fail();
-
-         return nil;
-
-         /*if (state.Source.PeekNextLine("^ /(['&%#-']); f").If(out var line))
-         {
-            var specifier = line[0];
-            var _block = specifier switch
-            {
-               '&' => getParagraph(state),
-               '-' => getList(state),
-               '%' => getOrderedList(state),
-               '#' => getHeader(state),
-               _ => failSpecifier(specifier)
-            };
-
-            if (_block.ValueOrOriginal(out var block, out var asOriginal))
-            {
-               state.Source.AdvanceLastPeek();
-               return block;
-            }
-            else
-            {
-               return asOriginal;
-            }
-         }
-         else
-         {
-            return nil;
-         }*/
+         return state.Source.Current.StartsWith("&") ? getParagraph(state) : getLine(state);
       }
 
-      /*protected Result<Block> getParagraph(ParsingState state)
+      protected Matched<Block> getParagraph(ParsingState state)
       {
+         state.Source.Advance(1);
          var paragraph = new Paragraph();
-         while (state.Source.More)
+         extentsParser.ForLine = false;
+
+         while (true)
          {
-            if (extentsParser.Parse(state).ValueOrCast(out var extent, out Result<Block> asBlock))
+            if (extentsParser.Parse(state).If(out var extent, out var _exception))
             {
                paragraph.Add(extent);
             }
+            else if (_exception.If(out var exception))
+            {
+               return exception;
+            }
             else
             {
-               return asBlock;
+               return paragraph;
             }
          }
-
-         return paragraph;
       }
 
-      protected Result<Block> getLine(ParsingState state)
+      protected Matched<Block> getLine(ParsingState state)
       {
+         state.Source.Advance(1);
          var line = new Line();
-         while (state.)
+         extentsParser.ForLine = true;
+
+         while (true)
          {
-            
+            if (extentsParser.Parse(state).If(out var extent, out var _exception))
+            {
+               line.Add(extent);
+            }
+            else if (_exception.If(out var exception))
+            {
+               return exception;
+            }
+            else
+            {
+               return line;
+            }
          }
       }
-
-      protected Result<Block> getOrderedList(ParsingState state)
-      {
-      }
-
-      protected Result<Block> getHeader(ParsingState state)
-      {
-      }*/
    }
 }

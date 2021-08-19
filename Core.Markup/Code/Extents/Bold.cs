@@ -1,6 +1,6 @@
 ﻿namespace Core.Markup.Code.Extents
 {
-   public class Bold : Extent
+   public sealed class Bold : Extent
    {
    }
 }

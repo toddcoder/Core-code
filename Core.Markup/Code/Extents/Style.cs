@@ -1,6 +1,6 @@
 ﻿namespace Core.Markup.Code.Extents
 {
-   public class Style : Extent
+   public sealed class Style : Extent
    {
       public Style(string name)
       {

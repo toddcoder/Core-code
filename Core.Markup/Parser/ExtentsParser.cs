@@ -11,6 +11,8 @@ namespace Core.Markup.Parser
 {
    public class ExtentsParser : BaseParser<Extent>
    {
+      public bool ForLine { get; set; }
+
       public override Matched<Extent> Parse(ParsingState state)
       {
          var current = state.Source.Current;
@@ -39,7 +41,7 @@ namespace Core.Markup.Parser
          }
       }
 
-      protected static Matched<Extent> getStyleOrFormat(ParsingState state)
+      protected Matched<Extent> getStyleOrFormat(ParsingState state)
       {
          state.Source.Advance(1);
          var current = state.Source.Current;
@@ -54,7 +56,7 @@ namespace Core.Markup.Parser
          }
       }
 
-      protected static Matched<Extent> getStyle(ParsingState state, MatchResult result)
+      protected Matched<Extent> getStyle(ParsingState state, MatchResult result)
       {
          var styleName = result.FirstGroup;
          if (state.Formats.ContainsKey(styleName))
@@ -68,7 +70,7 @@ namespace Core.Markup.Parser
          }
       }
 
-      protected static Matched<Extent> getFormat(ParsingState state)
+      protected Matched<Extent> getFormat(ParsingState state)
       {
          static ApplicationException fail(string specifier) => $"Specifier {specifier} not recognized".Fail();
 
@@ -120,7 +122,7 @@ namespace Core.Markup.Parser
          }
       }
 
-      protected static Matched<Extent> getText(ParsingState state)
+      protected Matched<Extent> getText(ParsingState state)
       {
          var current = state.Source.Current;
          var builder = new StringBuilder();
@@ -157,11 +159,24 @@ namespace Core.Markup.Parser
                   break;
                case '&' or '-' or '%' or '#' or '|' when lineEnding:
                   length--;
-                  gathering = false;
+                  lineEnding = false;
                   break;
                default:
-                  builder.Append(character);
-                  lineEnding = false;
+                  if (ForLine && lineEnding)
+                  {
+                     gathering = false;
+                  }
+                  else
+                  {
+                     if (lineEnding)
+                     {
+                        builder.Append(" ");
+                     }
+
+                     builder.Append(character);
+                     lineEnding = false;
+                  }
+
                   break;
             }
          }
