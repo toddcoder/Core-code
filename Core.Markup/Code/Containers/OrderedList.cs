@@ -1,6 +1,6 @@
 ﻿namespace Core.Markup.Code.Containers
 {
-   public sealed class OrderedList
+   public sealed class OrderedList : Container
    {
    }
 }
