@@ -11,8 +11,8 @@ namespace Core.Tests
       public void LogTest()
       {
          FolderName.Current = @"C:\Enterprise\Projects\Core";
-         var git = new Git.Git();
-         var _result = git.Log("origin/develop..origin/master");
+         var git = new Git.Git("master");
+         var _result = git.Log("origin/develop..origin/$branch");
          if (_result.IfLeft(out var lines, out var message))
          {
             foreach (var line in lines)
