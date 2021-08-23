@@ -60,8 +60,8 @@ namespace Core.WinForms.Documents
 
          isDirty = false;
          formName = this.form.Text;
-         _file = none<FileName>();
-         _colorizer = none<Colorizer>();
+         _file = nil;
+         _colorizer = nil;
          keepClean = false;
 
          initialize();
@@ -218,11 +218,11 @@ namespace Core.WinForms.Documents
             switch (result)
             {
                case DialogResult.Yes:
-                  YesButtonClicked?.Invoke(this, new EventArgs());
+                  YesButtonClicked?.Invoke(this, EventArgs.Empty);
                   Save();
                   break;
                case DialogResult.No:
-                  NoButtonClicked?.Invoke(this, new EventArgs());
+                  NoButtonClicked?.Invoke(this, EventArgs.Empty);
                   textBox.Clear();
                   Clean();
                   break;
@@ -233,7 +233,7 @@ namespace Core.WinForms.Documents
 
          textBox.Clear();
          Clean();
-         _file = none<FileName>();
+         _file = nil;
          DisplayFileName();
       }
 
@@ -250,20 +250,20 @@ namespace Core.WinForms.Documents
          dialogResult = openFileDialog.ShowDialog();
          if (dialogResult == DialogResult.OK)
          {
-            OKButtonClicked?.Invoke(this, new EventArgs());
+            OKButtonClicked?.Invoke(this, EventArgs.Empty);
             Open(openFileDialog.FileName);
             return true;
          }
          else
          {
-            CancelButtonClicked.Invoke(this, new EventArgs());
+            CancelButtonClicked.Invoke(this, EventArgs.Empty);
             return false;
          }
       }
 
       public virtual void Open(FileName fileName)
       {
-         _file = fileName.Some();
+         _file = fileName;
          if (_file.If(out var file))
          {
             textBox.Text = file.Lines.ToString("\r\n");
@@ -335,13 +335,13 @@ namespace Core.WinForms.Documents
       {
          if (saveFileDialog.ShowDialog() == DialogResult.OK)
          {
-            OKButtonClicked?.Invoke(this, new EventArgs());
-            _file = ((FileName)saveFileDialog.FileName).Some();
+            OKButtonClicked?.Invoke(this, EventArgs.Empty);
+            _file = (FileName)saveFileDialog.FileName;
             save();
          }
          else
          {
-            CancelButtonClicked?.Invoke(this, new EventArgs());
+            CancelButtonClicked?.Invoke(this, EventArgs.Empty);
          }
       }
 
@@ -353,11 +353,11 @@ namespace Core.WinForms.Documents
             switch (result)
             {
                case DialogResult.Yes:
-                  YesButtonClicked?.Invoke(this, new EventArgs());
+                  YesButtonClicked?.Invoke(this, EventArgs.Empty);
                   Save();
                   break;
                case DialogResult.Cancel:
-                  CancelButtonClicked?.Invoke(this, new EventArgs());
+                  CancelButtonClicked?.Invoke(this, EventArgs.Empty);
                   e.Cancel = true;
                   break;
             }

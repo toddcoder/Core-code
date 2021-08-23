@@ -605,7 +605,7 @@ namespace Core.WinForms.Controls
       {
          if (!lineNumber.Between(0).Until(Lines.Length))
          {
-            throw $"Line number {lineNumber} out of range".Throws();
+            throw $"Line number {lineNumber} out of range".Fail();
          }
 
          var line = Lines[lineNumber];
@@ -699,7 +699,7 @@ namespace Core.WinForms.Controls
          }
          else if (Text.IsEmpty() || start >= Text.Length)
          {
-            return none<Rectangle>();
+            return nil;
          }
          else
          {
@@ -713,7 +713,7 @@ namespace Core.WinForms.Controls
          var text = Text;
          if (text.IsEmpty() || start >= text.Length)
          {
-            return none<Rectangle>();
+            return nil;
          }
          else if (char.IsLetterOrDigit(text, start))
          {
@@ -727,7 +727,7 @@ namespace Core.WinForms.Controls
          }
          else
          {
-            return none<Rectangle>();
+            return nil;
          }
       }
 
@@ -738,10 +738,8 @@ namespace Core.WinForms.Controls
 
       public void DrawHighlight(Graphics graphics, Rectangle rectangle, Color color, DashStyle dashStyle)
       {
-         using (var brush = new SolidBrush(Color.FromArgb(30, color)))
-         {
-            graphics.FillRectangle(brush, rectangle);
-         }
+         using var brush = new SolidBrush(Color.FromArgb(30, color));
+         graphics.FillRectangle(brush, rectangle);
 
          using var pen = new Pen(Color.Black) { DashStyle = dashStyle };
          graphics.DrawRectangle(pen, rectangle);

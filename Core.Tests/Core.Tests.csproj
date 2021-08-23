@@ -94,6 +94,7 @@
     <Compile Include="EquatableTest.cs" />
     <Compile Include="FileNameTests.cs" />
     <Compile Include="FolderNameTests.cs" />
+    <Compile Include="GitTests.cs" />
     <Compile Include="HashTest.cs" />
     <Compile Include="DelimitedTextTests.cs" />
     <Compile Include="JsonTests.cs" />
@@ -119,6 +120,10 @@
     <ProjectReference Include="..\Core.Data\Core.Data.csproj">
       <Project>{5d564fef-44e1-47a1-ad5c-b0f3ca6be2c5}</Project>
       <Name>Core.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Core.Git\Core.Git.csproj">
+      <Project>{49b8bea0-9293-4438-b21b-5a90890b3f74}</Project>
+      <Name>Core.Git</Name>
     </ProjectReference>
     <ProjectReference Include="..\Core.Json\Core.Json.csproj">
       <Project>{787b6f39-bcb0-425e-99cb-091bc0fed0cd}</Project>

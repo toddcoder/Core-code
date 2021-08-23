@@ -49,7 +49,7 @@ namespace Core.WinForms.Consoles
          }
          else
          {
-            return none<string>();
+            return nil;
          }
       }
 
@@ -62,7 +62,7 @@ namespace Core.WinForms.Consoles
          }
          else
          {
-            return none<string>();
+            return nil;
          }
       }
    }

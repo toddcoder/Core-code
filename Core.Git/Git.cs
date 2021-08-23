@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading;
 using Core.Assertions;
-using Core.Dates.DateIncrements;
-using Core.Exceptions;
 using Core.Monads;
+using Core.Strings;
 using static Core.Monads.MonadFunctions;
-using Timer = System.Timers.Timer;
 
 namespace Core.Git
 {
@@ -17,93 +12,36 @@ namespace Core.Git
       protected internal const string MESSAGE_DIDNT_UNDERSTAND_ARGUMENT = "Didn't understand argument";
       private const string MESSAGE_BRANCH_MUST_HAVE_A_VALUE = "Branch must have a value";
 
-      protected static Result<T> timedOutCall<T>(Func<T> func, TimeSpan timeout)
+      protected static Either<string[], string> executeGit(string arguments)
       {
          try
          {
-            var timer = new Timer(100.0);
-            var stopwatch = new Stopwatch();
-            timer.Elapsed += (_, _) =>
-            {
-               if (stopwatch.Elapsed > timeout)
-               {
-                  throw "Function call exceed timeout".Fail<TimeoutException>();
-               }
-
-               Thread.Sleep(100);
-            };
-
-            timer.Start();
-            stopwatch.Start();
-            var call = func();
-            timer.Stop();
-
-            return call;
-         }
-         catch (Exception exception)
-         {
-            return exception;
-         }
-      }
-
-      protected Result<string> executeGit(string arguments)
-      {
-         try
-         {
-            using var process = new Process
-            {
-               StartInfo = new ProcessStartInfo("git.exe", arguments)
-               {
-                  UseShellExecute = false, CreateNoWindow = true, RedirectStandardOutput = true
-               }
-            };
-
-            process.Start();
-            process.WaitForExit(1000);
-
-            return timedOutCall(() => process.StandardOutput.ReadToEnd().TrimEnd(), 1.Minute());
-         }
-         catch (Exception exception)
-         {
-            return exception;
-         }
-      }
-
-      protected Either<string[], string> executeGitEnumerable(string arguments)
-      {
-         try
-         {
+            var error = string.Empty;
             using var process = new Process
             {
                StartInfo = new ProcessStartInfo("git.exe", arguments)
                {
                   UseShellExecute = false,
                   CreateNoWindow = true,
-                  RedirectStandardOutput = true
+                  RedirectStandardOutput = true,
+                  RedirectStandardError = true
                }
             };
 
-            IEnumerable<string> linesFromProcess()
-            {
-               while (true)
-               {
-                  var line = process.StandardOutput.ReadLine();
-                  if (line.NotNull(out var notNullLine))
-                  {
-                     yield return notNullLine;
-                  }
-                  else
-                  {
-                     break;
-                  }
-               }
-            }
-
+            process.ErrorDataReceived += (_, e) => error += e.Data;
             process.Start();
+            process.BeginErrorReadLine();
+            var enumerable = process.StandardOutput.ReadToEnd().TrimEnd().Lines();
             process.WaitForExit(1000);
 
-            var enumerable = linesFromProcess();
-            return enumerable.ToArray();
+            if (error.IsEmpty())
+            {
+               return enumerable;
+            }
+            else
+            {
+               return error;
+            }
          }
          catch (Exception exception)
          {
@@ -118,7 +56,7 @@ namespace Core.Git
          this.origin = origin;
       }
 
-      public Either<string[], string> Fetch(bool all) => executeGitEnumerable(all ? "--all" : "");
+      public Either<string[], string> Fetch(bool all) => executeGit(all ? "fetch --all" : "fetch");
 
       public Either<string[], string> Branch(string branch = "", BranchArguments branchArguments = BranchArguments.List)
       {
@@ -134,7 +72,7 @@ namespace Core.Git
 
             if (_arguments.If(out var arguments))
             {
-               return executeGitEnumerable($"branch {arguments}");
+               return executeGit($"branch {arguments}");
             }
             else
             {
@@ -162,7 +100,7 @@ namespace Core.Git
             };
             if (_arguments.If(out var arguments))
             {
-               return executeGitEnumerable($"checkout {arguments}");
+               return executeGit($"checkout {arguments}");
             }
             else
             {
@@ -181,7 +119,7 @@ namespace Core.Git
          {
             branch.Must().Not.BeNullOrEmpty().OrThrow(MESSAGE_BRANCH_MUST_HAVE_A_VALUE);
 
-            return executeGitEnumerable($"merge {branch}");
+            return executeGit($"merge {branch}");
          }
          catch (Exception exception)
          {
@@ -189,14 +127,14 @@ namespace Core.Git
          }
       }
 
-      public Either<string[], string> Pull() => executeGitEnumerable("pull");
+      public Either<string[], string> Pull() => executeGit("pull");
 
       public Either<string[], string> PushFirst(string branch)
       {
          try
          {
             branch.Must().Not.BeNullOrEmpty().OrThrow(MESSAGE_BRANCH_MUST_HAVE_A_VALUE);
-            return executeGitEnumerable($"branch --set-upstream {origin} {branch}");
+            return executeGit($"branch --set-upstream {origin} {branch}");
          }
          catch (Exception exception)
          {
@@ -216,7 +154,7 @@ namespace Core.Git
             };
             if (_arguments.If(out var arguments))
             {
-               return executeGitEnumerable(arguments);
+               return executeGit(arguments);
             }
             else
             {
@@ -229,6 +167,6 @@ namespace Core.Git
          }
       }
 
-      public Either<string[], string> Log(string arguments) => executeGitEnumerable($"log {arguments}");
+      public Either<string[], string> Log(string arguments) => executeGit($"log {arguments}");
    }
 }

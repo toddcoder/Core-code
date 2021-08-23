@@ -1,12 +1,13 @@
 ﻿using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
+using Core.Monads;
 
 namespace Core.WinForms.Notification
 {
    public class ImagePanel : Panel
    {
-      protected Image image;
+      protected Maybe<Image> _image;
 
       public ImagePanel()
       {
@@ -16,10 +17,10 @@ namespace Core.WinForms.Notification
 
       public Image Image
       {
-         get => image;
+         get => _image.Required("Image not set");
          set
          {
-            image = value;
+            _image = value;
             RecreateHandle();
          }
       }
@@ -41,17 +42,15 @@ namespace Core.WinForms.Notification
 
       protected override void OnPaint(PaintEventArgs e)
       {
-         if (image != null)
+         if (_image.If(out var image))
          {
             e.Graphics.CompositingQuality = CompositingQuality.HighQuality;
 
             e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
             e.Graphics.CompositingMode = CompositingMode.SourceOver;
             e.Graphics.SmoothingMode = SmoothingMode.HighQuality;
-            using (var brush = new SolidBrush(BackColor))
-            {
-               e.Graphics.FillRectangle(brush, ClientRectangle);
-            }
+            using var brush = new SolidBrush(BackColor);
+            e.Graphics.FillRectangle(brush, ClientRectangle);
 
             var left = (Width - image.Width) / 2;
             var top = (Height - image.Height) / 2;
