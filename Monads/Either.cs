@@ -4,6 +4,10 @@ namespace Core.Monads
 {
    public abstract class Either<TLeft, TRight>
    {
+      public static implicit operator Either<TLeft, TRight>(TLeft value) => new Left<TLeft, TRight>(value);
+
+      public static implicit operator Either<TLeft, TRight>(TRight value) => new Right<TLeft, TRight>(value);
+
       public abstract bool IfLeft(out TLeft value);
 
       public abstract bool IfLeft(out TLeft left, out TRight right);

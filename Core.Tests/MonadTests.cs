@@ -228,6 +228,19 @@ namespace Core.Tests
       {
          Maybe<string> maybe = "foobar";
          Console.WriteLine(maybe);
+
+         maybe = nil;
+         Console.WriteLine(maybe);
+      }
+
+      [TestMethod]
+      public void ImplicitResultTest()
+      {
+         Result<string> result = "Good!";
+         Console.WriteLine(result);
+
+         result = new Exception("Bad!");
+         Console.WriteLine(result);
       }
    }
 }

@@ -23,6 +23,8 @@ namespace Core.Monads
 
       public static implicit operator Result<T>(T value) => value.Success();
 
+      public static implicit operator Result<T>(Exception exception) => new Failure<T>(exception);
+
       public abstract bool If(out T value, out Exception exception);
 
       public abstract bool ValueOrOriginal(out T value, out Result<T> original);

@@ -18,6 +18,13 @@ namespace Core.Applications
          names = type.Assembly.GetManifestResourceNames();
       }
 
+      public Resources(string path)
+      {
+         type = typeof(T);
+         nameSpace = $@"{type.Namespace}.{path}.";
+         names = type.Assembly.GetManifestResourceNames();
+      }
+
       public string String(string name)
       {
          Contains(name).Must().BeTrue().OrThrow($"Resource {nameSpace}{name} does not exist");

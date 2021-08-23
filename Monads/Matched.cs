@@ -6,6 +6,15 @@ namespace Core.Monads
    {
       public static implicit operator Matched<T>(T value) => value.Match();
 
+      public static implicit operator Matched<T>(Exception exception) => new FailedMatch<T>(exception);
+
+      public static implicit operator Matched<T>(Nil _) => new NoMatch<T>();
+
+      public static implicit operator Matched<T>(Maybe<Exception> _exception)
+      {
+         return _exception.Map(e => (Matched<T>)new FailedMatch<T>(e)).DefaultTo(() => new NoMatch<T>());
+      }
+
       public abstract bool IsMatched { get; }
 
       public abstract bool IsNotMatched { get; }

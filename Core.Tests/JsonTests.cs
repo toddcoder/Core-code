@@ -23,5 +23,26 @@ namespace Core.Tests
             Console.WriteLine($"Exception: {exception.Message}");
          }
       }
+
+      [TestMethod]
+      public void WriterTest()
+      {
+         using var writer = new JsonWriter();
+
+         writer.BeginObject("metadata");
+         writer.Write("id", "Core");
+         writer.Write("version", "1.4.4.6");
+         writer.Write("title", "Core");
+         writer.Write("authors", "Todd Bennett");
+         writer.Write("copyright", 2021);
+         writer.BeginArray("tags");
+         writer.Write("Core");
+         writer.Write("Async");
+         writer.Write("Types");
+         writer.EndArray();
+         writer.EndObject();
+
+         Console.WriteLine(writer);
+      }
    }
 }

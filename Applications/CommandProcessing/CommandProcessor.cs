@@ -78,6 +78,10 @@ namespace Core.Applications.CommandProcessing
          {
             return ("help", "").Some();
          }
+         else if (commandLine.IsMatch("^ /s* [/w '-']+ /s* $; f"))
+         {
+            return (commandLine, "");
+         }
          else
          {
             return commandLine.Matches("^ /([/w '-']+) /s+ /(.+) $; f").Map(result => (result.FirstGroup, result.SecondGroup));

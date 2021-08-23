@@ -321,6 +321,8 @@ namespace Core.Configurations
 
       public Result<string> RequireValue(string key) => root.RequireValue(key);
 
+      public string At(string key) => GetValue(key).DefaultTo(() => "");
+
       public Maybe<Group> GetGroup(string key) => root.GetGroup(key);
 
       public Group GroupAt(string key) => GetGroup(key).Required($"Couldn't find group at '{key}'");
