@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Markup", "Core.Markup\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Json", "Core.Json\Core.Json.csproj", "{787B6F39-BCB0-425E-99CB-091BC0FED0CD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Git", "Core.Git\Core.Git.csproj", "{49B8BEA0-9293-4438-B21B-5A90890B3F74}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{787B6F39-BCB0-425E-99CB-091BC0FED0CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{787B6F39-BCB0-425E-99CB-091BC0FED0CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{787B6F39-BCB0-425E-99CB-091BC0FED0CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49B8BEA0-9293-4438-B21B-5A90890B3F74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49B8BEA0-9293-4438-B21B-5A90890B3F74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49B8BEA0-9293-4438-B21B-5A90890B3F74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49B8BEA0-9293-4438-B21B-5A90890B3F74}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
