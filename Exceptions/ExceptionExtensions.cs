@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Core.Monads;
 
 namespace Core.Exceptions
@@ -29,9 +30,11 @@ namespace Core.Exceptions
          return new FullStackException(message, innerException);
       }
 
-      public static TException Fail<TException>(object[] parameters) where TException : Exception
+      public static TException Fail<TException>(this object firstParameter, params object[] parameters) where TException : Exception
       {
-         return (TException)Activator.CreateInstance(typeof(TException), parameters);
+         var list = new List<object> { firstParameter };
+         list.AddRange(parameters);
+         return (TException)Activator.CreateInstance(typeof(TException), list.ToArray());
       }
 
       public static TException Fail<TException>() where TException : Exception, new()

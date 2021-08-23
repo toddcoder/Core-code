@@ -1,15 +1,16 @@
 ﻿using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Core.Data")]
+[assembly: AssemblyTitle("Core.Git")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Core.Data")]
-[assembly: AssemblyCopyright("Copyright © 2020")]
+[assembly: AssemblyProduct("Core.Git")]
+[assembly: AssemblyCopyright("Copyright ©  2021")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -19,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("5d564fef-44e1-47a1-ad5c-b0f3ca6be2c5")]
+[assembly: Guid("49b8bea0-9293-4438-b21b-5a90890b3f74")]
 
 // Version information for an assembly consists of the following four values:
 //
