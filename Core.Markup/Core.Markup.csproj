@@ -44,6 +44,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Code\Blocks\Block.cs" />
+    <Compile Include="Code\Blocks\Line.cs" />
+    <Compile Include="Code\Blocks\Paragraph.cs" />
+    <Compile Include="Code\Containers\Container.cs" />
+    <Compile Include="Code\Containers\List.cs" />
+    <Compile Include="Code\Containers\OrderedList.cs" />
+    <Compile Include="Code\Containers\Section.cs" />
+    <Compile Include="Code\Containers\Table.cs" />
+    <Compile Include="Code\Document.cs" />
+    <Compile Include="Code\Extents\Bold.cs" />
+    <Compile Include="Code\Extents\BoldItalic.cs" />
+    <Compile Include="Code\Extents\Extent.cs" />
+    <Compile Include="Code\Extents\Format.cs" />
+    <Compile Include="Code\Extents\Italic.cs" />
+    <Compile Include="Code\Extents\Style.cs" />
+    <Compile Include="Code\Extents\TextExtent.cs" />
+    <Compile Include="Parser\BaseParser.cs" />
+    <Compile Include="Parser\BlocksParser.cs" />
+    <Compile Include="Parser\ExtentsParser.cs" />
+    <Compile Include="Parser\ParsingState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rtf\Alignment.cs" />
     <Compile Include="Rtf\FieldType.cs" />
@@ -89,5 +109,6 @@
       <Name>Core</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -5,18 +5,20 @@ using System.Text.Json;
 
 namespace Core.Json
 {
-   public class Writer : IDisposable
+   public class JsonWriter : IDisposable
    {
       protected bool initialObject;
       protected MemoryStream stream;
       protected Utf8JsonWriter writer;
 
-      public Writer(bool initialObject = true)
+      public JsonWriter(bool initialObject = true)
       {
+         this.initialObject = initialObject;
+
          stream = new MemoryStream();
          writer = new Utf8JsonWriter(stream, new JsonWriterOptions { Indented = true });
 
-         if (initialObject)
+         if (this.initialObject)
          {
             BeginObject();
          }

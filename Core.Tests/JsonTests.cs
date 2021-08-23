@@ -27,7 +27,7 @@ namespace Core.Tests
       [TestMethod]
       public void WriterTest()
       {
-         using var writer = new Writer();
+         using var writer = new JsonWriter();
 
          writer.BeginObject("metadata");
          writer.Write("id", "Core");

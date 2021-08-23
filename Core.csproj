@@ -251,7 +251,7 @@
     <Compile Include="Exceptions\Deep.cs" />
     <Compile Include="Exceptions\GroupedExceptions.cs" />
     <Compile Include="Exceptions\MultiExceptions.cs" />
-    <Compile Include="Exceptions\Throwing.cs" />
+    <Compile Include="Exceptions\ExceptionExtensions.cs" />
     <Compile Include="Lambdas\LambdaExtensions.cs" />
     <Compile Include="Lambdas\LambdaFunctions.cs" />
     <Compile Include="Monads\AttemptFunctions.cs" />
@@ -265,6 +265,7 @@
     <Compile Include="Monads\FullStackException.cs" />
     <Compile Include="Monads\Completion.cs" />
     <Compile Include="Monads\IHasValue.cs" />
+    <Compile Include="Monads\LeftHand.cs" />
     <Compile Include="Monads\Matched.cs" />
     <Compile Include="Monads\Maybe.cs" />
     <Compile Include="Monads\Interrupted.cs" />
@@ -282,6 +283,7 @@
     <Compile Include="Monads\NoMatch.cs" />
     <Compile Include="Monads\ResultIterator.cs" />
     <Compile Include="Monads\Right.cs" />
+    <Compile Include="Monads\RightHand.cs" />
     <Compile Include="Monads\Some.cs" />
     <Compile Include="Monads\Success.cs" />
     <Compile Include="Monads\SuccessEventArgs.cs" />
