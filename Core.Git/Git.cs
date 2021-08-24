@@ -51,23 +51,30 @@ namespace Core.Git
       }
 
       protected string branch;
+      private string origin;
 
-      protected string origin;
-
-      public Git(string origin = "origin")
+      public Git()
       {
          branch = CurrentBranch;
-
-         origin.Must().Not.BeNullOrEmpty().OrThrow("Origin must have a value");
-         this.origin = origin;
+         origin = "origin";
       }
 
-      public Git(string branch, string origin = "origin")
+      public Git(string branch)
       {
          branch.Must().Not.BeNullOrEmpty().OrThrow("Branch must have a value");
-         origin.Must().Not.BeNullOrEmpty().OrThrow("Origin must have a value");
+
          this.branch = branch;
-         this.origin = origin;
+         origin = "origin";
+      }
+
+      public string Origin
+      {
+         get => origin;
+         set
+         {
+            origin.Must().Not.BeNullOrEmpty().OrThrow("Origin must have a value");
+            origin = value;
+         }
       }
 
       public static string CurrentBranch
@@ -92,7 +99,7 @@ namespace Core.Git
             var error = string.Empty;
             using var process = new Process
             {
-               StartInfo = new ProcessStartInfo("git.exe", arguments.Substitute("/b '$branch' /b", branch))
+               StartInfo = new ProcessStartInfo("git.exe", arguments.Substitute("'$branch' /b; f", branch))
                {
                   UseShellExecute = false,
                   CreateNoWindow = true,
@@ -195,7 +202,7 @@ namespace Core.Git
       {
          try
          {
-            return executeGit($"branch --set-upstream {origin} {branch}");
+            return executeGit($"branch --set-upstream {Origin} {branch}");
          }
          catch (Exception exception)
          {

@@ -7,23 +7,22 @@ namespace Core.Tests
    [TestClass]
    public class GitTests
    {
+      protected static void onLeft(string[] lines)
+      {
+         foreach (var line in lines)
+         {
+            Console.WriteLine(line);
+         }
+      }
+
+      protected static void onRight(string message) => Console.WriteLine($"Exception: {message}");
+
       [TestMethod]
       public void LogTest()
       {
          FolderName.Current = @"C:\Enterprise\Projects\Core";
          var git = new Git.Git("master");
-         var _result = git.Log("origin/develop..origin/$branch");
-         if (_result.IfLeft(out var lines, out var message))
-         {
-            foreach (var line in lines)
-            {
-               Console.WriteLine(line);
-            }
-         }
-         else
-         {
-            Console.WriteLine(message);
-         }
+         git.Log("origin/develop..origin/master").OnLeft(onLeft).OnRight(onRight);
       }
 
       [TestMethod]
@@ -31,18 +30,7 @@ namespace Core.Tests
       {
          FolderName.Current = @"C:\Enterprise\Projects\Core";
          var git = new Git.Git();
-         var _result = git.Fetch(true);
-         if (_result.IfLeft(out var lines, out var message))
-         {
-            foreach (var line in lines)
-            {
-               Console.WriteLine(line);
-            }
-         }
-         else
-         {
-            Console.WriteLine(message);
-         }
+         git.Fetch(true).OnLeft(onLeft).OnRight(onRight);
       }
    }
 }
