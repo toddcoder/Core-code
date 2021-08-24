@@ -22,7 +22,7 @@ namespace Core.Tests
       {
          FolderName.Current = @"C:\Enterprise\Projects\Core";
          var git = new Git.Git("master");
-         git.Log("origin/develop..origin/master").OnLeft(onLeft).OnRight(onRight);
+         git.Log("origin/develop..origin/master --pretty=format:\"%h %an %cn %s\"").OnLeft(onLeft).OnRight(onRight);
       }
 
       [TestMethod]
