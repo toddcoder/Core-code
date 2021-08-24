@@ -92,6 +92,12 @@ namespace Core.Git
          }
       }
 
+      public string WorkingBranch
+      {
+         get => branch;
+         set => branch = value;
+      }
+
       protected Either<string[], string> executeGit(string arguments)
       {
          try
@@ -171,7 +177,7 @@ namespace Core.Git
             };
             if (_arguments.If(out var arguments))
             {
-               return executeGit($"checkout {arguments}");
+               return executeGit($"checkout {arguments}").OnLeft(_ => branch = CurrentBranch);
             }
             else
             {
