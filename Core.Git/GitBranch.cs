@@ -33,13 +33,13 @@ namespace Core.Git
 
       public string Origin { get; set; }
 
-      public Result<string[]> Delete(bool force)
+      public Result<string[]> Delete(bool force = false)
       {
          var arguments = force ? $"-D {branch}" : $"-d {branch}";
          return Git.Execute($"branch {arguments}");
       }
 
-      public Result<string[]> CheckOut(bool force)
+      public Result<string[]> CheckOut(bool force = false)
       {
          var arguments = force ? $"{branch} --force" : branch;
          return Git.Execute($"checkout {arguments}");
@@ -50,7 +50,7 @@ namespace Core.Git
          return Git.Execute($"branch -b {newBranchName}").Map(_ => (GitBranch)newBranchName);
       }
 
-      public Result<string[]> Merge() => Git.Execute($"merge {branch}");
+      public Result<string[]> Merge() => Git.Execute($"merge {Origin}/{branch}");
 
       public Result<string[]> Pull() => Git.Execute("pull");
 
