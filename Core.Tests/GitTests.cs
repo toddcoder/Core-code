@@ -7,7 +7,7 @@ namespace Core.Tests
    [TestClass]
    public class GitTests
    {
-      protected static void onLeft(string[] lines)
+      protected static void onSuccess(string[] lines)
       {
          foreach (var line in lines)
          {
@@ -15,22 +15,20 @@ namespace Core.Tests
          }
       }
 
-      protected static void onRight(string message) => Console.WriteLine($"Exception: {message}");
+      protected static void onFailure(Exception exception) => Console.WriteLine($"Exception: {exception.Message}");
 
       [TestMethod]
       public void LogTest()
       {
          FolderName.Current = @"C:\Enterprise\Projects\Core";
-         var git = new Git.Git("master");
-         git.Log("origin/develop..origin/master --pretty=format:\"%h %an %cn %s\"").OnLeft(onLeft).OnRight(onRight);
+         Git.Git.Log("origin/develop..origin/master --pretty=format:\"%h %an %cn %s\"").OnSuccess(onSuccess).OnFailure(onFailure);
       }
 
       [TestMethod]
       public void FetchTest()
       {
          FolderName.Current = @"C:\Enterprise\Projects\Core";
-         var git = new Git.Git();
-         git.Fetch(true).OnLeft(onLeft).OnRight(onRight);
+         Git.Git.Fetch().OnSuccess(onSuccess).OnFailure(onFailure);
       }
    }
 }

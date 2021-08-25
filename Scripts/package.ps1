@@ -8,5 +8,5 @@ Copy-Item "..\Core.Json\bin\Debug\Core.Json.dll" $target
 Copy-Item "..\Core.Git\bin\Debug\Core.Git.dll" $target
 Push-Location "..\Core.lib"
 Remove-Item "*.nupkg"
-& 'C:\Program Files\dotnet\nuget.exe' pack .\Core.nuspec
+& 'C:\Users\tebennett\Utilities\nuget.exe' pack .\Core.nuspec
 Pop-Location
