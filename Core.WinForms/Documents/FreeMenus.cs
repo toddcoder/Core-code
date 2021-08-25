@@ -9,9 +9,9 @@ namespace Core.WinForms.Documents
    {
       public FreeMenus()
       {
-         Document = none<Document>();
-         Form = none<Form>();
-         SaveAll = none<EventHandler>();
+         Document = nil;
+         Form = nil;
+         SaveAll = nil;
       }
 
       public Maybe<Document> Document { get; set; }

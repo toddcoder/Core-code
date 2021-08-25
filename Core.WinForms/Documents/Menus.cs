@@ -237,7 +237,7 @@ namespace Core.WinForms.Documents
 
       public bool ContainsKey(string key) => menuItems.ContainsKey(MenuName(key));
 
-      public Result<Hash<string, ToolStripMenuItem>> AnyHash() => menuItems.ToHash(i => i.Key, i => (ToolStripMenuItem)i.Value).Success();
+      public Result<Hash<string, ToolStripMenuItem>> AnyHash() => menuItems.ToHash(i => i.Key, i => (ToolStripMenuItem)i.Value);
 
       public Maybe<Submenus> Submenus(string parentText) => this.Map(parentText, p => new Submenus(p));
 

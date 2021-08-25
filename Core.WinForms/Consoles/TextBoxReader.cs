@@ -25,7 +25,7 @@ namespace Core.WinForms.Consoles
 
          this.console = console;
          this.console.IOStatus = IOStatusType.Writing;
-         _previouslyFocused = none<Control>();
+         _previouslyFocused = nil;
       }
 
       public override void Flush()
@@ -41,7 +41,7 @@ namespace Core.WinForms.Consoles
       public override int Read(byte[] buffer, int offset, int count)
       {
          console.ReadOnly = false;
-         _previouslyFocused = form.ActiveControl.Some();
+         _previouslyFocused = form.ActiveControl;
          console.Focus();
          console.IOStatus = IOStatusType.Reading;
 
