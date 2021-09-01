@@ -7,21 +7,13 @@ namespace Core.Json
 {
    public class JsonWriter : IDisposable
    {
-      protected bool initialObject;
       protected MemoryStream stream;
       protected Utf8JsonWriter writer;
 
-      public JsonWriter(bool initialObject = true)
+      public JsonWriter()
       {
-         this.initialObject = initialObject;
-
          stream = new MemoryStream();
          writer = new Utf8JsonWriter(stream, new JsonWriterOptions { Indented = true });
-
-         if (this.initialObject)
-         {
-            BeginObject();
-         }
       }
 
       public void BeginObject() => writer.WriteStartObject();
@@ -66,11 +58,6 @@ namespace Core.Json
 
       public override string ToString()
       {
-         if (initialObject)
-         {
-            writer.WriteEndObject();
-         }
-
          writer.Flush();
          return Encoding.UTF8.GetString(stream.ToArray());
       }
