@@ -120,7 +120,7 @@ namespace Core.Monads
       [DebuggerStepThrough, Obsolete("Use |")]
       public override Result<T> Or(Func<T> other) => this;
 
-      public override Result<Unit> Unit => Monads.Unit.Success();
+      public override Result<Unit> Unit => unit;
 
       public override Result<T> Always(Action action)
       {

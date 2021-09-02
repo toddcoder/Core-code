@@ -101,7 +101,7 @@ namespace Core.Applications.Async
          try
          {
             await Task.Run(() => action(source.Token));
-            return Unit.Completed(source.Token);
+            return unit.Completed(source.Token);
          }
          catch (OperationCanceledException)
          {
@@ -118,7 +118,7 @@ namespace Core.Applications.Async
          try
          {
             await Task.Run(action, token);
-            return Unit.Completed(token);
+            return unit.Completed(token);
          }
          catch (OperationCanceledException)
          {
@@ -216,7 +216,7 @@ namespace Core.Applications.Async
             try
             {
                action();
-               taskCompletionSource.SetResult(Unit.Value);
+               taskCompletionSource.SetResult(unit);
             }
             catch (Exception exception)
             {

@@ -178,6 +178,6 @@ namespace Core.Matching
          }
       }
 
-      public Matched<Unit> Matched() => More ? Unit.Value : nil;
+      public Matched<Unit> Matched() => More ? unit : nil;
    }
 }

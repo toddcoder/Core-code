@@ -6,6 +6,8 @@ namespace Core.Monads
    {
       public static readonly Nil nil = new();
 
+      public static readonly Unit unit = new();
+
       public static Maybe<TParent> some<TChild, TParent>(TChild value) where TChild : TParent
       {
          return new Some<TParent>(value);
@@ -101,11 +103,11 @@ namespace Core.Monads
       {
          try
          {
-            return test ? Unit.Success() : ifFalse().Failure<Unit>();
+            return test ? unit : ifFalse().Failure<Unit>();
          }
          catch (Exception exception)
          {
-            return failure<Unit>(exception);
+            return exception;
          }
       }
    }

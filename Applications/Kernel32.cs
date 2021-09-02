@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using Core.Monads;
 using Microsoft.Win32.SafeHandles;
 using static Core.Monads.AttemptFunctions;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Applications
 {
@@ -55,12 +56,12 @@ namespace Core.Applications
       internal static Result<Unit> initializeOutStream() =>
          from fs in fileStream("CONOUT$", GENERIC_WRITE, FILE_SHARE_WRITE, FileAccess.Write)
          from writer in getTextWriter(fs)
-         select Unit.Value;
+         select unit;
 
       internal static Result<Unit> initializeInStream() =>
          from fs in fileStream("CONIN$", GENERIC_READ, FILE_SHARE_READ, FileAccess.Read)
          from reader in getTextReader(fs)
-         select Unit.Value;
+         select unit;
 
       private static Result<TextWriter> getTextWriter(FileStream fileStream) => tryTo(() =>
       {

@@ -369,7 +369,7 @@ namespace Core.Applications.CommandProcessing
             if (_object.If(out var objValue))
             {
                propertyInfo.SetValue(this, objValue);
-               return Unit.Value;
+               return unit;
             }
             else
             {
@@ -379,7 +379,7 @@ namespace Core.Applications.CommandProcessing
          else
          {
             propertyInfo.SetValue(this, true);
-            return Unit.Value;
+            return unit;
          }
       }
 

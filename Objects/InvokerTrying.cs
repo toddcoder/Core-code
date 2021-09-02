@@ -1,5 +1,6 @@
 ﻿using Core.Monads;
 using static Core.Monads.AttemptFunctions;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Objects
 {
@@ -14,7 +15,7 @@ namespace Core.Objects
       public Result<Unit> Invoke(string name, params object[] args) => tryTo(() =>
       {
          invoker.Invoke(name, args);
-         return Unit.Value;
+         return unit;
       });
 
       public Result<T> GetProperty<T>(string name, params object[] args) => tryTo(() => invoker.GetProperty<T>(name, args));
