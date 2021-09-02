@@ -443,7 +443,15 @@ namespace Core.Applications.CommandProcessing
          }
          else if (type == typeof(Maybe<string>))
          {
-            return maybe(value.IsNotEmpty(), () => (object)value);
+            if (value.IsNotEmpty())
+            {
+               var _someString = value.Some();
+               return ((object)_someString).Some();
+            }
+            else
+            {
+               return none<object>();
+            }
          }
          else if (type == typeof(FolderName))
          {
@@ -455,11 +463,29 @@ namespace Core.Applications.CommandProcessing
          }
          else if (type == typeof(Maybe<FolderName>))
          {
-            return maybe(value.IsNotEmpty(), () => (object)(FolderName)value);
+            if (value.IsNotEmpty())
+            {
+               FolderName folder = value;
+               var _folder = folder.Some();
+               return ((object)_folder).Some();
+            }
+            else
+            {
+               return none<object>();
+            }
          }
          else if (type == typeof(Maybe<FileName>))
          {
-            return maybe(value.IsNotEmpty(), () => (object)(FileName)value);
+            if (value.IsNotEmpty())
+            {
+               FileName file = value;
+               var _file = file.Some();
+               return ((object)_file).Some();
+            }
+            else
+            {
+               return none<object>();
+            }
          }
          else
          {
