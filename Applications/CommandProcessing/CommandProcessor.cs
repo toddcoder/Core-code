@@ -46,7 +46,13 @@ namespace Core.Applications.CommandProcessing
          Console.CancelKeyPress += CancelKeyPress;
       }
 
-      public abstract void Initialize();
+      public virtual void Initialize(string command)
+      {
+      }
+
+      public virtual void CleanUp(string command)
+      {
+      }
 
       public IWriter StandardWriter { get; set; }
 
@@ -128,14 +134,20 @@ namespace Core.Applications.CommandProcessing
                   ExceptionWriter.WriteLine($"No switches provided for {command}");
                }
             }
-            else if (this.MethodsUsing<CommandAttribute>().FirstOrNone(t => command == t.attribute.Name).If(out var methodInfo, out var commandAttribute))
+            else if (this.MethodsUsing<CommandAttribute>().FirstOrNone(t => command == t.attribute.Name)
+               .If(out var methodInfo, out var commandAttribute))
             {
                if (commandAttribute.Initialize)
                {
-                  Initialize();
+                  Initialize(commandAttribute.Name);
                }
+
                var result = executeMethod(methodInfo, rest);
-               if (result.IfNot(out var exception))
+               if (result.If(out _, out var exception))
+               {
+                  CleanUp(commandAttribute.Name);
+               }
+               else
                {
                   HandleException(exception);
                }

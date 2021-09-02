@@ -183,7 +183,7 @@ namespace Core.Tests
       [Switch("ignore-case"), ShortCut("i"), SwitchHelp("ignore case")]
       public bool IgnoreCase { get; set; }
 
-      public override void Initialize()
+      public override void Initialize(string command)
       {
          Text = string.Empty;
          Pattern = string.Empty;
