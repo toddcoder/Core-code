@@ -7,6 +7,7 @@ using Core.Assertions;
 using Core.Collections;
 using Core.Computers;
 using Core.Enumerables;
+using Core.Exceptions;
 using Core.Matching;
 using Core.Monads;
 using Core.Objects;
@@ -92,7 +93,6 @@ namespace Core.Applications.CommandProcessing
       {
          try
          {
-            Initialize();
             commandLine = removeExecutableFromCommandLine(commandLine);
             run(commandLine, true);
          }
@@ -128,8 +128,12 @@ namespace Core.Applications.CommandProcessing
                   ExceptionWriter.WriteLine($"No switches provided for {command}");
                }
             }
-            else if (this.MethodsUsing<CommandAttribute>().FirstOrNone(t => command == t.attribute.Name).If(out var methodInfo, out _))
+            else if (this.MethodsUsing<CommandAttribute>().FirstOrNone(t => command == t.attribute.Name).If(out var methodInfo, out var commandAttribute))
             {
+               if (commandAttribute.Initialize)
+               {
+                  Initialize();
+               }
                var result = executeMethod(methodInfo, rest);
                if (result.IfNot(out var exception))
                {
@@ -294,7 +298,7 @@ namespace Core.Applications.CommandProcessing
                var result = fill(switchAttributes, name, _value);
                if (result.IsNone)
                {
-                  return $"Switch {name} not successful".Failure<Unit>();
+                  return $"Switch {name} not successful".Fail();
                }
             }
             else if (prefix == ShortCut)
@@ -302,12 +306,12 @@ namespace Core.Applications.CommandProcessing
                var result = fill(shortCutAttributes, name, _value);
                if (result.IsNone)
                {
-                  return $"Shortcut {name} not successful".Failure<Unit>();
+                  return $"Shortcut {name} not successful".Fail();
                }
             }
             else
             {
-               return $"{name} not proceeded by {Prefix} or {ShortCut}".Failure<Unit>();
+               return $"{name} not proceeded by {Prefix} or {ShortCut}".Fail();
             }
          }
 
