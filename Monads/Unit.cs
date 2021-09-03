@@ -1,30 +1,24 @@
-﻿using System.Threading;
-using static Core.Monads.MonadFunctions;
+﻿using System;
 
 namespace Core.Monads
 {
-   public class Unit
+   public sealed class Unit : IEquatable<Unit>
    {
-      public static Unit Value => new Unit();
+      private readonly int hashCode;
 
-      public static Maybe<Unit> Some() => Value.Some();
-
-      public static Result<Unit> Success() => Value.Success();
-
-      public static Matched<Unit> Matched() => Value.Match();
-
-      public static Completion<Unit> Completed() => Value.Completed();
-
-      public static Completion<Unit> Completed(CancellationToken token)
+      public Unit()
       {
-         if (token.IsCancellationRequested)
-         {
-            return cancelled<Unit>();
-         }
-         else
-         {
-            return Completed();
-         }
+         hashCode = typeof(Unit).GetHashCode();
       }
+
+      public bool Equals(Unit other) => true;
+
+      public override bool Equals(object obj) => obj is Unit;
+
+      public override int GetHashCode() => hashCode;
+
+      public static bool operator ==(Unit left, Unit right) => Equals(left, right);
+
+      public static bool operator !=(Unit left, Unit right) => !Equals(left, right);
    }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Core.Monads;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Collections
 {
@@ -49,7 +50,7 @@ namespace Core.Collections
          }
       }
 
-      public void Add(T item) => content[item] = Unit.Value;
+      public void Add(T item) => content[item] = unit;
 
       public bool Contains(T item) => content.ContainsKey(item);
    }

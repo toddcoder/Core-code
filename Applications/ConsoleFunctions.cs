@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using Core.Monads;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Applications
 {
@@ -21,7 +22,7 @@ namespace Core.Applications
             return
                from outStream in Kernel32.initializeOutStream()
                from inStream in Kernel32.initializeInStream()
-               select Unit.Value;
+               select unit;
          }
          else
          {

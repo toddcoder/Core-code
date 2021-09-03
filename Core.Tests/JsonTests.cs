@@ -29,6 +29,7 @@ namespace Core.Tests
       {
          using var writer = new JsonWriter();
 
+         writer.BeginObject();
          writer.BeginObject("metadata");
          writer.Write("id", "Core");
          writer.Write("version", "1.4.4.6");
@@ -40,6 +41,7 @@ namespace Core.Tests
          writer.Write("Async");
          writer.Write("Types");
          writer.EndArray();
+         writer.EndObject();
          writer.EndObject();
 
          Console.WriteLine(writer);

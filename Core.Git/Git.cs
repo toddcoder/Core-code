@@ -3,6 +3,7 @@ using System.Diagnostics;
 using Core.Exceptions;
 using Core.Monads;
 using Core.Strings;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Git
 {
@@ -36,7 +37,7 @@ namespace Core.Git
             }
             else
             {
-               return error.Fail();
+               return fail(error);
             }
          }
          catch (Exception exception)

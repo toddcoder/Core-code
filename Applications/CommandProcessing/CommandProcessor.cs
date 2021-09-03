@@ -45,7 +45,13 @@ namespace Core.Applications.CommandProcessing
          Console.CancelKeyPress += CancelKeyPress;
       }
 
-      public abstract void Initialize();
+      public virtual void Initialize(string command)
+      {
+      }
+
+      public virtual void CleanUp(string command)
+      {
+      }
 
       public IWriter StandardWriter { get; set; }
 
@@ -76,7 +82,7 @@ namespace Core.Applications.CommandProcessing
       {
          if (commandLine.IsMatch("^ 'help' $; f"))
          {
-            return ("help", "").Some();
+            return ("help", "");
          }
          else if (commandLine.IsMatch("^ /s* [/w '-']+ /s* $; f"))
          {
@@ -92,7 +98,6 @@ namespace Core.Applications.CommandProcessing
       {
          try
          {
-            Initialize();
             commandLine = removeExecutableFromCommandLine(commandLine);
             run(commandLine, true);
          }
@@ -128,10 +133,20 @@ namespace Core.Applications.CommandProcessing
                   ExceptionWriter.WriteLine($"No switches provided for {command}");
                }
             }
-            else if (this.MethodsUsing<CommandAttribute>().FirstOrNone(t => command == t.attribute.Name).If(out var methodInfo, out _))
+            else if (this.MethodsUsing<CommandAttribute>().FirstOrNone(t => command == t.attribute.Name)
+               .If(out var methodInfo, out var commandAttribute))
             {
+               if (commandAttribute.Initialize)
+               {
+                  Initialize(commandAttribute.Name);
+               }
+
                var result = executeMethod(methodInfo, rest);
-               if (result.IfNot(out var exception))
+               if (result.If(out _, out var exception))
+               {
+                  CleanUp(commandAttribute.Name);
+               }
+               else
                {
                   HandleException(exception);
                }
@@ -216,12 +231,7 @@ namespace Core.Applications.CommandProcessing
 
       protected (PropertyInfo propertyInfo, SwitchAttribute attribute)[] getSwitchAttributes()
       {
-         return this.PropertiesUsing<SwitchAttribute>().Where(t => !t.attribute.Flag).ToArray();
-      }
-
-      public (PropertyInfo, SwitchAttribute attribute)[] getFlaggedSwitchAttributes()
-      {
-         return this.PropertiesUsing<SwitchAttribute>().Where(t => t.attribute.Flag).ToArray();
+         return this.PropertiesUsing<SwitchAttribute>().ToArray();
       }
 
       protected (PropertyInfo propertyInfo, ShortCutAttribute attribute)[] getShortCutAttributes()
@@ -294,7 +304,7 @@ namespace Core.Applications.CommandProcessing
                var result = fill(switchAttributes, name, _value);
                if (result.IsNone)
                {
-                  return $"Switch {name} not successful".Failure<Unit>();
+                  return fail($"Switch {name} not successful");
                }
             }
             else if (prefix == ShortCut)
@@ -302,12 +312,12 @@ namespace Core.Applications.CommandProcessing
                var result = fill(shortCutAttributes, name, _value);
                if (result.IsNone)
                {
-                  return $"Shortcut {name} not successful".Failure<Unit>();
+                  return fail($"Shortcut {name} not successful");
                }
             }
             else
             {
-               return $"{name} not proceeded by {Prefix} or {ShortCut}".Failure<Unit>();
+               return fail($"{name} not proceeded by {Prefix} or {ShortCut}");
             }
          }
 
@@ -369,7 +379,7 @@ namespace Core.Applications.CommandProcessing
             if (_object.If(out var objValue))
             {
                propertyInfo.SetValue(this, objValue);
-               return Unit.Value;
+               return unit;
             }
             else
             {
@@ -379,7 +389,7 @@ namespace Core.Applications.CommandProcessing
          else
          {
             propertyInfo.SetValue(this, true);
-            return Unit.Value;
+            return unit;
          }
       }
 
@@ -427,7 +437,15 @@ namespace Core.Applications.CommandProcessing
          }
          else if (type == typeof(Maybe<string>))
          {
-            return maybe(value.IsNotEmpty(), () => (object)value);
+            if (value.IsNotEmpty())
+            {
+               var _someString = value.Some();
+               return ((object)_someString).Some();
+            }
+            else
+            {
+               return none<object>();
+            }
          }
          else if (type == typeof(FolderName))
          {
@@ -439,11 +457,29 @@ namespace Core.Applications.CommandProcessing
          }
          else if (type == typeof(Maybe<FolderName>))
          {
-            return maybe(value.IsNotEmpty(), () => (object)(FolderName)value);
+            if (value.IsNotEmpty())
+            {
+               FolderName folder = value;
+               var _folder = folder.Some();
+               return ((object)_folder).Some();
+            }
+            else
+            {
+               return none<object>();
+            }
          }
          else if (type == typeof(Maybe<FileName>))
          {
-            return maybe(value.IsNotEmpty(), () => (object)(FileName)value);
+            if (value.IsNotEmpty())
+            {
+               FileName file = value;
+               var _file = file.Some();
+               return ((object)_file).Some();
+            }
+            else
+            {
+               return none<object>();
+            }
          }
          else
          {

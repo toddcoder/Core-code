@@ -60,7 +60,7 @@ namespace Core.Monads
          try
          {
             action();
-            return Unit.Success();
+            return unit;
          }
          catch (Exception exception)
          {

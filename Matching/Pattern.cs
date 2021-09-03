@@ -74,6 +74,14 @@ namespace Core.Matching
          }
       }
 
+      public static Pattern operator +(Pattern pattern1, Pattern pattern2) => new(pattern1.Regex + pattern2.Regex, pattern2.Options, pattern2.Friendly);
+
+      public static Pattern operator +(Pattern pattern, string source)
+      {
+         Pattern pattern2 = source;
+         return pattern + pattern2;
+      }
+
       protected static StringHash<string> friendlyPatterns;
 
       static Pattern()
@@ -142,16 +150,16 @@ namespace Core.Matching
 
             if (matches.Length > 0)
             {
-               return new MatchResult(matches, indexesToNames, namesToIndexes, slicer, input).Match();
+               return new MatchResult(matches, indexesToNames, namesToIndexes, slicer, input);
             }
             else
             {
-               return noMatch<MatchResult>();
+               return nil;
             }
          }
          catch (Exception exception)
          {
-            return failedMatch<MatchResult>(exception);
+            return exception;
          }
       }
 

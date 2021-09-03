@@ -52,6 +52,8 @@ namespace Core.Git
 
       public Result<string[]> Merge() => Git.Execute($"merge {Origin}/{branch}");
 
+      public Result<string[]> Abort() => Git.Execute("merge --abort");
+
       public Result<string[]> Pull() => Git.Execute("pull");
 
       public Result<string[]> Push(bool first = false)
@@ -59,5 +61,7 @@ namespace Core.Git
          var arguments = first ? $"branch --set-upstream {Origin} {branch}" : "push";
          return Git.Execute(arguments);
       }
+
+      public Result<string[]> Reset() => Git.Execute($"git reset --hard {Origin}/{branch}");
    }
 }

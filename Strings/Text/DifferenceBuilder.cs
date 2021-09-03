@@ -76,7 +76,7 @@ namespace Core.Strings.Text
                {
                   if (result.EditLength <= 0)
                   {
-                     return Unit.Success();
+                     return unit;
                   }
 
                   switch (result.LastEdit)
@@ -134,7 +134,7 @@ namespace Core.Strings.Text
             }
          }
 
-         return Unit.Success();
+         return unit;
       }
 
       protected static Result<EditLengthResult> calculateEditLength(int[] oldItems, int oldStart, int oldEnd, int[] newItems, int newStart,
