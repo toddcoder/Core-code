@@ -1,11 +1,10 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Text;
-using Core.Exceptions;
 using Core.Markup.Code.Extents;
 using Core.Matching;
 using Core.Monads;
 using Core.Strings;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Markup.Parser
 {
@@ -66,14 +65,12 @@ namespace Core.Markup.Parser
          }
          else
          {
-            return $"Style [{styleName}] hasn't been registered".Fail();
+            return fail($"Style [{styleName}] hasn't been registered");
          }
       }
 
       protected Matched<Extent> getFormat(ParsingState state)
       {
-         static ApplicationException fail(string specifier) => $"Specifier {specifier} not recognized".Fail();
-
          var current = state.Source.Current;
          if (current.Matches("^ /(-[']']+) ']'; f").If(out var result))
          {

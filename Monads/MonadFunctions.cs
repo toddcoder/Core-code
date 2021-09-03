@@ -8,6 +8,8 @@ namespace Core.Monads
 
       public static readonly Unit unit = new();
 
+      public static Exception fail(string message) => new ApplicationException(message);
+
       public static Maybe<TParent> some<TChild, TParent>(TChild value) where TChild : TParent
       {
          return new Some<TParent>(value);

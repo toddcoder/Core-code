@@ -7,7 +7,6 @@ using Core.Assertions;
 using Core.Collections;
 using Core.Computers;
 using Core.Enumerables;
-using Core.Exceptions;
 using Core.Matching;
 using Core.Monads;
 using Core.Objects;
@@ -83,7 +82,7 @@ namespace Core.Applications.CommandProcessing
       {
          if (commandLine.IsMatch("^ 'help' $; f"))
          {
-            return ("help", "").Some();
+            return ("help", "");
          }
          else if (commandLine.IsMatch("^ /s* [/w '-']+ /s* $; f"))
          {
@@ -232,12 +231,7 @@ namespace Core.Applications.CommandProcessing
 
       protected (PropertyInfo propertyInfo, SwitchAttribute attribute)[] getSwitchAttributes()
       {
-         return this.PropertiesUsing<SwitchAttribute>().Where(t => !t.attribute.Flag).ToArray();
-      }
-
-      public (PropertyInfo, SwitchAttribute attribute)[] getFlaggedSwitchAttributes()
-      {
-         return this.PropertiesUsing<SwitchAttribute>().Where(t => t.attribute.Flag).ToArray();
+         return this.PropertiesUsing<SwitchAttribute>().ToArray();
       }
 
       protected (PropertyInfo propertyInfo, ShortCutAttribute attribute)[] getShortCutAttributes()
@@ -310,7 +304,7 @@ namespace Core.Applications.CommandProcessing
                var result = fill(switchAttributes, name, _value);
                if (result.IsNone)
                {
-                  return $"Switch {name} not successful".Fail();
+                  return fail($"Switch {name} not successful");
                }
             }
             else if (prefix == ShortCut)
@@ -318,12 +312,12 @@ namespace Core.Applications.CommandProcessing
                var result = fill(shortCutAttributes, name, _value);
                if (result.IsNone)
                {
-                  return $"Shortcut {name} not successful".Fail();
+                  return fail($"Shortcut {name} not successful");
                }
             }
             else
             {
-               return $"{name} not proceeded by {Prefix} or {ShortCut}".Fail();
+               return fail($"{name} not proceeded by {Prefix} or {ShortCut}");
             }
          }
 

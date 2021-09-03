@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Linq;
 using Core.Enumerables;
+using Core.Matching;
 using Core.Monads;
 using static Core.Collections.CollectionFunctions;
 
@@ -36,6 +37,8 @@ namespace Core.Collections
          return this.FirstOrNone(i => i.IndexOf(needle, comparison) > -1);
       }
 
+      public Maybe<string> FirstMatch(Pattern pattern) => this.FirstOrNone(i => i.IsMatch(pattern));
+
       public bool AnyStartsWith(string needle) => this.Any(i => i.StartsWith(needle, ignoreCase, CultureInfo.CurrentCulture));
 
       public bool AnyEndsWith(string needle) => this.Any(i => i.EndsWith(needle, ignoreCase, CultureInfo.CurrentCulture));
@@ -45,5 +48,7 @@ namespace Core.Collections
          var comparison = stringComparison(ignoreCase);
          return this.Any(i => i.IndexOf(needle, comparison) > -1);
       }
+
+      public bool AnyMatch(Pattern pattern) => this.Any(i => i.IsMatch(pattern));
    }
 }

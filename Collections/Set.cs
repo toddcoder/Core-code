@@ -9,9 +9,9 @@ namespace Core.Collections
 {
    public class Set<T> : IEnumerable<T>, IEquatable<Set<T>>
    {
-      public static Set<T> Of(params T[] items) => new Set<T>(items);
+      public static Set<T> Of(params T[] items) => new(items);
 
-      public static Set<T> Of(IEnumerable<T> items) => new Set<T>(items);
+      public static Set<T> Of(IEnumerable<T> items) => new(items);
 
       public static Set<T> operator |(Set<T> set1, IEnumerable<T> set2) => set1.Union(set2);
 
@@ -27,7 +27,7 @@ namespace Core.Collections
       public Set()
       {
          content = new HashSet<T>();
-         _equalityComparer = none<IEqualityComparer<T>>();
+         _equalityComparer = nil;
       }
 
       public Set(IEqualityComparer<T> equalityComparer)
@@ -39,7 +39,7 @@ namespace Core.Collections
       public Set(IEnumerable<T> items)
       {
          content = new HashSet<T>(items);
-         _equalityComparer = none<IEqualityComparer<T>>();
+         _equalityComparer = nil;
       }
 
       public Set(IEnumerable<T> items, IEqualityComparer<T> equalityComparer)
@@ -51,7 +51,7 @@ namespace Core.Collections
       public Set(Set<T> other)
       {
          content = new HashSet<T>(other);
-         _equalityComparer = none<IEqualityComparer<T>>();
+         _equalityComparer = nil;
       }
 
       public Set(Set<T> other, IEqualityComparer<T> equalityComparer)
@@ -63,7 +63,7 @@ namespace Core.Collections
       public Set(params T[] items)
       {
          content = new HashSet<T>(items);
-         _equalityComparer = none<IEqualityComparer<T>>();
+         _equalityComparer = nil;
       }
 
       public int Count => content.Count;
@@ -182,6 +182,6 @@ namespace Core.Collections
          }
       }
 
-      public HashSet<T> ToHashSet() => new HashSet<T>(this);
+      public HashSet<T> ToHashSet() => new(this);
    }
 }
