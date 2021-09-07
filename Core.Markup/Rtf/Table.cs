@@ -41,9 +41,9 @@ namespace Core.Markup.Rtf
          titleRowCount = 0;
          cellPadding = new Margins[this.rowCount];
 
-         HeaderBackgroundColor = none<ColorDescriptor>();
-         RowBackgroundColor = none<ColorDescriptor>();
-         RowAltBackgroundColor = none<ColorDescriptor>();
+         HeaderBackgroundColor = nil;
+         RowBackgroundColor = nil;
+         RowAltBackgroundColor = nil;
 
          var defaultCellWidth = horizontalWidth / columnCount;
          cells = new TableCell[this.rowCount][];

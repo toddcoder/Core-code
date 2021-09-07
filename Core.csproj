@@ -254,6 +254,7 @@
     <Compile Include="Exceptions\ExceptionExtensions.cs" />
     <Compile Include="Lambdas\LambdaExtensions.cs" />
     <Compile Include="Lambdas\LambdaFunctions.cs" />
+    <Compile Include="Lists\ListExtensions.cs" />
     <Compile Include="Monads\AttemptFunctions.cs" />
     <Compile Include="Monads\Cancelled.cs" />
     <Compile Include="Monads\Completed.cs" />

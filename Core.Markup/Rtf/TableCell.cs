@@ -26,7 +26,7 @@ namespace Core.Markup.Rtf
          verticalAlignmentAlignment = VerticalAlignment.Top;
          borders = new Borders();
          mergeInfo = new LateLazy<CellMergeInfo>(true, "Merge info has not be set through MergeInfo property");
-         BackgroundColor = none<ColorDescriptor>();
+         BackgroundColor = nil;
       }
 
       public bool IsBeginOfColumnSpan => mergeInfo.AnyValue.Map(mergeInfo => mergeInfo.ColumnIndex == 0).DefaultTo(() => false);

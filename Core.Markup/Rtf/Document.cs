@@ -2,17 +2,26 @@ using System.Linq;
 using System.Text;
 using Core.Collections;
 using Core.Computers;
+using Core.Monads;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Markup.Rtf
 {
    public class Document : BlockList
    {
+      protected static StringHash<int> fontTable;
+      protected static Hash<Color, int> colorTable;
+
+      static Document()
+      {
+         fontTable = new StringHash<int>(true) { [DefaultValue.FONT] = 0 };
+         colorTable = new Hash<Color, int> { [new Color()] = 0 };
+      }
+
       protected PaperSize paperSize;
       protected PaperOrientation paperOrientation;
       protected Margins margins;
       protected Lcid lcid;
-      protected StringHash<int> fontTable;
-      protected Hash<Color, int> colorTable;
       protected HeaderFooter header;
       protected HeaderFooter footer;
 
@@ -38,9 +47,6 @@ namespace Core.Markup.Rtf
             margins[Direction.Left] = DefaultValue.A4_SHORT_EDGES;
          }
 
-         fontTable = new StringHash<int>(true) { [DefaultValue.FONT] = 0 };
-         colorTable = new Hash<Color, int> { [new Color()] = 0 };
-
          header = new HeaderFooter(HeaderFooterType.Header);
          footer = new HeaderFooter(HeaderFooterType.Footer);
       }
@@ -64,29 +70,29 @@ namespace Core.Markup.Rtf
          fontTable[fontName] = 0;
       }
 
-      public FontDescriptor Font(string fontName)
+      public static FontDescriptor Font(string fontName)
       {
          var index = fontTable.Memoize(fontName, _ => fontTable.Count);
          return new FontDescriptor(index);
       }
 
-      public ColorDescriptor Color(Color color)
+      public static ColorDescriptor Color(Color color)
       {
          var index = colorTable.Memoize(color, _ => colorTable.Count);
          return new ColorDescriptor(index);
       }
 
-      public ColorDescriptor Color(System.Drawing.Color color)
+      public static ColorDescriptor Color(System.Drawing.Color color)
       {
          var rtfColor = new Color(color.R, color.G, color.B);
          return Color(rtfColor);
       }
 
-      public ColorDescriptor Color(byte red, byte green, byte blue) => Color(new Color(red, green, blue));
+      public static ColorDescriptor Color(byte red, byte green, byte blue) => Color(new Color(red, green, blue));
 
-      public ColorDescriptor Color(int color) => Color(new Color(color));
+      public static ColorDescriptor Color(int color) => Color(new Color(color));
 
-      public ColorDescriptor Color(string colorName)
+      public static ColorDescriptor Color(string colorName)
       {
          var systemColor = System.Drawing.Color.FromName(colorName);
          var color = new Color(systemColor);
@@ -185,6 +191,64 @@ namespace Core.Markup.Rtf
       public void Save(FileName file)
       {
          file.Text = Render();
+      }
+
+      public Result<Document> Append(Document otherDocument, AppendFavoring appendFavoring) => appendFavoring switch
+      {
+         AppendFavoring.FavorLeft => append(this, otherDocument),
+         AppendFavoring.FavorRight => append(otherDocument, this),
+         AppendFavoring.FailOnConflict => appendUnfavored(this, otherDocument),
+         _ => fail($"Didn't understand {appendFavoring}")
+      };
+
+      protected static Result<Document> append(Document favoredDocument, Document unfavoredDocument)
+      {
+         var newDocument = new Document(favoredDocument.paperSize, favoredDocument.paperOrientation, favoredDocument.lcid)
+         {
+            margins = favoredDocument.margins,
+            header = favoredDocument.header,
+            footer = favoredDocument.footer
+         };
+      }
+
+      protected static Result<Document> appendUnfavored(Document leftDocument, Document rightDocument)
+      {
+         var paperSize = leftDocument.paperSize;
+         var paperOrientation = leftDocument.paperOrientation;
+         var lcid = leftDocument.lcid;
+         var margins = leftDocument.margins;
+         var header = leftDocument.header;
+         var footer = leftDocument.footer;
+
+         if (paperSize != rightDocument.paperSize)
+         {
+            return fail("Paper sizes don't match");
+         }
+
+         if (paperOrientation != rightDocument.paperOrientation)
+         {
+            return fail("Paper orientations don't match");
+         }
+
+         if (lcid != rightDocument.lcid)
+         {
+            return fail("Localizations don't match");
+         }
+
+         if (margins != rightDocument.margins)
+         {
+            return fail("Margins don't match");
+         }
+
+         if (header != rightDocument.header)
+         {
+            return fail("Headers don't match");
+         }
+
+         if (footer != rightDocument.footer)
+         {
+            return fail("")
+         }
       }
    }
 }

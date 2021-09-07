@@ -12,6 +12,6 @@ namespace Core.Markup.Rtf
       Super = 0x08,
       Sub = 0x10,
       Scaps = 0x20,
-      Strike = 0x40,
+      Strike = 0x40
    }
 }

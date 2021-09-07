@@ -50,7 +50,7 @@ namespace Core.Markup.Rtf
       public Paragraph(bool allowFootnote, bool allowControlWord)
       {
          text = new StringBuilder();
-         _lineSpacing = none<float>();
+         _lineSpacing = nil;
          margins = new Margins();
          alignment = Alignment.Left;
          charFormats = new List<CharFormat>();
@@ -118,20 +118,20 @@ namespace Core.Markup.Rtf
 
       public CharFormat CharFormat()
       {
-         var fmt = new CharFormat();
-         charFormats.Add(fmt);
+         var format = new CharFormat();
+         charFormats.Add(format);
 
-         return fmt;
+         return format;
       }
 
       public Footnote Footnote(int position)
       {
          allowFootnote.Must().BeTrue().OrThrow("Footnote is not allowed.");
 
-         var fnt = new Footnote(position, text.Length);
-         footnotes.Add(fnt);
+         var footnote = new Footnote(position, text.Length);
+         footnotes.Add(footnote);
 
-         return fnt;
+         return footnote;
       }
 
       public void ControlWord(int position, FieldType type)

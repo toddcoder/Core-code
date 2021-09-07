@@ -7,6 +7,6 @@ namespace Core.Markup.Rtf
       Parentheses,
       SquareBrackets,
       AngledBrackets,
-      Braces,
+      Braces
    }
 }
