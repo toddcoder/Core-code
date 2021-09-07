@@ -27,6 +27,7 @@ namespace Core.Monads
          return false;
       }
 
+      [Obsolete("Use If()")]
       public override bool ValueOrOriginal(out T value, out Result<T> original)
       {
          value = default;
@@ -35,6 +36,7 @@ namespace Core.Monads
          return false;
       }
 
+      [Obsolete("Use If()")]
       public override bool ValueOrCast<TResult>(out T value, out Result<TResult> result)
       {
          value = default;
@@ -47,6 +49,7 @@ namespace Core.Monads
 
       public override bool IsFailed => true;
 
+      [Obsolete("Use exception")]
       public override Result<TOther> ExceptionAs<TOther>() => failure<TOther>(exception);
 
       [DebuggerStepThrough]

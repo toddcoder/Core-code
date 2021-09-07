@@ -313,23 +313,23 @@ namespace Core.Monads
       public static Result<TResult> ForAny<TSource, TResult>(this IEnumerable<TSource> enumerable,
          Func<TSource, TResult> func) => tryTo(() =>
       {
-         var firstItem = none<TResult>();
+         Maybe<TResult> _firstItem = nil;
          foreach (var result in enumerable.Select(item => tryTo(() => func(item))))
          {
-            if (result.ValueOrOriginal(out var value, out var original))
+            if (result.If(out var value, out var exception))
             {
-               if (firstItem.IsNone)
+               if (_firstItem.IsNone)
                {
-                  firstItem = value.Some();
+                  _firstItem = value;
                }
             }
             else
             {
-               return original;
+               return exception;
             }
          }
 
-         return firstItem.Result("Enumerable empty");
+         return _firstItem.Result("Enumerable empty");
       });
 
       public static Result<TResult> ForAny<TSource, TResult>(this Result<IEnumerable<TSource>> enumerable,
@@ -377,7 +377,7 @@ namespace Core.Monads
             }
          }
 
-         return result().Success();
+         return result();
       });
 
       public static Result<TResult> ForAny<TSource, TResult>(this Result<IEnumerable<TSource>> enumerable,
@@ -656,9 +656,9 @@ namespace Core.Monads
          }
       }
 
-      public static bool If<T1, T2>(this Matched<(T1, T2)> matched, out T1 v1, out T2 v2, out Maybe<Exception> anyException)
+      public static bool If<T1, T2>(this Matched<(T1, T2)> matched, out T1 v1, out T2 v2, out Maybe<Exception> _exception)
       {
-         if (matched.If(out var value, out anyException))
+         if (matched.If(out var value, out _exception))
          {
             v1 = value.Item1;
             v2 = value.Item2;
@@ -694,9 +694,9 @@ namespace Core.Monads
          }
       }
 
-      public static bool If<T1, T2, T3>(this Matched<(T1, T2, T3)> matched, out T1 v1, out T2 v2, out T3 v3, out Maybe<Exception> anyException)
+      public static bool If<T1, T2, T3>(this Matched<(T1, T2, T3)> matched, out T1 v1, out T2 v2, out T3 v3, out Maybe<Exception> _exception)
       {
-         if (matched.If(out var value, out anyException))
+         if (matched.If(out var value, out _exception))
          {
             v1 = value.Item1;
             v2 = value.Item2;
@@ -738,9 +738,9 @@ namespace Core.Monads
       }
 
       public static bool If<T1, T2, T3, T4>(this Matched<(T1, T2, T3, T4)> matched, out T1 v1, out T2 v2, out T3 v3,
-         out T4 v4, out Maybe<Exception> anyException)
+         out T4 v4, out Maybe<Exception> _exception)
       {
-         if (matched.If(out var value, out anyException))
+         if (matched.If(out var value, out _exception))
          {
             v1 = value.Item1;
             v2 = value.Item2;
@@ -778,9 +778,9 @@ namespace Core.Monads
          }
       }
 
-      public static bool If<T1, T2>(this Completion<(T1, T2)> completion, out T1 v1, out T2 v2, out Maybe<Exception> anyException)
+      public static bool If<T1, T2>(this Completion<(T1, T2)> completion, out T1 v1, out T2 v2, out Maybe<Exception> _exception)
       {
-         if (completion.If(out var value, out anyException))
+         if (completion.If(out var value, out _exception))
          {
             v1 = value.Item1;
             v2 = value.Item2;
@@ -817,9 +817,9 @@ namespace Core.Monads
       }
 
       public static bool If<T1, T2, T3>(this Completion<(T1, T2, T3)> completion, out T1 v1, out T2 v2, out T3 v3,
-         out Maybe<Exception> anyException)
+         out Maybe<Exception> _exception)
       {
-         if (completion.If(out var value, out anyException))
+         if (completion.If(out var value, out _exception))
          {
             v1 = value.Item1;
             v2 = value.Item2;
@@ -860,9 +860,9 @@ namespace Core.Monads
       }
 
       public static bool If<T1, T2, T3, T4>(this Completion<(T1, T2, T3, T4)> completion, out T1 v1, out T2 v2, out T3 v3, out T4 v4,
-         out Maybe<Exception> anyException)
+         out Maybe<Exception> _exception)
       {
-         if (completion.If(out var value, out anyException))
+         if (completion.If(out var value, out _exception))
          {
             v1 = value.Item1;
             v2 = value.Item2;
@@ -877,378 +877,6 @@ namespace Core.Monads
             v2 = default;
             v3 = default;
             v4 = default;
-
-            return false;
-         }
-      }
-
-      public static bool ValueOrOriginal<T1, T2>(this Result<(T1, T2)> result, out T1 v1, out T2 v2, out Result<(T1, T2)> original)
-      {
-         if (result.ValueOrOriginal(out var tuple, out original))
-         {
-            v1 = tuple.Item1;
-            v2 = tuple.Item2;
-
-            return true;
-         }
-         else
-         {
-            v1 = default;
-            v2 = default;
-
-            return false;
-         }
-      }
-
-      public static bool ValueOrOriginal<T1, T2, T3>(this Result<(T1, T2, T3)> result, out T1 v1, out T2 v2, out T3 v3,
-         out Result<(T1, T2, T3)> original)
-      {
-         if (result.ValueOrOriginal(out var tuple, out original))
-         {
-            v1 = tuple.Item1;
-            v2 = tuple.Item2;
-            v3 = tuple.Item3;
-
-            return true;
-         }
-         else
-         {
-            v1 = default;
-            v2 = default;
-            v3 = default;
-
-            return false;
-         }
-      }
-
-      public static bool ValueOrOriginal<T1, T2, T3, T4>(this Result<(T1, T2, T3, T4)> result, out T1 v1, out T2 v2, out T3 v3, out T4 v4,
-         out Result<(T1, T2, T3, T4)> original)
-      {
-         if (result.ValueOrOriginal(out var tuple, out original))
-         {
-            v1 = tuple.Item1;
-            v2 = tuple.Item2;
-            v3 = tuple.Item3;
-            v4 = tuple.Item4;
-
-            return true;
-         }
-         else
-         {
-            v1 = default;
-            v2 = default;
-            v3 = default;
-            v4 = default;
-
-            return false;
-         }
-      }
-
-      public static bool ValueOrOriginal<T1, T2>(this Matched<(T1, T2)> matched, out T1 v1, out T2 v2, out Matched<(T1, T2)> original)
-      {
-         if (matched.ValueOrOriginal(out var tuple, out original))
-         {
-            v1 = tuple.Item1;
-            v2 = tuple.Item2;
-
-            return true;
-         }
-         else
-         {
-            v1 = default;
-            v2 = default;
-
-            return false;
-         }
-      }
-
-      public static bool ValueOrOriginal<T1, T2, T3>(this Matched<(T1, T2, T3)> matched, out T1 v1, out T2 v2, out T3 v3,
-         out Matched<(T1, T2, T3)> original)
-      {
-         if (matched.ValueOrOriginal(out var tuple, out original))
-         {
-            v1 = tuple.Item1;
-            v2 = tuple.Item2;
-            v3 = tuple.Item3;
-
-            return true;
-         }
-         else
-         {
-            v1 = default;
-            v2 = default;
-            v3 = default;
-
-            return false;
-         }
-      }
-
-      public static bool ValueOrOriginal<T1, T2, T3, T4>(this Matched<(T1, T2, T3, T4)> matched, out T1 v1, out T2 v2, out T3 v3, out T4 v4,
-         out Matched<(T1, T2, T3, T4)> original)
-      {
-         if (matched.ValueOrOriginal(out var tuple, out original))
-         {
-            v1 = tuple.Item1;
-            v2 = tuple.Item2;
-            v3 = tuple.Item3;
-            v4 = tuple.Item4;
-
-            return true;
-         }
-         else
-         {
-            v1 = default;
-            v2 = default;
-            v3 = default;
-            v4 = default;
-
-            return false;
-         }
-      }
-
-      public static bool ValueOrOriginal<T1, T2>(this Completion<(T1, T2)> completion, out T1 v1, out T2 v2, out Completion<(T1, T2)> original)
-      {
-         if (completion.ValueOrOriginal(out var tuple, out original))
-         {
-            v1 = tuple.Item1;
-            v2 = tuple.Item2;
-
-            return true;
-         }
-         else
-         {
-            v1 = default;
-            v2 = default;
-
-            return false;
-         }
-      }
-
-      public static bool ValueOrOriginal<T1, T2, T3>(this Completion<(T1, T2, T3)> completion, out T1 v1, out T2 v2, out T3 v3,
-         out Completion<(T1, T2, T3)> original)
-      {
-         if (completion.ValueOrOriginal(out var tuple, out original))
-         {
-            v1 = tuple.Item1;
-            v2 = tuple.Item2;
-            v3 = tuple.Item3;
-
-            return true;
-         }
-         else
-         {
-            v1 = default;
-            v2 = default;
-            v3 = default;
-
-            return false;
-         }
-      }
-
-      public static bool ValueOrOriginal<T1, T2, T3, T4>(this Completion<(T1, T2, T3, T4)> completion, out T1 v1, out T2 v2, out T3 v3, out T4 v4,
-         out Completion<(T1, T2, T3, T4)> original)
-      {
-         if (completion.ValueOrOriginal(out var tuple, out original))
-         {
-            v1 = tuple.Item1;
-            v2 = tuple.Item2;
-            v3 = tuple.Item3;
-            v4 = tuple.Item4;
-
-            return true;
-         }
-         else
-         {
-            v1 = default;
-            v2 = default;
-            v3 = default;
-            v4 = default;
-
-            return false;
-         }
-      }
-
-      public static bool ValueOrCast<T1, T2, TResult>(this Result<(T1, T2)> result, out T1 v1, out T2 v2, out Result<TResult> castAs)
-      {
-         if (result.ValueOrCast(out var tuple, out castAs))
-         {
-            v1 = tuple.Item1;
-            v2 = tuple.Item2;
-
-            return true;
-         }
-         else
-         {
-            v1 = default;
-            v2 = default;
-
-            return false;
-         }
-      }
-
-      public static bool ValueOrCast<T1, T2, T3, TResult>(this Result<(T1, T2, T3)> result, out T1 v1, out T2 v2, out T3 v3,
-         out Result<TResult> castAs)
-      {
-         if (result.ValueOrCast(out var tuple, out castAs))
-         {
-            v1 = tuple.Item1;
-            v2 = tuple.Item2;
-            v3 = tuple.Item3;
-
-            return true;
-         }
-         else
-         {
-            v1 = default;
-            v2 = default;
-            v3 = default;
-
-            return false;
-         }
-      }
-
-      public static bool ValueOrCast<T1, T2, T3, T4, TResult>(this Result<(T1, T2, T3, T4)> result, out T1 v1, out T2 v2, out T3 v3, out T4 v4,
-         out Result<TResult> castAs)
-      {
-         if (result.ValueOrCast(out var tuple, out castAs))
-         {
-            v1 = tuple.Item1;
-            v2 = tuple.Item2;
-            v3 = tuple.Item3;
-            v4 = tuple.Item4;
-
-            return true;
-         }
-         else
-         {
-            v1 = default;
-            v2 = default;
-            v3 = default;
-            v4 = tuple.Item4;
-
-            return false;
-         }
-      }
-
-      public static bool ValueOrCast<T1, T2, TResult>(this Matched<(T1, T2)> matched, out T1 v1, out T2 v2, out Matched<TResult> castAs)
-      {
-         if (matched.ValueOrCast(out var tuple, out castAs))
-         {
-            v1 = tuple.Item1;
-            v2 = tuple.Item2;
-
-            return true;
-         }
-         else
-         {
-            v1 = default;
-            v2 = default;
-
-            return false;
-         }
-      }
-
-      public static bool ValueOrCast<T1, T2, T3, TResult>(this Matched<(T1, T2, T3)> matched, out T1 v1, out T2 v2, out T3 v3,
-         out Matched<TResult> castAs)
-      {
-         if (matched.ValueOrCast(out var tuple, out castAs))
-         {
-            v1 = tuple.Item1;
-            v2 = tuple.Item2;
-            v3 = tuple.Item3;
-
-            return true;
-         }
-         else
-         {
-            v1 = default;
-            v2 = default;
-            v3 = default;
-
-            return false;
-         }
-      }
-
-      public static bool ValueOrCast<T1, T2, T3, T4, TResult>(this Matched<(T1, T2, T3, T4)> matched, out T1 v1, out T2 v2, out T3 v3, out T4 v4,
-         out Matched<TResult> castAs)
-      {
-         if (matched.ValueOrCast(out var tuple, out castAs))
-         {
-            v1 = tuple.Item1;
-            v2 = tuple.Item2;
-            v3 = tuple.Item3;
-            v4 = tuple.Item4;
-
-            return true;
-         }
-         else
-         {
-            v1 = default;
-            v2 = default;
-            v3 = default;
-            v4 = tuple.Item4;
-
-            return false;
-         }
-      }
-
-      public static bool ValueOrCast<T1, T2, TResult>(this Completion<(T1, T2)> completion, out T1 v1, out T2 v2, out Completion<TResult> castAs)
-      {
-         if (completion.ValueOrCast(out var tuple, out castAs))
-         {
-            v1 = tuple.Item1;
-            v2 = tuple.Item2;
-
-            return true;
-         }
-         else
-         {
-            v1 = default;
-            v2 = default;
-
-            return false;
-         }
-      }
-
-      public static bool ValueOrCast<T1, T2, T3, TResult>(this Completion<(T1, T2, T3)> completion, out T1 v1, out T2 v2, out T3 v3,
-         out Completion<TResult> castAs)
-      {
-         if (completion.ValueOrCast(out var tuple, out castAs))
-         {
-            v1 = tuple.Item1;
-            v2 = tuple.Item2;
-            v3 = tuple.Item3;
-
-            return true;
-         }
-         else
-         {
-            v1 = default;
-            v2 = default;
-            v3 = default;
-
-            return false;
-         }
-      }
-
-      public static bool ValueOrCast<T1, T2, T3, T4, TResult>(this Completion<(T1, T2, T3, T4)> completion, out T1 v1, out T2 v2, out T3 v3,
-         out T4 v4, out Completion<TResult> castAs)
-      {
-         if (completion.ValueOrCast(out var tuple, out castAs))
-         {
-            v1 = tuple.Item1;
-            v2 = tuple.Item2;
-            v3 = tuple.Item3;
-            v4 = tuple.Item4;
-
-            return true;
-         }
-         else
-         {
-            v1 = default;
-            v2 = default;
-            v3 = default;
-            v4 = tuple.Item4;
 
             return false;
          }

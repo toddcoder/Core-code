@@ -84,11 +84,11 @@ namespace Core.Dates
             }
             else
             {
-               return none<TimeSpan>();
+               return nil;
             }
          }
 
-         return newSpan.Some();
+         return newSpan;
       }
 
       public static Result<TimeSpan> TimeSpan(this string source)
@@ -99,17 +99,17 @@ namespace Core.Dates
 
          foreach (var span in spans)
          {
-            if (span.ValueOrOriginal(out var timeSpan, out var original))
+            if (span.If(out var timeSpan, out var exception))
             {
                newSpan = newSpan.Add(timeSpan);
             }
             else
             {
-               return original;
+               return exception;
             }
          }
 
-         return newSpan.Success();
+         return newSpan;
       }
 
       private static Result<TimeSpan> getSpan(string source)
@@ -151,7 +151,7 @@ namespace Core.Dates
                }
                else
                {
-                  throw $"Couldn't determine unit from {unit}".Throws();
+                  throw $"Couldn't determine unit from {unit}".Fail();
                }
             })
             select span;

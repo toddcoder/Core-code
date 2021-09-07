@@ -66,6 +66,7 @@ namespace Core.Monads
          return this;
       }
 
+      [Obsolete("Use exception")]
       public override Completion<TOther> InterruptedAs<TOther>() => interrupted<TOther>(exception);
 
       public override Completion<T> Or(Completion<T> other) => other;
@@ -154,6 +155,7 @@ namespace Core.Monads
          return this;
       }
 
+      [Obsolete("Use If")]
       public override bool ValueOrOriginal(out T value, out Completion<T> original)
       {
          value = default;
@@ -162,6 +164,7 @@ namespace Core.Monads
          return false;
       }
 
+      [Obsolete("Use If")]
       public override bool ValueOrCast<TCompletion>(out T value, out Completion<TCompletion> completion)
       {
          value = default;

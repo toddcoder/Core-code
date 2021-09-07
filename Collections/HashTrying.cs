@@ -1,6 +1,7 @@
 ﻿using System;
 using Core.Assertions;
 using Core.Monads;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Collections
 {
@@ -21,18 +22,18 @@ namespace Core.Collections
          }
          else
          {
-            if (defaultValue(key).ValueOrOriginal(out var value, out var original))
+            if (defaultValue(key).If(out var value, out var exception))
             {
                if (addIfNotFound)
                {
                   hash.Add(key, value);
                }
 
-               return value.Success();
+               return value;
             }
             else
             {
-               return original;
+               return exception;
             }
          }
       }
@@ -41,11 +42,11 @@ namespace Core.Collections
       {
          if (hash.If(key, out var value))
          {
-            return value.Success();
+            return value;
          }
          else
          {
-            return notFoundMessage.Failure<TValue>();
+            return fail(notFoundMessage);
          }
       }
 
@@ -53,11 +54,11 @@ namespace Core.Collections
       {
          if (hash.If(key, out var value))
          {
-            return value.Success();
+            return value;
          }
          else
          {
-            return notFoundMessage().Failure<TValue>();
+            return fail(notFoundMessage());
          }
       }
    }

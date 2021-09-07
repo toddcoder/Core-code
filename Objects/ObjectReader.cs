@@ -50,17 +50,17 @@ namespace Core.Objects
 
          foreach (var info in memberInfos)
          {
-            if (getValue(obj, info).ValueOrCast<Hash<string, object>>(out var value, out var result))
+            if (getValue(obj, info).If(out var value, out var exception))
             {
                hash[info.Name] = value;
             }
             else
             {
-               return result;
+               return exception;
             }
          }
 
-         return hash.Success();
+         return hash;
       }
 
       protected Hash<string, object> values;

@@ -21,20 +21,43 @@ namespace Core.Monads
          }
       }
 
+      public static Result<T> operator |(Result<T> left, Func<Result<T>> rightFunc)
+      {
+         if (left.IsSuccessful)
+         {
+            return left;
+         }
+         else
+         {
+            var right = rightFunc();
+            if (right.IsSuccessful)
+            {
+               return right;
+            }
+            else
+            {
+               return left;
+            }
+         }
+      }
+
       public static implicit operator Result<T>(T value) => value.Success();
 
       public static implicit operator Result<T>(Exception exception) => new Failure<T>(exception);
 
       public abstract bool If(out T value, out Exception exception);
 
+      [Obsolete("Use If()")]
       public abstract bool ValueOrOriginal(out T value, out Result<T> original);
 
+      [Obsolete("Use If()")]
       public abstract bool ValueOrCast<TResult>(out T value, out Result<TResult> result);
 
       public abstract bool IsSuccessful { get; }
 
       public abstract bool IsFailed { get; }
 
+      [Obsolete("Use exception")]
       public abstract Result<TOther> ExceptionAs<TOther>();
 
       public abstract Result<TResult> Map<TResult>(Func<T, Result<TResult>> ifSuccessful);
