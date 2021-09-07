@@ -65,6 +65,7 @@ namespace Core.Monads
          return this;
       }
 
+      [Obsolete("Use exception")]
       public override Completion<TOther> InterruptedAs<TOther>() => throw "There is no exception".Throws();
 
       public override Completion<T> Or(Completion<T> other) => this;
@@ -158,6 +159,7 @@ namespace Core.Monads
 
       public override Completion<T> OnInterrupted(Action<Exception> action) => this;
 
+      [Obsolete("Use If")]
       public override bool ValueOrOriginal(out T value, out Completion<T> original)
       {
          value = this.value;
@@ -166,6 +168,7 @@ namespace Core.Monads
          return true;
       }
 
+      [Obsolete("Use If")]
       public override bool ValueOrCast<TCompletion>(out T value, out Completion<TCompletion> completion)
       {
          value = this.value;

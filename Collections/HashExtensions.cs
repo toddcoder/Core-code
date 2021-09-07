@@ -49,43 +49,43 @@ namespace Core.Collections
       {
          if (hash.ContainsKey(key))
          {
-            return hash[key].Success();
+            return hash[key];
          }
          else
          {
-            return message.Failure<TValue>();
+            return fail(message);
          }
       }
 
       public static AutoHash<TKey, TValue> ToAutoHash<TKey, TValue>(this Hash<TKey, TValue> hash, TValue defaultValue)
       {
-         return new(hash, hash.Comparer) { Default = DefaultType.Value, DefaultValue = defaultValue };
+         return new AutoHash<TKey, TValue>(hash, hash.Comparer) { Default = DefaultType.Value, DefaultValue = defaultValue };
       }
 
       public static AutoStringHash<TValue> ToAutoStringHash<TValue>(this StringHash<TValue> hash, TValue defaultValue)
       {
-         return new(hash.IgnoreCase, hash) { Default = DefaultType.Value, DefaultValue = defaultValue };
+         return new AutoStringHash<TValue>(hash.IgnoreCase, hash) { Default = DefaultType.Value, DefaultValue = defaultValue };
       }
 
       public static AutoStringHash ToAutoStringHash(this StringHash hash, string defaultValue)
       {
-         return new(hash.IgnoreCase, hash) { Default = DefaultType.Value, DefaultValue = defaultValue };
+         return new AutoStringHash(hash.IgnoreCase, hash) { Default = DefaultType.Value, DefaultValue = defaultValue };
       }
 
       public static AutoHash<TKey, TValue> ToAutoHash<TKey, TValue>(this Hash<TKey, TValue> hash,
          Func<TKey, TValue> defaultLambda)
       {
-         return new(hash, hash.Comparer) { Default = DefaultType.Lambda, DefaultLambda = defaultLambda };
+         return new AutoHash<TKey, TValue>(hash, hash.Comparer) { Default = DefaultType.Lambda, DefaultLambda = defaultLambda };
       }
 
       public static AutoStringHash<TValue> ToAutoStringHash<TValue>(this StringHash<TValue> hash, Func<string, TValue> defaultLambda)
       {
-         return new(hash.IgnoreCase, hash) { Default = DefaultType.Lambda, DefaultLambda = defaultLambda };
+         return new AutoStringHash<TValue>(hash.IgnoreCase, hash) { Default = DefaultType.Lambda, DefaultLambda = defaultLambda };
       }
 
       public static AutoStringHash ToAutoStringHash(this StringHash hash, Func<string, string> defaultLambda)
       {
-         return new(hash.IgnoreCase, hash) { Default = DefaultType.Lambda, DefaultLambda = defaultLambda };
+         return new AutoStringHash(hash.IgnoreCase, hash) { Default = DefaultType.Lambda, DefaultLambda = defaultLambda };
       }
 
       public static string Format(this Hash<string, string> hash, string format) => new Formatter(hash).Format(format);
@@ -161,22 +161,22 @@ namespace Core.Collections
 
       public static Hash<TKey, TValue> ToHash<TKey, TValue>(this Dictionary<TKey, TValue> dictionary)
       {
-         return new(dictionary);
+         return new Hash<TKey, TValue>(dictionary);
       }
 
       public static StringHash<TValue> ToStringHash<TValue>(this Dictionary<string, TValue> dictionary, bool ignoreCase)
       {
-         return new(ignoreCase, dictionary);
+         return new StringHash<TValue>(ignoreCase, dictionary);
       }
 
       public static StringHash ToStringHash(this Dictionary<string, string> dictionary, bool ignoreCase)
       {
-         return new(ignoreCase, dictionary);
+         return new StringHash(ignoreCase, dictionary);
       }
 
       public static Hash<TKey, TValue> ToHash<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, IEqualityComparer<TKey> comparer)
       {
-         return new(dictionary, comparer);
+         return new Hash<TKey, TValue>(dictionary, comparer);
       }
 
       public static Hash<TKey, TValue> ToHash<TKey, TValue>(this IEnumerable<TValue> enumerable, Func<TValue, TKey> keySelector)
@@ -267,17 +267,17 @@ namespace Core.Collections
          var result = new Hash<TKey, TValue>();
          foreach (var item in enumerable)
          {
-            if (valueSelector(item).ValueOrCast<Hash<TKey, TValue>>(out var selector, out var original))
+            if (valueSelector(item).If(out var selector, out var exception))
             {
                result[keySelector(item)] = selector;
             }
             else
             {
-               return original;
+               return exception;
             }
          }
 
-         return result.Success();
+         return result;
       }
 
       public static Result<StringHash<TValue>> TryToStringHash<TValue, T>(this IEnumerable<T> enumerable, Func<T, string> keySelector,
@@ -286,17 +286,17 @@ namespace Core.Collections
          var result = new StringHash<TValue>(ignoreCase);
          foreach (var item in enumerable)
          {
-            if (valueSelector(item).ValueOrCast<StringHash<TValue>>(out var selector, out var original))
+            if (valueSelector(item).If(out var selector, out var exception))
             {
                result[keySelector(item)] = selector;
             }
             else
             {
-               return original;
+               return exception;
             }
          }
 
-         return result.Success();
+         return result;
       }
 
       public static Result<Hash<TKey, TValue>> TryToHash<TKey, TValue, T>(this IEnumerable<T> enumerable, Func<T, TKey> keySelector,
@@ -305,17 +305,17 @@ namespace Core.Collections
          var result = new Hash<TKey, TValue>(comparer);
          foreach (var item in enumerable)
          {
-            if (valueSelector(item).ValueOrCast<Hash<TKey, TValue>>(out var selector, out var original))
+            if (valueSelector(item).If(out var selector, out var exception))
             {
                result[keySelector(item)] = selector;
             }
             else
             {
-               return original;
+               return exception;
             }
          }
 
-         return result.Success();
+         return result;
       }
 
       public static Result<Hash<TKey, TValue>> TryToHash<TKey, TValue, T>(this IEnumerable<T> enumerable, Func<T, Result<TKey>> keySelector,
@@ -328,17 +328,17 @@ namespace Core.Collections
                from selector in valueSelector(item)
                from key in keySelector(item)
                select (value: selector, key);
-            if (pair.ValueOrOriginal(out var keyValue, out var original))
+            if (pair.If(out var keyValue, out var exception))
             {
                result[keyValue.key] = keyValue.value;
             }
             else
             {
-               return original.ExceptionAs<Hash<TKey, TValue>>();
+               return exception;
             }
          }
 
-         return result.Success();
+         return result;
       }
 
       public static Result<StringHash<TValue>> TryToStringHash<TValue, T>(this IEnumerable<T> enumerable, Func<T, Result<string>> keySelector,
@@ -351,17 +351,17 @@ namespace Core.Collections
                from selector in valueSelector(item)
                from key in keySelector(item)
                select (value: selector, key);
-            if (pair.ValueOrCast<StringHash<TValue>>(out var keyValue, out var original))
+            if (pair.If(out var keyValue, out var exception))
             {
                result[keyValue.key] = keyValue.value;
             }
             else
             {
-               return original;
+               return exception;
             }
          }
 
-         return result.Success();
+         return result;
       }
 
       public static Result<Hash<TKey, TValue>> TryToHash<TKey, TValue, T>(this IEnumerable<T> enumerable, Func<T, Result<TKey>> keySelector,
@@ -374,17 +374,17 @@ namespace Core.Collections
                from selector in valueSelector(item)
                from key in keySelector(item)
                select (value: selector, key);
-            if (pair.ValueOrOriginal(out var keyValue, out var original))
+            if (pair.If(out var keyValue, out var exception))
             {
                result[keyValue.key] = keyValue.value;
             }
             else
             {
-               return original.ExceptionAs<Hash<TKey, TValue>>();
+               return exception;
             }
          }
 
-         return result.Success();
+         return result;
       }
 
       public static Result<Hash<TKey, TValue>> TryToHash<TKey, TValue, T>(this IEnumerable<T> enumerable, Func<T, TKey> keySelector,
@@ -393,17 +393,17 @@ namespace Core.Collections
          var result = new Hash<TKey, TValue>();
          foreach (var item in enumerable)
          {
-            if (tryTo(() => valueSelector(item)).ValueOrCast<Hash<TKey, TValue>>(out var selector, out var original))
+            if (tryTo(() => valueSelector(item)).If(out var selector, out var exception))
             {
                result[keySelector(item)] = selector;
             }
             else
             {
-               return original;
+               return exception;
             }
          }
 
-         return result.Success();
+         return result;
       }
 
       public static Result<StringHash<TValue>> TryToStringHash<TValue, T>(this IEnumerable<T> enumerable, Func<T, string> keySelector,
@@ -412,17 +412,17 @@ namespace Core.Collections
          var result = new StringHash<TValue>(ignoreCase);
          foreach (var item in enumerable)
          {
-            if (tryTo(() => valueSelector(item)).ValueOrCast<StringHash<TValue>>(out var selector, out var original))
+            if (tryTo(() => valueSelector(item)).If(out var selector, out var exception))
             {
                result[keySelector(item)] = selector;
             }
             else
             {
-               return original;
+               return exception;
             }
          }
 
-         return result.Success();
+         return result;
       }
 
       public static Result<Hash<TKey, TValue>> TryToHash<TKey, TValue, T>(this IEnumerable<T> enumerable, Func<T, TKey> keySelector,
@@ -431,17 +431,17 @@ namespace Core.Collections
          var result = new Hash<TKey, TValue>(comparer);
          foreach (var item in enumerable)
          {
-            if (tryTo(() => valueSelector(item)).ValueOrCast<Hash<TKey, TValue>>(out var selector, out var original))
+            if (tryTo(() => valueSelector(item)).If(out var selector, out var exception))
             {
                result[keySelector(item)] = selector;
             }
             else
             {
-               return original;
+               return exception;
             }
          }
 
-         return result.Success();
+         return result;
       }
 
       public static IEnumerator<T> AsEnumerator<T>(this IEnumerable enumerable) => ((IEnumerable<T>)enumerable).GetEnumerator();
@@ -450,7 +450,7 @@ namespace Core.Collections
       {
          try
          {
-            if (hash.AnyHash().ValueOrCast(out var internalHash, out Result<Configuration> asConfiguration))
+            if (hash.AnyHash().If(out var internalHash, out var exception))
             {
                var group = new Group(uniqueID());
                foreach (var (key, value) in internalHash)
@@ -459,16 +459,16 @@ namespace Core.Collections
                   group[keyAsString] = new Item(keyAsString, value.ToString());
                }
 
-               return new Configuration(group).Success();
+               return new Configuration(group);
             }
             else
             {
-               return asConfiguration;
+               return exception;
             }
          }
          catch (Exception exception)
          {
-            return failure<Configuration>(exception);
+            return exception;
          }
       }
    }

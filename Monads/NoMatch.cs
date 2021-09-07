@@ -24,6 +24,7 @@ namespace Core.Monads
          return this;
       }
 
+      [Obsolete("Use exception")]
       public override Matched<TOther> ExceptionAs<TOther>() => throw "There is no exception".Throws();
 
       public override Matched<T> Or(Matched<T> other) => other;
@@ -55,6 +56,7 @@ namespace Core.Monads
          return false;
       }
 
+      [Obsolete("Use If")]
       public override bool ValueOrOriginal(out T value, out Matched<T> original)
       {
          value = default;
@@ -63,6 +65,7 @@ namespace Core.Monads
          return false;
       }
 
+      [Obsolete("Use If")]
       public override bool ValueOrCast<TMatched>(out T value, out Matched<TMatched> matched)
       {
          value = default;

@@ -6,6 +6,7 @@ using Core.Matching;
 using Core.Monads;
 using Core.Numbers;
 using Core.Strings;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Dates
 {
@@ -19,11 +20,11 @@ namespace Core.Dates
          {
             if (year <= 0)
             {
-               return "Year must be > 0".Failure<DateTime>();
+               return fail("Year must be > 0");
             }
             else if (!month.Between(1).And(12))
             {
-               return "Month must be between 1 and 12".Failure<DateTime>();
+               return fail("Month must be between 1 and 12");
             }
             else
             {
@@ -40,62 +41,61 @@ namespace Core.Dates
 
          public ValidDate()
          {
-            Year = "Year not set".Failure<int>();
-            Month = "Month not set".Failure<int>();
-            Day = "Day not set".Failure<int>();
+            Year = fail("Year not set");
+            Month = fail("Month not set");
+            Day = fail("Day not set");
          }
 
          protected Result<DateTime> validate()
          {
-            if (Year.ValueOrCast<DateTime>(out var year, out var original) && Month.ValueOrCast(out var month, out original) &&
-               Day.ValueOrCast(out var day, out original))
+            if (Year.If(out var year, out var exception) && Month.If(out var month, out exception) && Day.If(out var day, out exception))
             {
                return valid(year, month, day);
             }
             else
             {
-               return original;
+               return exception;
             }
          }
 
          public Result<ValidDate> AndYear(int year) => (Month.IsSuccessful || Day.IsSuccessful).Result(() =>
          {
-            Year = year.Success();
+            Year = year;
             return this;
          }, "Month or day must be set");
 
          public Result<DateTime> AndYearValid(int year)
          {
-            Year = year.Success();
+            Year = year;
             return validate();
          }
 
          public Result<ValidDate> AndMonth(int month) => (Year.IsSuccessful || Day.IsSuccessful).Result(() =>
          {
-            Month = month.Success();
+            Month = month;
             return this;
          }, "Year or day must be set");
 
          public Result<DateTime> AndMonthValid(int month)
          {
-            Month = month.Success();
+            Month = month;
             return validate();
          }
 
          public Result<ValidDate> AndDay(int day) => (Year.IsSuccessful || Month.IsSuccessful).Result(() =>
          {
-            Day = day.Success();
+            Day = day;
             return this;
          }, "Year or month must be set");
 
          public Result<DateTime> AndDayValid(int day)
          {
-            Day = day.Success();
+            Day = day;
             return validate();
          }
       }
 
-      public static ValidDate IsYear(this int year) => new() { Year = year.Success() };
+      public static ValidDate IsYear(this int year) => new() { Year = year };
 
       public static Result<ValidDate> AndYear(this Result<ValidDate> validDate, int year)
       {
@@ -107,7 +107,7 @@ namespace Core.Dates
          return validDate.Map(vd => vd.AndYearValid(year));
       }
 
-      public static ValidDate IsMonth(this int month) => new() { Month = month.Success() };
+      public static ValidDate IsMonth(this int month) => new() { Month = month };
 
       public static Result<ValidDate> AndMonth(this Result<ValidDate> validDate, int month)
       {
@@ -119,7 +119,7 @@ namespace Core.Dates
          return validDate.Map(vd => vd.AndMonthValid(month));
       }
 
-      public static ValidDate IsDay(this int day) => new() { Day = day.Success() };
+      public static ValidDate IsDay(this int day) => new() { Day = day };
 
       public static Result<ValidDate> AndDay(this Result<ValidDate> validDate, int day) => validDate.Map(vd => vd.AndDay(day));
 
@@ -169,61 +169,45 @@ namespace Core.Dates
 
       public static DateEnumerator To(this DateTime beginDate, DateTime endDate) => new(beginDate, endDate);
 
-      public static Result<string> MonthName(this int month)
+      public static Result<string> MonthName(this int month) => month switch
       {
-         switch (month)
-         {
-            case 1:
-               return "January".Success();
-            case 2:
-               return "February".Success();
-            case 3:
-               return "March".Success();
-            case 4:
-               return "April".Success();
-            case 5:
-               return "May".Success();
-            case 6:
-               return "June".Success();
-            case 7:
-               return "July".Success();
-            case 8:
-               return "August".Success();
-            case 9:
-               return "September".Success();
-            case 10:
-               return "October".Success();
-            case 11:
-               return "November".Success();
-            case 12:
-               return "December".Success();
-            default:
-               return "Month must be in a range from 1 to 12".Failure<string>();
-         }
-      }
+         1 => "January",
+         2 => "February",
+         3 => "March",
+         4 => "April",
+         5 => "May",
+         6 => "June",
+         7 => "July",
+         8 => "August",
+         9 => "September",
+         10 => "October",
+         11 => "November",
+         12 => "December",
+         _ => fail("Month must be in a range from 1 to 12")
+      };
 
       public static Result<int> MonthNumber(this string name) => name.ToLower() switch
       {
-         "january" or "jan" => 1.Success(),
-         "february" or "feb" => 2.Success(),
-         "march" or "mar" => 3.Success(),
-         "april" or "apr" => 4.Success(),
-         "may" => 5.Success(),
-         "june" or "jun" => 6.Success(),
-         "july" or "jul" => 7.Success(),
-         "august" or "aug" => 8.Success(),
-         "september" or "sep" => 9.Success(),
-         "october" or "oct" => 10.Success(),
-         "november" or "nov" => 11.Success(),
-         "december" or "dec" => 12.Success(),
-         _ => $"Didn't understand {name}".Failure<int>()
+         "january" or "jan" => 1,
+         "february" or "feb" => 2,
+         "march" or "mar" => 3,
+         "april" or "apr" => 4,
+         "may" => 5,
+         "june" or "jun" => 6,
+         "july" or "jul" => 7,
+         "august" or "aug" => 8,
+         "september" or "sep" => 9,
+         "october" or "oct" => 10,
+         "november" or "nov" => 11,
+         "december" or "dec" => 12,
+         _ => fail($"Didn't understand {name}")
       };
 
       public static Result<DateTime> RelativeTo(this DateTime date, string pattern)
       {
          if (pattern.IsMatch("^ ['//|'] /s* ['//|'] /s* ['//|'] $; f"))
          {
-            return date.Success();
+            return date;
          }
          else
          {
@@ -295,14 +279,14 @@ namespace Core.Dates
                      }
                   }
 
-                  return builder.Date.Success();
+                  return builder.Date;
                }
 
-               return $"Couldn't extract date elements from {pattern}".Failure<DateTime>();
+               return fail($"Couldn't extract date elements from {pattern}");
             }
             else
             {
-               return $"Didn't understand {pattern}".Failure<DateTime>();
+               return fail($"Didn't understand {pattern}");
             }
          }
       }

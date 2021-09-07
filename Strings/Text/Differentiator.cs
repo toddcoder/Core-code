@@ -29,17 +29,17 @@ namespace Core.Strings.Text
       public Result<DifferenceModel> BuildModel()
       {
          var differ = new DifferenceBuilder(oldText, newText, ignoreWhiteSpace, ignoreCase);
-         if (differ.Build().ValueOrCast<DifferenceModel>(out var result, out var asDifferenceModel))
+         if (differ.Build().If(out var result, out var exception))
          {
             var model = new DifferenceModel();
             ItemBuilder itemBuilder = buildItemsNoSub;
-            buildItems(result, model.OldDifferenceItems, model.NewDifferenceItems, itemBuilder.Some());
+            buildItems(result, model.OldDifferenceItems, model.NewDifferenceItems, itemBuilder);
 
-            return model.Success();
+            return model;
          }
          else
          {
-            return asDifferenceModel;
+            return exception;
          }
       }
 
@@ -52,7 +52,7 @@ namespace Core.Strings.Text
 
          if (differ.Build().If(out var wordResult))
          {
-            buildItems(wordResult, oldItems, newItems, none<ItemBuilder>());
+            buildItems(wordResult, oldItems, newItems, nil);
          }
       }
 

@@ -101,12 +101,12 @@ namespace Core.Strings.Text
                      select resultB;
                   if (resultAll.IfNot(out exception))
                   {
-                     return failure<Unit>(exception);
+                     return exception;
                   }
                }
                else
                {
-                  return failure<Unit>(exception);
+                  return exception;
                }
 
                break;
@@ -138,12 +138,11 @@ namespace Core.Strings.Text
       }
 
       protected static Result<EditLengthResult> calculateEditLength(int[] oldItems, int oldStart, int oldEnd, int[] newItems, int newStart,
-         int newEnd,
-         int[] forwardDiagonal, int[] reverseDiagonal)
+         int newEnd, int[] forwardDiagonal, int[] reverseDiagonal)
       {
          if (oldItems.Length == 0 && newItems.Length == 0)
          {
-            return new EditLengthResult().Success();
+            return new EditLengthResult();
          }
 
          var oldSize = oldEnd - oldStart;
@@ -201,7 +200,7 @@ namespace Core.Strings.Text
                         OldEnd = oldIndex + oldStart,
                         NewEnd = newIndex + newStart,
                         LastEdit = lastEdit
-                     }.Success();
+                     };
                   }
                }
             }
@@ -246,13 +245,13 @@ namespace Core.Strings.Text
                         OldEnd = oldEndIndex + oldStart,
                         NewEnd = newEndIndex + newStart,
                         LastEdit = lastEdit
-                     }.Success();
+                     };
                   }
                }
             }
          }
 
-         return "Should never get here".Failure<EditLengthResult>();
+         return fail("Should never get here");
       }
 
       protected bool ignoreWhiteSpace;
@@ -279,7 +278,7 @@ namespace Core.Strings.Text
 
          if (buildModifications().IfNot(out var exception))
          {
-            return failure<DifferenceResult>(exception);
+            return exception;
          }
 
          var oldItemsLength = oldModification.HashedItems.Length;
@@ -317,7 +316,7 @@ namespace Core.Strings.Text
             }
          } while (oldPosition < oldItemsLength && newPosition < newItemsLength);
 
-         return new DifferenceResult(oldModification.Items, newModification.Items, lineDiffs).Success();
+         return new DifferenceResult(oldModification.Items, newModification.Items, lineDiffs);
       }
    }
 }

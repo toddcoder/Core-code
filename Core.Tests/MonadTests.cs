@@ -140,14 +140,14 @@ namespace Core.Tests
       public void ExtensionsTest()
       {
          var result = (1, "foo").Success();
-         if (result.ValueOrCast<int, string, Unit>(out var i, out var s, out var asUnit))
+         if (result.If(out var i, out var s, out var exception))
          {
             Console.WriteLine(i);
             Console.WriteLine(s);
          }
          else
          {
-            Console.WriteLine(asUnit);
+            Console.WriteLine(exception.Message);
          }
       }
 

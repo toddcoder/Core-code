@@ -46,6 +46,7 @@ namespace Core.Monads
 
       public abstract Matched<T> Do(Action<T> ifMatched, Action ifNotMatched, Action<Exception> ifFailedMatch);
 
+      [Obsolete("Use exception")]
       public abstract Matched<TOther> ExceptionAs<TOther>();
 
       public abstract Matched<T> Or(Matched<T> other);
@@ -66,8 +67,10 @@ namespace Core.Monads
 
       public abstract bool Failed(out Exception exception);
 
+      [Obsolete("Use If")]
       public abstract bool ValueOrOriginal(out T value, out Matched<T> original);
 
+      [Obsolete("Use If")]
       public abstract bool ValueOrCast<TMatched>(out T value, out Matched<TMatched> matched);
 
       public abstract bool If(out T value, out Maybe<Exception> exception);

@@ -40,6 +40,7 @@ namespace Core.Monads
 
       public abstract Completion<T> Do(Action<T> ifCompleted, Action ifCancelled, Action<Exception> ifInterrupted);
 
+      [Obsolete("Use exception")]
       public abstract Completion<TOther> InterruptedAs<TOther>();
 
       public abstract Completion<T> Or(Completion<T> other);
@@ -90,8 +91,10 @@ namespace Core.Monads
 
       public abstract Completion<T> OnInterrupted(Action<Exception> action);
 
+      [Obsolete("Use If")]
       public abstract bool ValueOrOriginal(out T value, out Completion<T> original);
 
+      [Obsolete("Use If")]
       public abstract bool ValueOrCast<TCompletion>(out T value, out Completion<TCompletion> completion);
 
       public abstract bool ValueEqualTo(Completion<T> otherCompletion);
