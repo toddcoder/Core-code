@@ -12,15 +12,15 @@ namespace Core.Tests
       {
          var document = new Document(PaperSize.A4, PaperOrientation.Landscape, Lcid.English);
 
-         var timesFont = Document.Font("Times New Roman");
-         var courierFont = Document.Font("Courier New");
+         var timesFont = document.Font("Times New Roman");
+         var courierFont = document.Font("Courier New");
 
-         var redColor = Document.Color(0xff0000);
-         var blueColor = Document.Color("Blue");
+         var redColor = document.Color(0xff0000);
+         var blueColor = document.Color("Blue");
 
-         var tableHeaderColor = Document.Color(0x76923C);
-         var tableRowColor = Document.Color(0xD6E3BC);
-         var tableRowAltColor = Document.Color(0xFFFFFF);
+         var tableHeaderColor = document.Color(0x76923C);
+         var tableRowColor = document.Color(0xD6E3BC);
+         var tableRowAltColor = document.Color(0xFFFFFF);
 
          var paragraph = document.Paragraph();
          paragraph.Alignment = Alignment.Left;

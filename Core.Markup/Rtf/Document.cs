@@ -13,8 +13,8 @@ namespace Core.Markup.Rtf
       protected Lcid lcid;
       protected HeaderFooter header;
       protected HeaderFooter footer;
-      protected static StringHash<int> fontTable;
-      protected static Hash<Color, int> colorTable;
+      protected StringHash<int> fontTable;
+      protected Hash<Color, int> colorTable;
 
       public Document(PaperSize paperSize, PaperOrientation paperOrientation, Lcid lcid)
       {
@@ -64,29 +64,29 @@ namespace Core.Markup.Rtf
          fontTable[fontName] = 0;
       }
 
-      public static FontDescriptor Font(string fontName)
+      public FontDescriptor Font(string fontName)
       {
          var index = fontTable.Memoize(fontName, _ => fontTable.Count);
          return new FontDescriptor(index);
       }
 
-      public static ColorDescriptor Color(Color color)
+      public ColorDescriptor Color(Color color)
       {
          var index = colorTable.Memoize(color, _ => colorTable.Count);
          return new ColorDescriptor(index);
       }
 
-      public static ColorDescriptor Color(System.Drawing.Color color)
+      public ColorDescriptor Color(System.Drawing.Color color)
       {
          var rtfColor = new Color(color.R, color.G, color.B);
          return Color(rtfColor);
       }
 
-      public static ColorDescriptor Color(byte red, byte green, byte blue) => Color(new Color(red, green, blue));
+      public ColorDescriptor Color(byte red, byte green, byte blue) => Color(new Color(red, green, blue));
 
-      public static ColorDescriptor Color(int color) => Color(new Color(color));
+      public ColorDescriptor Color(int color) => Color(new Color(color));
 
-      public static ColorDescriptor Color(string colorName)
+      public ColorDescriptor Color(string colorName)
       {
          var systemColor = System.Drawing.Color.FromName(colorName);
          var color = new Color(systemColor);
