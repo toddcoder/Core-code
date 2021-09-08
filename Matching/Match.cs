@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Core.Arrays;
+using Core.Strings;
 
 namespace Core.Matching
 {
@@ -34,5 +35,36 @@ namespace Core.Matching
       }
 
       IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+      public void Deconstruct(out string firstGroup, out string secondGroup)
+      {
+         firstGroup = FirstGroup;
+         secondGroup = SecondGroup;
+      }
+
+      public void Deconstruct(out string firstGroup, out string secondGroup, out string thirdGroup, out string fourthGroup)
+      {
+         firstGroup = FirstGroup;
+         secondGroup = SecondGroup;
+         thirdGroup = ThirdGroup;
+         fourthGroup = FourthGroup;
+      }
+
+      public void Deconstruct(out string firstGroup, out string secondGroup, out string thirdGroup, out string fourthGroup, out string fifthGroup)
+      {
+         firstGroup = FirstGroup;
+         secondGroup = SecondGroup;
+         thirdGroup = ThirdGroup;
+         fourthGroup = FourthGroup;
+         fifthGroup = FifthGroup;
+      }
+
+      public IEnumerable<Slice> Slices()
+      {
+         foreach (var group in Groups)
+         {
+            yield return group.Slice;
+         }
+      }
    }
 }
