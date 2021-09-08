@@ -1,10 +1,9 @@
 using System;
 using System.Text;
-using Core.Lists;
 
 namespace Core.Markup.Rtf
 {
-   public class HeaderFooter : BlockList, IEquatable<HeaderFooter>
+   public class HeaderFooter : BlockList
    {
       protected HeaderFooterType type;
 
@@ -40,23 +39,5 @@ namespace Core.Markup.Rtf
          result.AppendLine("}");
          return result.ToString();
       }
-
-      public bool Equals(HeaderFooter other)
-      {
-         if (other is null)
-         {
-            return false;
-         }
-
-         return type == other.type && blocks.AllEqualTo(other.blocks);
-      }
-
-      public override bool Equals(object obj) => obj is HeaderFooter otherHeaderFooter && Equals(otherHeaderFooter);
-
-      public override int GetHashCode() => (int)type;
-
-      public static bool operator ==(HeaderFooter left, HeaderFooter right) => Equals(left, right);
-
-      public static bool operator !=(HeaderFooter left, HeaderFooter right) => !Equals(left, right);
    }
 }

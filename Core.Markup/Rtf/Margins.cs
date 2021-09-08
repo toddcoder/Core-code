@@ -1,14 +1,9 @@
-using System;
 using Core.Assertions;
 
 namespace Core.Markup.Rtf
 {
-   public class Margins : IEquatable<Margins>
+   public class Margins
    {
-      public static bool operator ==(Margins left, Margins right) => left.Equals(right);
-
-      public static bool operator !=(Margins left, Margins right) => !left.Equals(right);
-
       protected float[] margins;
 
       public Margins()
@@ -41,17 +36,5 @@ namespace Core.Markup.Rtf
             margins[index] = value;
          }
       }
-
-      public bool Equals(Margins margins)
-      {
-         return margins.margins[(int)Direction.Bottom] == this.margins[(int)Direction.Bottom] &&
-            margins.margins[(int)Direction.Left] == this.margins[(int)Direction.Left] &&
-            margins.margins[(int)Direction.Right] == this.margins[(int)Direction.Right] &&
-            margins.margins[(int)Direction.Top] == this.margins[(int)Direction.Top];
-      }
-
-      public override bool Equals(object obj) => obj is Margins otherMargins && Equals(otherMargins);
-
-      public override int GetHashCode() => margins.GetHashCode();
    }
 }

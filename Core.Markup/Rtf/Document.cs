@@ -2,28 +2,19 @@ using System.Linq;
 using System.Text;
 using Core.Collections;
 using Core.Computers;
-using Core.Monads;
-using static Core.Monads.MonadFunctions;
 
 namespace Core.Markup.Rtf
 {
    public class Document : BlockList
    {
-      protected static StringHash<int> fontTable;
-      protected static Hash<Color, int> colorTable;
-
-      static Document()
-      {
-         fontTable = new StringHash<int>(true) { [DefaultValue.FONT] = 0 };
-         colorTable = new Hash<Color, int> { [new Color()] = 0 };
-      }
-
       protected PaperSize paperSize;
       protected PaperOrientation paperOrientation;
       protected Margins margins;
       protected Lcid lcid;
       protected HeaderFooter header;
       protected HeaderFooter footer;
+      protected static StringHash<int> fontTable;
+      protected static Hash<Color, int> colorTable;
 
       public Document(PaperSize paperSize, PaperOrientation paperOrientation, Lcid lcid)
       {
@@ -49,6 +40,9 @@ namespace Core.Markup.Rtf
 
          header = new HeaderFooter(HeaderFooterType.Header);
          footer = new HeaderFooter(HeaderFooterType.Footer);
+
+         fontTable = new StringHash<int>(true) { [DefaultValue.FONT] = 0 };
+         colorTable = new Hash<Color, int> { [new Color()] = 0 };
       }
 
       public Margins Margins
@@ -191,64 +185,6 @@ namespace Core.Markup.Rtf
       public void Save(FileName file)
       {
          file.Text = Render();
-      }
-
-      public Result<Document> Append(Document otherDocument, AppendFavoring appendFavoring) => appendFavoring switch
-      {
-         AppendFavoring.FavorLeft => append(this, otherDocument),
-         AppendFavoring.FavorRight => append(otherDocument, this),
-         AppendFavoring.FailOnConflict => appendUnfavored(this, otherDocument),
-         _ => fail($"Didn't understand {appendFavoring}")
-      };
-
-      protected static Result<Document> append(Document favoredDocument, Document unfavoredDocument)
-      {
-         var newDocument = new Document(favoredDocument.paperSize, favoredDocument.paperOrientation, favoredDocument.lcid)
-         {
-            margins = favoredDocument.margins,
-            header = favoredDocument.header,
-            footer = favoredDocument.footer
-         };
-      }
-
-      protected static Result<Document> appendUnfavored(Document leftDocument, Document rightDocument)
-      {
-         var paperSize = leftDocument.paperSize;
-         var paperOrientation = leftDocument.paperOrientation;
-         var lcid = leftDocument.lcid;
-         var margins = leftDocument.margins;
-         var header = leftDocument.header;
-         var footer = leftDocument.footer;
-
-         if (paperSize != rightDocument.paperSize)
-         {
-            return fail("Paper sizes don't match");
-         }
-
-         if (paperOrientation != rightDocument.paperOrientation)
-         {
-            return fail("Paper orientations don't match");
-         }
-
-         if (lcid != rightDocument.lcid)
-         {
-            return fail("Localizations don't match");
-         }
-
-         if (margins != rightDocument.margins)
-         {
-            return fail("Margins don't match");
-         }
-
-         if (header != rightDocument.header)
-         {
-            return fail("Headers don't match");
-         }
-
-         if (footer != rightDocument.footer)
-         {
-            return fail("")
-         }
       }
    }
 }
