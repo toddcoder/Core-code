@@ -22,7 +22,7 @@ namespace Core.Arrays
          AwaitingStop
       }
 
-      public static T[] Append<T>(this T[] source, params T[] items)
+      public static T[] Augment<T>(this T[] source, params T[] items)
       {
          source ??= Array.Empty<T>();
 

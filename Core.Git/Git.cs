@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
+using Core.Arrays;
 using Core.Monads;
 using Core.Strings;
 using static Core.Monads.MonadFunctions;
@@ -31,9 +32,9 @@ namespace Core.Git
             var enumerable = process.StandardOutput.ReadToEnd().TrimEnd().Lines();
             process.WaitForExit(1000);
 
-            if (error.IsEmpty())
+            if (process.ExitCode == 0)
             {
-               return enumerable;
+               return enumerable.Augment(error.Lines());
             }
             else
             {
