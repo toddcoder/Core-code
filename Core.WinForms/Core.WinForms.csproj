@@ -62,6 +62,12 @@
     <Compile Include="Controls\LineChangedEventArgs.cs" />
     <Compile Include="Controls\ModificationState.cs" />
     <Compile Include="Controls\ProgressEventArgs.cs" />
+    <Compile Include="Controls\RichLabel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\RichLabel.Designer.cs">
+      <DependentUpon>RichLabel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\WebProgress.cs">
       <SubType>UserControl</SubType>
     </Compile>
