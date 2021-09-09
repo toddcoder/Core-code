@@ -7,6 +7,6 @@ namespace Core.Markup.Rtf
       Right,
       Center,
       FullyJustify,
-      Distributed,
+      Distributed
    }
 }

@@ -6,6 +6,6 @@ namespace Core.Markup.Rtf
       Single,
       Dotted,
       Dashed,
-      Double,
+      Double
    }
 }

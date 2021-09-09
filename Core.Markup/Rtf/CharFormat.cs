@@ -42,18 +42,18 @@ namespace Core.Markup.Rtf
 
       public CharFormat()
       {
-         _begin = none<int>();
-         _end = none<int>();
-         _font = none<FontDescriptor>();
-         _ansiFont = none<FontDescriptor>();
-         _fontSize = none<float>();
+         _begin = nil;
+         _end = nil;
+         _font = nil;
+         _ansiFont = nil;
+         _fontSize = nil;
          fontStyle = new FontStyle();
-         _backgroundColor = none<ColorDescriptor>();
-         _foregroundColor = none<ColorDescriptor>();
+         _backgroundColor = nil;
+         _foregroundColor = nil;
          twoInOneStyle = TwoInOneStyle.NotEnabled;
-         _bookmark = none<string>();
-         _localHyperlink = none<string>();
-         _localHyperlinkTip = none<string>();
+         _bookmark = nil;
+         _localHyperlink = nil;
+         _localHyperlinkTip = nil;
       }
 
       public CharFormat(int begin, int end, int textLength)
@@ -67,16 +67,16 @@ namespace Core.Markup.Rtf
 
          _begin = begin;
          _end = end;
-         _font = none<FontDescriptor>();
-         _ansiFont = none<FontDescriptor>();
-         _fontSize = none<float>();
+         _font = nil;
+         _ansiFont = nil;
+         _fontSize = nil;
          fontStyle = new FontStyle();
-         _backgroundColor = none<ColorDescriptor>();
-         _foregroundColor = none<ColorDescriptor>();
+         _backgroundColor = nil;
+         _foregroundColor = nil;
          twoInOneStyle = TwoInOneStyle.NotEnabled;
-         _bookmark = none<string>();
-         _localHyperlink = none<string>();
-         _localHyperlinkTip = none<string>();
+         _bookmark = nil;
+         _localHyperlink = nil;
+         _localHyperlinkTip = nil;
       }
 
       public void CopyFrom(CharFormat sourceFormat)

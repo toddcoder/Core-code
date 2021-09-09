@@ -4,6 +4,6 @@ namespace Core.Markup.Rtf
    {
       Letter = 1,
       A4,
-      A3,
+      A3
    }
 }

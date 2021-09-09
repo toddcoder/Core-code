@@ -1,5 +1,7 @@
 ﻿using System;
+using Core.Assertions;
 using Core.Computers;
+using Core.Git;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Core.Tests
@@ -29,6 +31,24 @@ namespace Core.Tests
       {
          FolderName.Current = @"C:\Enterprise\Projects\Core";
          Git.Git.Fetch().OnSuccess(onSuccess).OnFailure(onFailure);
+      }
+
+      [TestMethod]
+      public void IsCurrentFolderInGitTest()
+      {
+         FolderName.Current = @"~\source\repos\toddcoder\Core";
+         Git.Git.IsCurrentFolderInGit().Must().BeTrue().OrThrow();
+
+         FolderName.Current = @"C:\Temp";
+         Git.Git.IsCurrentFolderInGit().Must().Not.BeTrue().OrThrow();
+      }
+
+      [TestMethod]
+      public void IsBranchOnRemoteTest()
+      {
+         FolderName.Current = @"~\source\repos\toddcoder\Core";
+         var branch = GitBranch.Current;
+         branch.IsOnRemote().Must().BeTrue().OrThrow();
       }
    }
 }

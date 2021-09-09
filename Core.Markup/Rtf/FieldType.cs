@@ -6,6 +6,6 @@ namespace Core.Markup.Rtf
       Page,
       NumPages,
       Date,
-      Time,
+      Time
    }
 }

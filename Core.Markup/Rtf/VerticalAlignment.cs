@@ -4,6 +4,6 @@ namespace Core.Markup.Rtf
    {
       Top = 1,
       Middle,
-      Bottom,
+      Bottom
    }
 }
