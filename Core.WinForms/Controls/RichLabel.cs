@@ -23,7 +23,7 @@ namespace Core.WinForms.Controls
 
       protected override void WndProc(ref Message m)
       {
-         if (m.Msg is 0x204 or 0x205)
+         if (m.Msg is WM_R_BUTTON_DOWN or WM_R_BUTTON_UP)
          {
             return;
          }
