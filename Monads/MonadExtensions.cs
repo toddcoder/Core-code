@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Core.Enumerables;
@@ -15,7 +16,29 @@ namespace Core.Monads
 {
    public static class MonadExtensions
    {
-      public static Maybe<T> Some<T>(this T obj) => obj is null ? none<T>() : new Some<T>(obj);
+      public static Maybe<T> Some<T>(this T obj)
+      {
+         if (obj is null)
+         {
+            return none<T>();
+         }
+         else if (obj is ITuple tuple)
+         {
+            for (var i = 0; i < tuple.Length; i++)
+            {
+               if (tuple[i] is null)
+               {
+                  return none<T>();
+               }
+            }
+
+            return new Some<T>(obj);
+         }
+         else
+         {
+            return new Some<T>(obj);
+         }
+      }
 
       public static bool NotNull<T>(this T obj, out T value) => obj.Some().If(out value);
 
@@ -65,7 +88,29 @@ namespace Core.Monads
          }
       }
 
-      public static Result<T> Success<T>(this T value) => value is null ? "Value cannot be null".Failure<T>() : new Success<T>(value);
+      public static Result<T> Success<T>(this T value)
+      {
+         if (value is null)
+         {
+            return "Value cannot be null".Failure<T>();
+         }
+         else if (value is ITuple tuple)
+         {
+            for (var i = 0; i < tuple.Length; i++)
+            {
+               if (tuple[i] is null)
+               {
+                  return "No tuple value can be null".Failure<T>();
+               }
+            }
+
+            return new Success<T>(value);
+         }
+         else
+         {
+            return new Success<T>(value);
+         }
+      }
 
       public static Result<T> Failure<T>(this string message) => failure<T>(new Exception(message));
 
@@ -77,7 +122,29 @@ namespace Core.Monads
          return failure<T>((TException)typeof(TException).Create(list.ToArray()));
       }
 
-      public static Matched<T> Match<T>(this T matches) => matches is null ? "Matches cannot be null".FailedMatch<T>() : new Match<T>(matches);
+      public static Matched<T> Match<T>(this T matches)
+      {
+         if (matches is null)
+         {
+            return "Matches cannot be null".FailedMatch<T>();
+         }
+         else if (matches is ITuple tuple)
+         {
+            for (var i = 0; i < tuple.Length; i++)
+            {
+               if (tuple[i] is null)
+               {
+                  return "No tuple item can be null".FailedMatch<T>();
+               }
+            }
+
+            return new Match<T>(matches);
+         }
+         else
+         {
+            return new Match<T>(matches);
+         }
+      }
 
       public static Matched<T> MatchUnlessNull<T>(this T obj) => obj is null ? noMatch<T>() : obj.Match();
 
@@ -904,7 +971,29 @@ namespace Core.Monads
          }
       }
 
-      public static Completion<T> Completed<T>(this T value) => value is null ? "value cannot be null".Interrupted<T>() : new Completed<T>(value);
+      public static Completion<T> Completed<T>(this T value)
+      {
+         if (value is null)
+         {
+            return "value cannot be null".Interrupted<T>();
+         }
+         else if (value is ITuple tuple)
+         {
+            for (var i = 0; i < tuple.Length; i++)
+            {
+               if (tuple[i] is null)
+               {
+                  return "No tuple item can be null".Interrupted<T>();
+               }
+            }
+
+            return new Completed<T>(value);
+         }
+         else
+         {
+            return new Completed<T>(value);
+         }
+      }
 
       public static Completion<T> Completed<T>(this T value, CancellationToken token)
       {

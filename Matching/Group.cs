@@ -25,6 +25,8 @@ namespace Core.Matching
          length = Length;
       }
 
+      public Slice Slice => new(Text, Index, Length);
+
       public override string ToString() => Text;
    }
 }

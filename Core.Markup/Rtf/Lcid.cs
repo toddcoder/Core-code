@@ -10,6 +10,6 @@ namespace Core.Markup.Rtf
       Japanese = 1041,
       Korean = 1042,
       SimplifiedChinese = 2052,
-      Spanish = 3082,
+      Spanish = 3082
    }
 }

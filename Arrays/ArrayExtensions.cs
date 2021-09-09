@@ -22,9 +22,9 @@ namespace Core.Arrays
          AwaitingStop
       }
 
-      public static T[] Append<T>(this T[] source, params T[] items)
+      public static T[] Augment<T>(this T[] source, params T[] items)
       {
-         source ??= new T[0];
+         source ??= Array.Empty<T>();
 
          var targetLength = source.Length + items.Length;
          var target = new T[targetLength];
@@ -65,7 +65,7 @@ namespace Core.Arrays
          }
          else if (limitingSize == 0)
          {
-            return new T[0];
+            return Array.Empty<T>();
          }
          else if (limitingSize > length)
          {
@@ -205,19 +205,19 @@ namespace Core.Arrays
 
       public static Maybe<T> Last<T>(this T[] array) => maybe(array.IsNotEmpty(), () => array[array.Length - 1]);
 
-      public static T[] Tail<T>(this T[] array) => array.IsEmpty() ? new T[0] : array.Slice(1, array.Length - 1);
+      public static T[] Tail<T>(this T[] array) => array.IsEmpty() ? Array.Empty<T>() : array.Slice(1, array.Length - 1);
 
-      public static T[] AllButLast<T>(this T[] array) => array.IsEmpty() ? new T[0] : array.Slice(0, array.Length - 1);
+      public static T[] AllButLast<T>(this T[] array) => array.IsEmpty() ? Array.Empty<T>() : array.Slice(0, array.Length - 1);
 
       public static Maybe<Slice<T>> Balanced<T>(this T[] array, Predicate<T> startCondition, Predicate<T> stopCondition, int startIndex = 0)
       {
          if (array.IsEmpty())
          {
-            return none<Slice<T>>();
+            return nil;
          }
          else if (startIndex >= array.Length)
          {
-            return none<Slice<T>>();
+            return nil;
          }
          else
          {
@@ -248,7 +248,7 @@ namespace Core.Arrays
                      {
                         if (--count == 0)
                         {
-                           return array.From(index).To(i).Some();
+                           return array.From(index).To(i);
                         }
                      }
 
@@ -256,7 +256,7 @@ namespace Core.Arrays
                }
             }
 
-            return none<Slice<T>>();
+            return nil;
          }
       }
 
@@ -270,11 +270,11 @@ namespace Core.Arrays
 
             Array.Copy(array, newArray, length);
 
-            return (newArray, bottom).Some();
+            return (newArray, bottom);
          }
          else
          {
-            return none<(T[], T)>();
+            return nil;
          }
       }
 
@@ -288,11 +288,11 @@ namespace Core.Arrays
             Array.Copy(array, newArray, length - 1);
             newArray[length - 1] = element;
 
-            return newArray.Some();
+            return newArray;
          }
          else
          {
-            return none<T[]>();
+            return nil;
          }
       }
 
@@ -306,11 +306,11 @@ namespace Core.Arrays
 
             Array.Copy(array, 1, newArray, 0, length);
 
-            return (newArray, top).Some();
+            return (newArray, top);
          }
          else
          {
-            return none<(T[], T)>();
+            return nil;
          }
       }
 
@@ -324,11 +324,11 @@ namespace Core.Arrays
             Array.Copy(array, 0, newArray, 1, length - 1);
             newArray[0] = element;
 
-            return newArray.Some();
+            return newArray;
          }
          else
          {
-            return none<T[]>();
+            return nil;
          }
       }
 
@@ -427,11 +427,11 @@ namespace Core.Arrays
             var0 = array[0];
             var1 = array[1];
 
-            return 2.Success();
+            return 2;
          }
          else
          {
-            return "Array too small".Failure<int>();
+            return fail("Array too small");
          }
       }
 
@@ -443,7 +443,7 @@ namespace Core.Arrays
          {
             var2 = array[2];
 
-            return 3.Success();
+            return 3;
          }
          else
          {
@@ -459,7 +459,7 @@ namespace Core.Arrays
          {
             var3 = array[3];
 
-            return 4.Success();
+            return 4;
          }
          else
          {
@@ -476,7 +476,7 @@ namespace Core.Arrays
          {
             var4 = array[4];
 
-            return 5.Success();
+            return 5;
          }
          else
          {
@@ -493,7 +493,7 @@ namespace Core.Arrays
          {
             var5 = array[5];
 
-            return 6.Success();
+            return 6;
          }
          else
          {
@@ -510,7 +510,7 @@ namespace Core.Arrays
          {
             var6 = array[6];
 
-            return 7.Success();
+            return 7;
          }
          else
          {
@@ -536,11 +536,11 @@ namespace Core.Arrays
                index = Array.IndexOf(array, item, index + 1);
             }
 
-            return list.ToArray().Some();
+            return list.ToArray();
          }
          else
          {
-            return none<int[]>();
+            return nil;
          }
       }
 
@@ -653,6 +653,29 @@ namespace Core.Arrays
          e8 = array[7];
          e9 = array[8];
          e10 = array[9];
+      }
+
+      public static bool AllEqualTo<T>(this T[] left, T[] right) where T : IEquatable<T>
+      {
+         left.Must().Not.BeNullOrEmpty().OrThrow();
+         right.Must().Not.BeNullOrEmpty().OrThrow();
+
+         if (left.Length != right.Length)
+         {
+            return false;
+         }
+         else
+         {
+            for (var i = 0; i < left.Length; i++)
+            {
+               if (!left[i].Equals(right[i]))
+               {
+                  return false;
+               }
+            }
+
+            return true;
+         }
       }
    }
 }

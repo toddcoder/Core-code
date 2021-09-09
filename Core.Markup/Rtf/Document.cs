@@ -11,10 +11,10 @@ namespace Core.Markup.Rtf
       protected PaperOrientation paperOrientation;
       protected Margins margins;
       protected Lcid lcid;
-      protected StringHash<int> fontTable;
-      protected Hash<Color, int> colorTable;
       protected HeaderFooter header;
       protected HeaderFooter footer;
+      protected StringHash<int> fontTable;
+      protected Hash<Color, int> colorTable;
 
       public Document(PaperSize paperSize, PaperOrientation paperOrientation, Lcid lcid)
       {
@@ -38,11 +38,11 @@ namespace Core.Markup.Rtf
             margins[Direction.Left] = DefaultValue.A4_SHORT_EDGES;
          }
 
-         fontTable = new StringHash<int>(true) { [DefaultValue.FONT] = 0 };
-         colorTable = new Hash<Color, int> { [new Color()] = 0 };
-
          header = new HeaderFooter(HeaderFooterType.Header);
          footer = new HeaderFooter(HeaderFooterType.Footer);
+
+         fontTable = new StringHash<int>(true) { [DefaultValue.FONT] = 0 };
+         colorTable = new Hash<Color, int> { [new Color()] = 0 };
       }
 
       public Margins Margins

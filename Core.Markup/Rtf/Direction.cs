@@ -5,6 +5,6 @@ namespace Core.Markup.Rtf
       Top = 0,
       Right,
       Bottom,
-      Left,
+      Left
    }
 }

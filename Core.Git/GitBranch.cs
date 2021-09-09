@@ -31,6 +31,8 @@ namespace Core.Git
          Origin = "origin";
       }
 
+      public string Name => branch;
+
       public string Origin { get; set; }
 
       public Result<string[]> Delete(bool force = false)
@@ -62,6 +64,10 @@ namespace Core.Git
          return Git.Execute(arguments);
       }
 
-      public Result<string[]> Reset() => Git.Execute($"git reset --hard {Origin}/{branch}");
+      public Result<string[]> Reset() => Git.Execute($"reset --hard {Origin}/{branch}");
+
+      public bool IsOnRemote() => Git.Execute($"show-branch remotes/{Origin}/{branch}").Map(s => s.Length > 0).Recover(_ => false);
+
+      public override string ToString() => branch;
    }
 }

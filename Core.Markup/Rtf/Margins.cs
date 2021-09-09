@@ -36,13 +36,5 @@ namespace Core.Markup.Rtf
             margins[index] = value;
          }
       }
-
-      public bool Equals(Margins margins)
-      {
-         return margins.margins[(int)Direction.Bottom] == this.margins[(int)Direction.Bottom] &&
-            margins.margins[(int)Direction.Left] == this.margins[(int)Direction.Left] &&
-            margins.margins[(int)Direction.Right] == this.margins[(int)Direction.Right] &&
-            margins.margins[(int)Direction.Top] == this.margins[(int)Direction.Top];
-      }
    }
 }

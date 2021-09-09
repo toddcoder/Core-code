@@ -217,7 +217,7 @@ namespace Core.Computers
          set => setAttr(FileAttributes.Temporary, value);
       }
 
-      public FolderName this[string subfolder] => new(root, subfolders.Append(subfolder));
+      public FolderName this[string subfolder] => new(root, subfolders.Augment(subfolder));
 
       public Maybe<FolderName> Parent
       {

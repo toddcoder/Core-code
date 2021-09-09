@@ -242,5 +242,13 @@ namespace Core.Tests
          result = new Exception("Bad!");
          Console.WriteLine(result);
       }
+
+      [TestMethod]
+      public void NullTupleItemTest()
+      {
+         (int, string, int) items = (1, null, 10);
+         var _items = items.Some();
+         Console.WriteLine(_items.IsNone);
+      }
    }
 }
