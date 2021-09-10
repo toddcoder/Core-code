@@ -56,6 +56,7 @@
     <Compile Include="Consoles\TextBoxConsole.cs" />
     <Compile Include="Consoles\TextBoxExtensions.cs" />
     <Compile Include="Consoles\TextBoxReader.cs" />
+    <Compile Include="Controls\Decoration.cs" />
     <Compile Include="Controls\ExRichTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
