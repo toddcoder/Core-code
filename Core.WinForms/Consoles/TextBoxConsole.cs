@@ -329,5 +329,7 @@ namespace Core.WinForms.Consoles
             ResumeUpdating();
          }
       }
+
+      public void ScrollToCaret() => textBox.ScrollToCaret();
    }
 }
