@@ -38,7 +38,10 @@ namespace Core.WinForms.Consoles
                if (AutoStop)
                {
                   console.ResumeUpdating();
+                  console.ScrollToCaret();
                }
+
+               console.ScrollToCaret();
             }
          }
       }
