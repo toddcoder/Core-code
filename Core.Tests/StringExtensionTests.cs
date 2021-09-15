@@ -147,6 +147,8 @@ namespace Core.Tests
          {
             writeWords(text);
          }
+
+         writeWords("LEFT OUTER JOIN");
       }
    }
 }

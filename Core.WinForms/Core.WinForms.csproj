@@ -56,12 +56,19 @@
     <Compile Include="Consoles\TextBoxConsole.cs" />
     <Compile Include="Consoles\TextBoxExtensions.cs" />
     <Compile Include="Consoles\TextBoxReader.cs" />
+    <Compile Include="Controls\Decoration.cs" />
     <Compile Include="Controls\ExRichTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\LineChangedEventArgs.cs" />
     <Compile Include="Controls\ModificationState.cs" />
     <Compile Include="Controls\ProgressEventArgs.cs" />
+    <Compile Include="Controls\RichLabel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\RichLabel.Designer.cs">
+      <DependentUpon>RichLabel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\WebProgress.cs">
       <SubType>UserControl</SubType>
     </Compile>
