@@ -2393,12 +2393,13 @@ namespace Core.Strings
       public static IEnumerable<string> Words(this string source)
       {
          var builder = new StringBuilder();
+         var anyLower = false;
 
          foreach (var ch in source)
          {
             if (char.IsUpper(ch))
             {
-               if (builder.Length > 0)
+               if (anyLower && builder.Length > 0)
                {
                   yield return builder.ToString();
 
@@ -2406,9 +2407,11 @@ namespace Core.Strings
                }
 
                builder.Append(ch);
+               anyLower = false;
             }
             else if (char.IsLower(ch) || char.IsDigit(ch))
             {
+               anyLower = true;
                builder.Append(ch);
             }
             else if (ch == '_' || char.IsPunctuation(ch) || char.IsWhiteSpace(ch))
@@ -2419,6 +2422,8 @@ namespace Core.Strings
 
                   builder.Clear();
                }
+
+               anyLower = false;
             }
          }
 
