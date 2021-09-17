@@ -48,7 +48,7 @@ namespace Core.Tests
       {
          public Container()
          {
-            Tests = new Test[0];
+            Tests = Array.Empty<Test>();
          }
 
          public Test[] Tests { get; set; }
@@ -294,8 +294,7 @@ namespace Core.Tests
             from _ in file.TryTo.SetText(configuration.ToString())
             from source in file.TryTo.Text
             from configuration2 in Configuration.FromString(source)
-            from hash2 in configuration2.ToStringHash()
-            select hash2;
+            select configuration2.ToStringHash();
          if (_result.If(out var result, out var exception))
          {
             foreach (var (key, value) in result)

@@ -3,6 +3,7 @@ using Core.DataStructures;
 using Core.Matching;
 using Core.Monads;
 using Core.Strings;
+using static Core.Monads.MonadFunctions;
 using static Core.Strings.StringFunctions;
 
 namespace Core.Configurations
@@ -18,7 +19,7 @@ namespace Core.Configurations
          this.source = source;
       }
 
-      public Result<Configuration> Parse()
+      public Result<Group> Parse()
       {
          var rootGroup = new Group("_$root");
          var stack = new MaybeStack<IConfigurationItem>();
@@ -77,11 +78,11 @@ namespace Core.Configurations
                   }
                }
 
-               return (string.Empty, builder.ToString()).Success();
+               return (string.Empty, builder.ToString());
             }
             else
             {
-               return "Couldn't determine string".Failure<(string, string)>();
+               return fail("Couldn't determine string");
             }
          }
 
@@ -155,7 +156,7 @@ namespace Core.Configurations
                         {
                            var newSource = source.Drop(i + 1);
                            var str = builder.ToString();
-                           return (newSource, str).Success();
+                           return (newSource, str);
                         }
                      }
                      else
@@ -168,7 +169,7 @@ namespace Core.Configurations
                }
             }
 
-            return "Open string".Failure<(string, string)>();
+            return fail("Open string");
          }
 
          static string getKey(string keySource) => keySource == "?" ? $"__key_{uniqueID()}" : keySource;
@@ -185,7 +186,7 @@ namespace Core.Configurations
                }
                else
                {
-                  return "No parent group found".Failure<Configuration>();
+                  return fail("No parent group found");
                }
 
                stack.Push(group);
@@ -202,12 +203,12 @@ namespace Core.Configurations
                   }
                   else
                   {
-                     return "No parent group found".Failure<Configuration>();
+                     return fail("No parent group found");
                   }
                }
                else
                {
-                  return "Not closing on group".Failure<Configuration>();
+                  return fail("Not closing on group");
                }
 
                source = source.Drop(result.Length);
@@ -222,7 +223,7 @@ namespace Core.Configurations
                }
                else
                {
-                  return "No parent group found".Failure<Configuration>();
+                  return fail("No parent group found");
                }
 
                source = source.Drop(result.Length);
@@ -249,7 +250,7 @@ namespace Core.Configurations
                }
                else
                {
-                  return $"Didn't understand value {remainder}".Failure<Configuration>();
+                  return fail($"Didn't understand value {remainder}");
                }
             }
             else if (source.IsMatch("^ /s+ $; f"))
@@ -258,7 +259,7 @@ namespace Core.Configurations
             }
             else
             {
-               return $"Didn't understand {source.KeepUntil("\r\n")}".Failure<Configuration>();
+               return fail($"Didn't understand {source.KeepUntil("\r\n")}");
             }
          }
 
@@ -274,7 +275,7 @@ namespace Core.Configurations
             }
          }
 
-         return new Configuration(rootGroup).Success();
+         return rootGroup;
       }
    }
 }
