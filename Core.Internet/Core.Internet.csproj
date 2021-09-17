@@ -55,6 +55,10 @@
     <Compile Include="Markup\MarkupBuilder.cs" />
     <Compile Include="Markup\MarkupExtensions.cs" />
     <Compile Include="Markup\MarkupTextHolder.cs" />
+    <Compile Include="Smtp\Address.cs" />
+    <Compile Include="Smtp\Emailer.cs" />
+    <Compile Include="Smtp\EmailerTrying.cs" />
+    <Compile Include="Smtp\PriorityType.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core.csproj">
