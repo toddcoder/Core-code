@@ -1,4 +1,5 @@
 ﻿using System;
+using Core.Configurations;
 using Core.Services.Plugins;
 using Standard.Configurations;
 using Standard.ObjectGraphs;

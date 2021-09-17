@@ -42,7 +42,8 @@ namespace Core.Services.Loggers
          }
       }
 
-      public static Result<ServiceLogger> FromConfiguration(Configuration configuration)
+      protected static Result<ServiceLogger> fromConfiguration(Configuration configuration,
+         Func<FolderName, string, int, TimeSpan, Maybe<EventLogger>, Result<ServiceLogger>> creator)
       {
          if (configuration.GetValue("name").If(out var jobName))
          {
@@ -59,12 +60,22 @@ namespace Core.Services.Loggers
                _eventLogger = nil;
             }
 
-            return getBaseFolder(configuration, jobName).Map(baseFolder => new ServiceLogger(baseFolder, jobName, sizeLimit, expiry, _eventLogger));
+            return getBaseFolder(configuration, jobName).Map(baseFolder => creator(baseFolder, jobName, sizeLimit, expiry, _eventLogger));
          }
          else
          {
             return fail("Job name was not found");
          }
+      }
+
+      public static Result<ServiceLogger> FromConfiguration(Configuration configuration)
+      {
+         Result<ServiceLogger> creator(FolderName baseFolder, string jobName, int sizeLimit, TimeSpan expiry, Maybe<EventLogger> _eventLogger)
+         {
+            return new ServiceLogger(baseFolder, jobName, sizeLimit, expiry, _eventLogger);
+         }
+
+         return fromConfiguration(configuration, creator);
       }
 
       protected FolderName baseFolder;

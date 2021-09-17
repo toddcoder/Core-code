@@ -85,7 +85,7 @@ namespace Core.Services.Plugins
 
 		public virtual Result<Unit> SetUp()
 		{
-			Configuration.
+			
 			/*object obj = this;
 			jobGroup.Fill(ref obj);
 

@@ -47,6 +47,7 @@
     <Compile Include="EventWriter.cs" />
     <Compile Include="IServiceWriter.cs" />
     <Compile Include="Loggers\EmailMessage.cs" />
+    <Compile Include="Loggers\ErrorEmailMessage.cs" />
     <Compile Include="Loggers\EventLogger.cs" />
     <Compile Include="Loggers\IServiceMessage.cs" />
     <Compile Include="Loggers\LogEventArgs.cs" />
@@ -56,6 +57,7 @@
     <Compile Include="Loggers\ServiceLogger.cs" />
     <Compile Include="Loggers\ServiceMessage.cs" />
     <Compile Include="Loggers\ServiceMessageExtensions.cs" />
+    <Compile Include="Loggers\ServiceWriter.cs" />
     <Compile Include="Plugins\AfterPlugin.cs" />
     <Compile Include="Plugins\IRequiresTypeManager.cs" />
     <Compile Include="Plugins\MessagePump.cs" />
@@ -83,7 +85,6 @@
     <Compile Include="Scheduling\Validator.cs" />
     <Compile Include="Service.cs" />
     <Compile Include="TypeManager.cs" />
-    <Compile Include="TypeManagerTrying.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core.csproj">

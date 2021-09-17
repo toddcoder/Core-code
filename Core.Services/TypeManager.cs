@@ -1,16 +1,15 @@
 ﻿using System;
-using System.Linq;
 using System.Reflection;
 using Core.Assertions;
 using Core.Collections;
 using Core.Computers;
 using Core.Configurations;
 using Core.Enumerables;
-using Core.Exceptions;
 using Core.Matching;
 using Core.Monads;
-using Standard.Services;
+using Standard.Services.Plugins;
 using static System.Reflection.Assembly;
+using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
 using Group = Core.Configurations.Group;
 
@@ -59,7 +58,7 @@ namespace Core.Services
          _defaultTypeName = typeNames.Tuples().FirstOrNone(i => i.key == "default").Map((_, typeName) => typeName);
       }
 
-      public Type Type(string assemblyName, string typeName)
+      public Result<Type> Type(string assemblyName, string typeName)
       {
          if (typeName == "seq")
          {
@@ -67,55 +66,98 @@ namespace Core.Services
          }
          else if (assemblyName == "$")
          {
-            typeName = getTypeName(typeName);
-            return System.Type.GetType(typeName);
+            return getTypeName(typeName).Map(System.Type.GetType);
          }
          else
          {
-            var assembly = getAssemblyFromCache(assemblyName);
-            return getTypeFromCache(typeName, assembly);
+            return
+               from assembly in getAssemblyFromCache(assemblyName)
+               from type in getTypeFromCache(typeName, assembly)
+               select type;
          }
       }
 
-      Type getTypeFromCache(string name, Assembly assembly) => typeCache.Find(name, n =>
+      protected Result<Type> getTypeFromCache(string name, Assembly assembly)
       {
-         var typeName = getTypeName(name);
-         var match = typeName.Matches("^ -/{<} '<' -/{:} ':' /s* -/{>} '>' $");
-         if (match.If(out var m))
+         try
          {
-            var (tn, subTypeName, subAssemblyName) = m;
-            typeName = $"{tn}`1";
-            var type = getTypeFromAssembly(assembly, typeName);
-            var subType = Type(subAssemblyName, subTypeName);
-            return type.MakeGenericType(subType);
+            if (typeCache.If(name, out var type))
+            {
+               return type;
+            }
+            else if (getTypeName(name).If(out var typeName, out var exception))
+            {
+               if (typeName.Matches("^ -/{<} '<' -/{:} ':' /s* -/{>} '>' $; f").If(out var result))
+               {
+                  var (possibleTypeName, subTypeName, subAssemblyName) = result;
+                  typeName = $"{possibleTypeName}`1";
+
+                  var _result =
+                     from typeFromAssembly in getTypeFromAssembly(assembly, typeName)
+                     from subType in Type(subAssemblyName, subTypeName)
+                     select type.MakeGenericType(subType);
+                  if (_result.If(out type))
+                  {
+                     typeCache[name] = type;
+                  }
+
+                  return _result;
+               }
+               else
+               {
+                  var _result = getTypeFromAssembly(assembly, typeName);
+                  if (_result.If(out type))
+                  {
+                     typeCache[name] = type;
+                  }
+
+                  return _result;
+               }
+            }
+            else
+            {
+               return exception;
+            }
          }
-         else
+         catch (Exception exception)
          {
-            return getTypeFromAssembly(assembly, typeName);
+            return exception;
          }
-      }, true);
+      }
 
-      string getTypeName(string name) => typeNames.Value(name);
+      protected Result<string> getTypeName(string name) => typeNames.Map(name).Result($"Couldn't determine type name {name}");
 
-      static Type getTypeFromAssembly(Assembly assembly, string typeName) => assembly.GetType(typeName, true);
+      protected static Result<Type> getTypeFromAssembly(Assembly assembly, string typeName) => tryTo(() => assembly.GetType(typeName, true));
 
-      Assembly getAssemblyFromCache(string name) => assemblyCache.Find(name, n =>
+      protected Result<Assembly> getAssemblyFromCache(string name)
       {
-         if (assemblyNames.If(name, out var path))
+         try
          {
-            FolderName.Current = ((FileName)path).Folder;
-            return LoadFrom(path);
+            if (assemblyCache.If(name, out var assembly))
+            {
+               return assembly;
+            }
+            else if (assemblyNames.If(name, out var path))
+            {
+               FolderName.Current = ((FileName)path).Folder;
+               assembly = LoadFrom(path);
+               assemblyCache[name] = assembly;
+
+               return assembly;
+            }
+            else
+            {
+               return fail($"Couldn't find assembly named {name}");
+            }
          }
-         else
+         catch (Exception exception)
          {
-            throw $"Couldn't find assembly named {name}".Throws();
+            return exception;
          }
-      }, true);
+      }
 
-      public IMaybe<string> DefaultAssemblyName => _defaultAssemblyName;
+      public Maybe<string> DefaultAssemblyName => _defaultAssemblyName;
 
-      public IMaybe<string> DefaultTypeName => _defaultTypeName;
-
-      public TypeManagerTrying TryTo => new TypeManagerTrying(this);
+      public Maybe<string> DefaultTypeName => _defaultTypeName;
    }
 }
