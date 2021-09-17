@@ -44,6 +44,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EventWriter.cs" />
+    <Compile Include="IServiceWriter.cs" />
+    <Compile Include="Loggers\EmailMessage.cs" />
+    <Compile Include="Loggers\EventLogger.cs" />
+    <Compile Include="Loggers\IServiceMessage.cs" />
+    <Compile Include="Loggers\LogEventArgs.cs" />
+    <Compile Include="Loggers\NamedException.cs" />
+    <Compile Include="Loggers\NamedExceptions.cs" />
+    <Compile Include="Loggers\QueuedServiceLogger.cs" />
+    <Compile Include="Loggers\ServiceLogger.cs" />
+    <Compile Include="Loggers\ServiceMessage.cs" />
+    <Compile Include="Loggers\ServiceMessageExtensions.cs" />
+    <Compile Include="Plugins\AfterPlugin.cs" />
+    <Compile Include="Plugins\IRequiresTypeManager.cs" />
+    <Compile Include="Plugins\MessagePump.cs" />
+    <Compile Include="Plugins\MessagingPlugin.cs" />
+    <Compile Include="Plugins\Plugin.cs" />
+    <Compile Include="Plugins\PluginException.cs" />
+    <Compile Include="Plugins\Sequence.cs" />
+    <Compile Include="Plugins\Subscription.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scheduling\Brackets\AlwaysBracket.cs" />
     <Compile Include="Scheduling\Brackets\Bracket.cs" />
@@ -62,11 +82,17 @@
     <Compile Include="Scheduling\Scheduler.cs" />
     <Compile Include="Scheduling\Validator.cs" />
     <Compile Include="Service.cs" />
+    <Compile Include="TypeManager.cs" />
+    <Compile Include="TypeManagerTrying.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core.csproj">
       <Project>{fe997a92-d183-4c85-9a1a-fb032311ef62}</Project>
       <Name>Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Core.Internet\Core.Internet.csproj">
+      <Project>{38ffc55b-fe73-4618-86cf-05a3ef9cecac}</Project>
+      <Name>Core.Internet</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

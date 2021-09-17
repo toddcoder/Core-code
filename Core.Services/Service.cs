@@ -1,4 +1,5 @@
 ﻿using Core.Configurations;
+using Core.Internet.Smtp;
 
 namespace Core.Services
 {
@@ -6,6 +7,7 @@ namespace Core.Services
    {
       protected Configuration configuration;
       protected string name;
+      protected Address exceptionAddress;
 
    }
 }
