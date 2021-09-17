@@ -422,6 +422,26 @@ namespace Core.Configurations
          try
          {
             var obj = getObject(type);
+            return fill(ref obj, type).Map(_ => obj);
+         }
+         catch (Exception exception)
+         {
+            return exception;
+         }
+      }
+
+      public Result<T> Deserialize<T>() where T : class, new()
+      {
+         return
+            from obj in tryTo(() => Deserialize(typeof(T)))
+            from cast in obj.CastAs<T>()
+            select cast;
+      }
+
+      protected Result<Unit> fill(ref object obj, Type type)
+      {
+         try
+         {
             var allPropertyInfo = getPropertyInfo(type);
             foreach (var (key, value) in Values())
             {
@@ -450,7 +470,7 @@ namespace Core.Configurations
                }
             }
 
-            return obj;
+            return unit;
          }
          catch (Exception exception)
          {
@@ -458,12 +478,17 @@ namespace Core.Configurations
          }
       }
 
-      public Result<T> Deserialize<T>() where T : class, new()
+      public Result<Unit> Fill(ref object obj)
       {
-         return
-            from obj in tryTo(() => Deserialize(typeof(T)))
-            from cast in obj.CastAs<T>()
-            select cast;
+         if (obj is null)
+         {
+            return fail("Object may not be null");
+         }
+         else
+         {
+            var type = obj.GetType();
+            return fill(ref obj, type);
+         }
       }
    }
 }
