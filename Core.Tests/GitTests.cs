@@ -50,5 +50,13 @@ namespace Core.Tests
          var branch = GitBranch.Current;
          branch.IsOnRemote().Must().BeTrue().OrThrow();
       }
+
+      [TestMethod]
+      public void DifferentFromCurrentTest()
+      {
+         FolderName.Current = @"~\source\repos\toddcoder\Core";
+         GitBranch master = "master";
+         master.DifferentFromCurrent().OnSuccess(onSuccess).OnFailure(onFailure);
+      }
    }
 }
