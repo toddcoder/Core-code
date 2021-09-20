@@ -271,6 +271,21 @@ namespace Core.Monads
          }
       }
 
+      public static IEnumerable<Either<T, Exception>> Successful<T>(this IEnumerable<Result<T>> enumerable)
+      {
+         foreach (var result in enumerable)
+         {
+            if (result.If(out var value, out var exception))
+            {
+               yield return value;
+            }
+            else
+            {
+               yield return exception;
+            }
+         }
+      }
+
       public static IEnumerable<T> WhereIsMatched<T>(this IEnumerable<Matched<T>> enumerable)
       {
          foreach (var matched in enumerable)
