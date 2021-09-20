@@ -192,6 +192,7 @@
     <Compile Include="Computers\Synchronization\SynchronizerTrying.cs" />
     <Compile Include="Computers\Target.cs" />
     <Compile Include="Configurations\Configuration.cs" />
+    <Compile Include="Configurations\ConfigurationExtensions.cs" />
     <Compile Include="Configurations\Group.cs" />
     <Compile Include="Configurations\IConfigurationItem.cs" />
     <Compile Include="Configurations\Item.cs" />
