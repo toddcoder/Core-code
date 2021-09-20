@@ -1,4 +1,4 @@
-﻿namespace Standard.Services.Plugins
+﻿namespace Core.Services.Plugins
 {
    public interface IRequiresTypeManager
    {

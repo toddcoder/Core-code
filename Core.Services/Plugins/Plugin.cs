@@ -1,172 +1,211 @@
 ﻿using System;
 using Core.Applications;
-using Core.Collections;
 using Core.Configurations;
 using Core.Internet.Smtp;
 using Core.Monads;
 using Core.Services.Loggers;
 using Core.Services.Scheduling;
+using Core.Strings;
 using Standard.Services.Plugins;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Services.Plugins
 {
-	public abstract class Plugin
-	{
-		protected string name;
-		protected Configuration configuration;
-		protected Group jobGroup;
-		protected ServiceMessage serviceMessage;
-		protected Address address;
-		protected int retries;
-		protected string finalExceptionMessage;
-		protected Scheduler scheduler;
-		protected Maybe<Retrier> _retrier;
-		protected bool dispatchEnabled;
-		protected string applicationName;
+   public abstract class Plugin
+   {
+      protected string name;
+      protected Configuration configuration;
+      protected Group jobGroup;
+      protected ServiceMessage serviceMessage;
+      protected Address address;
+      protected int retries;
+      protected string finalExceptionMessage;
+      protected Maybe<Scheduler> _scheduler;
+      protected Maybe<Retrier> _retrier;
+      protected bool dispatchEnabled;
+      protected string applicationName;
 
-		public Plugin(string name, Configuration configuration, Group jobGroup)
-		{
-			this.name = name;
-			this.configuration = configuration;
-			this.jobGroup = jobGroup;
+      public Plugin(string name, Configuration configuration, Group jobGroup)
+      {
+         this.name = name;
+         this.configuration = configuration;
+         this.jobGroup = jobGroup;
 
-			dispatchEnabled = true;
-		}
+         dispatchEnabled = true;
+         After = nil;
+      }
 
-		public string Name => name;
+      public string Name => name;
 
-		public DateTime TriggerDate { get; set; }
+      public DateTime TriggerDate { get; set; }
 
-		public DateTime TargetDate { get; set; }
+      public DateTime TargetDate { get; set; }
 
-		public virtual void Initialize() { }
+      public virtual void Initialize()
+      {
+      }
 
-		public virtual void Deinitialize() { }
+      public virtual void Deinitialize()
+      {
+      }
 
-		public abstract void Dispatch();
+      public abstract Result<Unit> Dispatch();
 
-		public virtual void OnStart() { }
+      public virtual void OnStart()
+      {
+      }
 
-		public virtual void OnStop() { }
+      public virtual void OnStop()
+      {
+      }
 
-		public virtual void OnPause() { }
+      public virtual void OnPause()
+      {
+      }
 
-		public virtual void OnContinue() { }
+      public virtual void OnContinue()
+      {
+      }
 
-		public virtual void AfterFirstScheduled(Schedule schedule) { }
+      public virtual void AfterFirstScheduled(Schedule schedule)
+      {
+      }
 
-		public void InnerDispatch()
-		{
-			if (_retrier.If(out var r))
-			{
-				r.Execute();
-				if (r.AllRetriesFailed)
+      public void InnerDispatch()
+      {
+         if (_retrier.If(out var r))
+         {
+            r.Execute();
+            if (r.AllRetriesFailed)
             {
                serviceMessage.EmitExceptionMessage(finalExceptionMessage);
             }
          }
-		}
+      }
 
-		public virtual void InnerDispatch(int retry) { }
+      public virtual void InnerDispatch(int retry)
+      {
+      }
 
-		public virtual void SuccessfulInnerDispatch(int retry) { }
+      public virtual void SuccessfulInnerDispatch(int retry)
+      {
+      }
 
-		public virtual void FailedInnerDispatch(int retry) { }
+      public virtual void FailedInnerDispatch(int retry)
+      {
+      }
 
-		protected void noRetryException(Exception exception, int retry)
-		{
-			serviceMessage.EmitException(new PluginException(this, exception));
-		}
+      protected void noRetryException(Exception exception, int retry)
+      {
+         serviceMessage.EmitException(new PluginException(this, exception));
+      }
 
-		protected void retryException(Exception exception, int retry)
-		{
-			serviceMessage.EmitExceptionAttempt(new PluginException(this, exception), retry);
-		}
+      protected void retryException(Exception exception, int retry)
+      {
+         serviceMessage.EmitExceptionAttempt(new PluginException(this, exception), retry);
+      }
 
-		public virtual Result<Unit> SetUp()
-		{
-			
-			/*object obj = this;
-			jobGroup.Fill(ref obj);
-
-			createSchedules();
-
-			var exceptionsGraph = jobGroup["exceptions"];
-			var exceptionsTitle = exceptionsGraph["title"].Value;
-
-			if (exceptionsGraph["address"].Object<Address>().If(out address, out var exception)) { }
-			else
+      public virtual Result<Unit> SetUp()
+      {
+         try
          {
-            throw exception;
+            object obj = this;
+            jobGroup.Fill(ref obj);
+
+            createScheduler();
+
+            var exceptionsGroup = jobGroup.GroupAt("exceptions");
+            var exceptionsTitle = exceptionsGroup.ValueAt("title");
+
+            if (exceptionsGroup.GroupAt("address").Deserialize<Address>().If(out address, out var exception))
+            {
+               if (ServiceLogger.FromConfiguration(configuration).If(out var serviceLogger, out exception))
+               {
+                  retries = jobGroup.GetValue("retries").Map(r => r.AsInt()).DefaultTo(() => 0);
+                  SetRetrier();
+                  finalExceptionMessage = $"All {retries} {"retr(y|ies)".Plural(retries)} failed";
+
+                  var namedExceptions = new NamedExceptions(address, name, exceptionsTitle, retries);
+
+                  applicationName = configuration.ValueAt("name");
+
+                  serviceMessage = new ServiceMessage(applicationName);
+                  serviceMessage.Add(serviceLogger);
+                  serviceMessage.Add(namedExceptions);
+
+                  return unit;
+               }
+               else
+               {
+                  return exception;
+               }
+            }
+            else
+            {
+               return exception;
+            }
          }
+         catch (Exception exception)
+         {
+            return exception;
+         }
+      }
 
-         var serviceLogger = new ServiceLogger(configuration, jobGroup);
+      public void SetRetrier()
+      {
+         _retrier = maybe(retries > 0, () => new Retrier(retries, InnerDispatch, retryException));
+         if (_retrier.If(out var retrier))
+         {
+            retrier.Successful += (_, e) => SuccessfulInnerDispatch(e.RetryCount);
+            retrier.Failed += (_, e) => FailedInnerDispatch(e.RetryCount);
+         }
+      }
 
-			retries = jobGroup.FlatMap("retries", g => g.Value.ToInt(), 0);
-			SetRetrier();
-			finalExceptionMessage = $"All {retries} {(retries == 1 ? "retry" : "retries")} failed";
+      public void SetRetrier(int retries)
+      {
+         this.retries = retries;
+         SetRetrier();
+      }
 
-         var namedExceptions = new NamedExceptions(address, name, exceptionsTitle, retries);
-
-			applicationName = configuration.RootGraph["name"].Value;
-
-			serviceMessage = new ServiceMessage(applicationName);
-			serviceMessage.Add(serviceLogger);
-			serviceMessage.Add(namedExceptions);*/
-		}
-
-		public void SetRetrier()
-		{
-			_retrier = when(retries > 0, () => new Retrier(retries, InnerDispatch, retryException));
-			if (_retrier.If(out var r))
-			{
-				r.Successful += (sender, e) => SuccessfulInnerDispatch(e.RetryCount);
-				r.Failed += (sender, e) => FailedInnerDispatch(e.RetryCount);
-			}
-		}
-
-		public void SetRetrier(int retries)
-		{
-			this.retries = retries;
-			SetRetrier();
-		}
-
-		public void SetDefaultRetries(int retries)
-		{
-			if (retries < 0)
+      public void SetDefaultRetries(int retries)
+      {
+         if (retries < 0)
          {
             SetRetrier(retries);
          }
       }
 
-		protected static Schedules.Schedules getSchedules(string source)
-		{
-			return source == "none" ? new NullSchedules() : new Schedules.Schedules(source);
-		}
+      protected static Maybe<Scheduler> getScheduler(string source) => maybe(source != "none", () => new Scheduler(source));
 
-		protected virtual void createSchedules()
-		{
-			scheduler = jobGroup.If("schedule", out var schedule) ? getSchedules(schedule.Value) : new NullSchedules();
-		}
+      protected virtual void createScheduler()
+      {
+         _scheduler = jobGroup.GetValue("schedule").Map(getScheduler);
+      }
 
-		public Schedules.Schedules GetSchedules() => scheduler;
+      public Maybe<Scheduler> Scheduler() => _scheduler;
 
-		public virtual void BeforeDispatch(Schedule schedule) { }
+      public virtual void BeforeDispatch(Schedule schedule)
+      {
+      }
 
-		public virtual void AfterDispatch(Schedule schedule) { }
+      public virtual void AfterDispatch(Schedule schedule)
+      {
+      }
 
-		public virtual bool DispatchEnabled
-		{
-			get => dispatchEnabled;
-			set => dispatchEnabled = value;
-		}
+      public virtual bool DispatchEnabled
+      {
+         get => dispatchEnabled;
+         set => dispatchEnabled = value;
+      }
 
-		public virtual void TargetDateTimes(Schedules.Schedules jobSchedules) { }
+      public virtual void TargetDateTimes(Scheduler jobScheduler)
+      {
+      }
 
-		public IServiceMessage ServiceMessage => serviceMessage;
+      public IServiceMessage ServiceMessage => serviceMessage;
 
-		public IMaybe<AfterPlugin> After { get; set; } = none<AfterPlugin>();
+      public Maybe<AfterPlugin> After { get; set; }
 
-		public bool Tracing { get; set; }
-	}
+      public bool Tracing { get; set; }
+   }
 }

@@ -45,7 +45,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EventWriter.cs" />
+    <Compile Include="IAddServiceMessages.cs" />
     <Compile Include="IServiceWriter.cs" />
+    <Compile Include="Job.cs" />
     <Compile Include="Loggers\EmailMessage.cs" />
     <Compile Include="Loggers\ErrorEmailMessage.cs" />
     <Compile Include="Loggers\EventLogger.cs" />
@@ -60,16 +62,14 @@
     <Compile Include="Loggers\ServiceWriter.cs" />
     <Compile Include="Plugins\AfterPlugin.cs" />
     <Compile Include="Plugins\IRequiresTypeManager.cs" />
-    <Compile Include="Plugins\MessagePump.cs" />
-    <Compile Include="Plugins\MessagingPlugin.cs" />
     <Compile Include="Plugins\Plugin.cs" />
     <Compile Include="Plugins\PluginException.cs" />
-    <Compile Include="Plugins\Sequence.cs" />
     <Compile Include="Plugins\Subscription.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scheduling\Brackets\AlwaysBracket.cs" />
     <Compile Include="Scheduling\Brackets\Bracket.cs" />
     <Compile Include="Scheduling\Brackets\LimitedBracket.cs" />
+    <Compile Include="Scheduling\NullScheduler.cs" />
     <Compile Include="Scheduling\Parsers\DayOfWeekParser.cs" />
     <Compile Include="Scheduling\Parsers\DayParser.cs" />
     <Compile Include="Scheduling\Parsers\HourParser.cs" />

@@ -7,6 +7,7 @@ using Core.Configurations;
 using Core.Enumerables;
 using Core.Matching;
 using Core.Monads;
+using Core.Services.Plugins;
 using Standard.Services.Plugins;
 using static System.Reflection.Assembly;
 using static Core.Monads.AttemptFunctions;
@@ -60,11 +61,7 @@ namespace Core.Services
 
       public Result<Type> Type(string assemblyName, string typeName)
       {
-         if (typeName == "seq")
-         {
-            return typeof(Sequence);
-         }
-         else if (assemblyName == "$")
+         if (assemblyName == "$")
          {
             return getTypeName(typeName).Map(System.Type.GetType);
          }
