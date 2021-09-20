@@ -68,6 +68,8 @@ namespace Core.Git
 
       public bool IsOnRemote() => Git.Execute($"show-branch remotes/{Origin}/{branch}").Map(s => s.Length > 0).Recover(_ => false);
 
+      public Result<string[]> DifferentFromCurrent() => Git.Execute($"diff HEAD {Origin}/{branch} --name-only");
+
       public override string ToString() => branch;
    }
 }
