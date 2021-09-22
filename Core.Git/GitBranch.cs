@@ -1,9 +1,10 @@
-﻿using Core.Exceptions;
+﻿using System;
+using Core.Exceptions;
 using Core.Monads;
 
 namespace Core.Git
 {
-   public class GitBranch
+   public class GitBranch : IEquatable<GitBranch>
    {
       public static implicit operator GitBranch(string branch) => new(branch);
 
@@ -71,5 +72,21 @@ namespace Core.Git
       public Result<string[]> DifferentFromCurrent() => Git.Execute($"diff HEAD {Origin}/{branch} --name-only");
 
       public override string ToString() => branch;
+
+      public bool Equals(GitBranch other) => other is not null && branch == other.branch && Origin == other.Origin;
+
+      public override bool Equals(object obj) => obj is GitBranch other && Equals(other);
+
+      public override int GetHashCode()
+      {
+         unchecked
+         {
+            return (branch != null ? branch.GetHashCode() : 0) * 397 ^ (Origin != null ? Origin.GetHashCode() : 0);
+         }
+      }
+
+      public static bool operator ==(GitBranch left, GitBranch right) => Equals(left, right);
+
+      public static bool operator !=(GitBranch left, GitBranch right) => !Equals(left, right);
    }
 }
