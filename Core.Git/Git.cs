@@ -34,7 +34,7 @@ namespace Core.Git
             var enumerable = process.StandardOutput.ReadToEnd().TrimEnd().Lines();
             process.WaitForExit(1000);
 
-            var error = errors.ToArray();
+            var error = errors.Where(e => e is not null).ToArray();
 
             if (process.ExitCode == 0)
             {
