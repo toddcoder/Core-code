@@ -1,10 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Drawing;
-using System.Windows.Forms;
-using Core.Matching;
-using Core.Monads;
-using Core.Strings;
-using static Core.Monads.MonadFunctions;
+﻿using System.Windows.Forms;
 
 namespace Core.WinForms.Controls
 {
@@ -35,60 +29,6 @@ namespace Core.WinForms.Controls
          }
 
          base.WndProc(ref m);
-      }
-
-      protected IEnumerable<CombinedDecorations> decorations(string message)
-      {
-         var combinedDecorations = new CombinedDecorations(0, 0);
-
-         if (message.Matches("/('//color:' -[';']+ ';' | '//font:' -[';']+ ';' | '//' ['biu']); f").If(out var result))
-         {
-            foreach (var match in result)
-            {
-               var (text, index, length) = match;
-               var nextIndex = combinedDecorations.NextIndex;
-               if (nextIndex < index)
-               {
-                  combinedDecorations = combinedDecorations.With(new Undecorated(), nextIndex, index - nextIndex);
-                  yield return combinedDecorations;
-               }
-               else
-               {
-                  if (text.Matches("^ '//color:' /(-[';']+) ';'; f").If(out var subResult))
-                  {
-                     Maybe<Color> _color = nil;
-                     var argument = subResult.FirstGroup;
-                     if (argument.Matches("^ 'r' /s* /(/d1%3) /s* 'b' /s* /(/d1%3) /s* 'g' /s* /(/d1%3)").If(out subResult))
-                     {
-                        var (redString, greenString, blueString) = subResult;
-                        var _rgb =
-                           from redByte in redString.AsByte()
-                           from greenByte in greenString.AsByte()
-                           from blueByte in blueString.AsByte()
-                           select (redByte, greenByte, blueByte);
-                        if (_rgb.If(out var red, out var green, out var blue))
-                        {
-                           _color = Color.FromArgb(red, green, blue);
-                        }
-                     }
-                     else
-                     {
-                        _color = argument.AsEnumeration<Color>();
-                     }
-
-                     if (_color.If(out var color))
-                     {
-                        //combinedDecorations=combinedDecorations.With(new TextColor(color), index)
-                     }
-                  }
-               }
-            }
-         }
-      }
-
-      public void Display(string message)
-      {
-
       }
    }
 }

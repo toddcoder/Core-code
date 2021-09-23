@@ -8,12 +8,12 @@ namespace Core.WinForms.Consoles
 {
    public static class TextBoxExtensions
    {
-      private const int WM_SETREDRAW = 11;
-      private const int EM_GETRECT = 0x00b2;
-      private const int EM_SETRECT = 0x00b3;
+      private const int WM_SET_REDRAW = 11;
+      private const int EM_GET_RECT = 0x00b2;
+      private const int EM_SET_RECT = 0x00b3;
       private const int EM_SCROLL = 0x00b5;
-      private const int SB_LINEUP = 0;
-      private const int SB_LINEDOWN = 1;
+      private const int SB_LINE_UP = 0;
+      private const int SB_LINE_DOWN = 1;
 
       [StructLayout(LayoutKind.Sequential)]
       private readonly struct Rect
@@ -48,9 +48,9 @@ namespace Core.WinForms.Consoles
       [DllImport("user32.dll")]
       private static extern int SendMessage(IntPtr hwnd, int wMsg, int wParam, ref Point point);
 
-      public static void StopUpdating(this TextBoxBase textBox) => SendMessage(textBox.Handle, WM_SETREDRAW, false, 0);
+      public static void StopUpdating(this TextBoxBase textBox) => SendMessage(textBox.Handle, WM_SET_REDRAW, false, 0);
 
-      public static void ResumeUpdating(this TextBoxBase textBox) => SendMessage(textBox.Handle, WM_SETREDRAW, true, 0);
+      public static void ResumeUpdating(this TextBoxBase textBox) => SendMessage(textBox.Handle, WM_SET_REDRAW, true, 0);
 
       public static string CurrentLine(this TextBoxBase textBox) => textBox.Lines[textBox.CurrentLineIndex()];
 
@@ -80,7 +80,7 @@ namespace Core.WinForms.Consoles
          var size = textBox.ClientSize;
          var rect = new Rect(rectangle.Left, rectangle.Top, size.Width - rectangle.Left - rectangle.Right,
             size.Height - rectangle.Top - rectangle.Bottom);
-         SendMessage(textBox.Handle, EM_SETRECT, 0, ref rect);
+         SendMessage(textBox.Handle, EM_SET_RECT, 0, ref rect);
       }
 
       public static void Pad(this TextBoxBase textBox, int left, int top, int right, int bottom)
@@ -91,7 +91,7 @@ namespace Core.WinForms.Consoles
       public static (Point origin, Size size) Rectangle(this TextBoxBase textBox)
       {
          var rect = new Rect();
-         SendMessage(textBox.Handle, EM_GETRECT, 0, ref rect);
+         SendMessage(textBox.Handle, EM_GET_RECT, 0, ref rect);
 
          return (new Point(rect.Left, rect.Bottom), new Size(rect.Right - rect.Left, rect.Bottom - rect.Top));
       }
@@ -124,7 +124,7 @@ namespace Core.WinForms.Consoles
                break;
          }
 
-         SendMessage(textBox.Handle, EM_SCROLL, SB_LINEUP, 0);
+         SendMessage(textBox.Handle, EM_SCROLL, SB_LINE_UP, 0);
       }
    }
 }

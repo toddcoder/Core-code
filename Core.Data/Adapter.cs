@@ -14,8 +14,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Data
 {
-   public class Adapter<T> : IEnumerable<T>
-      where T : class
+   public class Adapter<T> : IEnumerable<T> where T : class
    {
       public static Result<Adapter<T>> FromSetup(ISetup setup, T entity) => tryTo(() => new Adapter<T>(entity, setup));
 
@@ -30,7 +29,7 @@ namespace Core.Data
          }
          else
          {
-            return "Entity must support ISetupObject interface".Failure<Adapter<T>>();
+            return fail("Entity must support ISetupObject interface");
          }
       }
 
@@ -134,11 +133,11 @@ namespace Core.Data
             RecordsAffected = DataSource.Execute(entity, Command, Parameters, Fields);
             HasRows = DataSource.HasRows;
 
-            return HasRows ? entity.Match() : noMatch<T>();
+            return HasRows ? entity.Match() : nil;
          }
          catch (Exception exception)
          {
-            return failedMatch<T>(exception);
+            return exception;
          }
       }
 
@@ -153,7 +152,7 @@ namespace Core.Data
          }
          catch
          {
-            return none<T>();
+            return nil;
          }
       }
 
@@ -201,7 +200,7 @@ namespace Core.Data
          }
          else
          {
-            throw new ApplicationException("You may only use a SQLDataSource for this function.");
+            throw "You may only use a SQLDataSource for this function.".Throws();
          }
       }
 

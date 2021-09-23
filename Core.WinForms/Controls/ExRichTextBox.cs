@@ -340,7 +340,6 @@ namespace Core.WinForms.Controls
       protected int getLineNumber(int lineNumber)
       {
          lineNumber.Must().BeBetween(0).Until(Lines.Length).OrThrow();
-
          return lineNumber;
       }
 
@@ -427,8 +426,7 @@ namespace Core.WinForms.Controls
 
       public Rectangle RectangleFromCurrentLine(Graphics graphics) => RectangleFrom(graphics, CurrentLineNumber);
 
-      public void DrawCurrentLineBar(Graphics graphics, Color foreColor, Color backColor, DashStyle dashStyle = DashStyle.Dot,
-         int alpha = 30)
+      public void DrawCurrentLineBar(Graphics graphics, Color foreColor, Color backColor, DashStyle dashStyle = DashStyle.Dot,         int alpha = 30)
       {
          if (TextLength > 0)
          {

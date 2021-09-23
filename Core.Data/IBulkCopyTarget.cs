@@ -7,8 +7,7 @@ namespace Core.Data
    {
       string TableName { get; set; }
 
-      void Copy<T>(Adapter<T> sourceAdapter)
-         where T : class;
+      void Copy<T>(Adapter<T> sourceAdapter) where T : class;
 
       void Copy(IDataReader reader, TimeSpan timeout);
    }

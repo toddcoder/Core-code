@@ -8,21 +8,26 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Data
 {
-   public class AdapterTrying<T>
-      where T : class
+   public class AdapterTrying<T> where T : class
    {
       protected Adapter<T> adapter;
 
       public AdapterTrying(Adapter<T> adapter) => this.adapter = adapter;
 
-      public Result<T> Execute() => tryTo(() =>
+      public Result<T> Execute()
       {
-         var result = adapter.Execute();
-         return adapter.HasRows ? result.Success() : "No rows".Failure<T>();
-      });
+         try
+         {
+            var result = adapter.Execute();
+            return adapter.HasRows ? result : fail("No rows");
+         }
+         catch (Exception exception)
+         {
+            return exception;
+         }
+      }
 
-      public Result<IBulkCopyTarget> BulkCopy<TSource>(Adapter<TSource> sourceAdapter)
-         where TSource : class
+      public Result<IBulkCopyTarget> BulkCopy<TSource>(Adapter<TSource> sourceAdapter) where TSource : class
       {
          return tryTo(() => adapter.BulkCopy(sourceAdapter));
       }

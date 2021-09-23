@@ -1,4 +1,5 @@
 ﻿using Core.Monads;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Data.Setups
 {
@@ -8,7 +9,7 @@ namespace Core.Data.Setups
 
       public OleDbSetupInfo(Maybe<string> file) => this.file = file;
 
-      public OleDbSetupInfo() : this(file: MonadFunctions.none<string>())
+      public OleDbSetupInfo() : this(file: nil)
       {
       }
 

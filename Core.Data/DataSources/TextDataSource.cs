@@ -7,13 +7,15 @@ namespace Core.Data.DataSources
 {
    public class TextDataSource : DataSource
    {
-      public TextDataSource(string connectionString, TimeSpan commandTimeout)
-         : base(connectionString, commandTimeout) { }
+      public TextDataSource(string connectionString, TimeSpan commandTimeout) : base(connectionString, commandTimeout)
+      {
+      }
 
       public override IDbConnection GetConnection()
       {
          var newConnection = new OleDbConnection(ConnectionString);
          newConnection.Open();
+
          return newConnection;
       }
 
@@ -27,7 +29,9 @@ namespace Core.Data.DataSources
          SqlDataSource.AddParametersToCommand(Command.Required("Command hasn't been set"), entity, parameters);
       }
 
-      public override void ClearAllPools() { }
+      public override void ClearAllPools()
+      {
+      }
 
       public override DataSource WithNewConnectionString(string newConnectionString) => new TextDataSource(newConnectionString, commandTimeout);
    }

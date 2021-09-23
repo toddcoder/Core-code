@@ -9,11 +9,11 @@ namespace Core.Data
 {
    public class Connection : IHash<string, string>
    {
-      protected StringHash<string> data;
+      protected StringHash data;
 
       public Connection(Group connectionGroup)
       {
-         data = new StringHash<string>(true);
+         data = new StringHash(true);
          Name = connectionGroup.Key;
          Type = connectionGroup.GetValue("type").DefaultTo(() => "sql");
          Timeout = connectionGroup.GetValue("timeout").Map(s => s.ToTimeSpan()).DefaultTo(() => 30.Seconds());
@@ -33,7 +33,7 @@ namespace Core.Data
 
       public bool ContainsKey(string key) => data.ContainsKey(key);
 
-      public Result<Hash<string, string>> AnyHash() => data.AsHash.Success();
+      public Result<Hash<string, string>> AnyHash() => data.AsHash;
 
       public string Type { get; set; }
 

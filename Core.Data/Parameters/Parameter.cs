@@ -16,18 +16,18 @@ namespace Core.Data.Parameters
          var signature = parameterGroup.GetValue("signature").DefaultTo(() => name);
          var typeName = parameterGroup.GetValue("type").DefaultTo(() => "$string");
          typeName = fixTypeName(typeName);
-         var type = getType(typeName);
-         var size = parameterGroup.GetValue("size").Map(s => s.ToInt());
+         var _type = getType(typeName);
+         var _size = parameterGroup.GetValue("size").Map(s => s.ToInt());
          var output = parameterGroup.GetValue("output").Map(s => s == "true").DefaultTo(() => false);
-         var value = parameterGroup.GetValue("value");
+         var _value = parameterGroup.GetValue("value");
          var _default = parameterGroup.GetValue("default");
 
          return new Parameter(name, signature)
          {
-            Type = type,
-            Size = size,
+            Type = _type,
+            Size = _size,
             Output = output,
-            Value = value,
+            Value = _value,
             Default = _default
          };
       }
@@ -49,11 +49,11 @@ namespace Core.Data.Parameters
 
       public Parameter(string name, string signature, Type type) : base(name, signature)
       {
-         Type = type.Some();
-         Size = none<int>();
+         Type = type;
+         Size = nil;
          Output = false;
-         Value = none<string>();
-         Default = none<string>();
+         Value = nil;
+         Default = nil;
       }
 
       public Maybe<Type> Type { get; set; }

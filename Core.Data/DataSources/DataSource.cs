@@ -42,9 +42,9 @@ namespace Core.Data.DataSources
          ConnectionString = connectionString;
          this.commandTimeout = commandTimeout;
          ResultIndex = 0;
-         Command = none<IDbCommand>();
-         _connection = none<IDbConnection>();
-         Reader = none<IDataReader>();
+         Command = nil;
+         _connection = nil;
+         Reader = nil;
       }
 
       public bool Deallocated { get; set; }
@@ -243,11 +243,11 @@ namespace Core.Data.DataSources
          {
             HasRows = true;
             fill(entity, reader);
-            return entity.Some();
+            return entity;
          }
          else
          {
-            return none<object>();
+            return nil;
          }
       }
 
@@ -292,17 +292,15 @@ namespace Core.Data.DataSources
       {
          foreach (var field in fields)
          {
-            var current = field;
-
-            if (current.Ordinal > -1)
+            if (field.Ordinal > -1)
             {
-               var value = reader.GetValue(current.Ordinal);
+               var value = reader.GetValue(field.Ordinal);
                if (value == DBNull.Value)
                {
                   value = null;
                }
 
-               current.SetValue(entity, value);
+               field.SetValue(entity, value);
             }
          }
       }
@@ -387,7 +385,7 @@ namespace Core.Data.DataSources
          if (Command.If(out var command))
          {
             command.Dispose();
-            Command = none<IDbCommand>();
+            Command = nil;
          }
       }
 
@@ -396,7 +394,7 @@ namespace Core.Data.DataSources
          if (_connection.If(out var connection))
          {
             connection.Dispose();
-            _connection = none<IDbConnection>();
+            _connection = nil;
          }
       }
 

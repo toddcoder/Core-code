@@ -43,7 +43,7 @@ namespace Core.Data.Parameters
 
       public bool ContainsKey(string key) => parameters.ContainsKey(key);
 
-      public Result<Hash<string, Parameter>> AnyHash() => parameters.AsHash.Success();
+      public Result<Hash<string, Parameter>> AnyHash() => parameters.AsHash;
 
       public int Count => parameters.Count;
 

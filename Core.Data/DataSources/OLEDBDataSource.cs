@@ -61,7 +61,7 @@ namespace Core.Data.DataSources
             {
                parameter.DeterminePropertyType(entity);
                parameterType = parameter.PropertyType;
-               parameter.Type = parameterType.Some();
+               parameter.Type = parameterType;
             }
 
             var oledbParameter = parameter.Size
@@ -96,7 +96,7 @@ namespace Core.Data.DataSources
                var underlyingType = type?.UnderlyingTypeOf() ?? none<Type>();
                if (underlyingType.IsSome)
                {
-                  value = type.InvokeMember("Value", BindingFlags.GetProperty, null, value, new object[0]);
+                  value = type.InvokeMember("Value", BindingFlags.GetProperty, null, value, Array.Empty<object>());
                }
 
                oledbParameter.Value = value;
