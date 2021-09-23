@@ -6,7 +6,6 @@ using Core.Data.Configurations;
 using Core.Data.ConnectionStrings;
 using Core.Data.DataSources;
 using Core.Monads;
-using static Core.Monads.MonadFunctions;
 
 namespace Core.Data.Setups
 {
@@ -37,9 +36,9 @@ namespace Core.Data.Setups
             var type = connection.Type.ToLower();
             var _connectionString = type switch
             {
-               "access" => new AccessConnectionString().Some<IConnectionString>(),
-               "excel" => new ExcelConnectionString().Some<IConnectionString>(),
-               "csv" => new CSVConnectionString().Some<IConnectionString>(),
+               "access" => new AccessConnectionString(),
+               "excel" => new ExcelConnectionString(),
+               "csv" => new CSVConnectionString(),
                _ => registeredTypes.Map(type).Map(f => f())
             };
 
@@ -51,7 +50,7 @@ namespace Core.Data.Setups
          }
          else
          {
-            return failure<OleDbSetup>(exception);
+            return exception;
          }
       }
 

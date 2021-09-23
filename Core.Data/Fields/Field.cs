@@ -25,12 +25,12 @@ namespace Core.Data.Fields
       {
          if (typeName.IsEmpty())
          {
-            return none<Type>();
+            return nil;
          }
          else
          {
             var fullName = typeName.Substitute("^ '$'; f", "System.");
-            return System.Type.GetType(fullName, false, true).Some();
+            return System.Type.GetType(fullName, false, true);
          }
       }
 
@@ -39,16 +39,19 @@ namespace Core.Data.Fields
       public Field(string name, Type type, bool optional = false) : base(name, name)
       {
          Optional = optional;
-         Type = type.Some();
+         Type = type;
       }
 
       public Field(string name, string signature, Type type, bool optional = false) : base(name, signature)
       {
          Optional = optional;
-         Type = type.Some();
+         Type = type;
       }
 
-      public Field() : base("", "") => Type = none<Type>();
+      public Field() : base("", "")
+      {
+         Type = nil;
+      }
 
       public int Ordinal { get; set; }
 

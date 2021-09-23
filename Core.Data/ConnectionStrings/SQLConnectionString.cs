@@ -37,7 +37,7 @@ namespace Core.Data.ConnectionStrings
       {
          if (connection.If("connection", out var connectionString))
          {
-            return new SqlConnectionString(connectionString, connection.Timeout).Success();
+            return new SqlConnectionString(connectionString, connection.Timeout);
          }
          else
          {

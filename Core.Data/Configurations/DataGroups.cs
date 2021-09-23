@@ -1,5 +1,6 @@
 ﻿using Core.Configurations;
 using Core.Monads;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Data.Configurations
 {
@@ -19,16 +20,16 @@ namespace Core.Data.Configurations
             if (CommandsGroup.GetGroup(commandName).If(out var commandGroup))
             {
                var command = new Command(commandGroup);
-               return command.Text.Success();
+               return command.Text;
             }
             else
             {
-               return $"Didn't find command group '{commandName}'".Failure<string>();
+               return fail($"Didn't find command group '{commandName}'");
             }
          }
          else
          {
-            return $"Didn't find adapter group '{adapterName}'".Failure<string>();
+            return fail($"Didn't find adapter group '{adapterName}'");
          }
       }
    }

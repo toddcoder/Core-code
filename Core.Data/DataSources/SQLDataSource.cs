@@ -39,7 +39,7 @@ namespace Core.Data.DataSources
             {
                parameter.DeterminePropertyType(entity);
                parameterType = parameter.PropertyType;
-               parameter.Type = parameterType.Some();
+               parameter.Type = parameterType;
             }
 
             var sqlParameter = parameter.Size
@@ -74,7 +74,7 @@ namespace Core.Data.DataSources
                var underlyingType = type?.UnderlyingTypeOf() ?? none<Type>();
                if (underlyingType.IsSome)
                {
-                  value = type.InvokeMember("Value", BindingFlags.GetProperty, null, value, new object[0]);
+                  value = type.InvokeMember("Value", BindingFlags.GetProperty, null, value, Array.Empty<object>());
                }
 
                sqlParameter.Value = value;
@@ -147,7 +147,7 @@ namespace Core.Data.DataSources
 
       public bool ContainsKey(string key) => attributes.ContainsKey(key);
 
-      public Result<Hash<string, string>> AnyHash() => attributes.Success<Hash<string, string>>();
+      public Result<Hash<string, string>> AnyHash() => attributes;
 
       public override IDbConnection GetConnection()
       {
@@ -184,7 +184,7 @@ namespace Core.Data.DataSources
          sqlConnection.Open();
 
          var adapter = new SqlDataAdapter { SelectCommand = sqlCommand };
-         Command = sqlCommand.Some<IDbCommand>();
+         Command = sqlCommand;
 
          changeCommandType(adapter.SelectCommand, command);
          addCommandParameters(entity, parameters);

@@ -18,7 +18,7 @@ namespace Core.Data.Setups
       public string Command
       {
          get => command.If(out var c) ? c : adapter;
-         set => command = value.Some();
+         set => command = value;
       }
 
       public string Adapter
@@ -29,16 +29,16 @@ namespace Core.Data.Setups
             adapter = value;
             if (command.IsNone)
             {
-               command = adapter.Some();
+               command = adapter;
             }
          }
       }
 
       public SetupInfo()
       {
-         connection = "";
-         command = none<string>();
-         adapter = "";
+         connection = string.Empty;
+         command = nil;
+         adapter = string.Empty;
       }
 
       public SetupInfo(string connectionName, string adapterName, Maybe<string> commandName)
@@ -48,10 +48,12 @@ namespace Core.Data.Setups
          command = commandName;
          if (command.IsNone)
          {
-            command = Adapter.Some();
+            command = Adapter;
          }
       }
 
-      public SetupInfo(string connectionName, string adapterName) : this(connectionName, adapterName, none<string>()) { }
+      public SetupInfo(string connectionName, string adapterName) : this(connectionName, adapterName, nil)
+      {
+      }
    }
 }

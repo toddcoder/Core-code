@@ -145,15 +145,15 @@ namespace Core.Enumerables
 
          if (first is null)
          {
-            return none<T>();
+            return nil;
          }
          else if (first.Equals(default))
          {
-            return none<T>();
+            return nil;
          }
          else
          {
-            return first.Some();
+            return first;
          }
       }
 
@@ -163,15 +163,15 @@ namespace Core.Enumerables
 
          if (last is null)
          {
-            return none<T>();
+            return nil;
          }
          else if (last.Equals(default))
          {
-            return none<T>();
+            return nil;
          }
          else
          {
-            return last.Some();
+            return last;
          }
       }
 
@@ -179,15 +179,15 @@ namespace Core.Enumerables
       {
          try
          {
-            return enumerable.First().Success();
+            return enumerable.FirstOrNone().Result(failureMessage);
          }
          catch (InvalidOperationException)
          {
-            return failureMessage.Failure<T>();
+            return fail(failureMessage);
          }
          catch (Exception exception)
          {
-            return failure<T>(exception);
+            return exception;
          }
       }
 
@@ -195,15 +195,15 @@ namespace Core.Enumerables
       {
          try
          {
-            return enumerable.First(i => predicate(i)).Success();
+            return enumerable.FirstOrNone(i => predicate(i)).Result(failureMessage);
          }
          catch (InvalidOperationException)
          {
-            return failureMessage.Failure<T>();
+            return fail(failureMessage);
          }
          catch (Exception exception)
          {
-            return failure<T>(exception);
+            return exception;
          }
       }
 
@@ -212,15 +212,15 @@ namespace Core.Enumerables
       {
          try
          {
-            return enumerable.First(i => predicate(i.Item1, i.Item2)).Success();
+            return enumerable.FirstOrNone(i => predicate(i.Item1, i.Item2)).Result(failureMessage);
          }
          catch (InvalidOperationException)
          {
-            return failureMessage.Failure<(T1, T2)>();
+            return fail(failureMessage);
          }
          catch (Exception exception)
          {
-            return failure<(T1, T2)>(exception);
+            return exception;
          }
       }
 
@@ -229,15 +229,15 @@ namespace Core.Enumerables
       {
          try
          {
-            return enumerable.First(i => predicate(i.Item1, i.Item2, i.Item3)).Success();
+            return enumerable.FirstOrNone(i => predicate(i.Item1, i.Item2, i.Item3)).Result(failureMessage);
          }
          catch (InvalidOperationException)
          {
-            return failureMessage.Failure<(T1, T2, T3)>();
+            return fail(failureMessage);
          }
          catch (Exception exception)
          {
-            return failure<(T1, T2, T3)>(exception);
+            return exception;
          }
       }
 
@@ -246,15 +246,15 @@ namespace Core.Enumerables
       {
          try
          {
-            return enumerable.First(i => predicate(i.Item1, i.Item2, i.Item3, i.Item4)).Success();
+            return enumerable.FirstOrNone(i => predicate(i.Item1, i.Item2, i.Item3, i.Item4)).Result(failureMessage);
          }
          catch (InvalidOperationException)
          {
-            return failureMessage.Failure<(T1, T2, T3, T4)>();
+            return fail(failureMessage);
          }
          catch (Exception exception)
          {
-            return failure<(T1, T2, T3, T4)>(exception);
+            return exception;
          }
       }
 
@@ -262,15 +262,15 @@ namespace Core.Enumerables
       {
          try
          {
-            return enumerable.First().Success();
+            return enumerable.FirstOrNone().Result(failureMessage());
          }
          catch (InvalidOperationException)
          {
-            return failureMessage().Failure<T>();
+            return fail(failureMessage());
          }
          catch (Exception exception)
          {
-            return failure<T>(exception);
+            return exception;
          }
       }
 
@@ -278,15 +278,15 @@ namespace Core.Enumerables
       {
          try
          {
-            return enumerable.First(i => predicate(i)).Success();
+            return enumerable.FirstOrNone(i => predicate(i)).Result(failureMessage());
          }
          catch (InvalidOperationException)
          {
-            return failureMessage().Failure<T>();
+            return fail(failureMessage());
          }
          catch (Exception exception)
          {
-            return failure<T>(exception);
+            return exception;
          }
       }
 
@@ -295,15 +295,15 @@ namespace Core.Enumerables
       {
          try
          {
-            return enumerable.First(i => predicate(i.Item1, i.Item2)).Success();
+            return enumerable.FirstOrNone(i => predicate(i.Item1, i.Item2)).Result(failureMessage());
          }
          catch (InvalidOperationException)
          {
-            return failureMessage().Failure<(T1, T2)>();
+            return fail(failureMessage());
          }
          catch (Exception exception)
          {
-            return failure<(T1, T2)>(exception);
+            return exception;
          }
       }
 
@@ -312,15 +312,15 @@ namespace Core.Enumerables
       {
          try
          {
-            return enumerable.First(i => predicate(i.Item1, i.Item2, i.Item3)).Success();
+            return enumerable.FirstOrNone(i => predicate(i.Item1, i.Item2, i.Item3)).Result(failureMessage());
          }
          catch (InvalidOperationException)
          {
-            return failureMessage().Failure<(T1, T2, T3)>();
+            return fail(failureMessage());
          }
          catch (Exception exception)
          {
-            return failure<(T1, T2, T3)>(exception);
+            return exception;
          }
       }
 
@@ -329,15 +329,15 @@ namespace Core.Enumerables
       {
          try
          {
-            return enumerable.First(i => predicate(i.Item1, i.Item2, i.Item3, i.Item4)).Success();
+            return enumerable.FirstOrNone(i => predicate(i.Item1, i.Item2, i.Item3, i.Item4)).Result(failureMessage());
          }
          catch (InvalidOperationException)
          {
-            return failureMessage().Failure<(T1, T2, T3, T4)>();
+            return fail(failureMessage());
          }
          catch (Exception exception)
          {
-            return failure<(T1, T2, T3, T4)>(exception);
+            return exception;
          }
       }
 
@@ -345,15 +345,15 @@ namespace Core.Enumerables
       {
          try
          {
-            return enumerable.Last().Success();
+            return enumerable.LastOrNone().Result(failureMessage);
          }
          catch (InvalidOperationException)
          {
-            return failureMessage.Failure<T>();
+            return fail(failureMessage);
          }
          catch (Exception exception)
          {
-            return failure<T>(exception);
+            return exception;
          }
       }
 
@@ -361,15 +361,15 @@ namespace Core.Enumerables
       {
          try
          {
-            return enumerable.Last(i => predicate(i)).Success();
+            return enumerable.LastOrNone(i => predicate(i)).Result(failureMessage);
          }
          catch (InvalidOperationException)
          {
-            return failureMessage.Failure<T>();
+            return fail(failureMessage);
          }
          catch (Exception exception)
          {
-            return failure<T>(exception);
+            return exception;
          }
       }
 
@@ -378,15 +378,15 @@ namespace Core.Enumerables
       {
          try
          {
-            return enumerable.Last(i => predicate(i.Item1, i.Item2)).Success();
+            return enumerable.LastOrNone(i => predicate(i.Item1, i.Item2)).Result(failureMessage);
          }
          catch (InvalidOperationException)
          {
-            return failureMessage.Failure<(T1, T2)>();
+            return fail(failureMessage);
          }
          catch (Exception exception)
          {
-            return failure<(T1, T2)>(exception);
+            return exception;
          }
       }
 
@@ -395,15 +395,15 @@ namespace Core.Enumerables
       {
          try
          {
-            return enumerable.Last(i => predicate(i.Item1, i.Item2, i.Item3)).Success();
+            return enumerable.LastOrNone(i => predicate(i.Item1, i.Item2, i.Item3)).Result(failureMessage);
          }
          catch (InvalidOperationException)
          {
-            return failureMessage.Failure<(T1, T2, T3)>();
+            return fail(failureMessage);
          }
          catch (Exception exception)
          {
-            return failure<(T1, T2, T3)>(exception);
+            return exception;
          }
       }
 
@@ -411,15 +411,15 @@ namespace Core.Enumerables
       {
          try
          {
-            return enumerable.Last().Success();
+            return enumerable.LastOrNone().Result(failureMessage());
          }
          catch (InvalidOperationException)
          {
-            return failureMessage().Failure<T>();
+            return fail(failureMessage());
          }
          catch (Exception exception)
          {
-            return failure<T>(exception);
+            return exception;
          }
       }
 
@@ -429,11 +429,11 @@ namespace Core.Enumerables
          {
             try
             {
-               return enumerable.Last(i => predicate(i)).Success();
+               return enumerable.LastOrNone(i => predicate(i)).Result(failureMessage());
             }
             catch
             {
-               return failureMessage().Failure<T>();
+               return fail(failureMessage());
             }
          });
       }
@@ -445,11 +445,11 @@ namespace Core.Enumerables
          {
             try
             {
-               return enumerable.Last(i => predicate(i.Item1, i.Item2)).Success();
+               return enumerable.LastOrNone(i => predicate(i.Item1, i.Item2)).Result(failureMessage());
             }
             catch
             {
-               return failureMessage().Failure<(T1, T2)>();
+               return fail(failureMessage());
             }
          });
       }
@@ -461,11 +461,11 @@ namespace Core.Enumerables
          {
             try
             {
-               return enumerable.Last(i => predicate(i.Item1, i.Item2, i.Item3)).Success();
+               return enumerable.LastOrNone(i => predicate(i.Item1, i.Item2, i.Item3)).Result(failureMessage());
             }
             catch
             {
-               return failureMessage().Failure<(T1, T2, T3)>();
+               return fail(failureMessage());
             }
          });
       }
@@ -477,11 +477,11 @@ namespace Core.Enumerables
          {
             try
             {
-               return enumerable.Last(i => predicate(i.Item1, i.Item2, i.Item3, i.Item4)).Success();
+               return enumerable.LastOrNone(i => predicate(i.Item1, i.Item2, i.Item3, i.Item4)).Result(failureMessage());
             }
             catch
             {
-               return failureMessage().Failure<(T1, T2, T3, T4)>();
+               return fail(failureMessage());
             }
          });
       }
@@ -492,15 +492,15 @@ namespace Core.Enumerables
 
          if (first is null)
          {
-            return none<T>();
+            return nil;
          }
          else if (first.Equals(default))
          {
-            return none<T>();
+            return nil;
          }
          else
          {
-            return first.Some();
+            return first;
          }
       }
 
@@ -510,15 +510,15 @@ namespace Core.Enumerables
 
          if (first.AnyNull())
          {
-            return none<(T1, T2)>();
+            return nil;
          }
          else if (first.Equals(default))
          {
-            return none<(T1, T2)>();
+            return nil;
          }
          else
          {
-            return first.Some();
+            return first;
          }
       }
 
@@ -528,15 +528,15 @@ namespace Core.Enumerables
 
          if (first.AnyNull())
          {
-            return none<(T1, T2, T3)>();
+            return nil;
          }
          else if (first.Equals(default))
          {
-            return none<(T1, T2, T3)>();
+            return nil;
          }
          else
          {
-            return first.Some();
+            return first;
          }
       }
 
@@ -547,15 +547,15 @@ namespace Core.Enumerables
 
          if (first.AnyNull())
          {
-            return none<(T1, T2, T3, T4)>();
+            return nil;
          }
          else if (first.Equals(default))
          {
-            return none<(T1, T2, T3, T4)>();
+            return nil;
          }
          else
          {
-            return first.Some();
+            return first;
          }
       }
 
@@ -565,15 +565,15 @@ namespace Core.Enumerables
 
          if (last is null)
          {
-            return none<T>();
+            return nil;
          }
          else if (last.Equals(default))
          {
-            return none<T>();
+            return nil;
          }
          else
          {
-            return last.Some();
+            return last;
          }
       }
 
@@ -583,15 +583,15 @@ namespace Core.Enumerables
 
          if (last.AnyNull())
          {
-            return none<(T1, T2)>();
+            return nil;
          }
          else if (last.Equals(default))
          {
-            return none<(T1, T2)>();
+            return nil;
          }
          else
          {
-            return last.Some();
+            return last;
          }
       }
 
@@ -601,15 +601,15 @@ namespace Core.Enumerables
 
          if (last.AnyNull())
          {
-            return none<(T1, T2, T3)>();
+            return nil;
          }
          else if (last.Equals(default))
          {
-            return none<(T1, T2, T3)>();
+            return nil;
          }
          else
          {
-            return last.Some();
+            return last;
          }
       }
 
@@ -620,15 +620,15 @@ namespace Core.Enumerables
 
          if (last.AnyNull())
          {
-            return none<(T1, T2, T3, T4)>();
+            return nil;
          }
          else if (last.Equals(default))
          {
-            return none<(T1, T2, T3, T4)>();
+            return nil;
          }
          else
          {
-            return last.Some();
+            return last;
          }
       }
 
@@ -636,28 +636,15 @@ namespace Core.Enumerables
       {
          try
          {
-            var first = enumerable.First(predicate);
-
-            if (first is null)
-            {
-               return noMatch<T>();
-            }
-            else if (first.Equals(default))
-            {
-               return noMatch<T>();
-            }
-            else
-            {
-               return first.Match();
-            }
+            return enumerable.FirstOrNone(predicate).Matched();
          }
          catch (InvalidOperationException)
          {
-            return noMatch<T>();
+            return nil;
          }
          catch (Exception exception)
          {
-            return failedMatch<T>(exception);
+            return exception;
          }
       }
 
@@ -665,28 +652,15 @@ namespace Core.Enumerables
       {
          try
          {
-            var first = enumerable.First(i => predicate(i.Item1, i.Item2));
-
-            if (first.AnyNull())
-            {
-               return noMatch<(T1, T2)>();
-            }
-            else if (first.Equals(default))
-            {
-               return noMatch<(T1, T2)>();
-            }
-            else
-            {
-               return first.Match();
-            }
+            return enumerable.FirstOrNone(i => predicate(i.Item1, i.Item2)).Matched();
          }
          catch (InvalidOperationException)
          {
-            return noMatch<(T1, T2)>();
+            return nil;
          }
          catch (Exception exception)
          {
-            return failedMatch<(T1, T2)>(exception);
+            return exception;
          }
       }
 
@@ -694,28 +668,15 @@ namespace Core.Enumerables
       {
          try
          {
-            var first = enumerable.First(i => predicate(i.Item1, i.Item2, i.Item3));
-
-            if (first.AnyNull())
-            {
-               return noMatch<(T1, T2, T3)>();
-            }
-            else if (first.Equals(default))
-            {
-               return noMatch<(T1, T2, T3)>();
-            }
-            else
-            {
-               return first.Match();
-            }
+            return enumerable.FirstOrNone(i => predicate(i.Item1, i.Item2, i.Item3)).Matched();
          }
          catch (InvalidOperationException)
          {
-            return noMatch<(T1, T2, T3)>();
+            return nil;
          }
          catch (Exception exception)
          {
-            return failedMatch<(T1, T2, T3)>(exception);
+            return exception;
          }
       }
 
@@ -724,28 +685,15 @@ namespace Core.Enumerables
       {
          try
          {
-            var first = enumerable.First(i => predicate(i.Item1, i.Item2, i.Item3, i.Item4));
-
-            if (first.AnyNull())
-            {
-               return noMatch<(T1, T2, T3, T4)>();
-            }
-            else if (first.Equals(default))
-            {
-               return noMatch<(T1, T2, T3, T4)>();
-            }
-            else
-            {
-               return first.Match();
-            }
+            return enumerable.FirstOrNone(i => predicate(i.Item1, i.Item2, i.Item3, i.Item4)).Matched();
          }
          catch (InvalidOperationException)
          {
-            return noMatch<(T1, T2, T3, T4)>();
+            return nil;
          }
          catch (Exception exception)
          {
-            return failedMatch<(T1, T2, T3, T4)>(exception);
+            return exception;
          }
       }
 
@@ -753,28 +701,15 @@ namespace Core.Enumerables
       {
          try
          {
-            var last = enumerable.Last(predicate);
-
-            if (last is null)
-            {
-               return noMatch<T>();
-            }
-            else if (last.Equals(default))
-            {
-               return noMatch<T>();
-            }
-            else
-            {
-               return last.Match();
-            }
+            return enumerable.LastOrNone(predicate).Matched();
          }
          catch (InvalidOperationException)
          {
-            return noMatch<T>();
+            return nil;
          }
          catch (Exception exception)
          {
-            return failedMatch<T>(exception);
+            return exception;
          }
       }
 
@@ -782,28 +717,15 @@ namespace Core.Enumerables
       {
          try
          {
-            var last = enumerable.Last(i => predicate(i.Item1, i.Item2));
-
-            if (last.AnyNull())
-            {
-               return noMatch<(T1, T2)>();
-            }
-            else if (last.Equals(default))
-            {
-               return noMatch<(T1, T2)>();
-            }
-            else
-            {
-               return last.Match();
-            }
+            return enumerable.LastOrNone(i => predicate(i.Item1, i.Item2)).Matched();
          }
          catch (InvalidOperationException)
          {
-            return noMatch<(T1, T2)>();
+            return nil;
          }
          catch (Exception exception)
          {
-            return failedMatch<(T1, T2)>(exception);
+            return exception;
          }
       }
 
@@ -811,28 +733,15 @@ namespace Core.Enumerables
       {
          try
          {
-            var last = enumerable.Last(i => predicate(i.Item1, i.Item2, i.Item3));
-
-            if (last.AnyNull())
-            {
-               return noMatch<(T1, T2, T3)>();
-            }
-            else if (last.Equals(default))
-            {
-               return noMatch<(T1, T2, T3)>();
-            }
-            else
-            {
-               return last.Match();
-            }
+            return enumerable.LastOrNone(i => predicate(i.Item1, i.Item2, i.Item3)).Matched();
          }
          catch (InvalidOperationException)
          {
-            return noMatch<(T1, T2, T3)>();
+            return nil;
          }
          catch (Exception exception)
          {
-            return failedMatch<(T1, T2, T3)>(exception);
+            return exception;
          }
       }
 
@@ -841,28 +750,15 @@ namespace Core.Enumerables
       {
          try
          {
-            var last = enumerable.Last(i => predicate(i.Item1, i.Item2, i.Item3, i.Item4));
-
-            if (last.AnyNull())
-            {
-               return noMatch<(T1, T2, T3, T4)>();
-            }
-            else if (last.Equals(default))
-            {
-               return noMatch<(T1, T2, T3, T4)>();
-            }
-            else
-            {
-               return last.Match();
-            }
+            return enumerable.LastOrNone(i => predicate(i.Item1, i.Item2, i.Item3, i.Item4)).Matched();
          }
          catch (InvalidOperationException)
          {
-            return noMatch<(T1, T2, T3, T4)>();
+            return nil;
          }
          catch (Exception exception)
          {
-            return failedMatch<(T1, T2, T3, T4)>(exception);
+            return exception;
          }
       }
 
@@ -870,28 +766,15 @@ namespace Core.Enumerables
       {
          try
          {
-            var first = enumerable.First();
-
-            if (first is null)
-            {
-               return noMatch<T>();
-            }
-            else if (first.Equals(default))
-            {
-               return noMatch<T>();
-            }
-            else
-            {
-               return first.Match();
-            }
+            return enumerable.FirstOrNone().Matched();
          }
          catch (InvalidOperationException)
          {
-            return noMatch<T>();
+            return nil;
          }
          catch (Exception exception)
          {
-            return failedMatch<T>(exception);
+            return exception;
          }
       }
 
@@ -899,28 +782,15 @@ namespace Core.Enumerables
       {
          try
          {
-            var last = enumerable.Last();
-
-            if (last is null)
-            {
-               return noMatch<T>();
-            }
-            else if (last.Equals(default))
-            {
-               return noMatch<T>();
-            }
-            else
-            {
-               return last.Match();
-            }
+            return enumerable.LastOrNone().Matched();
          }
          catch (InvalidOperationException)
          {
-            return noMatch<T>();
+            return nil;
          }
          catch (Exception exception)
          {
-            return failedMatch<T>(exception);
+            return exception;
          }
       }
 
@@ -1080,114 +950,114 @@ namespace Core.Enumerables
 
       public static Maybe<int> IndexOfMax<T>(this IEnumerable<T> enumerable) where T : IComparable<T>
       {
-         var index = none<int>();
+         var _index = Nil.Of<int>();
          var currentIndex = 0;
-         var anyCurrentValue = none<T>();
+         var _currentValue = Nil.Of<T>();
          foreach (var item in enumerable)
          {
-            if (anyCurrentValue.If(out var currentValue))
+            if (_currentValue.If(out var currentValue))
             {
                if (item.ComparedTo(currentValue) > 0)
                {
-                  index = currentIndex.Some();
-                  anyCurrentValue = item.Some();
+                  _index = currentIndex;
+                  _currentValue = item;
                }
             }
             else
             {
-               index = currentIndex.Some();
-               anyCurrentValue = item.Some();
+               _index = currentIndex;
+               _currentValue = item;
             }
 
             currentIndex++;
          }
 
-         return index;
+         return _index;
       }
 
       public static Maybe<int> IndexOfMax<TSource, TResult>(this IEnumerable<TSource> enumerable, Func<TSource, TResult> mappingFunc)
          where TResult : IComparable<TResult>
       {
-         var index = none<int>();
+         var _index = Nil.Of<int>();
          var currentIndex = 0;
-         var anyCurrentValue = none<TResult>();
+         var _currentValue = Nil.Of<TResult>();
          foreach (var item in enumerable)
          {
             var mappedItem = mappingFunc(item);
-            if (anyCurrentValue.If(out var currentValue))
+            if (_currentValue.If(out var currentValue))
             {
                if (mappedItem.ComparedTo(currentValue) > 0)
                {
-                  index = currentIndex.Some();
-                  anyCurrentValue = mappedItem.Some();
+                  _index = currentIndex;
+                  _currentValue = mappedItem;
                }
             }
             else
             {
-               index = currentIndex.Some();
-               anyCurrentValue = mappedItem.Some();
+               _index = currentIndex;
+               _currentValue = mappedItem;
             }
 
             currentIndex++;
          }
 
-         return index;
+         return _index;
       }
 
       public static Maybe<int> IndexOfMin<T>(this IEnumerable<T> enumerable) where T : IComparable<T>
       {
-         var index = none<int>();
+         var _index = Nil.Of<int>();
          var currentIndex = 0;
-         var anyCurrentValue = none<T>();
+         var _currentValue = Nil.Of<T>();
          foreach (var item in enumerable)
          {
-            if (anyCurrentValue.If(out var currentValue))
+            if (_currentValue.If(out var currentValue))
             {
                if (item.ComparedTo(currentValue) < 0)
                {
-                  index = currentIndex.Some();
-                  anyCurrentValue = item.Some();
+                  _index = currentIndex;
+                  _currentValue = item;
                }
             }
             else
             {
-               index = currentIndex.Some();
-               anyCurrentValue = item.Some();
+               _index = currentIndex;
+               _currentValue = item;
             }
 
             currentIndex++;
          }
 
-         return index;
+         return _index;
       }
 
       public static Maybe<int> IndexOfMin<TSource, TResult>(this IEnumerable<TSource> enumerable, Func<TSource, TResult> mappingFunc)
          where TResult : IComparable<TResult>
       {
-         var index = none<int>();
+         var _index = Nil.Of<int>();
          var currentIndex = 0;
-         var anyCurrentValue = none<TResult>();
+         var _currentValue = Nil.Of<TResult>();
          foreach (var item in enumerable)
          {
             var mappedItem = mappingFunc(item);
-            if (anyCurrentValue.If(out var currentValue))
+            if (_currentValue.If(out var currentValue))
             {
                if (mappedItem.ComparedTo(currentValue) < 0)
                {
-                  index = currentIndex.Some();
-                  anyCurrentValue = mappedItem.Some();
+                  _index = currentIndex;
+                  _currentValue = mappedItem;
                }
             }
             else
             {
-               index = currentIndex.Some();
-               anyCurrentValue = mappedItem.Some();
+               _index = currentIndex;
+               _currentValue = mappedItem;
             }
 
             currentIndex++;
          }
 
-         return index;
+         return _index;
       }
 
       public static IEnumerable<T> Reversed<T>(this IEnumerable<T> enumerable)
@@ -1304,5 +1174,41 @@ namespace Core.Enumerables
       public static IntegerEnumerable Times(this int size) => new(size);
 
       public static IntegerEnumerable To(this int start, int stop) => new IntegerEnumerable(stop).From(start);
+
+      public static IEnumerable<T> For<T>(this IEnumerable<T> enumerable, Action<T> action)
+      {
+         foreach (var item in enumerable)
+         {
+            action(item);
+            yield return item;
+         }
+      }
+
+      public static IEnumerable<(T1, T2)> For<T1, T2>(this IEnumerable<(T1, T2)> enumerable, Action<T1, T2> action)
+      {
+         foreach (var (item1, item2) in enumerable)
+         {
+            action(item1, item2);
+            yield return (item1, item2);
+         }
+      }
+
+      public static IEnumerable<(T1, T2, T3)> For<T1, T2, T3>(this IEnumerable<(T1, T2, T3)> enumerable, Action<T1, T2, T3> action)
+      {
+         foreach (var (item1, item2, item3) in enumerable)
+         {
+            action(item1, item2, item3);
+            yield return (item1, item2, item3);
+         }
+      }
+
+      public static IEnumerable<(T1, T2, T3, T4)> For<T1, T2, T3, T4>(this IEnumerable<(T1, T2, T3, T4)> enumerable, Action<T1, T2, T3, T4> action)
+      {
+         foreach (var (item1, item2, item3, item4) in enumerable)
+         {
+            action(item1, item2, item3, item4);
+            yield return (item1, item2, item3, item4);
+         }
+      }
    }
 }

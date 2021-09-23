@@ -35,16 +35,16 @@ namespace Core.Data
             }
             else
             {
-               return "Require 'text' or 'file' values".Failure<(string, TimeSpan)>();
+               return fail("Require 'text' or 'file' values");
             }
 
             var timeout = commandGroup.GetValue("timeout").Map(s => s.ToTimeSpan()).DefaultTo(() => 30.Seconds());
 
-            return (command, timeout).Success();
+            return (command, timeout);
          }
          catch (Exception exception)
          {
-            return failure<(string, TimeSpan)>(exception);
+            return exception;
          }
       }
 
@@ -70,9 +70,9 @@ namespace Core.Data
 
       internal Command()
       {
-         Name = "";
+         Name = string.Empty;
          CommandTimeout = 30.Seconds();
-         Text = "";
+         Text = string.Empty;
       }
 
       public string Name { get; set; }

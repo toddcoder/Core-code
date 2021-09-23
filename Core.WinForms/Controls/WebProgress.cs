@@ -24,6 +24,7 @@ namespace Core.WinForms.Controls
 
          value = 1;
          stopwatch = new Stopwatch();
+         Color = Color.Black;
       }
 
       protected void timer_Tick(object sender, EventArgs e)
@@ -90,6 +91,6 @@ namespace Core.WinForms.Controls
          e.Graphics.Restore(state);
       }
 
-      public Color Color { get; set; } = Color.Black;
+      public Color Color { get; set; }
    }
 }

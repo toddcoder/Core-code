@@ -26,7 +26,9 @@ namespace Core.Monads
 
       public override T Required(string message) => value;
 
-      public override Result<T> Result(string message) => value.Success();
+      public override Result<T> Result(string message) => value;
+
+      public override Matched<T> Matched() => value;
 
       [Obsolete("Use |")]
       public override Maybe<T> Or(Maybe<T> other) => this;

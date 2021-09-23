@@ -49,7 +49,7 @@ namespace Core.Data.Setups
             select setup;
       }
 
-      protected StringHash<string> attributes;
+      protected StringHash attributes;
 
       public SqlSetup(Group setupGroup)
       {
@@ -68,7 +68,7 @@ namespace Core.Data.Setups
          var fieldsGroup = setupGroup.GetGroup("fields");
          Fields = new Fields.Fields(fieldsGroup);
 
-         attributes = new StringHash<string>(true);
+         attributes = new StringHash(true);
          loadAttributes(setupGroup.GetGroup("attributes"));
       }
 
@@ -85,13 +85,13 @@ namespace Core.Data.Setups
          Parameters = new Parameters.Parameters(setupObject.Parameters());
          Fields = new Fields.Fields(setupObject.Fields());
 
-         attributes = new StringHash<string>(true);
+         attributes = new StringHash(true);
          loadAttributes(setupObject.Attributes);
       }
 
       internal SqlSetup(Maybe<Group> attributesGroup)
       {
-         attributes = new StringHash<string>(true);
+         attributes = new StringHash(true);
          loadAttributes(attributesGroup);
       }
 
@@ -141,6 +141,6 @@ namespace Core.Data.Setups
 
       public TimeSpan CommandTimeout { get; set; }
 
-      public Maybe<SqlInfoMessageEventHandler> Handler { get; set; } = none<SqlInfoMessageEventHandler>();
+      public Maybe<SqlInfoMessageEventHandler> Handler { get; set; } = nil;
    }
 }

@@ -33,7 +33,7 @@ namespace Core.Data
          };
       }
 
-      public static Maybe<SqlInfoMessageEventHandler> Handler { get; set; } = none<SqlInfoMessageEventHandler>();
+      public static Maybe<SqlInfoMessageEventHandler> Handler { get; set; } = nil;
 
       public static void RegisterSetup(string name, Func<DataGroups, string, ISetup> func) => setups[name] = func;
 
@@ -60,8 +60,7 @@ namespace Core.Data
          }
       }
 
-      protected Adapters(DataGroups dataGroups, StringHash<Adapter<T>> adapters, StringSet validAdapters,
-         Predicate<string> isValidAdapterName)
+      protected Adapters(DataGroups dataGroups, StringHash<Adapter<T>> adapters, StringSet validAdapters, Predicate<string> isValidAdapterName)
       {
          this.dataGroups = dataGroups;
          this.adapters = new StringHash<Adapter<T>>(true, adapters);
@@ -86,7 +85,7 @@ namespace Core.Data
             var adapter = adapters[adapterName];
             adapter.Entity = entity;
 
-            return adapter.Success();
+            return adapter;
          }
 
          return
@@ -102,12 +101,12 @@ namespace Core.Data
          var adapter = adapters.Find(child, an => new Adapter<T>(entity, setup(dataGroups, an)), true);
          adapter.Entity = entity;
 
-         return adapter.Success();
+         return adapter;
       });
 
       protected Result<Adapter<T>> getAdapter(Func<T> alwaysUse, string child, Func<DataGroups, string, ISetup> setup)
       {
-         return tryTo(() => adapters.Find(child, an => new Adapter<T>(alwaysUse(), setup(dataGroups, an)), true).Success());
+         return tryTo(() => adapters.Find(child, an => new Adapter<T>(alwaysUse(), setup(dataGroups, an)), true));
       }
 
       public Result<TResult> Execute<TResult>(string adapterName, T entity, Func<T, TResult> map, string setupType = "sql")
@@ -154,7 +153,7 @@ namespace Core.Data
             var adapter = adapters[adapterName];
             adapter.Entity = entityFunc();
 
-            return adapter.Success();
+            return adapter;
          }
 
          return

@@ -6,6 +6,7 @@ using Core.Collections;
 using Core.Matching;
 using Core.Monads;
 using Core.Strings;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Documents
 {
@@ -49,7 +50,7 @@ namespace Core.WinForms.Documents
          tabIndexes[item.Name] = tabIndex++;
       }
 
-      public static string MenuName(string text) => "menu" + makeIdentifier(text);
+      public static string MenuName(string text) => $"menu{makeIdentifier(text)}";
 
       protected static string makeIdentifier(string text) => text.Replace("&", "").Substitute("/s+; f", "_").SnakeToCamelCase(false);
 
@@ -193,7 +194,7 @@ namespace Core.WinForms.Documents
          }
          else
          {
-            return $"Didn't understand key {text}".Failure<Keys>();
+            return fail($"Didn't understand key {text}");
          }
       }
 

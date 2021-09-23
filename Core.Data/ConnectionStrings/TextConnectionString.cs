@@ -15,20 +15,14 @@ namespace Core.Data.ConnectionStrings
          fileName = connection.Value("file");
          header = connection.DefaultTo("header", "true") == "true" ? "YES" : "NO";
          delimited = connection.Value("delimited");
-         switch (delimited)
+         delimited = delimited switch
          {
-            case "comma":
-            case ",":
-               delimited = "CSVDelimited";
-               break;
-            case "tab":
-            case "\t":
-               delimited = "TabDelimited";
-               break;
-            default:
-               delimited = $"Delimited({delimited.Substring(0, 1)})";
-               break;
-         }
+            "comma" => "CSVDelimited",
+            "," => "CSVDelimited",
+            "tab" => "TabDelimited",
+            "\t" => "TabDelimited",
+            _ => $"Delimited({delimited.Substring(0, 1)})"
+         };
       }
 
       public string ConnectionString => $"Provider=Microsoft.Jet.OLEDB.4.0; Data Source={fileName};" +
