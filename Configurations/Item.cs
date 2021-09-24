@@ -28,13 +28,15 @@ namespace Core.Configurations
 
       public Result<string> RequireValue(string key) => assert(key.Same(Key), () => Value, () => $"Key '{key}' doesn't match item key");
 
-      public Maybe<Group> GetGroup(string key) => none<Group>();
+      public Maybe<Group> GetGroup(string key) => nil;
 
       public Group GroupAt(string key) => GetGroup(key).Required($"Couldn't find group at '{key}'");
 
       public IEnumerable<(string key, Group group)> Groups() => Enumerable.Empty<(string, Group)>();
 
-      public Result<Group> RequireGroup(string key) => "Not a group".Failure<Group>();
+      public int Count => 1;
+
+      public Result<Group> RequireGroup(string key) => fail("Not a group");
 
       public string Value { get; }
 

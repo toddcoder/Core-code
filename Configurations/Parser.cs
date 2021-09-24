@@ -21,7 +21,7 @@ namespace Core.Configurations
 
       public Result<Group> Parse()
       {
-         var rootGroup = new Group("_$root");
+         var rootGroup = new Group();
          var stack = new MaybeStack<IConfigurationItem>();
          stack.Push(rootGroup);
 
