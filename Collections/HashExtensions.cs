@@ -7,7 +7,6 @@ using Core.Monads;
 using Core.Strings;
 using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
-using static Core.Strings.StringFunctions;
 
 namespace Core.Collections
 {
@@ -452,7 +451,7 @@ namespace Core.Collections
          {
             if (hash.AnyHash().If(out var internalHash, out var exception))
             {
-               var group = new Group(uniqueID());
+               var group = new Group();
                foreach (var (key, value) in internalHash)
                {
                   var keyAsString = key.ToString();

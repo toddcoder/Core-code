@@ -26,5 +26,7 @@ namespace Core.Configurations
       Group GroupAt(string key);
 
       public IEnumerable<(string key, Group group)> Groups();
+
+      public int Count { get; }
    }
 }

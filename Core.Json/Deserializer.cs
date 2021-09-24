@@ -33,7 +33,7 @@ namespace Core.Json
 
          int itemCount() => peekGroup().Map(group => group.AnyHash().Map(h => h.Values.Count).Recover(_ => 0)).DefaultTo(() => 0);
 
-         var _propertyName = none<string>();
+         var _propertyName = Nil.Of<string>();
 
          void setItem(string value)
          {
@@ -46,7 +46,7 @@ namespace Core.Json
                group[key] = new Item(key, value);
             }
 
-            _propertyName = none<string>();
+            _propertyName = nil;
          }
 
          try
@@ -63,7 +63,7 @@ namespace Core.Json
                   case JsonTokenType.StartObject when firstObjectProcessed:
                   {
                      var key = _propertyName.DefaultTo(() => $"${itemCount()}");
-                     _propertyName = none<string>();
+                     _propertyName = nil;
                      var group = new Group(key);
                      if (peekGroup().If(out var parentGroup))
                      {
@@ -71,7 +71,7 @@ namespace Core.Json
                      }
                      else
                      {
-                        return "No parent group found".Failure<Configuration>();
+                        return fail("No parent group found");
                      }
 
                      stack.Push(group);
@@ -83,7 +83,7 @@ namespace Core.Json
                   case JsonTokenType.EndObject:
                      if (stack.IsEmpty)
                      {
-                        return "No parent group available".Failure<Configuration>();
+                        return fail("No parent group available");
                      }
 
                      stack.Pop();
@@ -91,7 +91,7 @@ namespace Core.Json
                   case JsonTokenType.StartArray:
                   {
                      var key = _propertyName.DefaultTo(() => $"${itemCount()}");
-                     _propertyName = none<string>();
+                     _propertyName = nil;
                      var group = new Group(key);
                      if (peekGroup().If(out var parentGroup))
                      {
@@ -99,7 +99,7 @@ namespace Core.Json
                      }
                      else
                      {
-                        return "No parent group found".Failure<Configuration>();
+                        return fail("No parent group found");
                      }
 
                      stack.Push(group);
@@ -109,13 +109,13 @@ namespace Core.Json
                   case JsonTokenType.EndArray:
                      if (stack.IsEmpty)
                      {
-                        return "No parent group available".Failure<Configuration>();
+                        return fail("No parent group available");
                      }
 
                      stack.Pop();
                      break;
                   case JsonTokenType.PropertyName:
-                     _propertyName = reader.GetString().Some();
+                     _propertyName = reader.GetString();
                      break;
                   case JsonTokenType.String:
                      setItem(reader.GetString());
@@ -132,11 +132,11 @@ namespace Core.Json
                }
             }
 
-            return new Configuration(rootGroup).Success();
+            return new Configuration(rootGroup);
          }
          catch (Exception exception)
          {
-            return failure<Configuration>(exception);
+            return exception;
          }
       }
    }

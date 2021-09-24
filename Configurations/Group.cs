@@ -41,7 +41,7 @@ namespace Core.Configurations
 
       protected StringHash<IConfigurationItem> items;
 
-      public Group(string key)
+      public Group(string key = "_$root")
       {
          Key = key;
 
@@ -101,6 +101,21 @@ namespace Core.Configurations
          foreach (var (key, item) in items.Where(i => i.Value is Group))
          {
             yield return (key, (Group)item);
+         }
+      }
+
+      public int Count => items.Count;
+
+      public string Child
+      {
+         set
+         {
+            Group newGroup = value;
+            var newItems = newGroup.items;
+            foreach (var (newKey, newItem) in newItems)
+            {
+               items[newKey] = newItem;
+            }
          }
       }
 

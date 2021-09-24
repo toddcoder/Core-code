@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Core.Collections;
+using Core.Enumerables;
 using Core.Monads;
 using Core.Objects;
 using static Core.Monads.AttemptFunctions;
@@ -35,7 +36,21 @@ namespace Core.Configurations
 
       public string Key => root.Key;
 
-      public IConfigurationItem this[string key] => root[key];
+      public IConfigurationItem this[string key]
+      {
+         get => root[key];
+         set
+         {
+            if (value.Count == 1 && value.Values().FirstOrNone().If(out var fKey, out var fValue))
+            {
+               root[key] = new Item(fKey, fValue);
+            }
+            else
+            {
+               root[key] = value;
+            }
+         }
+      }
 
       public Maybe<string> GetValue(string key) => root.GetValue(key);
 
@@ -78,5 +93,12 @@ namespace Core.Configurations
       public IEnumerable<(string key, string value)> Values() => root.Values();
 
       public IEnumerable<(string key, Group group)> Groups() => root.Groups();
+
+      public int Count => root.Count;
+
+      public string Child
+      {
+         set => root.Child = value;
+      }
    }
 }
