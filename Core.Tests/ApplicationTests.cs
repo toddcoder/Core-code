@@ -1,6 +1,7 @@
 ﻿using System;
 using Core.Applications;
 using Core.Applications.CommandProcessing;
+using Core.Collections;
 using Core.Enumerables;
 using Core.Matching;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -194,6 +195,14 @@ namespace Core.Tests
       public override void GetConfiguration(string name) => Console.WriteLine($"get config {name}");
 
       public override void SetConfiguration(string name, string value) => Console.WriteLine($"set config {name} '{value}'");
+
+      public override StringHash ConfigurationHelp()
+      {
+         return new StringHash(true)
+         {
+            ["foobar"] = "This is the foobar configuration item"
+         };
+      }
    }
 
    [TestClass]
@@ -301,6 +310,8 @@ namespace Core.Tests
          var processor = new TestProgram();
          processor.Run("config set foobar \"x\"");
          processor.Run("config get foobar");
+
+         Console.WriteLine(processor.Arguments);
       }
    }
 }

@@ -41,6 +41,7 @@ namespace Core.Applications.CommandProcessing
          Prefix = "--";
          ShortCut = "-";
          Suffix = " ";
+         Arguments = string.Empty;
 
          Console.CancelKeyPress += CancelKeyPress;
       }
@@ -70,6 +71,8 @@ namespace Core.Applications.CommandProcessing
       public string ShortCut { get; set; }
 
       public string Suffix { get; set; }
+
+      public string Arguments { get; protected set; }
 
       protected static string removeExecutableFromCommandLine(string commandLine)
       {
@@ -103,6 +106,7 @@ namespace Core.Applications.CommandProcessing
          try
          {
             commandLine = removeExecutableFromCommandLine(commandLine);
+            Arguments = commandLine;
             run(commandLine, true);
          }
          catch (Exception exception)
@@ -191,6 +195,7 @@ namespace Core.Applications.CommandProcessing
          var shortCuts = getShortCutAttributes()
             .Select(t => (t.propertyInfo.Name, t.attribute))
             .ToStringHash(t => t.Name, t => t.attribute.Name, true);
+         var configurationHelp = ConfigurationHelp();
 
          Console.WriteLine("Help");
          foreach (var (methodInfo, commandHelpAttribute) in getCommandHelpAttributes())
@@ -236,6 +241,19 @@ namespace Core.Applications.CommandProcessing
                         Console.Write("]");
                      }
                   }
+               }
+
+               if (configurationHelp.Count > 0)
+               {
+                  Console.WriteLine();
+
+                  Console.WriteLine("config");
+                  var maxLength = configurationHelp.Keys.Max(k => k.Length);
+                  foreach (var (key, value) in configurationHelp)
+                  {
+                     Console.WriteLine($"   {key.PadRight(maxLength)} - {value}");
+                  }
+
                }
 
                Console.WriteLine();
@@ -302,6 +320,8 @@ namespace Core.Applications.CommandProcessing
       public virtual void GetConfiguration(string name)
       {
       }
+
+      public virtual StringHash ConfigurationHelp() => new StringHash(true);
 
       protected IEnumerable<(string prefix, string name, Maybe<string> _value)> switchData(string source)
       {
