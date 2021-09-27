@@ -88,9 +88,13 @@ namespace Core.Applications.CommandProcessing
          {
             return (commandLine, "");
          }
+         else if (commandLine.Matches("^ /('config') /s+ ('get' | 'set') /b; f").If(out var result))
+         {
+            return ("config", commandLine.Drop(result.FirstGroup.Length).TrimLeft());
+         }
          else
          {
-            return commandLine.Matches("^ /([/w '-']+) /s+ /(.+) $; f").Map(result => (result.FirstGroup, result.SecondGroup));
+            return commandLine.Matches("^ /([/w '-']+) /s+ /(.+) $; f").Map(r => (r.FirstGroup, r.SecondGroup));
          }
       }
 
@@ -107,48 +111,58 @@ namespace Core.Applications.CommandProcessing
          }
       }
 
-      private void run(string commandLine, bool seekCommandFile)
+      protected void run(string commandLine, bool seekCommandFile)
       {
          if (splitCommandFromRest(commandLine).If(out var command, out var rest))
          {
-            if (command == "help")
+            switch (command)
             {
-               generateHelp();
-            }
-            else if (rest.IsEmpty())
-            {
-               if (seekCommandFile)
+               case "help":
+                  generateHelp();
+                  break;
+               case "config":
+                  handleConfiguration(rest);
+                  break;
+               default:
                {
-                  FileName file = @$"~\AppData\Local\{Application}\{command}.cli";
-                  if (!file.Exists())
+                  if (rest.IsEmpty())
                   {
-                     ExceptionWriter.WriteLine($"Command file {file} doesn't exist");
+                     if (seekCommandFile)
+                     {
+                        FileName file = @$"~\AppData\Local\{Application}\{command}.cli";
+                        if (!file.Exists())
+                        {
+                           ExceptionWriter.WriteLine($"Command file {file} doesn't exist");
+                        }
+
+                        var text = file.Text;
+                        run(text, false);
+                     }
+                     else
+                     {
+                        ExceptionWriter.WriteLine($"No switches provided for {command}");
+                     }
+                  }
+                  else if (this.MethodsUsing<CommandAttribute>().FirstOrNone(t => command == t.attribute.Name)
+                     .If(out var methodInfo, out var commandAttribute))
+                  {
+                     if (commandAttribute.Initialize)
+                     {
+                        Initialize(commandAttribute.Name);
+                     }
+
+                     var result = executeMethod(methodInfo, rest);
+                     if (result.If(out _, out var exception))
+                     {
+                        CleanUp(commandAttribute.Name);
+                     }
+                     else
+                     {
+                        HandleException(exception);
+                     }
                   }
 
-                  var text = file.Text;
-                  run(text, false);
-               }
-               else
-               {
-                  ExceptionWriter.WriteLine($"No switches provided for {command}");
-               }
-            }
-            else if (this.MethodsUsing<CommandAttribute>().FirstOrNone(t => command == t.attribute.Name)
-               .If(out var methodInfo, out var commandAttribute))
-            {
-               if (commandAttribute.Initialize)
-               {
-                  Initialize(commandAttribute.Name);
-               }
-
-               var result = executeMethod(methodInfo, rest);
-               if (result.If(out _, out var exception))
-               {
-                  CleanUp(commandAttribute.Name);
-               }
-               else
-               {
-                  HandleException(exception);
+                  break;
                }
             }
          }
@@ -263,6 +277,32 @@ namespace Core.Applications.CommandProcessing
          }
       }
 
+      protected void handleConfiguration(string rest)
+      {
+         if (rest.Matches("^ /('set' | 'get') /s+ /(/w [/w '-']*) /b /(.*) $; f").If(out var result))
+         {
+            var (command, name, value) = result;
+            switch (command)
+            {
+               case "set":
+                  value = value.TrimLeft().Unquotify();
+                  SetConfiguration(name, value);
+                  break;
+               case "get":
+                  GetConfiguration(name);
+                  break;
+            }
+         }
+      }
+
+      public virtual void SetConfiguration(string name, string value)
+      {
+      }
+
+      public virtual void GetConfiguration(string name)
+      {
+      }
+
       protected IEnumerable<(string prefix, string name, Maybe<string> _value)> switchData(string source)
       {
          var delimitedText = DelimitedText.BothQuotes();
@@ -297,6 +337,7 @@ namespace Core.Applications.CommandProcessing
       {
          var switchAttributes = getSwitchAttributes();
          var shortCutAttributes = getShortCutAttributes();
+
          foreach (var (prefix, name, _value) in switchData(rest))
          {
             if (prefix == Prefix)

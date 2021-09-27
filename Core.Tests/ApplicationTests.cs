@@ -190,6 +190,10 @@ namespace Core.Tests
          Count = 0;
          IgnoreCase = false;
       }
+
+      public override void GetConfiguration(string name) => Console.WriteLine($"get config {name}");
+
+      public override void SetConfiguration(string name, string value) => Console.WriteLine($"set config {name} '{value}'");
    }
 
    [TestClass]
@@ -289,6 +293,14 @@ namespace Core.Tests
       {
          var processor = new TestProgram();
          processor.Run("help");
+      }
+
+      [TestMethod]
+      public void ConfigurationTest()
+      {
+         var processor = new TestProgram();
+         processor.Run("config set foobar \"x\"");
+         processor.Run("config get foobar");
       }
    }
 }

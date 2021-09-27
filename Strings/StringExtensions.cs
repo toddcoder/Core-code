@@ -539,12 +539,12 @@ namespace Core.Strings
 
       public static string Unquotify(this string source)
       {
-         return source.Map(s => s.Matches("^ /dq /(.*) /dq $; f").Map(result => result.FirstGroup).DefaultTo(() => s));
+         return source.Map(s => s.Matches("^ `quote /(.*) `quote $; f").Map(result => result.FirstGroup).DefaultTo(() => s));
       }
 
       public static string SingleUnquotify(this string source)
       {
-         return source.Map(s => source.Matches("^ /sq /(.*) /sq $; f").Map(result => result.FirstGroup).DefaultTo(() => s));
+         return source.Map(s => source.Matches("^ `apos /(.*) `apos $; f").Map(result => result.FirstGroup).DefaultTo(() => s));
       }
 
       public static string Guillemetify(this string source) => source.Map(s => $"«{s}»");
