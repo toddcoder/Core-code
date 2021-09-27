@@ -35,7 +35,11 @@ namespace Core.Configurations
 
       public string Key => root.Key;
 
-      public string this[string key] => root[key];
+      public string this[string key]
+      {
+         get => root[key];
+         set => root[key] = value;
+      }
 
       public IConfigurationItem GetItem(string key) => root.GetItem(key);
 

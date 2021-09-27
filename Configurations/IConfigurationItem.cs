@@ -7,7 +7,7 @@ namespace Core.Configurations
    {
       string Key { get; }
 
-      string this[string key] { get; }
+      string this[string key] { get; set; }
 
       IConfigurationItem GetItem(string key);
 

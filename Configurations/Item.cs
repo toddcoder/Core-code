@@ -16,7 +16,11 @@ namespace Core.Configurations
 
       public string Key { get; }
 
-      public string this[string key] => key == Key ? Value : string.Empty;
+      public string this[string key]
+      {
+         get => key == Key ? Value : string.Empty;
+         set { }
+      }
 
       public IConfigurationItem GetItem(string key) => this;
 
