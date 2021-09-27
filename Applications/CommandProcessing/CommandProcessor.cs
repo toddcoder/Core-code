@@ -41,6 +41,7 @@ namespace Core.Applications.CommandProcessing
          Prefix = "--";
          ShortCut = "-";
          Suffix = " ";
+         Arguments = string.Empty;
 
          Console.CancelKeyPress += CancelKeyPress;
       }
@@ -71,6 +72,8 @@ namespace Core.Applications.CommandProcessing
 
       public string Suffix { get; set; }
 
+      public string Arguments { get; protected set; }
+
       protected static string removeExecutableFromCommandLine(string commandLine)
       {
          return commandLine.Matches("^ (.+? ('.exe' | '.dll') /s* [quote]? /s*) /s* /(.*) $; f")
@@ -88,9 +91,13 @@ namespace Core.Applications.CommandProcessing
          {
             return (commandLine, "");
          }
+         else if (commandLine.Matches("^ /('config') /s+ ('get' | 'set') /b; f").If(out var result))
+         {
+            return ("config", commandLine.Drop(result.FirstGroup.Length).TrimLeft());
+         }
          else
          {
-            return commandLine.Matches("^ /([/w '-']+) /s+ /(.+) $; f").Map(result => (result.FirstGroup, result.SecondGroup));
+            return commandLine.Matches("^ /([/w '-']+) /s+ /(.+) $; f").Map(r => (r.FirstGroup, r.SecondGroup));
          }
       }
 
@@ -99,6 +106,7 @@ namespace Core.Applications.CommandProcessing
          try
          {
             commandLine = removeExecutableFromCommandLine(commandLine);
+            Arguments = commandLine;
             run(commandLine, true);
          }
          catch (Exception exception)
@@ -107,48 +115,58 @@ namespace Core.Applications.CommandProcessing
          }
       }
 
-      private void run(string commandLine, bool seekCommandFile)
+      protected void run(string commandLine, bool seekCommandFile)
       {
          if (splitCommandFromRest(commandLine).If(out var command, out var rest))
          {
-            if (command == "help")
+            switch (command)
             {
-               generateHelp();
-            }
-            else if (rest.IsEmpty())
-            {
-               if (seekCommandFile)
+               case "help":
+                  generateHelp();
+                  break;
+               case "config":
+                  handleConfiguration(rest);
+                  break;
+               default:
                {
-                  FileName file = @$"~\AppData\Local\{Application}\{command}.cli";
-                  if (!file.Exists())
+                  if (rest.IsEmpty())
                   {
-                     ExceptionWriter.WriteLine($"Command file {file} doesn't exist");
+                     if (seekCommandFile)
+                     {
+                        FileName file = @$"~\AppData\Local\{Application}\{command}.cli";
+                        if (!file.Exists())
+                        {
+                           ExceptionWriter.WriteLine($"Command file {file} doesn't exist");
+                        }
+
+                        var text = file.Text;
+                        run(text, false);
+                     }
+                     else
+                     {
+                        ExceptionWriter.WriteLine($"No switches provided for {command}");
+                     }
+                  }
+                  else if (this.MethodsUsing<CommandAttribute>().FirstOrNone(t => command == t.attribute.Name)
+                     .If(out var methodInfo, out var commandAttribute))
+                  {
+                     if (commandAttribute.Initialize)
+                     {
+                        Initialize(commandAttribute.Name);
+                     }
+
+                     var result = executeMethod(methodInfo, rest);
+                     if (result.If(out _, out var exception))
+                     {
+                        CleanUp(commandAttribute.Name);
+                     }
+                     else
+                     {
+                        HandleException(exception);
+                     }
                   }
 
-                  var text = file.Text;
-                  run(text, false);
-               }
-               else
-               {
-                  ExceptionWriter.WriteLine($"No switches provided for {command}");
-               }
-            }
-            else if (this.MethodsUsing<CommandAttribute>().FirstOrNone(t => command == t.attribute.Name)
-               .If(out var methodInfo, out var commandAttribute))
-            {
-               if (commandAttribute.Initialize)
-               {
-                  Initialize(commandAttribute.Name);
-               }
-
-               var result = executeMethod(methodInfo, rest);
-               if (result.If(out _, out var exception))
-               {
-                  CleanUp(commandAttribute.Name);
-               }
-               else
-               {
-                  HandleException(exception);
+                  break;
                }
             }
          }
@@ -177,6 +195,7 @@ namespace Core.Applications.CommandProcessing
          var shortCuts = getShortCutAttributes()
             .Select(t => (t.propertyInfo.Name, t.attribute))
             .ToStringHash(t => t.Name, t => t.attribute.Name, true);
+         var configurationHelp = ConfigurationHelp();
 
          Console.WriteLine("Help");
          foreach (var (methodInfo, commandHelpAttribute) in getCommandHelpAttributes())
@@ -224,6 +243,19 @@ namespace Core.Applications.CommandProcessing
                   }
                }
 
+               if (configurationHelp.Count > 0)
+               {
+                  Console.WriteLine();
+
+                  Console.WriteLine("config");
+                  var maxLength = configurationHelp.Keys.Max(k => k.Length);
+                  foreach (var (key, value) in configurationHelp)
+                  {
+                     Console.WriteLine($"   {key.PadRight(maxLength)} - {value}");
+                  }
+
+               }
+
                Console.WriteLine();
             }
          }
@@ -263,6 +295,34 @@ namespace Core.Applications.CommandProcessing
          }
       }
 
+      protected void handleConfiguration(string rest)
+      {
+         if (rest.Matches("^ /('set' | 'get') /s+ /(/w [/w '-']*) /b /(.*) $; f").If(out var result))
+         {
+            var (command, name, value) = result;
+            switch (command)
+            {
+               case "set":
+                  value = value.TrimLeft().Unquotify();
+                  SetConfiguration(name, value);
+                  break;
+               case "get":
+                  GetConfiguration(name);
+                  break;
+            }
+         }
+      }
+
+      public virtual void SetConfiguration(string name, string value)
+      {
+      }
+
+      public virtual void GetConfiguration(string name)
+      {
+      }
+
+      public virtual StringHash ConfigurationHelp() => new StringHash(true);
+
       protected IEnumerable<(string prefix, string name, Maybe<string> _value)> switchData(string source)
       {
          var delimitedText = DelimitedText.BothQuotes();
@@ -297,6 +357,7 @@ namespace Core.Applications.CommandProcessing
       {
          var switchAttributes = getSwitchAttributes();
          var shortCutAttributes = getShortCutAttributes();
+
          foreach (var (prefix, name, _value) in switchData(rest))
          {
             if (prefix == Prefix)
