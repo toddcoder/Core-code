@@ -1,104 +1,65 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+using System.Text;
 using Core.Collections;
-using Core.Enumerables;
+using Core.Computers;
 using Core.Monads;
-using Core.Objects;
 using static Core.Monads.AttemptFunctions;
-using static Core.Matching.MatchingExtensions;
 
 namespace Core.Configurations
 {
-   public class Configuration : IHash<string, IConfigurationItem>, IConfigurationItem, IEnumerable<IConfigurationItem>
+   public class Configuration : Group
    {
-      public static implicit operator Configuration(string source) => FromString(source).ForceValue();
-
-      public static Result<Configuration> FromString(string source)
+      public static Result<Configuration> Open(FileName file)
       {
-         var parser = new Parser(source);
-         return parser.Parse().Map(group => new Configuration(group));
-      }
-
-      public static Result<Configuration> Serialize(Type type, object obj, string name)
-      {
-         return Group.Serialize(type, obj, name).Map(group => new Configuration(group));
-      }
-
-      public static Result<Configuration> Serialize<T>(T obj, string name) where T : class, new() => tryTo(() => Serialize(typeof(T), obj, name));
-
-      protected Group root;
-
-      public Configuration(Group root)
-      {
-         this.root = root;
-      }
-
-      public string Key => root.Key;
-
-      public IConfigurationItem this[string key]
-      {
-         get => root[key];
-         set
+         var _group =
+            from source in file.TryTo.Text
+            from groupFromString in FromString(source)
+            select groupFromString;
+         if (_group.If(out var group, out var exception))
          {
-            if (value.Count == 1 && value.Values().FirstOrNone().If(out var fKey, out var fValue))
-            {
-               root[key] = new Item(fKey, fValue);
-            }
-            else
-            {
-               root[key] = value;
-            }
+            return new Configuration(file, group.items);
+         }
+         else
+         {
+            return exception;
          }
       }
 
-      public Maybe<string> GetValue(string key) => root.GetValue(key);
-
-      public string ValueAt(string key) => GetValue(key).Required($"Couldn't find value '{key}'");
-
-      public string[] GetArray(string key) => GetValue(key).Map(s => s.Split("/s* ',' /s*; f")).DefaultTo(() => new[] { key });
-
-      public Result<string> RequireValue(string key) => root.RequireValue(key);
-
-      public string At(string key) => GetValue(key).DefaultTo(() => "");
-
-      public Maybe<Group> GetGroup(string key) => root.GetGroup(key);
-
-      public Group GroupAt(string key) => GetGroup(key).Required($"Couldn't find group at '{key}'");
-
-      public Result<Group> RequireGroup(string key) => root.RequireGroup(key);
-
-      public bool ContainsKey(string key) => root.ContainsKey(key);
-
-      public Result<Hash<string, IConfigurationItem>> AnyHash() => root.AnyHash();
-
-      public Result<object> Deserialize(Type type) => root.Deserialize(type);
-
-      public Result<T> Deserialize<T>() where T : class, new()
+      public static Result<Configuration> Serialize(FileName file, Type type, object obj, bool save = true, string name = ROOT_NAME)
       {
-         return
-            from obj in tryTo(() => Deserialize(typeof(T)))
-            from cast in obj.CastAs<T>()
-            select cast;
+         if (Serialize(type, obj, name).If(out var group, out var exception))
+         {
+            var configuration = new Configuration(file, group.items, name);
+            if (save)
+            {
+               return configuration.Save();
+            }
+            else
+            {
+               return configuration;
+            }
+         }
+         else
+         {
+            return exception;
+         }
       }
 
-      public IEnumerator<IConfigurationItem> GetEnumerator() => root.GetEnumerator();
-
-      public override string ToString() => root.ToString(true);
-
-      IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
-      public StringHash ToStringHash() => root.ToStringHash();
-
-      public IEnumerable<(string key, string value)> Values() => root.Values();
-
-      public IEnumerable<(string key, Group group)> Groups() => root.Groups();
-
-      public int Count => root.Count;
-
-      public string Child
+      public static Result<Configuration> Serialize<T>(FileName file, T obj, bool save = true, string name = ROOT_NAME) where T : class, new()
       {
-         set => root.Child = value;
+         return tryTo(() => Serialize(file, typeof(T), obj, save, name));
       }
+
+      protected FileName file;
+
+      internal Configuration(FileName file, StringHash<IConfigurationItem> items, string name = ROOT_NAME) : base(name)
+      {
+         this.file = file;
+         this.items = items;
+      }
+
+      public FileName File => file;
+
+      public Result<Configuration> Save() => file.TryTo.SetText(ToString(), Encoding.UTF8).Map(_ => this);
    }
 }

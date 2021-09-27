@@ -7,7 +7,13 @@ namespace Core.Configurations
    {
       string Key { get; }
 
-      IConfigurationItem this[string key] { get; }
+      string this[string key] { get; set; }
+
+      IConfigurationItem GetItem(string key);
+
+      Maybe<IConfigurationItem> GetSomeItem(string key);
+
+      void SetItem(string key, IConfigurationItem item);
 
       Maybe<string> GetValue(string key);
 

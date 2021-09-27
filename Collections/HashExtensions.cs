@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Core.Computers;
 using Core.Configurations;
 using Core.Exceptions;
 using Core.Monads;
@@ -445,7 +446,7 @@ namespace Core.Collections
 
       public static IEnumerator<T> AsEnumerator<T>(this IEnumerable enumerable) => ((IEnumerable<T>)enumerable).GetEnumerator();
 
-      public static Result<Configuration> ToConfiguration<TKey, TValue>(this IHash<TKey, TValue> hash)
+      public static Result<Group> ToGroup<TKey, TValue>(this IHash<TKey, TValue> hash)
       {
          try
          {
@@ -455,10 +456,10 @@ namespace Core.Collections
                foreach (var (key, value) in internalHash)
                {
                   var keyAsString = key.ToString();
-                  group[keyAsString] = new Item(keyAsString, value.ToString());
+                  group.SetItem(keyAsString, new Item(keyAsString, value.ToString()));
                }
 
-               return new Configuration(group);
+               return group;
             }
             else
             {
@@ -466,6 +467,26 @@ namespace Core.Collections
             }
          }
          catch (Exception exception)
+         {
+            return exception;
+         }
+      }
+
+      public static Result<Configuration> ToConfiguration<TKey, TValue>(this IHash<TKey, TValue> hash, FileName file, string name = Group.ROOT_NAME,
+         bool save = false)
+      {
+         if (hash.ToGroup().Map(g => new Configuration(file, g.items, name)).If(out var configuration, out var exception))
+         {
+            if (save)
+            {
+               return configuration.Save().Map(_ => configuration);
+            }
+            else
+            {
+               return configuration;
+            }
+         }
+         else
          {
             return exception;
          }

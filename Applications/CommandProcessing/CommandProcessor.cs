@@ -300,6 +300,10 @@ namespace Core.Applications.CommandProcessing
          {
             AllConfiguration();
          }
+         else if (rest.IsMatch("^ 'reset' /b"))
+         {
+            ResetConfiguration();
+         }
          else if (rest.Matches("^ /('set' | 'get') /s+ /(/w [/w '-']*) /b /(.*) $; f").If(out var result))
          {
             var (command, name, value) = result;
@@ -318,6 +322,11 @@ namespace Core.Applications.CommandProcessing
 
       public virtual void AllConfiguration()
       {
+      }
+
+      public virtual void ResetConfiguration()
+      {
+
       }
 
       public virtual void SetConfiguration(string name, string value)
