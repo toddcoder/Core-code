@@ -8,7 +8,7 @@
     <owners>Todd Bennett</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Common core code</description>
-    <releaseNotes>Configuration values can now be written</releaseNotes>
+    <releaseNotes>Added config command to CommandProcessor</releaseNotes>
     <copyright>Copyright 2021</copyright>
     <tags>Core Async Types Monads Strings WinForms Internet Io Data Regex Git Json</tags>
   </metadata>
