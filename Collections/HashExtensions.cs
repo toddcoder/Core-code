@@ -455,7 +455,7 @@ namespace Core.Collections
                foreach (var (key, value) in internalHash)
                {
                   var keyAsString = key.ToString();
-                  group[keyAsString] = new Item(keyAsString, value.ToString());
+                  group.SetItem(keyAsString, new Item(keyAsString, value.ToString()));
                }
 
                return new Configuration(group);

@@ -43,7 +43,7 @@ namespace Core.Json
                select (_group, _key);
             if (item.If(out var group, out var key))
             {
-               group[key] = new Item(key, value);
+               group.SetItem(key, new Item(key, value));
             }
 
             _propertyName = nil;
@@ -67,7 +67,7 @@ namespace Core.Json
                      var group = new Group(key);
                      if (peekGroup().If(out var parentGroup))
                      {
-                        parentGroup[key] = group;
+                        parentGroup.SetItem(key, group);
                      }
                      else
                      {
@@ -95,7 +95,7 @@ namespace Core.Json
                      var group = new Group(key);
                      if (peekGroup().If(out var parentGroup))
                      {
-                        parentGroup[group.Key] = group;
+                        parentGroup.SetItem(group.Key, group);
                      }
                      else
                      {

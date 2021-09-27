@@ -338,10 +338,12 @@ namespace Core.Tests
       [TestMethod]
       public void WritingTest()
       {
-         var root = new Group();
-         root.Child = @"repository: ""\\vmdvw10estm57""";
-         root.Child = "server: .";
-         root.Child = "database: local_tebennett";
+         var root = new Group
+         {
+            ["repository"] = @"\\vmdvw10estm57",
+            ["server"] = ".",
+            ["database"] = "local_tebennett"
+         };
 
          var configuration = new Configuration(root);
          Console.WriteLine(configuration);

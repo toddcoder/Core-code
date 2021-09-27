@@ -16,7 +16,15 @@ namespace Core.Configurations
 
       public string Key { get; }
 
-      public IConfigurationItem this[string key] => this;
+      public string this[string key] => key == Key ? Value : string.Empty;
+
+      public IConfigurationItem GetItem(string key) => this;
+
+      public Maybe<IConfigurationItem> GetSomeItem(string key) => maybe(key == Key, () => (IConfigurationItem)this);
+
+      public void SetItem(string key, IConfigurationItem item)
+      {
+      }
 
       public Maybe<string> GetValue(string key) => maybe(key.Same(Key), () => Value);
 

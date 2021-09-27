@@ -182,7 +182,7 @@ namespace Core.Configurations
                var group = new Group(key);
                if (peekGroup().If(out var parentGroup))
                {
-                  parentGroup[key] = group;
+                  parentGroup.SetItem(key, group);
                }
                else
                {
@@ -199,7 +199,7 @@ namespace Core.Configurations
                {
                   if (peekGroup().If(out var parentGroup))
                   {
-                     parentGroup[group.Key] = group;
+                     parentGroup.SetItem(group.Key, group);
                   }
                   else
                   {
@@ -219,7 +219,7 @@ namespace Core.Configurations
                var group = new Group(key);
                if (peekGroup().If(out var parentGroup))
                {
-                  parentGroup[key] = group;
+                  parentGroup.SetItem(key, group);
                }
                else
                {
@@ -241,7 +241,7 @@ namespace Core.Configurations
                   var item = new Item(key, value);
                   if (peekGroup().If(out var group))
                   {
-                     group[item.Key] = item;
+                     group.SetItem(item.Key, item);
                   }
                }
                else if (source.IsMatch("^ /s+ $; f"))
@@ -267,7 +267,7 @@ namespace Core.Configurations
          {
             if (peekGroup().If(out var parentGroup))
             {
-               parentGroup[group.Key] = group;
+               parentGroup.SetItem(group.Key, group);
             }
             else
             {

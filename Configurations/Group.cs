@@ -18,7 +18,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Configurations
 {
-   public class Group : IConfigurationItem, IHash<string, IConfigurationItem>, IEnumerable<IConfigurationItem>
+   public class Group : IConfigurationItem, IHash<string, string>, IEnumerable<IConfigurationItem>
    {
       protected static Set<Type> baseTypes;
 
@@ -50,11 +50,34 @@ namespace Core.Configurations
 
       public string Key { get; }
 
-      public IConfigurationItem this[string key]
+      public string this[string key]
       {
-         get => items[key];
-         set => items[key] = value;
+         get
+         {
+            return ValueAt(key);
+         }
+         set
+         {
+            if (value.StartsWith("["))
+            {
+               Group newGroup = $"{key}: {value}";
+               items[key] = newGroup;
+            }
+            else
+            {
+               var item = new Item(key, value);
+               items[key] = item;
+            }
+         }
       }
+
+      public IConfigurationItem GetItem(string key) => items.Require(key).ForceValue();
+
+      public Maybe<IConfigurationItem> GetSomeItem(string key) => items.Map(key);
+
+      public bool If(string key, out IConfigurationItem item) => items.If(key, out item);
+
+      public void SetItem(string key, IConfigurationItem item) => items[key] = item;
 
       public Maybe<string> GetValue(string key) => items.Map(key).Map(i => i.GetValue(key));
 
@@ -84,7 +107,7 @@ namespace Core.Configurations
 
       public bool ContainsKey(string key) => items.ContainsKey(key);
 
-      public Result<Hash<string, IConfigurationItem>> AnyHash() => items.AsHash;
+      public Result<Hash<string, string>> AnyHash() => items.ToStringHash(i => i.Key, i => i.Value.ToString(), true);
 
       public StringHash ToStringHash() => Values().ToHash(t => t.key, t => t.value).ToStringHash(true);
 
@@ -105,19 +128,6 @@ namespace Core.Configurations
       }
 
       public int Count => items.Count;
-
-      public string Child
-      {
-         set
-         {
-            Group newGroup = value;
-            var newItems = newGroup.items;
-            foreach (var (newKey, newItem) in newItems)
-            {
-               items[newKey] = newItem;
-            }
-         }
-      }
 
       public string ToString(int indent, bool ignoreSelf = false)
       {
@@ -362,7 +372,7 @@ namespace Core.Configurations
                   {
                      if (isBaseType(propertyType))
                      {
-                        group[key] = new Item(key, toString(value, propertyType));
+                        group.SetItem(key, new Item(key, toString(value, propertyType)));
                      }
                      else if (value is Array array)
                      {
@@ -376,7 +386,7 @@ namespace Core.Configurations
                               list.Add(toString(array.GetValue(i), elementType));
                            }
 
-                           group[key] = new Item(key, list.ToString(", "));
+                           group.SetItem(key, new Item(key, list.ToString(", ")));
                         }
                         else
                         {
@@ -385,7 +395,7 @@ namespace Core.Configurations
                            {
                               if (Serialize(elementType, array.GetValue(i), $"${i}").If(out var elementGroup, out var exception))
                               {
-                                 arrayGroup[$"${i}"] = elementGroup;
+                                 arrayGroup.SetItem($"${i}", elementGroup);
                               }
                               else
                               {
@@ -393,14 +403,14 @@ namespace Core.Configurations
                               }
                            }
 
-                           group[key] = arrayGroup;
+                           group.SetItem(key, arrayGroup);
                         }
                      }
                      else
                      {
                         if (Serialize(propertyType, value, key).If(out var propertyGroup, out var exception))
                         {
-                           group[key] = propertyGroup;
+                           group.SetItem(key, propertyGroup);
                         }
                         else
                         {

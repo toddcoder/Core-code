@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using Core.Collections;
-using Core.Enumerables;
 using Core.Monads;
 using Core.Objects;
 using static Core.Monads.AttemptFunctions;
@@ -10,7 +9,7 @@ using static Core.Matching.MatchingExtensions;
 
 namespace Core.Configurations
 {
-   public class Configuration : IHash<string, IConfigurationItem>, IConfigurationItem, IEnumerable<IConfigurationItem>
+   public class Configuration : IHash<string, string>, IConfigurationItem, IEnumerable<IConfigurationItem>
    {
       public static implicit operator Configuration(string source) => FromString(source).ForceValue();
 
@@ -36,21 +35,13 @@ namespace Core.Configurations
 
       public string Key => root.Key;
 
-      public IConfigurationItem this[string key]
-      {
-         get => root[key];
-         set
-         {
-            if (value.Count == 1 && value.Values().FirstOrNone().If(out var fKey, out var fValue))
-            {
-               root[key] = new Item(fKey, fValue);
-            }
-            else
-            {
-               root[key] = value;
-            }
-         }
-      }
+      public string this[string key] => root[key];
+
+      public IConfigurationItem GetItem(string key) => root.GetItem(key);
+
+      public Maybe<IConfigurationItem> GetSomeItem(string key) => root.GetSomeItem(key);
+
+      public void SetItem(string key, IConfigurationItem item) => root.SetItem(key, item);
 
       public Maybe<string> GetValue(string key) => root.GetValue(key);
 
@@ -70,7 +61,7 @@ namespace Core.Configurations
 
       public bool ContainsKey(string key) => root.ContainsKey(key);
 
-      public Result<Hash<string, IConfigurationItem>> AnyHash() => root.AnyHash();
+      public Result<Hash<string, string>> AnyHash() => root.AnyHash();
 
       public Result<object> Deserialize(Type type) => root.Deserialize(type);
 
@@ -95,10 +86,5 @@ namespace Core.Configurations
       public IEnumerable<(string key, Group group)> Groups() => root.Groups();
 
       public int Count => root.Count;
-
-      public string Child
-      {
-         set => root.Child = value;
-      }
    }
 }
