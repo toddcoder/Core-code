@@ -253,7 +253,6 @@ namespace Core.Applications.CommandProcessing
                   {
                      Console.WriteLine($"   {key.PadRight(maxLength)} - {value}");
                   }
-
                }
 
                Console.WriteLine();
@@ -297,7 +296,11 @@ namespace Core.Applications.CommandProcessing
 
       protected void handleConfiguration(string rest)
       {
-         if (rest.Matches("^ /('set' | 'get') /s+ /(/w [/w '-']*) /b /(.*) $; f").If(out var result))
+         if (rest.IsMatch("^ 'all' /b"))
+         {
+            AllConfiguration();
+         }
+         else if (rest.Matches("^ /('set' | 'get') /s+ /(/w [/w '-']*) /b /(.*) $; f").If(out var result))
          {
             var (command, name, value) = result;
             switch (command)
@@ -313,6 +316,10 @@ namespace Core.Applications.CommandProcessing
          }
       }
 
+      public virtual void AllConfiguration()
+      {
+      }
+
       public virtual void SetConfiguration(string name, string value)
       {
       }
@@ -321,7 +328,7 @@ namespace Core.Applications.CommandProcessing
       {
       }
 
-      public virtual StringHash ConfigurationHelp() => new StringHash(true);
+      public virtual StringHash ConfigurationHelp() => new(true);
 
       protected IEnumerable<(string prefix, string name, Maybe<string> _value)> switchData(string source)
       {
