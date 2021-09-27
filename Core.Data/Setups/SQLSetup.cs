@@ -41,10 +41,10 @@ namespace Core.Data.Setups
             };
       }
 
-      public static Result<SqlSetup> FromConfiguration(Configuration configuration, string adapterName)
+      public static Result<SqlSetup> FromGroup(Group group, string adapterName)
       {
          return
-            from dataGraphs in configuration.DataGroups().Result("Data graphs unavailable")
+            from dataGraphs in @group.DataGroups().Result("Data graphs unavailable")
             from setup in FromDataGroups(dataGraphs, adapterName)
             select setup;
       }

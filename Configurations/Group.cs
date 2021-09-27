@@ -20,6 +20,10 @@ namespace Core.Configurations
 {
    public class Group : IConfigurationItem, IHash<string, string>, IEnumerable<IConfigurationItem>
    {
+      public const string ROOT_NAME = "_$root";
+
+      public static Configuration operator +(Group group, FileName file) => new(file, group.items, group.Key);
+
       protected static Set<Type> baseTypes;
 
       static Group()
@@ -39,9 +43,9 @@ namespace Core.Configurations
          return parser.Parse();
       }
 
-      protected StringHash<IConfigurationItem> items;
+      internal StringHash<IConfigurationItem> items;
 
-      public Group(string key = "_$root")
+      public Group(string key = ROOT_NAME)
       {
          Key = key;
 
@@ -52,10 +56,7 @@ namespace Core.Configurations
 
       public string this[string key]
       {
-         get
-         {
-            return ValueAt(key);
-         }
+         get { return ValueAt(key); }
          set
          {
             if (value.StartsWith("["))
@@ -165,6 +166,8 @@ namespace Core.Configurations
 
       public string ToString(bool ignoreSelf) => ToString(0, ignoreSelf);
 
+      public override string ToString() => ToString(true);
+
       public IEnumerator<IConfigurationItem> GetEnumerator() => items.Values.GetEnumerator();
 
       IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
@@ -194,8 +197,7 @@ namespace Core.Configurations
          for (var i = 0; i < length; i++)
          {
             var group = groups[i];
-            var configuration = new Configuration(group);
-            if (configuration.Deserialize(elementType).If(out var element))
+            if (group.Deserialize(elementType).If(out var element))
             {
                newArray.SetValue(element, i);
             }
@@ -346,9 +348,9 @@ namespace Core.Configurations
          return type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.SetProperty | BindingFlags.GetProperty);
       }
 
-      public static Result<Group> Serialize<T>(T obj, string name) where T : class, new() => tryTo(() => Serialize(typeof(T), obj, name));
+      public static Result<Group> Serialize<T>(T obj, string name = ROOT_NAME) where T : class, new() => tryTo(() => Serialize(typeof(T), obj, name));
 
-      public static Result<Group> Serialize(Type type, object obj, string name)
+      public static Result<Group> Serialize(Type type, object obj, string name = ROOT_NAME)
       {
          if (type.IsValueType)
          {
@@ -487,8 +489,7 @@ namespace Core.Configurations
                if (allPropertyInfo.FirstOrNone(p => p.Name.Same(name)).If(out var propertyInfo))
                {
                   var propertyType = propertyInfo.PropertyType;
-                  var configuration = new Configuration(group);
-                  if (configuration.Deserialize(propertyType).If(out var objValue))
+                  if (group.Deserialize(propertyType).If(out var objValue))
                   {
                      propertyInfo.SetValue(obj, objValue);
                   }

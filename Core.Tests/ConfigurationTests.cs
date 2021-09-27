@@ -74,10 +74,10 @@ namespace Core.Tests
          var resources = new Resources<ConfigurationTests>();
          var source = resources.String("TestData.connections.txt");
 
-         if (Configuration.FromString(source).If(out var configuration, out var exception))
+         if (Group.FromString(source).If(out var @group, out var exception))
          {
             var result =
-               from connections in configuration.GetGroup("connections")
+               from connections in @group.GetGroup("connections")
                from connection1 in connections.GetGroup("connection1")
                from _server in connection1.GetValue("server")
                from _database in connection1.GetValue("database")
@@ -104,10 +104,10 @@ namespace Core.Tests
          var resources = new Resources<ConfigurationTests>();
          var source = resources.String("TestData.connections2.txt");
 
-         if (Configuration.FromString(source).If(out var configuration, out var exception))
+         if (Group.FromString(source).If(out var @group, out var exception))
          {
             var result =
-               from connections in configuration.GetGroup("connections")
+               from connections in @group.GetGroup("connections")
                from connection1 in connections.GetGroup("connection1")
                from _server in connection1.GetValue("server")
                from _database in connection1.GetValue("database")
@@ -133,9 +133,9 @@ namespace Core.Tests
       {
          var resources = new Resources<ConfigurationTests>();
          var source = resources.String("TestData.connections.txt");
-         if (Configuration.FromString(source).If(out var configuration, out var exception))
+         if (Group.FromString(source).If(out var group, out var exception))
          {
-            Console.Write(configuration);
+            Console.Write(group);
          }
          else
          {
@@ -156,9 +156,9 @@ namespace Core.Tests
             IsTrue = true,
             Escape = "\r \t \\ foobar"
          };
-         if (Configuration.Serialize(test, "test").If(out var configuration, out var exception))
+         if (Group.Serialize(test, "test").If(out var group, out var exception))
          {
-            Console.Write(configuration);
+            Console.Write(group);
          }
          else
          {
@@ -266,9 +266,9 @@ namespace Core.Tests
             ["echo"] = "Eta",
             ["foxtrot"] = "Phi"
          };
-         if (hash.ToConfiguration().If(out var configuration, out var exception))
+         if (hash.ToGroup().If(out var group, out var exception))
          {
-            Console.WriteLine(configuration);
+            Console.WriteLine(group);
          }
          else
          {
@@ -289,12 +289,12 @@ namespace Core.Tests
             ["foxtrot"] = "Phi"
          };
          var _result =
-            from configuration in hash.ToConfiguration()
+            from @group in hash.ToGroup()
             let file = (FileName)$@"C:\Temp\{uniqueID()}.txt"
-            from _ in file.TryTo.SetText(configuration.ToString())
+            from _ in file.TryTo.SetText(@group.ToString())
             from source in file.TryTo.Text
-            from configuration2 in Configuration.FromString(source)
-            select configuration2.ToStringHash();
+            from group2 in Group.FromString(source)
+            select @group.ToStringHash();
          if (_result.If(out var result, out var exception))
          {
             foreach (var (key, value) in result)
@@ -312,17 +312,17 @@ namespace Core.Tests
       public void EmptyStringItemTest()
       {
          var hash = new StringHash(true) { ["release"] = "", ["build"] = "http" };
-         if (hash.ToConfiguration().If(out var configuration, out var exception))
+         if (hash.ToGroup().If(out var @group, out var exception))
          {
-            var source = configuration.ToString();
+            var source = @group.ToString();
             Console.WriteLine(source);
-            Console.WriteLine(configuration["release"]);
-            Console.WriteLine(configuration["build"]);
+            Console.WriteLine(@group["release"]);
+            Console.WriteLine(@group["build"]);
 
-            if (Configuration.FromString(source).If(out configuration, out exception))
+            if (Group.FromString(source).If(out @group, out exception))
             {
-               Console.WriteLine(configuration["release"]);
-               Console.WriteLine(configuration["build"]);
+               Console.WriteLine(@group["release"]);
+               Console.WriteLine(@group["build"]);
             }
             else
             {
@@ -338,15 +338,14 @@ namespace Core.Tests
       [TestMethod]
       public void WritingTest()
       {
-         var root = new Group
+         var group = new Group
          {
             ["repository"] = @"\\vmdvw10estm57",
             ["server"] = ".",
             ["database"] = "local_tebennett"
          };
 
-         var configuration = new Configuration(root);
-         Console.WriteLine(configuration);
+         Console.WriteLine(group);
       }
    }
 }

@@ -17,7 +17,7 @@ namespace Core.Json
          this.source = source;
       }
 
-      public Result<Configuration> Deserialize()
+      public Result<Group> Deserialize()
       {
          var rootGroup = new Group("/");
          var stack = new MaybeStack<IConfigurationItem>();
@@ -132,7 +132,7 @@ namespace Core.Json
                }
             }
 
-            return new Configuration(rootGroup);
+            return rootGroup;
          }
          catch (Exception exception)
          {
