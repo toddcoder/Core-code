@@ -55,7 +55,7 @@ namespace Core.Applications.CommandProcessing
 
       public virtual Result<Configuration> InitializeConfiguration()
       {
-         FileName configurationFile = $@"~\AppData\Local{application}\{application}.configuration";
+         FileName configurationFile = $@"~\AppData\Local\{application}\{application}.configuration";
 
          configurationDefaults = GetConfigurationDefaults();
          configurationHelp = GetConfigurationHelp();
