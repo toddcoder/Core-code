@@ -184,7 +184,11 @@ namespace Core.Tests
       [Switch("ignore-case"), ShortCut("i"), SwitchHelp("ignore case")]
       public bool IgnoreCase { get; set; }
 
-      public override void Initialize(string command)
+      public override StringHash GetConfigurationDefaults() => new(true);
+
+      public override StringHash GetConfigurationHelp() => new(true);
+
+      public override void Initialize()
       {
          Text = string.Empty;
          Pattern = string.Empty;
@@ -194,7 +198,7 @@ namespace Core.Tests
 
       public override void GetConfiguration(string name) => Console.WriteLine($"get config {name}");
 
-      public override void SetConfiguration(string name, string value) => Console.WriteLine($"set config {name} '{value}'");
+      public override void SetConfiguration(string key, string value) => Console.WriteLine($"set config {key} '{value}'");
 
       public override StringHash ConfigurationHelp()
       {
