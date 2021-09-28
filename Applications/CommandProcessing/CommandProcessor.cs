@@ -6,6 +6,7 @@ using Core.Applications.Writers;
 using Core.Assertions;
 using Core.Collections;
 using Core.Computers;
+using Core.Configurations;
 using Core.Enumerables;
 using Core.Matching;
 using Core.Monads;
@@ -13,6 +14,7 @@ using Core.Objects;
 using Core.Strings;
 using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
+using Group = Core.Configurations.Group;
 
 namespace Core.Applications.CommandProcessing
 {
@@ -26,7 +28,10 @@ namespace Core.Applications.CommandProcessing
          BackgroundColor = ConsoleColor.White
       };
 
+      protected StringHash configurationDefaults;
+      protected StringHash configurationHelp;
       protected string application;
+      protected Configuration configuration;
 
       public event ConsoleCancelEventHandler CancelKeyPress;
 
@@ -44,13 +49,47 @@ namespace Core.Applications.CommandProcessing
          Arguments = string.Empty;
 
          Console.CancelKeyPress += CancelKeyPress;
+
+         Command = string.Empty;
       }
 
-      public virtual void Initialize(string command)
+      public virtual Result<Configuration> InitializeConfiguration()
+      {
+         FileName configurationFile = $@"~\AppData\Local{application}\{application}.configuration";
+
+         configurationDefaults = GetConfigurationDefaults();
+         configurationHelp = GetConfigurationHelp();
+
+         try
+         {
+            if (configurationFile.Exists())
+            {
+               return Configuration.Open(configurationFile);
+            }
+            else
+            {
+               configuration = new Group() + configurationFile;
+               configurationFile.Folder.Guarantee();
+               ResetConfiguration();
+
+               return configuration;
+            }
+         }
+         catch (Exception exception)
+         {
+            return exception;
+         }
+      }
+
+      public abstract StringHash GetConfigurationDefaults();
+
+      public abstract StringHash GetConfigurationHelp();
+
+      public virtual void Initialize()
       {
       }
 
-      public virtual void CleanUp(string command)
+      public virtual void CleanUp()
       {
       }
 
@@ -73,6 +112,8 @@ namespace Core.Applications.CommandProcessing
       public string Suffix { get; set; }
 
       public string Arguments { get; protected set; }
+
+      public string Command { get; protected set; }
 
       protected static string removeExecutableFromCommandLine(string commandLine)
       {
@@ -105,6 +146,11 @@ namespace Core.Applications.CommandProcessing
       {
          try
          {
+            if (InitializeConfiguration().IfNot(out configuration, out var exception))
+            {
+               HandleException(exception);
+            }
+
             commandLine = removeExecutableFromCommandLine(commandLine);
             Arguments = commandLine;
             run(commandLine, true);
@@ -119,6 +165,8 @@ namespace Core.Applications.CommandProcessing
       {
          if (splitCommandFromRest(commandLine).If(out var command, out var rest))
          {
+            Command = command;
+
             switch (command)
             {
                case "help":
@@ -152,13 +200,13 @@ namespace Core.Applications.CommandProcessing
                   {
                      if (commandAttribute.Initialize)
                      {
-                        Initialize(commandAttribute.Name);
+                        Initialize();
                      }
 
                      var result = executeMethod(methodInfo, rest);
                      if (result.If(out _, out var exception))
                      {
-                        CleanUp(commandAttribute.Name);
+                        CleanUp();
                      }
                      else
                      {
@@ -195,7 +243,6 @@ namespace Core.Applications.CommandProcessing
          var shortCuts = getShortCutAttributes()
             .Select(t => (t.propertyInfo.Name, t.attribute))
             .ToStringHash(t => t.Name, t => t.attribute.Name, true);
-         var configurationHelp = ConfigurationHelp();
 
          Console.WriteLine("Help");
          foreach (var (methodInfo, commandHelpAttribute) in getCommandHelpAttributes())
@@ -322,22 +369,55 @@ namespace Core.Applications.CommandProcessing
 
       public virtual void AllConfiguration()
       {
+         var tableMaker = new TableMaker(("Key", Justification.Left), ("Value", Justification.Left));
+         foreach (var (key, value) in configuration.Values())
+         {
+            tableMaker.Add(key, value);
+         }
+
+         StandardWriter.WriteLine(tableMaker);
       }
 
       public virtual void ResetConfiguration()
       {
+         if (configurationDefaults.Count > 0)
+         {
+            foreach (var (key, value) in configurationDefaults)
+            {
+               configuration[key] = value;
+            }
 
+            configuration.Save()
+               .OnSuccess(_ => StandardWriter.WriteLine("Configuration reset"))
+               .OnFailure(e => ExceptionWriter.WriteExceptionLine(e));
+         }
       }
 
-      public virtual void SetConfiguration(string name, string value)
+      public virtual void SetConfiguration(string key, string value)
       {
+         if (configuration.ContainsKey(key))
+         {
+            configuration[key] = value;
+         }
+         else
+         {
+            ExceptionWriter.WriteExceptionLine($"Didn't recognize key \"{key}\"");
+         }
       }
 
-      public virtual void GetConfiguration(string name)
+      public virtual void GetConfiguration(string key)
       {
+         if (configuration.ContainsKey(key))
+         {
+            StandardWriter.WriteLine($"{key} -> {configuration[key]}");
+         }
+         else
+         {
+            ExceptionWriter.WriteExceptionLine($"Didn't recognize key \"{key}\"");
+         }
       }
 
-      public virtual StringHash ConfigurationHelp() => new(true);
+      public virtual StringHash ConfigurationHelp() => configurationHelp;
 
       protected IEnumerable<(string prefix, string name, Maybe<string> _value)> switchData(string source)
       {
