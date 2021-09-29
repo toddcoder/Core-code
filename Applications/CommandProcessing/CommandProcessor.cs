@@ -244,13 +244,15 @@ namespace Core.Applications.CommandProcessing
             .Select(t => (t.propertyInfo.Name, t.attribute))
             .ToStringHash(t => t.Name, t => t.attribute.Name, true);
 
-         Console.WriteLine("Help");
-         foreach (var (methodInfo, commandHelpAttribute) in getCommandHelpAttributes())
+         void writeDivider() => Console.WriteLine("-".Repeat(80));
+
+         void displayCommands(MethodInfo methodInfo1, CommandHelpAttribute commandHelpAttribute1)
          {
-            if (commandHelps.If(methodInfo.Name, out var tuple))
+            if (commandHelps.If(methodInfo1.Name, out var tuple))
             {
-               Console.Write($"   {tuple.command}: {commandHelpAttribute.HelpText}");
-               foreach (var @switch in commandHelpAttribute.Switches)
+               writeDivider();
+               Console.Write($"{tuple.command}");
+               foreach (var @switch in commandHelpAttribute1.Switches)
                {
                   Console.Write(" ");
                   var optional = @switch.EndsWith("?");
@@ -297,21 +299,33 @@ namespace Core.Applications.CommandProcessing
                   }
                }
 
-               if (configurationHelp.Count > 0)
-               {
-                  Console.WriteLine();
-
-                  Console.WriteLine("config");
-                  var maxLength = configurationHelp.Keys.Max(k => k.Length);
-                  foreach (var (key, value) in configurationHelp)
-                  {
-                     Console.WriteLine($"   {key.PadRight(maxLength)} - {value}");
-                  }
-               }
-
                Console.WriteLine();
+               Console.WriteLine($">>> {commandHelpAttribute1.HelpText}");
             }
          }
+
+         void displayConfiguration()
+         {
+            if (configurationHelp.Count > 0)
+            {
+               writeDivider();
+               Console.WriteLine("config");
+               var maxLength = configurationHelp.Keys.Max(k => k.Length);
+               foreach (var (key, value) in configurationHelp)
+               {
+                  Console.WriteLine($"   {key.PadRight(maxLength)} - {value}");
+               }
+            }
+         }
+
+         Console.WriteLine($"help for {application}");
+
+         foreach (var (methodInfo, commandHelpAttribute) in getCommandHelpAttributes())
+         {
+            displayCommands(methodInfo, commandHelpAttribute);
+         }
+
+         displayConfiguration();
       }
 
       protected (PropertyInfo propertyInfo, SwitchAttribute attribute)[] getSwitchAttributes()
