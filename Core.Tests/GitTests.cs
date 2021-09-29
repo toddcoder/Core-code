@@ -58,5 +58,14 @@ namespace Core.Tests
          GitBranch master = "master";
          master.DifferentFromCurrent().OnSuccess(onSuccess).OnFailure(onFailure);
       }
+
+      [TestMethod]
+      public void DifferentFromParentTest()
+      {
+         FolderName.Current = @"~\source\repos\toddcoder\Core";
+         GitBranch develop = "origin/develop";
+         var currentBranch = GitBranch.Current;
+         currentBranch.DifferentFrom(develop, true).OnSuccess(onSuccess).OnFailure(onFailure);
+      }
    }
 }

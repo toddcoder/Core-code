@@ -507,8 +507,8 @@ namespace Core.Applications.CommandProcessing
             {
                _object = getBoolean(value);
             }
-            else if (type == typeof(string) || type == typeof(FileName) || type == typeof(FolderName) || type == typeof(Maybe<FileName>) ||
-               type == typeof(Maybe<FolderName>))
+            else if (type == typeof(string) || type == typeof(Maybe<string>) || type == typeof(FileName) || type == typeof(FolderName) ||
+               type == typeof(Maybe<FileName>) || type == typeof(Maybe<FolderName>))
             {
                _object = getString(value, type);
             }
