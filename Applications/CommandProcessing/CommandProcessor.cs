@@ -255,8 +255,15 @@ namespace Core.Applications.CommandProcessing
                   Console.Write(" ");
                   var optional = @switch.EndsWith("?");
                   var name = optional ? @switch.Drop(-1) : @switch;
+                  var alternate = name.StartsWith("|");
+                  name = alternate ? name.Drop(1) : name;
                   if (switches.If(name, out var propertyName))
                   {
+                     if (alternate)
+                     {
+                        Console.Write("OR ");
+                     }
+
                      if (optional)
                      {
                         Console.Write("[");
