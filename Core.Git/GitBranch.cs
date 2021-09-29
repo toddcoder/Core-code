@@ -1,12 +1,23 @@
 ﻿using System;
 using Core.Exceptions;
+using Core.Matching;
 using Core.Monads;
 
 namespace Core.Git
 {
    public class GitBranch : IEquatable<GitBranch>
    {
-      public static implicit operator GitBranch(string branch) => new(branch);
+      public static implicit operator GitBranch(string branch)
+      {
+         if (branch.Matches("^ /(-['//']+) '//' /(.+) $; f").If(out var result))
+         {
+            return new GitBranch(result.SecondGroup) { Origin = result.FirstGroup };
+         }
+         else
+         {
+            return new GitBranch(branch);
+         }
+      }
 
       public static GitBranch Current
       {
@@ -36,6 +47,8 @@ namespace Core.Git
 
       public string Origin { get; set; }
 
+      public string FullName => $"{Origin}/{branch}";
+
       public Result<string[]> Delete(bool force = false)
       {
          var arguments = force ? $"-D {branch}" : $"-d {branch}";
@@ -53,7 +66,7 @@ namespace Core.Git
          return Git.Execute($"branch -b {newBranchName}").Map(_ => (GitBranch)newBranchName);
       }
 
-      public Result<string[]> Merge() => Git.Execute($"merge {Origin}/{branch}");
+      public Result<string[]> Merge() => Git.Execute($"merge {FullName}");
 
       public Result<string[]> Abort() => Git.Execute("merge --abort");
 
@@ -65,11 +78,17 @@ namespace Core.Git
          return Git.Execute(arguments);
       }
 
-      public Result<string[]> Reset() => Git.Execute($"reset --hard {Origin}/{branch}");
+      public Result<string[]> Reset() => Git.Execute($"reset --hard {FullName}");
 
-      public bool IsOnRemote() => Git.Execute($"show-branch remotes/{Origin}/{branch}").Map(s => s.Length > 0).Recover(_ => false);
+      public bool IsOnRemote() => Git.Execute($"show-branch remotes/{FullName}").Map(s => s.Length > 0).Recover(_ => false);
 
-      public Result<string[]> DifferentFromCurrent() => Git.Execute($"diff HEAD {Origin}/{branch} --name-only");
+      public Result<string[]> DifferentFromCurrent() => Git.Execute($"diff HEAD {FullName} --name-only");
+
+      public Result<string[]> DifferentFrom(GitBranch parentBranch, bool includeStatus)
+      {
+         var option = includeStatus ? "name-status" : "name-only";
+         return Git.Execute($"diff {parentBranch.FullName}...{FullName} --{option}");
+      }
 
       public override string ToString() => branch;
 

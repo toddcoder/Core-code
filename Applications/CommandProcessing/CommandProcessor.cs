@@ -255,8 +255,15 @@ namespace Core.Applications.CommandProcessing
                   Console.Write(" ");
                   var optional = @switch.EndsWith("?");
                   var name = optional ? @switch.Drop(-1) : @switch;
+                  var alternate = name.StartsWith("|");
+                  name = alternate ? name.Drop(1) : name;
                   if (switches.If(name, out var propertyName))
                   {
+                     if (alternate)
+                     {
+                        Console.Write("OR ");
+                     }
+
                      if (optional)
                      {
                         Console.Write("[");
@@ -507,8 +514,8 @@ namespace Core.Applications.CommandProcessing
             {
                _object = getBoolean(value);
             }
-            else if (type == typeof(string) || type == typeof(FileName) || type == typeof(FolderName) || type == typeof(Maybe<FileName>) ||
-               type == typeof(Maybe<FolderName>))
+            else if (type == typeof(string) || type == typeof(Maybe<string>) || type == typeof(FileName) || type == typeof(FolderName) ||
+               type == typeof(Maybe<FileName>) || type == typeof(Maybe<FolderName>))
             {
                _object = getString(value, type);
             }
