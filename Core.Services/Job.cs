@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Timers;
 using Core.Configurations;
-using Core.Dates;
 using Core.Dates.DateIncrements;
 using Core.Dates.Now;
 using Core.Monads;
@@ -10,6 +9,7 @@ using Core.Services.Loggers;
 using Core.Services.Plugins;
 using Core.Services.Scheduling;
 using static Core.Monads.MonadFunctions;
+using static Core.Objects.ConversionFunctions;
 
 namespace Core.Services
 {
@@ -109,7 +109,7 @@ namespace Core.Services
                _scheduler = plugin.Scheduler();
             }
 
-            interval = jobGroup.GetValue("interval").Map(i => i.AsTimeSpan()).DefaultTo(() => 1.Second());
+            interval = jobGroup.GetValue("interval").Map(Value.TimeSpan).DefaultTo(() => 1.Second());
 
             plugin.After = jobGroup.GetGroup("after").Map(afterGroup =>
             {

@@ -12,6 +12,7 @@ using Core.Objects;
 using Core.Strings;
 using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
+using static Core.Objects.ConversionFunctions;
 
 namespace Core.Applications
 {
@@ -164,7 +165,7 @@ namespace Core.Applications
          }
          else
          {
-            return rest.Keep("^ /s* ('false' | 'true') /b; f").TrimStart().ToBool();
+            return Value.Boolean(rest.Keep("^ /s* ('false' | 'true') /b; f").TrimStart());
          }
       }
 
@@ -214,13 +215,13 @@ namespace Core.Applications
 
       protected static object getInt32(string rest)
       {
-         return rest.Keep("^ /s* -/s+; f").TrimStart().ToInt();
+         return Value.Int32(rest.Keep("^ /s* -/s+; f").TrimStart());
       }
 
       protected static object getFloatingPoint(string rest, Type type)
       {
          var source = rest.Keep("^ /s* -/s+; f").TrimStart();
-         return type == typeof(float) ? source.ToFloat() : source.ToDouble();
+         return type == typeof(float) ? Value.Single(source) : Value.Double(source);
       }
 
       protected static object getEnum(string rest, Type type)

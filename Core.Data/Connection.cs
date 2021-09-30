@@ -1,9 +1,9 @@
 ﻿using System;
 using Core.Collections;
 using Core.Configurations;
-using Core.Dates;
 using Core.Dates.DateIncrements;
 using Core.Monads;
+using static Core.Objects.ConversionFunctions;
 
 namespace Core.Data
 {
@@ -16,7 +16,7 @@ namespace Core.Data
          data = new StringHash(true);
          Name = connectionGroup.Key;
          Type = connectionGroup.GetValue("type").DefaultTo(() => "sql");
-         Timeout = connectionGroup.GetValue("timeout").Map(s => s.ToTimeSpan()).DefaultTo(() => 30.Seconds());
+         Timeout = connectionGroup.GetValue("timeout").Map(Maybe.TimeSpan).DefaultTo(() => 30.Seconds());
          foreach (var (key, value) in connectionGroup.Values())
          {
             data[key] = value;

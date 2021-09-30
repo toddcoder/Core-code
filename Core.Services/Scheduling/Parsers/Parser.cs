@@ -3,8 +3,8 @@ using Core.Matching;
 using Core.Monads;
 using Core.Numbers;
 using Core.Services.Scheduling.Brackets;
-using Core.Strings;
 using static Core.Monads.MonadFunctions;
+using static Core.Objects.ConversionFunctions;
 
 namespace Core.Services.Scheduling.Parsers
 {
@@ -36,7 +36,7 @@ namespace Core.Services.Scheduling.Parsers
          {
             tokens = result.Groups(0);
             var lastIndex = tokens.Length - 1;
-            var values = tokens.Where((_, i) => i.Between(1).Until(lastIndex)).Select(t => t.ToInt(-1)).ToArray();
+            var values = tokens.Where((_, i) => i.Between(1).Until(lastIndex)).Select(t => Value.Int32(t, -1)).ToArray();
             var bracketSource = result[0, lastIndex];
             if (bracketSource.Matches(PATTERN_UNADORNED_BRACKET).If(out result))
             {

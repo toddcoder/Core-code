@@ -1,14 +1,15 @@
 ﻿using System;
 using Core.Dates.Now;
+using static Core.Objects.ConversionFunctions;
 
 namespace Core.Dates
 {
    public class Trigger
    {
-      public static implicit operator Trigger(string interval) => new Trigger(interval.ToTimeSpan());
+      public static implicit operator Trigger(string interval) => new(Value.TimeSpan(interval));
 
-      DateTime targetTime;
-      TimeSpan interval;
+      protected DateTime targetTime;
+      protected TimeSpan interval;
 
       public Trigger(TimeSpan interval)
       {
@@ -32,7 +33,7 @@ namespace Core.Dates
          }
       }
 
-      void setTargetTime() => targetTime = NowServer.Now + interval;
+      protected void setTargetTime() => targetTime = NowServer.Now + interval;
 
       public void Reset() => setTargetTime();
 

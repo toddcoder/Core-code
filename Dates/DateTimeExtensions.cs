@@ -5,8 +5,8 @@ using Core.Dates.Now;
 using Core.Matching;
 using Core.Monads;
 using Core.Numbers;
-using Core.Strings;
 using static Core.Monads.MonadFunctions;
+using static Core.Objects.ConversionFunctions;
 
 namespace Core.Dates
 {
@@ -220,7 +220,7 @@ namespace Core.Dates
                   if (year.Length > 0)
                   {
                      var yearText = year.Text;
-                     var yearAmount = yearText.ToInt();
+                     var yearAmount = Value.Int32(yearText);
                      if (yearText.IsMatch(REGEX_SIGN))
                      {
                         builder.Year += yearAmount;
@@ -238,7 +238,7 @@ namespace Core.Dates
                   if (month.Length > 0)
                   {
                      var monthText = month.Text;
-                     var monthAmount = monthText.ToInt();
+                     var monthAmount = Value.Int32(monthText);
                      if (monthText.IsMatch(REGEX_SIGN))
                      {
                         builder.Month += monthAmount;
@@ -256,7 +256,7 @@ namespace Core.Dates
                   if (day.Length > 0)
                   {
                      var dayText = day.Text;
-                     var dayAmount = dayText.ToInt();
+                     var dayAmount = Value.Int32(dayText);
                      if (dayText.IsMatch(REGEX_SIGN))
                      {
                         builder.Day += dayAmount;

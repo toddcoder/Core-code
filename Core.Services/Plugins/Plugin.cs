@@ -8,6 +8,7 @@ using Core.Services.Scheduling;
 using Core.Strings;
 using Standard.Services.Plugins;
 using static Core.Monads.MonadFunctions;
+using static Core.Objects.ConversionFunctions;
 
 namespace Core.Services.Plugins
 {
@@ -121,7 +122,7 @@ namespace Core.Services.Plugins
             {
                if (ServiceLogger.FromConfiguration(configuration).If(out var serviceLogger, out exception))
                {
-                  retries = jobGroup.GetValue("retries").Map(r => r.AsInt()).DefaultTo(() => 0);
+                  retries = jobGroup.GetValue("retries").Map(Maybe.Int32).DefaultTo(() => 0);
                   SetRetrier();
                   finalExceptionMessage = $"All {retries} {"retr(y|ies)".Plural(retries)} failed";
 

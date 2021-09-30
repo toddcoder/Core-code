@@ -5,6 +5,7 @@ using Core.Matching;
 using Core.Monads;
 using Core.Strings;
 using static Core.Monads.MonadFunctions;
+using static Core.Objects.ConversionFunctions;
 
 namespace Core.Markup.Parser
 {
@@ -93,13 +94,13 @@ namespace Core.Markup.Parser
                         format.FontName = value;
                         break;
                      case "font-size":
-                        format.FontSize = value.AsFloat();
+                        format.FontSize = Maybe.Single(value);
                         break;
                      case "bold":
-                        format.Bold = value.AsBool();
+                        format.Bold = Maybe.Boolean(result[0, 1]);
                         break;
                      case "italic":
-                        format.Italic = value.AsBool();
+                        format.Italic = Maybe.Boolean(value);
                         break;
                      default:
                         return fail(specifier);

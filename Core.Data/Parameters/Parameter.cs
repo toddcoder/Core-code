@@ -17,7 +17,7 @@ namespace Core.Data.Parameters
          var typeName = parameterGroup.GetValue("type").DefaultTo(() => "$string");
          typeName = fixTypeName(typeName);
          var _type = getType(typeName);
-         var _size = parameterGroup.GetValue("size").Map(s => s.ToInt());
+         var _size = parameterGroup.GetValue("size").Map(s => ConversionFunctions.Value.Int32(s));
          var output = parameterGroup.GetValue("output").Map(s => s == "true").DefaultTo(() => false);
          var _value = parameterGroup.GetValue("value");
          var _default = parameterGroup.GetValue("default");

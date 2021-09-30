@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using Core.Collections;
 using Core.Strings;
+using static Core.Objects.ConversionFunctions;
 
 namespace Core.Io.Delimited
 {
@@ -128,9 +129,9 @@ namespace Core.Io.Delimited
 
       public int GetOrdinal(string name) => indexes.Value(name);
 
-      public bool GetBoolean(int i) => fields[i].ToBool();
+      public bool GetBoolean(int i) => Value.Boolean(fields[i]);
 
-      public byte GetByte(int i) => fields[i].ToByte();
+      public byte GetByte(int i) => Value.Byte(fields[i]);
 
       public long GetBytes(int i, long fieldOffset, byte[] buf, int bufferOffset, int length)
       {
@@ -162,19 +163,19 @@ namespace Core.Io.Delimited
 
       public short GetInt16(int i) => short.Parse(fields[i]);
 
-      public int GetInt32(int i) => fields[i].ToInt();
+      public int GetInt32(int i) => Value.Int32(fields[i]);
 
-      public long GetInt64(int i) => fields[i].ToLong();
+      public long GetInt64(int i) => Value.Int64(fields[i]);
 
-      public float GetFloat(int i) => fields[i].ToFloat();
+      public float GetFloat(int i) => Value.Single(fields[i]);
 
-      public double GetDouble(int i) => fields[i].ToDouble();
+      public double GetDouble(int i) => Value.Double(fields[i]);
 
       public string GetString(int i) => fields[i];
 
-      public decimal GetDecimal(int i) => fields[i].ToDecimal();
+      public decimal GetDecimal(int i) => Value.Decimal(fields[i]);
 
-      public DateTime GetDateTime(int i) => fields[i].ToDateTime();
+      public DateTime GetDateTime(int i) => Value.DateTime(fields[i]);
 
       public IDataReader GetData(int i) => i == 0 ? this : null;
 

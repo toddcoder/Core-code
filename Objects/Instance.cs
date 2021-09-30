@@ -3,6 +3,7 @@ using System.Reflection;
 using Core.Monads;
 using Core.Strings;
 using static Core.Monads.AttemptFunctions;
+using static Core.Objects.ConversionFunctions;
 
 namespace Core.Objects
 {
@@ -24,7 +25,7 @@ namespace Core.Objects
       {
          return
             from obj in tryTo(type.Create)
-            from cast in obj.CastAs<T>()
+            from cast in Result.Cast<T>(obj)
             select cast;
       }
 
@@ -59,7 +60,7 @@ namespace Core.Objects
       {
          return
             from obj in tryTo(() => type.Create(args))
-            from cast in obj.CastAs<T>()
+            from cast in Result.Cast<T>(obj)
             select cast;
       }
 
@@ -71,7 +72,7 @@ namespace Core.Objects
       {
          return
             from obj in tryTo(typeName.Create)
-            from cast in obj.CastAs<T>()
+            from cast in Result.Cast<T>(obj)
             select cast;
       }
 
@@ -83,7 +84,7 @@ namespace Core.Objects
       {
          return
             from obj in tryTo(() => typeName.Create(args))
-            from cast in obj.CastAs<T>()
+            from cast in Result.Cast<T>(obj)
             select cast;
       }
    }

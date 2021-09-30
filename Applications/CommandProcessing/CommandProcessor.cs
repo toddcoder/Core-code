@@ -13,6 +13,7 @@ using Core.Monads;
 using Core.Objects;
 using Core.Strings;
 using static Core.Monads.MonadFunctions;
+using static Core.Objects.ConversionFunctions;
 using Group = Core.Configurations.Group;
 
 namespace Core.Applications.CommandProcessing
@@ -279,11 +280,17 @@ namespace Core.Applications.CommandProcessing
                   var name = optional ? @switch.Drop(-1) : @switch;
                   var alternate = name.StartsWith("|");
                   name = alternate ? name.Drop(1) : name;
+                  var combined = name.StartsWith("&");
+                  name = combined ? name.Drop(1) : name;
                   if (switches.If(name, out var propertyName))
                   {
                      if (alternate)
                      {
                         Console.Write("OR ");
+                     }
+                     else if (combined)
+                     {
+                        Console.Write("AND ");
                      }
 
                      if (optional)
@@ -621,25 +628,25 @@ namespace Core.Applications.CommandProcessing
          }
       }
 
-      protected static Maybe<object> getInt32(string value) => value.AsInt().Map(i => (object)i);
+      protected static Maybe<object> getInt32(string value) => Maybe.Int32(value).Map(i => (object)i);
 
       protected static Maybe<object> getFloatingPoint(string value, Type type)
       {
          if (type == typeof(double))
          {
-            return value.AsDouble().Map(d => (object)d);
+            return Maybe.Double(value).CastAs<object>();
          }
          else if (type == typeof(float))
          {
-            return value.AsFloat().Map(f => (object)f);
+            return Maybe.Single(value).CastAs<object>();
          }
          else
          {
-            return none<object>();
+            return nil;
          }
       }
 
-      protected static Maybe<object> getDate(string value) => value.AsDateTime().Map(d => (object)d);
+      protected static Maybe<object> getDate(string value) => Maybe.DateTime(value).CastAs<object>();
 
       protected static Maybe<object> getString(string value, Type type)
       {
@@ -699,7 +706,7 @@ namespace Core.Applications.CommandProcessing
          }
       }
 
-      protected static Maybe<object> getEnum(string value, Type type) => value.AsEnumeration(type);
+      protected static Maybe<object> getEnum(string value, Type type) => Maybe.Enumeration(type, value);
 
       protected static Maybe<object> getStringArray(string value)
       {
