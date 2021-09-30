@@ -12,7 +12,6 @@ using Core.Matching;
 using Core.Monads;
 using Core.Objects;
 using Core.Strings;
-using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
 using Group = Core.Configurations.Group;
 
@@ -124,7 +123,7 @@ namespace Core.Applications.CommandProcessing
 
       protected static Maybe<(string command, string rest)> splitCommandFromRest(string commandLine)
       {
-         if (commandLine.IsMatch("^ 'help' $; f"))
+         if (commandLine.IsEmpty() || commandLine.IsMatch("^ 'help' $; f"))
          {
             return ("help", "");
          }
@@ -179,12 +178,29 @@ namespace Core.Applications.CommandProcessing
                {
                   if (rest.IsEmpty())
                   {
-                     if (seekCommandFile)
+                     if (getMethod(command).If(out var methodInfo, out var commandAttribute))
+                     {
+                        if (commandAttribute.Initialize)
+                        {
+                           Initialize();
+                        }
+
+                        var result = executeMethod(methodInfo);
+                        if (result.If(out _, out var exception))
+                        {
+                           CleanUp();
+                        }
+                        else
+                        {
+                           HandleException(exception);
+                        }
+                     }
+                     else if (seekCommandFile)
                      {
                         FileName file = @$"~\AppData\Local\{Application}\{command}.cli";
                         if (!file.Exists())
                         {
-                           ExceptionWriter.WriteLine($"Command file {file} doesn't exist");
+                           ExceptionWriter.WriteLine($"Didn't understand command {command}");
                         }
 
                         var text = file.Text;
@@ -195,8 +211,7 @@ namespace Core.Applications.CommandProcessing
                         ExceptionWriter.WriteLine($"No switches provided for {command}");
                      }
                   }
-                  else if (this.MethodsUsing<CommandAttribute>().FirstOrNone(t => command == t.attribute.Name)
-                     .If(out var methodInfo, out var commandAttribute))
+                  else if (getMethod(command).If(out var methodInfo, out var commandAttribute))
                   {
                      if (commandAttribute.Initialize)
                      {
@@ -229,6 +244,11 @@ namespace Core.Applications.CommandProcessing
             Console.Write("Hit any key to exit");
             var _ = Console.ReadKey();
          }
+      }
+
+      protected Maybe<(MethodInfo methodInfo, CommandAttribute CommandAttribute)> getMethod(string command)
+      {
+         return this.MethodsUsing<CommandAttribute>().FirstOrNone(t => t.attribute.Name.Same(command));
       }
 
       protected void generateHelp()
@@ -410,7 +430,7 @@ namespace Core.Applications.CommandProcessing
 
             configuration.Save()
                .OnSuccess(_ => StandardWriter.WriteLine("Configuration reset"))
-               .OnFailure(e => ExceptionWriter.WriteExceptionLine(e));
+               .OnFailure(ExceptionWriter.WriteExceptionLine);
          }
       }
 
@@ -419,6 +439,7 @@ namespace Core.Applications.CommandProcessing
          if (configuration.ContainsKey(key))
          {
             configuration[key] = value;
+            configuration.Save().OnSuccess(_ => StandardWriter.WriteLine($"Saved {key}")).OnFailure(ExceptionWriter.WriteExceptionLine);
          }
          else
          {
@@ -470,6 +491,19 @@ namespace Core.Applications.CommandProcessing
          }
       }
 
+      protected Result<Unit> executeMethod(MethodInfo methodInfo)
+      {
+         try
+         {
+            methodInfo.Invoke(this, Array.Empty<object>());
+            return unit;
+         }
+         catch (Exception exception)
+         {
+            return exception;
+         }
+      }
+
       protected Result<Unit> executeMethod(MethodInfo methodInfo, string rest)
       {
          var switchAttributes = getSwitchAttributes();
@@ -499,7 +533,7 @@ namespace Core.Applications.CommandProcessing
             }
          }
 
-         return tryTo(() => { methodInfo.Invoke(this, Array.Empty<object>()); });
+         return executeMethod(methodInfo);
       }
 
       protected Maybe<Unit> fill((PropertyInfo propertyInfo, SwitchAttribute attribute)[] switchAttributes, string name, Maybe<string> _value)
