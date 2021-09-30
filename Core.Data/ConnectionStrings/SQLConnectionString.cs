@@ -1,9 +1,9 @@
 ﻿using System;
 using Core.Collections;
-using Core.Dates;
 using Core.Dates.DateIncrements;
 using Core.Monads;
 using Core.Strings;
+using static Core.Objects.ConversionFunctions;
 
 namespace Core.Data.ConnectionStrings
 {
@@ -80,7 +80,7 @@ namespace Core.Data.ConnectionStrings
       public SqlConnectionString(string server, string database, string application, string user = "", string password = "", string timeout = "")
       {
          connectionString = GetConnectionString(server, database, application, user, password);
-         connectionTimeout = timeout.IsEmpty() ? 30.Seconds() : timeout.ToTimeSpan();
+         connectionTimeout = timeout.IsEmpty() ? 30.Seconds() : Value.TimeSpan(timeout);
       }
 
       public string ConnectionString => connectionString;

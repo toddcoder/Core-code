@@ -7,6 +7,7 @@ using Core.Matching;
 using Core.Monads;
 using Core.Strings;
 using static Core.Monads.MonadFunctions;
+using static Core.Objects.ConversionFunctions;
 
 namespace Core.WinForms.Documents
 {
@@ -187,10 +188,7 @@ namespace Core.WinForms.Documents
                }
             }
 
-            return result[0, 2]
-               .AsEnumeration<Keys>()
-               .Map(k => (keys | k).Success())
-               .DefaultTo(() => $"Couldn't translate {result[0, 2]} into a key".Failure<Keys>());
+            return Result.Enumeration<Keys>(result[0, 2]).Map(k => keys | k).ExceptionMessage($"Couldn't translate {result[0, 2]} into a key");
          }
          else
          {

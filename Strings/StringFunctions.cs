@@ -4,6 +4,7 @@ using System.Text;
 using Core.Assertions;
 using Core.Dates.Now;
 using Core.Objects;
+using static Core.Objects.ConversionFunctions;
 
 namespace Core.Strings
 {
@@ -30,7 +31,7 @@ namespace Core.Strings
 
       public static string uniqueID() => serialGUID().ToString();
 
-      public static string uniqueHex() => uniqueID().ToLong().ToString("x").ToUpper();
+      public static string uniqueHex() => Value.Int64(uniqueID()).ToString("x").ToUpper();
 
       public static string randomString(int length, bool alpha, bool numeric)
       {

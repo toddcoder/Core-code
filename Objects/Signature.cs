@@ -1,6 +1,7 @@
 ﻿using Core.Monads;
 using Core.Strings;
 using static Core.Monads.MonadFunctions;
+using static Core.Objects.ConversionFunctions;
 
 namespace Core.Objects
 {
@@ -13,12 +14,12 @@ namespace Core.Objects
          if (signature.Find("[").If(out var openIndex))
          {
             Name = signature.Keep(openIndex);
-            Index = signature.Drop(openIndex + 1).KeepUntil("]").AsInt();
+            Index = Maybe.Int32(signature.Drop(openIndex + 1).KeepUntil("]"));
          }
          else
          {
             Name = signature;
-            Index = none<int>();
+            Index = nil;
          }
       }
 

@@ -7,7 +7,6 @@ using System.Text;
 using Core.Matching;
 using Core.Monads;
 using Core.Strings;
-using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
 using static Core.Objects.ReflectorFormat;
 
@@ -67,17 +66,24 @@ namespace Core.Objects
 
       public static int HashCode(this object obj, string signature) => PropertyEvaluator.GetValue(obj, signature).GetHashCode();
 
-      public static Result<T> CastAs<T>(this object obj) => tryTo(() =>
+      public static Result<T> CastAs<T>(this object obj)
       {
-         if (obj is T o)
+         try
          {
-            return o.Success();
+            if (obj is T o)
+            {
+               return o;
+            }
+            else
+            {
+               return fail($"{obj} can't be cast to {typeof(T).FullName}");
+            }
          }
-         else
+         catch (Exception exception)
          {
-            return $"{obj} can't be cast to {typeof(T).FullName}".Failure<T>();
+            return exception;
          }
-      });
+      }
 
       public static Matched<T> MatchAs<T>(this object obj)
       {
@@ -85,16 +91,16 @@ namespace Core.Objects
          {
             if (obj is T o)
             {
-               return o.Match();
+               return o;
             }
             else
             {
-               return noMatch<T>();
+               return nil;
             }
          }
          catch (Exception exception)
          {
-            return failedMatch<T>(exception);
+            return exception;
          }
       }
 

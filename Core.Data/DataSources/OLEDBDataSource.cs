@@ -3,7 +3,7 @@ using System.Data;
 using System.Data.OleDb;
 using System.Reflection;
 using Core.Computers;
-using Core.Dates;
+using Core.Dates.DateIncrements;
 using Core.Exceptions;
 using Core.Monads;
 using Core.Strings;
@@ -32,7 +32,7 @@ namespace Core.Data.DataSources
 
       protected Maybe<FileName> associatedFile;
 
-      public OleDbDataSource(string connectionString, Maybe<FileName> associatedFile) : base(connectionString, "30 seconds".ToTimeSpan())
+      public OleDbDataSource(string connectionString, Maybe<FileName> associatedFile) : base(connectionString, 30.Seconds())
       {
          ConnectionString = getFileConnectionString(associatedFile);
          this.associatedFile = associatedFile;

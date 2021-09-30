@@ -11,10 +11,10 @@ using Core.Computers;
 using Core.Enumerables;
 using Core.Matching;
 using Core.Monads;
-using Core.Objects;
 using Core.Strings;
 using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
+using static Core.Objects.ConversionFunctions;
 
 namespace Core.Configurations
 {
@@ -226,19 +226,19 @@ namespace Core.Configurations
          }
          else if (type == typeof(int))
          {
-            return source.ToInt().Some<object>();
+            return Value.Int32(source).Some<object>();
          }
          else if (type == typeof(long))
          {
-            return source.ToLong().Some<object>();
+            return Value.Int64(source).Some<object>();
          }
          else if (type == typeof(float))
          {
-            return source.ToFloat().Some<object>();
+            return Value.Single(source).Some<object>();
          }
          else if (type == typeof(double))
          {
-            return source.ToDouble().Some<object>();
+            return Value.Double(source).Some<object>();
          }
          else if (type == typeof(bool))
          {
@@ -246,11 +246,11 @@ namespace Core.Configurations
          }
          else if (type == typeof(DateTime))
          {
-            return DateTime.Parse(source).Some<object>();
+            return Value.DateTime(source).Some<object>();
          }
          else if (type == typeof(Guid))
          {
-            return Guid.Parse(source).Some<object>();
+            return Value.Guid(source).Some<object>();
          }
          else if (type == typeof(FileName))
          {
@@ -461,7 +461,7 @@ namespace Core.Configurations
       {
          return
             from obj in tryTo(() => Deserialize(typeof(T)))
-            from cast in obj.CastAs<T>()
+            from cast in Result.Cast<T>(obj)
             select cast;
       }
 

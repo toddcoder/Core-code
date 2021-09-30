@@ -10,6 +10,7 @@ using Core.Numbers;
 using Core.Strings;
 using static System.Math;
 using static Core.Monads.MonadFunctions;
+using static Core.Objects.ConversionFunctions;
 using static Core.Objects.ObjectFunctions;
 
 namespace Core.Arrays
@@ -166,8 +167,8 @@ namespace Core.Arrays
             if (group.Matches("/(/d+) '-' /(/d+); f").If(out var result))
             {
                var (startIndex, stopIndex) = result;
-               var intStart = startIndex.ToInt();
-               var intStop = stopIndex.ToInt();
+               var intStart = Value.Int32(startIndex);
+               var intStop = Value.Int32(stopIndex);
                if (intStart > intStop)
                {
                   swap(ref intStart, ref intStop);
@@ -180,7 +181,7 @@ namespace Core.Arrays
             }
             else
             {
-               indexes.Add(group.ToInt());
+               indexes.Add(Value.Int32(group));
             }
          }
 

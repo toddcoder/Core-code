@@ -9,6 +9,7 @@ using Core.Monads;
 using Core.Strings;
 using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
+using static Core.Objects.ConversionFunctions;
 
 namespace Core.Dates
 {
@@ -66,10 +67,13 @@ namespace Core.Dates
          return Time.ToShortString(span, includeMilliseconds);
       }
 
+      [Obsolete("Use ConversionFunctions")]
       public static TimeSpan ToTimeSpan(this string source) => source.TimeSpan().Recover(_ => 1.Second());
 
+      [Obsolete("Use ConversionFunctions")]
       public static TimeSpan ToTimeSpan(this string source, TimeSpan defaultValue) => source.TimeSpan().Recover(_ => defaultValue);
 
+      [Obsolete("Use ConversionFunctions")]
       public static Maybe<TimeSpan> AsTimeSpan(this string source)
       {
          var intervals = source.Split("/s* (',' | 'and') /s*; f");
@@ -126,7 +130,7 @@ namespace Core.Dates
          var unit = result.SecondGroup;
 
          return
-            from intValue in value.Int32()
+            from intValue in Result.Int32(value)
             from span in tryTo(() =>
             {
                if (unit.IsMatch("'millisec' ('ond')? 's'?; f"))

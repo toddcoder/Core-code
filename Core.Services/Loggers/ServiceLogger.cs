@@ -11,6 +11,7 @@ using Core.Exceptions;
 using Core.Monads;
 using Core.Strings;
 using static Core.Monads.MonadFunctions;
+using static Core.Objects.ConversionFunctions;
 
 namespace Core.Services.Loggers
 {
@@ -47,8 +48,8 @@ namespace Core.Services.Loggers
          if (configuration.GetValue("name").If(out var jobName))
          {
             var _loggingGroup = configuration.GetGroup("logging");
-            var sizeLimit = _loggingGroup.Map(g => g.GetValue("sizeLimit")).Map(sl => sl.AsInt()).DefaultTo(() => 1000000);
-            var expiry = _loggingGroup.Map(g => g.GetValue("expiry")).Map(exp => exp.AsTimeSpan()).DefaultTo(() => 7.Days());
+            var sizeLimit = _loggingGroup.Map(g => g.GetValue("sizeLimit")).Map(Maybe.Int32).DefaultTo(() => 1000000);
+            var expiry = _loggingGroup.Map(g => g.GetValue("expiry")).Map(Maybe.TimeSpan).DefaultTo(() => 7.Days());
             Maybe<EventLogger> _eventLogger;
             try
             {
@@ -69,7 +70,7 @@ namespace Core.Services.Loggers
 
       public static Result<ServiceLogger> FromConfiguration(Configuration configuration)
       {
-         Result<ServiceLogger> creator(FolderName baseFolder, string jobName, int sizeLimit, TimeSpan expiry, Maybe<EventLogger> _eventLogger)
+         static Result<ServiceLogger> creator(FolderName baseFolder, string jobName, int sizeLimit, TimeSpan expiry, Maybe<EventLogger> _eventLogger)
          {
             return new ServiceLogger(baseFolder, jobName, sizeLimit, expiry, _eventLogger);
          }
@@ -227,8 +228,8 @@ namespace Core.Services.Loggers
 
          if (group.If("logging", out var loggingGroup))
          {
-            SizeLimit = loggingGroup.GetValue("sizeLimit").Map(sl => sl.AsInt()).DefaultTo(() => 1000000);
-            Expiry = loggingGroup.GetValue("expiry").Map(e => e.AsTimeSpan()).DefaultTo(() => 7.Days());
+            SizeLimit = loggingGroup.GetValue("sizeLimit").Map(Maybe.Int32).DefaultTo(() => 1000000);
+            Expiry = loggingGroup.GetValue("expiry").Map(Maybe.TimeSpan).DefaultTo(() => 7.Days());
          }
          else
          {

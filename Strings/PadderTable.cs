@@ -5,6 +5,7 @@ using Core.Enumerables;
 using Core.Matching;
 using Core.Monads;
 using Core.Objects;
+using static Core.Objects.ConversionFunctions;
 
 namespace Core.Strings
 {
@@ -62,8 +63,8 @@ namespace Core.Strings
          {
             for (var i = 0; i < result.MatchCount; i++)
             {
-               maxCount = Math.Max(maxCount, result[i, 1].ToInt());
-               var length = result[i, 3].AsInt();
+               maxCount = Math.Max(maxCount, Value.Int32(result[i, 1]));
+               var length = Maybe.Int32(result[i, 3]);
                var item = new PadderItem { Length = length, PadType = getPadType(result[i, 4]) };
                if (item.Length.IsNone && !hasNoLength)
                {

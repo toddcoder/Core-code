@@ -9,6 +9,7 @@ using Core.Numbers;
 using Core.Strings;
 using static System.Math;
 using static Core.Monads.MonadFunctions;
+using static Core.Objects.ConversionFunctions;
 
 namespace Core.Dates
 {
@@ -61,7 +62,7 @@ namespace Core.Dates
          {
             result.Must().HaveMatchCountOf(1).OrThrow("Couldn't determine parts of time to parse");
             var (hour, minute, second, millisecond) = result;
-            return (hour.ToInt(), minute.ToInt(), second.ToInt(), millisecond.ToInt());
+            return (Value.Int32(hour),Value.Int32( minute), Value.Int32(second), Value.Int32(millisecond));
          }
          else
          {

@@ -7,6 +7,7 @@ using Core.Strings;
 using Core.Matching;
 using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
+using static Core.Objects.ConversionFunctions;
 
 namespace Core.Internet.Smtp
 {
@@ -62,7 +63,7 @@ namespace Core.Internet.Smtp
             IsBodyHtml = isHtml,
             Body = Body,
             Subject = Address.Subject,
-            Priority = Enum.GetName(typeof(PriorityType), Priority).ToEnumeration<MailPriority>()
+            Priority = Value.Enumeration<MailPriority>(Enum.GetName(typeof(PriorityType), Priority))
          };
 
          addTo(Address.To, message, (m, s) => m.To.Add(s));

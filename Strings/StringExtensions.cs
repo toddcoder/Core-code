@@ -11,6 +11,7 @@ using Core.Monads;
 using Core.Numbers;
 using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
+using static Core.Objects.ConversionFunctions;
 using static Core.Strings.StringFunctions;
 using static Core.Strings.StringStreamFunctions;
 
@@ -77,7 +78,7 @@ namespace Core.Strings
 
       public static string[] Lines(this string source, SplitType split)
       {
-         return source.IsEmpty() ? new string[0] : source.Split(splitPattern(split));
+         return source.IsEmpty() ? Array.Empty<string>() : source.Split(splitPattern(split));
       }
 
       public static string[] Lines(this string source) => source.Split("/r/n | /r | /n; f");
@@ -981,6 +982,7 @@ namespace Core.Strings
          }
       }
 
+      [Obsolete("Use ConversionFunctions")]
       public static bool ToBool(this string source, bool defaultValue = false)
       {
          if (source.IsNotEmpty())
@@ -998,6 +1000,7 @@ namespace Core.Strings
          }
       }
 
+      [Obsolete("Use ConversionFunctions")]
       public static byte ToByte(this string source, byte defaultValue = 0)
       {
          if (source.IsNotEmpty())
@@ -1010,6 +1013,7 @@ namespace Core.Strings
          }
       }
 
+      [Obsolete("Use ConversionFunctions")]
       public static int ToInt(this string source, int defaultValue = 0)
       {
          if (source.IsNotEmpty())
@@ -1022,6 +1026,7 @@ namespace Core.Strings
          }
       }
 
+      [Obsolete("Use ConversionFunctions")]
       public static long ToLong(this string source, long defaultValue = 0)
       {
          if (source.IsNotEmpty())
@@ -1034,6 +1039,7 @@ namespace Core.Strings
          }
       }
 
+      [Obsolete("Use ConversionFunctions")]
       public static float ToFloat(this string source, float defaultValue = 0)
       {
          if (source.IsNotEmpty())
@@ -1046,6 +1052,7 @@ namespace Core.Strings
          }
       }
 
+      [Obsolete("Use ConversionFunctions")]
       public static double ToDouble(this string source, double defaultValue = 0)
       {
          if (source.IsNotEmpty())
@@ -1058,6 +1065,7 @@ namespace Core.Strings
          }
       }
 
+      [Obsolete("Use ConversionFunctions")]
       public static decimal ToDecimal(this string source, decimal defaultValue = 0)
       {
          if (source.IsNotEmpty())
@@ -1070,6 +1078,7 @@ namespace Core.Strings
          }
       }
 
+      [Obsolete("Use ConversionFunctions")]
       public static DateTime ToDateTime(this string source, DateTime defaultValue)
       {
          if (source.IsNotEmpty())
@@ -1082,8 +1091,10 @@ namespace Core.Strings
          }
       }
 
+      [Obsolete("Use ConversionFunctions")]
       public static DateTime ToDateTime(this string source) => source.ToDateTime(System.DateTime.MinValue);
 
+      [Obsolete("Use ConversionFunctions")]
       public static Guid ToGuid(this string source)
       {
          if (source.IsNotEmpty())
@@ -1096,67 +1107,85 @@ namespace Core.Strings
          }
       }
 
+      [Obsolete("Use ConversionFunctions")]
       public static Maybe<bool> AsBool(this string source)
       {
-         return source.IsNotEmpty() ? maybe(bool.TryParse(source, out var result), () => result) : none<bool>();
+         return source.IsNotEmpty() ? maybe(bool.TryParse(source, out var result), () => result) : nil;
       }
 
+      [Obsolete("Use ConversionFunctions")]
       public static Result<bool> Boolean(this string source) => tryTo(() => bool.Parse(source));
 
+      [Obsolete("Use ConversionFunctions")]
       public static Maybe<byte> AsByte(this string source)
       {
-         return source.IsNotEmpty() ? maybe(byte.TryParse(source, out var result), () => result) : none<byte>();
+         return source.IsNotEmpty() ? maybe(byte.TryParse(source, out var result), () => result) : nil;
       }
 
+      [Obsolete("Use ConversionFunctions")]
       public static Result<byte> Byte(this string source) => tryTo(() => byte.Parse(source));
 
+      [Obsolete("Use ConversionFunctions")]
       public static Maybe<int> AsInt(this string source)
       {
-         return source.IsNotEmpty() ? maybe(int.TryParse(source, out var result), () => result) : none<int>();
+         return source.IsNotEmpty() ? maybe(int.TryParse(source, out var result), () => result) : nil;
       }
 
+      [Obsolete("Use ConversionFunctions")]
       public static Result<int> Int32(this string source) => tryTo(() => int.Parse(source));
 
+      [Obsolete("Use ConversionFunctions")]
       public static Maybe<long> AsLong(this string source)
       {
-         return source.IsNotEmpty() ? maybe(long.TryParse(source, out var result), () => result) : none<long>();
+         return source.IsNotEmpty() ? maybe(long.TryParse(source, out var result), () => result) : nil;
       }
 
+      [Obsolete("Use ConversionFunctions")]
       public static Result<long> Int64(this string source) => tryTo(() => long.Parse(source));
 
+      [Obsolete("Use ConversionFunctions")]
       public static Maybe<float> AsFloat(this string source)
       {
-         return source.IsNotEmpty() ? maybe(float.TryParse(source, out var result), () => result) : none<float>();
+         return source.IsNotEmpty() ? maybe(float.TryParse(source, out var result), () => result) : nil;
       }
 
+      [Obsolete("Use ConversionFunctions")]
       public static Result<float> Single(this string source) => tryTo(() => float.Parse(source));
 
+      [Obsolete("Use ConversionFunctions")]
       public static Maybe<double> AsDouble(this string source)
       {
-         return source.IsNotEmpty() ? maybe(double.TryParse(source, out var result), () => result) : none<double>();
+         return source.IsNotEmpty() ? maybe(double.TryParse(source, out var result), () => result) : nil;
       }
 
+      [Obsolete("Use ConversionFunctions")]
       public static Result<double> Double(this string source) => tryTo(() => double.Parse(source));
 
+      [Obsolete("Use ConversionFunctions")]
       public static Maybe<decimal> AsDecimal(this string source)
       {
-         return source.IsNotEmpty() ? maybe(decimal.TryParse(source, out var result), () => result) : none<decimal>();
+         return source.IsNotEmpty() ? maybe(decimal.TryParse(source, out var result), () => result) : nil;
       }
 
+      [Obsolete("Use ConversionFunctions")]
       public static Result<decimal> Decimal(this string source) => tryTo(() => decimal.Parse(source));
 
+      [Obsolete("Use ConversionFunctions")]
       public static Maybe<DateTime> AsDateTime(this string source)
       {
-         return source.IsNotEmpty() ? maybe(System.DateTime.TryParse(source, out var result), () => result) : none<DateTime>();
+         return source.IsNotEmpty() ? maybe(System.DateTime.TryParse(source, out var result), () => result) : nil;
       }
 
+      [Obsolete("Use ConversionFunctions")]
       public static Result<DateTime> DateTime(this string source) => tryTo(() => System.DateTime.Parse(source));
 
+      [Obsolete("Use ConversionFunctions")]
       public static Maybe<Guid> AsGuid(this string source)
       {
-         return source.IsNotEmpty() ? maybe(System.Guid.TryParse(source, out var guid), () => guid) : none<Guid>();
+         return source.IsNotEmpty() ? maybe(System.Guid.TryParse(source, out var guid), () => guid) : nil;
       }
 
+      [Obsolete("Use ConversionFunctions")]
       public static Result<Guid> Guid(this string source) => tryTo(() => System.Guid.Parse(source));
 
       public static string ToBase64(this string source, Encoding encoding)
@@ -1166,11 +1195,15 @@ namespace Core.Strings
 
       public static string ToBase64(this string source) => source.ToBase64(Encoding.ASCII);
 
-      public static T ToEnumeration<T>(this string value, bool ignoreCase = true)
-         where T : struct => (T)Enum.Parse(typeof(T), value, ignoreCase);
 
-      public static T ToEnumeration<T>(this string value, bool ignoreCase, T defaultValue)
-         where T : struct
+      [Obsolete("Use ConversionFunctions")]
+      public static T ToEnumeration<T>(this string value, bool ignoreCase = true) where T : struct
+      {
+         return (T)Enum.Parse(typeof(T), value, ignoreCase);
+      }
+
+      [Obsolete("Use ConversionFunctions")]
+      public static T ToEnumeration<T>(this string value, bool ignoreCase, T defaultValue) where T : struct
       {
          try
          {
@@ -1198,40 +1231,44 @@ namespace Core.Strings
             return defaultValue;
          }
       }
-
+      [Obsolete("Use ConversionFunctions")]
       public static T ToEnumeration<T>(this string value, T defaultValue) where T : struct => value.ToEnumeration(true, defaultValue);
 
+      [Obsolete("Use ConversionFunctions")]
       public static Maybe<T> AsEnumeration<T>(this string value, bool ignoreCase = true) where T : struct
       {
          try
          {
-            return ToEnumeration<T>(value, ignoreCase).Some();
+            return ToEnumeration<T>(value, ignoreCase);
          }
          catch
          {
-            return none<T>();
+            return nil;
          }
       }
 
+      [Obsolete("Use ConversionFunctions")]
       public static Maybe<object> AsEnumeration(this string value, Type enumerationType, bool ignoreCase = true)
       {
          return value.Enumeration(enumerationType, ignoreCase).Maybe();
       }
 
+      [Obsolete("Use ConversionFunctions")]
       public static Result<object> Enumeration(this string value, Type enumerationType, bool ignoreCase = true)
       {
          return tryTo(() => Enum.Parse(enumerationType, value, ignoreCase));
       }
 
+      [Obsolete("Use ConversionFunctions")]
       public static Result<T> Enumeration<T>(this string value, bool ignoreCase = true) where T : struct
       {
          try
          {
-            return ToEnumeration<T>(value, ignoreCase).Success();
+            return ToEnumeration<T>(value, ignoreCase);
          }
          catch (Exception exception)
          {
-            return failure<T>(exception);
+            return exception;
          }
       }
 
@@ -1244,16 +1281,16 @@ namespace Core.Strings
       {
          if (value == null)
          {
-            return none<object>();
+            return nil;
          }
          else if (value.IsQuoted())
          {
-            return value.ExtractFromQuotes().Some<object>();
+            return value.ExtractFromQuotes();
          }
          else if (value.IsIntegral())
          {
-            var newValue = value.ToLong();
-            return (newValue is >= int.MinValue and <= int.MaxValue ? (object)value.ToInt() : value).Some();
+            var newValue = Value.Int64(value);
+            return newValue is >= int.MinValue and <= int.MaxValue ? Maybe.Int32(value) : value;
          }
 
          if (value.IsSingle())
@@ -1261,7 +1298,7 @@ namespace Core.Strings
             Pattern pattern = "^ /(.+) ['fF'] $; f";
             if (value.Matches(pattern).If(out var result))
             {
-               return some<float, object>(result.FirstGroup.ToFloat());
+               return Maybe.Single(result.FirstGroup);
             }
          }
 
@@ -1270,7 +1307,7 @@ namespace Core.Strings
             Pattern pattern = "^ /(.+) ['dD'] $; f";
             if (value.Matches(pattern).If(out var result))
             {
-               return some<double, object>(result.FirstGroup.ToDouble());
+               return Maybe.Double(result.FirstGroup);
             }
          }
 
@@ -1279,25 +1316,25 @@ namespace Core.Strings
             Pattern pattern = "^ /(.+) ['mM'] $; f";
             if (value.Matches(pattern).If(out var result))
             {
-               return some<decimal, object>(result.FirstGroup.ToDecimal());
+               return Maybe.Decimal(result.FirstGroup);
             }
          }
 
          if (value.IsGUID())
          {
-            return some<Guid, object>(new Guid(value));
+            return new Guid(value);
          }
          else if (value.IsDate())
          {
-            return some<DateTime, object>(value.ToDateTime());
+            return Maybe.DateTime(value);
          }
          else if (value.Same("false") || value.Same("true"))
          {
-            return some<bool, object>(value.ToBool());
+            return Maybe.Boolean(value);
          }
          else
          {
-            return none<object>();
+            return nil;
          }
       }
 
@@ -1305,27 +1342,27 @@ namespace Core.Strings
       {
          if (value.IsEmpty())
          {
-            return none<Type>();
+            return nil;
          }
          else if (value.IsQuoted())
          {
-            return typeof(string).Some();
+            return typeof(string);
          }
          else if (value.IsIntegral())
          {
-            return typeof(int).Some();
+            return typeof(int);
          }
          else if (value.IsSingle())
          {
-            return typeof(float).Some();
+            return typeof(float);
          }
          else if (value.IsDouble())
          {
-            return typeof(double).Some();
+            return typeof(double);
          }
          else if (value.IsDecimal())
          {
-            return typeof(decimal).Some();
+            return typeof(decimal);
          }
          else if (value.IsGUID())
          {
@@ -1337,11 +1374,11 @@ namespace Core.Strings
          }
          else if (value.Same("false") || value.Same("true"))
          {
-            return typeof(bool).Some();
+            return typeof(bool);
          }
          else
          {
-            return none<Type>();
+            return nil;
          }
       }
 
@@ -1349,43 +1386,43 @@ namespace Core.Strings
       {
          if (value.IsEmpty())
          {
-            return none<object>();
+            return nil;
          }
          else if (type == typeof(string))
          {
-            return value.ExtractFromQuotes().Some<object>();
+            return value.ExtractFromQuotes();
          }
          else if (type == typeof(int))
          {
-            return value.AsInt().CastAs<object>();
+            return Maybe.Int32(value).CastAs<object>();
          }
          else if (type == typeof(float))
          {
-            return value.AsFloat().CastAs<object>();
+            return Maybe.Single(value).CastAs<object>();
          }
          else if (type == typeof(double))
          {
-            return value.AsDouble().CastAs<object>();
+            return Maybe.Double(value).CastAs<object>();
          }
          else if (type == typeof(decimal))
          {
-            return value.AsDecimal().CastAs<object>();
+            return Maybe.Decimal(value).CastAs<object>();
          }
          else if (type == typeof(Guid))
          {
-            return value.AsGuid().CastAs<object>();
+            return Maybe.Guid(value).CastAs<object>();
          }
          else if (type == typeof(DateTime))
          {
-            return value.AsDateTime().CastAs<object>();
+            return Maybe.DateTime(value).CastAs<object>();
          }
          else if (type == typeof(bool))
          {
-            return value.AsBool().CastAs<object>();
+            return Maybe.Boolean(value).CastAs<object>();
          }
          else
          {
-            return none<object>();
+            return nil;
          }
       }
 
@@ -1393,16 +1430,16 @@ namespace Core.Strings
       {
          if (value.IsEmpty())
          {
-            return "value is null".Failure<object>();
+            return fail("value is null");
          }
          else if (value.IsQuoted())
          {
-            return value.ExtractFromQuotes().Success<object>();
+            return value.ExtractFromQuotes();
          }
          else if (value.IsIntegral())
          {
             return
-               from newValue in value.Int64()
+               from newValue in Result.Int64(value)
                from assertion in newValue.Must().BeBetween(int.MinValue).And(int.MaxValue).OrFailure()
                select (object)(int)assertion;
          }
@@ -1411,7 +1448,7 @@ namespace Core.Strings
          {
             return
                from result in value.Matches("^ /(.+) ['fF'] $; f").Result("Single in invalid format")
-               from floated in result.FirstGroup.Single()
+               from floated in Result.Single(result.FirstGroup)
                select (object)floated;
          }
 
@@ -1419,7 +1456,7 @@ namespace Core.Strings
          {
             return
                from result in value.Matches("^ /(.+) ['dD'] $; f").Result("Double in invalid format")
-               from doubled in result.FirstGroup.Double()
+               from doubled in Result.Double(result.FirstGroup)
                select (object)doubled;
          }
 
@@ -1427,25 +1464,25 @@ namespace Core.Strings
          {
             return
                from result in value.Matches("^ /(.+) ['mM'] $; f").Result("Decimal in invalid format")
-               from decimaled in result.FirstGroup.Decimal()
-               select (object)decimaled;
+               from asDecimal in Result.Decimal(result.FirstGroup)
+               select (object)asDecimal;
          }
 
          if (value.IsGUID())
          {
-            return value.Guid().Map(g => (object)g);
+            return Result.Guid(value).Map(g => (object)g);
          }
          else if (value.IsDate())
          {
-            return value.DateTime().Map(dt => (object)dt);
+            return Result.DateTime(value).Map(dt => (object)dt);
          }
          else if (value.Same("false") || value.Same("true"))
          {
-            return value.Boolean().Map(b => (object)b);
+            return Result.Boolean(value).Map(b => (object)b);
          }
          else
          {
-            return $"Couldn't determine type of {value}".Failure<object>();
+            return fail($"Couldn't determine type of {value}");
          }
       }
 
@@ -1453,43 +1490,43 @@ namespace Core.Strings
       {
          if (value.IsEmpty())
          {
-            return "value is null".Failure<Type>();
+            return fail("value is null");
          }
          else if (value.IsQuoted())
          {
-            return typeof(string).Success();
+            return typeof(string);
          }
          else if (value.IsIntegral())
          {
-            return typeof(int).Success();
+            return typeof(int);
          }
          else if (value.IsSingle())
          {
-            return typeof(float).Success();
+            return typeof(float);
          }
          else if (value.IsDouble())
          {
-            return typeof(double).Success();
+            return typeof(double);
          }
          else if (value.IsDecimal())
          {
-            return typeof(decimal).Success();
+            return typeof(decimal);
          }
          else if (value.IsGUID())
          {
-            return typeof(Guid).Success();
+            return typeof(Guid);
          }
          else if (value.IsDate())
          {
-            return typeof(DateTime).Success();
+            return typeof(DateTime);
          }
          else if (value.Same("false") || value.Same("true"))
          {
-            return typeof(bool).Success();
+            return typeof(bool);
          }
          else
          {
-            return $"Couldn't determine type of {value}".Failure<Type>();
+            return fail($"Couldn't determine type of {value}");
          }
       }
 
@@ -1497,7 +1534,7 @@ namespace Core.Strings
       {
          if (value.IsEmpty())
          {
-            return "value is null".Failure<object>();
+            return fail("value is null");
          }
          else if (type == typeof(string))
          {
@@ -1505,35 +1542,35 @@ namespace Core.Strings
          }
          else if (type == typeof(int))
          {
-            return value.Int32().CastAs<object>();
+            return Result.Int32(value).CastAs<object>();
          }
          else if (type == typeof(float))
          {
-            return value.Single().CastAs<object>();
+            return Result.Single(value).CastAs<object>();
          }
          else if (type == typeof(double))
          {
-            return value.Double().CastAs<object>();
+            return Result.Double(value).CastAs<object>();
          }
          else if (type == typeof(decimal))
          {
-            return value.Decimal().CastAs<object>();
+            return Result.Decimal(value).CastAs<object>();
          }
          else if (type == typeof(Guid))
          {
-            return value.Guid().CastAs<object>();
+            return Result.Guid(value).CastAs<object>();
          }
          else if (type == typeof(DateTime))
          {
-            return value.DateTime().CastAs<object>();
+            return Result.DateTime(value).CastAs<object>();
          }
          else if (type == typeof(bool))
          {
-            return value.Boolean().CastAs<object>();
+            return Result.Boolean(value).CastAs<object>();
          }
          else
          {
-            return $"Couldn't determine type of {value}".Failure<object>();
+            return fail($"Couldn't determine type of {value}");
          }
       }
 
@@ -1581,13 +1618,13 @@ namespace Core.Strings
 
       public static Maybe<int> ExtractInt(this string source)
       {
-         return maybe(source.IsNotEmpty(), () => source.Matches("/(['+-']? /d+); f")).Map(result => result[0, 1].ToInt());
+         return maybe(source.IsNotEmpty(), () => source.Matches("/(['+-']? /d+); f")).Map(result => Maybe.Int32(result[0, 1]));
       }
 
       public static Maybe<double> ExtractDouble(this string source)
       {
          return maybe(source.IsNotEmpty(), () => source.Matches("/(['+-']? /d* '.' /d* (['eE'] ['-+']? /d+)?); f"))
-            .Map(result => result[0, 1].ToDouble());
+            .Map(result => Value.Double(result[0, 1]));
       }
 
       public static Maybe<char> First(this string source) => maybe(source.IsNotEmpty(), () => source[0]);
@@ -2139,41 +2176,41 @@ namespace Core.Strings
       {
          if (source.IsEmpty())
          {
-            return "Source is empty".Failure<long>();
+            return fail("Source is empty");
          }
          else if (source.Matches("^ /(/d+) /['kmg']? $; f").If(out var result))
          {
             var valueSource = result.FirstGroup;
             var suffix = result.SecondGroup;
 
-            if (valueSource.AsLong().If(out var value))
+            if (Maybe.Int64(valueSource).If(out var value))
             {
                if (suffix.IsEmpty())
                {
-                  return value.Success();
+                  return value;
                }
 
                value *= 1028;
                if (suffix == "k")
                {
-                  return value.Success();
+                  return value;
                }
 
                value *= 1028;
-               return suffix == "m" ? value.Success() : (value * 1028).Success();
+               return suffix == "m" ? value : value * 1028;
             }
             else
             {
-               return $"{valueSource} can't be converted to a long".Failure<long>();
+               return fail($"{valueSource} can't be converted to a long");
             }
          }
          else
          {
-            return "Badly formatted source".Failure<long>();
+            return fail("Badly formatted source");
          }
       }
 
-      public static Maybe<long> AsByteSize(this string source) => source.ByteSize().Map(l => l.Some()).Recover(_ => none<long>());
+      public static Maybe<long> AsByteSize(this string source) => source.ByteSize().Map(l => l.Some()).Recover(_ => nil);
 
       public static long ToByteSize(this string source, long defaultValue = 0)
       {
@@ -2204,7 +2241,7 @@ namespace Core.Strings
          }
          else
          {
-            return none<int>();
+            return nil;
          }
       }
 
@@ -2224,7 +2261,7 @@ namespace Core.Strings
          }
          else
          {
-            return none<int>();
+            return nil;
          }
       }
 
@@ -2233,11 +2270,11 @@ namespace Core.Strings
          if (source.Matches(pattern).If(out var result))
          {
             var (text, index, length) = result.GetMatch(0);
-            return new Slice(text, index, length).Some();
+            return new Slice(text, index, length);
          }
          else
          {
-            return none<Slice>();
+            return nil;
          }
       }
 
@@ -2346,15 +2383,15 @@ namespace Core.Strings
       {
          if (left == right)
          {
-            return true.Some();
+            return true;
          }
          else if (left.Same(right))
          {
-            return false.Some();
+            return false;
          }
          else
          {
-            return none<bool>();
+            return nil;
          }
       }
 

@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Core.Arrays;
 using Core.Enumerables;
 using Core.Matching;
 using Core.Monads;
+using static Core.Objects.ConversionFunctions;
 
 namespace Core.Strings
 {
@@ -24,19 +26,19 @@ namespace Core.Strings
          splitPattern = DEFAULT_SPLIT_PATTERN;
          columnSeparator = " ";
          text = "";
-         sizes = new int[0];
+         sizes = Array.Empty<int>();
       }
 
       public Padding(string padTypes)
       {
          this.padTypes = padTypes.Split(DEFAULT_SPLIT_PATTERN)
-            .Select(s => s.AsEnumeration<PadType>())
+            .Select(s => Maybe.Enumeration<PadType>(s))
             .SomeValue()
             .ToArray();
          splitPattern = DEFAULT_SPLIT_PATTERN;
          columnSeparator = " ";
          text = "";
-         sizes = new int[0];
+         sizes = Array.Empty<int>();
       }
 
       public Padding(int count, PadType padType)
@@ -45,7 +47,7 @@ namespace Core.Strings
          splitPattern = DEFAULT_SPLIT_PATTERN;
          columnSeparator = " ";
          text = "";
-         sizes = new int[0];
+         sizes = Array.Empty<int>();
       }
 
       public string SplitPattern

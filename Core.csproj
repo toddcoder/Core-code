@@ -296,6 +296,7 @@
     <Compile Include="Numbers\GetHashCodeFunctions.cs" />
     <Compile Include="Numbers\NumberExtensions.cs" />
     <Compile Include="Objects\ComparableAttribute.cs" />
+    <Compile Include="Objects\ConversionFunctions.cs" />
     <Compile Include="Objects\DataContainer.cs" />
     <Compile Include="Objects\DataContainerEvaluator.cs" />
     <Compile Include="Objects\DataContainerExtensions.cs" />
