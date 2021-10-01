@@ -388,5 +388,41 @@ namespace Core.Matching
       public Matched<MatchResult> MatchedBy(Pattern pattern) => pattern.MatchedBy(Unmatched);
 
       public string[] Groups(int matchIndex) => getMatch(matchIndex).Groups.Select(g => g.GetSlice(slicer)).ToArray();
+
+      public string EvaluateMatches(Func<Match, int, Maybe<string>> func)
+      {
+         Slicer evaluated = input;
+
+         var matchIndex = 0;
+         foreach (var match in matches)
+         {
+            if (func(match, matchIndex++).If(out var replacement))
+            {
+               evaluated[match.Index, match.Length] = replacement;
+            }
+         }
+
+         return evaluated.ToString();
+      }
+
+      public string EvaluateGroups(Func<Group, int, Maybe<string>> func, bool skipGroup0)
+      {
+         Slicer evaluated = input;
+
+         foreach (var match in matches)
+         {
+            var groups = skipGroup0 ? match.Groups.Skip(1).ToArray() : match.Groups;
+            var groupIndex = skipGroup0 ? 1 : 0;
+            foreach (var group in groups)
+            {
+               if (func(group, groupIndex++).If(out var replacement))
+               {
+                  evaluated[group.Index, group.Length] = replacement;
+               }
+            }
+         }
+
+         return evaluated.ToString();
+      }
    }
 }

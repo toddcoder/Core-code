@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using Core.Applications.Writers;
 using Core.Assertions;
 using Core.Collections;
@@ -260,70 +261,81 @@ namespace Core.Applications.CommandProcessing
             .ToStringHash(t => t.switchName, t => t.propertyName, false);
          var switchHelps = getSwitchHelpAttributes()
             .Select(t => (t.propertyInfo.Name, t.attribute))
-            .ToStringHash(t => t.Name, t => t.attribute.HelpText, true);
+            .ToStringHash(t => t.Name, t => t.attribute, true);
          var shortCuts = getShortCutAttributes()
             .Select(t => (t.propertyInfo.Name, t.attribute))
             .ToStringHash(t => t.Name, t => t.attribute.Name, true);
 
          void writeDivider() => Console.WriteLine("-".Repeat(80));
 
+         Maybe<string> evaluateMatch(Match match, string indent)
+         {
+            var (name, optionalSource) = match;
+            var optional = optionalSource == "?";
+            if (switches.If(name, out var propertyName))
+            {
+               if (switchHelps.If(propertyName, out var switchHelpAttribute))
+               {
+                  var type = switchHelpAttribute.Type;
+                  var _argument = switchHelpAttribute.Argument;
+                  var _shortCut = shortCuts.Map(propertyName);
+
+                  var builder = new StringBuilder(indent);
+                  if (optional)
+                  {
+                     builder.Append("[");
+                  }
+
+                  if (_shortCut.IsSome)
+                  {
+                     builder.Append("(");
+                  }
+
+                  builder.Append($"{Prefix}{name}");
+
+                  if (_shortCut.If(out var shortCut))
+                  {
+                     builder.Append($@" \| {ShortCut}{shortCut})");
+                  }
+
+                  builder.Append($" <{type}>");
+
+                  if (optional)
+                  {
+                     builder.Append("]");
+                  }
+
+                  if (_argument.If(out var argument))
+                  {
+                     builder.Append($" : {argument}");
+                  }
+
+                  builder.AppendLine();
+
+                  return builder.ToString();
+               }
+            }
+
+            return nil;
+         }
+
          void displayCommands(MethodInfo methodInfo1, CommandHelpAttribute commandHelpAttribute1)
          {
             if (commandHelps.If(methodInfo1.Name, out var tuple))
             {
                writeDivider();
-               Console.Write($"{tuple.command}");
-               foreach (var @switch in commandHelpAttribute1.Switches)
+               Console.WriteLine($"{tuple.command}");
+               var switchPattern = commandHelpAttribute1.SwitchPattern;
+               if (switchPattern.Matches("'$' /(/w [/w '-']*) /('?'?); f").If(out var result))
                {
-                  Console.Write(" ");
-                  var optional = @switch.EndsWith("?");
-                  var name = optional ? @switch.Drop(-1) : @switch;
-                  var alternate = name.StartsWith("|");
-                  name = alternate ? name.Drop(1) : name;
-                  var combined = name.StartsWith("&");
-                  name = combined ? name.Drop(1) : name;
-                  if (switches.If(name, out var propertyName))
-                  {
-                     if (alternate)
-                     {
-                        Console.Write("OR ");
-                     }
-                     else if (combined)
-                     {
-                        Console.Write("AND ");
-                     }
+                  var indent = " ".Repeat(tuple.command.Length);
+                  var replacement = result.EvaluateMatches((match, matchIndex) => evaluateMatch(match, indent));
+                  replacement = replacement.Substitute(@"-(< '\') '|'; f", " OR ");
+                  replacement = replacement.Substitute(@"'\|'; f", "|");
+                  replacement = replacement.Substitute(@"-(< '\') '&'; f", " AND ");
+                  replacement = replacement.Substitute(@"'\&'; f", "&");
 
-                     if (optional)
-                     {
-                        Console.Write("[");
-                     }
-
-                     var _shortCut = shortCuts.Map(propertyName);
-
-                     if (_shortCut.IsSome)
-                     {
-                        Console.Write("(");
-                     }
-
-                     Console.Write(Prefix);
-                     Console.Write(name);
-
-                     if (_shortCut.If(out var shortCut))
-                     {
-                        Console.Write($" | {ShortCut}{shortCut})");
-                     }
-
-                     Console.Write(Suffix);
-                     if (switchHelps.If(propertyName, out var switchHelp))
-                     {
-                        Console.Write($"<{switchHelp}>");
-                     }
-
-                     if (optional)
-                     {
-                        Console.Write("]");
-                     }
-                  }
+                  Console.Write($" {replacement}");
                }
 
                Console.WriteLine();

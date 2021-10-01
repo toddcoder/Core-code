@@ -5,14 +5,14 @@ namespace Core.Applications.CommandProcessing
    [AttributeUsage(AttributeTargets.Method)]
    public class CommandHelpAttribute : Attribute
    {
-      public CommandHelpAttribute(string helpText, params string[] switches)
+      public CommandHelpAttribute(string helpText, string switchPattern)
       {
          HelpText = helpText;
-         Switches = switches;
+         SwitchPattern = switchPattern;
       }
 
       public string HelpText { get; }
 
-      public string[] Switches { get; }
+      public string SwitchPattern { get; }
    }
 }
