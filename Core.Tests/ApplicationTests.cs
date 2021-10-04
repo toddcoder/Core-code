@@ -159,7 +159,7 @@ namespace Core.Tests
       {
       }
 
-      [Command("find"), CommandHelp("Find text using pattern", "source", "pattern", "count?")]
+      [Command("find"), CommandHelp("Find text using pattern", "$source $pattern $count?")]
       public void Find()
       {
          if (Text.Matches(Pattern).If(out var result))
@@ -172,17 +172,23 @@ namespace Core.Tests
          }
       }
 
-      [Switch("source"), SwitchHelp("string")]
+      [Command("replace"), CommandHelp("Replace text using pattern", "$source $pattern $replacement | $ignore-case?")]
+      public void Replace() { }
+
+      [Switch("source"), SwitchHelp("string", "Source input from user")]
       public string Text { get; set; }
 
-      [Switch("pattern"), ShortCut("p"), SwitchHelp("pattern")]
+      [Switch("pattern"), ShortCut("p"), SwitchHelp("pattern", "Friendly matching pattern")]
       public string Pattern { get; set; }
 
-      [Switch("count"), ShortCut("c"), SwitchHelp("int")]
+      [Switch("count"), ShortCut("c"), SwitchHelp("int", "Number of matches to consume")]
       public int Count { get; set; }
 
-      [Switch("ignore-case"), ShortCut("i"), SwitchHelp("ignore case")]
+      [Switch("ignore-case"), ShortCut("i"), SwitchHelp("boolean", "ignore case")]
       public bool IgnoreCase { get; set; }
+
+      [Switch("replacement"), ShortCut("r"), SwitchHelp("string", "String pattern for replacement")]
+      public string Replacement { get; set; }
 
       public override StringHash GetConfigurationDefaults() => new(true);
 

@@ -441,7 +441,7 @@ namespace Core.Configurations
          var elementType = type.GetElementType();
          var array = Groups().Select(i => i.group).ToArray();
 
-         return makeArray(type, array).Required($"Couldn't make array of element type {elementType.FullName}");
+         return makeArray(elementType, array).Required($"Couldn't make array of element type {elementType.FullName}");
       }
 
       public Result<object> Deserialize(Type type)
