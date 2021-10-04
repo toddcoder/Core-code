@@ -155,6 +155,7 @@
     <Compile Include="Collections\HashExtensions.cs" />
     <Compile Include="Collections\CollectionFunctions.cs" />
     <Compile Include="Collections\HashTrying.cs" />
+    <Compile Include="Collections\IEnumerableHash.cs" />
     <Compile Include="Collections\IfHash.cs" />
     <Compile Include="Collections\IgnoreCaseEqualityComparer.cs" />
     <Compile Include="Collections\IHash.cs" />
