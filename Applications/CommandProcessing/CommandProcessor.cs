@@ -298,7 +298,10 @@ namespace Core.Applications.CommandProcessing
                      builder.Append($@" \| {ShortCut}{shortCut})");
                   }
 
-                  builder.Append($" <{type}>");
+                  if (!type.IsMatch("^ 'bool' ('ean')? $"))
+                  {
+                     builder.Append($" <{type}>");
+                  }
 
                   if (optional)
                   {
@@ -324,22 +327,25 @@ namespace Core.Applications.CommandProcessing
             if (commandHelps.If(methodInfo1.Name, out var tuple))
             {
                writeDivider();
-               Console.WriteLine($"{tuple.command}");
-               var switchPattern = commandHelpAttribute1.SwitchPattern;
-               if (switchPattern.Matches("'$' /(/w [/w '-']*) /('?'?); f").If(out var result))
+               Console.WriteLine($"{tuple.command}: {commandHelpAttribute1.HelpText}");
+               var _switchPattern = commandHelpAttribute1.SwitchPattern;
+               var _result =
+                  from switchPattern in _switchPattern
+                  from matchResult in switchPattern.Matches("'$' /(/w [/w '-']*) /('?'?); f")
+                  select matchResult;
+               if (_result.If(out var result))
                {
-                  var indent = " ".Repeat(tuple.command.Length);
-                  var replacement = result.EvaluateMatches((match, matchIndex) => evaluateMatch(match, indent));
-                  replacement = replacement.Substitute(@"-(< '\') '|'; f", " OR ");
+                  var indent = " ".Repeat(tuple.command.Length + 1);
+                  var replacement = result.EvaluateMatches((match, _) => evaluateMatch(match, indent));
+                  replacement = replacement.Substitute(@"-(< '\') '|'; f", $"{indent}OR\r\n");
                   replacement = replacement.Substitute(@"'\|'; f", "|");
-                  replacement = replacement.Substitute(@"-(< '\') '&'; f", " AND ");
+                  replacement = replacement.Substitute(@"-(< '\') '&'; f", $"{indent}AND\r\n");
                   replacement = replacement.Substitute(@"'\&'; f", "&");
 
                   Console.Write($" {replacement}");
                }
 
                Console.WriteLine();
-               Console.WriteLine($">>> {commandHelpAttribute1.HelpText}");
             }
          }
 

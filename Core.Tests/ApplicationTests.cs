@@ -172,6 +172,9 @@ namespace Core.Tests
          }
       }
 
+      [Command("replace"), CommandHelp("Replace text using pattern", "$source $pattern $replacement | $ignore-case?")]
+      public void Replace() { }
+
       [Switch("source"), SwitchHelp("string", "Source input from user")]
       public string Text { get; set; }
 
@@ -181,8 +184,11 @@ namespace Core.Tests
       [Switch("count"), ShortCut("c"), SwitchHelp("int", "Number of matches to consume")]
       public int Count { get; set; }
 
-      [Switch("ignore-case"), ShortCut("i"), SwitchHelp("ignore case")]
+      [Switch("ignore-case"), ShortCut("i"), SwitchHelp("boolean", "ignore case")]
       public bool IgnoreCase { get; set; }
+
+      [Switch("replacement"), ShortCut("r"), SwitchHelp("string", "String pattern for replacement")]
+      public string Replacement { get; set; }
 
       public override StringHash GetConfigurationDefaults() => new(true);
 

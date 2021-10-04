@@ -1,4 +1,6 @@
 ﻿using System;
+using Core.Monads;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Applications.CommandProcessing
 {
@@ -11,8 +13,14 @@ namespace Core.Applications.CommandProcessing
          SwitchPattern = switchPattern;
       }
 
+      public CommandHelpAttribute(string helpText)
+      {
+         HelpText = helpText;
+         SwitchPattern = nil;
+      }
+
       public string HelpText { get; }
 
-      public string SwitchPattern { get; }
+      public Maybe<string> SwitchPattern { get; }
    }
 }
