@@ -114,5 +114,11 @@ namespace Core.Monads
          action(this);
          return this;
       }
+
+      public abstract Matched<T> OnMatch(Action<T> onMatched);
+
+      public abstract Matched<T> OnFailed(Action<Exception> onFailed);
+
+      public abstract Matched<T> OnNotMatched(Action onNotMatched);
    }
 }

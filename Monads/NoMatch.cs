@@ -134,6 +134,24 @@ namespace Core.Monads
 
       public override Matched<T> ExceptionMessage(Func<Exception, string> message) => this;
 
+      public override Matched<T> OnMatch(Action<T> onMatched) => this;
+
+      public override Matched<T> OnFailed(Action<Exception> onFailed) => this;
+
+      public override Matched<T> OnNotMatched(Action onNotMatched)
+      {
+         try
+         {
+            onNotMatched();
+         }
+         catch (Exception exception)
+         {
+            return exception;
+         }
+
+         return this;
+      }
+
       public override bool IsMatched => false;
 
       public override bool IsNotMatched => true;

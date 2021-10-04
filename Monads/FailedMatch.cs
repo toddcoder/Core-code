@@ -146,6 +146,22 @@ namespace Core.Monads
          return new FailedMatch<T>(new FullStackException(message(exception), exception));
       }
 
+      public override Matched<T> OnMatch(Action<T> onMatched) => this;
+
+      public override Matched<T> OnFailed(Action<Exception> onFailed)
+      {
+         try
+         {
+            onFailed(exception);
+         }
+         catch
+         {
+         }
+         return this;
+      }
+
+      public override Matched<T> OnNotMatched(Action onNotMatched) => this;
+
       public override bool IsMatched => false;
 
       public override bool IsNotMatched => false;
