@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using Core.Enumerables;
 using Core.Monads;
 using static System.Math;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Strings
 {
@@ -85,10 +87,30 @@ namespace Core.Strings
          {
          }
 
-         public string Render(ColumnHeader[] columnHeaders, string columnSeparator)
+         public virtual string Render(ColumnHeader[] columnHeaders, string columnSeparator)
          {
-            var length = columnHeaders.Select(ch => ch.MaxWidth).Sum() + (columnHeaders.Length - 1) * columnSeparator.Length;
+            var length = dividerLength(columnHeaders, columnSeparator);
             return character.ToString().Repeat(length);
+         }
+
+         protected static int dividerLength(ColumnHeader[] columnHeaders, string columnSeparator)
+         {
+            return columnHeaders.Select(ch => ch.MaxWidth).Sum() + (columnHeaders.Length - 1) * columnSeparator.Length;
+         }
+      }
+
+      protected class TableTitle : Divider
+      {
+         public TableTitle(char character) : base(character)
+         {
+         }
+
+         public override string Render(ColumnHeader[] columnHeaders, string columnSeparator)
+         {
+            var length = dividerLength(columnHeaders, columnSeparator);
+            using var writer = new StringWriter();
+
+            writer.WriteLine(base.Render(columnHeaders, columnSeparator), columnSeparator);
          }
       }
 
@@ -110,9 +132,10 @@ namespace Core.Strings
          columnHeaders = columns.Select(c => new ColumnHeader(c.header, c.justification)).ToArray();
          rows = new List<IRow>();
          hasHeaders = true;
-         HeaderFoot = '='.Some();
+         HeaderFoot = '=';
          ColumnSeparator = " | ";
-         RowSeparator = '-'.Some();
+         RowSeparator = '-';
+         Title = nil;
       }
 
       public TableMaker(params Justification[] justifications)
@@ -122,9 +145,10 @@ namespace Core.Strings
          rows = new List<IRow>();
          hasHeaders = false;
 
-         HeaderFoot = '='.Some();
+         HeaderFoot = '=';
          ColumnSeparator = " | ";
-         RowSeparator = '-'.Some();
+         RowSeparator = '-';
+         Title = nil;
       }
 
       public void Clear() => rows.Clear();
@@ -134,6 +158,8 @@ namespace Core.Strings
       public string ColumnSeparator { get; set; }
 
       public Maybe<char> RowSeparator { get; set; }
+
+      public Maybe<string> Title { get; set; }
 
       public TableMaker Add(params object[] items)
       {

@@ -125,15 +125,19 @@ namespace Core.Applications.CommandProcessing
 
       protected static Maybe<(string command, string rest)> splitCommandFromRest(string commandLine)
       {
-         if (commandLine.IsEmpty() || commandLine.IsMatch("^ 'help' $; f"))
+         if (commandLine.IsEmpty())
          {
             return ("help", "");
+         }
+         else if (commandLine.Matches("^ 'help' (/s+ /(.+))? $; f").If(out var result))
+         {
+            return ("help", result.FirstGroup);
          }
          else if (commandLine.IsMatch("^ /s* [/w '-']+ /s* $; f"))
          {
             return (commandLine, "");
          }
-         else if (commandLine.Matches("^ /('config') /s+ ('get' | 'set') /b; f").If(out var result))
+         else if (commandLine.Matches("^ /('config') /s+ ('get' | 'set') /b; f").If(out result))
          {
             return ("config", commandLine.Drop(result.FirstGroup.Length).TrimLeft());
          }
@@ -171,7 +175,7 @@ namespace Core.Applications.CommandProcessing
             switch (command)
             {
                case "help":
-                  generateHelp();
+                  generateHelp(rest);
                   break;
                case "config":
                   handleConfiguration(rest);
@@ -253,7 +257,7 @@ namespace Core.Applications.CommandProcessing
          return this.MethodsUsing<CommandAttribute>().FirstOrNone(t => t.attribute.Name.Same(command));
       }
 
-      protected void generateHelp()
+      protected void generateHelp(string rest)
       {
          var commandHelps = getCommandHelps().ToStringHash(t => t.methodName, t => (t.command, t.attribute), true);
          var switches = getSwitchAttributes()
@@ -364,13 +368,31 @@ namespace Core.Applications.CommandProcessing
          }
 
          Console.WriteLine($"help for {application}");
+         Console.WriteLine();
 
-         foreach (var (methodInfo, commandHelpAttribute) in getCommandHelpAttributes())
+         if (rest.IsEmpty())
          {
-            displayCommands(methodInfo, commandHelpAttribute);
-         }
+            Console.WriteLine("Commands");
+            writeDivider();
+            var table = new TableMaker(("Command", Justification.Left), ("Description", Justification.Left));
+            foreach (var (_, (command, attribute)) in commandHelps)
+            {
+               table.Add(command, attribute.HelpText);
+            }
 
-         displayConfiguration();
+            Console.WriteLine(table);
+         }
+         else if (rest.Same("config"))
+         {
+            displayConfiguration();
+         }
+         else
+         {
+            foreach (var (methodInfo, commandHelpAttribute) in getCommandHelpAttributes())
+            {
+               displayCommands(methodInfo, commandHelpAttribute);
+            }
+         }
       }
 
       protected (PropertyInfo propertyInfo, SwitchAttribute attribute)[] getSwitchAttributes()
