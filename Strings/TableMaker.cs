@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 using Core.Enumerables;
@@ -99,21 +98,6 @@ namespace Core.Strings
          }
       }
 
-      protected class TableTitle : Divider
-      {
-         public TableTitle(char character) : base(character)
-         {
-         }
-
-         public override string Render(ColumnHeader[] columnHeaders, string columnSeparator)
-         {
-            var length = dividerLength(columnHeaders, columnSeparator);
-            using var writer = new StringWriter();
-
-            writer.WriteLine(base.Render(columnHeaders, columnSeparator), columnSeparator);
-         }
-      }
-
       protected class Line : IRow
       {
          public void Evaluate(ColumnHeader[] columnHeaders)
@@ -206,10 +190,23 @@ namespace Core.Strings
 
          int headerWidth;
 
+         string getRowSeparator()
+         {
+            var rowSeparator = "\r\n";
+            return RowSeparator.Map(rs => rowSeparator + rs.Repeat(headerWidth) + rowSeparator).DefaultTo(() => rowSeparator);
+         }
+
          if (hasHeaders)
          {
             var header = columnHeaders.Select(ch => ch.Render()).ToString(ColumnSeparator);
             headerWidth = header.Length;
+
+            if (Title.If(out var title))
+            {
+               builder.Append(title.Center(headerWidth));
+               builder.Append(getRowSeparator());
+            }
+
             builder.AppendLine(header);
             if (HeaderFoot.If(out var headerFoot))
             {
@@ -225,12 +222,7 @@ namespace Core.Strings
             headerWidth = columnHeaders.Select(ch => ch.MaxWidth).Sum() + (columnHeaders.Length - 1) * ColumnSeparator.Length;
          }
 
-         var rowSeparator = "\r\n";
-         if (RowSeparator.If(out var separator))
-         {
-            rowSeparator = rowSeparator + separator.ToString().Repeat(headerWidth) + rowSeparator;
-         }
-
+         var rowSeparator = getRowSeparator();
          foreach (var renderedRow in rows.Select(row => row.Render(columnHeaders, ColumnSeparator)))
          {
             builder.Append(renderedRow);

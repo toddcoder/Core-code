@@ -33,7 +33,7 @@ namespace Core.Json
 
          int itemCount() => peekGroup().Map(group => group.AnyHash().Map(h => h.Values.Count).Recover(_ => 0)).DefaultTo(() => 0);
 
-         var _propertyName = Nil.Of<string>();
+         var _propertyName = MaybeOf<string>.nil;
 
          void setItem(string value)
          {
