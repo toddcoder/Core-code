@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using Core.Applications.Writers;
 using Core.Assertions;
 using Core.Collections;
@@ -259,139 +258,33 @@ namespace Core.Applications.CommandProcessing
 
       protected void generateHelp(string rest)
       {
-         var commandHelps = getCommandHelps().ToStringHash(t => t.methodName, t => (t.command, t.attribute), true);
-         var switches = getSwitchAttributes()
-            .Select(t => (switchName: t.attribute.Name, propertyName: t.propertyInfo.Name))
-            .ToStringHash(t => t.switchName, t => t.propertyName, false);
-         var switchHelps = getSwitchHelpAttributes()
-            .Select(t => (t.propertyInfo.Name, t.attribute))
-            .ToStringHash(t => t.Name, t => t.attribute, true);
-         var shortCuts = getShortCutAttributes()
-            .Select(t => (t.propertyInfo.Name, t.attribute))
-            .ToStringHash(t => t.Name, t => t.attribute.Name, true);
-
-         void writeDivider() => Console.WriteLine("-".Repeat(80));
-
-         Maybe<string> evaluateMatch(Match match, string indent)
-         {
-            var (name, optionalSource) = match;
-            var optional = optionalSource == "?";
-            if (switches.If(name, out var propertyName))
-            {
-               if (switchHelps.If(propertyName, out var switchHelpAttribute))
-               {
-                  var type = switchHelpAttribute.Type;
-                  var _argument = switchHelpAttribute.Argument;
-                  var _shortCut = shortCuts.Map(propertyName);
-
-                  var builder = new StringBuilder(indent);
-                  if (optional)
-                  {
-                     builder.Append("[");
-                  }
-
-                  if (_shortCut.IsSome)
-                  {
-                     builder.Append("(");
-                  }
-
-                  builder.Append($"{Prefix}{name}");
-
-                  if (_shortCut.If(out var shortCut))
-                  {
-                     builder.Append($@" \| {ShortCut}{shortCut})");
-                  }
-
-                  if (!type.IsMatch("^ 'bool' ('ean')? $"))
-                  {
-                     builder.Append($" <{type}>");
-                  }
-
-                  if (optional)
-                  {
-                     builder.Append("]");
-                  }
-
-                  if (_argument.If(out var argument))
-                  {
-                     builder.Append($" : {argument}");
-                  }
-
-                  builder.AppendLine();
-
-                  return builder.ToString();
-               }
-            }
-
-            return nil;
-         }
-
-         void displayCommands(MethodInfo methodInfo1, CommandHelpAttribute commandHelpAttribute1)
-         {
-            if (commandHelps.If(methodInfo1.Name, out var tuple))
-            {
-               writeDivider();
-               Console.WriteLine($"{tuple.command}: {commandHelpAttribute1.HelpText}");
-               var _switchPattern = commandHelpAttribute1.SwitchPattern;
-               var _result =
-                  from switchPattern in _switchPattern
-                  from matchResult in switchPattern.Matches("'$' /(/w [/w '-']*) /('?'?); f")
-                  select matchResult;
-               if (_result.If(out var result))
-               {
-                  var indent = " ".Repeat(tuple.command.Length + 1);
-                  var replacement = result.EvaluateMatches((match, _) => evaluateMatch(match, indent));
-                  replacement = replacement.Substitute(@"-(< '\') '|'; f", $"{indent}OR\r\n");
-                  replacement = replacement.Substitute(@"'\|'; f", "|");
-                  replacement = replacement.Substitute(@"-(< '\') '&'; f", $"{indent}AND\r\n");
-                  replacement = replacement.Substitute(@"'\&'; f", "&");
-
-                  Console.Write($" {replacement}");
-               }
-
-               Console.WriteLine();
-            }
-         }
-
-         void displayConfiguration()
-         {
-            if (configurationHelp.Count > 0)
-            {
-               writeDivider();
-               Console.WriteLine("config");
-               var maxLength = configurationHelp.Keys.Max(k => k.Length);
-               foreach (var (key, value) in configurationHelp)
-               {
-                  Console.WriteLine($"   {key.PadRight(maxLength)} - {value}");
-               }
-            }
-         }
-
-         Console.WriteLine($"help for {application}");
-         Console.WriteLine();
-
-         if (rest.IsEmpty())
-         {
-            Console.WriteLine("Commands");
-            writeDivider();
-            var table = new TableMaker(("Command", Justification.Left), ("Description", Justification.Left));
-            foreach (var (_, (command, attribute)) in commandHelps)
-            {
-               table.Add(command, attribute.HelpText);
-            }
-
-            Console.WriteLine(table);
-         }
-         else if (rest.Same("config"))
+         if (rest.Same("config"))
          {
             displayConfiguration();
          }
          else
          {
-            foreach (var (methodInfo, commandHelpAttribute) in getCommandHelpAttributes())
+            var generator = new HelpGenerator(this);
+            string help;
+            if (rest.IsEmpty())
             {
-               displayCommands(methodInfo, commandHelpAttribute);
+               help = generator.Help();
             }
+            else if (generator.Help(rest).IfNot(out help, out var exception))
+            {
+               ExceptionWriter.WriteExceptionLine(exception);
+            }
+
+            StandardWriter.WriteLine(help);
+         }
+      }
+
+      protected void displayConfiguration()
+      {
+         var table = new TableMaker(("Key", Justification.Left), ("Value", Justification.Left)) { Title = "Configuration" };
+         foreach (var (key, value) in configurationHelp)
+         {
+            table.Add(key, value);
          }
       }
 
@@ -415,27 +308,50 @@ namespace Core.Applications.CommandProcessing
          return this.PropertiesUsing<SwitchHelpAttribute>().ToArray();
       }
 
-      protected IEnumerable<(string methodName, string command, CommandHelpAttribute attribute)> getCommandHelps()
+      public StringHash<(string helpText, string switchPattern)> GetCommandHelp()
       {
          var commandHelpAttributes = getCommandHelpAttributes()
             .Select(t => (t.methodInfo.Name, t.attribute))
             .ToStringHash(t => t.Name, t => t.attribute, true);
+         var hash = new StringHash<(string, string)>(true);
          foreach (var (methodInfo, commandAttribute) in this.MethodsUsing<CommandAttribute>())
          {
             if (commandHelpAttributes.If(methodInfo.Name, out var attribute))
             {
-               yield return (methodInfo.Name, commandAttribute.Name, attribute);
+               if (attribute.SwitchPattern.If(out var switchPattern))
+               {
+                  hash[commandAttribute.Name] = (attribute.HelpText, switchPattern);
+               }
             }
          }
+
+         return hash;
+      }
+
+      public StringHash<(string type, Maybe<string> _argument, Maybe<string> _shortCut)> GetSwitchHelp()
+      {
+         var switchHelpAttributes = getSwitchHelpAttributes().ToStringHash(t => t.propertyInfo.Name, t => t.attribute, true);
+         var shortCuts = getShortCutAttributes().ToStringHash(t => t.propertyInfo.Name, t => t.attribute.Name, true);
+         var hash = new StringHash<(string, Maybe<string>, Maybe<string>)>(true);
+         foreach (var (propertyInfo, switchAttribute) in getSwitchAttributes())
+         {
+            if (switchHelpAttributes.If(propertyInfo.Name, out var switchHelpAttribute))
+            {
+               var _shortCut = shortCuts.Map(propertyInfo.Name);
+               hash[switchAttribute.Name] = (switchHelpAttribute.Type, switchHelpAttribute.Argument, _shortCut);
+            }
+         }
+
+         return hash;
       }
 
       protected void handleConfiguration(string rest)
       {
-         if (rest.IsMatch("^ 'all' /b"))
+         if (rest.IsMatch("^ 'all' /b; f"))
          {
             AllConfiguration();
          }
-         else if (rest.IsMatch("^ 'reset' /b"))
+         else if (rest.IsMatch("^ 'reset' /b; f"))
          {
             ResetConfiguration();
          }
@@ -457,7 +373,7 @@ namespace Core.Applications.CommandProcessing
 
       public virtual void AllConfiguration()
       {
-         var tableMaker = new TableMaker(("Key", Justification.Left), ("Value", Justification.Left));
+         var tableMaker = new TableMaker(("Key", Justification.Left), ("Value", Justification.Left)) { Title = "All Configurations" };
          foreach (var (key, value) in configuration.Values())
          {
             tableMaker.Add(key, value);
@@ -505,8 +421,6 @@ namespace Core.Applications.CommandProcessing
             ExceptionWriter.WriteExceptionLine($"Didn't recognize key \"{key}\"");
          }
       }
-
-      public virtual StringHash ConfigurationHelp() => configurationHelp;
 
       protected IEnumerable<(string prefix, string name, Maybe<string> _value)> switchData(string source)
       {
