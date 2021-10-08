@@ -4,7 +4,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Applications.CommandProcessing
 {
-   [AttributeUsage(AttributeTargets.Method)]
+   [AttributeUsage(AttributeTargets.Method), Obsolete("Use new parameters on CommandAttribute")]
    public class CommandHelpAttribute : Attribute
    {
       public CommandHelpAttribute(string helpText, string switchPattern)

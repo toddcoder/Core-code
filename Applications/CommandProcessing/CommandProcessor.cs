@@ -298,7 +298,12 @@ namespace Core.Applications.CommandProcessing
          return this.PropertiesUsing<ShortCutAttribute>().ToArray();
       }
 
-      protected (MethodInfo methodInfo, CommandHelpAttribute attribute)[] getCommandHelpAttributes()
+      protected (MethodInfo methodInfo, CommandAttribute attribute)[] getCommandAttributes()
+      {
+         return this.MethodsUsing<CommandAttribute>().ToArray();
+      }
+
+      /*protected (MethodInfo methodInfo, CommandHelpAttribute attribute)[] getCommandHelpAttributes()
       {
          return this.MethodsUsing<CommandHelpAttribute>().ToArray();
       }
@@ -306,43 +311,20 @@ namespace Core.Applications.CommandProcessing
       protected (PropertyInfo propertyInfo, SwitchHelpAttribute attribute)[] getSwitchHelpAttributes()
       {
          return this.PropertiesUsing<SwitchHelpAttribute>().ToArray();
+      }*/
+
+      public StringHash<(Maybe<string> _helpText, Maybe<string> _switchPattern)> GetCommandHelp()
+      {
+         return getCommandAttributes()
+            .Select(a => (a.attribute.Name, a.attribute.HelpText, a.attribute.SwitchPattern))
+            .ToStringHash(t => t.Name, t => (t.HelpText, t.SwitchPattern), true);
       }
 
-      public StringHash<(string helpText, string switchPattern)> GetCommandHelp()
+      public StringHash<(string type, string argument, Maybe<string> _shortCut)> GetSwitchHelp()
       {
-         var commandHelpAttributes = getCommandHelpAttributes()
-            .Select(t => (t.methodInfo.Name, t.attribute))
-            .ToStringHash(t => t.Name, t => t.attribute, true);
-         var hash = new StringHash<(string, string)>(true);
-         foreach (var (methodInfo, commandAttribute) in this.MethodsUsing<CommandAttribute>())
-         {
-            if (commandHelpAttributes.If(methodInfo.Name, out var attribute))
-            {
-               if (attribute.SwitchPattern.If(out var switchPattern))
-               {
-                  hash[commandAttribute.Name] = (attribute.HelpText, switchPattern);
-               }
-            }
-         }
-
-         return hash;
-      }
-
-      public StringHash<(string type, Maybe<string> _argument, Maybe<string> _shortCut)> GetSwitchHelp()
-      {
-         var switchHelpAttributes = getSwitchHelpAttributes().ToStringHash(t => t.propertyInfo.Name, t => t.attribute, true);
-         var shortCuts = getShortCutAttributes().ToStringHash(t => t.propertyInfo.Name, t => t.attribute.Name, true);
-         var hash = new StringHash<(string, Maybe<string>, Maybe<string>)>(true);
-         foreach (var (propertyInfo, switchAttribute) in getSwitchAttributes())
-         {
-            if (switchHelpAttributes.If(propertyInfo.Name, out var switchHelpAttribute))
-            {
-               var _shortCut = shortCuts.Map(propertyInfo.Name);
-               hash[switchAttribute.Name] = (switchHelpAttribute.Type, switchHelpAttribute.Argument, _shortCut);
-            }
-         }
-
-         return hash;
+         return getSwitchAttributes()
+            .Select(a => (a.attribute.Name, a.attribute.Type, a.attribute.Argument, a.attribute.ShortCut))
+            .ToStringHash(t => t.Name, t => (t.Type, t.Argument, t.ShortCut), true);
       }
 
       protected void handleConfiguration(string rest)

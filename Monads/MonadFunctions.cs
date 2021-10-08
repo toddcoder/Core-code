@@ -4,21 +4,6 @@ namespace Core.Monads
 {
    public static class MonadFunctions
    {
-      public static class MaybeOf<T>
-      {
-         public static readonly Maybe<T> nil = new None<T>();
-      }
-
-      public static class MatchedOf<T>
-      {
-         public static readonly Matched<T> nil = new NoMatch<T>();
-      }
-
-      public static class CompletionOf<T>
-      {
-         public static readonly Completion<T> nil = new Cancelled<T>();
-      }
-
       public static readonly Nil nil = new();
 
       public static readonly Unit unit = new();

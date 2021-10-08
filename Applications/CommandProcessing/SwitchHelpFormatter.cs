@@ -47,7 +47,7 @@ namespace Core.Applications.CommandProcessing
       protected string source;
       protected StringHash replacements;
 
-      public SwitchHelpFormatter(string command, string helpText, string source, StringHash<(string, Maybe<string>, Maybe<string>)> switchHelp,
+      public SwitchHelpFormatter(string command, string helpText, string source, StringHash<(string, string, Maybe<string>)> switchHelp,
          string prefix, string shortCutPrefix)
       {
          this.command = command;
@@ -56,7 +56,7 @@ namespace Core.Applications.CommandProcessing
 
          replacements = new StringHash(true);
 
-         foreach (var (name, (type, _argument, _shortCut)) in switchHelp)
+         foreach (var (name, (type, argument, _shortCut)) in switchHelp)
          {
             var builder = new StringBuilder($"{prefix}{name}");
             if (_shortCut.If(out var shortCut))
@@ -69,10 +69,7 @@ namespace Core.Applications.CommandProcessing
                builder.Append($" <{type}>");
             }
 
-            if (_argument.If(out var argument))
-            {
-               builder.Append($" : {argument}");
-            }
+            builder.Append($" : {argument}");
 
             replacements[$"${name}"] = builder.ToString();
          }
@@ -89,7 +86,8 @@ namespace Core.Applications.CommandProcessing
             var length = firstLine.Length.MaxOf(80);
             writer.WriteLine("=".Repeat(length));
 
-            var _divider = MaybeOf<string>.nil;
+            var _divider = Maybe<string>.nil;
+            var _indent = Maybe<string>.nil;
 
             foreach (var line in source.Split("/s* ';' /s*; f"))
             {
@@ -120,7 +118,7 @@ namespace Core.Applications.CommandProcessing
                      }
                   }
 
-                  writer.WriteLine($"{command} {result}");
+                  writer.WriteLine($"{command}{result}");
                }
                else
                {

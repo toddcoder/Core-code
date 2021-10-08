@@ -4,6 +4,8 @@ namespace Core.Monads
 {
    public abstract class Matched<T>
    {
+      public static Matched<T> nil => new NoMatch<T>();
+
       public static implicit operator Matched<T>(T value) => value.Match();
 
       public static implicit operator Matched<T>(Exception exception) => new FailedMatch<T>(exception);

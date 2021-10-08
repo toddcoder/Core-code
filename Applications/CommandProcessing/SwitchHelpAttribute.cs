@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Globalization;
 using Core.Monads;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Applications.CommandProcessing
 {
-   [AttributeUsage(AttributeTargets.Property)]
+   [AttributeUsage(AttributeTargets.Property), Obsolete("Use SwitchAttribute")]
    public class SwitchHelpAttribute : Attribute
    {
       public SwitchHelpAttribute(string type, string argument)
