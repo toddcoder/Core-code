@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Core.Collections;
+using Core.Enumerables;
 using Core.Monads;
 using Core.Matching;
 using Core.Numbers;
@@ -12,15 +14,45 @@ namespace Core.Applications.CommandProcessing
 {
    public class SwitchHelpFormatter
    {
+      protected static string expand(string source)
+      {
+         if (source.Matches("'{' /(-['.']+) '...' /(-['}']+) '}'; f").If(out var result))
+         {
+            for (var i = 0; i < result.MatchCount; i++)
+            {
+               var left = result[i, 1].Split("/s* ',' /s*; f");
+               var right = result[i, 2].Split("/s* ',' /s*; f");
+               var list = new List<string>();
+               foreach (var leftItem in left)
+               {
+                  foreach (var rightItem in right)
+                  {
+                     list.Add($"{leftItem}{rightItem}");
+                  }
+               }
+
+               result[i] = list.ToString(";");
+            }
+
+            return result.ToString();
+         }
+         else
+         {
+            return source;
+         }
+      }
+
       protected string command;
+      protected string helpText;
       protected string source;
       protected StringHash replacements;
 
-      public SwitchHelpFormatter(string command, string source, StringHash<(string, Maybe<string>, Maybe<string>)> switchHelp, string prefix,
-         string shortCutPrefix)
+      public SwitchHelpFormatter(string command, string helpText, string source, StringHash<(string, Maybe<string>, Maybe<string>)> switchHelp,
+         string prefix, string shortCutPrefix)
       {
          this.command = command;
-         this.source = source;
+         this.helpText = helpText;
+         this.source = expand(source);
 
          replacements = new StringHash(true);
 
@@ -52,9 +84,10 @@ namespace Core.Applications.CommandProcessing
          {
             using var writer = new StringWriter();
 
-            writer.WriteLine(command);
-            var commandLength = command.Length.MaxOf(80);
-            writer.WriteLine("=".Repeat(commandLength));
+            var firstLine = $"{command} - {helpText}";
+            writer.WriteLine(firstLine);
+            var length = firstLine.Length.MaxOf(80);
+            writer.WriteLine("=".Repeat(length));
 
             var _divider = MaybeOf<string>.nil;
 
@@ -66,7 +99,7 @@ namespace Core.Applications.CommandProcessing
                }
                else
                {
-                  _divider = "-".Repeat(commandLength);
+                  _divider = "-".Repeat(length);
                }
 
                if (line.Matches(@"-(> '\') /('$' /w [/w '-']*) /('?')?; f").If(out var result))
@@ -87,11 +120,11 @@ namespace Core.Applications.CommandProcessing
                      }
                   }
 
-                  writer.WriteLine(result.ToString());
+                  writer.WriteLine($"{command} {result}");
                }
                else
                {
-                  writer.WriteLine(line.Replace(@"\$", "$"));
+                  writer.WriteLine($"{command} {line.Replace(@"\$", "$")}");
                }
             }
 
