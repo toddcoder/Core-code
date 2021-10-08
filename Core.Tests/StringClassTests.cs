@@ -168,5 +168,36 @@ namespace Core.Tests
             Console.WriteLine($"[ {tag} -> {value} ] {remainder}");
          }
       }
+
+      [TestMethod]
+      public void TableMakerTest()
+      {
+         var table = new TableMaker(("Name", Justification.Left), ("Value", Justification.Left))
+         {
+            Title = "Properties"
+         };
+
+         var obj = "Testing";
+
+         table.Add("Value", obj);
+         table.Add("Length", obj.Length);
+         table.Add("Hash Code", obj.GetHashCode());
+
+         Console.WriteLine(table);
+      }
+
+      [TestMethod]
+      public void TableMaker2Test()
+      {
+         var table = new TableMaker(("Name", Justification.Left), ("Value", Justification.Left));
+
+         var obj = "Testing";
+
+         table.Add("Value", obj);
+         table.Add("Length", obj.Length);
+         table.Add("Hash Code", obj.GetHashCode());
+
+         Console.WriteLine(table);
+      }
    }
 }

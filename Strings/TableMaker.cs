@@ -4,6 +4,7 @@ using System.Text;
 using Core.Enumerables;
 using Core.Monads;
 using static System.Math;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Strings
 {
@@ -85,10 +86,15 @@ namespace Core.Strings
          {
          }
 
-         public string Render(ColumnHeader[] columnHeaders, string columnSeparator)
+         public virtual string Render(ColumnHeader[] columnHeaders, string columnSeparator)
          {
-            var length = columnHeaders.Select(ch => ch.MaxWidth).Sum() + (columnHeaders.Length - 1) * columnSeparator.Length;
+            var length = dividerLength(columnHeaders, columnSeparator);
             return character.ToString().Repeat(length);
+         }
+
+         protected static int dividerLength(ColumnHeader[] columnHeaders, string columnSeparator)
+         {
+            return columnHeaders.Select(ch => ch.MaxWidth).Sum() + (columnHeaders.Length - 1) * columnSeparator.Length;
          }
       }
 
@@ -110,9 +116,10 @@ namespace Core.Strings
          columnHeaders = columns.Select(c => new ColumnHeader(c.header, c.justification)).ToArray();
          rows = new List<IRow>();
          hasHeaders = true;
-         HeaderFoot = '='.Some();
+         HeaderFoot = '=';
          ColumnSeparator = " | ";
-         RowSeparator = '-'.Some();
+         RowSeparator = '-';
+         Title = nil;
       }
 
       public TableMaker(params Justification[] justifications)
@@ -122,9 +129,10 @@ namespace Core.Strings
          rows = new List<IRow>();
          hasHeaders = false;
 
-         HeaderFoot = '='.Some();
+         HeaderFoot = '=';
          ColumnSeparator = " | ";
-         RowSeparator = '-'.Some();
+         RowSeparator = '-';
+         Title = nil;
       }
 
       public void Clear() => rows.Clear();
@@ -134,6 +142,8 @@ namespace Core.Strings
       public string ColumnSeparator { get; set; }
 
       public Maybe<char> RowSeparator { get; set; }
+
+      public Maybe<string> Title { get; set; }
 
       public TableMaker Add(params object[] items)
       {
@@ -180,10 +190,23 @@ namespace Core.Strings
 
          int headerWidth;
 
+         string getRowSeparator()
+         {
+            var rowSeparator = "\r\n";
+            return RowSeparator.Map(rs => rowSeparator + rs.Repeat(headerWidth) + rowSeparator).DefaultTo(() => rowSeparator);
+         }
+
          if (hasHeaders)
          {
             var header = columnHeaders.Select(ch => ch.Render()).ToString(ColumnSeparator);
             headerWidth = header.Length;
+
+            if (Title.If(out var title))
+            {
+               builder.Append(title.Center(headerWidth));
+               builder.Append(getRowSeparator());
+            }
+
             builder.AppendLine(header);
             if (HeaderFoot.If(out var headerFoot))
             {
@@ -199,12 +222,7 @@ namespace Core.Strings
             headerWidth = columnHeaders.Select(ch => ch.MaxWidth).Sum() + (columnHeaders.Length - 1) * ColumnSeparator.Length;
          }
 
-         var rowSeparator = "\r\n";
-         if (RowSeparator.If(out var separator))
-         {
-            rowSeparator = rowSeparator + separator.ToString().Repeat(headerWidth) + rowSeparator;
-         }
-
+         var rowSeparator = getRowSeparator();
          foreach (var renderedRow in rows.Select(row => row.Render(columnHeaders, ColumnSeparator)))
          {
             builder.Append(renderedRow);

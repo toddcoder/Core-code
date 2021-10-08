@@ -159,7 +159,7 @@ namespace Core.Tests
       {
       }
 
-      [Command("find"), CommandHelp("Find text using pattern", "$source $pattern $count?")]
+      [Command("find"), CommandHelp("Find text using pattern", "$source$pattern$count?")]
       public void Find()
       {
          if (Text.Matches(Pattern).If(out var result))
@@ -172,7 +172,7 @@ namespace Core.Tests
          }
       }
 
-      [Command("replace"), CommandHelp("Replace text using pattern", "$source $pattern $replacement | $ignore-case?")]
+      [Command("replace"), CommandHelp("Replace text using pattern", "$source$pattern$replacement;$source$pattern$ignore-case?")]
       public void Replace() { }
 
       [Switch("source"), SwitchHelp("string", "Source input from user")]
@@ -200,18 +200,6 @@ namespace Core.Tests
          Pattern = string.Empty;
          Count = 0;
          IgnoreCase = false;
-      }
-
-      public override void GetConfiguration(string name) => Console.WriteLine($"get config {name}");
-
-      public override void SetConfiguration(string key, string value) => Console.WriteLine($"set config {key} '{value}'");
-
-      public override StringHash ConfigurationHelp()
-      {
-         return new StringHash(true)
-         {
-            ["foobar"] = "This is the foobar configuration item"
-         };
       }
    }
 
@@ -312,6 +300,27 @@ namespace Core.Tests
       {
          var processor = new TestProgram();
          processor.Run("help");
+      }
+
+      [TestMethod]
+      public void CommandHelpOnFindTest()
+      {
+         var processor = new TestProgram();
+         processor.Run("help find");
+      }
+
+      [TestMethod]
+      public void CommandHelpOnReplaceTest()
+      {
+         var processor = new TestProgram();
+         processor.Run("help replace");
+      }
+
+      [TestMethod]
+      public void CommandHelpOnConfigTest()
+      {
+         var processor = new TestProgram();
+         processor.Run("help config");
       }
 
       [TestMethod]

@@ -70,9 +70,11 @@
     <Compile Include="Applications\CommandProcessing\CommandAttribute.cs" />
     <Compile Include="Applications\CommandProcessing\CommandProcessor.cs" />
     <Compile Include="Applications\CommandProcessing\CommandHelpAttribute.cs" />
+    <Compile Include="Applications\CommandProcessing\HelpGenerator.cs" />
     <Compile Include="Applications\CommandProcessing\ShortCutAttribute.cs" />
     <Compile Include="Applications\CommandProcessing\SwitchAttribute.cs" />
     <Compile Include="Applications\CommandProcessing\SwitchHelpAttribute.cs" />
+    <Compile Include="Applications\CommandProcessing\SwitchHelpFormatter.cs" />
     <Compile Include="Applications\ConsoleFunctions.cs" />
     <Compile Include="Applications\ConsoleProgress.cs" />
     <Compile Include="Applications\ConvertArgs.cs" />

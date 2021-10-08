@@ -950,9 +950,9 @@ namespace Core.Enumerables
 
       public static Maybe<int> IndexOfMax<T>(this IEnumerable<T> enumerable) where T : IComparable<T>
       {
-         var _index = Nil.Of<int>();
+         var _index = MaybeOf<int>.nil;
          var currentIndex = 0;
-         var _currentValue = Nil.Of<T>();
+         var _currentValue = MaybeOf<T>.nil;
          foreach (var item in enumerable)
          {
             if (_currentValue.If(out var currentValue))
@@ -978,9 +978,9 @@ namespace Core.Enumerables
       public static Maybe<int> IndexOfMax<TSource, TResult>(this IEnumerable<TSource> enumerable, Func<TSource, TResult> mappingFunc)
          where TResult : IComparable<TResult>
       {
-         var _index = Nil.Of<int>();
+         var _index = MaybeOf<int>.nil;
          var currentIndex = 0;
-         var _currentValue = Nil.Of<TResult>();
+         var _currentValue = MaybeOf<TResult>.nil;
          foreach (var item in enumerable)
          {
             var mappedItem = mappingFunc(item);
@@ -1006,9 +1006,9 @@ namespace Core.Enumerables
 
       public static Maybe<int> IndexOfMin<T>(this IEnumerable<T> enumerable) where T : IComparable<T>
       {
-         var _index = Nil.Of<int>();
+         var _index = MaybeOf<int>.nil;
          var currentIndex = 0;
-         var _currentValue = Nil.Of<T>();
+         var _currentValue = MaybeOf<T>.nil;
          foreach (var item in enumerable)
          {
             if (_currentValue.If(out var currentValue))
@@ -1034,9 +1034,9 @@ namespace Core.Enumerables
       public static Maybe<int> IndexOfMin<TSource, TResult>(this IEnumerable<TSource> enumerable, Func<TSource, TResult> mappingFunc)
          where TResult : IComparable<TResult>
       {
-         var _index = Nil.Of<int>();
+         var _index = MaybeOf<int>.nil;
          var currentIndex = 0;
-         var _currentValue = Nil.Of<TResult>();
+         var _currentValue = MaybeOf<TResult>.nil;
          foreach (var item in enumerable)
          {
             var mappedItem = mappingFunc(item);

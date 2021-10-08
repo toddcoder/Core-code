@@ -4,6 +4,7 @@ namespace Core.Monads
 {
    public class Nil : IEquatable<Nil>
    {
+      [Obsolete("Use appropriate nil variable")]
       public static Maybe<T> Of<T>() => new None<T>();
 
       protected int hashCode;
