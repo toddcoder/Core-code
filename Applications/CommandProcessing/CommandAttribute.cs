@@ -1,30 +1,54 @@
 ﻿using System;
+using System.Linq;
+using Core.Collections;
 using Core.Monads;
+using Core.Matching;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Applications.CommandProcessing
 {
    [AttributeUsage(AttributeTargets.Method)]
-   public class CommandAttribute : Attribute
+   public class CommandAttribute : Attribute, IHash<string, string>
    {
-      protected CommandAttribute(string name, Maybe<string> helpText, Maybe<string> switchPattern, bool initialize = true)
+      protected static StringHash getReplacements(string source)
+      {
+         var hash = new StringHash(true);
+
+         var items = source.Split(@"/s* -(< '\') ';' /s*").Select(i => i.Replace(@"\;", ";")).ToArray();
+         foreach (var item in items)
+         {
+            if (item.Matches("^ /(-[':']+) ':' /s* /(.+) $").If(out var result))
+            {
+               var (key, value) = result;
+               hash[key.TrimEnd()] = value;
+            }
+         }
+
+         return hash;
+      }
+
+      protected StringHash replacements;
+
+      protected CommandAttribute(string name, Maybe<string> helpText, Maybe<string> switchPattern, bool initialize = true, string replacements = "")
       {
          Name = name;
          HelpText = helpText;
          SwitchPattern = switchPattern;
          Initialize = initialize;
+
+         this.replacements = getReplacements(replacements);
       }
 
-      public CommandAttribute(string name, bool initialize = true) : this(name, nil, nil, initialize)
+      public CommandAttribute(string name, bool initialize = true, string replacements = "") : this(name, nil, nil, initialize, replacements)
       {
       }
 
-      public CommandAttribute(string name, string helpText, bool initialize = true) : this(name, helpText, nil, initialize)
+      public CommandAttribute(string name, string helpText, bool initialize = true, string replacements = "") : this(name, helpText, nil, initialize, replacements)
       {
       }
 
-      public CommandAttribute(string name, string helpText, string switchPattern, bool initialize = true) :
-         this(name, helpText.Some(), switchPattern.Some(), initialize)
+      public CommandAttribute(string name, string helpText, string switchPattern, bool initialize = true, string replacements = "") :
+         this(name, helpText.Some(), switchPattern.Some(), initialize, replacements)
       {
       }
 
@@ -35,5 +59,15 @@ namespace Core.Applications.CommandProcessing
       public Maybe<string> SwitchPattern { get; }
 
       public bool Initialize { get; }
+
+      public string this[string key]
+      {
+         get => replacements[key];
+         set => replacements[key] = value;
+      }
+
+      public bool ContainsKey(string key) => replacements.ContainsKey(key);
+
+      public Result<Hash<string, string>> AnyHash() => replacements;
    }
 }

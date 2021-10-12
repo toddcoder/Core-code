@@ -303,11 +303,11 @@ namespace Core.Applications.CommandProcessing
          return this.MethodsUsing<CommandAttribute>().ToArray();
       }
 
-      public StringHash<(Maybe<string> _helpText, Maybe<string> _switchPattern)> GetCommandHelp()
+      public StringHash<(Maybe<string> _helpText, Maybe<string> _switchPattern, IHash<string, string> replacements)> GetCommandHelp()
       {
          return getCommandAttributes()
-            .Select(a => (a.attribute.Name, a.attribute.HelpText, a.attribute.SwitchPattern))
-            .ToStringHash(t => t.Name, t => (t.HelpText, t.SwitchPattern), true);
+            .Select(a => (a.attribute.Name, a.attribute.HelpText, a.attribute.SwitchPattern, (IHash<string, string>)a.attribute))
+            .ToStringHash(t => t.Name, t => (t.HelpText, t.SwitchPattern, t.Item4), true);
       }
 
       public StringHash<(string type, string argument, Maybe<string> _shortCut)> GetSwitchHelp()
