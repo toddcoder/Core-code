@@ -293,11 +293,6 @@ namespace Core.Applications.CommandProcessing
          return this.PropertiesUsing<SwitchAttribute>().ToArray();
       }
 
-      protected (PropertyInfo propertyInfo, ShortCutAttribute attribute)[] getShortCutAttributes()
-      {
-         return this.PropertiesUsing<ShortCutAttribute>().ToArray();
-      }
-
       protected (MethodInfo methodInfo, CommandAttribute attribute)[] getCommandAttributes()
       {
          return this.MethodsUsing<CommandAttribute>().ToArray();
@@ -440,13 +435,12 @@ namespace Core.Applications.CommandProcessing
       protected Result<Unit> executeMethod(MethodInfo methodInfo, string rest)
       {
          var switchAttributes = getSwitchAttributes();
-         var shortCutAttributes = getShortCutAttributes();
 
          foreach (var (prefix, name, _value) in switchData(rest))
          {
             if (prefix == Prefix)
             {
-               var result = fill(switchAttributes, name, _value);
+               var result = fillSwitch(switchAttributes, name, _value);
                if (result.IsNone)
                {
                   return fail($"Switch {name} not successful");
@@ -454,7 +448,7 @@ namespace Core.Applications.CommandProcessing
             }
             else if (prefix == ShortCut)
             {
-               var result = fill(shortCutAttributes, name, _value);
+               var result = fillShortCut(switchAttributes, name, _value);
                if (result.IsNone)
                {
                   return fail($"Shortcut {name} not successful");
@@ -469,7 +463,7 @@ namespace Core.Applications.CommandProcessing
          return executeMethod(methodInfo);
       }
 
-      protected Maybe<Unit> fill((PropertyInfo propertyInfo, SwitchAttribute attribute)[] switchAttributes, string name, Maybe<string> _value)
+      protected Maybe<Unit> fillSwitch((PropertyInfo propertyInfo, SwitchAttribute attribute)[] switchAttributes, string name, Maybe<string> _value)
       {
          return
             from propertyInfo in switchAttributes.FirstOrNone((_, a) => a.Name == name).Select(t => t.Item1)
@@ -477,10 +471,10 @@ namespace Core.Applications.CommandProcessing
             select filled;
       }
 
-      protected Maybe<Unit> fill((PropertyInfo propertyInfo, ShortCutAttribute attribute)[] shortCutAttributes, string name, Maybe<string> _value)
+      protected Maybe<Unit> fillShortCut((PropertyInfo propertyInfo, SwitchAttribute attribute)[] switchAttributes, string name, Maybe<string> _value)
       {
          return
-            from propertyInfo in shortCutAttributes.FirstOrNone((_, a) => a.Name == name).Select(t => t.Item1)
+            from propertyInfo in switchAttributes.FirstOrNone((_, a) => a.ShortCut.DefaultTo(() => "") == name).Select(t => t.Item1)
             from filled in fillProperty(propertyInfo, _value)
             select filled;
       }
