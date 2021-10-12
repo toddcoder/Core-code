@@ -4,6 +4,8 @@ namespace Core.Monads
 {
    public abstract class Maybe<T>
    {
+      public static Maybe<T> nil => new None<T>();
+
       public static Maybe<T> operator |(Maybe<T> left, Maybe<T> right)
       {
          if (left.IsSome)

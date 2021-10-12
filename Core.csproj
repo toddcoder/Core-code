@@ -275,6 +275,7 @@
     <Compile Include="Monads\Maybe.cs" />
     <Compile Include="Monads\Interrupted.cs" />
     <Compile Include="Monads\Nil.cs" />
+    <Compile Include="Monads\NilWithMessage.cs" />
     <Compile Include="Monads\Result.cs" />
     <Compile Include="Monads\Left.cs" />
     <Compile Include="Monads\Match.cs" />

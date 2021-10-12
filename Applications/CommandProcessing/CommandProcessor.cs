@@ -298,51 +298,23 @@ namespace Core.Applications.CommandProcessing
          return this.PropertiesUsing<ShortCutAttribute>().ToArray();
       }
 
-      protected (MethodInfo methodInfo, CommandHelpAttribute attribute)[] getCommandHelpAttributes()
+      protected (MethodInfo methodInfo, CommandAttribute attribute)[] getCommandAttributes()
       {
-         return this.MethodsUsing<CommandHelpAttribute>().ToArray();
+         return this.MethodsUsing<CommandAttribute>().ToArray();
       }
 
-      protected (PropertyInfo propertyInfo, SwitchHelpAttribute attribute)[] getSwitchHelpAttributes()
+      public StringHash<(Maybe<string> _helpText, Maybe<string> _switchPattern)> GetCommandHelp()
       {
-         return this.PropertiesUsing<SwitchHelpAttribute>().ToArray();
+         return getCommandAttributes()
+            .Select(a => (a.attribute.Name, a.attribute.HelpText, a.attribute.SwitchPattern))
+            .ToStringHash(t => t.Name, t => (t.HelpText, t.SwitchPattern), true);
       }
 
-      public StringHash<(string helpText, string switchPattern)> GetCommandHelp()
+      public StringHash<(string type, string argument, Maybe<string> _shortCut)> GetSwitchHelp()
       {
-         var commandHelpAttributes = getCommandHelpAttributes()
-            .Select(t => (t.methodInfo.Name, t.attribute))
-            .ToStringHash(t => t.Name, t => t.attribute, true);
-         var hash = new StringHash<(string, string)>(true);
-         foreach (var (methodInfo, commandAttribute) in this.MethodsUsing<CommandAttribute>())
-         {
-            if (commandHelpAttributes.If(methodInfo.Name, out var attribute))
-            {
-               if (attribute.SwitchPattern.If(out var switchPattern))
-               {
-                  hash[commandAttribute.Name] = (attribute.HelpText, switchPattern);
-               }
-            }
-         }
-
-         return hash;
-      }
-
-      public StringHash<(string type, Maybe<string> _argument, Maybe<string> _shortCut)> GetSwitchHelp()
-      {
-         var switchHelpAttributes = getSwitchHelpAttributes().ToStringHash(t => t.propertyInfo.Name, t => t.attribute, true);
-         var shortCuts = getShortCutAttributes().ToStringHash(t => t.propertyInfo.Name, t => t.attribute.Name, true);
-         var hash = new StringHash<(string, Maybe<string>, Maybe<string>)>(true);
-         foreach (var (propertyInfo, switchAttribute) in getSwitchAttributes())
-         {
-            if (switchHelpAttributes.If(propertyInfo.Name, out var switchHelpAttribute))
-            {
-               var _shortCut = shortCuts.Map(propertyInfo.Name);
-               hash[switchAttribute.Name] = (switchHelpAttribute.Type, switchHelpAttribute.Argument, _shortCut);
-            }
-         }
-
-         return hash;
+         return getSwitchAttributes()
+            .Select(a => (a.attribute.Name, a.attribute.Type, a.attribute.Argument, a.attribute.ShortCut))
+            .ToStringHash(t => t.Name, t => (t.Type, t.Argument, t.ShortCut), true);
       }
 
       protected void handleConfiguration(string rest)
@@ -433,7 +405,7 @@ namespace Core.Applications.CommandProcessing
             noStrings = noStrings.Drop(result.Length);
             if (noStrings.IsEmpty() || noStrings.IsMatch($"^ /s* ('{Prefix}' | '{ShortCut}'); f"))
             {
-               yield return (prefix, name, none<string>());
+               yield return (prefix, name, Maybe<string>.nil);
             }
             else if (noStrings.Matches("^ /s* /([quote]) /(-[quote]*) /1; f").If(out result))
             {
@@ -516,7 +488,7 @@ namespace Core.Applications.CommandProcessing
       protected Maybe<Unit> fillProperty(PropertyInfo propertyInfo, Maybe<string> _value)
       {
          var type = propertyInfo.PropertyType;
-         var _object = none<object>();
+         var _object = Maybe<object>.nil;
          if (_value.If(out var value))
          {
             if (type == typeof(bool))
@@ -556,7 +528,7 @@ namespace Core.Applications.CommandProcessing
             }
             else
             {
-               return none<Unit>();
+               return Maybe<Unit>.nil;
             }
          }
          else
@@ -617,7 +589,7 @@ namespace Core.Applications.CommandProcessing
             }
             else
             {
-               return none<object>();
+               return Maybe<object>.nil;
             }
          }
          else if (type == typeof(FolderName))
@@ -638,7 +610,7 @@ namespace Core.Applications.CommandProcessing
             }
             else
             {
-               return none<object>();
+               return Maybe<object>.nil;
             }
          }
          else if (type == typeof(Maybe<FileName>))
@@ -651,12 +623,12 @@ namespace Core.Applications.CommandProcessing
             }
             else
             {
-               return none<object>();
+               return Maybe<object>.nil;
             }
          }
          else
          {
-            return none<object>();
+            return Maybe<object>.nil;
          }
       }
 
@@ -672,7 +644,7 @@ namespace Core.Applications.CommandProcessing
          }
          else
          {
-            return none<object>();
+            return Maybe<object>.nil;
          }
       }
 
