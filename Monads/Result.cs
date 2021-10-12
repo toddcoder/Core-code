@@ -45,6 +45,8 @@ namespace Core.Monads
 
       public static implicit operator Result<T>(Exception exception) => new Failure<T>(exception);
 
+      public static Result<T> Nil(string message) => new Failure<T>(new Exception(message));
+
       public abstract bool If(out T value, out Exception exception);
 
       [Obsolete("Use If()")]

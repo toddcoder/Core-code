@@ -1,9 +1,14 @@
-$target = "..\Assemblies"
-Copy-Item "..\bin\Debug\Core.dll" $target
-Copy-Item "..\Core.Internet\bin\Debug\Core.Internet.dll" $target
-Copy-Item "..\Core.Data\bin\Debug\Core.Data.dll" $target
-Copy-Item "..\Core.WinForms\bin\Debug\Core.WinForms.dll" $target
-Copy-Item "..\Core.Markup\bin\Debug\Core.Markup.dll" $target
-Copy-Item "..\Core.Json\bin\Debug\Core.Json.dll" $target
-Copy-Item "..\Core.Git\bin\Debug\Core.Git.dll" $target
-Copy-Item "..\Core.Services\bin\Debug\Core.Services.dll" $target
+Push-Location "C:\Users\tebennett\source\repos\toddcoder\Core"
+
+$target = "Assemblies"
+
+robocopy "bin\Debug" $target Core.dll /xf *.xml *.config *.pdb /NDL /NJH /NJS /nc /ns
+robocopy "Core.Internet\bin\Debug" $target Core.Internet.dll /xf *.xml *.config *.pdb /NDL /NJH /NJS /nc /ns
+robocopy "Core.Data\bin\Debug" $target Core.Data.dll /xf *.xml *.config *.pdb /NDL /NJH /NJS /nc /ns
+robocopy "Core.WinForms\bin\Debug" $target Core.WinForms.dll /xf *.xml *.config *.pdb /NDL /NJH /NJS /nc /ns
+robocopy "Core.Markup\bin\Debug" $target Core.Markup.dll /xf *.xml *.config *.pdb /NDL /NJH /NJS /nc /ns
+robocopy "Core.Json\bin\Debug" $target Core.Json.dll /xf *.xml *.config *.pdb /NDL /NJH /NJS /nc /ns
+robocopy "Core.Git\bin\Debug" $target Core.Git.dll /xf *.xml *.config *.pdb /NDL /NJH /NJS /nc /ns
+robocopy "Core.Services\bin\Debug" $target Core.Services.dll /xf *.xml *.config *.pdb /NDL /NJH /NJS /nc /ns
+
+Pop-Location
