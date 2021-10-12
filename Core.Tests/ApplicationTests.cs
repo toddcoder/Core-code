@@ -2,9 +2,12 @@
 using Core.Applications;
 using Core.Applications.CommandProcessing;
 using Core.Collections;
+using Core.Computers;
 using Core.Enumerables;
 using Core.Matching;
+using Core.Monads;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Tests
 {
@@ -157,6 +160,8 @@ namespace Core.Tests
    {
       public TestProgram() : base("test")
       {
+         File = nil;
+         Folder = nil;
       }
 
       [Command("find", "Find text using pattern", "$source$pattern$count?")]
@@ -183,6 +188,23 @@ namespace Core.Tests
       {
       }
 
+      [Command("scan", "Scan for data", "$folder;$file")]
+      public void Scan()
+      {
+         if (File.If(out var file))
+         {
+            Console.WriteLine($"Scanning file {file}");
+         }
+         else if (Folder.If(out var folder))
+         {
+            Console.WriteLine($"Scanning folder {folder}");
+         }
+         else
+         {
+            Console.WriteLine("Scanning nothing");
+         }
+      }
+
       [Switch("source", "string", "Source input from user")]
       public string Text { get; set; }
 
@@ -197,6 +219,12 @@ namespace Core.Tests
 
       [Switch("replacement", "string", "String pattern for replacement", "r")]
       public string Replacement { get; set; }
+
+      [Switch("file", "file", "File to use", "f")]
+      public Maybe<FileName> File { get; set; }
+
+      [Switch("folder", "folder", "Folder to use", "F")]
+      public Maybe<FolderName> Folder { get; set; }
 
       public override StringHash GetConfigurationDefaults() => new(true);
 
@@ -346,6 +374,19 @@ namespace Core.Tests
          processor.Run("config get foobar");
 
          Console.WriteLine(processor.Arguments);
+      }
+
+      [TestMethod]
+      public void ScanFileTest()
+      {
+         var processor = new TestProgram();
+         processor.Run(@"scan -f C:\Temp\max.txt");
+
+         processor = new TestProgram();
+         processor.Run(@"scan -F C:\Temp");
+
+         processor = new TestProgram();
+         processor.Run("scan");
       }
    }
 }
