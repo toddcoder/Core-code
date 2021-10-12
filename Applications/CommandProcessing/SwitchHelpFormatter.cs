@@ -88,6 +88,7 @@ namespace Core.Applications.CommandProcessing
             writer.WriteLine("=".Repeat(length));
 
             var _divider = Maybe<string>.nil;
+            var _indent = Maybe<string>.nil;
 
             foreach (var line in source.Split("/s* ';' /s*; f"))
             {
@@ -108,9 +109,15 @@ namespace Core.Applications.CommandProcessing
                      var optional = result[i, 2] == "?";
                      if (replacements.If(name, out var replacement))
                      {
-                        var prefix = optional ? "\t[" : "\t";
+                        var indent = _indent.DefaultTo(() => " ");
+                        var prefix = optional ? $"{indent}[" : indent;
                         var suffix = optional ? "]\r\n" : "\r\n";
                         result[i] = $"{prefix}{replacement}{suffix}";
+
+                        if (_indent.IsNone)
+                        {
+                           _indent = " ".Repeat(command.Length + 1);
+                        }
                      }
                      else
                      {
@@ -119,6 +126,7 @@ namespace Core.Applications.CommandProcessing
                   }
 
                   writer.WriteLine($"{command}{result}");
+                  _indent = nil;
                }
                else
                {
