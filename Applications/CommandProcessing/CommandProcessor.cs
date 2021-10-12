@@ -303,16 +303,6 @@ namespace Core.Applications.CommandProcessing
          return this.MethodsUsing<CommandAttribute>().ToArray();
       }
 
-      /*protected (MethodInfo methodInfo, CommandHelpAttribute attribute)[] getCommandHelpAttributes()
-      {
-         return this.MethodsUsing<CommandHelpAttribute>().ToArray();
-      }
-
-      protected (PropertyInfo propertyInfo, SwitchHelpAttribute attribute)[] getSwitchHelpAttributes()
-      {
-         return this.PropertiesUsing<SwitchHelpAttribute>().ToArray();
-      }*/
-
       public StringHash<(Maybe<string> _helpText, Maybe<string> _switchPattern)> GetCommandHelp()
       {
          return getCommandAttributes()

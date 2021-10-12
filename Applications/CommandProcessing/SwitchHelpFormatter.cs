@@ -87,7 +87,6 @@ namespace Core.Applications.CommandProcessing
             writer.WriteLine("=".Repeat(length));
 
             var _divider = Maybe<string>.nil;
-            var _indent = Maybe<string>.nil;
 
             foreach (var line in source.Split("/s* ';' /s*; f"))
             {

@@ -6,9 +6,13 @@ namespace Core.Monads
    {
       public static Completion<T> nil => new Cancelled<T>();
 
+      public static Completion<T> Nil(string message) => new Interrupted<T>(new Exception(message));
+
       public static implicit operator Completion<T>(T value) => value.Completed();
 
       public static implicit operator Completion<T>(Exception exception) => new Interrupted<T>(exception);
+
+      public static implicit operator Completion<T>(NilWithMessage nilWithMessage) => new Interrupted<T>(new Exception(nilWithMessage.Message));
 
       public static implicit operator Completion<T>(Nil _) => new Cancelled<T>();
 

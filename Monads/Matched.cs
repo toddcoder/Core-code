@@ -6,9 +6,13 @@ namespace Core.Monads
    {
       public static Matched<T> nil => new NoMatch<T>();
 
+      public static Matched<T> Nil(string message) => new FailedMatch<T>(new Exception(message));
+
       public static implicit operator Matched<T>(T value) => value.Match();
 
       public static implicit operator Matched<T>(Exception exception) => new FailedMatch<T>(exception);
+
+      public static implicit operator Matched<T>(NilWithMessage nilWithMessage) => new FailedMatch<T>(new Exception(nilWithMessage.Message));
 
       public static implicit operator Matched<T>(Nil _) => new NoMatch<T>();
 

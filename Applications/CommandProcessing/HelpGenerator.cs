@@ -39,16 +39,23 @@ namespace Core.Applications.CommandProcessing
          if (commandHelp.If(command, out var tuple))
          {
             var (_helpText, _switchPattern) = tuple;
-            if (_helpText.If(out var helpText) && _switchPattern.If(out var switchPattern))
+            if (_helpText.If(out var helpText))
             {
-               var formatter = new SwitchHelpFormatter(command, helpText, switchPattern, switchHelp, prefix, shortCut);
-               if (formatter.Format().If(out var formattedHelp, out var exception))
+               if (_switchPattern.If(out var switchPattern))
                {
-                  return formattedHelp;
+                  var formatter = new SwitchHelpFormatter(command, helpText, switchPattern, switchHelp, prefix, shortCut);
+                  if (formatter.Format().If(out var formattedHelp, out var exception))
+                  {
+                     return formattedHelp;
+                  }
+                  else
+                  {
+                     return exception;
+                  }
                }
                else
                {
-                  return exception;
+                  return $"{command} - {helpText}";
                }
             }
             else
