@@ -173,7 +173,15 @@ namespace Core.Tests
       }
 
       [Command("replace", "Replace text using pattern", "$source$pattern$replacement;$source$pattern$ignore-case?")]
-      public void Replace() { }
+      public void Replace()
+      {
+      }
+
+      [Command("replace2", "Replace text using pattern", "$source$pattern$replacement;$source$pattern$ignore-case?",
+         replacements: "pattern:Unfriendly matching pattern")]
+      public void Replace2()
+      {
+      }
 
       [Switch("source", "string", "Source input from user")]
       public string Text { get; set; }
@@ -314,6 +322,13 @@ namespace Core.Tests
       {
          var processor = new TestProgram();
          processor.Run("help replace");
+      }
+
+      [TestMethod]
+      public void CommandHelpOnReplace2Test()
+      {
+         var processor = new TestProgram();
+         processor.Run("help replace2");
       }
 
       [TestMethod]

@@ -48,7 +48,7 @@ namespace Core.Applications.CommandProcessing
       protected StringHash replacements;
 
       public SwitchHelpFormatter(string command, string helpText, string source, StringHash<(string, string, Maybe<string>)> switchHelp,
-         string prefix, string shortCutPrefix)
+         string prefix, string shortCutPrefix, IHash<string, string> commandReplacements)
       {
          this.command = command;
          this.helpText = helpText;
@@ -69,7 +69,8 @@ namespace Core.Applications.CommandProcessing
                builder.Append($" <{type}>");
             }
 
-            builder.Append($" : {argument}");
+            var newArgument = commandReplacements.Map(name).DefaultTo(() => argument);
+            builder.Append($" : {newArgument}");
 
             replacements[$"${name}"] = builder.ToString();
          }

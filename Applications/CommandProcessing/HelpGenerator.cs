@@ -7,7 +7,7 @@ namespace Core.Applications.CommandProcessing
 {
    public class HelpGenerator
    {
-      protected StringHash<(Maybe<string> _helpText, Maybe<string> _switchPattern)> commandHelp;
+      protected StringHash<(Maybe<string> _helpText, Maybe<string> _switchPattern, IHash<string, string> replacements)> commandHelp;
       protected StringHash<(string type, string argument, Maybe<string> _shortCut)> switchHelp;
       protected string prefix;
       protected string shortCut;
@@ -23,7 +23,7 @@ namespace Core.Applications.CommandProcessing
       public string Help()
       {
          var table = new TableMaker(("Command", Justification.Left), ("Help", Justification.Left)) { Title = "Commands" };
-         foreach (var (command, (_helpText, _)) in commandHelp)
+         foreach (var (command, (_helpText, _, _)) in commandHelp)
          {
             if (_helpText.If(out var helpText))
             {
@@ -38,12 +38,12 @@ namespace Core.Applications.CommandProcessing
       {
          if (commandHelp.If(command, out var tuple))
          {
-            var (_helpText, _switchPattern) = tuple;
+            var (_helpText, _switchPattern, replacements) = tuple;
             if (_helpText.If(out var helpText))
             {
                if (_switchPattern.If(out var switchPattern))
                {
-                  var formatter = new SwitchHelpFormatter(command, helpText, switchPattern, switchHelp, prefix, shortCut);
+                  var formatter = new SwitchHelpFormatter(command, helpText, switchPattern, switchHelp, prefix, shortCut, replacements);
                   if (formatter.Format().If(out var formattedHelp, out var exception))
                   {
                      return formattedHelp;
