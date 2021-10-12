@@ -405,7 +405,7 @@ namespace Core.Applications.CommandProcessing
             noStrings = noStrings.Drop(result.Length);
             if (noStrings.IsEmpty() || noStrings.IsMatch($"^ /s* ('{Prefix}' | '{ShortCut}'); f"))
             {
-               yield return (prefix, name, none<string>());
+               yield return (prefix, name, Maybe<string>.nil);
             }
             else if (noStrings.Matches("^ /s* /([quote]) /(-[quote]*) /1; f").If(out result))
             {
@@ -488,7 +488,7 @@ namespace Core.Applications.CommandProcessing
       protected Maybe<Unit> fillProperty(PropertyInfo propertyInfo, Maybe<string> _value)
       {
          var type = propertyInfo.PropertyType;
-         var _object = none<object>();
+         var _object = Maybe<object>.nil;
          if (_value.If(out var value))
          {
             if (type == typeof(bool))
@@ -528,7 +528,7 @@ namespace Core.Applications.CommandProcessing
             }
             else
             {
-               return none<Unit>();
+               return Maybe<Unit>.nil;
             }
          }
          else
@@ -589,7 +589,7 @@ namespace Core.Applications.CommandProcessing
             }
             else
             {
-               return none<object>();
+               return Maybe<object>.nil;
             }
          }
          else if (type == typeof(FolderName))
@@ -610,7 +610,7 @@ namespace Core.Applications.CommandProcessing
             }
             else
             {
-               return none<object>();
+               return Maybe<object>.nil;
             }
          }
          else if (type == typeof(Maybe<FileName>))
@@ -623,12 +623,12 @@ namespace Core.Applications.CommandProcessing
             }
             else
             {
-               return none<object>();
+               return Maybe<object>.nil;
             }
          }
          else
          {
-            return none<object>();
+            return Maybe<object>.nil;
          }
       }
 
@@ -644,7 +644,7 @@ namespace Core.Applications.CommandProcessing
          }
          else
          {
-            return none<object>();
+            return Maybe<object>.nil;
          }
       }
 
