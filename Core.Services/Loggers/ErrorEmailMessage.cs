@@ -1,4 +1,4 @@
-﻿using Core.Internet.Markup;
+﻿using Core.Markup.Xml;
 using Core.Strings;
 
 namespace Core.Services.Loggers

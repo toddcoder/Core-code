@@ -1,7 +1,7 @@
 ﻿using Core.Matching;
 using Core.Strings;
 
-namespace Core.Internet.Markup
+namespace Core.Markup.Xml
 {
    public class MarkupTextHolder
    {

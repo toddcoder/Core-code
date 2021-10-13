@@ -4,15 +4,19 @@ using System.Linq;
 using Core.Collections;
 using Core.Enumerables;
 
-namespace Core.Internet.Markup
+namespace Core.Markup.Xml
 {
    public class Attributes : IEnumerable<Attribute>
    {
-      protected Hash<string, Attribute> attributes;
+      protected StringHash<Attribute> attributes;
 
-      public Attributes() => attributes = new Hash<string, Attribute>();
+      public Attributes()
+      {
+         attributes = new StringHash<Attribute>(true);
+         Quote = QuoteType.Double;
+      }
 
-      public QuoteType Quote { get; set; } = QuoteType.Double;
+      public QuoteType Quote { get; set; }
 
       public Attribute Add(string name, string text)
       {
