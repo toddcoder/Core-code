@@ -122,7 +122,7 @@ namespace Core.Matching
             var rregex = new RRegex(regex, options);
             var newMatches = rregex.Matches(input)
                .Cast<RMatch>()
-               .Select((m, i) => new Match
+               .Select((m, i) => new Match()
                {
                   Index = m.Index,
                   Length = m.Length,

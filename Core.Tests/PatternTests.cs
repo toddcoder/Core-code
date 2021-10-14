@@ -14,9 +14,9 @@ namespace Core.Tests
       {
          if ("tsqlcop.sql.format.options.xml".Matches(pattern).If(out var result))
          {
-            for (var matchIndex = 0; matchIndex < result.MatchCount; matchIndex++)
+            foreach (var match in result)
             {
-               result[matchIndex, 1] = "style";
+               match.FirstGroup = "style";
             }
 
             Console.WriteLine(result);
