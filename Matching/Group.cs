@@ -10,7 +10,7 @@ namespace Core.Matching
 
       public int Length { get; set; }
 
-      public string Text { get; set; }
+      public virtual string Text { get; set; }
 
       public int Which { get; set; }
 

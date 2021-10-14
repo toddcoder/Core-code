@@ -152,6 +152,8 @@ namespace Core.Monads
          return this;
       }
 
+      public override Maybe<T> Maybe() => new None<T>();
+
       public override bool IsMatched => false;
 
       public override bool IsNotMatched => true;

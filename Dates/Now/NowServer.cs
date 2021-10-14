@@ -4,7 +4,7 @@ namespace Core.Dates.Now
 {
    public static class NowServer
    {
-      static NowBase now;
+      private static NowBase now;
 
       static NowServer() => SetToStandard();
 

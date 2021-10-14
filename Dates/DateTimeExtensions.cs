@@ -294,5 +294,21 @@ namespace Core.Dates
       public static void Sleep(this TimeSpan interval) => Thread.Sleep(interval);
 
       public static bool OldEnough(this DateTime date, TimeSpan age) => NowServer.Now - date >= age;
+
+      public static string DescriptionFromNow(this DateTime date)
+      {
+         var now = NowServer.Today;
+         var dateOnly = date.Truncate();
+         var difference = (int)now.Subtract(dateOnly).TotalDays;
+
+         return difference switch
+         {
+            0 => "Today",
+            1 => "Yesterday",
+            < 7 => dateOnly.DayOfWeek.ToString(),
+            _ when dateOnly.Year == now.Year => dateOnly.ToString("MMMM d"),
+            _ => dateOnly.ToString("MMMM d, yyyy")
+         };
+      }
    }
 }

@@ -216,9 +216,6 @@ namespace Core.Markup.Xml
          }
       }
 
-      public string ToPlainText()
-      {
-
-      }
+      public string ToPlainText() => string.Empty;
    }
 }

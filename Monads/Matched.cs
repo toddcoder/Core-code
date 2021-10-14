@@ -126,5 +126,7 @@ namespace Core.Monads
       public abstract Matched<T> OnFailed(Action<Exception> onFailed);
 
       public abstract Matched<T> OnNotMatched(Action onNotMatched);
+
+      public abstract Maybe<T> Maybe();
    }
 }
