@@ -19,6 +19,8 @@ namespace Core.Tests
 
          checkToday();
          checkYesterday();
+         checkDayBeforeYesterday();
+         checkThreeDaysAgo();
          check5DaysAgo();
          check7DaysAgo();
          check8DaysAgo();
@@ -34,6 +36,10 @@ namespace Core.Tests
       protected static void checkToday() => checkDate("Today", NowServer.Today);
 
       protected static void checkYesterday() => checkDate("Yesterday", NowServer.Today - 1.Day());
+
+      protected static void checkDayBeforeYesterday() => checkDate("Day before yesterday", NowServer.Now - 2.Days());
+
+      protected static void checkThreeDaysAgo() => checkDate("3 days ago", NowServer.Now - 3.Days());
 
       protected static void check5DaysAgo() => checkDate("5 days ago", NowServer.Today - 5.Days());
 
