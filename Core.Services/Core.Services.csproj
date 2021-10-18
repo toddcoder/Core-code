@@ -95,6 +95,10 @@
       <Project>{38ffc55b-fe73-4618-86cf-05a3ef9cecac}</Project>
       <Name>Core.Internet</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Core.Markup\Core.Markup.csproj">
+      <Project>{F8A07AC2-AE74-4681-AE71-784DC4E75D97}</Project>
+      <Name>Core.Markup</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

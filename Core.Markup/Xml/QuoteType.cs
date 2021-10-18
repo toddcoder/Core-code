@@ -1,4 +1,4 @@
-﻿namespace Core.Internet.Markup
+﻿namespace Core.Markup.Xml
 {
    public enum QuoteType
    {

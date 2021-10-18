@@ -135,5 +135,20 @@ namespace Core.Tests
             Console.WriteLine("Not matched");
          }
       }
+
+      [TestMethod]
+      public void MatchTextTest()
+      {
+         var input = "This is a test I'm testing";
+         if (input.Matches("/b 'test' /w*; f").If(out var result))
+         {
+            foreach (var match in result)
+            {
+               match.Text = $"<{match.Text}>";
+            }
+         }
+
+         Console.WriteLine(result);
+      }
    }
 }

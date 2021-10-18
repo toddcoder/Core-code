@@ -1,13 +1,78 @@
 ﻿using System;
 using System.Text;
+using System.Xml;
 using Core.Assertions;
 using Core.Computers;
+using Core.DataStructures;
+using Core.Monads;
+using static Core.Monads.MonadFunctions;
 using static Core.Strings.StringFunctions;
 
-namespace Core.Internet.Markup
+namespace Core.Markup.Xml
 {
    public class MarkupBuilder
    {
+      public static Result<MarkupBuilder> HtmlFromString(string html)
+      {
+         try
+         {
+            html.Must().Not.BeNullOrEmpty().OrThrow();
+
+            var document = new XmlDocument();
+            document.LoadXml(html);
+            using var nodeReader = new XmlNodeReader(document);
+            var settings = new XmlReaderSettings
+            {
+               ValidationType = ValidationType.None,
+               IgnoreWhitespace = true
+            };
+            using var reader = XmlReader.Create(nodeReader, settings);
+
+            var builder = new MarkupBuilder("html");
+            var element = builder.Root;
+            var elementStack = new MaybeStack<Element>();
+
+            while (reader.Read())
+            {
+               switch (reader.NodeType)
+               {
+                  case XmlNodeType.Element when reader.Value != "html":
+                     elementStack.Push(element);
+                     element = new Element
+                     {
+                        Name = reader.Name
+                     };
+                     break;
+                  case XmlNodeType.Text:
+                     element.Text = reader.Value;
+                     break;
+                  case XmlNodeType.EndElement when reader.Value != "html":
+                     if (elementStack.Pop().If(out element))
+                     {
+                     }
+                     else
+                     {
+                        return fail("Uneven elements");
+                     }
+
+                     break;
+                  case XmlNodeType.Attribute:
+                  {
+                     var attribute = new Attribute(reader.Name, reader.Value, QuoteType.Double);
+                     element.Attributes[attribute.Name] = attribute;
+                     break;
+                  }
+               }
+            }
+
+            return builder;
+         }
+         catch (Exception exception)
+         {
+            return exception;
+         }
+      }
+
       public enum DocType
       {
          None,
@@ -150,5 +215,7 @@ namespace Core.Internet.Markup
             tempFile.MoveTo(file);
          }
       }
+
+      public string ToPlainText() => string.Empty;
    }
 }

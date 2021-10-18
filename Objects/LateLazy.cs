@@ -20,8 +20,8 @@ namespace Core.Objects
          this.overriding = overriding;
          this.errorMessage = errorMessage;
 
-         _value = none<T>();
-         _activator = none<Func<T>>();
+         _value = nil;
+         _activator = nil;
       }
 
       public void ActivateWith(Func<T> activator)
@@ -30,8 +30,9 @@ namespace Core.Objects
 
          if (_activator.IsNone || overriding)
          {
-            _activator = activator.Some();
-            _value = none<T>();
+            _activator = activator;
+            _value = nil;
+            HasActivator = true;
          }
       }
 
@@ -47,7 +48,7 @@ namespace Core.Objects
             {
                var returnValue = activator();
                returnValue.Must().Not.BeNull().OrThrow();
-               _value = returnValue.Some();
+               _value = returnValue;
 
                return returnValue;
             }
@@ -61,6 +62,8 @@ namespace Core.Objects
       public bool IsActivated => _value.IsSome;
 
       public Maybe<T> AnyValue => _value;
+
+      public bool HasActivator { get; set; }
 
       public LateLazyTrying<T> TryTo => new(this);
 

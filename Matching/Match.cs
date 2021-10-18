@@ -32,6 +32,19 @@ namespace Core.Matching
          set => matchResult.Value[Which, index] = value;
       }
 
+      public override string Text
+      {
+         get => base.Text;
+         set
+         {
+            base.Text = value;
+            if (matchResult.HasActivator)
+            {
+               matchResult.Value[Which] = value;
+            }
+         }
+      }
+
       public string ZerothGroup
       {
          get => Groups.Of(0, Empty).Text;

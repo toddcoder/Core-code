@@ -1,7 +1,7 @@
 ﻿using Core.Assertions;
-using static Core.Internet.Markup.MarkupTextHolder;
+using static Core.Markup.Xml.MarkupTextHolder;
 
-namespace Core.Internet.Markup
+namespace Core.Markup.Xml
 {
    public class Attribute
    {
