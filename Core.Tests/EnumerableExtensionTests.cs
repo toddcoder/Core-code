@@ -122,5 +122,19 @@ namespace Core.Tests
             Console.Write($"{i,3}");
          }
       }
+
+      [TestMethod]
+      public void ByTest()
+      {
+         var numbers = 1.To(10).ToArray();
+         foreach (var by2 in numbers.By(2))
+         {
+            Console.WriteLine("----------");
+            foreach (var value in by2)
+            {
+               Console.WriteLine(value);
+            }
+         }
+      }
    }
 }

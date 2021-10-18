@@ -48,7 +48,8 @@ namespace Core.Dates
 
          protected Result<DateTime> validate()
          {
-            if (Year.If(out var year, out var exception) && Month.If(out var month, out exception) && Day.If(out var day, out exception))
+            if (Year.If(out var year, out var exception) && Month.If(out var month, out exception) &&
+               Day.If(out var day, out exception))
             {
                return valid(year, month, day);
             }
@@ -294,5 +295,24 @@ namespace Core.Dates
       public static void Sleep(this TimeSpan interval) => Thread.Sleep(interval);
 
       public static bool OldEnough(this DateTime date, TimeSpan age) => NowServer.Now - date >= age;
+
+      public static string DescriptionFromNow(this DateTime date)
+      {
+         var today = NowServer.Today;
+         var dateOnly = date.Truncate();
+         var difference = (int)today.Subtract(dateOnly).TotalDays;
+
+         static int dayOfWeek(DateTime dateTime) => (int)dateTime.DayOfWeek;
+
+         return difference switch
+         {
+            0 => "Today",
+            1 => "Yesterday",
+            <= 7 when dayOfWeek(today) > dayOfWeek(dateOnly) => dateOnly.DayOfWeek.ToString(),
+            <= 7 => $"Last {dateOnly.DayOfWeek}",
+            _ when dateOnly.Year == today.Year => dateOnly.ToString("MMMM d"),
+            _ => dateOnly.ToString("MMMM d, yyyy")
+         };
+      }
    }
 }

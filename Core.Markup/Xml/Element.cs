@@ -3,7 +3,7 @@ using System.Text;
 using Core.Computers;
 using Core.Strings;
 
-namespace Core.Internet.Markup
+namespace Core.Markup.Xml
 {
    public class Element : IRendering
    {

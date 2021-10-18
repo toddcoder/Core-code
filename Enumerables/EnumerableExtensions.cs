@@ -191,7 +191,8 @@ namespace Core.Enumerables
          }
       }
 
-      public static Result<T> FirstOrFail<T>(this IEnumerable<T> enumerable, Predicate<T> predicate, string failureMessage = "Default value")
+      public static Result<T> FirstOrFail<T>(this IEnumerable<T> enumerable, Predicate<T> predicate,
+         string failureMessage = "Default value")
       {
          try
          {
@@ -224,7 +225,8 @@ namespace Core.Enumerables
          }
       }
 
-      public static Result<(T1, T2, T3)> FirstOrFail<T1, T2, T3>(this IEnumerable<(T1, T2, T3)> enumerable, Func<T1, T2, T3, bool> predicate,
+      public static Result<(T1, T2, T3)> FirstOrFail<T1, T2, T3>(this IEnumerable<(T1, T2, T3)> enumerable,
+         Func<T1, T2, T3, bool> predicate,
          string failureMessage = "Default value")
       {
          try
@@ -307,7 +309,8 @@ namespace Core.Enumerables
          }
       }
 
-      public static Result<(T1, T2, T3)> FirstOrFail<T1, T2, T3>(this IEnumerable<(T1, T2, T3)> enumerable, Func<T1, T2, T3, bool> predicate,
+      public static Result<(T1, T2, T3)> FirstOrFail<T1, T2, T3>(this IEnumerable<(T1, T2, T3)> enumerable,
+         Func<T1, T2, T3, bool> predicate,
          Func<string> failureMessage)
       {
          try
@@ -357,7 +360,8 @@ namespace Core.Enumerables
          }
       }
 
-      public static Result<T> LastOrFail<T>(this IEnumerable<T> enumerable, Predicate<T> predicate, string failureMessage = "Default value")
+      public static Result<T> LastOrFail<T>(this IEnumerable<T> enumerable, Predicate<T> predicate,
+         string failureMessage = "Default value")
       {
          try
          {
@@ -390,7 +394,8 @@ namespace Core.Enumerables
          }
       }
 
-      public static Result<(T1, T2, T3)> LastOrFail<T1, T2, T3>(this IEnumerable<(T1, T2, T3)> enumerable, Func<T1, T2, T3, bool> predicate,
+      public static Result<(T1, T2, T3)> LastOrFail<T1, T2, T3>(this IEnumerable<(T1, T2, T3)> enumerable,
+         Func<T1, T2, T3, bool> predicate,
          string failureMessage = "Default value")
       {
          try
@@ -454,7 +459,8 @@ namespace Core.Enumerables
          });
       }
 
-      public static Result<(T1, T2, T3)> LastOrFail<T1, T2, T3>(this IEnumerable<(T1, T2, T3)> enumerable, Func<T1, T2, T3, bool> predicate,
+      public static Result<(T1, T2, T3)> LastOrFail<T1, T2, T3>(this IEnumerable<(T1, T2, T3)> enumerable,
+         Func<T1, T2, T3, bool> predicate,
          Func<string> failureMessage)
       {
          return tryTo(() =>
@@ -522,7 +528,8 @@ namespace Core.Enumerables
          }
       }
 
-      public static Maybe<(T1, T2, T3)> FirstOrNone<T1, T2, T3>(this IEnumerable<(T1, T2, T3)> enumerable, Func<T1, T2, T3, bool> predicate)
+      public static Maybe<(T1, T2, T3)> FirstOrNone<T1, T2, T3>(this IEnumerable<(T1, T2, T3)> enumerable,
+         Func<T1, T2, T3, bool> predicate)
       {
          var first = enumerable.FirstOrDefault(i => predicate(i.Item1, i.Item2, i.Item3));
 
@@ -595,7 +602,8 @@ namespace Core.Enumerables
          }
       }
 
-      public static Maybe<(T1, T2, T3)> LastOrNone<T1, T2, T3>(this IEnumerable<(T1, T2, T3)> enumerable, Func<T1, T2, T3, bool> predicate)
+      public static Maybe<(T1, T2, T3)> LastOrNone<T1, T2, T3>(this IEnumerable<(T1, T2, T3)> enumerable,
+         Func<T1, T2, T3, bool> predicate)
       {
          var last = enumerable.LastOrDefault(i => predicate(i.Item1, i.Item2, i.Item3));
 
@@ -664,7 +672,8 @@ namespace Core.Enumerables
          }
       }
 
-      public static Matched<(T1, T2, T3)> FirstOrNotMatched<T1, T2, T3>(this IEnumerable<(T1, T2, T3)> enumerable, Func<T1, T2, T3, bool> predicate)
+      public static Matched<(T1, T2, T3)> FirstOrNotMatched<T1, T2, T3>(this IEnumerable<(T1, T2, T3)> enumerable,
+         Func<T1, T2, T3, bool> predicate)
       {
          try
          {
@@ -729,7 +738,8 @@ namespace Core.Enumerables
          }
       }
 
-      public static Matched<(T1, T2, T3)> LastOrNotMatched<T1, T2, T3>(this IEnumerable<(T1, T2, T3)> enumerable, Func<T1, T2, T3, bool> predicate)
+      public static Matched<(T1, T2, T3)> LastOrNotMatched<T1, T2, T3>(this IEnumerable<(T1, T2, T3)> enumerable,
+         Func<T1, T2, T3, bool> predicate)
       {
          try
          {
@@ -799,7 +809,8 @@ namespace Core.Enumerables
          return enumerable.ToHash(kv => kv.Key, kv => kv.Value);
       }
 
-      public static Hash<TKey, TValue> ToHash<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> enumerable, IEqualityComparer<TKey> comparer)
+      public static Hash<TKey, TValue> ToHash<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> enumerable,
+         IEqualityComparer<TKey> comparer)
       {
          return enumerable.ToHash(kv => kv.Key, kv => kv.Value, comparer);
       }
@@ -890,7 +901,8 @@ namespace Core.Enumerables
          return result;
       }
 
-      public static Hash<TKey, Set<TValue>> GroupToSet<TKey, TValue>(this IEnumerable<TValue> enumerable, Func<TValue, TKey> groupingFunc)
+      public static Hash<TKey, Set<TValue>> GroupToSet<TKey, TValue>(this IEnumerable<TValue> enumerable,
+         Func<TValue, TKey> groupingFunc)
       {
          var hash = new Hash<TKey, Set<TValue>>();
          foreach (var value in enumerable)
@@ -929,7 +941,8 @@ namespace Core.Enumerables
          return hash;
       }
 
-      public static (IEnumerable<T> isTrue, IEnumerable<T> isFalse) Partition<T>(this IEnumerable<T> enumerable, Predicate<T> predicate)
+      public static (IEnumerable<T> isTrue, IEnumerable<T> isFalse) Partition<T>(this IEnumerable<T> enumerable,
+         Predicate<T> predicate)
       {
          var isTrue = new List<T>();
          var isFalse = new List<T>();
@@ -1085,7 +1098,8 @@ namespace Core.Enumerables
 
       public static bool AtLeastOne<T>(this IEnumerable<T> enumerable) => enumerable.FirstOrNone().IsSome;
 
-      public static bool AtLeastOne<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate) => enumerable.FirstOrNone(predicate).IsSome;
+      public static bool AtLeastOne<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate) =>
+         enumerable.FirstOrNone(predicate).IsSome;
 
       public static IEnumerable<T> Do<T>(this IEnumerable<T> enumerable, Action<T> action)
       {
@@ -1109,7 +1123,8 @@ namespace Core.Enumerables
          }
       }
 
-      public static IEnumerable<T> DoIfElse<T>(this IEnumerable<T> enumerable, Predicate<T> predicate, Action<T> ifTrue, Action<T> ifFalse)
+      public static IEnumerable<T> DoIfElse<T>(this IEnumerable<T> enumerable, Predicate<T> predicate, Action<T> ifTrue,
+         Action<T> ifFalse)
       {
          foreach (var value in enumerable)
          {
@@ -1126,7 +1141,8 @@ namespace Core.Enumerables
          }
       }
 
-      public static bool AllMatch<T1, T2>(this IEnumerable<T1> leftEnumerable, IEnumerable<T2> rightEnumerable, Func<T1, T2, bool> matcher,
+      public static bool AllMatch<T1, T2>(this IEnumerable<T1> leftEnumerable, IEnumerable<T2> rightEnumerable,
+         Func<T1, T2, bool> matcher,
          bool mustBeSameLength = true)
       {
          var left = leftEnumerable.ToArray();
@@ -1148,7 +1164,8 @@ namespace Core.Enumerables
          return true;
       }
 
-      public static IEnumerable<(T1, Maybe<T2>)> AllMatched<T1, T2>(this IEnumerable<T1> leftEnumerable, IEnumerable<T2> rightEnumerable,
+      public static IEnumerable<(T1, Maybe<T2>)> AllMatched<T1, T2>(this IEnumerable<T1> leftEnumerable,
+         IEnumerable<T2> rightEnumerable,
          Func<T1, T2, bool> matcher)
       {
          var rightArray = rightEnumerable.ToArray();
@@ -1202,12 +1219,22 @@ namespace Core.Enumerables
          }
       }
 
-      public static IEnumerable<(T1, T2, T3, T4)> For<T1, T2, T3, T4>(this IEnumerable<(T1, T2, T3, T4)> enumerable, Action<T1, T2, T3, T4> action)
+      public static IEnumerable<(T1, T2, T3, T4)> For<T1, T2, T3, T4>(this IEnumerable<(T1, T2, T3, T4)> enumerable,
+         Action<T1, T2, T3, T4> action)
       {
          foreach (var (item1, item2, item3, item4) in enumerable)
          {
             action(item1, item2, item3, item4);
             yield return (item1, item2, item3, item4);
+         }
+      }
+
+      public static IEnumerable<IEnumerable<T>> By<T>(this IEnumerable<T> enumerable, int count)
+      {
+         var array = enumerable.ToArray();
+         for (var i = 0; i < array.Length; i += count)
+         {
+            yield return array.Skip(i).Take(count);
          }
       }
    }

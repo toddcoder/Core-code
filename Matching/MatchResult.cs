@@ -31,6 +31,11 @@ namespace Core.Matching
          this.namesToIndexes = namesToIndexes;
          this.slicer = slicer;
          this.input = input;
+
+         foreach (var match in this.matches)
+         {
+            match.MatchResult = this;
+         }
       }
 
       public string Input => input;
@@ -321,6 +326,12 @@ namespace Core.Matching
       {
          get => this[9];
          set => this[9] = value;
+      }
+
+      public string ZerothGroup
+      {
+         get => this[0, 0];
+         set => this[0, 0] = value;
       }
 
       public string FirstGroup

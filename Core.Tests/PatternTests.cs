@@ -14,9 +14,9 @@ namespace Core.Tests
       {
          if ("tsqlcop.sql.format.options.xml".Matches(pattern).If(out var result))
          {
-            for (var matchIndex = 0; matchIndex < result.MatchCount; matchIndex++)
+            foreach (var match in result)
             {
-               result[matchIndex, 1] = "style";
+               match.FirstGroup = "style";
             }
 
             Console.WriteLine(result);
@@ -134,6 +134,21 @@ namespace Core.Tests
          {
             Console.WriteLine("Not matched");
          }
+      }
+
+      [TestMethod]
+      public void MatchTextTest()
+      {
+         var input = "This is a test I'm testing";
+         if (input.Matches("/b 'test' /w*; f").If(out var result))
+         {
+            foreach (var match in result)
+            {
+               match.Text = $"<{match.Text}>";
+            }
+         }
+
+         Console.WriteLine(result);
       }
    }
 }

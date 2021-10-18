@@ -6,7 +6,7 @@ using Core.Assertions;
 using Core.Computers;
 using Core.Enumerables;
 
-namespace Core.Internet.Markup
+namespace Core.Markup.Xml
 {
    public class Elements : IRendering
    {

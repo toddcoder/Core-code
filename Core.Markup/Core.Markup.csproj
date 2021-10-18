@@ -103,6 +103,17 @@
     <Compile Include="Rtf\TableCell.cs" />
     <Compile Include="Rtf\ConversionExtensions.cs" />
     <Compile Include="Rtf\TwoInOneStyle.cs" />
+    <Compile Include="Xml\Attribute.cs" />
+    <Compile Include="Xml\Attributes.cs" />
+    <Compile Include="Xml\Element.cs" />
+    <Compile Include="Xml\Elements.cs" />
+    <Compile Include="Xml\IRendering.cs" />
+    <Compile Include="Xml\IText.cs" />
+    <Compile Include="Xml\MarkupBuilder.cs" />
+    <Compile Include="Xml\MarkupExtensions.cs" />
+    <Compile Include="Xml\MarkupReader.cs" />
+    <Compile Include="Xml\MarkupTextHolder.cs" />
+    <Compile Include="Xml\QuoteType.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core.csproj">
@@ -110,6 +121,8 @@
       <Name>Core</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Html\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

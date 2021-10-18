@@ -162,6 +162,8 @@ namespace Core.Monads
 
       public override Matched<T> OnNotMatched(Action onNotMatched) => this;
 
+      public override Maybe<T> Maybe() => new None<T>();
+
       public override bool IsMatched => false;
 
       public override bool IsNotMatched => false;

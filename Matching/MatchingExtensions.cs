@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 using Core.Monads;
 using Core.Strings;
-using static Core.Monads.MonadFunctions;
 using RRegex = System.Text.RegularExpressions.Regex;
 
 namespace Core.Matching
@@ -169,17 +168,7 @@ namespace Core.Matching
 
       public static Matched<MatchResult> Matched(this string input, Pattern pattern) => pattern.MatchedBy(input);
 
-      public static Maybe<MatchResult> Matches(this string input, Pattern pattern)
-      {
-         if (pattern.MatchedBy(input).If(out var result))
-         {
-            return result.Some();
-         }
-         else
-         {
-            return none<MatchResult>();
-         }
-      }
+      public static Maybe<MatchResult> Matches(this string input, Pattern pattern) => pattern.MatchedBy(input).Maybe();
 
       public static Pattern Pattern(this string pattern, bool ignoreCase, bool multiline, bool friendly)
       {

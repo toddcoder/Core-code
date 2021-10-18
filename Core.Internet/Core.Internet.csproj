@@ -44,17 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Http\HttpClientExtensions.cs" />
-    <Compile Include="Markup\Attributes.cs" />
-    <Compile Include="Markup\Element.cs" />
-    <Compile Include="Markup\Elements.cs" />
-    <Compile Include="Markup\IRendering.cs" />
-    <Compile Include="Markup\IText.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Markup\QuoteType.cs" />
-    <Compile Include="Markup\Attribute.cs" />
-    <Compile Include="Markup\MarkupBuilder.cs" />
-    <Compile Include="Markup\MarkupExtensions.cs" />
-    <Compile Include="Markup\MarkupTextHolder.cs" />
     <Compile Include="Smtp\Address.cs" />
     <Compile Include="Smtp\Emailer.cs" />
     <Compile Include="Smtp\EmailerTrying.cs" />
@@ -66,6 +56,8 @@
       <Name>Core</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Markup\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

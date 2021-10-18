@@ -6,13 +6,13 @@ using Core.Matching;
 using Core.Monads;
 using static Core.Monads.AttemptFunctions;
 
-namespace Core.Internet.Markup
+namespace Core.Markup.Xml
 {
    public static class MarkupExtensions
    {
-      private const string REGEX_EMPTY_ELEMENT = "'<' /(-['//!'] -['>']+ -['//']) '><//' /(-['>']+) '>'; f";
+      private const string PATTERN_EMPTY_ELEMENT = "'<' /(-['//!'] -['>']+ -['//']) '><//' /(-['>']+) '>'; f";
       private const string TEXT_EMPTY_ELEMENT = "<$1/>";
-      private const string REGEX_HEADER = "/s* '<?' -['?']+ '?>'; mf";
+      private const string PATTERN_HEADER = "/s* '<?' -['?']+ '?>'; mf";
 
       private static Result<string> fromStream(Stream stream, Encoding encoding) => tryTo(() =>
       {
@@ -29,7 +29,7 @@ namespace Core.Internet.Markup
 
          var document = new XmlDocument();
          document.LoadXml(markup);
-         document.LoadXml(document.OuterXml.Substitute(REGEX_EMPTY_ELEMENT, TEXT_EMPTY_ELEMENT));
+         document.LoadXml(document.OuterXml.Substitute(PATTERN_EMPTY_ELEMENT, TEXT_EMPTY_ELEMENT));
 
          using var stream = new MemoryStream();
          using var writer = new XmlTextWriter(stream, encoding) { Formatting = Formatting.Indented, Indentation = 3, QuoteChar = quoteChar };
@@ -38,7 +38,7 @@ namespace Core.Internet.Markup
 
          if (fromStream(stream, encoding).If(out var text))
          {
-            return includeHeader ? text : text.Substitute(REGEX_HEADER, string.Empty).Trim();
+            return includeHeader ? text : text.Substitute(PATTERN_HEADER, string.Empty).Trim();
          }
          else
          {
