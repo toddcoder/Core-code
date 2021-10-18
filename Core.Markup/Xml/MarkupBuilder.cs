@@ -36,7 +36,7 @@ namespace Core.Markup.Xml
             {
                switch (reader.NodeType)
                {
-                  case XmlNodeType.Element:
+                  case XmlNodeType.Element when reader.Value != "html":
                      elementStack.Push(element);
                      element = new Element
                      {
@@ -46,7 +46,7 @@ namespace Core.Markup.Xml
                   case XmlNodeType.Text:
                      element.Text = reader.Value;
                      break;
-                  case XmlNodeType.EndElement:
+                  case XmlNodeType.EndElement when reader.Value != "html":
                      if (elementStack.Pop().If(out element))
                      {
                      }
