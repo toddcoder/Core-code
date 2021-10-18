@@ -50,5 +50,19 @@ namespace Core.Tests
       protected static void check30DaysAgo() => checkDate("30 days ago", NowServer.Today - 30.Days());
 
       protected static void checkAYearAgo() => checkDate("1 year ago", NowServer.Today - 365.Days());
+
+      [TestMethod]
+      public void IncrementalDateDescriptionTest()
+      {
+         var beginningDate = Value.DateTime("06/01/2021");
+         DateIncrementer incrementer = beginningDate;
+         NowServer.SetToTest(incrementer);
+
+         for (var i = 0; i <= 30; i++)
+         {
+            var date = NowServer.Now - i.Days();
+            Console.WriteLine($"{date:d} [{date.DayOfWeek}] -> {date.DescriptionFromNow()}");
+         }
+      }
    }
 }
