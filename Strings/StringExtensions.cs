@@ -902,6 +902,10 @@ namespace Core.Strings
 
       public static bool IsEmpty(this string source) => string.IsNullOrEmpty(source);
 
+      public static bool IsNotWhiteSpace(this string source) => !string.IsNullOrWhiteSpace(source);
+
+      public static bool IsWhiteSpace(this string source) => string.IsNullOrWhiteSpace(source);
+
       public static bool Has(this string source, string substring, bool ignoreCase = false)
       {
          if (source.IsNotEmpty() && substring.IsNotEmpty())

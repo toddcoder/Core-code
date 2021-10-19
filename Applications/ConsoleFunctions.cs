@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using Core.Monads;
+using Core.Strings;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Applications
@@ -64,6 +65,70 @@ namespace Core.Applications
          }
 
          Console.Write(TWIRL[progress % TWIRL.Length]);
+      }
+
+      public static Maybe<string> readConsole(string prompt, string suggestion)
+      {
+         Console.Write(prompt);
+         var left = Console.CursorLeft;
+         Console.Write(suggestion);
+
+         Maybe<string> _input = suggestion;
+         var looping = true;
+         while (looping)
+         {
+            var key = Console.ReadKey(true);
+            switch (key.Key)
+            {
+               case ConsoleKey.Enter:
+                  Console.WriteLine();
+                  looping = false;
+                  break;
+               case ConsoleKey.Backspace when key.Modifiers.HasFlag(ConsoleModifiers.Control):
+               {
+                  var length = _input.Map(i => i.Length).DefaultTo(() => 0);
+                  if (length > 0)
+                  {
+                     var backspaces = '\b'.Repeat(length);
+                     Console.Write(backspaces);
+                     Console.Write(" ".Repeat(length));
+                     Console.Write(backspaces);
+                     _input = "";
+                  }
+
+                  break;
+               }
+               case ConsoleKey.Backspace:
+               {
+                  if (Console.CursorLeft != left)
+                  {
+                     Console.Write('\b');
+                     Console.Write(" ");
+                     Console.Write('\b');
+                     _input = _input.Map(i => i.Drop(-1));
+                  }
+
+                  break;
+               }
+               case ConsoleKey.Escape:
+                  _input = nil;
+                  looping = false;
+                  Console.WriteLine();
+                  break;
+               default:
+               {
+                  if (char.IsLetterOrDigit(key.KeyChar) || char.IsPunctuation(key.KeyChar) || char.IsWhiteSpace(key.KeyChar))
+                  {
+                     _input = _input.Map(i => i + key.KeyChar);
+                     Console.Write(key.KeyChar);
+                  }
+
+                  break;
+               }
+            }
+         }
+
+         return _input;
       }
    }
 }

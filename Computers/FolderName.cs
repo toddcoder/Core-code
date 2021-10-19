@@ -17,18 +17,25 @@ using Core.Numbers;
 using Core.Strings;
 using static System.IO.Directory;
 using static Core.Computers.ComputerFunctions;
+using static Core.Computers.FullPathFunctions;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Computers
 {
-   public class FolderName : IComparable, IComparable<FolderName>, IEquatable<FolderName>
+   public class FolderName : IComparable, IComparable<FolderName>, IEquatable<FolderName>, IFullPath, IValidPath<FolderName>
    {
       public class Try
       {
+         [Obsolete("Use static FromString")]
          public static Result<FolderName> FromString(string folder)
          {
             return folder.Must().BeAValidFolderName().OrFailure().Map(f => (FolderName)f);
          }
+      }
+
+      public static Result<FolderName> FromString(string folder)
+      {
+         return folder.Must().BeAValidFolderName().OrFailure().Map(f => (FolderName)f);
       }
 
       protected const int MAX_PATH = 260;
@@ -63,7 +70,7 @@ namespace Core.Computers
          return newFolder;
       }
 
-      public static FolderName CreateRootOnly(string root) => new(root, new string[0]);
+      public static FolderName CreateRootOnly(string root) => new(root, Array.Empty<string>());
 
       protected static FolderName specialFolder(Environment.SpecialFolder folder) => Environment.GetFolderPath(folder);
 
@@ -101,11 +108,11 @@ namespace Core.Computers
          {
             if (Environment.GetCommandLineArgs()[0].Matches(@"^ /(.+) '\' -['\']+ '.'('exe' | 'dll') $; f").If(out var result))
             {
-               return ((FolderName)result.FirstGroup).Some();
+               return (FolderName)result.FirstGroup;
             }
             else
             {
-               return none<FolderName>();
+               return nil;
             }
          }
       }
@@ -228,18 +235,18 @@ namespace Core.Computers
                var length = subfolders.Length - 1;
                if (length <= 0)
                {
-                  return CreateRootOnly(root).Some();
+                  return CreateRootOnly(root);
                }
                else
                {
                   var parentArray = new string[length];
                   Array.ConstrainedCopy(subfolders, 0, parentArray, 0, length);
-                  return new FolderName(root, parentArray).Some();
+                  return new FolderName(root, parentArray);
                }
             }
             else
             {
-               return none<FolderName>();
+               return nil;
             }
          }
       }
@@ -248,26 +255,26 @@ namespace Core.Computers
       {
          if (count > 0)
          {
-            var result = none<FolderName>();
+            var _result = Maybe<FolderName>.nil;
             var self = this;
             for (var i = 0; i < count; i++)
             {
-               result = self.Parent;
-               if (result.If(out var parent))
+               _result = self.Parent;
+               if (_result.If(out var parent))
                {
                   self = parent;
                }
                else
                {
-                  return result;
+                  return _result;
                }
             }
 
-            return result;
+            return _result;
          }
          else
          {
-            return none<FolderName>();
+            return nil;
          }
       }
 
@@ -324,7 +331,7 @@ namespace Core.Computers
             }
             else
             {
-               subfolders = new string[0];
+               subfolders = Array.Empty<string>();
             }
          }
       }
@@ -418,7 +425,7 @@ namespace Core.Computers
          }
          else
          {
-            return new string[0];
+            return Array.Empty<string>();
          }
       }
 
@@ -442,7 +449,7 @@ namespace Core.Computers
          setFullPath();
       }
 
-      protected void initialize(string newRoot) => initialize(newRoot, new string[0]);
+      protected void initialize(string newRoot) => initialize(newRoot, Array.Empty<string>());
 
       protected void setFullPath(string folder)
       {
@@ -465,7 +472,7 @@ namespace Core.Computers
             folderSubfolders = folderSubfolders.Substring(1);
          }
 
-         initialize(folderRoot, folderSubfolders.IsEmpty() ? new string[0] : folderSubfolders.Split(@"'\'; f"));
+         initialize(folderRoot, folderSubfolders.IsEmpty() ? Array.Empty<string>() : folderSubfolders.Split(@"'\'; f"));
       }
 
       public void CreateIfNonExistent()
@@ -951,5 +958,9 @@ namespace Core.Computers
       public FolderName Combine(string subPath) => Path.Combine(fullPath, subPath);
 
       public bool ContainsImmediateFolderName(string name) => Combine(name).Exists();
+
+      public Result<FolderName> Validate(bool allowRelativePaths = false) => ValidatePath(this, allowRelativePaths).Map(s => (FolderName)s);
+
+      public bool IsValid => Validate(true).IsSuccessful;
    }
 }
