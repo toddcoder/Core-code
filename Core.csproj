@@ -176,6 +176,7 @@
     <Compile Include="Computers\FileArgs.cs" />
     <Compile Include="Computers\FileExceptionArgs.cs" />
     <Compile Include="Computers\FileFolderExtensions.cs" />
+    <Compile Include="Computers\FullPathFunctions.cs" />
     <Compile Include="Computers\FileName.cs" />
     <Compile Include="Computers\FileNameCore.cs" />
     <Compile Include="Computers\FileNameMappedReader.cs" />
@@ -185,8 +186,10 @@
     <Compile Include="Computers\FolderName.cs" />
     <Compile Include="Computers\FolderNameTrying.cs" />
     <Compile Include="Computers\Identity.cs" />
+    <Compile Include="Computers\IFullPath.cs" />
     <Compile Include="Computers\Impersonator.cs" />
     <Compile Include="Computers\ImpersonatorArguments.cs" />
+    <Compile Include="Computers\IValidPath.cs" />
     <Compile Include="Computers\Synchronization\FailedFileArgs.cs" />
     <Compile Include="Computers\Synchronization\FailedFolderArgs.cs" />
     <Compile Include="Computers\Synchronization\FileArgs.cs" />

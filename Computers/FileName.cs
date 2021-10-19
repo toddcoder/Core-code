@@ -11,21 +11,25 @@ using Core.Monads;
 using Core.Numbers;
 using Core.Objects;
 using Core.Strings;
+using static Core.Computers.FullPathFunctions;
 using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
 using static Core.Strings.StringFunctions;
 
 namespace Core.Computers
 {
-   public class FileName : IComparable, IComparable<FileName>, IEquatable<FileName>
+   public class FileName : IComparable, IComparable<FileName>, IEquatable<FileName>, IFullPath, IValidPath<FileName>
    {
       public class Try
       {
+         [Obsolete("Use static FromString")]
          public static Result<FileName> FromString(string file)
          {
             return file.Must().BeAValidFileName().OrFailure().Map(f => (FileName)f);
          }
       }
+
+      public static Result<FileName> FromString(string file) => file.Must().BeAValidFileName().OrFailure().Map(f => (FileName)f);
 
       protected const string REGEX_VALID_FILENAME = @"^ ((['a-zA-Z'] ':' | '\') ('\' -['\']+)* '\')? (-['.']+ ('.' -['.\']+)?) $; f";
 
@@ -92,11 +96,11 @@ namespace Core.Computers
             var fileName = Path.GetFileNameWithoutExtension(name);
             var extension = Path.GetExtension(name);
 
-            return Path.Combine(ResolveFolder(folder), fileName + extension).Some();
+            return Path.Combine(ResolveFolder(folder), fileName + extension);
          }
          catch
          {
-            return none<string>();
+            return nil;
          }
       }
 
@@ -415,11 +419,11 @@ namespace Core.Computers
             if (clone.Folder.Parent.If(out var folderName))
             {
                clone.Folder = folderName;
-               return clone.Some();
+               return clone;
             }
             else
             {
-               return none<FileName>();
+               return nil;
             }
          }
       }
@@ -461,11 +465,11 @@ namespace Core.Computers
       {
          if (limit < 3)
          {
-            return none<FileName>();
+            return nil;
          }
          else if (fullPath.Length <= limit)
          {
-            return Clone().Some();
+            return Clone();
          }
          else
          {
@@ -484,11 +488,11 @@ namespace Core.Computers
                var truncatedName = new FileName(result);
                truncatedName.replaceTildes();
 
-               return truncatedName.Some();
+               return truncatedName;
             }
             else
             {
-               return none<FileName>();
+               return nil;
             }
          }
       }
@@ -538,20 +542,20 @@ namespace Core.Computers
                   var targetFile = Folder.File(name + suffix, extension);
                   if (!targetFile.Exists())
                   {
-                     return targetFile.Success();
+                     return targetFile;
                   }
                }
 
-               return $"Couldn't generate next file for {fullPath}".Failure<FileName>();
+               return fail($"Couldn't generate next file for {fullPath}");
             }
             else
             {
-               return this.Success();
+               return this;
             }
          }
          catch (Exception exception)
          {
-            return failure<FileName>(exception);
+            return exception;
          }
       }
 
@@ -997,13 +1001,17 @@ namespace Core.Computers
             var newFile = folder + newName;
             if (!newFile.Exists())
             {
-               return newFile.Some();
+               return newFile;
             }
          }
 
-         return none<FileName>();
+         return nil;
       }
 
       public FileNameCore Core => new(this);
+
+      public Result<FileName> Validate(bool allowRelativePaths = false) => ValidatePath(this, allowRelativePaths).Map(s => (FileName)s);
+
+      public bool IsValid => Validate(true).IsSuccessful;
    }
 }
