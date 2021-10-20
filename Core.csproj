@@ -63,6 +63,7 @@
     <Compile Include="Applications\Async\AsyncFunctions.cs" />
     <Compile Include="Applications\Async\ReleaseDisposable.cs" />
     <Compile Include="Applications\CancelAction.cs" />
+    <Compile Include="Applications\CancelException.cs" />
     <Compile Include="Applications\CancelTask.cs" />
     <Compile Include="Applications\CancelTasks.cs" />
     <Compile Include="Applications\CommandLine.cs" />

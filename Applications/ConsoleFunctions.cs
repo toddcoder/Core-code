@@ -67,68 +67,74 @@ namespace Core.Applications
          Console.Write(TWIRL[progress % TWIRL.Length]);
       }
 
-      public static Maybe<string> readConsole(string prompt, string suggestion)
+      public static Result<string> readConsole(string prompt, string suggestion)
       {
-         Console.Write(prompt);
-         var left = Console.CursorLeft;
-         Console.Write(suggestion);
-
-         Maybe<string> _input = suggestion;
-         var looping = true;
-         while (looping)
+         try
          {
-            var key = Console.ReadKey(true);
-            switch (key.Key)
+            Console.Write(prompt);
+            var left = Console.CursorLeft;
+            Console.Write(suggestion);
+
+            Result<string> _input = suggestion;
+            var looping = true;
+            while (looping)
             {
-               case ConsoleKey.Enter:
-                  Console.WriteLine();
-                  looping = false;
-                  break;
-               case ConsoleKey.Backspace when key.Modifiers.HasFlag(ConsoleModifiers.Control):
+               var key = Console.ReadKey(true);
+               switch (key.Key)
                {
-                  var length = _input.Map(i => i.Length).DefaultTo(() => 0);
-                  if (length > 0)
+                  case ConsoleKey.Enter:
+                     Console.WriteLine();
+                     looping = false;
+                     break;
+                  case ConsoleKey.Backspace when key.Modifiers.HasFlag(ConsoleModifiers.Control):
                   {
-                     var backspaces = '\b'.Repeat(length);
-                     Console.Write(backspaces);
-                     Console.Write(" ".Repeat(length));
-                     Console.Write(backspaces);
-                     _input = "";
-                  }
+                     if (_input.Map(i => i.Length).If(out var length) && length > 0)
+                     {
+                        var backspaces = '\b'.Repeat(length);
+                        Console.Write(backspaces);
+                        Console.Write(" ".Repeat(length));
+                        Console.Write(backspaces);
+                        _input = "";
+                     }
 
-                  break;
-               }
-               case ConsoleKey.Backspace:
-               {
-                  if (Console.CursorLeft != left)
+                     break;
+                  }
+                  case ConsoleKey.Backspace:
                   {
-                     Console.Write('\b');
-                     Console.Write(" ");
-                     Console.Write('\b');
-                     _input = _input.Map(i => i.Drop(-1));
-                  }
+                     if (Console.CursorLeft != left)
+                     {
+                        Console.Write('\b');
+                        Console.Write(" ");
+                        Console.Write('\b');
+                        _input = _input.Map(i => i.Drop(-1));
+                     }
 
-                  break;
-               }
-               case ConsoleKey.Escape:
-                  _input = nil;
-                  looping = false;
-                  Console.WriteLine();
-                  break;
-               default:
-               {
-                  if (char.IsLetterOrDigit(key.KeyChar) || char.IsPunctuation(key.KeyChar) || char.IsWhiteSpace(key.KeyChar))
+                     break;
+                  }
+                  case ConsoleKey.Escape:
+                     _input = new CancelException();
+                     looping = false;
+                     Console.WriteLine();
+                     break;
+                  default:
                   {
-                     _input = _input.Map(i => i + key.KeyChar);
-                     Console.Write(key.KeyChar);
-                  }
+                     if (char.IsLetterOrDigit(key.KeyChar) || char.IsPunctuation(key.KeyChar) || char.IsWhiteSpace(key.KeyChar))
+                     {
+                        _input = _input.Map(i => i + key.KeyChar);
+                        Console.Write(key.KeyChar);
+                     }
 
-                  break;
+                     break;
+                  }
                }
             }
-         }
 
-         return _input;
+            return _input;
+         }
+         catch (Exception exception)
+         {
+            return exception;
+         }
       }
    }
 }
