@@ -187,6 +187,12 @@ namespace Core.Monads
 
       public override Completion<T> Where(Predicate<T> predicate, Func<string> exceptionMessage) => this;
 
+      public override Maybe<T> Maybe() => Maybe<T>.nil;
+
+      public override Result<T> Result() => new Failure<T>(Exception);
+
+      public override Responding<T> Responding() => new FailedResponse<T>(Exception);
+
       public bool Equals(Interrupted<T> other)
       {
          return other is not null && ReferenceEquals(this, other) || Equals(exception, other.exception);

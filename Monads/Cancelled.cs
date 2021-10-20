@@ -1,4 +1,5 @@
 ﻿using System;
+using Core.Applications;
 using Core.Exceptions;
 using static Core.Monads.MonadFunctions;
 
@@ -183,6 +184,12 @@ namespace Core.Monads
       public override Completion<T> Where(Predicate<T> predicate, string exceptionMessage) => this;
 
       public override Completion<T> Where(Predicate<T> predicate, Func<string> exceptionMessage) => this;
+
+      public override Maybe<T> Maybe() => Maybe<T>.nil;
+
+      public override Result<T> Result() => new Failure<T>(new CancelException());
+
+      public override Responding<T> Responding() => Responding<T>.nil;
 
       public bool Equals(Cancelled<T> other) => true;
 

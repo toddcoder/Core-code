@@ -120,5 +120,11 @@ namespace Core.Monads
          action(this);
          return this;
       }
+
+      public abstract Maybe<T> Maybe();
+
+      public abstract Result<T> Result();
+
+      public abstract Responding<T> Responding();
    }
 }
