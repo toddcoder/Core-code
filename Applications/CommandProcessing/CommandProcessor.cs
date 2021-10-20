@@ -258,25 +258,18 @@ namespace Core.Applications.CommandProcessing
 
       protected void generateHelp(string rest)
       {
-         if (rest.Same("config"))
+         var generator = new HelpGenerator(this);
+         string help;
+         if (rest.IsEmpty())
          {
-            displayConfiguration();
+            help = generator.Help();
          }
-         else
+         else if (generator.Help(rest).IfNot(out help, out var exception))
          {
-            var generator = new HelpGenerator(this);
-            string help;
-            if (rest.IsEmpty())
-            {
-               help = generator.Help();
-            }
-            else if (generator.Help(rest).IfNot(out help, out var exception))
-            {
-               ExceptionWriter.WriteExceptionLine(exception);
-            }
+            ExceptionWriter.WriteExceptionLine(exception);
+         }
 
-            StandardWriter.WriteLine(help);
-         }
+         StandardWriter.WriteLine(help);
       }
 
       protected void displayConfiguration()
