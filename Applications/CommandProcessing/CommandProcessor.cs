@@ -307,25 +307,33 @@ namespace Core.Applications.CommandProcessing
 
       protected void handleConfiguration(string rest)
       {
-         if (rest.IsMatch($"^ '{Prefix}all' /b; f"))
+         if (rest.IsMatch($"^ '{Prefix}all' | '{ShortCut}a' /b; f"))
          {
             AllConfiguration();
          }
-         else if (rest.IsMatch($"^ '{Prefix}reset' /b; f"))
+         else if (rest.IsMatch($"^ '{Prefix}reset' | '{ShortCut}r' /b; f"))
          {
             ResetConfiguration();
          }
-         else if (rest.Matches($"^ /('{Prefix}set' | '{Prefix}get') /s+ /(/w [/w '-']*) /b /(.*) $; f").If(out var result))
+         else if (rest.Matches($"^ /('{Prefix}set' | '{Prefix}get' | '{ShortCut}s' | '{ShortCut}g') /s+ /(/w [/w '-']*) /b /(.*) $; f").If(out var result))
          {
             var (command, name, value) = result;
-            command = command.Drop(Prefix.Length);
+            if (command.Matches($"^ '{Prefix}' /('set' | 'get'); f").If(out result))
+            {
+               command = result.FirstGroup;
+            }
+            else if (command.Matches($"^ '{ShortCut}' /('s' | 'g'); f").If(out result))
+            {
+               command = result.FirstGroup;
+            }
+
             switch (command)
             {
-               case "set":
+               case "set" or "s":
                   value = value.TrimLeft().Unquotify();
                   SetConfiguration(name, value);
                   break;
-               case "get":
+               case "get" or "g":
                   GetConfiguration(name);
                   break;
             }
