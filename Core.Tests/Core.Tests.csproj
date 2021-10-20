@@ -100,6 +100,7 @@
     <Compile Include="HashTest.cs" />
     <Compile Include="DelimitedTextTests.cs" />
     <Compile Include="JsonTests.cs" />
+    <Compile Include="MarkupTests.cs" />
     <Compile Include="ObjectTests.cs" />
     <Compile Include="PatternTests.cs" />
     <Compile Include="MatchingTests.cs" />
