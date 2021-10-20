@@ -185,7 +185,9 @@ namespace Core.Monads
          return predicate(value) ? this : exceptionMessage().Failure<T>();
       }
 
-      public override Maybe<T> Maybe() => value.Some();
+      public override Maybe<T> Maybe() => value;
+
+      public override Responding<T> Responding() => Value;
 
       public override bool EqualToValueOf(Result<T> otherResult) => otherResult.If(out var otherValue) && ValueEqualTo(otherValue);
 

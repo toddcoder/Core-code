@@ -112,6 +112,8 @@ namespace Core.Monads
 
       public abstract Maybe<T> Maybe();
 
+      public abstract Responding<T> Responding();
+
       public abstract bool EqualToValueOf(Result<T> otherResult);
 
       public abstract bool ValueEqualTo(T otherValue);

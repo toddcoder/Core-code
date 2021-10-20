@@ -204,6 +204,12 @@ namespace Core.Monads
          return predicate(value) ? this : exceptionMessage().Interrupted<T>();
       }
 
+      public override Maybe<T> Maybe() => Value;
+
+      public override Result<T> Result() => Value;
+
+      public override Responding<T> Responding() => Value;
+
       public bool Equals(Completed<T> other)
       {
          return other is not null && (ReferenceEquals(this, other) || EqualityComparer<T>.Default.Equals(value, other.value));

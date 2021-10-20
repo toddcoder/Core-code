@@ -40,6 +40,32 @@ namespace Core.Monads
          }
       }
 
+      public static Responding<T> Response<T>(this T obj)
+      {
+         if (obj is null)
+         {
+            return new FailedResponse<T>(new Exception("Responses cannot be null"));
+         }
+         else if (obj is ITuple tuple)
+         {
+            for (var i = 0; i < tuple.Length; i++)
+            {
+               if (tuple[i] is null)
+               {
+                  return new FailedResponse<T>(new Exception("No tuple item can be null"));
+               }
+            }
+
+            return new Response<T>(obj);
+         }
+         else
+         {
+            return new Response<T>(obj);
+         }
+      }
+
+      public static Responding<T> FailedResponse<T>(this string message) => new FailedResponse<T>(new Exception(message));
+
       public static bool NotNull<T>(this T obj, out T value) => obj.Some().If(out value);
 
       public static Maybe<string> SomeIfNotEmpty(this string text) => maybe(text.IsNotEmpty(), text.Some);
@@ -945,6 +971,127 @@ namespace Core.Monads
          out Maybe<Exception> _exception)
       {
          if (completion.If(out var value, out _exception))
+         {
+            v1 = value.Item1;
+            v2 = value.Item2;
+            v3 = value.Item3;
+            v4 = value.Item4;
+
+            return true;
+         }
+         else
+         {
+            v1 = default;
+            v2 = default;
+            v3 = default;
+            v4 = default;
+
+            return false;
+         }
+      }
+
+      public static bool If<T1, T2>(this Responding<(T1, T2)> responding, out T1 v1, out T2 v2)
+      {
+         if (responding.If(out var value))
+         {
+            v1 = value.Item1;
+            v2 = value.Item2;
+
+            return true;
+         }
+         else
+         {
+            v1 = default;
+            v2 = default;
+
+            return false;
+         }
+      }
+
+      public static bool If<T1, T2>(this Responding<(T1, T2)> responding, out T1 v1, out T2 v2, out Maybe<Exception> _exception)
+      {
+         if (responding.If(out var value, out _exception))
+         {
+            v1 = value.Item1;
+            v2 = value.Item2;
+
+            return true;
+         }
+         else
+         {
+            v1 = default;
+            v2 = default;
+
+            return false;
+         }
+      }
+
+      public static bool If<T1, T2, T3>(this Responding<(T1, T2, T3)> responding, out T1 v1, out T2 v2, out T3 v3)
+      {
+         if (responding.If(out var value))
+         {
+            v1 = value.Item1;
+            v2 = value.Item2;
+            v3 = value.Item3;
+
+            return true;
+         }
+         else
+         {
+            v1 = default;
+            v2 = default;
+            v3 = default;
+
+            return false;
+         }
+      }
+
+      public static bool If<T1, T2, T3>(this Responding<(T1, T2, T3)> responding, out T1 v1, out T2 v2, out T3 v3, out Maybe<Exception> _exception)
+      {
+         if (responding.If(out var value, out _exception))
+         {
+            v1 = value.Item1;
+            v2 = value.Item2;
+            v3 = value.Item3;
+
+            return true;
+         }
+         else
+         {
+            v1 = default;
+            v2 = default;
+            v3 = default;
+
+            return false;
+         }
+      }
+
+      public static bool If<T1, T2, T3, T4>(this Responding<(T1, T2, T3, T4)> responding, out T1 v1, out T2 v2, out T3 v3, out T4 v4)
+      {
+         if (responding.If(out var value))
+         {
+            v1 = value.Item1;
+            v2 = value.Item2;
+            v3 = value.Item3;
+            v4 = value.Item4;
+
+            return true;
+         }
+         else
+         {
+            v1 = default;
+            v2 = default;
+            v3 = default;
+            v4 = default;
+
+            return false;
+         }
+      }
+
+      public static bool If<T1, T2, T3, T4>(this Responding<(T1, T2, T3, T4)> responding, out T1 v1, out T2 v2, out T3 v3, out T4 v4,
+         out Maybe<Exception> _exception)
+      {
+         if (responding.If(out var value, out _exception))
          {
             v1 = value.Item1;
             v2 = value.Item2;

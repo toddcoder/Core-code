@@ -67,7 +67,7 @@ namespace Core.Applications
          Console.Write(TWIRL[progress % TWIRL.Length]);
       }
 
-      public static Result<string> readConsole(string prompt, string suggestion)
+      public static Responding<string> readConsole(string prompt, string suggestion)
       {
          try
          {
@@ -75,7 +75,7 @@ namespace Core.Applications
             var left = Console.CursorLeft;
             Console.Write(suggestion);
 
-            Result<string> _input = suggestion;
+            Responding<string> _input = suggestion;
             var looping = true;
             while (looping)
             {
@@ -112,7 +112,7 @@ namespace Core.Applications
                      break;
                   }
                   case ConsoleKey.Escape:
-                     _input = new CancelException();
+                     _input = nil;
                      looping = false;
                      Console.WriteLine();
                      break;

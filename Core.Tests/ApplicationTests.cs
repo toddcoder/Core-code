@@ -370,8 +370,8 @@ namespace Core.Tests
       public void ConfigurationTest()
       {
          var processor = new TestProgram();
-         processor.Run("config set foobar \"x\"");
-         processor.Run("config get foobar");
+         processor.Run("config --set foobar \"x\"");
+         processor.Run("config -g foobar");
 
          Console.WriteLine(processor.Arguments);
       }

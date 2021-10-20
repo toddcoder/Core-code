@@ -142,7 +142,9 @@ namespace Core.Monads
 
       public override Result<T> Assert(Predicate<T> predicate, Func<string> exceptionMessage) => this;
 
-      public override Maybe<T> Maybe() => none<T>();
+      public override Maybe<T> Maybe() => Maybe<T>.nil;
+
+      public override Responding<T> Responding() => new FailedResponse<T>(Exception);
 
       public override bool EqualToValueOf(Result<T> otherResult) => false;
 

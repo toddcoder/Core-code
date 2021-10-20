@@ -30,6 +30,8 @@ namespace Core.Monads
 
       public override Matched<T> Matched() => value;
 
+      public override Responding<T> Responding() => value;
+
       [Obsolete("Use |")]
       public override Maybe<T> Or(Maybe<T> other) => this;
 
