@@ -40,6 +40,32 @@ namespace Core.Monads
          }
       }
 
+      public static Responding<T> Response<T>(this T obj)
+      {
+         if (obj is null)
+         {
+            return new FailedResponse<T>(new Exception("Responses cannot be null"));
+         }
+         else if (obj is ITuple tuple)
+         {
+            for (var i = 0; i < tuple.Length; i++)
+            {
+               if (tuple[i] is null)
+               {
+                  return new FailedResponse<T>(new Exception("No tuple item can be null"));
+               }
+            }
+
+            return new Response<T>(obj);
+         }
+         else
+         {
+            return new Response<T>(obj);
+         }
+      }
+
+      public static Responding<T> FailedResponse<T>(this string message) => new FailedResponse<T>(new Exception(message));
+
       public static bool NotNull<T>(this T obj, out T value) => obj.Some().If(out value);
 
       public static Maybe<string> SomeIfNotEmpty(this string text) => maybe(text.IsNotEmpty(), text.Some);

@@ -42,6 +42,8 @@ namespace Core.Monads
 
       public abstract Matched<T> Matched();
 
+      public abstract Responding<T> Responding();
+
       [Obsolete("Use |")]
       public abstract Maybe<T> Or(Maybe<T> other);
 

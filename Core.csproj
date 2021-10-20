@@ -269,6 +269,7 @@
     <Compile Include="Monads\Either.cs" />
     <Compile Include="Monads\EitherExtensions.cs" />
     <Compile Include="Monads\FailedMatch.cs" />
+    <Compile Include="Monads\FailedResponse.cs" />
     <Compile Include="Monads\Failure.cs" />
     <Compile Include="Monads\FailureEventArgs.cs" />
     <Compile Include="Monads\FullStackException.cs" />
@@ -280,6 +281,8 @@
     <Compile Include="Monads\Interrupted.cs" />
     <Compile Include="Monads\Nil.cs" />
     <Compile Include="Monads\NilWithMessage.cs" />
+    <Compile Include="Monads\NoResponse.cs" />
+    <Compile Include="Monads\Response.cs" />
     <Compile Include="Monads\Result.cs" />
     <Compile Include="Monads\Left.cs" />
     <Compile Include="Monads\Match.cs" />
@@ -298,6 +301,7 @@
     <Compile Include="Monads\Success.cs" />
     <Compile Include="Monads\SuccessEventArgs.cs" />
     <Compile Include="Monads\Unit.cs" />
+    <Compile Include="Monads\Responding.cs" />
     <Compile Include="Numbers\Between.cs" />
     <Compile Include="Numbers\Bits32.cs" />
     <Compile Include="Numbers\Comparison.cs" />

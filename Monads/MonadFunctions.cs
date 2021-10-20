@@ -31,6 +31,8 @@ namespace Core.Monads
 
       public static Result<T> failure<T>(Exception exception) => new Failure<T>(exception);
 
+      public static Responding<T> failedResponse<T>(Exception exception) => new FailedResponse<T>(exception);
+
       public static Matched<TParent> matched<TChild, TParent>(TChild value) where TChild : TParent
       {
          return new Match<TParent>(value);
@@ -68,6 +70,8 @@ namespace Core.Monads
             return failedMatch<T>(exception);
          }
       }
+
+      public static Responding<T> noResponse<T>() => new NoResponse<T>();
 
       public static Maybe<T> maybe<T>(bool test, Func<T> ifTrue) => test ? ifTrue().Some() : none<T>();
 
