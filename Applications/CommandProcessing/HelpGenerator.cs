@@ -52,10 +52,10 @@ namespace Core.Applications.CommandProcessing
             var length = firstLine.Length.MaxOf(80);
             writer.WriteLine("=".Repeat(length));
 
-            writer.WriteLine("config all : Display all configuration key/values in a table");
-            writer.WriteLine("       get <key> : Display a particular value at key");
-            writer.WriteLine("       set <key> <string> : Update item at key to value");
-            writer.WriteLine("       reset : Reset configuration to default values");
+            writer.WriteLine("config --all : Display all configuration key/values in a table");
+            writer.WriteLine("       --get <key> : Display a particular value at key");
+            writer.WriteLine("       --set <key> <string> : Update item at key to value");
+            writer.WriteLine("       --reset : Reset configuration to default values");
 
             return writer.ToString();
          }

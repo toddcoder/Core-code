@@ -307,17 +307,18 @@ namespace Core.Applications.CommandProcessing
 
       protected void handleConfiguration(string rest)
       {
-         if (rest.IsMatch("^ 'all' /b; f"))
+         if (rest.IsMatch($"^ '{Prefix}all' /b; f"))
          {
             AllConfiguration();
          }
-         else if (rest.IsMatch("^ 'reset' /b; f"))
+         else if (rest.IsMatch($"^ '{Prefix}reset' /b; f"))
          {
             ResetConfiguration();
          }
-         else if (rest.Matches("^ /('set' | 'get') /s+ /(/w [/w '-']*) /b /(.*) $; f").If(out var result))
+         else if (rest.Matches($"^ /('{Prefix}set' | '{Prefix}get') /s+ /(/w [/w '-']*) /b /(.*) $; f").If(out var result))
          {
             var (command, name, value) = result;
+            command = command.Drop(Prefix.Length);
             switch (command)
             {
                case "set":
