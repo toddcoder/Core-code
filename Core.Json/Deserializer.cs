@@ -37,11 +37,8 @@ namespace Core.Json
 
          void setItem(string value)
          {
-            var item =
-               from _group in peekGroup()
-               from _key in _propertyName
-               select (_group, _key);
-            if (item.If(out var group, out var key))
+            var key = _propertyName.DefaultTo(() => $"${itemCount()}");
+            if (peekGroup().If(out var group))
             {
                group.SetItem(key, new Item(key, value));
             }
@@ -128,6 +125,9 @@ namespace Core.Json
                      break;
                   case JsonTokenType.False:
                      setItem("false");
+                     break;
+                  case JsonTokenType.Null or JsonTokenType.Comment or JsonTokenType.None:
+                     setItem("");
                      break;
                }
             }
