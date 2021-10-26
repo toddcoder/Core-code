@@ -67,5 +67,13 @@ namespace Core.Tests
          var currentBranch = GitBranch.Current;
          currentBranch.DifferentFrom(develop, true).OnSuccess(onSuccess).OnFailure(onFailure);
       }
+
+      [TestMethod]
+      public void ShowMergeCommitTest()
+      {
+         FolderName.Current = @"\\vmdvw10estm57\Estream";
+         GitCommit commit = "2b7c75bdd0f9c186f21d5cf8f317a1f9a77559c3";
+         commit.ShowMerge().OnSuccess(onSuccess).OnFailure(onFailure);
+      }
    }
 }
