@@ -60,6 +60,7 @@
     <Compile Include="Code\Extents\Italic.cs" />
     <Compile Include="Code\Extents\Style.cs" />
     <Compile Include="Code\Extents\TextExtent.cs" />
+    <Compile Include="Html\StyleBuilder.cs" />
     <Compile Include="Parser\BaseParser.cs" />
     <Compile Include="Parser\BlocksParser.cs" />
     <Compile Include="Parser\ExtentsParser.cs" />
@@ -121,8 +122,6 @@
       <Name>Core</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Html\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

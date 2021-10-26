@@ -2067,7 +2067,7 @@ namespace Core.Strings
       {
          Maybe<int> matches()
          {
-            return source.Matches("^ '0x' /(['0-9a-fA-F']+) $; f").Map(m => int.Parse(m.FirstGroup, NumberStyles.HexNumber));
+            return source.Matches("^ ('0x')? /(['0-9a-fA-F']+) $; f").Map(m => int.Parse(m.FirstGroup, NumberStyles.HexNumber));
          }
 
          return maybe(source.IsNotEmpty(), matches);

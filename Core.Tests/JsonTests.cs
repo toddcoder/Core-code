@@ -25,6 +25,23 @@ namespace Core.Tests
       }
 
       [TestMethod]
+      public void Deserialization2Test()
+      {
+         FileName jsonFile = @"..\..\TestData\builds.json";
+         var source = jsonFile.Text;
+         var deserializer = new Deserializer(source);
+         if (deserializer.Deserialize().If(out var group, out var exception))
+         {
+            Console.WriteLine(group.Count);
+            Console.WriteLine(group);
+         }
+         else
+         {
+            Console.WriteLine($"Exception: {exception.Message}");
+         }
+      }
+
+      [TestMethod]
       public void WriterTest()
       {
          using var writer = new JsonWriter();
