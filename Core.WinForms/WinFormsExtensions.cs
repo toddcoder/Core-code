@@ -7,13 +7,16 @@ namespace Core.WinForms
    {
       public static void Do(this Control control, Action action)
       {
-         if (control.InvokeRequired)
+         if (!(control?.IsDisposed ?? false))
          {
-            control.Invoke(action);
-         }
-         else
-         {
-            action();
+            if (control.InvokeRequired)
+            {
+               control.Invoke(action);
+            }
+            else
+            {
+               action();
+            }
          }
       }
    }
