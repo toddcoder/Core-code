@@ -49,9 +49,9 @@ namespace Core.Markup.Rtf
          return block;
       }
 
-      public Section Section(SectionStartEnd type, Document doc)
+      public Section Section(SectionStartEnd type, Document document)
       {
-         var block = new Section(type, doc);
+         var block = new Section(type, document);
          blocks.Add(block);
 
          return block;

@@ -1199,7 +1199,6 @@ namespace Core.Strings
 
       public static string ToBase64(this string source) => source.ToBase64(Encoding.ASCII);
 
-
       [Obsolete("Use ConversionFunctions")]
       public static T ToEnumeration<T>(this string value, bool ignoreCase = true) where T : struct
       {
@@ -1235,6 +1234,7 @@ namespace Core.Strings
             return defaultValue;
          }
       }
+
       [Obsolete("Use ConversionFunctions")]
       public static T ToEnumeration<T>(this string value, T defaultValue) where T : struct => value.ToEnumeration(true, defaultValue);
 
@@ -2472,6 +2472,24 @@ namespace Core.Strings
          {
             yield return builder.ToString();
          }
+      }
+
+      public static string[] Divide(this string source, DividerType divider = DividerType.Comma)
+      {
+         var pattern = divider switch
+         {
+            DividerType.CrlLf => "/r/n | /r | /n; f",
+            DividerType.Tab => "/t; f",
+            DividerType.Whitespace => "/s+; f",
+            DividerType.Comma => "/s* ',' /s*; f",
+            DividerType.Semicolon => "/s* ';' /s*; f",
+            DividerType.Slash => "/s* '//' /s*; f",
+            DividerType.Backslash => @"/s* '\' /s*; f",
+            DividerType.Pipe => "/s* '|' /s*; f",
+            DividerType.Colon => "/s* ':' /s*; f",
+            _ => ""
+         };
+         return source.Split(pattern);
       }
    }
 }

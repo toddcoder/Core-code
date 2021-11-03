@@ -382,6 +382,7 @@
     <Compile Include="Matching\Parsers\UnmodifiedParser.cs" />
     <Compile Include="Strings\CharacterExtensions.cs" />
     <Compile Include="Strings\Csv.cs" />
+    <Compile Include="Strings\DividerType.cs" />
     <Compile Include="Strings\Formatter.cs" />
     <Compile Include="Strings\DelimitedTextStatus.cs" />
     <Compile Include="Strings\IStringStream.cs" />

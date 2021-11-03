@@ -155,6 +155,59 @@ namespace Core.Matching
          }
       }
 
+      public Maybe<Slice> NextSlice()
+      {
+         if (More)
+         {
+            var current = Current;
+            string line;
+            int sliceIndex;
+            if (current.Matches(REGEX_NEXT_LINE).If(out var result))
+            {
+               line = result.FirstGroup;
+               sliceIndex = this.index;
+               Advance(result.Length);
+            }
+            else
+            {
+               line = current;
+               sliceIndex = this.index;
+               Advance(line.Length);
+            }
+
+            return new Slice(line, sliceIndex, line.Length);
+         }
+         else
+         {
+            return nil;
+         }
+      }
+
+      public Maybe<Slice> PeekSlice()
+      {
+         _peekLength = nil;
+         if (More)
+         {
+            var current = Current;
+            string line;
+            if (current.Matches(REGEX_NEXT_LINE).If(out var result))
+            {
+               line = result.FirstGroup;
+            }
+            else
+            {
+               line = current;
+            }
+
+            _peekLength = line.Length;
+            return new Slice(line, index, line.Length);
+         }
+         else
+         {
+            return nil;
+         }
+      }
+
       public bool More => index < length;
 
       public int Index => index;
