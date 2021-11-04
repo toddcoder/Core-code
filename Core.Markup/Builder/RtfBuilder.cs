@@ -77,7 +77,7 @@ namespace Core.Markup.Builder
          }
       }
 
-      protected Maybe<FontStyle> addFontStyle(string specifier, FontStyle fontStyle)
+      protected static Maybe<FontStyle> addFontStyle(string specifier, FontStyle fontStyle)
       {
          if (specifier.IsMatch("'none' | 'bold' | 'italic' | 'underline' | 'super' | 'sub' | 'scaps' | 'strike'; f"))
          {
@@ -146,7 +146,7 @@ namespace Core.Markup.Builder
          }
       }
 
-      protected Result<string> formatParagraph(string specifierList, Paragraph paragraph)
+      protected static Result<string> formatParagraph(string specifierList, Paragraph paragraph)
       {
          try
          {
@@ -227,32 +227,144 @@ namespace Core.Markup.Builder
          }
       }
 
+      protected static Maybe<(IEnumerable<Slice>, string)> getSpecifiers(string text)
+      {
+         var slices = new List<Slice>();
+
+         while (true)
+         {
+            if (text.Matches("^ -(< '//') '//' /(.+?) '//(' /(-[')']+?) ')'; f ").If(out var result))
+            {
+               var (specifiers, index, _) = result.GetGroup(0, 1);
+               var (affectedText, _, length) = result.GetGroup(0, 2);
+               var slice = new Slice(specifiers, index, length);
+               slices.Add(slice);
+
+               result.FirstMatch = affectedText;
+               text = result.ToString();
+            }
+            else
+            {
+               break;
+            }
+         }
+
+         if (slices.Count > 0)
+         {
+            return (slices, text);
+         }
+         else
+         {
+            return nil;
+         }
+      }
+
+      protected Responding<Unit> formatBlockList(Paragraph paragraph, string line)
+      {
+         if (line.Matches("^ '[' /(-[']']+) ']'").If(out var result))
+         {
+            var specifiers = result.FirstGroup;
+            var _result =
+               from restFromCharFormat in formatCharFormat(specifiers, paragraph.DefaultCharFormat)
+               from restFromParagraph in formatParagraph(restFromCharFormat, paragraph)
+               select restFromParagraph;
+            if (_result.If(out var remaining, out var exception))
+            {
+               if (remaining.IsNotEmpty())
+               {
+                  return fail($"Didn't understand specification {remaining}");
+               }
+
+               var paragraphText = line.Drop(result.Length);
+               if (getSpecifiers(paragraphText).If(out var slices, out var newParagraphText))
+               {
+                  foreach (var (text, index, length) in slices)
+                  {
+                     var format = paragraph.CharFormat(index, length - index);
+                     if (formatCharFormat(text, format).If(out remaining))
+                     {
+                        if (remaining.IsNotEmpty())
+                        {
+                           return fail($"Didn't understand specification {remaining}");
+                        }
+                     }
+                  }
+
+                  paragraph.Text = newParagraphText;
+               }
+               else
+               {
+                  paragraph.Text = paragraphText;
+               }
+
+               return unit;
+            }
+            else
+            {
+               return exception;
+            }
+         }
+         else
+         {
+            return unit;
+         }
+      }
+
       protected Responding<Unit> createParagraph()
+      {
+         while (source.NextLine("^ '>'; f").If(out var line))
+         {
+            if (line.Matches("^ '>' /s*").If(out var result))
+            {
+               line = line.Drop(result.Length);
+               var paragraph = document.Paragraph();
+               if (formatBlockList(paragraph, line).IfFailedResponse(out var exception))
+               {
+                  return exception;
+               }
+            }
+            else
+            {
+               return nil;
+            }
+         }
+
+         return unit;
+      }
+
+      protected Responding<Unit> createHeader()
       {
          while (source.NextLine("^ '^'; f").If(out var line))
          {
             if (line.Matches("^ '^' /s*").If(out var result))
             {
                line = line.Drop(result.Length);
-               var paragraph = document.Paragraph();
-               if (line.Matches("^ '[' /(-[']']+) ']'").If(out result))
+               var paragraph = document.Header.Paragraph();
+               if (formatBlockList(paragraph, line).IfFailedResponse(out var exception))
                {
-                  var specifiers = result.FirstGroup;
-                  var _result =
-                     from restFromCharFormat in formatCharFormat(specifiers, paragraph.DefaultCharFormat)
-                     from restFromParagraph in formatParagraph(restFromCharFormat, paragraph)
-                     select restFromParagraph;
-                  if (_result.If(out var remaining, out var exception))
-                  {
-                     if (remaining.IsNotEmpty())
-                     {
-                        return fail($"Didn't understand specification {remaining}");
-                     }
-                  }
-                  else
-                  {
-                     return exception;
-                  }
+                  return exception;
+               }
+            }
+            else
+            {
+               return nil;
+            }
+         }
+
+         return unit;
+      }
+
+      protected Responding<Unit> createFooter()
+      {
+         while (source.NextLine("^ '$'; f").If(out var line))
+         {
+            if (line.Matches("^ '$' /s*").If(out var result))
+            {
+               line = line.Drop(result.Length);
+               var paragraph = document.Footer.Paragraph();
+               if (formatBlockList(paragraph, line).IfFailedResponse(out var exception))
+               {
+                  return exception;
                }
             }
             else
