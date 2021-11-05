@@ -1,4 +1,7 @@
-﻿using Core.Enumerables;
+﻿using System;
+using System.IO;
+using Core.Enumerables;
+using Core.Markup.Builder;
 using Core.Markup.Rtf;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -100,6 +103,28 @@ namespace Core.Tests
          format.Bookmark = "target";
 
          document.Save(@"C:\Temp\Test.rtf");
+      }
+
+      [TestMethod]
+      public void MarkupTest()
+      {
+         using var writer = new StringWriter();
+         writer.WriteLine("font: times = Times New Roman, courier = Courier New");
+         writer.WriteLine("color: red = 0xff0000, blue = Blue");
+         writer.WriteLine("color: header = 0x76923c, row = 0xd6e3bc, alt = 0xffffff");
+         writer.WriteLine("> [alignment: left/font: times/ansi-font: courier]Testing");
+         writer.WriteLine("> [font: times]/fore-color:blue/back-color:red/font-size:18/(Test2:) /bold/underline/font: courier/(Character Formatting)");
+         writer.WriteLine("$ [alignment: center, font-size: 15]Test : #page//#num-pages Date:#date Time:#time");
+
+         var builder = new RtfBuilder();
+         if (builder.Build(writer.ToString()).If(out var document, out var exception))
+         {
+            document.Save(@"C:\Temp\Test2.rtf");
+         }
+         else
+         {
+            Console.WriteLine($"Exception: {exception.Message}");
+         }
       }
    }
 }

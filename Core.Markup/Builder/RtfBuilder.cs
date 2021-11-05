@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using Core.Arrays;
 using Core.Collections;
 using Core.Enumerables;
@@ -35,6 +36,19 @@ namespace Core.Markup.Builder
 
          while (source.NextLine().If(out var line))
          {
+            var result = createParagraph(line) | createHeader(line) | createFooter(line);
+            if (result.If(out _, out var _exception))
+            {
+            }
+            else if (_exception.If(out var exception))
+            {
+               return exception;
+            }
+            else
+            {
+               var paragraph = document.Paragraph();
+               paragraph.Text = line;
+            }
          }
 
          return document;
@@ -55,7 +69,7 @@ namespace Core.Markup.Builder
                   }
                }
             }
-            else if (line.Matches("^ 'font:' /s* /(.+) $; f").If(out result))
+            else if (line.Matches("^ 'color:' /s* /(.+) $; f").If(out result))
             {
                var specifiers = result.FirstGroup.Divide();
                foreach (var specifier in specifiers)
@@ -95,6 +109,11 @@ namespace Core.Markup.Builder
       {
          try
          {
+            if (specifierList.IsEmpty())
+            {
+               return specifierList;
+            }
+
             var missing = new List<string>();
             var specifiers = specifierList.Divide(DividerType.Slash);
             foreach (var specifier in specifiers)
@@ -133,7 +152,7 @@ namespace Core.Markup.Builder
                      format.Bookmark = value;
                      break;
                   default:
-                     missing.Add(key);
+                     missing.Add(specifier);
                      break;
                }
             }
@@ -150,6 +169,11 @@ namespace Core.Markup.Builder
       {
          try
          {
+            if (specifierList.IsEmpty())
+            {
+               return specifierList;
+            }
+
             var missing = new List<string>();
             var specifiers = specifierList.Divide(DividerType.Slash);
             foreach (var specifier in specifiers)
@@ -187,6 +211,7 @@ namespace Core.Markup.Builder
                      {
                         paragraph.Margins[Direction.Left] = floatValue;
                      }
+
                      break;
                   }
                   case "margin-top":
@@ -195,6 +220,7 @@ namespace Core.Markup.Builder
                      {
                         paragraph.Margins[Direction.Top] = floatValue;
                      }
+
                      break;
                   }
                   case "margin-right":
@@ -203,6 +229,7 @@ namespace Core.Markup.Builder
                      {
                         paragraph.Margins[Direction.Right] = floatValue;
                      }
+
                      break;
                   }
                   case "margin-bottom":
@@ -211,6 +238,7 @@ namespace Core.Markup.Builder
                      {
                         paragraph.Margins[Direction.Bottom] = floatValue;
                      }
+
                      break;
                   }
                   default:
@@ -227,18 +255,20 @@ namespace Core.Markup.Builder
          }
       }
 
-      protected static Maybe<(IEnumerable<Slice>, string)> getSpecifiers(string text)
+      protected static Maybe<(IEnumerable<Span>, string)> getSpecifiers(string text)
       {
-         var slices = new List<Slice>();
+         var spans = new List<Span>();
 
          while (true)
          {
-            if (text.Matches("^ -(< '//') '//' /(.+?) '//(' /(-[')']+?) ')'; f ").If(out var result))
+            if (text.Matches(" -(< '//') '//' /(.+?) '//(' /(-[')']+?) ')'; f").If(out var result))
             {
                var (specifiers, index, _) = result.GetGroup(0, 1);
                var (affectedText, _, length) = result.GetGroup(0, 2);
-               var slice = new Slice(specifiers, index, length);
-               slices.Add(slice);
+               index--;
+               length--;
+               var slice = new Span(specifiers, index, index + length);
+               spans.Add(slice);
 
                result.FirstMatch = affectedText;
                text = result.ToString();
@@ -249,9 +279,9 @@ namespace Core.Markup.Builder
             }
          }
 
-         if (slices.Count > 0)
+         if (spans.Count > 0)
          {
-            return (slices, text);
+            return (spans, text);
          }
          else
          {
@@ -259,7 +289,7 @@ namespace Core.Markup.Builder
          }
       }
 
-      protected Responding<Unit> formatBlockList(Paragraph paragraph, string line)
+      protected Result<string> format(string line, Paragraph paragraph)
       {
          if (line.Matches("^ '[' /(-[']']+) ']'").If(out var result))
          {
@@ -270,34 +300,14 @@ namespace Core.Markup.Builder
                select restFromParagraph;
             if (_result.If(out var remaining, out var exception))
             {
-               if (remaining.IsNotEmpty())
+               if (remaining.IsEmpty())
                {
-                  return fail($"Didn't understand specification {remaining}");
-               }
-
-               var paragraphText = line.Drop(result.Length);
-               if (getSpecifiers(paragraphText).If(out var slices, out var newParagraphText))
-               {
-                  foreach (var (text, index, length) in slices)
-                  {
-                     var format = paragraph.CharFormat(index, length - index);
-                     if (formatCharFormat(text, format).If(out remaining))
-                     {
-                        if (remaining.IsNotEmpty())
-                        {
-                           return fail($"Didn't understand specification {remaining}");
-                        }
-                     }
-                  }
-
-                  paragraph.Text = newParagraphText;
+                  return line.Drop(result.Length);
                }
                else
                {
-                  paragraph.Text = paragraphText;
+                  return fail($"Didn't understand specification {remaining}");
                }
-
-               return unit;
             }
             else
             {
@@ -306,74 +316,129 @@ namespace Core.Markup.Builder
          }
          else
          {
-            return unit;
+            return line;
          }
       }
 
-      protected Responding<Unit> createParagraph()
+      protected Result<Unit> formatCharacters(string paragraphText, Paragraph paragraph)
       {
-         while (source.NextLine("^ '>'; f").If(out var line))
+         if (getSpecifiers(paragraphText).If(out var slices, out var newParagraphText))
          {
-            if (line.Matches("^ '>' /s*").If(out var result))
+            paragraph.Text = newParagraphText;
+            foreach (var (text, start, stop) in slices)
             {
-               line = line.Drop(result.Length);
-               var paragraph = document.Paragraph();
-               if (formatBlockList(paragraph, line).IfFailedResponse(out var exception))
+               var format = paragraph.CharFormat(start, stop);
+               if (formatCharFormat(text, format).If(out var remaining))
                {
-                  return exception;
+                  if (remaining.IsNotEmpty())
+                  {
+                     return fail($"Didn't understand specification {remaining}");
+                  }
                }
             }
-            else
-            {
-               return nil;
-            }
+         }
+         else
+         {
+            paragraph.Text = paragraphText;
          }
 
          return unit;
       }
 
-      protected Responding<Unit> createHeader()
+      protected Result<Unit> formatBlockList(Paragraph paragraph, string line)
       {
-         while (source.NextLine("^ '^'; f").If(out var line))
-         {
-            if (line.Matches("^ '^' /s*").If(out var result))
-            {
-               line = line.Drop(result.Length);
-               var paragraph = document.Header.Paragraph();
-               if (formatBlockList(paragraph, line).IfFailedResponse(out var exception))
-               {
-                  return exception;
-               }
-            }
-            else
-            {
-               return nil;
-            }
-         }
-
-         return unit;
+         return
+            from paragraphText in format(line, paragraph)
+            from result in formatCharacters(paragraphText, paragraph)
+            select result;
       }
 
-      protected Responding<Unit> createFooter()
+      protected Responding<Unit> createParagraph(string line)
       {
-         while (source.NextLine("^ '$'; f").If(out var line))
+         if (line.Matches("^ '>' /s*").If(out var result))
          {
-            if (line.Matches("^ '$' /s*").If(out var result))
+            line = line.Drop(result.Length);
+            var paragraph = document.Paragraph();
+            if (formatBlockList(paragraph, line).IfNot(out var exception))
             {
-               line = line.Drop(result.Length);
-               var paragraph = document.Footer.Paragraph();
-               if (formatBlockList(paragraph, line).IfFailedResponse(out var exception))
-               {
-                  return exception;
-               }
+               return exception;
             }
             else
             {
-               return nil;
+               return unit;
             }
          }
+         else
+         {
+            return nil;
+         }
+      }
 
-         return unit;
+      protected Result<string> addControlWords(Paragraph paragraph, string paragraphText)
+      {
+         if (paragraphText.Matches("'#' /('page' | 'num-pages' | 'date' | 'time') /b; f").If(out var result))
+         {
+            var builder = new StringBuilder();
+            var lastIndex = 0;
+            foreach (var match in result)
+            {
+               var fieldTypeName = match.FirstGroup;
+               var fieldType = fieldTypeName switch
+               {
+                  "page" => FieldType.Page,
+                  "num-pages" => FieldType.NumPages,
+                  "date" => FieldType.Date,
+                  "time" => FieldType.Time,
+                  _ => FieldType.None
+               };
+
+               builder.Append(paragraphText.Drop(lastIndex));
+               lastIndex += match.Length;
+               paragraph.ControlWord(lastIndex);
+            }
+         }
+      }
+
+      protected Responding<Unit> createHeader(string line)
+      {
+         if (line.Matches("^ '^' /s*").If(out var result))
+         {
+            line = line.Drop(result.Length);
+            var paragraph = document.Header.Paragraph();
+            if (formatBlockList(paragraph, line).IfNot(out var exception))
+            {
+               return exception;
+            }
+            else
+            {
+               return unit;
+            }
+         }
+         else
+         {
+            return nil;
+         }
+      }
+
+      protected Responding<Unit> createFooter(string line)
+      {
+         if (line.Matches("^ '$' /s*").If(out var result))
+         {
+            line = line.Drop(result.Length);
+            var paragraph = document.Footer.Paragraph();
+            if (formatBlockList(paragraph, line).IfNot(out var exception))
+            {
+               return exception;
+            }
+            else
+            {
+               return unit;
+            }
+         }
+         else
+         {
+            return nil;
+         }
       }
    }
 }

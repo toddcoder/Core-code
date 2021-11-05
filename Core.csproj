@@ -400,6 +400,7 @@
     <Compile Include="Strings\RestringifyQuotes.cs" />
     <Compile Include="Strings\Slice.cs" />
     <Compile Include="Strings\Slicer.cs" />
+    <Compile Include="Strings\Span.cs" />
     <Compile Include="Strings\SplitType.cs" />
     <Compile Include="Strings\StringExtensions.cs" />
     <Compile Include="Strings\StringFunctions.cs" />

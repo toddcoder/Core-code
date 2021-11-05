@@ -2487,6 +2487,7 @@ namespace Core.Strings
             DividerType.Backslash => @"/s* '\' /s*; f",
             DividerType.Pipe => "/s* '|' /s*; f",
             DividerType.Colon => "/s* ':' /s*; f",
+            DividerType.Equal => "/s* '=' /s*; f",
             _ => ""
          };
          return source.Split(pattern);

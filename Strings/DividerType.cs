@@ -10,6 +10,7 @@
       Slash,
       Backslash,
       Pipe,
-      Colon
+      Colon,
+      Equal
    }
 }
