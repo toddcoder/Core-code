@@ -176,7 +176,24 @@ namespace Core.Configurations
 
          while (source.Length > 0)
          {
-            if (source.Matches($"^ /s* {REGEX_KEY} /s* '['; f").If(out var result))
+            if (source.Matches("^ /s* '['; f").If(out var result))
+            {
+               var key = getKey("?");
+               var group = new Group(key);
+               if (peekGroup().If(out var parentGroup))
+               {
+                  parentGroup.SetItem(key, group);
+               }
+               else
+               {
+                  return fail("No parent group found");
+               }
+
+               stack.Push(group);
+
+               source = source.Drop(result.Length);
+            }
+            else if (source.Matches($"^ /s* {REGEX_KEY} /s* '['; f").If(out result))
             {
                var key = getKey(result.FirstGroup);
                var group = new Group(key);
