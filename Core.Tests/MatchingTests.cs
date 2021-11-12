@@ -4,6 +4,8 @@ using Core.Assertions;
 using Core.Collections;
 using Core.Enumerables;
 using Core.Matching;
+using Core.Matching.MultiMatching;
+using Core.Monads;
 using Core.Strings;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -125,6 +127,33 @@ namespace Core.Tests
          var source = "~foobar-foo?baz-boo!boo-yogi";
          var retained = source.Scrub("[/w '-']; f");
          Console.WriteLine(retained);
+      }
+
+      [TestMethod]
+      public void MultiMatcherTest()
+      {
+         static Responding<MatchResult> match(string input)
+         {
+            return input.MatchFirst()
+               .Case("^ 'foobaz' $; f").Then(_ => Console.WriteLine("1. Foobaz"))
+               .Case("^ 'foo' /(.3) $; f").Then(r => Console.WriteLine($"2. Foo{r.FirstGroup}"))
+               .Else(() => Console.WriteLine("3. No match"))
+               .Result();
+         }
+
+         foreach (var input in new[] { "foobar", "foobaz", "???" })
+         {
+            var _result = match(input);
+            var message = _result switch
+            {
+               Response<MatchResult> response => $"This was the match result: {response}",
+               NoResponse<MatchResult> => "Default happened",
+               FailedResponse<MatchResult> failedResponse => $"Exception: {failedResponse.Exception.Message}",
+               _ => "???"
+            };
+            Console.WriteLine(message);
+            Console.WriteLine();
+         }
       }
    }
 }

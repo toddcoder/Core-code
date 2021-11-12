@@ -263,6 +263,9 @@
     <Compile Include="Lambdas\LambdaExtensions.cs" />
     <Compile Include="Lambdas\LambdaFunctions.cs" />
     <Compile Include="Lists\ListExtensions.cs" />
+    <Compile Include="Matching\MultiMatching\Case.cs" />
+    <Compile Include="Matching\MultiMatching\MultiMatcher.cs" />
+    <Compile Include="Matching\MultiMatching\MultiMatchingExtensions.cs" />
     <Compile Include="Monads\AttemptFunctions.cs" />
     <Compile Include="Monads\Cancelled.cs" />
     <Compile Include="Monads\Completed.cs" />

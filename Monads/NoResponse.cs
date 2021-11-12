@@ -102,5 +102,7 @@ namespace Core.Monads
       public static bool operator ==(NoResponse<T> left, NoResponse<T> right) => Equals(left, right);
 
       public static bool operator !=(NoResponse<T> left, NoResponse<T> right) => !Equals(left, right);
+
+      public override string ToString() => "NoResponse()";
    }
 }
