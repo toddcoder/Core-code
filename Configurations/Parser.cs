@@ -172,13 +172,28 @@ namespace Core.Configurations
             return fail("Open string");
          }
 
-         static string getKey(string keySource) => keySource == "?" ? $"__key_{uniqueID()}" : keySource;
-
          while (source.Length > 0)
          {
-            if (source.Matches($"^ /s* {REGEX_KEY} /s* '['; f").If(out var result))
+            if (source.Matches("^ /s* '['; f").If(out var result))
             {
-               var key = getKey(result.FirstGroup);
+               var key = GetKey("?");
+               var group = new Group(key);
+               if (peekGroup().If(out var parentGroup))
+               {
+                  parentGroup.SetItem(key, group);
+               }
+               else
+               {
+                  return fail("No parent group found");
+               }
+
+               stack.Push(group);
+
+               source = source.Drop(result.Length);
+            }
+            else if (source.Matches($"^ /s* {REGEX_KEY} /s* '['; f").If(out result))
+            {
+               var key = GetKey(result.FirstGroup);
                var group = new Group(key);
                if (peekGroup().If(out var parentGroup))
                {
@@ -215,7 +230,7 @@ namespace Core.Configurations
             }
             else if (source.Matches($"^ /s* {REGEX_KEY} '.'; f").If(out result))
             {
-               var key = getKey(result.FirstGroup);
+               var key = GetKey(result.FirstGroup);
                var group = new Group(key);
                if (peekGroup().If(out var parentGroup))
                {
@@ -234,7 +249,7 @@ namespace Core.Configurations
             }
             else if (source.Matches($"^ /s* {REGEX_KEY} ':' /s*; f").If(out result))
             {
-               var key = getKey(result.FirstGroup);
+               var key = GetKey(result.FirstGroup);
                var remainder = source.Drop(result.Length);
                if (getString(source.Drop(result.Length)).If(out source, out var value))
                {
@@ -277,5 +292,9 @@ namespace Core.Configurations
 
          return rootGroup;
       }
+
+      public static string GenerateKey() => $"__$key_{uniqueID()}";
+
+      public static string GetKey(string keySource) => keySource == "?" ? GenerateKey() : keySource;
    }
 }

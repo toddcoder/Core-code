@@ -1,4 +1,5 @@
 ﻿using System;
+using Core.Strings;
 
 namespace Core.Monads
 {
@@ -104,5 +105,7 @@ namespace Core.Monads
       public static bool operator ==(FailedResponse<T> left, FailedResponse<T> right) => Equals(left, right);
 
       public static bool operator !=(FailedResponse<T> left, FailedResponse<T> right) => !Equals(left, right);
+
+      public override string ToString() => $"FailedResponse({Exception.Message.Elliptical(60, ' ')})";
    }
 }
