@@ -38,7 +38,7 @@ namespace Core.Matching.MultiMatching
          _defaultAction = nil;
       }
 
-      public Case Case(Pattern pattern) => new(this, pattern);
+      public Case When(Pattern pattern) => new(this, pattern);
 
       internal void AddPattern(Pattern pattern, Action<MatchResult> action) => patternActions.Add(new PatternAction(pattern, action));
 

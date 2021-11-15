@@ -2,6 +2,6 @@
 {
    public static class MultiMatchingExtensions
    {
-      public static MultiMatcher MatchFirst(this string input) => new(input);
+      public static MultiMatcher Matching(this string input) => new(input);
    }
 }

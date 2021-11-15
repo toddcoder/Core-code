@@ -134,9 +134,9 @@ namespace Core.Tests
       {
          static Responding<MatchResult> match(string input)
          {
-            return input.MatchFirst()
-               .Case("^ 'foobaz' $; f").Then(_ => Console.WriteLine("1. Foobaz"))
-               .Case("^ 'foo' /(.3) $; f").Then(r => Console.WriteLine($"2. Foo{r.FirstGroup}"))
+            return input.Matching()
+               .When("^ 'foobaz' $; f").Then(_ => Console.WriteLine("1. Foobaz"))
+               .When("^ 'foo' /(.3) $; f").Then(r => Console.WriteLine($"2. Foo{r.FirstGroup}"))
                .Else(() => Console.WriteLine("3. No match"))
                .Result();
          }
