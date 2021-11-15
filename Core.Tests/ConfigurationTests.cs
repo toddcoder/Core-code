@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.IO;
 using System.Linq;
 using Core.Applications;
 using Core.Assertions;
@@ -8,6 +9,7 @@ using Core.Computers;
 using Core.Configurations;
 using Core.Enumerables;
 using Core.Monads;
+using Core.Strings;
 using static Core.Strings.StringFunctions;
 
 namespace Core.Tests
@@ -74,7 +76,7 @@ namespace Core.Tests
          var resources = new Resources<ConfigurationTests>();
          var source = resources.String("TestData.connections.txt");
 
-         if (Group.FromString(source).If(out var @group, out var exception))
+         if (Group.FromString(source).If(out var group, out var exception))
          {
             var result =
                from connections in @group.GetGroup("connections")
@@ -104,7 +106,7 @@ namespace Core.Tests
          var resources = new Resources<ConfigurationTests>();
          var source = resources.String("TestData.connections2.txt");
 
-         if (Group.FromString(source).If(out var @group, out var exception))
+         if (Group.FromString(source).If(out var group, out var exception))
          {
             var result =
                from connections in @group.GetGroup("connections")
@@ -172,7 +174,7 @@ namespace Core.Tests
          var resources = new Resources<ConfigurationTests>();
          var binary = resources.Bytes("TestData.guids.pdf");
          var package = new BinaryPackage { Payload = binary };
-         if (Configuration.Serialize(package, "guids").If(out var configuration, out var exception))
+         if (Group.Serialize(package, "guids").If(out var configuration, out var exception))
          {
             Console.WriteLine(configuration);
             if (configuration.Deserialize<BinaryPackage>().If(out var newPackage, out exception))
@@ -195,7 +197,7 @@ namespace Core.Tests
       {
          var source = @"enum: Bravo; intValue: 153; stringValue: foobar; file: C:\temp\temp.txt; doubles: 1.0, 5.0, 3.0; isTrue: true; " +
             @"escape: ""`r `t \ foobar""";
-         if (Configuration.FromString(source).If(out var configuration, out var exception))
+         if (Group.FromString(source).If(out var configuration, out var exception))
          {
             if (configuration.Deserialize<Test>().If(out var obj, out exception))
             {
@@ -233,7 +235,7 @@ namespace Core.Tests
                }
             }
          };
-         if (Configuration.Serialize(container, "data").If(out var configuration, out var exception))
+         if (Group.Serialize(container, "data").If(out var configuration, out var exception))
          {
             Console.WriteLine(configuration);
             if (configuration.Deserialize<Container>().If(out container, out exception))
@@ -312,17 +314,17 @@ namespace Core.Tests
       public void EmptyStringItemTest()
       {
          var hash = new StringHash(true) { ["release"] = "", ["build"] = "http" };
-         if (hash.ToGroup().If(out var @group, out var exception))
+         if (hash.ToGroup().If(out var group, out var exception))
          {
-            var source = @group.ToString();
+            var source = group.ToString();
             Console.WriteLine(source);
-            Console.WriteLine(@group["release"]);
-            Console.WriteLine(@group["build"]);
+            Console.WriteLine(group["release"]);
+            Console.WriteLine(group["build"]);
 
-            if (Group.FromString(source).If(out @group, out exception))
+            if (Group.FromString(source).If(out group, out exception))
             {
-               Console.WriteLine(@group["release"]);
-               Console.WriteLine(@group["build"]);
+               Console.WriteLine(group["release"]);
+               Console.WriteLine(group["build"]);
             }
             else
             {
@@ -346,6 +348,43 @@ namespace Core.Tests
          };
 
          Console.WriteLine(group);
+      }
+
+      [TestMethod]
+      public void ArrayTest()
+      {
+         using var writer = new StringWriter();
+         writer.WriteLine("[");
+         writer.WriteLine("   value1: 111");
+         writer.WriteLine("   value2: \"$1\"");
+         writer.WriteLine("]");
+         writer.WriteLine("[");
+         writer.WriteLine("   value1: 123");
+         writer.WriteLine("   value2: \"$2\"");
+         writer.WriteLine("]");
+         writer.WriteLine("[");
+         writer.WriteLine("   value1: 153");
+         writer.WriteLine("   value2: \"$3\"");
+         writer.WriteLine("]");
+         var source = writer.ToString();
+         if (Group.FromString(source).If(out var group, out var exception))
+         {
+            foreach (var (key, innerGroup) in group.Groups())
+            {
+               Console.WriteLine($"{key} [");
+               Console.WriteLine($"   value1: {innerGroup.ValueAt("value1")}");
+               Console.WriteLine($"   value2: {innerGroup.ValueAt("value2")}");
+               Console.WriteLine("]");
+            }
+
+            Console.WriteLine("=".Repeat(80));
+
+            Console.WriteLine(group);
+         }
+         else
+         {
+            throw exception;
+         }
       }
    }
 }

@@ -43,20 +43,24 @@ namespace Core.Configurations
          return parser.Parse();
       }
 
+      protected bool isGeneratedKey;
       internal StringHash<IConfigurationItem> items;
 
       public Group(string key = ROOT_NAME)
       {
          Key = key;
+         isGeneratedKey = Key.StartsWith("__$key");
 
          items = new StringHash<IConfigurationItem>(true);
       }
 
       public string Key { get; }
 
+      public bool IsGeneratedKey => isGeneratedKey;
+
       public string this[string key]
       {
-         get { return ValueAt(key); }
+         get => ValueAt(key);
          set
          {
             if (value.StartsWith("["))
@@ -138,7 +142,14 @@ namespace Core.Configurations
 
          if (!ignoreSelf)
          {
-            writer.WriteLine($"{indentation()}{Key} [");
+            if (isGeneratedKey)
+            {
+               writer.WriteLine($"{indentation()}[");
+            }
+            else
+            {
+               writer.WriteLine($"{indentation()}{Key} [");
+            }
             indent++;
          }
 
@@ -395,9 +406,10 @@ namespace Core.Configurations
                            var arrayGroup = new Group(key);
                            for (var i = 0; i < array.Length; i++)
                            {
-                              if (Serialize(elementType, array.GetValue(i), $"${i}").If(out var elementGroup, out var exception))
+                              var generatedKey = Parser.GenerateKey();
+                              if (Serialize(elementType, array.GetValue(i), generatedKey).If(out var elementGroup, out var exception))
                               {
-                                 arrayGroup.SetItem($"${i}", elementGroup);
+                                 arrayGroup.SetItem(generatedKey, elementGroup);
                               }
                               else
                               {
