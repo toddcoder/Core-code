@@ -247,6 +247,27 @@ namespace Core.Configurations
             {
                source = source.Drop(result.Length);
             }
+            else if (source.Matches("^ /s* ':' /s*; f").If(out result))
+            {
+               var key = GenerateKey();
+               var remainder = source.Drop(result.Length);
+               if (getString(source.Drop(result.Length)).If(out source, out var value))
+               {
+                  var item = new Item(key, value);
+                  if (peekGroup().If(out var group))
+                  {
+                     group.SetItem(item.Key, item);
+                  }
+               }
+               else if (source.IsMatch("^ /s+ $; f"))
+               {
+                  break;
+               }
+               else
+               {
+                  return fail($"Didn't understand value {remainder}");
+               }
+            }
             else if (source.Matches($"^ /s* {REGEX_KEY} ':' /s*; f").If(out result))
             {
                var key = GetKey(result.FirstGroup);
@@ -271,6 +292,15 @@ namespace Core.Configurations
             else if (source.IsMatch("^ /s+ $; f"))
             {
                break;
+            }
+            else if (getString(source.TrimLeft()).If(out source, out var value))
+            {
+               var key = GenerateKey();
+               var item = new Item(key, value);
+               if (peekGroup().If(out var group))
+               {
+                  group.SetItem(item.Key, item);
+               }
             }
             else
             {

@@ -386,5 +386,40 @@ namespace Core.Tests
             throw exception;
          }
       }
+
+      [TestMethod]
+      public void AnonymousTest()
+      {
+         using var writer = new StringWriter();
+         writer.WriteLine("[");
+         writer.WriteLine("   alpha");
+         writer.WriteLine("   bravo");
+         writer.WriteLine("   charlie");
+         writer.WriteLine("]");
+         var source = writer.ToString();
+
+         var group = Group.FromString(source).ForceValue();
+         var (_, innerGroup) = group.Groups().FirstOrFail("No outer group").ForceValue();
+         foreach (var (key, value) in innerGroup.Values())
+         {
+            Console.WriteLine($"{key}: \"{value}\"");
+         }
+      }
+
+      [TestMethod]
+      public void AnonymousTest2()
+      {
+         using var writer = new StringWriter();
+         writer.WriteLine("alpha");
+         writer.WriteLine("bravo");
+         writer.WriteLine("charlie");
+         var source = writer.ToString();
+
+         var group = Group.FromString(source).ForceValue();
+         foreach (var (key, value) in group.Values())
+         {
+            Console.WriteLine($"{key}: \"{value}\"");
+         }
+      }
    }
 }
