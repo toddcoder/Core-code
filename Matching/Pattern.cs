@@ -13,7 +13,7 @@ using RRegex = System.Text.RegularExpressions.Regex;
 
 namespace Core.Matching
 {
-   public class Pattern
+   public class Pattern : IEquatable<Pattern>
    {
       protected static bool isFriendly;
 
@@ -74,7 +74,10 @@ namespace Core.Matching
          }
       }
 
-      public static Pattern operator +(Pattern pattern1, Pattern pattern2) => new(pattern1.Regex + pattern2.Regex, pattern2.Options, pattern2.Friendly);
+      public static Pattern operator +(Pattern pattern1, Pattern pattern2)
+      {
+         return new(pattern1.Regex + pattern2.Regex, pattern2.Options, pattern2.Friendly);
+      }
 
       public static Pattern operator +(Pattern pattern, string source)
       {
@@ -150,7 +153,7 @@ namespace Core.Matching
 
             if (matches.Length > 0)
             {
-               return new MatchResult(matches, indexesToNames, namesToIndexes, slicer, input);
+               return new MatchResult(matches, indexesToNames, namesToIndexes, slicer, input, this);
             }
             else
             {
@@ -180,5 +183,25 @@ namespace Core.Matching
       }
 
       public Pattern WithPattern(Func<string, string> patternFunc) => new(patternFunc(regex), options, false);
+
+      public bool Equals(Pattern other) => other is not null && regex == other.regex && options == other.options && friendly == other.friendly;
+
+      public override bool Equals(object obj) => obj is Pattern other && Equals(other);
+
+      public override int GetHashCode()
+      {
+         unchecked
+         {
+            var hashCode = regex != null ? regex.GetHashCode() : 0;
+            hashCode = hashCode * 397 ^ (int)options;
+            hashCode = hashCode * 397 ^ friendly.GetHashCode();
+
+            return hashCode;
+         }
+      }
+
+      public static bool operator ==(Pattern left, Pattern right) => Equals(left, right);
+
+      public static bool operator !=(Pattern left, Pattern right) => !Equals(left, right);
    }
 }

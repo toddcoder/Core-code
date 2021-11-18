@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Core.Monads;
 using Core.Strings;
+using static Core.Monads.MonadFunctions;
 using RRegex = System.Text.RegularExpressions.Regex;
 
 namespace Core.Matching
@@ -198,6 +199,20 @@ namespace Core.Matching
                yield return match;
             }
          }
+      }
+
+      public static Maybe<MatchResult> FirstMatch(this IEnumerable<Pattern> patterns, string input)
+      {
+         foreach (var pattern in patterns)
+         {
+            var _result = pattern.MatchedBy(input);
+            if (_result.IsMatched)
+            {
+               return _result.Maybe();
+            }
+         }
+
+         return nil;
       }
    }
 }

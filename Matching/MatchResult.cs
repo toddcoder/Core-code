@@ -15,7 +15,7 @@ namespace Core.Matching
    {
       public static MatchResult Empty
       {
-         get => new(Array.Empty<Match>(), new Hash<int, string>(), new StringHash<int>(true), new Slicer(string.Empty), string.Empty);
+         get => new(Array.Empty<Match>(), new Hash<int, string>(), new StringHash<int>(true), new Slicer(string.Empty), string.Empty, "");
       }
 
       protected Match[] matches;
@@ -23,14 +23,16 @@ namespace Core.Matching
       protected StringHash<int> namesToIndexes;
       protected Slicer slicer;
       protected string input;
+      protected Pattern pattern;
 
-      internal MatchResult(Match[] matches, Hash<int, string> indexesToNames, StringHash<int> namesToIndexes, Slicer slicer, string input)
+      internal MatchResult(Match[] matches, Hash<int, string> indexesToNames, StringHash<int> namesToIndexes, Slicer slicer, string input, Pattern pattern)
       {
          this.matches = matches;
          this.indexesToNames = indexesToNames;
          this.namesToIndexes = namesToIndexes;
          this.slicer = slicer;
          this.input = input;
+         this.pattern = pattern;
 
          foreach (var match in this.matches)
          {
@@ -39,6 +41,8 @@ namespace Core.Matching
       }
 
       public string Input => input;
+
+      public Pattern Pattern => pattern;
 
       public Match[] Matches => matches;
 
