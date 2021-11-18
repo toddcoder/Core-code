@@ -12,7 +12,7 @@ namespace Core.Matching
    {
       public static bool IsMatch(this string input, Pattern pattern)
       {
-         return pattern.MatchedBy(input).IsMatched;
+         return pattern.MatchedBy(input).IsResponse;
       }
 
       public static string Substitute(this string input, Pattern pattern, string replacement)
@@ -167,7 +167,7 @@ namespace Core.Matching
          }
       }
 
-      public static Matched<MatchResult> Matched(this string input, Pattern pattern) => pattern.MatchedBy(input);
+      public static Responding<MatchResult> Matched(this string input, Pattern pattern) => pattern.MatchedBy(input);
 
       public static Maybe<MatchResult> Matches(this string input, Pattern pattern) => pattern.MatchedBy(input).Maybe();
 
@@ -206,7 +206,7 @@ namespace Core.Matching
          foreach (var pattern in patterns)
          {
             var _result = pattern.MatchedBy(input);
-            if (_result.IsMatched)
+            if (_result.IsResponse)
             {
                return _result.Maybe();
             }
