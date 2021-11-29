@@ -421,5 +421,17 @@ namespace Core.Tests
             Console.WriteLine($"{key}: \"{value}\"");
          }
       }
+
+      [TestMethod]
+      public void QuoteTest()
+      {
+         using var writer = new StringWriter();
+         writer.WriteLine("[");
+         //writer.WriteLine("   alpha: foobar\"baz");
+         writer.WriteLine(@"   bravo: ""^(Enqueuing task `""\[)[^\]]+(\]`""""");
+         writer.WriteLine("]");
+         var source = writer.ToString();
+         _ = Group.FromString(source).ForceValue();
+      }
    }
 }
