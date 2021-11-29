@@ -5,6 +5,7 @@ using Core.Assertions;
 using Core.Computers;
 using Core.Enumerables;
 using Core.Matching;
+using Core.Monads;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Core.Tests
@@ -139,6 +140,27 @@ namespace Core.Tests
          FolderName folder = @"C:\Program Files (x86)\Microsoft Visual Studio\2019";
          folder.ContainsImmediateFolderName("Professional").Must().BeTrue().OrThrow();
          folder.ContainsImmediateFolderName("Enterprise").Must().Not.BeTrue().OrThrow();
+      }
+
+      [TestMethod]
+      public void FolderExistsTest()
+      {
+         FolderName tempFolder = @"C:\Temp";
+         var subFolder = tempFolder["foobar"];
+         var _result =
+            from existing in subFolder.TryTo.Existing()
+            select existing;
+         if (_result.If(out var folder, out var exception))
+         {
+            foreach (var file in folder.Files)
+            {
+               Console.WriteLine(file.NameExtension);
+            }
+         }
+         else
+         {
+            Console.WriteLine($"Exception: {exception.Message}");
+         }
       }
    }
 }

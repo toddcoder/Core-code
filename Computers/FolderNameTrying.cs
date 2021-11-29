@@ -3,6 +3,7 @@ using System.Linq;
 using Core.Assertions;
 using Core.Monads;
 using static Core.Monads.AttemptFunctions;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Computers
 {
@@ -102,6 +103,6 @@ namespace Core.Computers
 
       public Result<bool> Exists() => tryTo(() => folderName.Exists());
 
-      public Result<FolderName> Existing() => Exists().Map(_ => folderName);
+      public Result<FolderName> Existing() => folderName.Must().Exist().OrFailure($"Folder {folderName.FullPath} doesn't exist");
    }
 }
