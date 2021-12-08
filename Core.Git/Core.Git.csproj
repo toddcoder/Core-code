@@ -47,6 +47,7 @@
     <Compile Include="Git.cs" />
     <Compile Include="GitBranch.cs" />
     <Compile Include="GitCommit.cs" />
+    <Compile Include="GitPrompt.cs" />
     <Compile Include="GitTag.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

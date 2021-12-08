@@ -66,5 +66,7 @@ namespace Core.Git
             return false;
          }
       }
+
+      public static Result<string[]> ShortStatus() => Execute("status -s -b");
    }
 }
