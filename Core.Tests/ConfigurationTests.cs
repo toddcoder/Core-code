@@ -428,7 +428,7 @@ namespace Core.Tests
          using var writer = new StringWriter();
          writer.WriteLine("[");
          //writer.WriteLine("   alpha: foobar\"baz");
-         writer.WriteLine(@"   bravo: ""^(Enqueuing task `""\[)[^\]]+(\]`""""");
+         writer.WriteLine(@"   bravo: ""^(Enqueuing task `""\[)[^\]]+(\]`"").+$; u""");
          writer.WriteLine("]");
          var source = writer.ToString();
          _ = Group.FromString(source).ForceValue();
