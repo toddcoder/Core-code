@@ -15,6 +15,13 @@ namespace Core.Git
    {
       protected AutoHash<PromptColor, string> backColorMap;
       protected AutoHash<PromptColor, string> foreColorMap;
+      protected string aheadSymbol;
+      protected string behindSymbol;
+      protected string aheadBehindSymbol;
+      protected string connectedSymbol;
+      protected string notConnectedSymbol;
+      protected string stagedSymbol;
+      protected string unstagedSymbol;
 
       public GitPrompt()
       {
@@ -33,6 +40,14 @@ namespace Core.Git
          {
             [PromptColor.Behind] = "Black"
          };
+
+         aheadSymbol = "↑";
+         behindSymbol = "↓";
+         aheadBehindSymbol = "↕";
+         connectedSymbol = "≡";
+         notConnectedSymbol = "≢";
+         stagedSymbol = "\u2713";
+         unstagedSymbol = "\u2717";
       }
 
       public PromptColor PromptColor { get; set; }
@@ -40,6 +55,48 @@ namespace Core.Git
       public string BackColor => backColorMap[PromptColor];
 
       public string ForeColor => foreColorMap[PromptColor];
+
+      public string AheadSymbol
+      {
+         get => aheadSymbol;
+         set => aheadSymbol = value;
+      }
+
+      public string BehindSymbol
+      {
+         get => behindSymbol;
+         set => behindSymbol = value;
+      }
+
+      public string AheadBehindSymbol
+      {
+         get => aheadBehindSymbol;
+         set => aheadBehindSymbol = value;
+      }
+
+      public string ConnectedSymbol
+      {
+         get => connectedSymbol;
+         set => connectedSymbol = value;
+      }
+
+      public string NotConnectedSymbol
+      {
+         get => notConnectedSymbol;
+         set => notConnectedSymbol = value;
+      }
+
+      public string StagedSymbol
+      {
+         get => stagedSymbol;
+         set => stagedSymbol = value;
+      }
+
+      public string UnstagedSymbol
+      {
+         get => unstagedSymbol;
+         set => unstagedSymbol = value;
+      }
 
       public Result<string> Prompt()
       {
@@ -89,51 +146,51 @@ namespace Core.Git
 
                   if (aheadCount > 0 && behindCount > 0)
                   {
-                     prompt.Add($"{aheadCount}↕{behindCount}");
+                     prompt.Add($"{aheadCount}{aheadBehindSymbol}{behindCount}");
                      PromptColor = PromptColor.AheadBehind;
                   }
                   else if (aheadCount > 0)
                   {
-                     prompt.Add($"↑{aheadCount}");
+                     prompt.Add($"{aheadSymbol}{aheadCount}");
                      PromptColor = PromptColor.Ahead;
                   }
                   else if (behindCount > 0)
                   {
-                     prompt.Add($"↓{behindCount}");
+                     prompt.Add($"{behindSymbol}{behindCount}");
                      PromptColor = PromptColor.Behind;
                   }
                }
                else
                {
-                  prompt.Add(hasRemote ? "[|]" : "[ ]");
+                  prompt.Add(hasRemote ? connectedSymbol : notConnectedSymbol);
                }
 
-               var indexedCounter = new FileCounter(true);
-               var unindexedCounter = new FileCounter(false);
+               var stagedCounter = new FileCounter(true);
+               var unstagedCounter = new FileCounter(false);
 
                foreach (var line in lines.Skip(1))
                {
                   if (line.Matches("^ /(.) /(.)").If(out result))
                   {
-                     var indexed = result.FirstGroup;
-                     var unindexed = result.SecondGroup;
-                     indexedCounter.Increment(indexed);
-                     unindexedCounter.Increment(unindexed);
+                     var staged = result.FirstGroup;
+                     var unstaged = result.SecondGroup;
+                     stagedCounter.Increment(staged);
+                     unstagedCounter.Increment(unstaged);
                   }
                }
 
-               var item = indexedCounter.ToString();
+               var item = stagedCounter.ToString();
                if (item.IsNotEmpty())
                {
-                  prompt.Add("|");
+                  prompt.Add(stagedSymbol);
                   prompt.Add(item);
                   PromptColor = PromptColor.Modified;
                }
 
-               item = unindexedCounter.ToString();
+               item = unstagedCounter.ToString();
                if (item.IsNotEmpty())
                {
-                  prompt.Add("|");
+                  prompt.Add(unstagedSymbol);
                   prompt.Add(item);
                   PromptColor = PromptColor.Modified;
                }

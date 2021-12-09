@@ -5,15 +5,15 @@ namespace Core.Git
 {
    public class FileCounter
    {
-      protected bool isIndexed;
+      protected bool isStaged;
       protected int added;
       protected int modified;
       protected int deleted;
       protected int conflicted;
 
-      public FileCounter(bool isIndexed)
+      public FileCounter(bool isStaged)
       {
-         this.isIndexed = isIndexed;
+         this.isStaged = isStaged;
 
          added = 0;
          modified = 0;
@@ -28,7 +28,7 @@ namespace Core.Git
             case "A":
                added++;
                break;
-            case "?" when !isIndexed:
+            case "?" when !isStaged:
                added++;
                break;
             case "M":
@@ -40,7 +40,7 @@ namespace Core.Git
             case " ":
                break;
             default:
-               if (!isIndexed)
+               if (!isStaged)
                {
                   conflicted++;
                }

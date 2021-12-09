@@ -25,10 +25,13 @@ namespace Core.Test
          Repo = nil;
       }
 
-      [Switch("repo","Folder","Repository")]
+      [Switch("repo", "Folder", "Repository")]
       public Maybe<string> Repo { get; set; }
 
-      [Command("git-prompt","Display a git prompt","$repo?")]
+      [Switch("alt-sym", "boolean", "Use alternate symbols for ASCII strings")]
+      public bool AlternateSymbols { get; set; }
+
+      [Command("git-prompt", "Display a git prompt", "$repo?")]
       public void GitPrompt()
       {
          if (Repo.If(out var repo))
@@ -37,6 +40,13 @@ namespace Core.Test
          }
 
          var prompt = new GitPrompt();
+         if (AlternateSymbols)
+         {
+            prompt.ConnectedSymbol = "[|]";
+            prompt.NotConnectedSymbol = "[ ]";
+            prompt.StagedSymbol = "[*]";
+            prompt.UnstagedSymbol = "[ ]";
+         }
          prompt.Prompt().OnSuccess(p => writePrompt(p, prompt)).OnFailure(e => Console.WriteLine($"Exception: {e.Message}"));
       }
 
