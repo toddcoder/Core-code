@@ -28,6 +28,7 @@ namespace Core.Git
          backColorMap[PromptColor.Modified] = 0xffff00;
 
          foreColorMap = new AutoHash<PromptColor, int>(0x0);
+         foreColorMap[PromptColor.Ahead] = 0xffffff;
          foreColorMap[PromptColor.AheadBehind] = 0xffffff;
          foreColorMap[PromptColor.Modified] = 0xffffff;
       }
