@@ -50,6 +50,7 @@
     <Compile Include="GitCommit.cs" />
     <Compile Include="GitPrompt.cs" />
     <Compile Include="GitTag.cs" />
+    <Compile Include="PromptColor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

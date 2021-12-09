@@ -4,6 +4,7 @@ using Core.Collections;
 using Core.Computers;
 using Core.Git;
 using Core.Monads;
+using static Core.Applications.ConsoleFunctions;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Test
@@ -36,7 +37,29 @@ namespace Core.Test
          }
 
          var prompt = new GitPrompt();
-         prompt.Prompt().OnSuccess(Console.WriteLine).OnFailure(e => Console.WriteLine($"Exception: {e.Message}"));
+         prompt.Prompt().OnSuccess(p => writePrompt(p, prompt)).OnFailure(e => Console.WriteLine($"Exception: {e.Message}"));
+      }
+
+      protected void writePrompt(string message, GitPrompt prompt)
+      {
+         var backColor = Console.BackgroundColor;
+         var foreColor = Console.ForegroundColor;
+
+         try
+         {
+            Console.BackgroundColor = nearestConsoleColor(prompt.BackColor);
+            Console.ForegroundColor = nearestConsoleColor(prompt.ForeColor);
+            Console.WriteLine(message);
+         }
+         catch (Exception exception)
+         {
+            Console.WriteLine(exception);
+         }
+         finally
+         {
+            Console.BackgroundColor = backColor;
+            Console.ForegroundColor = foreColor;
+         }
       }
 
       public override StringHash GetConfigurationDefaults() => new StringHash(true);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Core.Collections;
 using Core.Enumerables;
 using Core.Matching;
 using Core.Monads;
@@ -12,6 +13,31 @@ namespace Core.Git
 {
    public class GitPrompt
    {
+      protected Hash<PromptColor, int> backColorMap;
+      protected Hash<PromptColor, int> foreColorMap;
+
+      public GitPrompt()
+      {
+         PromptColor = PromptColor.Normal;
+
+         backColorMap = new AutoHash<PromptColor, int>(0xffffff);
+         backColorMap[PromptColor.Normal] = 0x00ff00;
+         backColorMap[PromptColor.Ahead] = 0xff00ff;
+         backColorMap[PromptColor.Behind] = 0x00ffff;
+         backColorMap[PromptColor.AheadBehind] = 0xffff00;
+         backColorMap[PromptColor.Modified] = 0xffff00;
+
+         foreColorMap = new AutoHash<PromptColor, int>(0x0);
+         foreColorMap[PromptColor.AheadBehind] = 0xffffff;
+         foreColorMap[PromptColor.Modified] = 0xffffff;
+      }
+
+      public PromptColor PromptColor { get; set; }
+
+      public int BackColor => backColorMap[PromptColor];
+
+      public int ForeColor => foreColorMap[PromptColor];
+
       public Result<string> Prompt()
       {
          try
@@ -21,8 +47,11 @@ namespace Core.Git
             {
                if (lines.Length == 0)
                {
+                  PromptColor = PromptColor.Error;
                   return fail("Nothing returned");
                }
+
+               PromptColor = PromptColor.Normal;
 
                var firstLine = lines[0];
                var branch = "";
@@ -57,14 +86,17 @@ namespace Core.Git
                   if (aheadCount > 0 && behindCount > 0)
                   {
                      prompt.Add($"{aheadCount}↕{behindCount}");
+                     PromptColor = PromptColor.AheadBehind;
                   }
                   else if (aheadCount > 0)
                   {
                      prompt.Add($"↑{aheadCount}");
+                     PromptColor = PromptColor.Ahead;
                   }
                   else if (behindCount > 0)
                   {
                      prompt.Add($"↓{behindCount}");
+                     PromptColor = PromptColor.Behind;
                   }
                }
                else
@@ -91,6 +123,7 @@ namespace Core.Git
                {
                   prompt.Add("|");
                   prompt.Add(item);
+                  PromptColor = PromptColor.Modified;
                }
 
                item = unindexedCounter.ToString();
@@ -98,6 +131,7 @@ namespace Core.Git
                {
                   prompt.Add("|");
                   prompt.Add(item);
+                  PromptColor = PromptColor.Modified;
                }
 
                return prompt.ToString(" ");
