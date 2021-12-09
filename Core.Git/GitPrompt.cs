@@ -27,10 +27,7 @@ namespace Core.Git
          backColorMap[PromptColor.AheadBehind] = 0xffff00;
          backColorMap[PromptColor.Modified] = 0xffff00;
 
-         foreColorMap = new AutoHash<PromptColor, int>(0x0);
-         foreColorMap[PromptColor.Ahead] = 0xffffff;
-         foreColorMap[PromptColor.AheadBehind] = 0xffffff;
-         foreColorMap[PromptColor.Modified] = 0xffffff;
+         foreColorMap = new AutoHash<PromptColor, int>(0xffffff);
       }
 
       public PromptColor PromptColor { get; set; }
@@ -78,6 +75,7 @@ namespace Core.Git
                   {
                      aheadCount = Value.Int32(result.FirstGroup);
                   }
+
                   var behindCount = 0;
                   if (aheadBehind.Matches("'behind' /s+ /(/d+)").If(out result))
                   {
