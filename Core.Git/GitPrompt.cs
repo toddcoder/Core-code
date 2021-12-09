@@ -13,28 +13,33 @@ namespace Core.Git
 {
    public class GitPrompt
    {
-      protected Hash<PromptColor, int> backColorMap;
-      protected Hash<PromptColor, int> foreColorMap;
+      protected AutoHash<PromptColor, string> backColorMap;
+      protected AutoHash<PromptColor, string> foreColorMap;
 
       public GitPrompt()
       {
          PromptColor = PromptColor.Normal;
 
-         backColorMap = new AutoHash<PromptColor, int>(0xffffff);
-         backColorMap[PromptColor.Normal] = 0x00ff00;
-         backColorMap[PromptColor.Ahead] = 0xff00ff;
-         backColorMap[PromptColor.Behind] = 0x00ffff;
-         backColorMap[PromptColor.AheadBehind] = 0xffff00;
-         backColorMap[PromptColor.Modified] = 0xffff00;
+         backColorMap = new AutoHash<PromptColor, string>(_ => "Black")
+         {
+            [PromptColor.Normal] = "DarkGreen",
+            [PromptColor.Ahead] = "Magenta",
+            [PromptColor.Behind] = "Cyan",
+            [PromptColor.AheadBehind] = "Red",
+            [PromptColor.Modified] = "Green"
+         };
 
-         foreColorMap = new AutoHash<PromptColor, int>(0xffffff);
+         foreColorMap = new AutoHash<PromptColor, string>(_ => "White")
+         {
+            [PromptColor.Behind] = "Black"
+         };
       }
 
       public PromptColor PromptColor { get; set; }
 
-      public int BackColor => backColorMap[PromptColor];
+      public string BackColor => backColorMap[PromptColor];
 
-      public int ForeColor => foreColorMap[PromptColor];
+      public string ForeColor => foreColorMap[PromptColor];
 
       public Result<string> Prompt()
       {
@@ -100,7 +105,7 @@ namespace Core.Git
                }
                else
                {
-                  prompt.Add(hasRemote ? "≡" : "≢");
+                  prompt.Add(hasRemote ? "[|]" : "[ ]");
                }
 
                var indexedCounter = new FileCounter(true);

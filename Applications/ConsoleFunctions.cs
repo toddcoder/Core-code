@@ -155,5 +155,17 @@ namespace Core.Applications
 
          return nearestConsoleColor(red, green, blue);
       }
+
+      public static Maybe<ConsoleColor> consoleColorFromName(string name)
+      {
+         if (Enum.TryParse(name, true, out ConsoleColor color))
+         {
+            return color;
+         }
+         else
+         {
+            return nil;
+         }
+      }
    }
 }
