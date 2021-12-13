@@ -121,6 +121,8 @@ namespace Core.Git
                {
                   var local = firstLine.Keep(tripleDotsIndex).TrimRight();
                   var remote = firstLine.Drop(tripleDotsIndex + 3).TrimLeft();
+                  hasRemote = true;
+
                   if (local.Matches("^ '##' /s+ /(.+); f").If(out var result))
                   {
                      branch = result.FirstGroup;
