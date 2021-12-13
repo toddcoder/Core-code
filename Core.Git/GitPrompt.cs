@@ -117,11 +117,27 @@ namespace Core.Git
                var branch = "";
                var hasRemote = false;
                var aheadBehind = "";
-               if (firstLine.Matches("^ '##' /s+ /([/w '.-']+) ('...' /([/w '//.-']+))? (/s+ '[' /(-[']']+) ']')?; f").If(out var result))
+               if (firstLine.Find("...").If(out var tripleDotsIndex))
+               {
+                  var local = firstLine.Keep(tripleDotsIndex).TrimRight();
+                  var remote = firstLine.Drop(tripleDotsIndex + 3).TrimLeft();
+                  if (local.Matches("^ '##' /s+ /(.+); f").If(out var result))
+                  {
+                     branch = result.FirstGroup;
+
+                     if (remote.Matches("'[' /(-[ ']' ]+) ']'; f").If(out result))
+                     {
+                        aheadBehind = result.FirstGroup;
+                     }
+                  }
+                  else
+                  {
+                     return fail($"Couldn't determine branch from {firstLine}");
+                  }
+               }
+               else if (firstLine.Matches("^ '##' /s+ /(.+); f").If(out var result))
                {
                   branch = result.FirstGroup;
-                  hasRemote = result.SecondGroup.IsNotEmpty();
-                  aheadBehind = result.ThirdGroup;
                }
                else
                {
@@ -133,13 +149,13 @@ namespace Core.Git
                if (aheadBehind.IsNotEmpty())
                {
                   var aheadCount = 0;
-                  if (aheadBehind.Matches("'ahead' /s+ /(/d+)").If(out result))
+                  if (aheadBehind.Matches("'ahead' /s+ /(/d+); f").If(out var result))
                   {
                      aheadCount = Value.Int32(result.FirstGroup);
                   }
 
                   var behindCount = 0;
-                  if (aheadBehind.Matches("'behind' /s+ /(/d+)").If(out result))
+                  if (aheadBehind.Matches("'behind' /s+ /(/d+); f").If(out result))
                   {
                      behindCount = Value.Int32(result.FirstGroup);
                   }
@@ -170,7 +186,7 @@ namespace Core.Git
 
                foreach (var line in lines.Skip(1))
                {
-                  if (line.Matches("^ /(.) /(.)").If(out result))
+                  if (line.Matches("^ /(.) /(.); f").If(out var result))
                   {
                      var staged = result.FirstGroup;
                      var unstaged = result.SecondGroup;
