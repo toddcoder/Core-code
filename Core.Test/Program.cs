@@ -13,16 +13,20 @@ namespace Core.Test
    {
       public static void Main()
       {
-         var program = new Program
-         {
-            Test = true
-         };
+         var program = new Program();
          program.Run();
       }
 
       public Program() : base("core.test")
       {
          Repo = nil;
+      }
+
+      [Switch("test", "boolean", "Test mode")]
+      public bool Testing
+      {
+         get => Test;
+         set => Test = value;
       }
 
       [Switch("repo", "Folder", "Repository")]
@@ -47,6 +51,7 @@ namespace Core.Test
             prompt.StagedSymbol = "[*]";
             prompt.UnstagedSymbol = "[ ]";
          }
+
          prompt.Prompt().OnSuccess(p => writePrompt(p, prompt)).OnFailure(e => Console.WriteLine($"Exception: {e.Message}"));
       }
 

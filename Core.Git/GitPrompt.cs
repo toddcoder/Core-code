@@ -117,7 +117,7 @@ namespace Core.Git
                var branch = "";
                var hasRemote = false;
                var aheadBehind = "";
-               if (firstLine.Matches("^ '##' /s+ /([/w '-']+) ('...' /([/w '//-']+))? (/s+ '[' /(-[']']+) ']')?; f").If(out var result))
+               if (firstLine.Matches("^ '##' /s+ /([/w '.-']+) ('...' /([/w '//.-']+))? (/s+ '[' /(-[']']+) ']')?; f").If(out var result))
                {
                   branch = result.FirstGroup;
                   hasRemote = result.SecondGroup.IsNotEmpty();
