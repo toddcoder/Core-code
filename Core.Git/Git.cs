@@ -6,7 +6,6 @@ using Core.Arrays;
 using Core.Computers;
 using Core.Enumerables;
 using Core.Monads;
-using Core.Strings;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Git
@@ -33,7 +32,19 @@ namespace Core.Git
             process.ErrorDataReceived += (_, e) => errors.Add(e.Data);
             process.Start();
             process.BeginErrorReadLine();
-            var enumerable = process.StandardOutput.ReadToEnd().TrimEnd().Lines();
+            var list = new List<string>();
+            while (true)
+            {
+               var line = process.StandardOutput.ReadLine();
+               if (line == null)
+               {
+                  break;
+               }
+
+               list.Add(line);
+            }
+
+            var enumerable = list.ToArray();//process.StandardOutput.ReadToEnd().TrimEnd().Lines();
             process.WaitForExit(1000);
 
             var error = errors.Where(e => e is not null).ToArray();

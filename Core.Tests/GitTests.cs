@@ -9,6 +9,8 @@ namespace Core.Tests
    [TestClass]
    public class GitTests
    {
+      protected const string CORE_REPO = @"~\source\repos\toddcoder\Core";
+
       protected static void onSuccess(string[] lines)
       {
          foreach (var line in lines)
@@ -29,14 +31,14 @@ namespace Core.Tests
       [TestMethod]
       public void FetchTest()
       {
-         FolderName.Current = @"C:\Enterprise\Projects\Core";
+         FolderName.Current = CORE_REPO;
          Git.Git.Fetch().OnSuccess(onSuccess).OnFailure(onFailure);
       }
 
       [TestMethod]
       public void IsCurrentFolderInGitTest()
       {
-         FolderName.Current = @"~\source\repos\toddcoder\Core";
+         FolderName.Current = CORE_REPO;
          Git.Git.IsCurrentFolderInGit().Must().BeTrue().OrThrow();
 
          FolderName.Current = @"C:\Temp";
@@ -46,7 +48,7 @@ namespace Core.Tests
       [TestMethod]
       public void IsBranchOnRemoteTest()
       {
-         FolderName.Current = @"~\source\repos\toddcoder\Core";
+         FolderName.Current = CORE_REPO;
          var branch = GitBranch.Current;
          branch.IsOnRemote().Must().BeTrue().OrThrow();
       }
@@ -54,7 +56,7 @@ namespace Core.Tests
       [TestMethod]
       public void DifferentFromCurrentTest()
       {
-         FolderName.Current = @"~\source\repos\toddcoder\Core";
+         FolderName.Current = CORE_REPO;
          GitBranch master = "master";
          master.DifferentFromCurrent().OnSuccess(onSuccess).OnFailure(onFailure);
       }
@@ -62,7 +64,7 @@ namespace Core.Tests
       [TestMethod]
       public void DifferentFromParentTest()
       {
-         FolderName.Current = @"~\source\repos\toddcoder\Core";
+         FolderName.Current = CORE_REPO;
          GitBranch develop = "origin/develop";
          var currentBranch = GitBranch.Current;
          currentBranch.DifferentFrom(develop, true).OnSuccess(onSuccess).OnFailure(onFailure);
