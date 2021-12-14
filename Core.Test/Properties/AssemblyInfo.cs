@@ -1,15 +1,16 @@
 ﻿using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Core.Internet")]
+[assembly: AssemblyTitle("Core.Test")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Core.Internet")]
-[assembly: AssemblyCopyright("Copyright © 2020")]
+[assembly: AssemblyProduct("Core.Test")]
+[assembly: AssemblyCopyright("Copyright ©  2021")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -19,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("38ffc55b-fe73-4618-86cf-05a3ef9cecac")]
+[assembly: Guid("de184979-e19e-4938-bdd0-b126b7905ca6")]
 
 // Version information for an assembly consists of the following four values:
 //

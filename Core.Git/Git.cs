@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Core.Arrays;
+using Core.Computers;
 using Core.Enumerables;
 using Core.Monads;
 using Core.Strings;
@@ -24,7 +25,8 @@ namespace Core.Git
                   UseShellExecute = false,
                   CreateNoWindow = true,
                   RedirectStandardOutput = true,
-                  RedirectStandardError = true
+                  RedirectStandardError = true,
+                  WorkingDirectory = FolderName.Current.FullPath
                }
             };
 
@@ -66,5 +68,7 @@ namespace Core.Git
             return false;
          }
       }
+
+      public static Result<string[]> ShortStatus() => Execute("status -s -b");
    }
 }

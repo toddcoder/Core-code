@@ -136,5 +136,36 @@ namespace Core.Applications
             return exception;
          }
       }
+
+      public static ConsoleColor nearestConsoleColor(byte red, byte green, byte blue)
+      {
+         var index = red > 128 | green > 128 | blue > 128 ? 8 : 0;
+         index |= red > 64 ? 4 : 0;
+         index |= green > 64 ? 2 : 0;
+         index |= blue > 64 ? 1 : 0;
+
+         return (ConsoleColor)index;
+      }
+
+      public static ConsoleColor nearestConsoleColor(int rgb)
+      {
+         var red = (byte)(rgb >> 16 & 0xff);
+         var green = (byte)(rgb >> 8 & 0xff);
+         var blue = (byte)(rgb >> 0 & 0xff);
+
+         return nearestConsoleColor(red, green, blue);
+      }
+
+      public static Maybe<ConsoleColor> consoleColorFromName(string name)
+      {
+         if (Enum.TryParse(name, true, out ConsoleColor color))
+         {
+            return color;
+         }
+         else
+         {
+            return nil;
+         }
+      }
    }
 }
