@@ -181,42 +181,7 @@ namespace Core.Applications.CommandProcessing
                   break;
                default:
                {
-                  if (rest.IsEmpty())
-                  {
-                     if (getMethod(command).If(out var methodInfo, out var commandAttribute))
-                     {
-                        if (commandAttribute.Initialize)
-                        {
-                           Initialize();
-                        }
-
-                        var result = executeMethod(methodInfo);
-                        if (result.If(out _, out var exception))
-                        {
-                           CleanUp();
-                        }
-                        else
-                        {
-                           HandleException(exception);
-                        }
-                     }
-                     else if (seekCommandFile)
-                     {
-                        FileName file = @$"~\AppData\Local\{Application}\{command}.cli";
-                        if (!file.Exists())
-                        {
-                           ExceptionWriter.WriteLine($"Didn't understand command {command}");
-                        }
-
-                        var text = file.Text;
-                        run(text, false);
-                     }
-                     else
-                     {
-                        ExceptionWriter.WriteLine($"No switches provided for {command}");
-                     }
-                  }
-                  else if (getMethod(command).If(out var methodInfo, out var commandAttribute))
+                  if (getMethod(command).If(out var methodInfo, out var commandAttribute))
                   {
                      if (commandAttribute.Initialize)
                      {
@@ -232,6 +197,23 @@ namespace Core.Applications.CommandProcessing
                      {
                         HandleException(exception);
                      }
+                  }
+                  else if (seekCommandFile)
+                  {
+                     FileName file = @$"~\AppData\Local\{Application}\{command}.cli";
+                     if (file.Exists())
+                     {
+                        var text = file.Text;
+                        run(text, false);
+                     }
+                     else
+                     {
+                        ExceptionWriter.WriteLine($"Didn't understand command '{command}'");
+                     }
+                  }
+                  else
+                  {
+                     ExceptionWriter.WriteLine($"Didn't understand command '{command}'");
                   }
 
                   break;
@@ -272,15 +254,6 @@ namespace Core.Applications.CommandProcessing
          StandardWriter.WriteLine(help);
       }
 
-      protected void displayConfiguration()
-      {
-         var table = new TableMaker(("Key", Justification.Left), ("Value", Justification.Left)) { Title = "Configuration" };
-         foreach (var (key, value) in configurationHelp)
-         {
-            table.Add(key, value);
-         }
-      }
-
       protected (PropertyInfo propertyInfo, SwitchAttribute attribute)[] getSwitchAttributes()
       {
          return this.PropertiesUsing<SwitchAttribute>().ToArray();
@@ -315,7 +288,8 @@ namespace Core.Applications.CommandProcessing
          {
             ResetConfiguration();
          }
-         else if (rest.Matches($"^ /('{Prefix}set' | '{Prefix}get' | '{ShortCut}s' | '{ShortCut}g') /s+ /(/w [/w '-']*) /b /(.*) $; f").If(out var result))
+         else if (rest.Matches($"^ /('{Prefix}set' | '{Prefix}get' | '{ShortCut}s' | '{ShortCut}g') /s+ /(/w [/w '-']*) /b /(.*) $; f")
+                  .If(out var result))
          {
             var (command, name, value) = result;
             if (command.Matches($"^ '{Prefix}' /('set' | 'get'); f").If(out result))
@@ -436,6 +410,11 @@ namespace Core.Applications.CommandProcessing
 
       protected Result<Unit> executeMethod(MethodInfo methodInfo, string rest)
       {
+         if (rest.IsEmpty())
+         {
+            return executeMethod(methodInfo);
+         }
+
          var switchAttributes = getSwitchAttributes();
 
          foreach (var (prefix, name, _value) in switchData(rest))
@@ -492,7 +471,7 @@ namespace Core.Applications.CommandProcessing
                _object = getBoolean(value);
             }
             else if (type == typeof(string) || type == typeof(Maybe<string>) || type == typeof(FileName) || type == typeof(FolderName) ||
-               type == typeof(Maybe<FileName>) || type == typeof(Maybe<FolderName>))
+                     type == typeof(Maybe<FileName>) || type == typeof(Maybe<FolderName>))
             {
                _object = getString(value, type);
             }

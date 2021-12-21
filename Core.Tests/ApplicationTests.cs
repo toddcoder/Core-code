@@ -388,5 +388,12 @@ namespace Core.Tests
          processor = new TestProgram();
          processor.Run("scan");
       }
+
+      [TestMethod]
+      public void UnknownCommandTest()
+      {
+         var processor = new TestProgram();
+         processor.Run(@"foobar -f C:\Temp\max.txt");
+      }
    }
 }
