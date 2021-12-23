@@ -103,7 +103,7 @@ namespace Core.Git
          try
          {
             var prompt = new List<string>();
-            if (Git.ShortStatus().If(out var lines, out var exception))
+            if (Git.TryTo.ShortStatus().If(out var lines, out var exception))
             {
                if (lines.Length == 0)
                {
