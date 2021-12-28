@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using Core.Computers;
+using Core.Monads;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Git
 {
@@ -29,9 +31,17 @@ namespace Core.Git
          process.Start();
          process.BeginErrorReadLine();
 
+         var _line = Maybe<string>.nil;
+         _line = process.StandardOutput.ReadLine();
+         if (_line.IsNone)
+         {
+            yield break;
+         }
+
          while (!process.HasExited)
          {
-            process.WaitForExit(10000);
+            System.Threading.Thread.Sleep(100);
+            process.WaitForExit(100);
          }
 
          var isGood = process.ExitCode == GOOD_EXIT_CODE;
@@ -39,6 +49,13 @@ namespace Core.Git
 
          if (isGood)
          {
+            if (_line.If(out var firstLine))
+            {
+               yield return firstLine;
+
+               _line = nil;
+            }
+
             while (true)
             {
                var line = process.StandardOutput.ReadLine();
