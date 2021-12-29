@@ -1,85 +1,75 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using Core.Arrays;
 using Core.Computers;
-using Core.Enumerables;
-using Core.Monads;
-using static Core.Monads.MonadFunctions;
 
 namespace Core.Git
 {
    public static class Git
    {
-      public static Result<string[]> Execute(string arguments)
+      public const int GOOD_EXIT_CODE = 0;
+
+      public static GitTry TryTo => new();
+
+      public static IEnumerable<GitResult> Execute(string arguments)
       {
-         try
+         var lines = new List<string>();
+         var errors = new List<string>();
+         using var process = new Process
          {
-            var errors = new List<string>();
-            using var process = new Process
+            StartInfo = new ProcessStartInfo("git.exe", $"--no-pager {arguments}")
             {
-               StartInfo = new ProcessStartInfo("git.exe", arguments)
-               {
-                  UseShellExecute = false,
-                  CreateNoWindow = true,
-                  RedirectStandardOutput = true,
-                  RedirectStandardError = true,
-                  WorkingDirectory = FolderName.Current.FullPath
-               }
-            };
-
-            process.ErrorDataReceived += (_, e) => errors.Add(e.Data);
-            process.Start();
-            process.BeginErrorReadLine();
-            var list = new List<string>();
-            while (true)
-            {
-               var line = process.StandardOutput.ReadLine();
-               if (line == null)
-               {
-                  break;
-               }
-
-               list.Add(line);
+               UseShellExecute = false,
+               CreateNoWindow = true,
+               RedirectStandardOutput = true,
+               RedirectStandardError = true,
+               WorkingDirectory = FolderName.Current.FullPath
             }
+         };
 
-            var enumerable = list.ToArray();//process.StandardOutput.ReadToEnd().TrimEnd().Lines();
-            process.WaitForExit(1000);
+         process.OutputDataReceived += (_, e) => lines.Add(e.Data);
+         process.ErrorDataReceived += (_, e) => errors.Add(e.Data);
+         process.Start();
+         process.BeginErrorReadLine();
+         process.BeginOutputReadLine();
+         process.WaitForExit();
 
-            var error = errors.Where(e => e is not null).ToArray();
+         var isGood = process.ExitCode == GOOD_EXIT_CODE;
+         yield return isGood ? GitResult.Success : GitResult.Error;
 
-            if (process.ExitCode == 0)
+         if (isGood)
+         {
+            foreach (var line in lines)
             {
-               return enumerable.Augment(error);
-            }
-            else
-            {
-               return fail(error.ToString(" "));
+               yield return line;
             }
          }
-         catch (Exception exception)
+
+         foreach (var error in errors)
          {
-            return exception;
+            yield return error;
          }
       }
 
-      public static Result<string[]> Log(string arguments) => Execute($"log {arguments}");
+      public static IEnumerable<GitResult> Log(string arguments) => Execute($"log {arguments}");
 
-      public static Result<string[]> Fetch() => Execute("fetch --all");
+      public static IEnumerable<GitResult> Fetch() => Execute("fetch --all");
 
       public static bool IsCurrentFolderInGit()
       {
-         try
+         foreach (var result in Execute("rev-parse --is-inside-work-tree"))
          {
-            return Execute("rev-parse --is-inside-work-tree").Map(s => s.Any(i => i.Contains("true"))).Recover(_ => false);
+            if (result is GitLine gitLine)
+            {
+               if (gitLine.Text.Contains("true"))
+               {
+                  return true;
+               }
+            }
          }
-         catch
-         {
-            return false;
-         }
+
+         return false;
       }
 
-      public static Result<string[]> ShortStatus() => Execute("status -s -b");
+      public static IEnumerable<GitResult> ShortStatus() => Execute("status -s -b");
    }
 }

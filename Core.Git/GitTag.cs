@@ -10,7 +10,7 @@ namespace Core.Git
       public static Result<string[]> List(string pattern = "")
       {
          var arguments = pattern.IsNotEmpty() ? "tag" : $"tag -l \"{pattern}\"";
-         return Git.Execute(arguments);
+         return Git.TryTo.Execute(arguments);
       }
 
       protected string tag;
@@ -24,8 +24,8 @@ namespace Core.Git
 
       public string Origin { get; set; }
 
-      public Result<string[]> Create() => Git.Execute($"tag {tag}");
+      public Result<string[]> Create() => Git.TryTo.Execute($"tag {tag}");
 
-      public Result<string[]> Push() => Git.Execute($"push {Origin} --tags");
+      public Result<string[]> Push() => Git.TryTo.Execute($"push {Origin} --tags");
    }
 }

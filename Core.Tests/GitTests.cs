@@ -24,15 +24,44 @@ namespace Core.Tests
       [TestMethod]
       public void LogTest()
       {
-         FolderName.Current = @"C:\Enterprise\Projects\Core";
-         Git.Git.Log("origin/develop..origin/master --pretty=format:\"%h %an %cn %s\"").OnSuccess(onSuccess).OnFailure(onFailure);
+         FolderName.Current = CORE_REPO;
+         Git.Git.TryTo.Log("origin/develop..origin/master --pretty=format:\"%h %an %cn %s\"").OnSuccess(onSuccess).OnFailure(onFailure);
+      }
+
+      [TestMethod]
+      public void LogTest2()
+      {
+         FolderName.Current = CORE_REPO;
+         foreach (var result in Git.Git.Log("origin/develop..origin/master --pretty=format:\"%h %an %cn %s\""))
+         {
+            switch (result)
+            {
+               case GitSuccess:
+                  Console.WriteLine("SUCCESS");
+                  break;
+               case GitError:
+                  Console.WriteLine("ERROR");
+                  break;
+               case GitLine gitLine:
+                  Console.WriteLine(gitLine);
+                  break;
+
+            }
+         }
       }
 
       [TestMethod]
       public void FetchTest()
       {
          FolderName.Current = CORE_REPO;
-         Git.Git.Fetch().OnSuccess(onSuccess).OnFailure(onFailure);
+         Git.Git.TryTo.Fetch().OnSuccess(onSuccess).OnFailure(onFailure);
+      }
+
+      [TestMethod]
+      public void BadFetchTest()
+      {
+         FolderName.Current = @"C:\Temp";
+         Git.Git.TryTo.Fetch().OnSuccess(onSuccess).OnFailure(onFailure);
       }
 
       [TestMethod]
@@ -58,7 +87,7 @@ namespace Core.Tests
       {
          FolderName.Current = CORE_REPO;
          GitBranch master = "master";
-         master.DifferentFromCurrent().OnSuccess(onSuccess).OnFailure(onFailure);
+         master.TryTo.DifferentFromCurrent().OnSuccess(onSuccess).OnFailure(onFailure);
       }
 
       [TestMethod]
@@ -67,7 +96,7 @@ namespace Core.Tests
          FolderName.Current = CORE_REPO;
          GitBranch develop = "origin/develop";
          var currentBranch = GitBranch.Current;
-         currentBranch.DifferentFrom(develop, true).OnSuccess(onSuccess).OnFailure(onFailure);
+         currentBranch.TryTo.DifferentFrom(develop, true).OnSuccess(onSuccess).OnFailure(onFailure);
       }
 
       [TestMethod]

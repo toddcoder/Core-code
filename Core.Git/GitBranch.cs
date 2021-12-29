@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Core.Exceptions;
 using Core.Matching;
 using Core.Monads;
@@ -23,7 +24,7 @@ namespace Core.Git
       {
          get
          {
-            if (Git.Execute("rev-parse --abbrev-ref HEAD").If(out var lines, out var exception))
+            if (Git.TryTo.Execute("rev-parse --abbrev-ref HEAD").If(out var lines, out var exception))
             {
                return lines.Length > 0 ? lines[0].Trim() : throw "Branch not found".Fail();
             }
@@ -49,42 +50,41 @@ namespace Core.Git
 
       public string FullName => $"{Origin}/{branch}";
 
-      public Result<string[]> Delete(bool force = false)
+      public GitBranchTry TryTo => new(this);
+
+      public IEnumerable<GitResult> Delete(bool force = false)
       {
          var arguments = force ? $"-D {branch}" : $"-d {branch}";
          return Git.Execute($"branch {arguments}");
       }
 
-      public Result<string[]> CheckOut(bool force = false)
+      public IEnumerable<GitResult> CheckOut(bool force = false)
       {
          var arguments = force ? $"{branch} --force" : branch;
          return Git.Execute($"checkout {arguments}");
       }
 
-      public Result<GitBranch> Create(string newBranchName)
-      {
-         return Git.Execute($"branch -b {newBranchName}").Map(_ => (GitBranch)newBranchName);
-      }
+      public IEnumerable<GitResult> Create(string newBranchName) => Git.Execute($"branch -b {newBranchName}");
 
-      public Result<string[]> Merge() => Git.Execute($"merge {FullName}");
+      public IEnumerable<GitResult> Merge() => Git.Execute($"merge {FullName}");
 
-      public Result<string[]> Abort() => Git.Execute("merge --abort");
+      public IEnumerable<GitResult> Abort() => Git.Execute("merge --abort");
 
-      public Result<string[]> Pull() => Git.Execute("pull");
+      public IEnumerable<GitResult> Pull() => Git.Execute("pull");
 
-      public Result<string[]> Push(bool first = false)
+      public IEnumerable<GitResult> Push(bool first = false)
       {
          var arguments = first ? $"branch --set-upstream {Origin} {branch}" : "push";
          return Git.Execute(arguments);
       }
 
-      public Result<string[]> Reset() => Git.Execute($"reset --hard {FullName}");
+      public IEnumerable<GitResult> Reset() => Git.Execute($"reset --hard {FullName}");
 
-      public bool IsOnRemote() => Git.Execute($"show-branch remotes/{FullName}").Map(s => s.Length > 0).Recover(_ => false);
+      public bool IsOnRemote() => Git.TryTo.Execute($"show-branch remotes/{FullName}").Map(s => s.Length > 0).Recover(_ => false);
 
-      public Result<string[]> DifferentFromCurrent() => Git.Execute($"diff HEAD {FullName} --name-only");
+      public IEnumerable<GitResult> DifferentFromCurrent() => Git.Execute($"diff HEAD {FullName} --name-only");
 
-      public Result<string[]> DifferentFrom(GitBranch parentBranch, bool includeStatus)
+      public IEnumerable<GitResult> DifferentFrom(GitBranch parentBranch, bool includeStatus)
       {
          var option = includeStatus ? "name-status" : "name-only";
          return Git.Execute($"diff {parentBranch.FullName}...{FullName} --{option}");

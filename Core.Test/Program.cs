@@ -1,5 +1,6 @@
 ﻿using System;
 using Core.Applications.CommandProcessing;
+using Core.Assertions;
 using Core.Collections;
 using Core.Computers;
 using Core.Git;
@@ -20,6 +21,7 @@ namespace Core.Test
       public Program() : base("core.test")
       {
          Repo = nil;
+         GitArguments = string.Empty;
       }
 
       [Switch("test", "boolean", "Test mode")]
@@ -55,7 +57,7 @@ namespace Core.Test
          prompt.Prompt().OnSuccess(p => writePrompt(p, prompt)).OnFailure(e => Console.WriteLine($"Exception: {e.Message}"));
       }
 
-      protected void writePrompt(string message, GitPrompt prompt)
+      protected static void writePrompt(string message, GitPrompt prompt)
       {
          var backColor = Console.BackgroundColor;
          var foreColor = Console.ForegroundColor;
@@ -77,8 +79,37 @@ namespace Core.Test
          }
       }
 
-      public override StringHash GetConfigurationDefaults() => new StringHash(true);
+      [Switch("args", "string", "Arguments supplied by user", "a")]
+      public string GitArguments { get; set; }
 
-      public override StringHash GetConfigurationHelp() => new StringHash(true);
+      [Command("log", "Execute a log in git with supplied arguments", "$args")]
+      public void Log()
+      {
+         try
+         {
+            GitArguments.Must().Not.BeEmpty().OrThrow();
+
+            foreach (var result in Git.Git.Log(GitArguments))
+            {
+               switch (result)
+               {
+                  case GitError:
+                     Console.WriteLine("Error");
+                     break;
+                  case GitLine gitLine:
+                     Console.WriteLine($"   {gitLine}");
+                     break;
+               }
+            }
+         }
+         catch (Exception exception)
+         {
+            HandleException(exception);
+         }
+      }
+
+      public override StringHash GetConfigurationDefaults() => new(true);
+
+      public override StringHash GetConfigurationHelp() => new(true);
    }
 }

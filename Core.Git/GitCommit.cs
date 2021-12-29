@@ -19,7 +19,7 @@ namespace Core.Git
          this.hash = hash;
       }
 
-      public Result<string[]> ShowMerge() => Git.Execute($"show --oneline --no-patch -m {hash}");
+      public Result<string[]> ShowMerge() => Git.TryTo.Execute($"show --oneline --no-patch -m {hash}");
 
       public bool Equals(GitCommit other) => hash is not null && hash == other.hash;
 
