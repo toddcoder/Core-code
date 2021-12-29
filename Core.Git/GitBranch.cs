@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Core.Exceptions;
 using Core.Matching;
-using Core.Monads;
 
 namespace Core.Git
 {

@@ -106,5 +106,13 @@ namespace Core.Tests
          GitCommit commit = "2b7c75bdd0f9c186f21d5cf8f317a1f9a77559c3";
          commit.ShowMerge().OnSuccess(onSuccess).OnFailure(onFailure);
       }
+
+      [TestMethod]
+      public void TryToCheckoutTest()
+      {
+         FolderName.Current = CORE_REPO;
+         var branch = GitBranch.Current;
+         branch.TryTo.Checkout();
+      }
    }
 }
