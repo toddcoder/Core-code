@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using Core.Computers;
-using Core.Monads;
-using static Core.Monads.MonadFunctions;
 
 namespace Core.Git
 {
@@ -14,6 +12,7 @@ namespace Core.Git
 
       public static IEnumerable<GitResult> Execute(string arguments)
       {
+         var lines = new List<string>();
          var errors = new List<string>();
          using var process = new Process
          {
@@ -27,44 +26,20 @@ namespace Core.Git
             }
          };
 
+         process.OutputDataReceived += (_, e) => lines.Add(e.Data);
          process.ErrorDataReceived += (_, e) => errors.Add(e.Data);
          process.Start();
          process.BeginErrorReadLine();
          process.BeginOutputReadLine();
-
-         var _line = Maybe<string>.nil;
-         _line = process.StandardOutput.ReadLine();
-         if (_line.IsNone)
-         {
-            yield break;
-         }
-
-         while (!process.HasExited)
-         {
-            System.Threading.Thread.Sleep(100);
-            process.WaitForExit(100);
-         }
+         process.WaitForExit();
 
          var isGood = process.ExitCode == GOOD_EXIT_CODE;
          yield return isGood ? GitResult.Success : GitResult.Error;
 
          if (isGood)
          {
-            if (_line.If(out var firstLine))
+            foreach (var line in lines)
             {
-               yield return firstLine;
-
-               _line = nil;
-            }
-
-            while (true)
-            {
-               var line = process.StandardOutput.ReadLine();
-               if (line == null)
-               {
-                  break;
-               }
-
                yield return line;
             }
          }

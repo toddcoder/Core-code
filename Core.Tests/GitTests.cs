@@ -47,15 +47,6 @@ namespace Core.Tests
                   break;
 
             }
-            /*switch (result)
-            {
-               case Left<string, int> left:
-                  Console.WriteLine(left.Value);
-                  break;
-               case Right<string, int> right when right.Value != Git.Git.GOOD_EXIT_CODE:
-                  Console.WriteLine($"Error: {right.Value}");
-                  break;
-            }*/
          }
       }
 
