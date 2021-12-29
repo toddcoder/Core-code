@@ -30,6 +30,7 @@ namespace Core.Git
          process.ErrorDataReceived += (_, e) => errors.Add(e.Data);
          process.Start();
          process.BeginErrorReadLine();
+         process.BeginOutputReadLine();
 
          var _line = Maybe<string>.nil;
          _line = process.StandardOutput.ReadLine();

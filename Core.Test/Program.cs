@@ -85,19 +85,26 @@ namespace Core.Test
       [Command("log", "Execute a log in git with supplied arguments", "$args")]
       public void Log()
       {
-         GitArguments.Must().Not.BeEmpty().OrThrow();
-
-         foreach (var result in Git.Git.Log(GitArguments))
+         try
          {
-            switch (result)
+            GitArguments.Must().Not.BeEmpty().OrThrow();
+
+            foreach (var result in Git.Git.Log(GitArguments))
             {
-               case GitError:
-                  Console.WriteLine("Error");
-                  break;
-               case GitLine gitLine:
-                  Console.WriteLine($"   {gitLine}");
-                  break;
+               switch (result)
+               {
+                  case GitError:
+                     Console.WriteLine("Error");
+                     break;
+                  case GitLine gitLine:
+                     Console.WriteLine($"   {gitLine}");
+                     break;
+               }
             }
+         }
+         catch (Exception exception)
+         {
+            HandleException(exception);
          }
       }
 
