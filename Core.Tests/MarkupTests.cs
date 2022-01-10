@@ -1,5 +1,6 @@
 ﻿using System;
 using Core.Markup.Html;
+using Core.Markup.Xml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Core.Tests
@@ -19,6 +20,15 @@ namespace Core.Tests
          builder.Add("tr:nth-child(even)", "color", "white");
          builder.Add("background-color", "salmon");
 
+         Console.WriteLine(builder);
+      }
+
+      [TestMethod]
+      public void ImplicitAttributeTest()
+      {
+         var builder = new MarkupBuilder("alpha");
+         builder.Root.Attributes["bar"] = "@bar='txt'";
+         builder.Root.Attribute = "baz='txt2'";
          Console.WriteLine(builder);
       }
    }

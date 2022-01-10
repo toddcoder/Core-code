@@ -54,6 +54,15 @@ namespace Core.Markup.Xml
 
       public Attributes Attributes => attributes;
 
+      public string Attribute
+      {
+         set
+         {
+            Attribute attribute = value;
+            attributes[attribute.Name] = attribute;
+         }
+      }
+
       public override string ToString() => ToStringRendering(_ => true);
 
       public virtual string ToStringRendering(Func<Element, bool> callback)

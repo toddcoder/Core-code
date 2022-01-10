@@ -19,5 +19,24 @@ namespace Core.WinForms
             }
          }
       }
+
+      public static T Get<T>(this Control control, Func<T> func)
+      {
+         if (!(control?.IsDisposed ?? false))
+         {
+            if (control.InvokeRequired)
+            {
+               return (T)control.Invoke(func);
+            }
+            else
+            {
+               return func();
+            }
+         }
+         else
+         {
+            throw new ObjectDisposedException("Control already disposed");
+         }
+      }
    }
 }

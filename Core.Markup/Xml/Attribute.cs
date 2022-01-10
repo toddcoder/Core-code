@@ -1,10 +1,25 @@
-﻿using Core.Assertions;
+﻿using System;
+using Core.Assertions;
+using Core.Matching;
 using static Core.Markup.Xml.MarkupTextHolder;
 
 namespace Core.Markup.Xml
 {
    public class Attribute
    {
+      public static implicit operator Attribute(string source)
+      {
+         if (source.Matches("^ '@'? /(/w [/w '-']+) /s* '=' /s* /([quote]) /(-[quote]*) /2 $; f").If(out var result))
+         {
+            var (name, quote, text) = result;
+            return new Attribute(name, text, quote == "'" ? QuoteType.Single : QuoteType.Double);
+         }
+         else
+         {
+            throw new ApplicationException($"Didn't understand '{source}'");
+         }
+      }
+
       protected string name;
       protected string text;
       protected QuoteType quote;
