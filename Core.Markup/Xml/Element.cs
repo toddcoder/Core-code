@@ -1,15 +1,50 @@
 ﻿using System;
 using System.Text;
 using Core.Computers;
+using Core.Matching;
+using Core.Monads;
 using Core.Strings;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Markup.Xml
 {
    public class Element : IRendering
    {
+      public static implicit operator Element(string source)
+      {
+         if (source.Matches("^ /(['a-zA-Z_'][/w]*) /s* '>' /s* [quote]? /(.*) $").If(out var result))
+         {
+            return new Element
+            {
+               Name = result.FirstGroup,
+               Text = result.SecondGroup
+            };
+         }
+         else
+         {
+            throw new ApplicationException($"Didn't understand {source}");
+         }
+      }
+
+      public static Element operator +(Element element, string source)
+      {
+         Element childElement = source;
+         element.Children.Add(childElement);
+
+         return childElement;
+      }
+
+      public static Element operator *(Element element, string source)
+      {
+         Element childElement = source;
+         element.Children.Add(childElement);
+
+         return element;
+      }
+
       protected string name;
       protected MarkupTextHolder text;
-      protected Element parent;
+      protected Maybe<Element> _parent;
       protected Elements siblings;
       protected Elements children;
       protected Attributes attributes;
@@ -18,9 +53,9 @@ namespace Core.Markup.Xml
       {
          name = "no-name";
          text = string.Empty;
-         parent = null;
+         _parent = nil;
          siblings = new Elements();
-         siblings.ElementAdded += (_, e) => e.Element.Parent = parent;
+         siblings.ElementAdded += (_, e) => _parent.IfThen(parent => e.Element.Parent = parent);
          children = new Elements();
          children.ElementAdded += (_, e) => e.Element.Parent = this;
          attributes = new Attributes();
@@ -29,6 +64,15 @@ namespace Core.Markup.Xml
       public Element this[string elementName] => Children[elementName];
 
       public Element this[int index] => Children[index];
+
+      public string Child
+      {
+         set
+         {
+            Element element = value;
+            children.Add(element);
+         }
+      }
 
       public string Name
       {
@@ -42,10 +86,10 @@ namespace Core.Markup.Xml
          set => text = value;
       }
 
-      public Element Parent
+      public Maybe<Element> Parent
       {
-         get => parent;
-         set => parent = value;
+         get => _parent;
+         set => _parent = value;
       }
 
       public Elements Siblings => siblings;

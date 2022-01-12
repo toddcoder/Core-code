@@ -31,5 +31,26 @@ namespace Core.Tests
          builder.Root.Attribute = "baz='txt2'";
          Console.WriteLine(builder);
       }
+
+      [TestMethod]
+      public void ImplicitElementTest()
+      {
+         var builder = new MarkupBuilder("alpha");
+         var alpha = builder.Root;
+         alpha *= "bar>txt";
+         alpha *= "baz>' txt2 ";
+         Console.WriteLine(alpha);
+      }
+
+      [TestMethod]
+      public void PlusElementTest()
+      {
+         var builder = new MarkupBuilder("alpha");
+         var alpha = builder.Root;
+         var bar = alpha + "bar>";
+         _ = bar + "baz>none";
+
+         Console.WriteLine(builder);
+      }
    }
 }
