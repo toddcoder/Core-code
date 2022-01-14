@@ -7,12 +7,16 @@ namespace Core.Markup.Xml
 {
    public class Attribute
    {
+      protected const string PATTERN_ATTRIBUTE = "^ '@'? /(['a-zA-Z_'] [/w '-']*) /s* '=' /s* [quote]? /(.*) $; f";
+
+      public static bool Matches(string source) => source.IsMatch(PATTERN_ATTRIBUTE);
+
       public static implicit operator Attribute(string source)
       {
-         if (source.Matches("^ '@'? /(/w [/w '-']+) /s* '=' /s* /([quote]) /(-[quote]*) /2 $; f").If(out var result))
+         if (source.Matches(PATTERN_ATTRIBUTE).If(out var result))
          {
-            var (name, quote, text) = result;
-            return new Attribute(name, text, quote == "'" ? QuoteType.Single : QuoteType.Double);
+            var (name, text) = result;
+            return new Attribute(name, text, QuoteType.Single);
          }
          else
          {

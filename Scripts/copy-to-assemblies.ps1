@@ -10,5 +10,5 @@ robocopy "Core.Markup\bin\Debug" $target Core.Markup.dll /xf *.xml *.config *.pd
 robocopy "Core.Json\bin\Debug" $target Core.Json.dll /xf *.xml *.config *.pdb /NDL /NJH /NJS /nc /ns
 robocopy "Core.Git\bin\Debug" $target Core.Git.dll /xf *.xml *.config *.pdb /NDL /NJH /NJS /nc /ns
 robocopy "Core.Services\bin\Debug" $target Core.Services.dll /xf *.xml *.config *.pdb /NDL /NJH /NJS /nc /ns
-
+robocopy "Core.Zip\bin\Debug" $target Core.Zip.dll /xf *.xml *.config *.pdb /NDL /NJH /NJS /nc /ns
 Pop-Location

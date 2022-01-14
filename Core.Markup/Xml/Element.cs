@@ -12,7 +12,7 @@ namespace Core.Markup.Xml
    {
       public static implicit operator Element(string source)
       {
-         if (source.Matches("^ /(['a-zA-Z_'][/w]*) /s* '>' /s* [quote]? /(.*) $").If(out var result))
+         if (source.Matches("^ /(['a-zA-Z_'] [/w '-']*) /s* '>' /s* [quote]? /(.*) $; f").If(out var result))
          {
             return new Element
             {
@@ -28,18 +28,34 @@ namespace Core.Markup.Xml
 
       public static Element operator +(Element element, string source)
       {
-         Element childElement = source;
-         element.Children.Add(childElement);
+         if (Xml.Attribute.Matches(source))
+         {
+            element.Attribute = source;
+            return element;
+         }
+         else
+         {
+            Element childElement = source;
+            element.Children.Add(childElement);
 
-         return childElement;
+            return childElement;
+         }
       }
 
       public static Element operator *(Element element, string source)
       {
-         Element childElement = source;
-         element.Children.Add(childElement);
+         if (Xml.Attribute.Matches(source))
+         {
+            element.Attribute = source;
+            return element;
+         }
+         else
+         {
+            Element childElement = source;
+            element.Children.Add(childElement);
 
-         return element;
+            return element;
+         }
       }
 
       protected string name;

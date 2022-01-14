@@ -27,9 +27,10 @@ namespace Core.Tests
       public void ImplicitAttributeTest()
       {
          var builder = new MarkupBuilder("alpha");
-         builder.Root.Attributes["bar"] = "@bar='txt'";
-         builder.Root.Attribute = "baz='txt2'";
-         Console.WriteLine(builder);
+         var alpha = builder.Root;
+         alpha += "@bar=txt";
+         alpha += "baz=txt2";
+         Console.WriteLine(alpha);
       }
 
       [TestMethod]

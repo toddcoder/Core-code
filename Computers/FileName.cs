@@ -863,7 +863,7 @@ namespace Core.Computers
 
       public int CompareTo(FileName other) => ToString().CompareTo(other.ToString());
 
-      public bool Equals(FileName other) => fullPath == other.fullPath;
+      public bool Equals(FileName other) => fullPath == (other?.fullPath ?? "");
 
       public override string ToString() => fullPath;
 
