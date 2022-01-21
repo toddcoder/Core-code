@@ -50,7 +50,10 @@ namespace Core.Git
          }
       }
 
-      public static IEnumerable<GitResult> Log(string arguments) => Execute($"log {arguments}");
+      public static IEnumerable<GitResult> Log(string arguments, bool oneLine = false)
+      {
+         return Execute($"log {arguments}{(oneLine ? " --oneline" : "")}");
+      }
 
       public static IEnumerable<GitResult> Fetch() => Execute("fetch --all");
 
@@ -71,5 +74,7 @@ namespace Core.Git
       }
 
       public static IEnumerable<GitResult> ShortStatus() => Execute("status -s -b");
+
+      public static IEnumerable<GitResult> Revert(string commit) => Execute($"revert --no-edit -m 1 {commit}");
    }
 }
