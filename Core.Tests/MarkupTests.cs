@@ -53,5 +53,37 @@ namespace Core.Tests
 
          Console.WriteLine(builder);
       }
+
+      [TestMethod]
+      public void HtmlTest()
+      {
+         var builder = new HtmlBuilder();
+         var tableThTd = builder + "table, th, td { border: 1px solid black";
+         tableThTd += "border-collapse: collapse";
+         tableThTd += "padding: 5px";
+         _ = tableThTd + "font-family: Verdana";
+
+         var nthChild = builder + "tr:nth-child(even) {";
+         nthChild += "color: white";
+         _ = nthChild + "background-color: salmon";
+
+         var table = builder.Body + "table>";
+         var tr = table + "tr>";
+         tr *= "th>Alpha";
+         tr *= "th>Bravo";
+         _ = tr * "th>Charlie";
+
+         tr = table + "tr>";
+         tr *= "td>alpha";
+         tr *= "td>beta";
+         _ = tr * "td>kappa";
+
+         tr = table + "tr>";
+         tr *= "td>ah";
+         tr *= "td>bo";
+         _ = tr * "td>tso";
+
+         Console.WriteLine(builder);
+      }
    }
 }
