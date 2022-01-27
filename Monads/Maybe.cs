@@ -88,5 +88,7 @@ namespace Core.Monads
          action(this);
          return this;
       }
+
+      public abstract Maybe<T> Initialize(Func<T> initializer);
    }
 }

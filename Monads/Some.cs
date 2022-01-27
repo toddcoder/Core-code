@@ -90,6 +90,8 @@ namespace Core.Monads
 
       public override Maybe<T> Where(Predicate<T> predicate) => predicate(value) ? this : none<T>();
 
+      public override Maybe<T> Initialize(Func<T> initializer) => this;
+
       public bool Equals(Some<T> other)
       {
          return other is not null && ReferenceEquals(this, other) || EqualityComparer<T>.Default.Equals(value, other.value);
