@@ -1,4 +1,5 @@
-﻿using Core.Enumerables;
+﻿using System.Runtime.InteropServices;
+using Core.Enumerables;
 using Core.Markup.Rtf;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -10,7 +11,7 @@ namespace Core.Tests
       [TestMethod]
       public void BasicTest()
       {
-         var document = new Document(PaperSize.A4, PaperOrientation.Landscape, Lcid.English);
+         var document = new Document(PaperSize.A4, PaperOrientation.Landscape);
 
          var timesFont = document.Font("Times New Roman");
          var courierFont = document.Font("Courier New");
@@ -100,6 +101,36 @@ namespace Core.Tests
          format.Bookmark = "target";
 
          document.Save(@"C:\Temp\Test.rtf");
+      }
+
+      [TestMethod]
+      public void TableDataTest()
+      {
+         var document = new Document();
+         var tableData = new TableData(document);
+         var blueColor = document.Color("blue");
+         tableData.TableCell += (_, e) =>
+         {
+            var paragraph = e.TableCell.Paragraph();
+            paragraph.Text = e.Text;
+
+            switch (e.ColumnIndex)
+            {
+               case 0:
+                  paragraph.DefaultCharFormat.FontStyle += FontStyleFlag.Bold;
+                  break;
+               case 1:
+                  paragraph.DefaultCharFormat.LocalHyperlink = e.Text;
+                  paragraph.DefaultCharFormat.ForegroundColor = blueColor;
+                  break;
+            }
+         };
+
+         tableData.AddRow("Pull Request", "http://foobar");
+         tableData.AddRow("estreamps", "http://evokeps");
+         tableData.AddRow("staging10ua", "http://evokeuat");
+         _ = tableData.Table(12);
+         document.Save(@"C:\Temp\Test2.rtf");
       }
    }
 }
