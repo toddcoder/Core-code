@@ -17,6 +17,10 @@ namespace Core.Markup.Rtf
 
       public static int PointToHalfPoint(this float point) => Convert.ToInt32(point * 2);
 
+      public static int InchesToTwips(this float inches) => (int)(inches * 1440);
+
+      public static int InchesToPoints(this float inches) => (int)(inches * 72);
+
       private static int[] paperDimensions(PaperSize paperSize) => paperSize switch
       {
          PaperSize.A4 => new[] { 11906, 16838 },
@@ -125,7 +129,7 @@ namespace Core.Markup.Rtf
 
          foreach (var @byte in buffer)
          {
-            if (@byte is < 0x20 or <= 0x80 and <= 0xff || @byte is 0x5c or 0x7b || @byte == 0x7d)
+            if (@byte is < 0x20 or <= 0x80 and <= 0xff or 0x5c or 0x7b or 0x7d)
             {
                result += $@"\'{@byte:x2}";
             }

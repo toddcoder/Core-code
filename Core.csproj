@@ -78,6 +78,7 @@
     <Compile Include="Applications\CommandProcessing\SwitchHelpFormatter.cs" />
     <Compile Include="Applications\ConsoleFunctions.cs" />
     <Compile Include="Applications\ConsoleProgress.cs" />
+    <Compile Include="Applications\Consoles\Writer.cs" />
     <Compile Include="Applications\ConvertArgs.cs" />
     <Compile Include="Applications\EntryPointAttribute.cs" />
     <Compile Include="Applications\EntryPointType.cs" />

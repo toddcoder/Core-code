@@ -71,7 +71,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rtf\Alignment.cs" />
     <Compile Include="Rtf\FieldType.cs" />
+    <Compile Include="Rtf\TableCellArgs.cs" />
     <Compile Include="Rtf\RtfConcatenator.cs" />
+    <Compile Include="Rtf\TableData.cs" />
     <Compile Include="Rtf\VerticalAlignment.cs" />
     <Compile Include="Rtf\Block.cs" />
     <Compile Include="Rtf\Border.cs" />

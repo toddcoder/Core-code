@@ -16,7 +16,7 @@ namespace Core.Markup.Rtf
       protected StringHash<int> fontTable;
       protected Hash<Color, int> colorTable;
 
-      public Document(PaperSize paperSize, PaperOrientation paperOrientation, Lcid lcid)
+      public Document(PaperSize paperSize = PaperSize.Letter, PaperOrientation paperOrientation = PaperOrientation.Portrait, Lcid lcid = Lcid.English)
       {
          this.paperSize = paperSize;
          this.paperOrientation = paperOrientation;
