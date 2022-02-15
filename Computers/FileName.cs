@@ -340,49 +340,41 @@ namespace Core.Computers
             }
             else
             {
-               using var file = File.Open(fullPath, FileMode.Open, FileAccess.Read, FileShare.Read);
-               using var reader = new StreamReader(file, Encoding);
-
-               try
-               {
-                  return reader.ReadToEnd();
-               }
-               finally
-               {
-                  reader?.Close();
-               }
+               return GetText(Encoding);
             }
          }
-         set
-         {
-            using var file = File.Open(fullPath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
-            using var writer = new StreamWriter(file, Encoding);
-
-            try
-            {
-               writer.Write(value);
-            }
-            finally
-            {
-               writer.Flush();
-               writer.Close();
-            }
-         }
+         set => SetText(value, Encoding);
       }
 
       public string GetText(Encoding encoding)
       {
-         using var reader = new FileNameMappedReader(this, encoding);
-         return reader.ReadToEnd();
+         using var file = File.Open(fullPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+         using var reader = new StreamReader(file, encoding);
+
+         try
+         {
+            return reader.ReadToEnd();
+         }
+         finally
+         {
+            reader?.Close();
+         }
       }
 
       public void SetText(string text, Encoding encoding)
       {
          using var file = File.Open(fullPath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
          using var writer = new StreamWriter(file, encoding);
-         writer.Write(text);
-         writer.Flush();
-         writer.Close();
+
+         try
+         {
+            writer.Write(text);
+         }
+         finally
+         {
+            writer.Flush();
+            writer.Close();
+         }
       }
 
       public byte[] Bytes
@@ -392,7 +384,7 @@ namespace Core.Computers
             using var stream = new FileStream(fullPath, FileMode.Open, FileAccess.Read, FileShare.Write);
             var length = (int)stream.Length;
             var bytes = new byte[length];
-            stream.Read(bytes, 0, length);
+            _ = stream.Read(bytes, 0, length);
 
             return bytes;
          }
@@ -803,7 +795,7 @@ namespace Core.Computers
       {
          using var stream = new FileStream(fullPath, FileMode.Open, FileAccess.Read, FileShare.Read);
          var bytes = new byte[length];
-         stream.Read(bytes, start, length);
+         _ = stream.Read(bytes, start, length);
 
          return bytes;
       }
