@@ -340,17 +340,33 @@ namespace Core.Computers
             }
             else
             {
-               using var reader = new FileNameMappedReader(this);
-               return reader.ReadToEnd();
+               using var file = File.Open(fullPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+               using var reader = new StreamReader(file, Encoding);
+
+               try
+               {
+                  return reader.ReadToEnd();
+               }
+               finally
+               {
+                  reader?.Close();
+               }
             }
          }
          set
          {
             using var file = File.Open(fullPath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
             using var writer = new StreamWriter(file, Encoding);
-            writer.Write(value);
-            writer.Flush();
-            writer.Close();
+
+            try
+            {
+               writer.Write(value);
+            }
+            finally
+            {
+               writer.Flush();
+               writer.Close();
+            }
          }
       }
 
