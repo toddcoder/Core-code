@@ -1,9 +1,10 @@
 ﻿using System;
-using System.Text;
-using System.Text.Json;
+using System.IO;
 using Core.Configurations;
 using Core.DataStructures;
 using Core.Monads;
+using Core.Strings;
+using Newtonsoft.Json;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Json
@@ -48,16 +49,17 @@ namespace Core.Json
 
          try
          {
-            var utf8 = Encoding.UTF8;
-            var options = new JsonReaderOptions { AllowTrailingCommas = true, CommentHandling = JsonCommentHandling.Skip };
-            var reader = new Utf8JsonReader(utf8.GetBytes(source), options);
+            using var textReader = new StringReader(source);
+            using var reader = new JsonTextReader(textReader);
             var firstObjectProcessed = false;
+
+            string getValue() => reader.Value?.ToString() ?? "";
 
             while (reader.Read())
             {
                switch (reader.TokenType)
                {
-                  case JsonTokenType.StartObject when firstObjectProcessed:
+                  case JsonToken.StartObject when firstObjectProcessed:
                   {
                      var key = _propertyName.DefaultTo(() => $"${itemCount()}");
                      _propertyName = nil;
@@ -74,10 +76,10 @@ namespace Core.Json
                      stack.Push(group);
                      break;
                   }
-                  case JsonTokenType.StartObject:
+                  case JsonToken.StartObject:
                      firstObjectProcessed = true;
                      break;
-                  case JsonTokenType.EndObject:
+                  case JsonToken.EndObject:
                      if (stack.IsEmpty)
                      {
                         return fail("No parent group available");
@@ -85,7 +87,7 @@ namespace Core.Json
 
                      stack.Pop();
                      break;
-                  case JsonTokenType.StartArray:
+                  case JsonToken.StartArray:
                   {
                      var key = _propertyName.DefaultTo(() => $"${itemCount()}");
                      _propertyName = nil;
@@ -103,7 +105,7 @@ namespace Core.Json
 
                      break;
                   }
-                  case JsonTokenType.EndArray:
+                  case JsonToken.EndArray:
                      if (stack.IsEmpty)
                      {
                         return fail("No parent group available");
@@ -111,22 +113,25 @@ namespace Core.Json
 
                      stack.Pop();
                      break;
-                  case JsonTokenType.PropertyName:
-                     _propertyName = reader.GetString();
+                  case JsonToken.PropertyName:
+                     _propertyName = reader.Value.Some().Map(o => o.ToNonNullString());
                      break;
-                  case JsonTokenType.String:
-                     setItem(reader.GetString());
+                  case JsonToken.String:
+                     setItem(getValue());
                      break;
-                  case JsonTokenType.Number:
-                     setItem(reader.GetDouble().ToString());
+                  case JsonToken.Integer:
+                     setItem(getValue());
                      break;
-                  case JsonTokenType.True:
-                     setItem("true");
+                  case JsonToken.Float:
+                     setItem(getValue());
                      break;
-                  case JsonTokenType.False:
-                     setItem("false");
+                  case JsonToken.Boolean:
+                     setItem(getValue().ToLower());
                      break;
-                  case JsonTokenType.Null or JsonTokenType.Comment or JsonTokenType.None:
+                  case JsonToken.Date:
+                     setItem(getValue());
+                     break;
+                  default:
                      setItem("");
                      break;
                }

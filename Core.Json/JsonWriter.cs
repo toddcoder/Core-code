@@ -1,60 +1,109 @@
 ﻿using System;
 using System.IO;
 using System.Text;
-using System.Text.Json;
+using Newtonsoft.Json;
 
 namespace Core.Json
 {
    public class JsonWriter : IDisposable
    {
       protected MemoryStream stream;
-      protected Utf8JsonWriter writer;
+      protected StreamWriter streamWriter;
+      protected JsonTextWriter writer;
 
       public JsonWriter()
       {
          stream = new MemoryStream();
-         writer = new Utf8JsonWriter(stream, new JsonWriterOptions { Indented = true });
+         streamWriter = new StreamWriter(stream);
+         writer = new JsonTextWriter(streamWriter)
+         {
+            Formatting = Formatting.Indented,
+            Indentation = 2,
+            QuoteChar = '"',
+            IndentChar = ' ',
+            QuoteName = true
+         };
       }
 
       public void BeginObject() => writer.WriteStartObject();
 
-      public void BeginObject(string propertyName) => writer.WriteStartObject(propertyName);
+      public void BeginObject(string propertyName)
+      {
+         writer.WritePropertyName(propertyName);
+         writer.WriteStartObject();
+      }
 
       public void BeginArray() => writer.WriteStartArray();
 
-      public void BeginArray(string propertyName) => writer.WriteStartArray(propertyName);
+      public void BeginArray(string propertyName)
+      {
+         writer.WritePropertyName(propertyName);
+         writer.WriteStartArray();
+      }
 
       public void EndArray() => writer.WriteEndArray();
 
       public void EndObject() => writer.WriteEndObject();
 
-      public void Write(string value) => writer.WriteStringValue(value);
+      public void Write(string value) => writer.WriteValue(value);
 
-      public void Write(int value) => writer.WriteNumberValue(value);
+      public void Write(int value) => writer.WriteValue(value);
 
-      public void Write(double value) => writer.WriteNumberValue(value);
+      public void Write(double value) => writer.WriteValue(value);
 
-      public void Write(bool value) => writer.WriteBooleanValue(value);
+      public void Write(bool value) => writer.WriteValue(value);
 
-      public void Write(DateTime value) => writer.WriteStringValue(value);
+      public void Write(DateTime value) => writer.WriteValue(value);
 
-      public void Write(Guid value) => writer.WriteStringValue(value);
+      public void Write(Guid value) => writer.WriteValue(value);
 
-      public void Write(string propertyName, string value) => writer.WriteString(propertyName, value);
+      public void Write(string propertyName, string value)
+      {
+         writer.WritePropertyName(propertyName);
+         writer.WriteValue(value);
+      }
 
-      public void Write(string propertyName, int value) => writer.WriteNumber(propertyName, value);
+      public void Write(string propertyName, int value)
+      {
+         writer.WritePropertyName(propertyName);
+         writer.WriteValue(value);
+      }
 
-      public void Write(string propertyName, double value) => writer.WriteNumber(propertyName, value);
+      public void Write(string propertyName, double value)
+      {
+         writer.WritePropertyName(propertyName);
+         writer.WriteValue(value);
+      }
 
-      public void Write(string propertyName, bool value) => writer.WriteBoolean(propertyName, value);
+      public void Write(string propertyName, bool value)
+      {
+         writer.WritePropertyName(propertyName);
+         writer.WriteValue(value);
+      }
 
-      public void Write(string propertyName, DateTime value) => writer.WriteString(propertyName, value);
+      public void Write(string propertyName, DateTime value)
+      {
+         writer.WritePropertyName(propertyName);
+         writer.WriteValue(value);
+      }
 
-      public void Write(string propertyName, Guid value) => writer.WriteString(propertyName, value);
+      public void Write(string propertyName, Guid value)
+      {
+         writer.WritePropertyName(propertyName);
+         writer.WriteValue(value);
+      }
 
-      public void Write(string propertyName, byte[] value) => writer.WriteBase64String(propertyName, value);
+      public void Write(string propertyName, byte[] value)
+      {
+         writer.WritePropertyName(propertyName);
+         writer.WriteValue(value);
+      }
 
-      public void WriteNull(string propertyName) => writer.WriteNull(propertyName);
+      public void WriteNull(string propertyName)
+      {
+         writer.WritePropertyName(propertyName);
+         writer.WriteNull();
+      }
 
       public override string ToString()
       {
@@ -64,7 +113,6 @@ namespace Core.Json
 
       public void Dispose()
       {
-         writer?.Dispose();
          stream?.Dispose();
       }
    }
