@@ -17,7 +17,7 @@ namespace Core.WinForms.Documents
 
       public static string GetWindowsText(string text) => SetWindowsText(text).ToString("\r\n");
 
-      public static string[] SetWindowsText(string text) => text.Split(PATTERN_CRLF);
+      public static string[] SetWindowsText(string text) => text.Unjoin(PATTERN_CRLF);
 
       public static Maybe<string> ClipboardText()
       {

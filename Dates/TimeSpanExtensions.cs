@@ -97,7 +97,7 @@ namespace Core.Dates
 
       public static Result<TimeSpan> TimeSpan(this string source)
       {
-         var intervals = source.Split("/s* (',' | 'and') /s*; f");
+         var intervals = source.Unjoin("/s* (',' | 'and') /s*; f");
          var spans = intervals.Where(i => i.IsNotEmpty()).Select(getSpan);
          var newSpan = new TimeSpan(0, 0, 0, 0);
 

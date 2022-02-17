@@ -78,10 +78,10 @@ namespace Core.Strings
 
       public static string[] Lines(this string source, SplitType split)
       {
-         return source.IsEmpty() ? Array.Empty<string>() : source.Split(splitPattern(split));
+         return source.IsEmpty() ? Array.Empty<string>() : source.Unjoin(splitPattern(split));
       }
 
-      public static string[] Lines(this string source) => source.Split("/r/n | /r | /n; f");
+      public static string[] Lines(this string source) => source.Unjoin("/r/n | /r | /n; f");
 
       public static string Slice(this string source, int startIndex, int stopIndex)
       {
@@ -216,7 +216,7 @@ namespace Core.Strings
 
       private static string replaceWhitespace(string source, string replacement)
       {
-         return source.Map(s => string.Join(replacement, s.Split("/s+; f")));
+         return source.Map(s => string.Join(replacement, s.Unjoin("/s+; f")));
       }
 
       public static string NormalizeWhitespace(this string source) => replaceWhitespace(source, " ");
@@ -2228,7 +2228,7 @@ namespace Core.Strings
             return string.Empty;
          }
 
-         var array = source.Split(splitPattern);
+         var array = source.Unjoin(splitPattern);
          var result = array.Select(e => $"{e}{" ".Repeat(padding)}").ToString(string.Empty).Trim();
 
          return result.Center(allowedLength).Elliptical(allowedLength, ' ');
@@ -2330,7 +2330,7 @@ namespace Core.Strings
             }
             else if (whole.IsMatch("'_'; f"))
             {
-               whole = whole.Split("'_'+; f").Select(s => s.ToPascal()).ToString("");
+               whole = whole.Unjoin("'_'+; f").Select(s => s.ToPascal()).ToString("");
             }
 
             var part = new StringBuilder();

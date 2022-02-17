@@ -88,7 +88,7 @@ namespace Core.Configurations
 
       public string ValueAt(string key) => GetValue(key).Required($"Couldn't find value '{key}'");
 
-      public string[] GetArray(string key) => GetValue(key).Map(s => s.Split("/s* ',' /s*; f")).DefaultTo(() => new[] { key });
+      public string[] GetArray(string key) => GetValue(key).Map(s => s.Unjoin("/s* ',' /s*; f")).DefaultTo(() => new[] { key });
 
       public Result<string> RequireValue(string key) => items.Require(key).Map(i => i.RequireValue(key));
 
@@ -284,7 +284,7 @@ namespace Core.Configurations
             var elementType = type.GetElementType();
             if (isBaseType(elementType))
             {
-               var strings = source.Split("/s* ',' /s*; f");
+               var strings = source.Unjoin("/s* ',' /s*; f");
                return makeArray(elementType, strings);
             }
             else

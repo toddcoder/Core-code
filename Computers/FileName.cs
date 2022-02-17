@@ -398,7 +398,7 @@ namespace Core.Computers
 
       public string[] Lines
       {
-         get => Text.Split(splitPattern(SplitType));
+         get => Text.Unjoin(splitPattern(SplitType));
          set => Text = string.Join(splitLiteral(SplitType), value);
       }
 
@@ -436,7 +436,7 @@ namespace Core.Computers
          }
       }
 
-      public string[] Parts => fullPath.Split(@"'\'; f");
+      public string[] Parts => fullPath.Unjoin(@"'\'; f");
 
       public bool IsRooted => Path.IsPathRooted(fullPath);
 
@@ -481,7 +481,7 @@ namespace Core.Computers
          }
          else
          {
-            var parts = fullPath.Split(@"'\'; f");
+            var parts = fullPath.Unjoin(@"'\'; f");
             string result;
             var index = parts.Length - 4;
 

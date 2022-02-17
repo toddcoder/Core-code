@@ -7,7 +7,7 @@ namespace Core.Objects
    {
       public SignatureCollection(string signature)
       {
-         foreach (var singleSignature in signature.Split("'.'; f"))
+         foreach (var singleSignature in signature.Unjoin("'.'; f"))
          {
             Add(singleSignature);
          }

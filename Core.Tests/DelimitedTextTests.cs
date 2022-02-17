@@ -121,7 +121,7 @@ namespace Core.Tests
          result = delimitedText.Transform("(111 + 123       - 153) / 3", "($0+$1-$2) / 3", "sum('$0', '$1', '$2') / n('$0', '$1', '$2')");
          Console.WriteLine(result);
 
-         delimitedText.TransformingMap = func<string, string>(s1 => s1.Split("/s* '+' /s*").Select(s2 => s2.Trim().Quotify()).ToString(", ")).Some();
+         delimitedText.TransformingMap = func<string, string>(s1 => s1.Unjoin("/s* '+' /s*").Select(s2 => s2.Trim().Quotify()).ToString(", ")).Some();
          result = delimitedText.Transform("(111 + 123       + 153) / 3", "($0) / 3", "sum($0) / n($0)");
          Console.WriteLine(result);
       }

@@ -20,7 +20,7 @@ namespace Core.WinForms.Documents
       public Colorizer(Pattern pattern, string colors)
       {
          this.pattern = pattern;
-         this.colors = colors.Split("/s* ',' /s*; f").Select(Color.FromName).ToArray();
+         this.colors = colors.Unjoin("/s* ',' /s*; f").Select(Color.FromName).ToArray();
       }
 
       public void Colorize(RichTextBox textBox)

@@ -46,7 +46,7 @@ namespace Core.Internet.Smtp
       {
          if (destination.IsNotEmpty())
          {
-            foreach (var item in destination.Split("/s* [',;'] /s*"))
+            foreach (var item in destination.Unjoin("/s* [',;'] /s*"))
             {
                action(message, item);
             }

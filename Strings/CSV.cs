@@ -18,7 +18,7 @@ namespace Core.Strings
 
          public Record(string record, DelimitedText delimitedText) : this()
          {
-            foreach (var field in record.Split("','; f"))
+            foreach (var field in record.Unjoin("','; f"))
             {
                fields.Add(delimitedText.Restringify(field, RestringifyQuotes.None));
             }
@@ -69,7 +69,7 @@ namespace Core.Strings
          var destringified = delimitedText.Destringify(source);
          if (source.IsNotEmpty())
          {
-            foreach (var record in destringified.Split("/r /n | /r | /n; f"))
+            foreach (var record in destringified.Unjoin("/r /n | /r | /n; f"))
             {
                records.Add(getNewRecord(record, delimitedText));
             }

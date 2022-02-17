@@ -20,8 +20,8 @@ namespace Core.Applications.CommandProcessing
          {
             for (var i = 0; i < result.MatchCount; i++)
             {
-               var left = result[i, 1].Split("/s* ',' /s*; f");
-               var right = result[i, 2].Split("/s* ',' /s*; f");
+               var left = result[i, 1].Unjoin("/s* ',' /s*; f");
+               var right = result[i, 2].Unjoin("/s* ',' /s*; f");
                var list = new List<string>();
                foreach (var leftItem in left)
                {
@@ -90,7 +90,7 @@ namespace Core.Applications.CommandProcessing
             var _divider = Maybe<string>.nil;
             var _indent = Maybe<string>.nil;
 
-            foreach (var line in source.Split("/s* ';' /s*; f"))
+            foreach (var line in source.Unjoin("/s* ';' /s*; f"))
             {
                if (_divider.If(out var divider))
                {

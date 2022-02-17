@@ -17,7 +17,7 @@ namespace Core.Applications
       {
          var delimitedText = DelimitedText.BothQuotes();
          var destringified = delimitedText.Destringify(arguments.Replace(@"\", @"\\"));
-         return destringified.Split("/s+; f").Select(s => delimitedText.Restringify(s, RestringifyQuotes.None)).ToArray();
+         return destringified.Unjoin("/s+; f").Select(s => delimitedText.Restringify(s, RestringifyQuotes.None)).ToArray();
       }
 
       protected Argument[] arguments;
