@@ -31,7 +31,7 @@ namespace Core.Strings
 
       public Padding(string padTypes)
       {
-         this.padTypes = padTypes.Split(DEFAULT_SPLIT_PATTERN)
+         this.padTypes = padTypes.Unjoin(DEFAULT_SPLIT_PATTERN)
             .Select(s => Maybe.Enumeration<PadType>(s))
             .SomeValue()
             .ToArray();
@@ -68,7 +68,7 @@ namespace Core.Strings
          {
             if (text.IsNotEmpty())
             {
-               var lines = text.Split(LINE_SPLIT_PATTERN).Select(line => line.Split(splitPattern)).ToArray();
+               var lines = text.Unjoin(LINE_SPLIT_PATTERN).Select(line => line.Unjoin(splitPattern)).ToArray();
                return getText(lines);
             }
             else

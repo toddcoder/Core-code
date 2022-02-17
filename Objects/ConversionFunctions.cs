@@ -377,7 +377,7 @@ namespace Core.Objects
 
       private static Result<TimeSpan> getSpans(string source)
       {
-         var intervals = source.Split("/s* (',' | 'and') /s*; f");
+         var intervals = source.Unjoin("/s* (',' | 'and') /s*; f");
          var spans = intervals.Where(i => i.IsNotEmpty()).Select(getSpan);
          var newSpan = new TimeSpan(0, 0, 0, 0);
 

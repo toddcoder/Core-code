@@ -421,7 +421,7 @@ namespace Core.Computers
                subfolders = subfolders.Substring(1);
             }
 
-            return subfolders.Split(@"'\'; f");
+            return subfolders.Unjoin(@"'\'; f");
          }
          else
          {
@@ -472,7 +472,7 @@ namespace Core.Computers
             folderSubfolders = folderSubfolders.Substring(1);
          }
 
-         initialize(folderRoot, folderSubfolders.IsEmpty() ? Array.Empty<string>() : folderSubfolders.Split(@"'\'; f"));
+         initialize(folderRoot, folderSubfolders.IsEmpty() ? Array.Empty<string>() : folderSubfolders.Unjoin(@"'\'; f"));
       }
 
       public void CreateIfNonExistent()

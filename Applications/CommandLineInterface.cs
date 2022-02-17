@@ -235,7 +235,7 @@ namespace Core.Applications
          if (rest.Matches("^/s* '[' /s*  /(.*) /s* ']'; f").If(out var result))
          {
             var list = result.FirstGroup;
-            var array = list.Split("/s* ',' /s*; f");
+            var array = list.Unjoin("/s* ',' /s*; f");
             return array;
          }
          else
@@ -316,9 +316,9 @@ namespace Core.Applications
 
       protected static Hash<char, string> getShortcuts(string source)
       {
-         return source.Split("/s* ';' /s*; f").Select(s =>
+         return source.Unjoin("/s* ';' /s*; f").Select(s =>
          {
-            var pair = s.Split("/s* '=' /s*; f");
+            var pair = s.Unjoin("/s* '=' /s*; f");
             return (key: pair[0][0], value: pair[1]);
          }).ToHash(i => i.key, i => i.value);
       }

@@ -145,7 +145,7 @@ namespace Core.Objects
       {
          if (signature.IsMatch("[/w '.[]']+; f"))
          {
-            if (signature.Split("'.'; f").All(s => s.IsMatch(Signature.REGEX_FORMAT)))
+            if (signature.Unjoin("'.'; f").All(s => s.IsMatch(Signature.REGEX_FORMAT)))
             {
                var current = obj;
 

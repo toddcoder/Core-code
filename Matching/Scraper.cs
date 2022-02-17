@@ -92,7 +92,7 @@ namespace Core.Matching
             return noMatch<Scraper>();
          }
 
-         var split = source.Current.Split(pattern);
+         var split = source.Current.Unjoin(pattern);
          foreach (var value in split)
          {
             variables[nameFunc(value)] = value;

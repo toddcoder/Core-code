@@ -330,7 +330,7 @@ namespace Core.Strings
          Status = DelimitedTextStatus.Outside;
          var values = new List<string>();
 
-         foreach (var (text, sliceIndex, length) in pattern.SplitIntoSlices("'$' /d+; f").Where(s => s.Length > 0))
+         foreach (var (text, sliceIndex, length) in pattern.UnjoinIntoSlices("'$' /d+; f").Where(s => s.Length > 0))
          {
             if (sliceIndex == 0)
             {

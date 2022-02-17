@@ -18,9 +18,9 @@ namespace Core.Collections
          var parsed = destringifier.Destringify(keyValues);
          var hash = new StringStringHash();
 
-         foreach (var keyValue in parsed.Split("/s* ',' /s*; f"))
+         foreach (var keyValue in parsed.Unjoin("/s* ',' /s*; f"))
          {
-            var elements = keyValue.Split("/s* '->' /s*; f");
+            var elements = keyValue.Unjoin("/s* '->' /s*; f");
             if (elements.Length == 2)
             {
                var key = destringifier.Restringify(elements[0], RestringifyQuotes.None);

@@ -22,7 +22,7 @@ namespace Core.Services.Scheduling
       {
          if (!noSchedules)
          {
-            schedules = source.Split("/s* ',' /s*; f").Select(s => new Schedule(s, autoNext)).ToArray();
+            schedules = source.Unjoin("/s* ',' /s*; f").Select(s => new Schedule(s, autoNext)).ToArray();
             lastScheduleIndex = -1;
             nextScheduleIndex = -1;
             _lastTargetDateTime = nil;

@@ -40,11 +40,18 @@ namespace Core.Matching
          }
       }
 
+      [Obsolete("Use Unjoin")]
       public static string[] Split(this string input, Pattern pattern)
       {
          return RRegex.Split(input, pattern.Regex, pattern.Options);
       }
 
+      public static string[] Unjoin(this string input, Pattern pattern)
+      {
+         return RRegex.Split(input, pattern.Regex, pattern.Options);
+      }
+
+      [Obsolete("Use UnjoinIntoSlices")]
       public static IEnumerable<Slice> SplitIntoSlices(this string input, Pattern pattern)
       {
          if (input.Matches(pattern).If(out var result))
@@ -67,12 +74,42 @@ namespace Core.Matching
          }
       }
 
+      public static IEnumerable<Slice> UnjoinIntoSlices(this string input, Pattern pattern)
+      {
+         if (input.Matches(pattern).If(out var result))
+         {
+            var index = 0;
+            int length;
+            string text;
+            foreach (var (_, matchIndex, matchLength) in result)
+            {
+               length = matchIndex - index;
+               text = input.Drop(index).Keep(length);
+               yield return new Slice(text, index, length);
+
+               index = matchIndex + matchLength;
+            }
+
+            length = input.Length - index;
+            text = input.Drop(index);
+            yield return new Slice(text, index, length);
+         }
+      }
+
+      [Obsolete("Use Unjoin2")]
       public static (string, string) Split2(this string input, Pattern pattern)
       {
          var result = input.Split(pattern);
          return result.Length == 1 ? (result[0], "") : (result[0], result[1]);
       }
 
+      public static (string, string) Unjoin2(this string input, Pattern pattern)
+      {
+         var result = input.Unjoin(pattern);
+         return result.Length == 1 ? (result[0], "") : (result[0], result[1]);
+      }
+
+      [Obsolete("Use Unjoin3")]
       public static (string, string, string) Split3(this string input, Pattern pattern)
       {
          var result = input.Split(pattern);
@@ -84,6 +121,18 @@ namespace Core.Matching
          };
       }
 
+      public static (string, string, string) Unjoin3(this string input, Pattern pattern)
+      {
+         var result = input.Unjoin(pattern);
+         return result.Length switch
+         {
+            1 => (result[0], "", ""),
+            2 => (result[0], result[1], ""),
+            _ => (result[0], result[1], result[2])
+         };
+      }
+
+      [Obsolete("Use Unjoin4")]
       public static (string, string, string, string) Split4(this string input, Pattern pattern)
       {
          var result = input.Split(pattern);
@@ -96,6 +145,17 @@ namespace Core.Matching
          };
       }
 
+      public static (string, string, string, string) Unjoin4(this string input, Pattern pattern)
+      {
+         var result = input.Unjoin(pattern);
+         return result.Length switch
+         {
+            1 => (result[0], "", "", ""),
+            2 => (result[0], result[1], "", ""),
+            3 => (result[0], result[1], result[2], ""),
+            _ => (result[0], result[1], result[2], result[3])
+         };
+      }
       public static (string group1, string group2) Group2(this string input, Pattern pattern)
       {
          if (pattern.MatchedBy(input).If(out var result))

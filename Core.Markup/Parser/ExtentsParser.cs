@@ -80,7 +80,7 @@ namespace Core.Markup.Parser
 
             var delimitedText = DelimitedText.AsFriendlyPattern();
             var bareText = delimitedText.Destringify(specification);
-            var specifiers = bareText.Split("/s* ',' /s*; f").Select(s => delimitedText.Restringify(s, RestringifyQuotes.None)).ToArray();
+            var specifiers = bareText.Unjoin("/s* ',' /s*; f").Select(s => delimitedText.Restringify(s, RestringifyQuotes.None)).ToArray();
             var format = new Format();
 
             foreach (var specifier in specifiers)

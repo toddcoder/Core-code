@@ -614,7 +614,7 @@ namespace Core.Applications.CommandProcessing
          if (value.Matches("^/s* '[' /s*  /(.*) /s* ']'; f").If(out var result))
          {
             var list = result.FirstGroup;
-            var array = list.Split("/s* ',' /s*; f");
+            var array = list.Unjoin("/s* ',' /s*; f");
             return array.Some().Map(a => (object)a);
          }
          else

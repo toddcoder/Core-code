@@ -162,7 +162,7 @@ namespace Core.Arrays
       {
          var indexes = new List<int>();
 
-         foreach (var group in columnIndexes.RemoveWhitespace().Split("','; f"))
+         foreach (var group in columnIndexes.RemoveWhitespace().Unjoin("','; f"))
          {
             if (group.Matches("/(/d+) '-' /(/d+); f").If(out var result))
             {

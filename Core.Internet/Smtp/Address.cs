@@ -8,7 +8,7 @@ namespace Core.Internet.Smtp
 {
    public class Address
    {
-      protected static string joinByCommas(string value) => value.Split("/s* [';,'] /s*; f").ToString(", ");
+      protected static string joinByCommas(string value) => value.Unjoin("/s* [';,'] /s*; f").ToString(", ");
 
       protected string to;
       protected string cc;

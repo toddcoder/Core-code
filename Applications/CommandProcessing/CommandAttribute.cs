@@ -14,7 +14,7 @@ namespace Core.Applications.CommandProcessing
       {
          var hash = new StringHash(true);
 
-         var items = source.Split(@"/s* -(< '\') ';' /s*").Select(i => i.Replace(@"\;", ";")).ToArray();
+         var items = source.Unjoin(@"/s* -(< '\') ';' /s*").Select(i => i.Replace(@"\;", ";")).ToArray();
          foreach (var item in items)
          {
             if (item.Matches("^ /(-[':']+) ':' /s* /(.+) $").If(out var result))
