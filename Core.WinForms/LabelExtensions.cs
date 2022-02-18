@@ -8,8 +8,8 @@ namespace Core.WinForms
    {
       public static void ShowMessage(this Label label, string message)
       {
-         label.ForeColor = SystemColors.InfoText;
-         label.BackColor = SystemColors.Info;
+         label.ForeColor = Color.White;
+         label.BackColor = Color.Blue;
          label.Text = message;
       }
 
