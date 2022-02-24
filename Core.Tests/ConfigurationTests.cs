@@ -131,6 +131,21 @@ namespace Core.Tests
       }
 
       [TestMethod]
+      public void MultilineArrayTest()
+      {
+         var resources = new Resources<ConfigurationTests>();
+         var source = resources.String("TestData.Arrays.txt");
+         if (Group.FromString(source).If(out var group, out var exception))
+         {
+            Console.WriteLine(group);
+         }
+         else
+         {
+            Console.WriteLine(exception.Message);
+         }
+      }
+
+      [TestMethod]
       public void ToStringTest()
       {
          var resources = new Resources<ConfigurationTests>();

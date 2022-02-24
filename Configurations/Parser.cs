@@ -1,5 +1,7 @@
-﻿using System.Text;
+﻿using System.Collections.Generic;
+using System.Text;
 using Core.DataStructures;
+using Core.Enumerables;
 using Core.Matching;
 using Core.Monads;
 using Core.Strings;
@@ -41,12 +43,43 @@ namespace Core.Configurations
                select parentGroup;
          }
 
+         Result<(string, string)> getLinesAsArray(string source)
+         {
+            var lines = new List<string>();
+            while (source.Length > 0)
+            {
+               if (source.Matches("^ /s* '}' ([/r /n]+ | $); f").If(out var result))
+               {
+                  return (source.Drop(result.Length), lines.ToString(","));
+               }
+               else if (source.Matches("^ /s* /(-[/r /n]*) ('/r/n')?; f").If(out result))
+               {
+                  if (getString(result.FirstGroup).If(out _, out var @string, out var exception))
+                  {
+                     source = source.Drop(result.Length);
+                     lines.Add(@string);
+                  }
+                  else
+                  {
+                     return exception;
+                  }
+               }
+            }
+
+            return fail("No terminating }");
+         }
+
          Result<(string newSource, string str)> getString(string source)
          {
             if (source.Matches("^ /s* /[quote]; f").If(out var result))
             {
                var quote = result.FirstGroup[0];
                return getQuotedString(source.Drop(result.Length), quote);
+            }
+            else if (source.Matches("^ /s* '{' [/r /n]+; f").If(out result))
+            {
+               var newSource = source.Drop(result.Length);
+               return getLinesAsArray(newSource);
             }
             else if (source.Matches("^ /s* /(-[/r /n]*) ('/r/n')?; f").If(out result))
             {
@@ -58,16 +91,16 @@ namespace Core.Configurations
                   switch (current)
                   {
                      case ';':
-                        return (source.Drop(i + 1), builder.ToString()).Success();
+                        return (source.Drop(i + 1), builder.ToString());
                      case ']' or '#':
-                        return (source.Drop(i), builder.ToString()).Success();
+                        return (source.Drop(i), builder.ToString());
                      case '\r' or '\n':
                         foundReturn = true;
                         break;
                      default:
                         if (foundReturn)
                         {
-                           return (source.Drop(i - 1), builder.ToString()).Success();
+                           return (source.Drop(i - 1), builder.ToString());
                         }
                         else
                         {

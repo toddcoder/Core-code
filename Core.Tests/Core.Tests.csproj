@@ -154,6 +154,7 @@
     <None Include="TestData\work-item.json" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="TestData\Arrays.txt" />
     <Content Include="TestData\big file.bad.sql" />
     <Content Include="TestData\big file.sql" />
     <EmbeddedResource Include="TestData\connections2.txt" />
