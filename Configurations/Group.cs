@@ -150,6 +150,7 @@ namespace Core.Configurations
             {
                writer.WriteLine($"{indentation()}{Key} [");
             }
+
             indent++;
          }
 
@@ -161,6 +162,7 @@ namespace Core.Configurations
                   writer.Write(group.ToString(indent));
                   break;
                case Item item:
+                  item.Indentation = indent;
                   writer.WriteLine($"{indentation()}{item}");
                   break;
             }
@@ -399,7 +401,12 @@ namespace Core.Configurations
                               list.Add(toString(array.GetValue(i), elementType));
                            }
 
-                           group.SetItem(key, new Item(key, list.ToString(", ")));
+                           var item = new Item(key, list.ToString(", "))
+                           {
+                              IsArray = true
+                           };
+                           group.SetItem(key, item);
+
                         }
                         else
                         {

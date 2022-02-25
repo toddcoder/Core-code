@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using Core.Matching;
 using Core.Monads;
 using Core.Strings;
 using static Core.Monads.MonadFunctions;
@@ -21,6 +23,10 @@ namespace Core.Configurations
          get => key == Key ? Value : string.Empty;
          set { }
       }
+
+      public bool IsArray { get; set; }
+
+      public int Indentation { get; set; }
 
       public IConfigurationItem GetItem(string key) => this;
 
@@ -58,6 +64,24 @@ namespace Core.Configurations
          if (value.IsEmpty())
          {
             return $"{Key}: \"{value}\"";
+         }
+         else if (IsArray)
+         {
+            var destringifier = DelimitedText.AsSql();
+            var destringified = destringifier.Destringify(value);
+            var array = destringified.Unjoin("/s* ',' /s*; f").Select(i => destringifier.Restringify(i, RestringifyQuotes.DoubleQuote));
+
+            using var writer = new StringWriter();
+            writer.WriteLine($"{Key}: {{");
+            var indentation = " ".Repeat((Indentation + 1) * 3);
+            foreach (var item in array)
+            {
+               writer.WriteLine($"{indentation}{item}");
+            }
+
+            writer.Write("}");
+
+            return writer.ToString();
          }
          else if (value.StartsWith(@"""") && value.EndsWith(@""""))
          {

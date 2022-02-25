@@ -205,11 +205,10 @@ namespace Core.WinForms.Documents
          form.Controls.Add(menuStrip);
       }
 
-      protected ToolStripItem[] getMenuItems() =>
-         menuItems.Values
-            .Select(i => new { MenuItem = i, Index = tabIndexes[i.Name] })
-            .OrderBy(a => a.Index)
-            .Select(a => a.MenuItem).ToArray();
+      protected ToolStripItem[] getMenuItems() => menuItems.Values
+         .Select(i => new { MenuItem = i, Index = tabIndexes[i.Name] })
+         .OrderBy(a => a.Index)
+         .Select(a => a.MenuItem).ToArray();
 
       public void CreateContextMenu(Control control)
       {

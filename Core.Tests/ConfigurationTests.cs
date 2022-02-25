@@ -56,6 +56,11 @@ namespace Core.Tests
          public Test[] Tests { get; set; }
       }
 
+      protected class ReleaseTarget
+      {
+         public string[] ReleaseTargets { get; set; } = Array.Empty<string>();
+      }
+
       protected class BinaryPackage : IEquatable<BinaryPackage>
       {
          public byte[] Payload { get; set; }
@@ -447,6 +452,42 @@ namespace Core.Tests
          writer.WriteLine("]");
          var source = writer.ToString();
          _ = Group.FromString(source).ForceValue();
+      }
+
+      [TestMethod]
+      public void MultiLineArraySavingTest()
+      {
+         using var writer = new StringWriter();
+         writer.WriteLine("releaseTargets: {");
+         writer.WriteLine("   Monthly - 6.34 - March");
+         writer.WriteLine("   Monthly - 6.35 - April");
+         writer.WriteLine("}");
+         var source = writer.ToString();
+
+         if (Group.FromString(source).If(out var group, out var exception))
+         {
+            Console.WriteLine(group);
+         }
+         else
+         {
+            Console.WriteLine(exception.Message);
+         }
+
+         if (group.Deserialize<ReleaseTarget>().If(out var releaseTarget, out exception))
+         {
+            if (Group.Serialize(typeof(ReleaseTarget), releaseTarget).If(out group, out exception))
+            {
+               Console.WriteLine(group);
+            }
+            else
+            {
+               Console.WriteLine(exception.Message);
+            }
+         }
+         else
+         {
+            Console.WriteLine(exception.Message);
+         }
       }
    }
 }

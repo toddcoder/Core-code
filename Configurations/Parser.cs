@@ -43,18 +43,18 @@ namespace Core.Configurations
                select parentGroup;
          }
 
-         Result<(string, string)> getLinesAsArray(string source)
+         Result<(string, string, bool)> getLinesAsArray(string source)
          {
             var lines = new List<string>();
             while (source.Length > 0)
             {
                if (source.Matches("^ /s* '}' ([/r /n]+ | $); f").If(out var result))
                {
-                  return (source.Drop(result.Length), lines.ToString(","));
+                  return (source.Drop(result.Length), lines.ToString(","), true);
                }
                else if (source.Matches("^ /s* /(-[/r /n]*) ('/r/n')?; f").If(out result))
                {
-                  if (getString(result.FirstGroup).If(out _, out var @string, out var exception))
+                  if (getString(result.FirstGroup).If(out _, out var @string, out _, out var exception))
                   {
                      source = source.Drop(result.Length);
                      lines.Add(@string);
@@ -69,7 +69,7 @@ namespace Core.Configurations
             return fail("No terminating }");
          }
 
-         Result<(string newSource, string str)> getString(string source)
+         Result<(string newSource, string str, bool isArray)> getString(string source)
          {
             if (source.Matches("^ /s* /[quote]; f").If(out var result))
             {
@@ -91,16 +91,16 @@ namespace Core.Configurations
                   switch (current)
                   {
                      case ';':
-                        return (source.Drop(i + 1), builder.ToString());
+                        return (source.Drop(i + 1), builder.ToString(), false);
                      case ']' or '#':
-                        return (source.Drop(i), builder.ToString());
+                        return (source.Drop(i), builder.ToString(), false);
                      case '\r' or '\n':
                         foundReturn = true;
                         break;
                      default:
                         if (foundReturn)
                         {
-                           return (source.Drop(i - 1), builder.ToString());
+                           return (source.Drop(i - 1), builder.ToString(), false);
                         }
                         else
                         {
@@ -111,7 +111,7 @@ namespace Core.Configurations
                   }
                }
 
-               return (string.Empty, builder.ToString());
+               return (string.Empty, builder.ToString(), false);
             }
             else
             {
@@ -119,7 +119,7 @@ namespace Core.Configurations
             }
          }
 
-         static Result<(string newSource, string str)> getQuotedString(string source, char quote)
+         static Result<(string newSource, string str, bool isArray)> getQuotedString(string source, char quote)
          {
             var escaped = false;
             var builder = new StringBuilder();
@@ -189,7 +189,7 @@ namespace Core.Configurations
                         {
                            var newSource = source.Drop(i + 1);
                            var str = builder.ToString();
-                           return (newSource, str);
+                           return (newSource, str, false);
                         }
                      }
                      else
@@ -284,9 +284,12 @@ namespace Core.Configurations
             {
                var key = GenerateKey();
                var remainder = source.Drop(result.Length);
-               if (getString(source.Drop(result.Length)).If(out source, out var value))
+               if (getString(source.Drop(result.Length)).If(out source, out var value, out var isArray))
                {
-                  var item = new Item(key, value);
+                  var item = new Item(key, value)
+                  {
+                     IsArray = isArray
+                  };
                   if (peekGroup().If(out var group))
                   {
                      group.SetItem(item.Key, item);
@@ -305,9 +308,12 @@ namespace Core.Configurations
             {
                var key = GetKey(result.FirstGroup);
                var remainder = source.Drop(result.Length);
-               if (getString(source.Drop(result.Length)).If(out source, out var value))
+               if (getString(source.Drop(result.Length)).If(out source, out var value, out var isArray))
                {
-                  var item = new Item(key, value);
+                  var item = new Item(key, value)
+                  {
+                     IsArray = isArray
+                  };
                   if (peekGroup().If(out var group))
                   {
                      group.SetItem(item.Key, item);
@@ -326,10 +332,13 @@ namespace Core.Configurations
             {
                break;
             }
-            else if (getString(source.TrimLeft()).If(out source, out var value))
+            else if (getString(source.TrimLeft()).If(out source, out var value, out var isArray))
             {
                var key = GenerateKey();
-               var item = new Item(key, value);
+               var item = new Item(key, value)
+               {
+                  IsArray = isArray
+               };
                if (peekGroup().If(out var group))
                {
                   group.SetItem(item.Key, item);
