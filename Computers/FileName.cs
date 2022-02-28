@@ -804,15 +804,19 @@ namespace Core.Computers
 
       protected StringBuilder getBuffer() => buffer ??= new StringBuilder();
 
-      protected void appendText(string text)
+      protected void appendText(string text) => appendText(text, Encoding);
+
+      protected void appendText(string text, Encoding encoding)
       {
          folder.CreateIfNonExistent();
          using var file = File.Open(fullPath, FileMode.Append, FileAccess.Write, FileShare.ReadWrite);
-         using var writer = new StreamWriter(file, Encoding);
+         using var writer = new StreamWriter(file, encoding);
          writer.Write(text);
       }
 
-      public void Append(string text)
+      public void Append(string text) => Append(text, Encoding);
+
+      public void Append(string text, Encoding encoding)
       {
          if (useBuffer)
          {
@@ -827,11 +831,9 @@ namespace Core.Computers
          }
          else
          {
-            appendText(text);
+            appendText(text, encoding);
          }
       }
-
-      public void Append(string format, params object[] args) => Append(string.Format(format, args));
 
       public void Append(byte[] bytes)
       {
