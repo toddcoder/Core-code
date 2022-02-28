@@ -50,7 +50,7 @@
     <Compile Include="GitBranchTry.cs" />
     <Compile Include="GitCommit.cs" />
     <Compile Include="GitError.cs" />
-    <Compile Include="GitFunctions.cs" />
+    <Compile Include="GitExtensions.cs" />
     <Compile Include="GitLine.cs" />
     <Compile Include="GitPrompt.cs" />
     <Compile Include="GitSuccess.cs" />

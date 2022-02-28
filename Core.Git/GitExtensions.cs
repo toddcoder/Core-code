@@ -5,7 +5,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Git
 {
-   internal static class GitFunctions
+   internal static class GitExtensions
    {
       private enum GitStatus
       {
@@ -14,7 +14,7 @@ namespace Core.Git
          Error
       }
 
-      internal static Result<string[]> enumerableToResult(IEnumerable<GitResult> enumerable)
+      public static Result<string[]> EnumerableToResult(this IEnumerable<GitResult> enumerable)
       {
          var list = new List<string>();
          var status = GitStatus.NotSet;
