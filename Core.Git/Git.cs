@@ -76,5 +76,7 @@ namespace Core.Git
       public static IEnumerable<GitResult> ShortStatus() => Execute("status -s -b");
 
       public static IEnumerable<GitResult> Revert(string commit) => Execute($"revert --no-edit -m 1 {commit}");
+
+      public static IEnumerable<GitResult> CherryPick(string reference) => Execute($"cherry-pick {reference}");
    }
 }

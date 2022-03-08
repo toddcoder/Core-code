@@ -11,5 +11,7 @@ namespace Core.Git
       public Result<string[]> Fetch() => Git.Fetch().EnumerableToResult();
 
       public Result<string[]> ShortStatus() => Git.ShortStatus().EnumerableToResult();
+
+      public Result<string[]> CherryPick(string reference) => Git.CherryPick(reference).EnumerableToResult();
    }
 }
