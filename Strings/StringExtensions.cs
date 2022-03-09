@@ -702,29 +702,29 @@ namespace Core.Strings
          {
             if (number == 1)
             {
-               for (var matchIndex = 0; matchIndex < result.MatchCount; matchIndex++)
+               foreach (var match in result)
                {
-                  if (result[matchIndex, 2].IsNotEmpty())
+                  if (match.SecondGroup.IsNotEmpty())
                   {
-                     result[matchIndex] = result[matchIndex, 1];
+                     match.Text = match.FirstGroup;
                   }
                   else
                   {
-                     result[matchIndex] = string.Empty;
+                     match.Text = string.Empty;
                   }
                }
             }
             else
             {
-               for (var matchIndex = 0; matchIndex < result.MatchCount; matchIndex++)
+               foreach (var match in result)
                {
-                  if (result[matchIndex, 2].IsNotEmpty())
+                  if (match.SecondGroup.IsNotEmpty())
                   {
-                     result[matchIndex] = result[matchIndex, 2];
+                     match.Text = match.SecondGroup;
                   }
                   else
                   {
-                     result[matchIndex] = result[matchIndex, 1];
+                     match.Text = match.FirstGroup;
                   }
                }
             }
@@ -735,13 +735,13 @@ namespace Core.Strings
             if (matcherText.Matches(pattern).If(out result))
             {
                numberAccountedFor = true;
-               for (var matchIndex = 0; matchIndex < result.MatchCount; matchIndex++)
+               foreach (var match in result)
                {
-                  result[matchIndex, 1] = number.ToString();
+                  match.FirstGroup = number.ToString();
                }
+               matcherText = result.ToString();
             }
 
-            matcherText = result.ToString();
             pattern = @"/('\#'); f";
             if (matcherText.Matches(pattern).If(out result))
             {
@@ -749,9 +749,9 @@ namespace Core.Strings
                {
                   result[matchIndex, 1] = "#";
                }
-            }
 
-            matcherText = result.ToString();
+               matcherText = result.ToString();
+            }
 
             return numberAccountedFor ? matcherText : $"{number} {matcherText}";
          }
@@ -1199,7 +1199,6 @@ namespace Core.Strings
 
       public static string ToBase64(this string source) => source.ToBase64(Encoding.ASCII);
 
-
       [Obsolete("Use ConversionFunctions")]
       public static T ToEnumeration<T>(this string value, bool ignoreCase = true) where T : struct
       {
@@ -1235,6 +1234,7 @@ namespace Core.Strings
             return defaultValue;
          }
       }
+
       [Obsolete("Use ConversionFunctions")]
       public static T ToEnumeration<T>(this string value, T defaultValue) where T : struct => value.ToEnumeration(true, defaultValue);
 

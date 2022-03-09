@@ -7,7 +7,7 @@ namespace Core.Matching
 {
    public class Source
    {
-      protected const string REGEX_NEXT_LINE = "^ /(.*?) (/r /n | /r | /n); fm";
+      public const string REGEX_NEXT_LINE = "^ /(.*?) (/r /n | /r | /n); fm";
 
       protected string source;
       protected int index;
@@ -153,6 +153,19 @@ namespace Core.Matching
          {
             return nil;
          }
+      }
+
+      public Maybe<string> GoTo(Pattern pattern)
+      {
+         while (NextLine().If(out var line))
+         {
+            if (line.IsMatch(pattern))
+            {
+               return line;
+            }
+         }
+
+         return nil;
       }
 
       public bool More => index < length;
