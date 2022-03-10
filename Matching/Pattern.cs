@@ -118,6 +118,10 @@ namespace Core.Matching
 
       public bool Friendly => friendly;
 
+      public Pattern Befriend() => new(regex, options, true);
+
+      public Pattern Unfriend() => new(regex, options, false);
+
       public Responding<MatchResult> MatchedBy(string input)
       {
          try
