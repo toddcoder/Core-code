@@ -162,15 +162,9 @@ namespace Core.Markup.Rtf
             rtf.AppendLine();
          }
 
-         void documentBody()
-         {
-            rtf.Append(base.Render());
-         }
+         void documentBody() => rtf.Append(base.Render());
 
-         void ending()
-         {
-            rtf.AppendLine("}");
-         }
+         void ending() => rtf.AppendLine("}");
 
          prolog();
          insertFontTable();

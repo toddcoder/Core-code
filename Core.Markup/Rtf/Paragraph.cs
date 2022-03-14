@@ -8,20 +8,20 @@ namespace Core.Markup.Rtf
 {
    public class Paragraph : Block
    {
-      private StringBuilder text;
-      private Maybe<float> _lineSpacing;
-      private Margins margins;
-      private Alignment alignment;
-      private List<CharFormat> charFormats;
+      protected StringBuilder text;
+      protected Maybe<float> _lineSpacing;
+      protected Margins margins;
+      protected Alignment alignment;
+      protected List<CharFormat> charFormats;
       protected bool allowFootnote;
       protected bool allowControlWord;
-      private List<Footnote> footnotes;
-      private List<FieldControlWord> controlWords;
-      private string blockHead;
-      private string blockTail;
-      private bool startNewPage;
-      private float firstLineIndent;
-      private CharFormat defaultCharFormat;
+      protected List<Footnote> footnotes;
+      protected List<FieldControlWord> controlWords;
+      protected string blockHead;
+      protected string blockTail;
+      protected bool startNewPage;
+      protected float firstLineIndent;
+      protected CharFormat defaultCharFormat;
 
       protected struct Token
       {
