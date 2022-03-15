@@ -20,6 +20,7 @@ namespace Core.Markup.Rtf
       protected string blockHead;
       protected string blockTail;
       protected bool startNewPage;
+      protected bool startNewPageAfter;
       protected float firstLineIndent;
       protected CharFormat defaultCharFormat;
 
@@ -88,6 +89,12 @@ namespace Core.Markup.Rtf
       {
          get => startNewPage;
          set => startNewPage = value;
+      }
+
+      public bool StartNewPageAfter
+      {
+         get => startNewPageAfter;
+         set => startNewPageAfter = value;
       }
 
       public override Alignment Alignment
@@ -476,6 +483,12 @@ namespace Core.Markup.Rtf
          result.Append(defaultCharFormat.RenderTail());
 
          result.AppendLine(blockTail);
+
+         if (startNewPageAfter)
+         {
+            result.Append(@"\pagebb");
+         }
+
          return result.ToString();
       }
    }
