@@ -178,6 +178,7 @@
     <Compile Include="Computers\FileArgs.cs" />
     <Compile Include="Computers\FileExceptionArgs.cs" />
     <Compile Include="Computers\FileFolderExtensions.cs" />
+    <Compile Include="Computers\FileNameWriter.cs" />
     <Compile Include="Computers\FullPathFunctions.cs" />
     <Compile Include="Computers\FileName.cs" />
     <Compile Include="Computers\FileNameCore.cs" />

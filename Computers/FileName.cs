@@ -1023,5 +1023,34 @@ namespace Core.Computers
       public Result<FileName> Validate(bool allowRelativePaths = false) => ValidatePath(this, allowRelativePaths).Map(s => (FileName)s);
 
       public bool IsValid => Validate(true).IsSuccessful;
+
+      public FileName Serialize(int limit = 1000)
+      {
+         var baseName = name;
+         if (baseName.Matches("'-' /d+ $").If(out var result))
+         {
+            baseName = baseName.Drop(-result.Length);
+         }
+
+         var currentFile = new FileName(folder, baseName, extension);
+         if (currentFile.Exists())
+         {
+            for (var i = 1; i < limit; i++)
+            {
+               var newName = $"{name}-{i}";
+               var newFile = new FileName(folder, newName, extension);
+               if (!newFile.Exists())
+               {
+                  return newFile;
+               }
+            }
+
+            throw fail($"Limited to {limit}");
+         }
+         else
+         {
+            return currentFile;
+         }
+      }
    }
 }

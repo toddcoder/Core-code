@@ -99,15 +99,21 @@ namespace Core.Computers
 
       public Result<FileStream> ReadWriteStream() => tryTo(() => fileName.ReadWriteStream());
 
-      public Result<TextReader> TextReader() =>
-         from readingStream in ReadingStream()
-         from reader in tryTo(() => (TextReader)new StreamReader(readingStream))
-         select reader;
+      public Result<TextReader> TextReader()
+      {
+         return
+            from readingStream in ReadingStream()
+            from reader in tryTo(() => (TextReader)new StreamReader(readingStream))
+            select reader;
+      }
 
-      public Result<TextWriter> TextWriter() =>
-         from writingStream in WritingStream()
-         from writer in tryTo(() => (TextWriter)new StreamWriter(writingStream))
-         select writer;
+      public Result<TextWriter> TextWriter()
+      {
+         return
+            from writingStream in WritingStream()
+            from writer in tryTo(() => (TextWriter)new StreamWriter(writingStream))
+            select writer;
+      }
 
       public Result<string> GetText(Encoding encoding) => tryTo(() => fileName.GetText(encoding));
 
@@ -120,5 +126,7 @@ namespace Core.Computers
       public Result<Unit> Append(string text) => tryTo(() => fileName.Append(text));
 
       public Result<Unit> Append(string text, Encoding encoding) => tryTo(() => fileName.Append(text, encoding));
+
+      public Result<FileName> Serialize(int limit = 1000) => tryTo(() => fileName.Serialize(limit));
    }
 }
