@@ -74,6 +74,7 @@
     <Compile Include="Controls\WebProgress.designer.cs">
       <DependentUpon>WebProgress.cs</DependentUpon>
     </Compile>
+    <Compile Include="ControlWrappers\MessageLabel.cs" />
     <Compile Include="Documents\Colorizer.cs" />
     <Compile Include="Documents\ConsoleConfiguration.cs" />
     <Compile Include="Documents\ConsoleDocument.cs" />
