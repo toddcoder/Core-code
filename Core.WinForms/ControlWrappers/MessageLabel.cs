@@ -21,7 +21,9 @@ namespace Core.WinForms.ControlWrappers
             [MessageLabelType.Exception] = Color.White,
             [MessageLabelType.Success] = Color.White,
             [MessageLabelType.Failure] = Color.Black,
-            [MessageLabelType.Busy] = Color.Black
+            [MessageLabelType.Busy] = Color.Black,
+            [MessageLabelType.Selected] = Color.White,
+            [MessageLabelType.Unselected] = Color.White
          };
          globalBackColors = new Hash<MessageLabelType, Color>
          {
@@ -30,7 +32,9 @@ namespace Core.WinForms.ControlWrappers
             [MessageLabelType.Exception] = Color.Red,
             [MessageLabelType.Success] = Color.Green,
             [MessageLabelType.Failure] = Color.Gold,
-            [MessageLabelType.Busy] = Color.White
+            [MessageLabelType.Busy] = Color.White,
+            [MessageLabelType.Selected] = Color.FromArgb(0, 127, 0),
+            [MessageLabelType.Unselected] = Color.FromArgb(127, 0, 0)
          };
          globalStyles = new Hash<MessageLabelType, MessageStyle>
          {
@@ -101,6 +105,8 @@ namespace Core.WinForms.ControlWrappers
 
       public AutoHash<MessageLabelType, MessageStyle> Styles => styles;
 
+      public Label Label => labelMessage;
+
       protected Font getFont(MessageLabelType type) => styles[type] switch
       {
          MessageStyle.None => font,
@@ -132,6 +138,10 @@ namespace Core.WinForms.ControlWrappers
       public void Failure(string message) => ShowMessage(message, MessageLabelType.Failure);
 
       public void Busy(string message) => ShowMessage(message, MessageLabelType.Busy);
+
+      public void Selected(string message) => ShowMessage(message, MessageLabelType.Selected);
+
+      public void Unselected(string message) => ShowMessage(message, MessageLabelType.Unselected);
 
       public void Tape()
       {

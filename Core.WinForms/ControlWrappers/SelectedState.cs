@@ -1,13 +1,8 @@
 ﻿namespace Core.WinForms.ControlWrappers
 {
-   public enum MessageLabelType
+   public enum SelectedState
    {
       Uninitialized,
-      Message,
-      Exception,
-      Success,
-      Failure,
-      Busy,
       Selected,
       Unselected
    }

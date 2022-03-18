@@ -77,6 +77,8 @@
     <Compile Include="ControlWrappers\MessageLabel.cs" />
     <Compile Include="ControlWrappers\MessageLabelType.cs" />
     <Compile Include="ControlWrappers\MessageStyle.cs" />
+    <Compile Include="ControlWrappers\SelectedState.cs" />
+    <Compile Include="ControlWrappers\StatusLabel.cs" />
     <Compile Include="Documents\Colorizer.cs" />
     <Compile Include="Documents\ConsoleConfiguration.cs" />
     <Compile Include="Documents\ConsoleDocument.cs" />
