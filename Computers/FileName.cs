@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -1051,6 +1052,26 @@ namespace Core.Computers
          {
             return currentFile;
          }
+      }
+
+      public IEnumerable<string> Reading()
+      {
+         using var file = File.Open(fullPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+         using var reader = new StreamReader(file, Encoding);
+
+         while (true)
+         {
+            var line = reader.ReadLine();
+            if (line is null)
+            {
+               break;
+            }
+
+            yield return line;
+         }
+
+         reader?.Dispose();
+         file?.Dispose();
       }
    }
 }
