@@ -8,7 +8,7 @@ namespace Core.Markup.Rtf
       {
          RowIndex = rowIndex;
          ColumnIndex = columnIndex;
-         Text = text;
+         Text = text ?? "";
          TableCell = tableCell;
       }
 

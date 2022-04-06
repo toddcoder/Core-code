@@ -19,6 +19,10 @@ namespace Core.Markup.Rtf
          maxColumnCount = 0;
       }
 
+      public int RowCount => rows.Count;
+
+      public int MaxColumnCount => maxColumnCount;
+
       public void AddRow(params string[] columns)
       {
          var columnList = new List<string>();
@@ -54,7 +58,7 @@ namespace Core.Markup.Rtf
                if (columnIndex < maxColumnCount)
                {
                   var tableCell = table[rowIndex, columnIndex];
-                  TableCell?.Invoke(this, new TableCellArgs(rowIndex, columnIndex, column, tableCell));
+                  TableCell?.Invoke(this, new TableCellArgs(rowIndex, columnIndex, column ?? "", tableCell));
                }
                else
                {
