@@ -49,6 +49,42 @@ namespace Core.Markup.Rtf
          return block;
       }
 
+      public Paragraph Paragraph(string text, params object[] specifiers)
+      {
+         var paragraph = Paragraph();
+         paragraph.Text = text;
+         var format = paragraph.DefaultCharFormat;
+         var firstColor = false;
+
+         foreach (var specifier in specifiers)
+         {
+            switch (specifier)
+            {
+               case FontDescriptor fontDescriptor:
+                  format.Font = fontDescriptor;
+                  break;
+               case float fontSize:
+                  format.FontSize = fontSize;
+                  break;
+               case Alignment alignment:
+                  paragraph.Alignment = alignment;
+                  break;
+               case ColorDescriptor colorDescriptor when firstColor:
+                  format.BackgroundColor = colorDescriptor;
+                  break;
+               case ColorDescriptor colorDescriptor:
+                  format.ForegroundColor = colorDescriptor;
+                  firstColor = true;
+                  break;
+               case FontStyleFlag fontStyleFlag:
+                  format.FontStyle += fontStyleFlag;
+                  break;
+            }
+         }
+
+         return paragraph;
+      }
+
       public Section Section(SectionStartEnd type, Document doc)
       {
          var block = new Section(type, doc);
