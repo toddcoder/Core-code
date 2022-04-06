@@ -33,7 +33,7 @@ namespace Core.Computers
 
       public static Result<FileName> FromString(string file) => file.Must().BeAValidFileName().OrFailure().Map(f => (FileName)f);
 
-      [DllImport("Shell32")]
+      [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
       public static extern bool PathYetAnotherMakeUniqueName(StringBuilder uniqueName, string path, string shortTemplate, string longTemplate);
 
       protected const string REGEX_VALID_FILENAME = @"^ ((['a-zA-Z'] ':' | '\') ('\' -['\']+)* '\')? (-['.']+ ('.' -['.\']+)?) $; f";
@@ -477,7 +477,7 @@ namespace Core.Computers
       public Maybe<FileName> Unique()
       {
          var uniqueName = new StringBuilder(260);
-         if (PathYetAnotherMakeUniqueName(uniqueName, Folder.FullPath, null, NameExtension))
+         if (PathYetAnotherMakeUniqueName(uniqueName, FullPath, null, NameExtension))
          {
             return Folder + uniqueName.ToString();
          }
