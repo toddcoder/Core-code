@@ -30,10 +30,10 @@ namespace Core.Tests
       {
          var synchronizer = new Synchronizer(SOURCE_FOLDER0, TARGET_FOLDER0, ".+ '.sql' $; f");
 
-         synchronizer.Success += (sender, args) => Console.WriteLine($"Success: {args.Message}");
-         synchronizer.Failure += (sender, args) => Console.WriteLine($"Failure: {args.Message}");
-         synchronizer.NewFolderSuccess += (sender, args) => Console.WriteLine($"New folder success: {args.Message}");
-         synchronizer.NewFolderFailure += (sender, args) => Console.WriteLine($"New folder failure: {args.Message}");
+         synchronizer.Success += (_, args) => Console.WriteLine($"Success: {args.Message}");
+         synchronizer.Failure += (_, args) => Console.WriteLine($"Failure: {args.Message}");
+         synchronizer.NewFolderSuccess += (_, args) => Console.WriteLine($"New folder success: {args.Message}");
+         synchronizer.NewFolderFailure += (_, args) => Console.WriteLine($"New folder failure: {args.Message}");
 
          synchronizer.Synchronize();
       }
@@ -43,10 +43,10 @@ namespace Core.Tests
       {
          var synchronizer = new Synchronizer(SOURCE_FOLDER1, TARGET_FOLDER1, "'.dll' $; f");
 
-         synchronizer.Success += (sender, args) => Console.WriteLine($"Success: {args.Message}");
-         synchronizer.Failure += (sender, args) => Console.WriteLine($"Failure: {args.Message}");
-         synchronizer.NewFolderSuccess += (sender, args) => Console.WriteLine($"New folder success: {args.Message}");
-         synchronizer.NewFolderFailure += (sender, args) => Console.WriteLine($"New folder failure: {args.Message}");
+         synchronizer.Success += (_, args) => Console.WriteLine($"Success: {args.Message}");
+         synchronizer.Failure += (_, args) => Console.WriteLine($"Failure: {args.Message}");
+         synchronizer.NewFolderSuccess += (_, args) => Console.WriteLine($"New folder success: {args.Message}");
+         synchronizer.NewFolderFailure += (_, args) => Console.WriteLine($"New folder failure: {args.Message}");
 
          synchronizer.Synchronize("ApexSQL.Activation.dll", "ApexSQL.Common.Formatting.dll", "ApexSQL.Common.GrammarParser.dll",
             "ApexSQL.Common.Shared.dll", "ApexSQL.Common.UI.dll", "ApexSql.Refactor.dll", "Core.dll", "Microsoft.SqlServer.TransactSql.ScriptDom.dll",
@@ -64,6 +64,20 @@ namespace Core.Tests
          else
          {
             Console.WriteLine("Out of indexes");
+         }
+      }
+
+      [TestMethod]
+      public void UniqueFileNameTest()
+      {
+         FileName file = @"~\source\repos\toddcoder\Core\Core.Tests\TestData\connections.txt";
+         if (file.Unique().If(out var uniqueFile))
+         {
+            Console.WriteLine(uniqueFile);
+         }
+         else
+         {
+            Console.WriteLine("Unique name not created");
          }
       }
    }

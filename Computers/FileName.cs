@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using Core.Assertions;
 using Core.Enumerables;
@@ -31,6 +32,9 @@ namespace Core.Computers
       }
 
       public static Result<FileName> FromString(string file) => file.Must().BeAValidFileName().OrFailure().Map(f => (FileName)f);
+
+      [DllImport("Shell32")]
+      public static extern bool PathYetAnotherMakeUniqueName(StringBuilder uniqueName, string path, string shortTemplate, string longTemplate);
 
       protected const string REGEX_VALID_FILENAME = @"^ ((['a-zA-Z'] ':' | '\') ('\' -['\']+)* '\')? (-['.']+ ('.' -['.\']+)?) $; f";
 
@@ -468,6 +472,19 @@ namespace Core.Computers
       {
          name = guid();
          setFullPath();
+      }
+
+      public Maybe<FileName> Unique()
+      {
+         var uniqueName = new StringBuilder(260);
+         if (PathYetAnotherMakeUniqueName(uniqueName, Folder.FullPath, null, NameExtension))
+         {
+            return Folder + uniqueName.ToString();
+         }
+         else
+         {
+            return nil;
+         }
       }
 
       public Maybe<FileName> Truncated(int limit)
