@@ -1,4 +1,5 @@
-﻿using Core.Monads;
+﻿using System;
+using Core.Monads;
 
 namespace Core.Git
 {
@@ -13,7 +14,10 @@ namespace Core.Git
 
       public Result<string[]> Delete(bool force = false) => branch.Delete(force).EnumerableToResult();
 
+      [Obsolete("Use CheckOut instead")]
       public Result<string[]> Checkout(bool force = false) => branch.CheckOut(force).EnumerableToResult();
+
+      public Result<string[]> CheckOut(bool force = false) => branch.CheckOut(force).EnumerableToResult();
 
       public Result<GitBranch> Create(string newBranchName) => branch.Create(newBranchName).EnumerableToResult().Map(_ => (GitBranch)newBranchName);
 

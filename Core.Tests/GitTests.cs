@@ -45,7 +45,6 @@ namespace Core.Tests
                case GitLine gitLine:
                   Console.WriteLine(gitLine);
                   break;
-
             }
          }
       }
@@ -112,7 +111,7 @@ namespace Core.Tests
       {
          FolderName.Current = CORE_REPO;
          var branch = GitBranch.Current;
-         branch.TryTo.Checkout();
+         branch.TryTo.CheckOut();
       }
    }
 }
