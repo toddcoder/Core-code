@@ -79,6 +79,10 @@ namespace Core.Markup.Rtf
                case FontStyleFlag fontStyleFlag:
                   format.FontStyle += fontStyleFlag;
                   break;
+               case (string hyperlink, string hyperlinkTip):
+                  format.LocalHyperlink = hyperlink;
+                  format.LocalHyperlinkTip = hyperlinkTip;
+                  break;
             }
          }
 
