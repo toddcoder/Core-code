@@ -40,6 +40,9 @@ namespace Core.Markup.Rtf
                case Action<Paragraph> action:
                   action(paragraph);
                   break;
+               case Action<CharFormat> action:
+                  action(paragraph.DefaultCharFormat);
+                  break;
             }
          }
       }
