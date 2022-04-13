@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using Core.Assertions;
 using Core.Computers;
+using static Core.Markup.Rtf.ParagraphFunctions;
 
 namespace Core.Markup.Rtf
 {
@@ -52,39 +53,7 @@ namespace Core.Markup.Rtf
       public Paragraph Paragraph(string text, params object[] specifiers)
       {
          var paragraph = Paragraph();
-         paragraph.Text = text;
-         var format = paragraph.DefaultCharFormat;
-         var firstColor = false;
-
-         foreach (var specifier in specifiers)
-         {
-            switch (specifier)
-            {
-               case FontDescriptor fontDescriptor:
-                  format.Font = fontDescriptor;
-                  break;
-               case float fontSize:
-                  format.FontSize = fontSize;
-                  break;
-               case Alignment alignment:
-                  paragraph.Alignment = alignment;
-                  break;
-               case ColorDescriptor colorDescriptor when firstColor:
-                  format.BackgroundColor = colorDescriptor;
-                  break;
-               case ColorDescriptor colorDescriptor:
-                  format.ForegroundColor = colorDescriptor;
-                  firstColor = true;
-                  break;
-               case FontStyleFlag fontStyleFlag:
-                  format.FontStyle += fontStyleFlag;
-                  break;
-               case (string hyperlink, string hyperlinkTip):
-                  format.LocalHyperlink = hyperlink;
-                  format.LocalHyperlinkTip = hyperlinkTip;
-                  break;
-            }
-         }
+         SetParagraphProperties(paragraph, text, specifiers);
 
          return paragraph;
       }
@@ -125,11 +94,11 @@ namespace Core.Markup.Rtf
          return block;
       }
 
-      public Table Table(int rowCount, int colCount, float horizontalWidth, float fontSize)
+      public Table Table(float horizontalWidth, float fontSize)
       {
          allowTable.Must().BeTrue().OrThrow("Table is not allowed.");
 
-         var block = new Table(rowCount, colCount, horizontalWidth, fontSize);
+         var block = new Table(horizontalWidth, fontSize);
          blocks.Add(block);
 
          return block;

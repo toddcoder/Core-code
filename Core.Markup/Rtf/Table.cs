@@ -1,37 +1,52 @@
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Core.Assertions;
 using Core.Collections;
 using Core.Exceptions;
 using Core.Monads;
+using static Core.Markup.Rtf.ParagraphFunctions;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Markup.Rtf
 {
    public class Table : Block
    {
-      private Alignment alignment;
-      private Margins margins;
-      private int rowCount;
-      private int columnCount;
-      private TableCell[][] cells;
-      private List<TableCell> representatives;
-      private bool startNewPage;
-      private float[] rowHeights;
-      private bool[] rowKeepInSamePage;
-      private int titleRowCount;
-      private readonly float fontSize;
-      private CharFormat defaultCharFormat;
-      private Margins[] cellPadding;
-
-      public Table(int rowCount, int columnCount, float horizontalWidth, float fontSize)
+      protected class CellData
       {
-         rowCount.Must().BeGreaterThan(0).OrThrow("Number of rows must be > 0");
-         this.rowCount = rowCount;
+         public CellData()
+         {
+            Text = string.Empty;
+            Specifiers = Array.Empty<object>();
+         }
 
-         columnCount.Must().BeGreaterThan(0).OrThrow("Number of columns must be > 0");
-         this.columnCount = columnCount;
+         public string Text { get; set; }
 
+         public object[] Specifiers { get; set; }
+      }
+
+      protected Alignment alignment;
+      protected Margins margins;
+      protected int rowCount;
+      protected int columnCount;
+      protected TableCell[][] cells;
+      protected List<TableCell> representatives;
+      protected bool startNewPage;
+      protected float[] rowHeights;
+      protected bool[] rowKeepInSamePage;
+      protected int titleRowCount;
+      protected readonly float fontSize;
+      protected CharFormat defaultCharFormat;
+      protected Margins[] cellPadding;
+      protected List<List<CellData>> rows;
+      protected int maxColumnCount;
+      protected float horizontalWidth;
+      protected int rowIndex;
+      protected bool arrayCreated;
+
+      public Table(float horizontalWidth, float fontSize)
+      {
+         this.horizontalWidth = horizontalWidth;
          this.fontSize = fontSize;
 
          alignment = Alignment.None;
@@ -39,30 +54,73 @@ namespace Core.Markup.Rtf
          representatives = new List<TableCell>();
          startNewPage = false;
          titleRowCount = 0;
-         cellPadding = new Margins[this.rowCount];
 
          HeaderBackgroundColor = nil;
          RowBackgroundColor = nil;
          RowAltBackgroundColor = nil;
+         defaultCharFormat = new CharFormat();
 
-         var defaultCellWidth = horizontalWidth / columnCount;
-         cells = new TableCell[this.rowCount][];
-         rowHeights = new float[this.rowCount];
-         rowKeepInSamePage = new bool[this.rowCount];
+         rows = new List<List<CellData>>();
+         maxColumnCount = 0;
+         rowIndex = -1;
+         arrayCreated = false;
+      }
 
-         for (var i = 0; i < this.rowCount; i++)
+      public void AddRow()
+      {
+         rows.Add(new List<CellData>());
+         rowIndex = rows.Count - 1;
+      }
+
+      public void AddColumn(string text, params object[] specifiers)
+      {
+         var cellData = new CellData { Text = text, Specifiers = specifiers };
+         var row = rows[rowIndex];
+         row.Add(cellData);
+         if (row.Count > maxColumnCount)
          {
-            cells[i] = new TableCell[this.columnCount];
+            maxColumnCount = row.Count;
+         }
+      }
+
+      protected void createArrays()
+      {
+         if (arrayCreated)
+         {
+            return;
+         }
+
+         rowCount = rows.Count;
+         columnCount = maxColumnCount;
+
+         cellPadding = new Margins[rowCount];
+         var defaultCellWidth = horizontalWidth / columnCount;
+         cells = new TableCell[rowCount][];
+         rowHeights = new float[rowCount];
+         rowKeepInSamePage = new bool[rowCount];
+
+         for (var i = 0; i < rowCount; i++)
+         {
+            cells[i] = new TableCell[columnCount];
             rowHeights[i] = 0F;
             rowKeepInSamePage[i] = false;
             cellPadding[i] = new Margins();
-            for (var j = 0; j < this.columnCount; j++)
+            var row = rows[i];
+            var count = row.Count;
+            for (var j = 0; j < columnCount; j++)
             {
-               cells[i][j] = new TableCell(defaultCellWidth, i, j, this);
+               var tableCell = new TableCell(defaultCellWidth, i, j, this);
+               cells[i][j] = tableCell;
+               if (j < count)
+               {
+                  var cellData = row[j];
+                  var paragraph = tableCell.Paragraph();
+                  SetParagraphProperties(paragraph, cellData.Text, cellData.Specifiers);
+               }
             }
          }
 
-         defaultCharFormat = new CharFormat();
+         arrayCreated = true;
       }
 
       public Maybe<ColorDescriptor> HeaderBackgroundColor { get; set; }
@@ -77,7 +135,14 @@ namespace Core.Markup.Rtf
          set => alignment = value;
       }
 
-      public override Margins Margins => margins;
+      public override Margins Margins
+      {
+         get
+         {
+            createArrays();
+            return margins;
+         }
+      }
 
       public override CharFormat DefaultCharFormat => defaultCharFormat;
 
@@ -97,7 +162,14 @@ namespace Core.Markup.Rtf
          set => titleRowCount = value;
       }
 
-      public Margins[] CellPadding => cellPadding;
+      public Margins[] CellPadding
+      {
+         get
+         {
+            createArrays();
+            return cellPadding;
+         }
+      }
 
       public override string BlockHead
       {
@@ -113,6 +185,7 @@ namespace Core.Markup.Rtf
       {
          get
          {
+            createArrays();
             var cell = cells[row][col];
             if (cell.IsMerged)
             {
@@ -137,6 +210,7 @@ namespace Core.Markup.Rtf
 
       public void SetColumnWidth(int column, float width)
       {
+         createArrays();
          assertColumnInRange(column);
 
          for (var i = 0; i < rowCount; i++)
@@ -152,6 +226,7 @@ namespace Core.Markup.Rtf
 
       public void SetRowHeight(int row, float height)
       {
+         createArrays();
          assertRowInRange(row);
 
          for (var i = 0; i < columnCount; i++)
@@ -168,6 +243,8 @@ namespace Core.Markup.Rtf
 
       public void SetRowKeepInSamePage(int row, bool allow)
       {
+         createArrays();
+
          assertRowInRange(row);
 
          rowKeepInSamePage[row] = allow;
@@ -175,6 +252,8 @@ namespace Core.Markup.Rtf
 
       public TableCell Merge(int topRow, int leftColumn, int rowSpan, int colSpan)
       {
+         createArrays();
+
          assertRowInRange(topRow);
          assertColumnInRange(leftColumn);
 
@@ -273,7 +352,7 @@ namespace Core.Markup.Rtf
 
             if (statistics.ContainsKey(border))
             {
-               statistics[border] = statistics[border] + 1;
+               statistics[border] += 1;
             }
             else
             {
@@ -299,6 +378,8 @@ namespace Core.Markup.Rtf
 
       public void SetInnerBorder(BorderStyle style, float width, ColorDescriptor color)
       {
+         createArrays();
+
          for (var i = 0; i < rowCount; i++)
          {
             for (var j = 0; j < columnCount; j++)
@@ -354,6 +435,8 @@ namespace Core.Markup.Rtf
 
       public void SetOuterBorder(BorderStyle style, float width, ColorDescriptor color)
       {
+         createArrays();
+
          for (var i = 0; i < columnCount; i++)
          {
             cells[0][i].Borders[Direction.Top].Style = style;
@@ -377,6 +460,8 @@ namespace Core.Markup.Rtf
 
       public void SetHeaderBorderColors(ColorDescriptor colorOuter, ColorDescriptor colorInner)
       {
+         createArrays();
+
          for (var j = 0; j < columnCount; j++)
          {
             cells[0][j].Borders[Direction.Top].Color = colorOuter;
@@ -402,6 +487,8 @@ namespace Core.Markup.Rtf
 
       public override string Render()
       {
+         createArrays();
+
          var result = new StringBuilder();
 
          validateAllMergedCellBorders();

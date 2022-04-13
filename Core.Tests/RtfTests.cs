@@ -1,7 +1,7 @@
-﻿using System.Runtime.InteropServices;
-using Core.Enumerables;
+﻿using Core.Enumerables;
 using Core.Markup.Rtf;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static Core.Arrays.ArrayFunctions;
 
 namespace Core.Tests
 {
@@ -23,15 +23,9 @@ namespace Core.Tests
          var tableRowColor = document.Color(0xD6E3BC);
          var tableRowAltColor = document.Color(0xFFFFFF);
 
-         var paragraph = document.Paragraph();
-         paragraph.Alignment = Alignment.Left;
-         paragraph.DefaultCharFormat.Font = timesFont;
-         paragraph.DefaultCharFormat.AnsiFont = courierFont;
-         paragraph.Text = "Testing\n";
+         document.Paragraph("Testing\n", Alignment.Left, timesFont);
 
-         paragraph = document.Paragraph();
-         paragraph.DefaultCharFormat.Font = timesFont;
-         paragraph.Text = "Test2: Character Formatting";
+         var paragraph = document.Paragraph("Test2: Character Formatting", timesFont);
 
          var format = paragraph.CharFormat(0, 5);
          format.ForegroundColor = blueColor;
@@ -43,27 +37,32 @@ namespace Core.Tests
          format.FontStyle += FontStyleFlag.Underline;
          format.Font = courierFont;
 
-         paragraph = document.Paragraph();
-         paragraph.Text = "Footnote";
+         paragraph = document.Paragraph("Footnote");
          paragraph.Footnote(7).Paragraph().Text = "Footnote details here.";
 
-         paragraph = document.Footer.Paragraph();
-         paragraph.Text = "Test : Page: / Date: Time:";
-         paragraph.Alignment = Alignment.Center;
-         paragraph.DefaultCharFormat.FontSize = 15f;
+         paragraph = document.Footer.Paragraph("Test : Page: / Date: Time:", Alignment.Center, 15f);
          paragraph.ControlWord(12, FieldType.Page);
          paragraph.ControlWord(13, FieldType.NumPages);
          paragraph.ControlWord(19, FieldType.Date);
          paragraph.ControlWord(25, FieldType.Time);
 
-         paragraph = document.Header.Paragraph();
-         paragraph.Text = "Header";
+         document.Header.Paragraph("Header");
 
          var image = document.Image(@"C:\Temp\rabbit-mq.jpg");
          image.Width = 130;
          image.StartNewParagraph = true;
 
-         var table = document.Table(5, 4, 415.2f, 12);
+         var table = document.Table(415.2f, 12);
+
+         foreach (var row in 5.Times())
+         {
+            table.AddRow();
+            foreach (var column in 4.Times())
+            {
+               table.AddColumn($"CELL {row}, {column}");
+            }
+         }
+
          table.Margins[Direction.Bottom] = 20;
          table.SetInnerBorder(BorderStyle.Dotted, 1);
          table.SetOuterBorder(BorderStyle.Single, 2);
@@ -72,31 +71,20 @@ namespace Core.Tests
          table.RowBackgroundColor = tableRowColor;
          table.RowAltBackgroundColor = tableRowAltColor;
 
-         foreach (var row in table.RowCount.Times())
-         {
-            foreach (var column in table.ColumnCount.Times())
-            {
-               table[row, column].Paragraph().Text = $"CELL {row}, {column}";
-            }
-         }
-
          table.Merge(1, 0, 3, 1);
          table[4, 3].BackgroundColor = redColor;
          table[4, 3].Paragraph().Text = "Table";
 
-         paragraph = document.Paragraph();
-         paragraph.Text = "Test 7.1: Hyperlink to target (Test9)";
+         paragraph = document.Paragraph("Test 7.1: Hyperlink to target (Test9)");
          format = paragraph.CharFormat(10, 18);
          format.LocalHyperlink = "target";
          format.LocalHyperlinkTip = "Link to target";
          format.ForegroundColor = blueColor;
 
-         paragraph = document.Paragraph();
+         paragraph = document.Paragraph("New page");
          paragraph.StartNewPage = true;
-         paragraph.Text = "New page";
 
-         paragraph = document.Paragraph();
-         paragraph.Text = "Test9: Set bookmark";
+         paragraph = document.Paragraph("Test9: Set bookmark");
          format = paragraph.CharFormat(0, 18);
          format.Bookmark = "target";
 
@@ -107,29 +95,15 @@ namespace Core.Tests
       public void TableDataTest()
       {
          var document = new Document();
-         var tableData = new TableData(document);
+         var table = document.Table(12);
          var blueColor = document.Color("blue");
-         tableData.TableCell += (_, e) =>
+
+         foreach (var (prompt, hyperlink) in array(("Pull Request", "http://foobar"), ("estreamps", "http://evokeps"), ("staging10ua", "http://evokeuat")))
          {
-            var paragraph = e.TableCell.Paragraph();
-            paragraph.Text = e.Text;
-
-            switch (e.ColumnIndex)
-            {
-               case 0:
-                  paragraph.DefaultCharFormat.FontStyle += FontStyleFlag.Bold;
-                  break;
-               case 1:
-                  paragraph.DefaultCharFormat.LocalHyperlink = e.Text;
-                  paragraph.DefaultCharFormat.ForegroundColor = blueColor;
-                  break;
-            }
-         };
-
-         tableData.AddRow("Pull Request", "http://foobar");
-         tableData.AddRow("estreamps", "http://evokeps");
-         tableData.AddRow("staging10ua", "http://evokeuat");
-         _ = tableData.Table(12);
+            table.AddRow();
+            table.AddColumn(prompt, FontStyleFlag.Bold);
+            table.AddColumn(hyperlink, blueColor, (hyperlink, ""));
+         }
          document.Save(@"C:\Temp\Test2.rtf");
       }
    }

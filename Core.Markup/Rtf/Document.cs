@@ -94,13 +94,13 @@ namespace Core.Markup.Rtf
          return Color(color);
       }
 
-      public Table Table(int rowCount, int colCount, float fontSize)
+      public Table Table(float fontSize)
       {
          var baseValue = paperOrientation == PaperOrientation.Portrait ? paperSize.PaperWidthInPoints(paperOrientation)
             : paperSize.PaperHeightInPoints(paperOrientation);
          var horizontalWidth = baseValue - margins[Direction.Left] - margins[Direction.Right];
 
-         return Table(rowCount, colCount, horizontalWidth, fontSize);
+         return Table(horizontalWidth, fontSize);
       }
 
       public override string Render()
