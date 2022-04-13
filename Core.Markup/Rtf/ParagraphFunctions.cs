@@ -1,4 +1,6 @@
-﻿namespace Core.Markup.Rtf
+﻿using System;
+
+namespace Core.Markup.Rtf
 {
    public static class ParagraphFunctions
    {
@@ -34,6 +36,9 @@
                case (string hyperlink, string hyperlinkTip):
                   format.LocalHyperlink = hyperlink;
                   format.LocalHyperlinkTip = hyperlinkTip;
+                  break;
+               case Action<Paragraph> action:
+                  action(paragraph);
                   break;
             }
          }
