@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Core.Assertions;
 using Core.Collections;
+using Core.Computers;
 using Core.Exceptions;
 using Core.Monads;
 using static Core.Markup.Rtf.ParagraphFunctions;
@@ -18,11 +19,17 @@ namespace Core.Markup.Rtf
          {
             Text = string.Empty;
             Specifiers = Array.Empty<object>();
+            ImageFile = nil;
+            ImageFileType = nil;
          }
 
          public string Text { get; set; }
 
          public object[] Specifiers { get; set; }
+
+         public Maybe<FileName> ImageFile { get; set; }
+
+         public Maybe<ImageFileType> ImageFileType { get; set; }
       }
 
       protected Alignment alignment;
@@ -83,6 +90,17 @@ namespace Core.Markup.Rtf
          }
       }
 
+      public void AddImage(FileName imageFile, ImageFileType imageFileType)
+      {
+         var cellData = new CellData { ImageFile = imageFile, ImageFileType = imageFileType };
+         var row = rows[rowIndex];
+         row.Add(cellData);
+         if (row.Count > maxColumnCount)
+         {
+            maxColumnCount = row.Count;
+         }
+      }
+
       protected void createArrays()
       {
          if (arrayCreated)
@@ -114,8 +132,15 @@ namespace Core.Markup.Rtf
                if (j < count)
                {
                   var cellData = row[j];
-                  var paragraph = tableCell.Paragraph();
-                  SetParagraphProperties(paragraph, cellData.Text, cellData.Specifiers);
+                  if (cellData.ImageFile.If(out var imageFile) && cellData.ImageFileType.If(out var imageFileType))
+                  {
+                     tableCell.Image(imageFile.FullPath, imageFileType);
+                  }
+                  else
+                  {
+                     var paragraph = tableCell.Paragraph();
+                     SetParagraphProperties(paragraph, cellData.Text, cellData.Specifiers);
+                  }
                }
             }
          }
