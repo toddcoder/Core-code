@@ -4,6 +4,7 @@ using System.Text;
 using Core.Assertions;
 using Core.Collections;
 using Core.Computers;
+using Core.DataStructures;
 using Core.Exceptions;
 using Core.Monads;
 using static Core.Markup.Rtf.ParagraphFunctions;
@@ -50,6 +51,7 @@ namespace Core.Markup.Rtf
       protected float horizontalWidth;
       protected int rowIndex;
       protected bool arrayCreated;
+      protected MaybeQueue<(int topRow, int leftColumn, int rowSpan, int colSpan)> pendingMerges;
 
       public Table(float horizontalWidth, float fontSize)
       {
@@ -71,6 +73,7 @@ namespace Core.Markup.Rtf
          maxColumnCount = 0;
          rowIndex = -1;
          arrayCreated = false;
+         pendingMerges = new MaybeQueue<(int, int, int, int)>();
       }
 
       public void AddRow()
@@ -273,6 +276,19 @@ namespace Core.Markup.Rtf
          assertRowInRange(row);
 
          rowKeepInSamePage[row] = allow;
+      }
+
+      public void PendingMerge(int topRow, int leftColumn, int rowSpan, int colSpan)
+      {
+         pendingMerges.Enqueue((topRow, leftColumn, rowSpan, colSpan));
+      }
+
+      public void ActivatePendingMerges()
+      {
+         while (pendingMerges.Dequeue().If(out var topRow, out var leftColumn, out var rowSpan, out var colSpan))
+         {
+            Merge(topRow, leftColumn, rowSpan, colSpan);
+         }
       }
 
       public TableCell Merge(int topRow, int leftColumn, int rowSpan, int colSpan)
