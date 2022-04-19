@@ -60,6 +60,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\LineChangedEventArgs.cs" />
+    <Compile Include="Controls\MessageProgress.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Controls\ModificationState.cs" />
     <Compile Include="Controls\ProgressEventArgs.cs" />
     <Compile Include="Controls\RichLabel.cs">

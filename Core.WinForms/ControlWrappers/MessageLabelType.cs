@@ -9,6 +9,9 @@
       Failure,
       Busy,
       Selected,
-      Unselected
+      Unselected,
+      Tape,
+      ProgressIndefinite,
+      ProgressDefinite
    }
 }

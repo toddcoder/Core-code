@@ -1,4 +1,5 @@
 ﻿using System.Windows.Forms;
+using Core.WinForms.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Core.Tests
@@ -21,6 +22,20 @@ namespace Core.Tests
          {
             writer.WriteLine(i);
          }
+      }
+
+      [TestMethod]
+      public void MessageProgressBusyTest()
+      {
+         var form = new Form();
+         var message = new MessageProgress();
+         message.AddToControls(form.Controls, false);
+         message.SetUp(0, 0, 300, 40, AnchorStyles.Top | AnchorStyles.Left);
+         form.Show();
+
+         Application.DoEvents();
+
+         message.Busy(true);
       }
    }
 }
