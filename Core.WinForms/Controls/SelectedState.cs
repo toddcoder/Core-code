@@ -1,4 +1,4 @@
-﻿namespace Core.WinForms.ControlWrappers
+﻿namespace Core.WinForms.Controls
 {
    public enum SelectedState
    {

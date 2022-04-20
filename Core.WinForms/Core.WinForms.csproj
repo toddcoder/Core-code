@@ -60,6 +60,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\LineChangedEventArgs.cs" />
+    <Compile Include="Controls\MessageProgressType.cs" />
     <Compile Include="Controls\MessageProgress.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -71,6 +72,10 @@
     <Compile Include="Controls\RichLabel.Designer.cs">
       <DependentUpon>RichLabel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\SelectedState.cs" />
+    <Compile Include="Controls\StatusProgress.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Controls\WebProgress.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -78,10 +83,7 @@
       <DependentUpon>WebProgress.cs</DependentUpon>
     </Compile>
     <Compile Include="ControlWrappers\MessageLabel.cs" />
-    <Compile Include="ControlWrappers\MessageLabelType.cs" />
     <Compile Include="ControlWrappers\MessageStyle.cs" />
-    <Compile Include="ControlWrappers\ProgressMessageLabel.cs" />
-    <Compile Include="ControlWrappers\SelectedState.cs" />
     <Compile Include="ControlWrappers\StatusLabel.cs" />
     <Compile Include="Documents\Colorizer.cs" />
     <Compile Include="Documents\ConsoleConfiguration.cs" />

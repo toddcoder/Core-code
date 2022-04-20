@@ -1,7 +1,10 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Windows.Forms;
+using Core.WinForms.Controls;
 
 namespace Core.WinForms.ControlWrappers
 {
+   [Obsolete("Use StatusProgress")]
    public class StatusLabel
    {
       protected MessageLabel message;

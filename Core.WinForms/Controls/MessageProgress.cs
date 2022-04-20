@@ -10,74 +10,78 @@ namespace Core.WinForms.Controls
 {
    public class MessageProgress : UserControl
    {
-      protected static Hash<MessageLabelType, Color> globalForeColors;
-      protected static Hash<MessageLabelType, Color> globalBackColors;
-      protected static Hash<MessageLabelType, MessageStyle> globalStyles;
+      protected static Hash<MessageProgressType, Color> globalForeColors;
+      protected static Hash<MessageProgressType, Color> globalBackColors;
+      protected static Hash<MessageProgressType, MessageStyle> globalStyles;
 
       static MessageProgress()
       {
-         globalForeColors = new Hash<MessageLabelType, Color>
+         globalForeColors = new Hash<MessageProgressType, Color>
          {
-            [MessageLabelType.Uninitialized] = Color.White,
-            [MessageLabelType.Message] = Color.White,
-            [MessageLabelType.Exception] = Color.White,
-            [MessageLabelType.Success] = Color.White,
-            [MessageLabelType.Failure] = Color.Black,
-            [MessageLabelType.Selected] = Color.White,
-            [MessageLabelType.Unselected] = Color.White,
-            [MessageLabelType.ProgressIndefinite] = Color.White,
-            [MessageLabelType.ProgressDefinite] = Color.Black
+            [MessageProgressType.Uninitialized] = Color.White,
+            [MessageProgressType.Message] = Color.White,
+            [MessageProgressType.Exception] = Color.White,
+            [MessageProgressType.Success] = Color.White,
+            [MessageProgressType.Failure] = Color.Black,
+            [MessageProgressType.Selected] = Color.White,
+            [MessageProgressType.Unselected] = Color.White,
+            [MessageProgressType.ProgressIndefinite] = Color.White,
+            [MessageProgressType.ProgressDefinite] = Color.Black
          };
-         globalBackColors = new Hash<MessageLabelType, Color>
+         globalBackColors = new Hash<MessageProgressType, Color>
          {
-            [MessageLabelType.Uninitialized] = Color.Gray,
-            [MessageLabelType.Message] = Color.Blue,
-            [MessageLabelType.Exception] = Color.Red,
-            [MessageLabelType.Success] = Color.Green,
-            [MessageLabelType.Failure] = Color.Gold,
-            [MessageLabelType.Selected] = Color.FromArgb(0, 127, 0),
-            [MessageLabelType.Unselected] = Color.FromArgb(127, 0, 0)
+            [MessageProgressType.Uninitialized] = Color.Gray,
+            [MessageProgressType.Message] = Color.Blue,
+            [MessageProgressType.Exception] = Color.Red,
+            [MessageProgressType.Success] = Color.Green,
+            [MessageProgressType.Failure] = Color.Gold,
+            [MessageProgressType.Selected] = Color.FromArgb(0, 127, 0),
+            [MessageProgressType.Unselected] = Color.FromArgb(127, 0, 0)
          };
-         globalStyles = new Hash<MessageLabelType, MessageStyle>
+         globalStyles = new Hash<MessageProgressType, MessageStyle>
          {
-            [MessageLabelType.Uninitialized] = MessageStyle.Italic,
-            [MessageLabelType.Message] = MessageStyle.None,
-            [MessageLabelType.Exception] = MessageStyle.Bold,
-            [MessageLabelType.Success] = MessageStyle.Bold,
-            [MessageLabelType.Failure] = MessageStyle.Bold
+            [MessageProgressType.Uninitialized] = MessageStyle.Italic,
+            [MessageProgressType.Message] = MessageStyle.None,
+            [MessageProgressType.Exception] = MessageStyle.Bold,
+            [MessageProgressType.Success] = MessageStyle.Bold,
+            [MessageProgressType.Failure] = MessageStyle.Bold
          };
       }
 
-      public static Hash<MessageLabelType, Color> GlobalForeColors => globalForeColors;
+      public static Hash<MessageProgressType, Color> GlobalForeColors => globalForeColors;
 
-      public static Hash<MessageLabelType, Color> GlobalBackColors => globalBackColors;
+      public static Hash<MessageProgressType, Color> GlobalBackColors => globalBackColors;
 
-      public static Hash<MessageLabelType, MessageStyle> GlobalStyles => globalStyles;
+      public static Hash<MessageProgressType, MessageStyle> GlobalStyles => globalStyles;
 
       protected Font italicFont;
       protected Font boldFont;
-      protected AutoHash<MessageLabelType, Color> foreColors;
-      protected AutoHash<MessageLabelType, Color> backColors;
-      protected AutoHash<MessageLabelType, MessageStyle> styles;
+      protected AutoHash<MessageProgressType, Color> foreColors;
+      protected AutoHash<MessageProgressType, Color> backColors;
+      protected AutoHash<MessageProgressType, MessageStyle> styles;
       protected string text;
-      protected MessageLabelType type;
+      protected MessageProgressType type;
       protected Random random;
       protected int value;
       protected Timer timer;
+      protected int maximum;
+      protected int index;
 
-      public MessageProgress()
+      public MessageProgress(Form form)
       {
+         form.Controls.Add(this);
+
          italicFont = new Font(base.Font, FontStyle.Italic);
          boldFont = new Font(base.Font, FontStyle.Bold);
 
          Center = false;
          Is3D = true;
 
-         foreColors = new AutoHash<MessageLabelType, Color>(mlt => globalForeColors[mlt]);
-         backColors = new AutoHash<MessageLabelType, Color>(mlt => globalBackColors[mlt]);
-         styles = new AutoHash<MessageLabelType, MessageStyle>(mlt => globalStyles[mlt]);
+         foreColors = new AutoHash<MessageProgressType, Color>(mlt => globalForeColors[mlt]);
+         backColors = new AutoHash<MessageProgressType, Color>(mlt => globalBackColors[mlt]);
+         styles = new AutoHash<MessageProgressType, MessageStyle>(mlt => globalStyles[mlt]);
          text = string.Empty;
-         type = MessageLabelType.Uninitialized;
+         type = MessageProgressType.Uninitialized;
 
          SetStyle(ControlStyles.UserPaint, true);
 
@@ -89,13 +93,64 @@ namespace Core.WinForms.Controls
             Enabled = false
          };
          timer.Tick += (_, _) => this.Do(Refresh);
+
+         Minimum = 1;
+         maximum = 0;
       }
 
-      public void SetUp(int x, int y, int width, int height, AnchorStyles anchor)
+      protected void setUpFont(string fontName, float fontSize)
+      {
+         Font = new Font(fontName, fontSize);
+      }
+
+      protected void setUpCore(int x, int y, int width, int height, string fontName, float fontSize)
       {
          Location = new Point(x, y);
          Size = new Size(width, height);
+         setUpFont(fontName, fontSize);
+      }
+
+      public void SetUp(int x, int y, int width, int height, AnchorStyles anchor, string fontName = "Consolas", float fontSize = 12f)
+      {
+         setUpCore(x, y, width, height, fontName, fontSize);
          Anchor = anchor;
+      }
+
+      public void SetUp(int x, int y, int width, int height, DockStyle dockStyle, string fontName = "Consolas", float fontSize = 12f)
+      {
+         setUpCore(x, y, width, height, fontName, fontSize);
+         Dock = dockStyle;
+      }
+
+      [Obsolete("Use SetUpInTableLayoutPanel")]
+      public void SetUpAsDockFill(string fontName = "Consolas", float fontSize = 12f)
+      {
+         Dock = DockStyle.Fill;
+         setUpFont(fontName, fontSize);
+      }
+
+      public void SetUpInTableLayoutPanel(TableLayoutPanel tableLayoutPanel, int column, int row, int columnSpan = 1, int rowSpan = 1,
+         string fontName = "Consolas", float fontSize = 12f, DockStyle dockStyle = DockStyle.Fill)
+      {
+         Dock = dockStyle;
+         tableLayoutPanel.Controls.Add(this, column, row);
+
+         if (columnSpan > 1)
+         {
+            tableLayoutPanel.SetColumnSpan(this, columnSpan);
+         }
+
+         if (rowSpan > 1)
+         {
+            tableLayoutPanel.SetRowSpan(this, rowSpan);
+         }
+
+         setUpFont(fontName, fontSize);
+      }
+
+      public void SetUp(int x, int y, int width, int height, string fontName = "Consolas", float fontSize = 12f)
+      {
+         setUpCore(x, y, width, height, fontName, fontSize);
       }
 
       public override Font Font
@@ -119,13 +174,13 @@ namespace Core.WinForms.Controls
 
       public bool Is3D { get; set; }
 
-      public AutoHash<MessageLabelType, Color> ForeColors => foreColors;
+      public AutoHash<MessageProgressType, Color> ForeColors => foreColors;
 
-      public AutoHash<MessageLabelType, Color> BackColors => backColors;
+      public AutoHash<MessageProgressType, Color> BackColors => backColors;
 
-      public AutoHash<MessageLabelType, MessageStyle> Styles => styles;
+      public AutoHash<MessageProgressType, MessageStyle> Styles => styles;
 
-      protected Font getFont(MessageLabelType type) => styles[type] switch
+      protected Font getFont(MessageProgressType type) => styles[type] switch
       {
          MessageStyle.None => Font,
          MessageStyle.Italic => italicFont,
@@ -142,7 +197,7 @@ namespace Core.WinForms.Controls
          });
       }
 
-      public void ShowMessage(string message, MessageLabelType type)
+      public void ShowMessage(string message, MessageProgressType type)
       {
          Busy(false);
          text = message;
@@ -150,48 +205,67 @@ namespace Core.WinForms.Controls
          refresh();
       }
 
-      public void Uninitialized(string message) => ShowMessage(message, MessageLabelType.Uninitialized);
+      public void Uninitialized(string message) => ShowMessage(message, MessageProgressType.Uninitialized);
 
-      public void Message(string message) => ShowMessage(message, MessageLabelType.Message);
+      public void Message(string message) => ShowMessage(message, MessageProgressType.Message);
 
-      public void Exception(Exception exception) => ShowMessage(exception.Message, MessageLabelType.Exception);
+      public void Exception(Exception exception) => ShowMessage(exception.Message, MessageProgressType.Exception);
 
-      public void Success(string message) => ShowMessage(message, MessageLabelType.Success);
+      public void Success(string message) => ShowMessage(message, MessageProgressType.Success);
 
-      public void Failure(string message) => ShowMessage(message, MessageLabelType.Failure);
+      public void Failure(string message) => ShowMessage(message, MessageProgressType.Failure);
 
-      public void Selected(string message) => ShowMessage(message, MessageLabelType.Selected);
+      public void Selected(string message) => ShowMessage(message, MessageProgressType.Selected);
 
-      public void Unselected(string message) => ShowMessage(message, MessageLabelType.Unselected);
+      public void Unselected(string message) => ShowMessage(message, MessageProgressType.Unselected);
 
       public void Tape()
       {
-         type = MessageLabelType.Tape;
+         type = MessageProgressType.Tape;
          refresh();
       }
 
       public void ProgressText(string text)
       {
          this.text = text;
-         type = MessageLabelType.ProgressIndefinite;
+         type = MessageProgressType.ProgressIndefinite;
 
          refresh();
       }
 
       public int Minimum { get; set; }
 
-      public int Maximum { get; set; }
+      public int Maximum
+      {
+         get => maximum;
+         set
+         {
+            maximum = value;
+            index = Minimum;
+         }
+      }
 
       public void Progress(int value, string text = "")
       {
          this.value = value;
          this.text = text;
 
-         type = MessageLabelType.ProgressDefinite;
+         type = MessageProgressType.ProgressDefinite;
 
          refresh();
       }
 
+      public void Progress(string text)
+      {
+         value = index++;
+         this.text = text;
+
+         type = MessageProgressType.ProgressDefinite;
+
+         refresh();
+      }
+
+      [Obsolete("Use SetUp")]
       public void AddToControls(ControlCollection controls, bool fill = true)
       {
          Font = new Font("Consolas", 12);
@@ -228,10 +302,10 @@ namespace Core.WinForms.Controls
 
          switch (type)
          {
-            case MessageLabelType.ProgressIndefinite:
+            case MessageProgressType.ProgressIndefinite:
                writeText(e.Graphics);
                break;
-            case MessageLabelType.ProgressDefinite:
+            case MessageProgressType.ProgressDefinite:
             {
                var finalText = text;
                if (finalText.IsEmpty())
@@ -248,7 +322,7 @@ namespace Core.WinForms.Controls
             }
             default:
             {
-               if (type != MessageLabelType.Tape)
+               if (type != MessageProgressType.Tape)
                {
                   writeText(e.Graphics);
                }
@@ -264,13 +338,13 @@ namespace Core.WinForms.Controls
 
          switch (type)
          {
-            case MessageLabelType.Tape:
+            case MessageProgressType.Tape:
             {
                using var brush = new HatchBrush(HatchStyle.BackwardDiagonal, Color.Black, Color.Gold);
                pevent.Graphics.FillRectangle(brush, ClientRectangle);
                break;
             }
-            case MessageLabelType.ProgressIndefinite or MessageLabelType.Busy:
+            case MessageProgressType.ProgressIndefinite or MessageProgressType.Busy:
             {
                var x = random.Next(ClientRectangle.Width - 5);
                var y = random.Next(ClientRectangle.Height - 5);
@@ -293,7 +367,7 @@ namespace Core.WinForms.Controls
                pevent.Graphics.DrawLine(greenPen, location, endPoint);
                break;
             }
-            case MessageLabelType.ProgressDefinite:
+            case MessageProgressType.ProgressDefinite:
             {
                using var whiteBrush = new SolidBrush(Color.White);
                pevent.Graphics.FillRectangle(whiteBrush, ClientRectangle);
@@ -304,6 +378,24 @@ namespace Core.WinForms.Controls
                var rectangle = new Rectangle(location, size);
                using var greenBrush = new SolidBrush(Color.CornflowerBlue);
                pevent.Graphics.FillRectangle(greenBrush, rectangle);
+               break;
+            }
+            case MessageProgressType.Unselected:
+            {
+               using var brush = new SolidBrush(Color.White);
+               pevent.Graphics.FillRectangle(brush, ClientRectangle);
+
+               using var pen = new Pen(Color.DarkGray, 10);
+               pevent.Graphics.DrawRectangle(pen, ClientRectangle);
+               break;
+            }
+            case MessageProgressType.Selected:
+            {
+               using var brush = new SolidBrush(Color.White);
+               pevent.Graphics.FillRectangle(brush, ClientRectangle);
+
+               using var pen = new Pen(Color.Black, 10);
+               pevent.Graphics.DrawRectangle(pen, ClientRectangle);
                break;
             }
             default:
@@ -332,14 +424,16 @@ namespace Core.WinForms.Controls
          }
       }
 
-      protected int getPercentage() => (int)((float)value / Maximum * 100);
+      protected int getPercentage() => (int)((float)value / maximum * 100);
 
-      protected int getPercentage(int width) => (int)((float)value / Maximum * width);
+      protected int getPercentage(int width) => (int)((float)value / maximum * width);
+
+      public int Index(bool increment) => increment ? index++ : index;
 
       public void Busy(bool enabled)
       {
          text = "";
-         type = MessageLabelType.Busy;
+         type = MessageProgressType.Busy;
          this.Do(() => timer.Enabled = enabled);
       }
    }

@@ -28,9 +28,8 @@ namespace Core.Tests
       public void MessageProgressBusyTest()
       {
          var form = new Form();
-         var message = new MessageProgress();
-         message.AddToControls(form.Controls, false);
-         message.SetUp(0, 0, 300, 40, AnchorStyles.Top | AnchorStyles.Left);
+         var message = new MessageProgress(form);
+         message.SetUp(0, 0, 300, 40);
          form.Show();
 
          Application.DoEvents();

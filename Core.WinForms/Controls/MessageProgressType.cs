@@ -1,6 +1,6 @@
-﻿namespace Core.WinForms.ControlWrappers
+﻿namespace Core.WinForms.Controls
 {
-   public enum MessageLabelType
+   public enum MessageProgressType
    {
       Uninitialized,
       Message,
