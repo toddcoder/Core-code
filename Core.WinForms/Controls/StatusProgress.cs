@@ -31,6 +31,8 @@ namespace Core.WinForms.Controls
             };
             changeState();
          };
+
+         Clickable = true;
       }
 
       protected void changeState()
@@ -51,7 +53,7 @@ namespace Core.WinForms.Controls
             _ => uninitializedText
          };
 
-         this.Do(Refresh);
+         this.Do(refresh);
       }
 
       public SelectedState State

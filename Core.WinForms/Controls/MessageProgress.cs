@@ -66,6 +66,7 @@ namespace Core.WinForms.Controls
       protected Timer timer;
       protected int maximum;
       protected int index;
+      protected bool mouseInside;
 
       public MessageProgress(Form form)
       {
@@ -233,6 +234,8 @@ namespace Core.WinForms.Controls
          refresh();
       }
 
+      public bool Clickable { get; set; }
+
       public int Minimum { get; set; }
 
       public int Maximum
@@ -277,9 +280,8 @@ namespace Core.WinForms.Controls
          controls.Add(this);
       }
 
-      protected void writeText(Graphics graphics, string text, bool center)
+      protected void writeText(Graphics graphics, string text, bool center, Font font, Rectangle rectangle)
       {
-         var font = getFont(type);
          var foreColor = foreColors[type];
          var flags = TextFormatFlags.EndEllipsis;
          if (center)
@@ -292,6 +294,12 @@ namespace Core.WinForms.Controls
          }
 
          TextRenderer.DrawText(graphics, text, font, ClientRectangle, foreColor, flags);
+      }
+
+      protected void writeText(Graphics graphics, string text, bool center)
+      {
+         var font = getFont(type);
+         writeText(graphics, text, center, font, ClientRectangle);
       }
 
       protected void writeText(Graphics graphics) => writeText(graphics, text, Center);
@@ -328,6 +336,21 @@ namespace Core.WinForms.Controls
                }
 
                break;
+            }
+         }
+
+         if (Clickable)
+         {
+            var color = foreColors[type];
+            using var pen = new Pen(color, 4);
+            e.Graphics.DrawLine(pen, ClientRectangle.Right - 4, 4, ClientRectangle.Right - 4, ClientRectangle.Bottom - 4);
+
+            if (mouseInside)
+            {
+               using var smallFont = new Font("Segoe UI", 8);
+               var size = TextRenderer.MeasureText(e.Graphics, "clickable", smallFont);
+               var location = new Point(ClientRectangle.Right - size.Width - 8, ClientRectangle.Top + 8);
+               TextRenderer.DrawText(e.Graphics, "clickable", smallFont, new Rectangle(location, size), color);
             }
          }
       }
@@ -421,6 +444,28 @@ namespace Core.WinForms.Controls
             pevent.Graphics.DrawLine(darkGrayPen, new Point(left, top), new Point(left, height));
             pevent.Graphics.DrawLine(lightPen, new Point(left, height), new Point(width, height));
             pevent.Graphics.DrawLine(lightPen, new Point(width, top), new Point(width, height));
+         }
+      }
+
+      protected override void OnMouseEnter(EventArgs e)
+      {
+         base.OnMouseEnter(e);
+
+         if (!mouseInside)
+         {
+            mouseInside = true;
+            refresh();
+         }
+      }
+
+      protected override void OnMouseLeave(EventArgs e)
+      {
+         base.OnMouseLeave(e);
+
+         if (mouseInside)
+         {
+            mouseInside = false;
+            refresh();
          }
       }
 
