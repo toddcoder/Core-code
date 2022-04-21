@@ -106,6 +106,7 @@ namespace Core.WinForms.Controls
 
       protected void setUpCore(int x, int y, int width, int height, string fontName, float fontSize)
       {
+         AutoSize = false;
          Location = new Point(x, y);
          Size = new Size(width, height);
          setUpFont(fontName, fontSize);
@@ -348,9 +349,11 @@ namespace Core.WinForms.Controls
             if (mouseInside)
             {
                using var smallFont = new Font("Segoe UI", 8);
-               var size = TextRenderer.MeasureText(e.Graphics, "clickable", smallFont);
+               var size = TextRenderer.MeasureText(e.Graphics, "↓", smallFont);
                var location = new Point(ClientRectangle.Right - size.Width - 8, ClientRectangle.Top + 8);
-               TextRenderer.DrawText(e.Graphics, "clickable", smallFont, new Rectangle(location, size), color);
+               TextRenderer.DrawText(e.Graphics, "↓", smallFont, new Rectangle(location, size), color);
+               using var linePen = new Pen(color, 1);
+               e.Graphics.DrawLine(linePen, location.X, location.Y + size.Height, location.X + size.Width, location.Y + size.Height);
             }
          }
       }
