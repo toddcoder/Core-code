@@ -26,7 +26,7 @@ namespace Core.WinForms.Controls
             [MessageProgressType.Selected] = Color.White,
             [MessageProgressType.Unselected] = Color.White,
             [MessageProgressType.ProgressIndefinite] = Color.White,
-            [MessageProgressType.ProgressDefinite] = Color.Black
+            [MessageProgressType.ProgressDefinite] = Color.White
          };
          globalBackColors = new Hash<MessageProgressType, Color>
          {
@@ -67,6 +67,7 @@ namespace Core.WinForms.Controls
       protected int maximum;
       protected int index;
       protected bool mouseInside;
+      protected bool mouseDown;
 
       public MessageProgress(Form form)
       {
@@ -85,6 +86,8 @@ namespace Core.WinForms.Controls
          type = MessageProgressType.Uninitialized;
 
          SetStyle(ControlStyles.UserPaint, true);
+         SetStyle(ControlStyles.DoubleBuffer, true);
+         SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 
          random = new Random();
 
@@ -281,7 +284,7 @@ namespace Core.WinForms.Controls
          controls.Add(this);
       }
 
-      protected void writeText(Graphics graphics, string text, bool center, Font font, Rectangle rectangle)
+      protected void writeText(Graphics graphics, string text, bool center, Font font)
       {
          var foreColor = foreColors[type];
          var flags = TextFormatFlags.EndEllipsis;
@@ -300,7 +303,7 @@ namespace Core.WinForms.Controls
       protected void writeText(Graphics graphics, string text, bool center)
       {
          var font = getFont(type);
-         writeText(graphics, text, center, font, ClientRectangle);
+         writeText(graphics, text, center, font);
       }
 
       protected void writeText(Graphics graphics) => writeText(graphics, text, Center);
@@ -355,6 +358,16 @@ namespace Core.WinForms.Controls
                using var linePen = new Pen(color, 1);
                e.Graphics.DrawLine(linePen, location.X, location.Y + size.Height, location.X + size.Width, location.Y + size.Height);
             }
+
+            if (mouseDown)
+            {
+               using var dashedPen = new Pen(color, 1);
+               dashedPen.DashStyle = DashStyle.Dash;
+               var rectangle = ClientRectangle;
+               rectangle.Inflate(-2, -2);
+               //rectangle.Offset(2, 2);
+               e.Graphics.DrawRectangle(dashedPen, rectangle);
+            }
          }
       }
 
@@ -395,15 +408,15 @@ namespace Core.WinForms.Controls
             }
             case MessageProgressType.ProgressDefinite:
             {
-               using var whiteBrush = new SolidBrush(Color.White);
-               pevent.Graphics.FillRectangle(whiteBrush, ClientRectangle);
+               using var coralBrush = new SolidBrush(Color.Coral);
+               pevent.Graphics.FillRectangle(coralBrush, ClientRectangle);
                var width = ClientRectangle.Width;
                var percentWidth = getPercentage(width);
                var location = ClientRectangle.Location;
                var size = new Size(percentWidth, ClientRectangle.Height);
                var rectangle = new Rectangle(location, size);
-               using var greenBrush = new SolidBrush(Color.CornflowerBlue);
-               pevent.Graphics.FillRectangle(greenBrush, rectangle);
+               using var cornflowerBlueBrush = new SolidBrush(Color.CornflowerBlue);
+               pevent.Graphics.FillRectangle(cornflowerBlueBrush, rectangle);
                break;
             }
             case MessageProgressType.Unselected:
@@ -468,6 +481,28 @@ namespace Core.WinForms.Controls
          if (mouseInside)
          {
             mouseInside = false;
+            refresh();
+         }
+      }
+
+      protected override void OnMouseDown(MouseEventArgs e)
+      {
+         base.OnMouseDown(e);
+
+         if (!mouseDown)
+         {
+            mouseDown = true;
+            refresh();
+         }
+      }
+
+      protected override void OnMouseUp(MouseEventArgs e)
+      {
+         base.OnMouseUp(e);
+
+         if (mouseDown)
+         {
+            mouseDown = false;
             refresh();
          }
       }

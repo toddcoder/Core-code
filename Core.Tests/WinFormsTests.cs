@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System.Drawing;
+using System.Windows.Forms;
 using Core.WinForms.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -28,13 +29,11 @@ namespace Core.Tests
       public void MessageProgressBusyTest()
       {
          var form = new Form();
+         //form.Size = new Size(800, 100);
          var message = new MessageProgress(form);
          message.SetUp(0, 0, 300, 40);
-         form.Show();
-
-         Application.DoEvents();
-
-         message.Busy(true);
+         message.Clickable = true;
+         form.ShowDialog();
       }
    }
 }
