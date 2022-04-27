@@ -1,10 +1,13 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using Core.Collections;
+using Core.Monads;
 using Core.Strings;
 using Core.WinForms.ControlWrappers;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Controls
 {
@@ -68,6 +71,8 @@ namespace Core.WinForms.Controls
       protected int index;
       protected bool mouseInside;
       protected bool mouseDown;
+      protected ToolTip toolTip;
+      protected Maybe<string> _clickText;
 
       public MessageProgress(Form form)
       {
@@ -83,6 +88,7 @@ namespace Core.WinForms.Controls
          backColors = new AutoHash<MessageProgressType, Color>(mlt => globalBackColors[mlt]);
          styles = new AutoHash<MessageProgressType, MessageStyle>(mlt => globalStyles[mlt]);
          text = string.Empty;
+         _clickText = nil;
          type = MessageProgressType.Uninitialized;
 
          SetStyle(ControlStyles.UserPaint, true);
@@ -100,6 +106,14 @@ namespace Core.WinForms.Controls
 
          Minimum = 1;
          maximum = 0;
+
+         toolTip = new ToolTip { IsBalloon = true };
+         toolTip.SetToolTip(this, "");
+      }
+
+      public MessageProgress(Form form, IContainer container) : this(form)
+      {
+         container.Add(this);
       }
 
       protected void setUpFont(string fontName, float fontSize)
@@ -169,10 +183,26 @@ namespace Core.WinForms.Controls
          }
       }
 
+      protected void setToolTip()
+      {
+         if (Clickable && ClickText.IsNotEmpty())
+         {
+            toolTip.SetToolTip(this, ClickText);
+         }
+         else
+         {
+            toolTip.SetToolTip(this, text);
+         }
+      }
+
       public override string Text
       {
          get => text;
-         set => text = value;
+         set
+         {
+            text = value;
+            this.Do(setToolTip);
+         }
       }
 
       public bool Center { get; set; }
@@ -205,7 +235,7 @@ namespace Core.WinForms.Controls
       public void ShowMessage(string message, MessageProgressType type)
       {
          Busy(false);
-         text = message;
+         Text = message;
          this.type = type;
          refresh();
       }
@@ -232,13 +262,19 @@ namespace Core.WinForms.Controls
 
       public void ProgressText(string text)
       {
-         this.text = text;
+         Text = text;
          type = MessageProgressType.ProgressIndefinite;
 
          refresh();
       }
 
-      public bool Clickable { get; set; }
+      public bool Clickable => _clickText.IsSome;
+
+      public string ClickText
+      {
+         get => _clickText.DefaultTo(() => text);
+         set => _clickText = maybe(value.IsNotEmpty(), () => value);
+      }
 
       public int Minimum { get; set; }
 
@@ -255,7 +291,7 @@ namespace Core.WinForms.Controls
       public void Progress(int value, string text = "")
       {
          this.value = value;
-         this.text = text;
+         Text = text;
 
          type = MessageProgressType.ProgressDefinite;
 
@@ -265,7 +301,7 @@ namespace Core.WinForms.Controls
       public void Progress(string text)
       {
          value = index++;
-         this.text = text;
+         Text = text;
 
          type = MessageProgressType.ProgressDefinite;
 
@@ -365,7 +401,6 @@ namespace Core.WinForms.Controls
                dashedPen.DashStyle = DashStyle.Dash;
                var rectangle = ClientRectangle;
                rectangle.Inflate(-2, -2);
-               //rectangle.Offset(2, 2);
                e.Graphics.DrawRectangle(dashedPen, rectangle);
             }
          }
@@ -515,7 +550,7 @@ namespace Core.WinForms.Controls
 
       public void Busy(bool enabled)
       {
-         text = "";
+         Text = "";
          type = MessageProgressType.Busy;
          this.Do(() => timer.Enabled = enabled);
       }

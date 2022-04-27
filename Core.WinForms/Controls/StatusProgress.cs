@@ -32,7 +32,7 @@ namespace Core.WinForms.Controls
             changeState();
          };
 
-         Clickable = true;
+         ClickText = "Click to change status";
       }
 
       protected void changeState()

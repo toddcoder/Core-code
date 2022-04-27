@@ -32,7 +32,7 @@ namespace Core.Tests
          //form.Size = new Size(800, 100);
          var message = new MessageProgress(form);
          message.SetUp(0, 0, 300, 40);
-         message.Clickable = true;
+         message.ClickText = "Click me!";
          form.ShowDialog();
       }
    }
