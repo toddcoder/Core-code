@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 
 namespace Core.WinForms
@@ -25,6 +26,22 @@ namespace Core.WinForms
          }
 
          listView.EndUpdate();
+      }
+
+      public static IEnumerable<ListViewItem> AllItems(this ListView listView)
+      {
+         foreach (ListViewItem item in listView.Items)
+         {
+            yield return item;
+         }
+      }
+
+      public static IEnumerable<ListViewItem> AllCheckedItems(this ListView listView)
+      {
+         foreach (ListViewItem item in listView.CheckedItems)
+         {
+            yield return item;
+         }
       }
    }
 }
