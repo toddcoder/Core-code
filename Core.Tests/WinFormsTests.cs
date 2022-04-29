@@ -1,5 +1,4 @@
-﻿using System.Drawing;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 using Core.WinForms.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -33,6 +32,7 @@ namespace Core.Tests
          var message = new MessageProgress(form);
          message.SetUp(0, 0, 300, 40);
          message.ClickText = "Click me!";
+         message.BusyText("foobar");
          form.ShowDialog();
       }
    }

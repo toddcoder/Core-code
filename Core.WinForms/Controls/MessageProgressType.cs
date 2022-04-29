@@ -12,6 +12,7 @@
       Unselected,
       Tape,
       ProgressIndefinite,
-      ProgressDefinite
+      ProgressDefinite,
+      BusyText
    }
 }
