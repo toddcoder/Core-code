@@ -337,7 +337,7 @@ namespace Core.WinForms.Controls
       protected void writeText(Graphics graphics, string text, bool center, Font font)
       {
          var foreColor = foreColors[type];
-         var flags = TextFormatFlags.EndEllipsis;
+         var flags = TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix;
          if (center)
          {
             flags |= TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter;
@@ -399,7 +399,7 @@ namespace Core.WinForms.Controls
                var textRectangle = getBusyTextRectangle(drawRectangle);
                var font = getFont(type);
                var foreColor = foreColors[type];
-               var flags = TextFormatFlags.EndEllipsis | TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter;
+               var flags = TextFormatFlags.EndEllipsis | TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter | TextFormatFlags.NoPrefix;
                TextRenderer.DrawText(e.Graphics, text, font, textRectangle, foreColor, flags);
                break;
             }
