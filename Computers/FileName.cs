@@ -895,14 +895,22 @@ namespace Core.Computers
 
       public override string ToString() => fullPath;
 
+      [Obsolete("Use Uri")]
       public virtual string ToURL(string host)
       {
-         return $"file://{host}/{fullPath.Substitute("^ /l ':\'; f", "").Substitute(@"^ '\\'; f", "").Substitute("'\'+; f", "/")}";
+         return $"file://{host}/{fullPath.Substitute("^ /l ':\'; f", "").Substitute(@"^ '\\'; f", "").Substitute(@"'\'+; f", "/")}";
       }
 
+      [Obsolete("Use Uri")]
       public virtual string ToURL()
       {
-         return $"file://{fullPath.Substitute("^ /l ':\'; f", "").Substitute("^ '\\'; f", "").Substitute("'\'+; f", "/")}";
+         return $"file://{fullPath.Substitute("^ /l ':\'; f", "").Substitute("^ '\\'; f", "").Substitute(@"'\'+; f", "/")}";
+      }
+
+      public virtual string Uri(UriKind uriKind = UriKind.Absolute)
+      {
+         var uri = new Uri(FullPath, uriKind);
+         return uri.AbsoluteUri;
       }
 
       public Process Start() => global::System.Diagnostics.Process.Start(fullPath);

@@ -80,5 +80,14 @@ namespace Core.Tests
             Console.WriteLine("Unique name not created");
          }
       }
+
+      [TestMethod]
+      public void FileToUrlTest()
+      {
+         FileName file = @"\\pdfsevolv01corp\data\ProductionSupport\MergePalette\Configuration\Releases\r-6.33.8\" +
+            @"Branches\r-6.33.8\extra branches.control";
+         var uri = file.Uri();
+         Console.WriteLine(uri);
+      }
    }
 }
