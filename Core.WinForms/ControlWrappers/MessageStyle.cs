@@ -4,6 +4,7 @@
    {
       None,
       Italic,
-      Bold
+      Bold,
+      ItalicBold
    }
 }

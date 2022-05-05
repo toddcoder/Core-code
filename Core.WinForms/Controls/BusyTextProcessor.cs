@@ -24,7 +24,7 @@ namespace Core.WinForms.Controls
 
       protected static Color[] generatePalette(Color color)
       {
-         Color darken(Color spokeColor,int percent) => Color.FromArgb(percent, spokeColor.R, spokeColor.G, spokeColor.B);
+         static Color darken(Color spokeColor, int percent) => Color.FromArgb(percent, spokeColor.R, spokeColor.G, spokeColor.B);
 
          var colors = new Color[SPOKE_COUNT];
          var increment = (byte)(byte.MaxValue / SPOKE_COUNT);
@@ -67,7 +67,7 @@ namespace Core.WinForms.Controls
       protected static Rectangle getDrawRectangle(Rectangle clientRectangle)
       {
          var side = clientRectangle.Height;
-         return new Rectangle(0, 0, side, side);
+         return new Rectangle(2, 2, side - 2, side - 2);
       }
 
       protected static Rectangle getTextRectangle(Rectangle drawRectangle, Rectangle clientRectangle)

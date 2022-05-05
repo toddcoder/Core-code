@@ -48,7 +48,8 @@ namespace Core.WinForms.Controls
             [MessageProgressType.Message] = MessageStyle.None,
             [MessageProgressType.Exception] = MessageStyle.Bold,
             [MessageProgressType.Success] = MessageStyle.Bold,
-            [MessageProgressType.Failure] = MessageStyle.Bold
+            [MessageProgressType.Failure] = MessageStyle.Bold,
+            [MessageProgressType.BusyText] = MessageStyle.ItalicBold
          };
       }
 
@@ -60,6 +61,7 @@ namespace Core.WinForms.Controls
 
       protected Font italicFont;
       protected Font boldFont;
+      protected Font italicBoldFont;
       protected AutoHash<MessageProgressType, Color> foreColors;
       protected AutoHash<MessageProgressType, Color> backColors;
       protected AutoHash<MessageProgressType, MessageStyle> styles;
@@ -82,6 +84,7 @@ namespace Core.WinForms.Controls
 
          italicFont = new Font(base.Font, FontStyle.Italic);
          boldFont = new Font(base.Font, FontStyle.Bold);
+         italicBoldFont = new Font(base.Font, FontStyle.Italic | FontStyle.Bold);
 
          Center = false;
          Is3D = true;
@@ -193,6 +196,7 @@ namespace Core.WinForms.Controls
             base.Font = value;
             italicFont = new Font(base.Font, FontStyle.Italic);
             boldFont = new Font(base.Font, FontStyle.Bold);
+            italicBoldFont = new Font(base.Font, FontStyle.Italic | FontStyle.Bold);
          }
       }
 
@@ -233,6 +237,7 @@ namespace Core.WinForms.Controls
          MessageStyle.None => Font,
          MessageStyle.Italic => italicFont,
          MessageStyle.Bold => boldFont,
+         MessageStyle.ItalicBold => italicBoldFont,
          _ => Font
       };
 
@@ -404,10 +409,6 @@ namespace Core.WinForms.Controls
                var font = getFont(type);
                var foreColor = foreColors[type];
                var flags = TextFormatFlags.EndEllipsis | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix;
-               if (Center)
-               {
-                  flags |= TextFormatFlags.HorizontalCenter;
-               }
 
                TextRenderer.DrawText(e.Graphics, text, font, textRectangle, foreColor, flags);
                break;
@@ -518,7 +519,7 @@ namespace Core.WinForms.Controls
             }
             case MessageProgressType.BusyText:
             {
-               using var brush = new SolidBrush(Color.Blue);
+               using var brush = new SolidBrush(Color.Teal);
                pevent.Graphics.FillRectangle(brush, ClientRectangle);
 
                busyTextProcessor.OnPaint(pevent);
