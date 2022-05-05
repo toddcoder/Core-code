@@ -31,7 +31,7 @@ namespace Core.Tests
          //form.Size = new Size(800, 100);
          var message = new MessageProgress(form);
          message.SetUp(0, 0, 300, 40, AnchorStyles.Left | AnchorStyles.Right);
-         message.BusyText("This message is in no way clickable!");
+         message.Busy("This message is in no way clickable!");
          form.ShowDialog();
       }
    }

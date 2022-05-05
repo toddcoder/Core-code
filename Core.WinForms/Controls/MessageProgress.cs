@@ -321,7 +321,16 @@ namespace Core.WinForms.Controls
          refresh();
       }
 
+      [Obsolete("Use Busy with string argument")]
       public void BusyText(string text)
+      {
+         Text = text;
+         type = MessageProgressType.BusyText;
+         this.Do(() => timer.Enabled = true);
+         refresh();
+      }
+
+      public void Busy(string text)
       {
          Text = text;
          type = MessageProgressType.BusyText;
