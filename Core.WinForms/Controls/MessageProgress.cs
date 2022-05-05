@@ -408,7 +408,7 @@ namespace Core.WinForms.Controls
                var textRectangle = busyTextProcessor.TextRectangle;
                var font = getFont(type);
                var foreColor = foreColors[type];
-               var flags = TextFormatFlags.EndEllipsis | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix;
+               var flags = TextFormatFlags.EndEllipsis | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix | TextFormatFlags.HorizontalCenter;
 
                TextRenderer.DrawText(e.Graphics, text, font, textRectangle, foreColor, flags);
                break;

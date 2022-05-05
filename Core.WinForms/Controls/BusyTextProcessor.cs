@@ -67,7 +67,7 @@ namespace Core.WinForms.Controls
       protected static Rectangle getDrawRectangle(Rectangle clientRectangle)
       {
          var side = clientRectangle.Height;
-         return new Rectangle(2, 2, side - 2, side - 2);
+         return new Rectangle(0, 0, side, side);
       }
 
       protected static Rectangle getTextRectangle(Rectangle drawRectangle, Rectangle clientRectangle)
