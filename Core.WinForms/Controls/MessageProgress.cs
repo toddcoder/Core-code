@@ -74,8 +74,7 @@ namespace Core.WinForms.Controls
       protected bool mouseDown;
       protected ToolTip toolTip;
       protected Maybe<string> _clickText;
-      protected int lineX;
-      protected int lineIncrement;
+      protected BusyTextProcessor busyTextProcessor;
 
       public MessageProgress(Form form)
       {
@@ -105,7 +104,15 @@ namespace Core.WinForms.Controls
             Interval = 100,
             Enabled = false
          };
-         timer.Tick += (_, _) => this.Do(Refresh);
+         timer.Tick += (_, _) =>
+         {
+            if (type == MessageProgressType.BusyText)
+            {
+               busyTextProcessor.OnTick();
+            }
+
+            this.Do(Refresh);
+         };
 
          Minimum = 1;
          maximum = 0;
@@ -113,8 +120,8 @@ namespace Core.WinForms.Controls
          toolTip = new ToolTip { IsBalloon = true };
          toolTip.SetToolTip(this, "");
 
-         lineX = 0;
-         lineIncrement = 1;
+         busyTextProcessor = new BusyTextProcessor(Color.White, ClientRectangle);
+         Resize += (_, _) => busyTextProcessor = new BusyTextProcessor(Color.White, ClientRectangle);
       }
 
       public MessageProgress(Form form, IContainer container) : this(form)
@@ -358,17 +365,6 @@ namespace Core.WinForms.Controls
 
       protected void writeText(Graphics graphics) => writeText(graphics, text, Center);
 
-      protected Rectangle getBusyDrawRectangle()
-      {
-         return new Rectangle(ClientRectangle.X, ClientRectangle.Y, ClientRectangle.Width, ClientRectangle.Height / 4);
-      }
-
-      protected Rectangle getBusyTextRectangle(Rectangle drawRectangle)
-      {
-         return new Rectangle(ClientRectangle.X, ClientRectangle.Y + drawRectangle.Height, ClientRectangle.Width,
-            ClientRectangle.Height - drawRectangle.Height);
-      }
-
       protected override void OnPaint(PaintEventArgs e)
       {
          base.OnPaint(e);
@@ -395,11 +391,15 @@ namespace Core.WinForms.Controls
             }
             case MessageProgressType.BusyText:
             {
-               var drawRectangle = getBusyDrawRectangle();
-               var textRectangle = getBusyTextRectangle(drawRectangle);
+               var textRectangle = busyTextProcessor.TextRectangle;
                var font = getFont(type);
                var foreColor = foreColors[type];
-               var flags = TextFormatFlags.EndEllipsis | TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter | TextFormatFlags.NoPrefix;
+               var flags = TextFormatFlags.EndEllipsis | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix;
+               if (Center)
+               {
+                  flags |= TextFormatFlags.HorizontalCenter;
+               }
+
                TextRenderer.DrawText(e.Graphics, text, font, textRectangle, foreColor, flags);
                break;
             }
@@ -509,24 +509,11 @@ namespace Core.WinForms.Controls
             }
             case MessageProgressType.BusyText:
             {
-               var drawRectangle = getBusyDrawRectangle();
-               var textRectangle = getBusyTextRectangle(drawRectangle);
-               lineIncrement = drawRectangle.Width / 10;
+               using var brush = new SolidBrush(Color.Blue);
+               pevent.Graphics.FillRectangle(brush, ClientRectangle);
 
-               lineX += lineIncrement;
-               if (lineX > drawRectangle.Right)
-               {
-                  lineX = 0;
-               }
+               busyTextProcessor.OnPaint(pevent);
 
-               using var topBrush = new SolidBrush(Color.BlueViolet);
-               pevent.Graphics.FillRectangle(topBrush, drawRectangle);
-
-               using var bottomBrush = new SolidBrush(Color.Blue);
-               pevent.Graphics.FillRectangle(bottomBrush, textRectangle);
-
-               using var pen = new Pen(Color.White, 2);
-               pevent.Graphics.DrawLine(pen, new Point(lineX, 0), new Point(lineX, drawRectangle.Height));
                break;
             }
             default:
