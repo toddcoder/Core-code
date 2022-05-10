@@ -34,7 +34,8 @@ namespace Core.WinForms.Controls
             [MessageProgressType.Unselected] = Color.White,
             [MessageProgressType.ProgressIndefinite] = Color.White,
             [MessageProgressType.ProgressDefinite] = Color.White,
-            [MessageProgressType.BusyText] = Color.White
+            [MessageProgressType.BusyText] = Color.White,
+            [MessageProgressType.Automatic] = Color.Black
          };
          globalBackColors = new Hash<MessageProgressType, Color>
          {
@@ -44,7 +45,8 @@ namespace Core.WinForms.Controls
             [MessageProgressType.Success] = Color.Green,
             [MessageProgressType.Failure] = Color.Gold,
             [MessageProgressType.Selected] = Color.FromArgb(0, 127, 0),
-            [MessageProgressType.Unselected] = Color.FromArgb(127, 0, 0)
+            [MessageProgressType.Unselected] = Color.FromArgb(127, 0, 0),
+            [MessageProgressType.Automatic] = Color.White
          };
          globalStyles = new Hash<MessageProgressType, MessageStyle>
          {
@@ -83,6 +85,11 @@ namespace Core.WinForms.Controls
       protected LateLazy<BusyTextProcessor> busyTextProcessor;
       protected LateLazy<ProgressDefiniteProcessor> progressDefiniteProcessor;
       protected Maybe<int> _percentage;
+      protected Maybe<Color> _foreColor;
+      protected Maybe<Color> _backColor;
+      protected Maybe<MessageStyle> _style;
+
+      public event EventHandler<AutomaticMessageArgs> AutomaticMessage;
 
       public MessageProgress(Form form)
       {
@@ -115,9 +122,22 @@ namespace Core.WinForms.Controls
          };
          timer.Tick += (_, _) =>
          {
-            if (type == MessageProgressType.BusyText)
+            switch (type)
             {
-               busyTextProcessor.Value.OnTick();
+               case MessageProgressType.BusyText:
+                  busyTextProcessor.Value.OnTick();
+                  break;
+               case MessageProgressType.Automatic:
+               {
+                  var args = new AutomaticMessageArgs();
+                  AutomaticMessage?.Invoke(this, args);
+                  if (args.GetText().If(out var automaticText))
+                  {
+                     Text = automaticText;
+                  }
+
+                  break;
+               }
             }
 
             this.Do(Refresh);
@@ -137,12 +157,22 @@ namespace Core.WinForms.Controls
             progressDefiniteProcessor.Reset();
          };
          _percentage = nil;
+
+         _foreColor = nil;
+         _backColor = nil;
+         _style = nil;
       }
 
       public MessageProgress(Form form, IContainer container) : this(form)
       {
          container.Add(this);
       }
+
+      public void SetForeColor(Color foreColor) => _foreColor = foreColor;
+
+      public void SetBackColor(Color backColor) => _backColor = backColor;
+
+      public void SetStyle(MessageStyle style) => _style = style;
 
       protected void setUpFont(string fontName, float fontSize)
       {
@@ -244,7 +274,7 @@ namespace Core.WinForms.Controls
 
       public AutoHash<MessageProgressType, MessageStyle> Styles => styles;
 
-      protected Font getFont(MessageProgressType type) => styles[type] switch
+      protected Font getFont() => getStyle() switch
       {
          MessageStyle.None => Font,
          MessageStyle.Italic => italicFont,
@@ -376,6 +406,12 @@ namespace Core.WinForms.Controls
          controls.Add(this);
       }
 
+      protected Color getForeColor() => _foreColor.DefaultTo(() => foreColors[type]);
+
+      protected Color getBackColor() => _backColor.DefaultTo(() => backColors[type]);
+
+      protected MessageStyle getStyle() => _style.DefaultTo(() => styles[type]);
+
       protected override void OnPaint(PaintEventArgs e)
       {
          base.OnPaint(e);
@@ -383,8 +419,8 @@ namespace Core.WinForms.Controls
          var progressText = new MessageProgressText(Center)
          {
             Rectangle = ClientRectangle,
-            Font = getFont(type),
-            Color = foreColors[type]
+            Font = getFont(),
+            Color = getForeColor()
          };
 
          switch (type)
@@ -401,7 +437,7 @@ namespace Core.WinForms.Controls
                progressText.Write(percentText, e.Graphics);
 
                progressText.Rectangle = progressDefiniteProcessor.Value.TextRectangle;
-               progressText.Color = foreColors[type];
+               progressText.Color = getForeColor();
                progressText.Write(text, e.Graphics);
                break;
             }
@@ -425,7 +461,7 @@ namespace Core.WinForms.Controls
 
          if (Clickable)
          {
-            var color = foreColors[type];
+            var color = getForeColor();
             using var pen = new Pen(color, 4);
             e.Graphics.DrawLine(pen, ClientRectangle.Right - 4, 4, ClientRectangle.Right - 4, ClientRectangle.Bottom - 4);
 
@@ -531,7 +567,7 @@ namespace Core.WinForms.Controls
             }
             default:
             {
-               var backColor = backColors[type];
+               var backColor = getBackColor();
                using var brush = new SolidBrush(backColor);
                pevent.Graphics.FillRectangle(brush, ClientRectangle);
                break;
@@ -610,6 +646,18 @@ namespace Core.WinForms.Controls
          Text = "";
          type = MessageProgressType.Busy;
          this.Do(() => timer.Enabled = enabled);
+      }
+
+      public void StartAutomatic()
+      {
+         Text = "";
+         type = MessageProgressType.Automatic;
+         this.Do(() => timer.Enabled = true);
+      }
+
+      public void StopAutomatic()
+      {
+         this.Do(() => timer.Enabled = false);
       }
    }
 }

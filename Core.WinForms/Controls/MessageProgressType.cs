@@ -13,6 +13,7 @@
       Tape,
       ProgressIndefinite,
       ProgressDefinite,
-      BusyText
+      BusyText,
+      Automatic
    }
 }

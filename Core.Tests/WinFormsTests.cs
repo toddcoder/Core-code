@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System.Diagnostics;
+using System.Windows.Forms;
 using Core.Strings;
 using Core.WinForms.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -59,11 +60,22 @@ namespace Core.Tests
          };
          timer.Start();
          form.ShowDialog();
-         /*for (var i = 0; i < 50; i++)
+      }
+
+      [TestMethod]
+      public void AutomaticMessageTest()
+      {
+         var form = new Form();
+         var message = new MessageProgress(form);
+         message.SetUp(0, 0, 300, 27, AnchorStyles.Left | AnchorStyles.Right);
+         var stopwatch = new Stopwatch();
+         message.AutomaticMessage += (_, e) =>
          {
-            
-            Application.DoEvents();
-         }*/
+            e.Text = stopwatch.Elapsed.ToString();
+         };
+         message.StartAutomatic();
+         stopwatch.Start();
+         form.ShowDialog();
       }
    }
 }
