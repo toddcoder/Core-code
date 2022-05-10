@@ -1,4 +1,5 @@
 ﻿using System.Windows.Forms;
+using Core.Strings;
 using Core.WinForms.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -33,6 +34,36 @@ namespace Core.Tests
          message.SetUp(0, 0, 300, 27, AnchorStyles.Left | AnchorStyles.Right);
          message.Busy("This message is in no way clickable!");
          form.ShowDialog();
+      }
+
+      [TestMethod]
+      public void ProgressDefiniteTest()
+      {
+         var form = new Form();
+         var message = new MessageProgress(form);
+         message.SetUp(0, 0, 300, 27, AnchorStyles.Left | AnchorStyles.Right);
+         message.Maximum = 50;
+         var i = 0;
+
+         var timer = new Timer();
+         timer.Tick += (_, _) =>
+         {
+            if (i++ < 50)
+            {
+               message.Progress("x".Repeat(i));
+            }
+            else
+            {
+               timer.Stop();
+            }
+         };
+         timer.Start();
+         form.ShowDialog();
+         /*for (var i = 0; i < 50; i++)
+         {
+            
+            Application.DoEvents();
+         }*/
       }
    }
 }

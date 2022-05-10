@@ -5,8 +5,8 @@ namespace Core.Collections
 {
    public class OrderedSet<T> : ICollection<T>
    {
-      Hash<T, LinkedListNode<T>> hash;
-      LinkedList<T> list;
+      protected Hash<T, LinkedListNode<T>> hash;
+      protected LinkedList<T> list;
 
       public OrderedSet(IEqualityComparer<T> comparer)
       {

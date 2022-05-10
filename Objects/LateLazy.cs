@@ -14,6 +14,7 @@ namespace Core.Objects
       protected string errorMessage;
       protected Maybe<T> _value;
       protected Maybe<Func<T>> _activator;
+      protected bool reset;
 
       public LateLazy(bool overriding = false, string errorMessage = DEFAULT_ERROR_MESSAGE)
       {
@@ -22,17 +23,19 @@ namespace Core.Objects
 
          _value = nil;
          _activator = nil;
+         reset = false;
       }
 
       public void ActivateWith(Func<T> activator)
       {
          activator.Must().Not.BeNull().OrThrow();
 
-         if (_activator.IsNone || overriding)
+         if (_activator.IsNone || overriding || reset)
          {
             _activator = activator;
             _value = nil;
             HasActivator = true;
+            reset = false;
          }
       }
 
@@ -72,5 +75,7 @@ namespace Core.Objects
          get => errorMessage;
          set => errorMessage = value;
       }
+
+      public void Reset() => reset = true;
    }
 }

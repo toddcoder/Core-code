@@ -206,6 +206,7 @@
     <Compile Include="Configurations\IConfigurationItem.cs" />
     <Compile Include="Configurations\Item.cs" />
     <Compile Include="Configurations\Parser.cs" />
+    <Compile Include="DataStructures\EnumerableQueue.cs" />
     <Compile Include="DataStructures\IQueue.cs" />
     <Compile Include="DataStructures\MaybeQueue.cs" />
     <Compile Include="DataStructures\MaybeStack.cs" />

@@ -46,8 +46,6 @@ namespace Core.WinForms.Controls
          return colors;
       }
 
-      public Rectangle DrawRectangle => drawRectangle;
-
       public Rectangle TextRectangle => textRectangle;
 
       protected static double[] generateAngles()
@@ -106,10 +104,7 @@ namespace Core.WinForms.Controls
          return new PointF(center.X + radius * (float)Math.Cos(angleInRadians), center.Y + radius * (float)Math.Sin(angleInRadians));
       }
 
-      public void OnTick()
-      {
-         progressValue = ++progressValue % SPOKE_COUNT;
-      }
+      public void OnTick() => progressValue = ++progressValue % SPOKE_COUNT;
 
       public void OnPaint(PaintEventArgs e)
       {

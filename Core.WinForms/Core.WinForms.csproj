@@ -61,11 +61,13 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\LineChangedEventArgs.cs" />
+    <Compile Include="Controls\MessageProgressText.cs" />
     <Compile Include="Controls\MessageProgressType.cs" />
     <Compile Include="Controls\MessageProgress.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Controls\ModificationState.cs" />
+    <Compile Include="Controls\ProgressDefiniteProcessor.cs" />
     <Compile Include="Controls\ProgressEventArgs.cs" />
     <Compile Include="Controls\RichLabel.cs">
       <SubType>Component</SubType>
@@ -76,12 +78,6 @@
     <Compile Include="Controls\SelectedState.cs" />
     <Compile Include="Controls\StatusProgress.cs">
       <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\WebProgress.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\WebProgress.designer.cs">
-      <DependentUpon>WebProgress.cs</DependentUpon>
     </Compile>
     <Compile Include="ControlWrappers\MessageLabel.cs" />
     <Compile Include="ControlWrappers\MessageStyle.cs" />
@@ -96,6 +92,7 @@
     <Compile Include="Documents\Menus.cs" />
     <Compile Include="Documents\Submenus.cs" />
     <Compile Include="LabelExtensions.cs" />
+    <Compile Include="ListBoxExtensions.cs" />
     <Compile Include="ListViewExtensions.cs" />
     <Compile Include="Notification\ImagePanel.cs">
       <SubType>Component</SubType>
@@ -119,10 +116,6 @@
     <EmbeddedResource Include="ControlWrappers\tape.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Controls\WebProgress.resx">
-      <DependentUpon>WebProgress.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="Notification\NotifierHost.resx">
       <DependentUpon>NotifierHost.cs</DependentUpon>
       <SubType>Designer</SubType>

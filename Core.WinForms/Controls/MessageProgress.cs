@@ -5,6 +5,7 @@ using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using Core.Collections;
 using Core.Monads;
+using Core.Objects;
 using Core.Strings;
 using Core.WinForms.ControlWrappers;
 using static Core.Monads.MonadFunctions;
@@ -13,6 +14,9 @@ namespace Core.WinForms.Controls
 {
    public class MessageProgress : UserControl
    {
+      protected const string BUSY_TEXT_PROCESSOR_NOT_INITIALIZED = "BusyTextProcessor not initialized";
+      protected const string PROGRESS_DEFINITE_PROCESSOR_NOT_INITIALIZED = "Progress Definite Processor not initialized";
+
       protected static Hash<MessageProgressType, Color> globalForeColors;
       protected static Hash<MessageProgressType, Color> globalBackColors;
       protected static Hash<MessageProgressType, MessageStyle> globalStyles;
@@ -76,7 +80,9 @@ namespace Core.WinForms.Controls
       protected bool mouseDown;
       protected ToolTip toolTip;
       protected Maybe<string> _clickText;
-      protected BusyTextProcessor busyTextProcessor;
+      protected LateLazy<BusyTextProcessor> busyTextProcessor;
+      protected LateLazy<ProgressDefiniteProcessor> progressDefiniteProcessor;
+      protected Maybe<int> _percentage;
 
       public MessageProgress(Form form)
       {
@@ -111,7 +117,7 @@ namespace Core.WinForms.Controls
          {
             if (type == MessageProgressType.BusyText)
             {
-               busyTextProcessor.OnTick();
+               busyTextProcessor.Value.OnTick();
             }
 
             this.Do(Refresh);
@@ -123,8 +129,14 @@ namespace Core.WinForms.Controls
          toolTip = new ToolTip { IsBalloon = true };
          toolTip.SetToolTip(this, "");
 
-         busyTextProcessor = new BusyTextProcessor(Color.White, ClientRectangle);
-         Resize += (_, _) => busyTextProcessor = new BusyTextProcessor(Color.White, ClientRectangle);
+         busyTextProcessor = new LateLazy<BusyTextProcessor>(true, BUSY_TEXT_PROCESSOR_NOT_INITIALIZED);
+         progressDefiniteProcessor = new LateLazy<ProgressDefiniteProcessor>(errorMessage: PROGRESS_DEFINITE_PROCESSOR_NOT_INITIALIZED);
+         Resize += (_, _) =>
+         {
+            busyTextProcessor.ActivateWith(() => new BusyTextProcessor(Color.White, ClientRectangle));
+            progressDefiniteProcessor.Reset();
+         };
+         _percentage = nil;
       }
 
       public MessageProgress(Form form, IContainer container) : this(form)
@@ -306,9 +318,17 @@ namespace Core.WinForms.Controls
          }
       }
 
-      public void Progress(int value, string text = "")
+      public void Progress(int value, string text = "", bool asPercentage = false)
       {
-         this.value = value;
+         if (asPercentage)
+         {
+            _percentage = value;
+         }
+         else
+         {
+            this.value = value;
+         }
+
          Text = text;
 
          type = MessageProgressType.ProgressDefinite;
@@ -331,6 +351,7 @@ namespace Core.WinForms.Controls
       {
          Text = text;
          type = MessageProgressType.BusyText;
+         busyTextProcessor.ActivateWith(() => new BusyTextProcessor(Color.White, ClientRectangle));
          this.Do(() => timer.Enabled = true);
          refresh();
       }
@@ -355,69 +376,47 @@ namespace Core.WinForms.Controls
          controls.Add(this);
       }
 
-      protected void writeText(Graphics graphics, string text, bool center, Font font)
-      {
-         var foreColor = foreColors[type];
-         var flags = TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix;
-         if (center)
-         {
-            flags |= TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter;
-         }
-         else
-         {
-            flags |= TextFormatFlags.VerticalCenter | TextFormatFlags.LeftAndRightPadding;
-         }
-
-         TextRenderer.DrawText(graphics, text, font, ClientRectangle, foreColor, flags);
-      }
-
-      protected void writeText(Graphics graphics, string text, bool center)
-      {
-         var font = getFont(type);
-         writeText(graphics, text, center, font);
-      }
-
-      protected void writeText(Graphics graphics) => writeText(graphics, text, Center);
-
       protected override void OnPaint(PaintEventArgs e)
       {
          base.OnPaint(e);
 
+         var progressText = new MessageProgressText(Center)
+         {
+            Rectangle = ClientRectangle,
+            Font = getFont(type),
+            Color = foreColors[type]
+         };
+
          switch (type)
          {
             case MessageProgressType.ProgressIndefinite:
-               writeText(e.Graphics);
+               progressText.Write(text, e.Graphics);
                break;
             case MessageProgressType.ProgressDefinite:
             {
-               var finalText = text;
-               if (finalText.IsEmpty())
-               {
-                  finalText = $"{getPercentage()}%";
-               }
-               else
-               {
-                  finalText = $"{finalText} ({getPercentage()}%)";
-               }
+               var percentText = $"{getPercentage()}%";
+               progressText.Rectangle = progressDefiniteProcessor.Value.PercentRectangle;
+               progressText.Center(true);
+               progressText.Color = Color.Black;
+               progressText.Write(percentText, e.Graphics);
 
-               writeText(e.Graphics, finalText, true);
+               progressText.Rectangle = progressDefiniteProcessor.Value.TextRectangle;
+               progressText.Color = foreColors[type];
+               progressText.Write(text, e.Graphics);
                break;
             }
             case MessageProgressType.BusyText:
             {
-               var textRectangle = busyTextProcessor.TextRectangle;
-               var font = getFont(type);
-               var foreColor = foreColors[type];
-               var flags = TextFormatFlags.EndEllipsis | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix | TextFormatFlags.HorizontalCenter;
-
-               TextRenderer.DrawText(e.Graphics, text, font, textRectangle, foreColor, flags);
+               progressText.Rectangle = busyTextProcessor.Value.TextRectangle;
+               progressText.Center(true);
+               progressText.Write(text, e.Graphics);
                break;
             }
             default:
             {
                if (type != MessageProgressType.Tape)
                {
-                  writeText(e.Graphics);
+                  progressText.Write(text, e.Graphics);
                }
 
                break;
@@ -488,12 +487,16 @@ namespace Core.WinForms.Controls
             }
             case MessageProgressType.ProgressDefinite:
             {
+               progressDefiniteProcessor.ActivateWith(() => new ProgressDefiniteProcessor(Font, pevent.Graphics, ClientRectangle));
+               progressDefiniteProcessor.Value.OnPaint(pevent.Graphics);
+               var textRectangle = progressDefiniteProcessor.Value.TextRectangle;
+
                using var coralBrush = new SolidBrush(Color.Coral);
-               pevent.Graphics.FillRectangle(coralBrush, ClientRectangle);
-               var width = ClientRectangle.Width;
+               pevent.Graphics.FillRectangle(coralBrush, textRectangle);
+               var width = textRectangle.Width;
                var percentWidth = getPercentage(width);
-               var location = ClientRectangle.Location;
-               var size = new Size(percentWidth, ClientRectangle.Height);
+               var location = textRectangle.Location;
+               var size = new Size(percentWidth, textRectangle.Height);
                var rectangle = new Rectangle(location, size);
                using var cornflowerBlueBrush = new SolidBrush(Color.CornflowerBlue);
                pevent.Graphics.FillRectangle(cornflowerBlueBrush, rectangle);
@@ -522,7 +525,7 @@ namespace Core.WinForms.Controls
                using var brush = new SolidBrush(Color.Teal);
                pevent.Graphics.FillRectangle(brush, ClientRectangle);
 
-               busyTextProcessor.OnPaint(pevent);
+               busyTextProcessor.Value.OnPaint(pevent);
 
                break;
             }
@@ -596,7 +599,7 @@ namespace Core.WinForms.Controls
          }
       }
 
-      protected int getPercentage() => (int)((float)value / maximum * 100);
+      protected int getPercentage() => _percentage.DefaultTo(() => (int)((float)value / maximum * 100));
 
       protected int getPercentage(int width) => (int)((float)value / maximum * width);
 

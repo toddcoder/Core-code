@@ -690,7 +690,7 @@ namespace Core.Strings
 
       public static string ToLower1(this string source) => source.Map(s => s.Keep(1).ToLower() + s.Drop(1));
 
-      public static string Plural(this string source, int number)
+      public static string Plural(this string source, int number, bool omitNumber = false)
       {
          if (source.IsEmpty())
          {
@@ -753,7 +753,14 @@ namespace Core.Strings
                matcherText = result.ToString();
             }
 
-            return numberAccountedFor ? matcherText : $"{number} {matcherText}";
+            if (omitNumber || numberAccountedFor)
+            {
+               return matcherText;
+            }
+            else
+            {
+               return $"{number} {matcherText}";
+            }
          }
          else
          {
