@@ -90,6 +90,8 @@ namespace Core.WinForms.Controls
       protected Maybe<MessageStyle> _style;
 
       public event EventHandler<AutomaticMessageArgs> AutomaticMessage;
+      public event EventHandler<PaintEventArgs> Painting;
+      public event EventHandler<PaintEventArgs> PaintingBackground;
 
       public MessageProgress(Form form)
       {
@@ -484,6 +486,8 @@ namespace Core.WinForms.Controls
                e.Graphics.DrawRectangle(dashedPen, rectangle);
             }
          }
+
+         Painting?.Invoke(this, e);
       }
 
       protected override void OnPaintBackground(PaintEventArgs pevent)
@@ -589,6 +593,8 @@ namespace Core.WinForms.Controls
             pevent.Graphics.DrawLine(lightPen, new Point(left, height), new Point(width, height));
             pevent.Graphics.DrawLine(lightPen, new Point(width, top), new Point(width, height));
          }
+
+         PaintingBackground?.Invoke(this, pevent);
       }
 
       protected override void OnMouseEnter(EventArgs e)
