@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Drawing;
 using System.Windows.Forms;
 using Core.Strings;
 using Core.WinForms.Controls;
@@ -75,6 +76,25 @@ namespace Core.Tests
          };
          message.StartAutomatic();
          stopwatch.Start();
+         form.ShowDialog();
+      }
+
+      [TestMethod]
+      public void ResponderTest()
+      {
+         var form = new Form
+         {
+            BackColor = Color.Aqua
+         };
+         var responder = new Responder(form, "!Yes|yes", "?No|no", "$Stop|stop", ".Maybe|maybe", "???")
+         {
+            BackColor = Color.White
+         };
+         responder.SetUp(0, 0, 500, 100, 24);
+         responder.ButtonClick += (_, e) =>
+         {
+            form.Text = e.Key;
+         };
          form.ShowDialog();
       }
    }

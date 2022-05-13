@@ -70,6 +70,10 @@
     <Compile Include="Controls\ModificationState.cs" />
     <Compile Include="Controls\ProgressDefiniteProcessor.cs" />
     <Compile Include="Controls\ProgressEventArgs.cs" />
+    <Compile Include="Controls\Responder.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ResponderButtonArgs.cs" />
     <Compile Include="Controls\RichLabel.cs">
       <SubType>Component</SubType>
     </Compile>

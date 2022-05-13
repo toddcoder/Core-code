@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
@@ -93,16 +92,15 @@ namespace Core.WinForms.Controls
       public event EventHandler<PaintEventArgs> Painting;
       public event EventHandler<PaintEventArgs> PaintingBackground;
 
-      public MessageProgress(Form form)
+      public MessageProgress(Form form, bool center = false, bool is3D = true)
       {
          form.Controls.Add(this);
+         Center = center;
+         Is3D = is3D;
 
          italicFont = new Font(base.Font, FontStyle.Italic);
          boldFont = new Font(base.Font, FontStyle.Bold);
          italicBoldFont = new Font(base.Font, FontStyle.Italic | FontStyle.Bold);
-
-         Center = false;
-         Is3D = true;
 
          foreColors = new AutoHash<MessageProgressType, Color>(mlt => globalForeColors[mlt]);
          backColors = new AutoHash<MessageProgressType, Color>(mlt => globalBackColors[mlt]);
@@ -165,11 +163,6 @@ namespace Core.WinForms.Controls
          _style = nil;
       }
 
-      public MessageProgress(Form form, IContainer container) : this(form)
-      {
-         container.Add(this);
-      }
-
       public void SetForeColor(Color foreColor) => _foreColor = foreColor;
 
       public void SetBackColor(Color backColor) => _backColor = backColor;
@@ -181,7 +174,7 @@ namespace Core.WinForms.Controls
          Font = new Font(fontName, fontSize);
       }
 
-      protected void setUpCore(int x, int y, int width, int height, string fontName, float fontSize)
+      protected void setUpDimensions(int x, int y, int width, int height, string fontName, float fontSize)
       {
          AutoSize = false;
          Location = new Point(x, y);
@@ -191,14 +184,14 @@ namespace Core.WinForms.Controls
 
       public void SetUp(int x, int y, int width, int height, AnchorStyles anchor, string fontName = "Consolas", float fontSize = 12f)
       {
-         setUpCore(x, y, width, height, fontName, fontSize);
+         setUpDimensions(x, y, width, height, fontName, fontSize);
          Anchor = anchor;
       }
 
-      public void SetUp(int x, int y, int width, int height, DockStyle dockStyle, string fontName = "Consolas", float fontSize = 12f)
+      public void SetUp(int x, int y, int width, int height, DockStyle dock, string fontName = "Consolas", float fontSize = 12f)
       {
-         setUpCore(x, y, width, height, fontName, fontSize);
-         Dock = dockStyle;
+         setUpDimensions(x, y, width, height, fontName, fontSize);
+         Dock = dock;
       }
 
       [Obsolete("Use SetUpInTableLayoutPanel")]
@@ -229,7 +222,7 @@ namespace Core.WinForms.Controls
 
       public void SetUp(int x, int y, int width, int height, string fontName = "Consolas", float fontSize = 12f)
       {
-         setUpCore(x, y, width, height, fontName, fontSize);
+         setUpDimensions(x, y, width, height, fontName, fontSize);
       }
 
       public override Font Font
@@ -467,17 +460,7 @@ namespace Core.WinForms.Controls
             using var pen = new Pen(color, 4);
             e.Graphics.DrawLine(pen, ClientRectangle.Right - 4, 4, ClientRectangle.Right - 4, ClientRectangle.Bottom - 4);
 
-            if (mouseInside)
-            {
-               using var smallFont = new Font("Segoe UI", 8);
-               var size = TextRenderer.MeasureText(e.Graphics, "↓", smallFont);
-               var location = new Point(ClientRectangle.Right - size.Width - 8, ClientRectangle.Top + 8);
-               TextRenderer.DrawText(e.Graphics, "↓", smallFont, new Rectangle(location, size), color);
-               using var linePen = new Pen(color, 1);
-               e.Graphics.DrawLine(linePen, location.X, location.Y + size.Height, location.X + size.Width, location.Y + size.Height);
-            }
-
-            if (mouseDown)
+            if (mouseInside || mouseDown)
             {
                using var dashedPen = new Pen(color, 1);
                dashedPen.DashStyle = DashStyle.Dash;
