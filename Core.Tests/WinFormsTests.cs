@@ -97,5 +97,45 @@ namespace Core.Tests
          };
          form.ShowDialog();
       }
+
+      [TestMethod]
+      public void EnabledTest1()
+      {
+         var form = new Form();
+         var message = new MessageProgress(form);
+         message.SetUp(0, 0, 300, 30);
+         message.Busy("working...");
+
+         var checkBox = new CheckBox
+         {
+            Text = "Enabled",
+            Checked = true
+         };
+         checkBox.Click += (_, _) => message.Enabled = checkBox.Checked;
+         checkBox.Location = new Point(0, 35);
+         form.Controls.Add(checkBox);
+
+         form.ShowDialog();
+      }
+
+      [TestMethod]
+      public void EnabledTest2()
+      {
+         var form = new Form();
+         var responder = new Responder(form, "!OK|ok", "?Cancel|cancel");
+         responder.SetUp(0, 0, 300, 30, 30);
+         responder.ButtonClick += (_, e) => form.Text = e.Key;
+
+         var checkBox = new CheckBox
+         {
+            Text = "Enabled",
+            Checked = true
+         };
+         checkBox.Click += (_, _) => responder.Enabled = checkBox.Checked;
+         checkBox.Location = new Point(0, 35);
+         form.Controls.Add(checkBox);
+
+         form.ShowDialog();
+      }
    }
 }

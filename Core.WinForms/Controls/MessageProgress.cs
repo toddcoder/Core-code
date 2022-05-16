@@ -34,7 +34,8 @@ namespace Core.WinForms.Controls
             [MessageProgressType.ProgressIndefinite] = Color.White,
             [MessageProgressType.ProgressDefinite] = Color.White,
             [MessageProgressType.BusyText] = Color.White,
-            [MessageProgressType.Automatic] = Color.Black
+            [MessageProgressType.Automatic] = Color.Black,
+            [MessageProgressType.Disabled] = Color.LightGray
          };
          globalBackColors = new Hash<MessageProgressType, Color>
          {
@@ -45,7 +46,8 @@ namespace Core.WinForms.Controls
             [MessageProgressType.Failure] = Color.Gold,
             [MessageProgressType.Selected] = Color.FromArgb(0, 127, 0),
             [MessageProgressType.Unselected] = Color.FromArgb(127, 0, 0),
-            [MessageProgressType.Automatic] = Color.White
+            [MessageProgressType.Automatic] = Color.White,
+            [MessageProgressType.Disabled] = Color.DarkGray
          };
          globalStyles = new Hash<MessageProgressType, MessageStyle>
          {
@@ -87,6 +89,11 @@ namespace Core.WinForms.Controls
       protected Maybe<Color> _foreColor;
       protected Maybe<Color> _backColor;
       protected Maybe<MessageStyle> _style;
+      protected Maybe<MessageProgressType> _lastType;
+      protected Maybe<bool> _lastEnabled;
+      protected Maybe<Color> _lastForeColor;
+      protected Maybe<Color> _lastBackColor;
+      protected Maybe<MessageStyle> _lastStyle;
 
       public event EventHandler<AutomaticMessageArgs> AutomaticMessage;
       public event EventHandler<PaintEventArgs> Painting;
@@ -115,6 +122,12 @@ namespace Core.WinForms.Controls
 
          random = new Random();
 
+         _lastType = nil;
+         _lastEnabled = nil;
+         _lastForeColor = nil;
+         _lastBackColor = nil;
+         _lastStyle = nil;
+
          timer = new Timer
          {
             Interval = 100,
@@ -122,21 +135,24 @@ namespace Core.WinForms.Controls
          };
          timer.Tick += (_, _) =>
          {
-            switch (type)
+            if (Enabled)
             {
-               case MessageProgressType.BusyText:
-                  busyTextProcessor.Value.OnTick();
-                  break;
-               case MessageProgressType.Automatic:
+               switch (type)
                {
-                  var args = new AutomaticMessageArgs();
-                  AutomaticMessage?.Invoke(this, args);
-                  if (args.GetText().If(out var automaticText))
+                  case MessageProgressType.BusyText:
+                     busyTextProcessor.Value.OnTick();
+                     break;
+                  case MessageProgressType.Automatic:
                   {
-                     Text = automaticText;
-                  }
+                     var args = new AutomaticMessageArgs();
+                     AutomaticMessage?.Invoke(this, args);
+                     if (args.GetText().If(out var automaticText))
+                     {
+                        Text = automaticText;
+                     }
 
-                  break;
+                     break;
+                  }
                }
             }
 
@@ -401,9 +417,15 @@ namespace Core.WinForms.Controls
          controls.Add(this);
       }
 
+      protected Color getForeColor(MessageProgressType type) => foreColors[type];
+
       protected Color getForeColor() => _foreColor.DefaultTo(() => foreColors[type]);
 
+      protected Color getBackColor(MessageProgressType type) => backColors[type];
+
       protected Color getBackColor() => _backColor.DefaultTo(() => backColors[type]);
+
+      protected MessageStyle getStyle(MessageProgressType type) => styles[type];
 
       protected MessageStyle getStyle() => _style.DefaultTo(() => styles[type]);
 
@@ -647,6 +669,53 @@ namespace Core.WinForms.Controls
       public void StopAutomatic()
       {
          this.Do(() => timer.Enabled = false);
+      }
+
+      protected override void OnEnabledChanged(EventArgs e)
+      {
+         base.OnEnabledChanged(e);
+
+         if (Enabled)
+         {
+            if (_lastType.If(out var lastType))
+            {
+               ShowMessage(text, lastType);
+               _lastType = nil;
+            }
+            else
+            {
+               ShowMessage(text, MessageProgressType.Uninitialized);
+            }
+
+            if (_lastEnabled.If(out var enabled))
+            {
+               timer.Enabled = enabled;
+               _lastEnabled = nil;
+            }
+
+            _foreColor = _lastForeColor;
+            _backColor = _lastBackColor;
+            _style = _lastStyle;
+         }
+         else
+         {
+            _lastType = type;
+            type = MessageProgressType.Disabled;
+
+            _lastEnabled = timer.Enabled;
+            timer.Enabled = false;
+
+            _lastForeColor = _foreColor;
+            _foreColor = nil;
+
+            _lastBackColor = _backColor;
+            _backColor = nil;
+
+            _lastStyle = _style;
+            _style = nil;
+
+            refresh();
+         }
       }
    }
 }

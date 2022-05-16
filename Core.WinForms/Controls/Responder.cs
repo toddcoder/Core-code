@@ -122,7 +122,7 @@ namespace Core.WinForms.Controls
             var button = responderButtons[key];
             button.SetUp(left, top, width, buttonHeight, AnchorStyles.Left | AnchorStyles.Top, fontName, fontSize);
             button.Message(button.Label);
-            button.Click += (_, _) => { ButtonClick?.Invoke(this, new ResponderButtonArgs(key)); };
+            button.Click += (_, _) => ButtonClick?.Invoke(this, new ResponderButtonArgs(key));
             button.ClickText = button.Label;
             left += width + 2;
          }
@@ -199,5 +199,21 @@ namespace Core.WinForms.Controls
       public bool ContainsKey(string key) => responderButtons.ContainsKey(key);
 
       public Result<Hash<string, ResponderButton>> AnyHash() => responderButtons;
+
+      protected override void OnEnabledChanged(EventArgs e)
+      {
+         base.OnEnabledChanged(e);
+
+         /*foreach (var (_, button) in responderButtons)
+         {
+            button.Enabled = Enabled;
+            button.Refresh();
+         }*/
+         foreach (var key in responderButtons.Keys)
+         {
+            responderButtons[key].Enabled = Enabled;
+            responderButtons[key].Refresh();
+         }
+      }
    }
 }
