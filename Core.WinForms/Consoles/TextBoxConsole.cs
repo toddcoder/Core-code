@@ -80,7 +80,7 @@ namespace Core.WinForms.Consoles
                   break;
                case Keys.Down:
                {
-                  if (history.Forward().If(out var text))
+                  if (history.Forward().Map(out var text))
                   {
                      Text = text;
                   }
@@ -91,7 +91,7 @@ namespace Core.WinForms.Consoles
 
                case Keys.Up:
                {
-                  if (history.Backward().If(out var text))
+                  if (history.Backward().Map(out var text))
                   {
                      Text = text;
                   }

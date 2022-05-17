@@ -103,7 +103,7 @@ namespace Core.Git
          try
          {
             var prompt = new List<string>();
-            if (Git.TryTo.ShortStatus().If(out var lines, out var exception))
+            if (Git.TryTo.ShortStatus().Map(out var lines, out var exception))
             {
                if (lines.Length == 0)
                {
@@ -117,17 +117,17 @@ namespace Core.Git
                var branch = "";
                var hasRemote = false;
                var aheadBehind = "";
-               if (firstLine.Find("...").If(out var tripleDotsIndex))
+               if (firstLine.Find("...").Map(out var tripleDotsIndex))
                {
                   var local = firstLine.Keep(tripleDotsIndex).TrimRight();
                   var remote = firstLine.Drop(tripleDotsIndex + 3).TrimLeft();
                   hasRemote = true;
 
-                  if (local.Matches("^ '##' /s+ /(.+); f").If(out var result))
+                  if (local.Matches("^ '##' /s+ /(.+); f").Map(out var result))
                   {
                      branch = result.FirstGroup;
 
-                     if (remote.Matches("'[' /(-[ ']' ]+) ']'; f").If(out result))
+                     if (remote.Matches("'[' /(-[ ']' ]+) ']'; f").Map(out result))
                      {
                         aheadBehind = result.FirstGroup;
                      }
@@ -137,7 +137,7 @@ namespace Core.Git
                      return fail($"Couldn't determine branch from {firstLine}");
                   }
                }
-               else if (firstLine.Matches("^ '##' /s+ /(.+); f").If(out var result))
+               else if (firstLine.Matches("^ '##' /s+ /(.+); f").Map(out var result))
                {
                   branch = result.FirstGroup;
                }
@@ -151,13 +151,13 @@ namespace Core.Git
                if (aheadBehind.IsNotEmpty())
                {
                   var aheadCount = 0;
-                  if (aheadBehind.Matches("'ahead' /s+ /(/d+); f").If(out var result))
+                  if (aheadBehind.Matches("'ahead' /s+ /(/d+); f").Map(out var result))
                   {
                      aheadCount = Value.Int32(result.FirstGroup);
                   }
 
                   var behindCount = 0;
-                  if (aheadBehind.Matches("'behind' /s+ /(/d+); f").If(out result))
+                  if (aheadBehind.Matches("'behind' /s+ /(/d+); f").Map(out result))
                   {
                      behindCount = Value.Int32(result.FirstGroup);
                   }
@@ -188,7 +188,7 @@ namespace Core.Git
 
                foreach (var line in lines.Skip(1))
                {
-                  if (line.Matches("^ /(.) /(.); f").If(out var result))
+                  if (line.Matches("^ /(.) /(.); f").Map(out var result))
                   {
                      var staged = result.FirstGroup;
                      var unstaged = result.SecondGroup;

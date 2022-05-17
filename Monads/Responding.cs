@@ -80,13 +80,13 @@ namespace Core.Monads
 
       public abstract Responding<TResult> Select<TResult>(Responding<T> result, Func<T, TResult> func);
 
-      public abstract bool If(out T value);
+      public abstract bool Map(out T value);
 
       public abstract bool IfNoResponse();
 
       public abstract bool IfFailedResponse(out Exception exception);
 
-      public abstract bool If(out T value, out Maybe<Exception> _exception);
+      public abstract bool Map(out T value, out Maybe<Exception> _exception);
 
       public abstract T Force();
 

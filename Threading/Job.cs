@@ -65,7 +65,7 @@ namespace Core.Threading
 
                while (true)
                {
-                  while (queue.Dequeue(affinity).If(out var action))
+                  while (queue.Dequeue(affinity).Map(out var action))
                   {
                      try
                      {
@@ -102,7 +102,7 @@ namespace Core.Threading
 
       public void Execute(JobQueue queue)
       {
-         while (queue.Dequeue(affinity).If(out var action))
+         while (queue.Dequeue(affinity).Map(out var action))
          {
             try
             {

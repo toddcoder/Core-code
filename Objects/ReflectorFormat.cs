@@ -64,7 +64,7 @@ namespace Core.Objects
 
       protected static Result<Replacements> getReplacements(string source)
       {
-         if (source.Matches(@"-(< '\') '{' /(-['}']+) '}'; f").If(out var result))
+         if (source.Matches(@"-(< '\') '{' /(-['}']+) '}'; f").Map(out var result))
          {
             var matches = result.Matches;
             var replacements = getReplacements(matches);
@@ -111,7 +111,7 @@ namespace Core.Objects
                      }
                   }
 
-                  if (chosen.If(out var ch))
+                  if (chosen.Map(out var ch))
                   {
                      members[reflectorReplacement.MemberName] = new Pair(reflectorReplacement, ch);
                   }

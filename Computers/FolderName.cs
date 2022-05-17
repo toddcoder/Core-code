@@ -106,7 +106,7 @@ namespace Core.Computers
       {
          get
          {
-            if (Environment.GetCommandLineArgs()[0].Matches(@"^ /(.+) '\' -['\']+ '.'('exe' | 'dll') $; f").If(out var result))
+            if (Environment.GetCommandLineArgs()[0].Matches(@"^ /(.+) '\' -['\']+ '.'('exe' | 'dll') $; f").Map(out var result))
             {
                return (FolderName)result.FirstGroup;
             }
@@ -260,7 +260,7 @@ namespace Core.Computers
             for (var i = 0; i < count; i++)
             {
                _result = self.Parent;
-               if (_result.If(out var parent))
+               if (_result.Map(out var parent))
                {
                   self = parent;
                }
@@ -529,7 +529,7 @@ namespace Core.Computers
                file.CopyTo(targetFolder, true);
                FileSuccess?.Invoke(this, new FileArgs(file, file, "Copied"));
             }
-            else if (targetFolder.File(file).Next().If(out var candidateFile))
+            else if (targetFolder.File(file).Next().Map(out var candidateFile))
             {
                file.CopyTo(candidateFile, true);
                FileSuccess?.Invoke(this, new FileArgs(file, candidateFile, "Copied"));

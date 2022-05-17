@@ -73,7 +73,7 @@ namespace Core.Tests
             from setup in SqlSetup.FromGroup(@group, "all")
             from adapter in Adapter<ColumnData>.FromSetup(setup, entity)
             select adapter;
-         if (_adapter.If(out var allColumnData, out var exception))
+         if (_adapter.Map(out var allColumnData, out var exception))
          {
             var data = allColumnData.ToArray();
             foreach (var columnData in data)
@@ -97,7 +97,7 @@ namespace Core.Tests
             from setup in SqlSetup.FromGroup(configuration, "all2")
             from adapter in Adapter<ColumnData>.FromSetup(setup, new ColumnData { ObjectId = 5664280 })
             select adapter;
-         if (_adapter.If(out var allColumnData, out var exception))
+         if (_adapter.Map(out var allColumnData, out var exception))
          {
             allColumnData.ConnectionString = TRUE_CONNECTION_STRING;
             foreach (var columnData in allColumnData)
@@ -116,7 +116,7 @@ namespace Core.Tests
       {
          var entity = new ColumnData { ObjectId = 89 };
          var _adapter = Adapter<ColumnData>.FromSetupObject(entity);
-         if (_adapter.If(out var allColumnData, out var exception))
+         if (_adapter.Map(out var allColumnData, out var exception))
          {
             allColumnData.ConnectionString = TRUE_CONNECTION_STRING;
             var data = allColumnData.ToArray();

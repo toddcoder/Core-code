@@ -29,7 +29,7 @@ namespace Core.Matching
 
       public static string Replace(this string input, Pattern pattern, Action<MatchResult> replacer)
       {
-         if (pattern.MatchedBy(input).If(out var result, out _))
+         if (pattern.MatchedBy(input).Map(out var result, out _))
          {
             replacer(result);
             return result.ToString();
@@ -54,7 +54,7 @@ namespace Core.Matching
       [Obsolete("Use UnjoinIntoSlices")]
       public static IEnumerable<Slice> SplitIntoSlices(this string input, Pattern pattern)
       {
-         if (input.Matches(pattern).If(out var result))
+         if (input.Matches(pattern).Map(out var result))
          {
             var index = 0;
             int length;
@@ -76,7 +76,7 @@ namespace Core.Matching
 
       public static IEnumerable<Slice> UnjoinIntoSlices(this string input, Pattern pattern)
       {
-         if (input.Matches(pattern).If(out var result))
+         if (input.Matches(pattern).Map(out var result))
          {
             var index = 0;
             int length;
@@ -158,7 +158,7 @@ namespace Core.Matching
       }
       public static (string group1, string group2) Group2(this string input, Pattern pattern)
       {
-         if (pattern.MatchedBy(input).If(out var result))
+         if (pattern.MatchedBy(input).Map(out var result))
          {
             return (result.FirstGroup, result.SecondGroup);
          }
@@ -170,7 +170,7 @@ namespace Core.Matching
 
       public static (string group1, string group2, string group3) Group3(this string input, Pattern pattern)
       {
-         if (pattern.MatchedBy(input).If(out var result))
+         if (pattern.MatchedBy(input).Map(out var result))
          {
             return (result.FirstGroup, result.SecondGroup, result.ThirdGroup);
          }
@@ -182,7 +182,7 @@ namespace Core.Matching
 
       public static (string group1, string group2, string group3, string group4) Group4(this string input, Pattern pattern)
       {
-         if (pattern.MatchedBy(input).If(out var result))
+         if (pattern.MatchedBy(input).Map(out var result))
          {
             return (result.FirstGroup, result.SecondGroup, result.ThirdGroup, result.FourthGroup);
          }
@@ -194,7 +194,7 @@ namespace Core.Matching
 
       public static string Retain(this string input, Pattern pattern)
       {
-         if (pattern.MatchedBy(input).If(out var result))
+         if (pattern.MatchedBy(input).Map(out var result))
          {
             var builder = new StringBuilder();
             foreach (var match in result)
@@ -212,7 +212,7 @@ namespace Core.Matching
 
       public static string Scrub(this string input, Pattern pattern)
       {
-         if (pattern.MatchedBy(input).If(out var result))
+         if (pattern.MatchedBy(input).Map(out var result))
          {
             for (var i = 0; i < result.MatchCount; i++)
             {
@@ -252,7 +252,7 @@ namespace Core.Matching
 
       public static IEnumerable<Match> AllMatches(this string input, Pattern pattern)
       {
-         if (input.Matches(pattern).If(out var result))
+         if (input.Matches(pattern).Map(out var result))
          {
             foreach (var match in result)
             {

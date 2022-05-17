@@ -123,7 +123,7 @@ namespace Core.Objects
          {
             return dateTime.ToString(format);
          }
-         else if (format.Matches("/['cdefgnprxs'] /('-'? /d+)? ('.' /(/d+))?; fi").If(out var result))
+         else if (format.Matches("/['cdefgnprxs'] /('-'? /d+)? ('.' /(/d+))?; fi").Map(out var result))
          {
             var (specifier, width, places) = result;
 

@@ -23,7 +23,7 @@ namespace Core.Data.ConnectionStrings
 
       public static string GetConnectionString(string server, string database, string application, Maybe<string> _user, Maybe<string> _password)
       {
-         if (_user.If(out var user) && _password.If(out var password))
+         if (_user.Map(out var user) && _password.Map(out var password))
          {
             return GetConnectionString(server, database, application, user, password);
          }

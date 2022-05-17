@@ -76,7 +76,7 @@ namespace Core.Strings.Text
       {
          using var writer = new StringWriter();
 
-         if (Position.If(out var position))
+         if (Position.Map(out var position))
          {
             writer.Write(position.RightJustify(10));
             writer.Write(" ");

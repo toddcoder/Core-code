@@ -62,11 +62,11 @@ namespace Core.Objects
       {
          try
          {
-            if (source.Matches("^ -/{,} ','? /s* /{a-zA-Z_0-9.} $; f").If(out var result))
+            if (source.Matches("^ -/{,} ','? /s* /{a-zA-Z_0-9.} $; f").Map(out var result))
             {
                return getUngenericType(result.FirstGroup, result.SecondGroup).Success();
             }
-            else if (source.Matches("^ -/{,} ','? /s* /{a-zA-Z_0-9.} '<' -/{,} ',' -/{>} '>' $; f").If(out result))
+            else if (source.Matches("^ -/{,} ','? /s* /{a-zA-Z_0-9.} '<' -/{,} ',' -/{>} '>' $; f").Map(out result))
             {
                return getGenericType(result.FirstGroup, result.SecondGroup, result.ThirdGroup, result.FourthGroup).Success();
             }

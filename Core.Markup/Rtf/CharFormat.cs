@@ -81,27 +81,27 @@ namespace Core.Markup.Rtf
 
       public void CopyFrom(CharFormat sourceFormat)
       {
-         if (_begin.IsNone && sourceFormat._begin.If(out var begin))
+         if (_begin.IsNone && sourceFormat._begin.Map(out var begin))
          {
             _begin = begin;
          }
 
-         if (_end.IsNone && sourceFormat._end.If(out var end))
+         if (_end.IsNone && sourceFormat._end.Map(out var end))
          {
             _end = end;
          }
 
-         if (_font.IsNone && sourceFormat._font.If(out var font))
+         if (_font.IsNone && sourceFormat._font.Map(out var font))
          {
             _font = new FontDescriptor(font.Value);
          }
 
-         if (_ansiFont.IsNone && sourceFormat._ansiFont.If(out var ansiFont))
+         if (_ansiFont.IsNone && sourceFormat._ansiFont.Map(out var ansiFont))
          {
             _ansiFont = new FontDescriptor(ansiFont.Value);
          }
 
-         if (_fontSize.IsNone && sourceFormat._fontSize.If(out var fontSize))
+         if (_fontSize.IsNone && sourceFormat._fontSize.Map(out var fontSize))
          {
             _fontSize = fontSize;
          }
@@ -111,12 +111,12 @@ namespace Core.Markup.Rtf
             fontStyle = new FontStyle(sourceFormat.fontStyle);
          }
 
-         if (_backgroundColor.IsNone && sourceFormat._backgroundColor.If(out var backgroundColor))
+         if (_backgroundColor.IsNone && sourceFormat._backgroundColor.Map(out var backgroundColor))
          {
             _backgroundColor = new ColorDescriptor(backgroundColor.Value);
          }
 
-         if (_foregroundColor.IsNone && sourceFormat._foregroundColor.If(out var foregroundColor))
+         if (_foregroundColor.IsNone && sourceFormat._foregroundColor.Map(out var foregroundColor))
          {
             _foregroundColor = new ColorDescriptor(foregroundColor.Value);
          }
@@ -190,11 +190,11 @@ namespace Core.Markup.Rtf
       {
          var result = new StringBuilder("{");
 
-         if (_localHyperlink.If(out var localHyperlink))
+         if (_localHyperlink.Map(out var localHyperlink))
          {
             result.Append(@"{\field{\*\fldinst HYPERLINK \\l ");
             result.Append($"\"{localHyperlink}\"");
-            if (_localHyperlinkTip.If(out var localHyperlinkTip))
+            if (_localHyperlinkTip.Map(out var localHyperlinkTip))
             {
                result.Append($" \\\\o \"{localHyperlinkTip}\"");
             }
@@ -202,9 +202,9 @@ namespace Core.Markup.Rtf
             result.Append(@"}{\fldrslt{");
          }
 
-         if (_font.If(out var font))
+         if (_font.Map(out var font))
          {
-            if (_ansiFont.If(out var ansiFont))
+            if (_ansiFont.Map(out var ansiFont))
             {
                result.Append($@"\loch\af{ansiFont.Value}\hich\af{ansiFont.Value}\dbch\af{font.Value}");
             }
@@ -213,22 +213,22 @@ namespace Core.Markup.Rtf
                result.Append($@"\f{font.Value}");
             }
          }
-         else if (_ansiFont.If(out var ansiFont))
+         else if (_ansiFont.Map(out var ansiFont))
          {
             result.Append(@"\f" + ansiFont.Value);
          }
 
-         if (_fontSize.If(out var fontSize))
+         if (_fontSize.Map(out var fontSize))
          {
             result.Append($@"\fs{fontSize.PointToHalfPoint()}");
          }
 
-         if (_foregroundColor.If(out var foregroundColor))
+         if (_foregroundColor.Map(out var foregroundColor))
          {
             result.Append($@"\cf{foregroundColor.Value}");
          }
 
-         if (_backgroundColor.If(out var backgroundColor))
+         if (_backgroundColor.Map(out var backgroundColor))
          {
             result.Append($@"\chshdng0\chcbpat{backgroundColor.Value}\cb{backgroundColor.Value}");
          }
@@ -273,7 +273,7 @@ namespace Core.Markup.Rtf
             result.Append(" ");
          }
 
-         if (_bookmark.If(out var bookmark))
+         if (_bookmark.Map(out var bookmark))
          {
             result.Append($@"{{\*\bkmkstart {bookmark}}}");
          }
@@ -285,7 +285,7 @@ namespace Core.Markup.Rtf
       {
          var result = new StringBuilder(string.Empty);
 
-         if (_bookmark.If(out var bookmark))
+         if (_bookmark.Map(out var bookmark))
          {
             result.Append($@"{{\*\bkmkend {bookmark}}}");
          }

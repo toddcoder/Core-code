@@ -59,7 +59,7 @@ namespace Core.Strings
          var padderItems = new List<PadderItem>();
 
          //matcher.Evaluate(Format, , true);
-         if (Format.Matches("'{' /(/d+) '}' /('[' /(/d+) /(['lLrRcC']) ']'); fi").If(out var result))
+         if (Format.Matches("'{' /(/d+) '}' /('[' /(/d+) /(['lLrRcC']) ']'); fi").Map(out var result))
          {
             for (var i = 0; i < result.MatchCount; i++)
             {
@@ -95,7 +95,7 @@ namespace Core.Strings
       public PadderTable Add(string text)
       {
          var item = items[itemIndex];
-         if (item.Length.If(out var length))
+         if (item.Length.Map(out var length))
          {
             currentRow[itemIndex] = text.Pad(item.PadType, length);
          }

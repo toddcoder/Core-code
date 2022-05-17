@@ -167,7 +167,7 @@ namespace Core.Tests
       [Command("find", "Find text using pattern", "$source$pattern$count?")]
       public void Find()
       {
-         if (Text.Matches(Pattern).If(out var result))
+         if (Text.Matches(Pattern).Map(out var result))
          {
             Console.WriteLine($"{Count}: {result.FirstMatch}");
          }
@@ -191,11 +191,11 @@ namespace Core.Tests
       [Command("scan", "Scan for data", "$folder;$file")]
       public void Scan()
       {
-         if (File.If(out var file))
+         if (File.Map(out var file))
          {
             Console.WriteLine($"Scanning file {file}");
          }
-         else if (Folder.If(out var folder))
+         else if (Folder.Map(out var folder))
          {
             Console.WriteLine($"Scanning folder {folder}");
          }

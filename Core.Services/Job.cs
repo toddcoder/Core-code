@@ -58,11 +58,11 @@ namespace Core.Services
       {
          Result<string> getValue(string objectName, Func<Maybe<string>> defaultValue, string message)
          {
-            if (group.GetValue(objectName).If(out var name))
+            if (group.GetValue(objectName).Map(out var name))
             {
                return name;
             }
-            else if (defaultValue().If(out name))
+            else if (defaultValue().Map(out name))
             {
                return name;
             }
@@ -89,7 +89,7 @@ namespace Core.Services
             from pluginType in typeManager.Type(typeInfo.assemblyName, typeInfo.typeName)
             from createdPlugin in pluginType.TryCreate(name, configuration, jobGroup).CastAs<Plugin>()
             select createdPlugin;
-         if (_plugin.If(out plugin, out var exception))
+         if (_plugin.Map(out plugin, out var exception))
          {
             if (plugin is IRequiresTypeManager requiresTypeManager)
             {
@@ -98,7 +98,7 @@ namespace Core.Services
 
             serviceMessage.EmitMessage($"Setting up {name} plugin");
 
-            if (plugin.SetUp().IfNot(out exception))
+            if (plugin.SetUp().UnMap(out exception))
             {
                return exception;
             }
@@ -141,7 +141,7 @@ namespace Core.Services
 
       protected void enableTimer(bool timerEnabled)
       {
-         if (_timer.If(out var timer))
+         if (_timer.Map(out var timer))
          {
             _stopTime = maybe(timerEnabled, () => NowServer.Now);
             timer.Enabled = timerEnabled;
@@ -162,7 +162,7 @@ namespace Core.Services
          {
             enableTimer(false);
 
-            if (_stopTime.If(out var stopTime) && e.SignalTime > stopTime)
+            if (_stopTime.Map(out var stopTime) && e.SignalTime > stopTime)
             {
                trace(() => "Stopped");
             }
@@ -174,7 +174,7 @@ namespace Core.Services
                catch (Exception exception)
                {
                   plugin.ServiceMessage.EmitException(exception);
-                  if (plugin.After.If(out var afterPlugin))
+                  if (plugin.After.Map(out var afterPlugin))
                   {
                      afterPlugin.AfterFailure(exception);
                   }
@@ -193,7 +193,7 @@ namespace Core.Services
 
       public void TriggerDispatch()
       {
-         if (_scheduler.If(out var scheduler))
+         if (_scheduler.Map(out var scheduler))
          {
             var schedule = scheduler.NextSchedule;
             plugin.BeforeDispatch(schedule);

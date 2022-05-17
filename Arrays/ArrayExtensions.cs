@@ -164,7 +164,7 @@ namespace Core.Arrays
 
          foreach (var group in columnIndexes.RemoveWhitespace().Unjoin("','; f"))
          {
-            if (group.Matches("/(/d+) '-' /(/d+); f").If(out var result))
+            if (group.Matches("/(/d+) '-' /(/d+); f").Map(out var result))
             {
                var (startIndex, stopIndex) = result;
                var intStart = Value.Int32(startIndex);
@@ -440,7 +440,7 @@ namespace Core.Arrays
       {
          var2 = default;
          var result = Assign(array, out var0, out var1);
-         if (result.If(out var value) && array.Length >= value + 1)
+         if (result.Map(out var value) && array.Length >= value + 1)
          {
             var2 = array[2];
 
@@ -456,7 +456,7 @@ namespace Core.Arrays
       {
          var3 = default;
          var result = Assign(array, out var0, out var1, out var2);
-         if (result.If(out var value) && array.Length >= value + 1)
+         if (result.Map(out var value) && array.Length >= value + 1)
          {
             var3 = array[3];
 
@@ -473,7 +473,7 @@ namespace Core.Arrays
       {
          var4 = default;
          var result = Assign(array, out var0, out var1, out var2, out var3);
-         if (result.If(out var value) && array.Length >= value + 1)
+         if (result.Map(out var value) && array.Length >= value + 1)
          {
             var4 = array[4];
 
@@ -490,7 +490,7 @@ namespace Core.Arrays
       {
          var5 = default;
          var result = Assign(array, out var0, out var1, out var2, out var3, out var4);
-         if (result.If(out var value) && array.Length >= value + 1)
+         if (result.Map(out var value) && array.Length >= value + 1)
          {
             var5 = array[5];
 
@@ -507,7 +507,7 @@ namespace Core.Arrays
       {
          var6 = default;
          var result = Assign(array, out var0, out var1, out var2, out var3, out var4, out var5);
-         if (result.If(out var value) && array.Length >= value + 1)
+         if (result.Map(out var value) && array.Length >= value + 1)
          {
             var6 = array[6];
 

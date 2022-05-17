@@ -42,7 +42,7 @@ namespace Core.WinForms.Notification
 
       protected override void OnPaint(PaintEventArgs e)
       {
-         if (_image.If(out var image))
+         if (_image.Map(out var image))
          {
             e.Graphics.CompositingQuality = CompositingQuality.HighQuality;
 

@@ -26,7 +26,7 @@ namespace Core.Data.Parameters
 
       public Parameters(Maybe<Group> _parametersGroup) : this()
       {
-         if (_parametersGroup.If(out var parametersGroup))
+         if (_parametersGroup.Map(out var parametersGroup))
          {
             foreach (var (key, parameter) in parametersGroup.Groups().Select(t => (t.key, Parameter.Parse(t.group))))
             {

@@ -411,7 +411,7 @@ namespace Core.Matching
          var matchIndex = 0;
          foreach (var match in matches)
          {
-            if (func(match, matchIndex++).If(out var replacement))
+            if (func(match, matchIndex++).Map(out var replacement))
             {
                evaluated[match.Index, match.Length] = replacement;
             }
@@ -430,7 +430,7 @@ namespace Core.Matching
             var groupIndex = skipGroup0 ? 1 : 0;
             foreach (var group in groups)
             {
-               if (func(group, groupIndex++).If(out var replacement))
+               if (func(group, groupIndex++).Map(out var replacement))
                {
                   evaluated[group.Index, group.Length] = replacement;
                }

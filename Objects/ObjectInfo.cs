@@ -49,10 +49,10 @@ namespace Core.Objects
       {
          get
          {
-            if (_info.If(out var info))
+            if (_info.Map(out var info))
             {
                var parameters = info.GetIndexParameters();
-               if (_index.If(out var index))
+               if (_index.Map(out var index))
                {
                   return parameters.Length == 0 ? getValue(index) : info.GetValue(obj, getIndex(index)).Some();
                }
@@ -74,9 +74,9 @@ namespace Core.Objects
          {
             var val = value.Required("Value must be set to a Some");
             var parameters = _info.Required("No property exists for signature").GetIndexParameters();
-            if (_info.If(out var info))
+            if (_info.Map(out var info))
             {
-               if (_index.If(out var index))
+               if (_index.Map(out var index))
                {
                   if (parameters.Length == 0)
                   {
@@ -97,7 +97,7 @@ namespace Core.Objects
 
       protected Maybe<object> getValue(int defaultIndex)
       {
-         if (_info.If(out var inf))
+         if (_info.Map(out var inf))
          {
             var result = inf.GetValue(obj, null);
             if (result is null)
@@ -124,14 +124,14 @@ namespace Core.Objects
 
       protected bool setValue(object value)
       {
-         if (_info.If(out var info))
+         if (_info.Map(out var info))
          {
             var result = info.GetValue(obj, null);
             if (result is null)
             {
                return false;
             }
-            else if (_index.If(out var index))
+            else if (_index.Map(out var index))
             {
                switch (result)
                {

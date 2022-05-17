@@ -31,7 +31,7 @@ namespace Core.Matching
          if (More)
          {
             var current = Current;
-            if (current.IsMatch(pattern) && current.Matches(REGEX_NEXT_LINE).If(out var result))
+            if (current.IsMatch(pattern) && current.Matches(REGEX_NEXT_LINE).Map(out var result))
             {
                Advance(result.Length);
                return result.FirstGroup;
@@ -53,7 +53,7 @@ namespace Core.Matching
          if (More)
          {
             var current = Current;
-            if (current.IsMatch(pattern) && current.Matches(REGEX_NEXT_LINE).If(out var result))
+            if (current.IsMatch(pattern) && current.Matches(REGEX_NEXT_LINE).Map(out var result))
             {
                _peekLength = result.FirstGroup.Length;
                return result.FirstGroup;
@@ -77,7 +77,7 @@ namespace Core.Matching
                .Map(result => (result.FirstGroup, result.Length))
                .DefaultTo(() => (Current, Current.Length));
 
-            if (line.Matches(pattern).If(out var lineResult))
+            if (line.Matches(pattern).Map(out var lineResult))
             {
                Advance(lineLength);
                return (lineResult, line);
@@ -95,7 +95,7 @@ namespace Core.Matching
             var (line, lineLength) = Current.Matches(REGEX_NEXT_LINE)
                .Map(result => (result.FirstGroup, result.Length))
                .DefaultTo(() => (Current, Current.Length));
-            if (line.Matches(pattern).If(out var lineResult))
+            if (line.Matches(pattern).Map(out var lineResult))
             {
                _peekLength = lineLength;
                return (lineResult, line);
@@ -111,7 +111,7 @@ namespace Core.Matching
          {
             var current = Current;
             string line;
-            if (current.Matches(REGEX_NEXT_LINE).If(out var result))
+            if (current.Matches(REGEX_NEXT_LINE).Map(out var result))
             {
                line = result.FirstGroup;
                Advance(result.Length);
@@ -137,7 +137,7 @@ namespace Core.Matching
          {
             var current = Current;
             string line;
-            if (current.Matches(REGEX_NEXT_LINE).If(out var result))
+            if (current.Matches(REGEX_NEXT_LINE).Map(out var result))
             {
                line = result.FirstGroup;
             }
@@ -157,7 +157,7 @@ namespace Core.Matching
 
       public Maybe<string> GoTo(Pattern pattern)
       {
-         while (NextLine().If(out var line))
+         while (NextLine().Map(out var line))
          {
             if (line.IsMatch(pattern))
             {
@@ -184,7 +184,7 @@ namespace Core.Matching
 
       public void AdvanceLastPeek()
       {
-         if (_peekLength.If(out var peekLength))
+         if (_peekLength.Map(out var peekLength))
          {
             index += peekLength;
             _peekLength = nil;

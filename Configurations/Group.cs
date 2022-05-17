@@ -194,7 +194,7 @@ namespace Core.Configurations
          for (var i = 0; i < length; i++)
          {
             var item = sourceArray[i];
-            if (getConversion(elementType, item).If(out var objValue))
+            if (getConversion(elementType, item).Map(out var objValue))
             {
                newArray.SetValue(objValue, i);
             }
@@ -210,7 +210,7 @@ namespace Core.Configurations
          for (var i = 0; i < length; i++)
          {
             var group = groups[i];
-            if (group.Deserialize(elementType).If(out var element))
+            if (group.Deserialize(elementType).Map(out var element))
             {
                newArray.SetValue(element, i);
             }
@@ -291,7 +291,7 @@ namespace Core.Configurations
             }
             else
             {
-               if (FromString(source).If(out var arrayGroup))
+               if (FromString(source).Map(out var arrayGroup))
                {
                   var groups = arrayGroup.Groups().Select(t => t.group).ToArray();
                   return makeArray(elementType, groups);
@@ -302,7 +302,7 @@ namespace Core.Configurations
                }
             }
          }
-         else if (FromString(source).If(out var configuration))
+         else if (FromString(source).Map(out var configuration))
          {
             return configuration.Deserialize(type).Maybe();
          }
@@ -414,7 +414,7 @@ namespace Core.Configurations
                            for (var i = 0; i < array.Length; i++)
                            {
                               var generatedKey = Parser.GenerateKey();
-                              if (Serialize(elementType, array.GetValue(i), generatedKey).If(out var elementGroup, out var exception))
+                              if (Serialize(elementType, array.GetValue(i), generatedKey).Map(out var elementGroup, out var exception))
                               {
                                  arrayGroup.SetItem(generatedKey, elementGroup);
                               }
@@ -429,7 +429,7 @@ namespace Core.Configurations
                      }
                      else
                      {
-                        if (Serialize(propertyType, value, key).If(out var propertyGroup, out var exception))
+                        if (Serialize(propertyType, value, key).Map(out var propertyGroup, out var exception))
                         {
                            group.SetItem(key, propertyGroup);
                         }
@@ -492,10 +492,10 @@ namespace Core.Configurations
             foreach (var (key, value) in Values())
             {
                var name = key.ToPascal();
-               if (allPropertyInfo.FirstOrNone(p => p.Name.Same(name)).If(out var propertyInfo))
+               if (allPropertyInfo.FirstOrNone(p => p.Name.Same(name)).Map(out var propertyInfo))
                {
                   var propertyType = propertyInfo.PropertyType;
-                  if (getConversion(propertyType, value).If(out var objValue))
+                  if (getConversion(propertyType, value).Map(out var objValue))
                   {
                      propertyInfo.SetValue(obj, objValue);
                   }
@@ -505,10 +505,10 @@ namespace Core.Configurations
             foreach (var (key, group) in Groups())
             {
                var name = key.ToPascal();
-               if (allPropertyInfo.FirstOrNone(p => p.Name.Same(name)).If(out var propertyInfo))
+               if (allPropertyInfo.FirstOrNone(p => p.Name.Same(name)).Map(out var propertyInfo))
                {
                   var propertyType = propertyInfo.PropertyType;
-                  if (group.Deserialize(propertyType).If(out var objValue))
+                  if (group.Deserialize(propertyType).Map(out var objValue))
                   {
                      propertyInfo.SetValue(obj, objValue);
                   }

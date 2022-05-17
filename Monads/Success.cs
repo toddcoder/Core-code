@@ -17,7 +17,7 @@ namespace Core.Monads
 
       public T Value => value;
 
-      public override bool If(out T value, out Exception exception)
+      public override bool Map(out T value, out Exception exception)
       {
          value = this.value;
          exception = null;
@@ -133,19 +133,19 @@ namespace Core.Monads
 
       public override Matched<T> Match() => value.Match();
 
-      public override bool If(out T value)
+      public override bool Map(out T value)
       {
          value = this.value;
          return true;
       }
 
-      public override bool IfNot(out Exception exception)
+      public override bool UnMap(out Exception exception)
       {
          exception = null;
          return false;
       }
 
-      public override bool IfNot(out T value, out Exception exception)
+      public override bool UnMap(out T value, out Exception exception)
       {
          value = this.value;
          exception = null;
@@ -189,7 +189,7 @@ namespace Core.Monads
 
       public override Responding<T> Responding() => Value;
 
-      public override bool EqualToValueOf(Result<T> otherResult) => otherResult.If(out var otherValue) && ValueEqualTo(otherValue);
+      public override bool EqualToValueOf(Result<T> otherResult) => otherResult.Map(out var otherValue) && ValueEqualTo(otherValue);
 
       public override bool ValueEqualTo(T otherValue) => value.Equals(otherValue);
 

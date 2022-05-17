@@ -43,15 +43,15 @@ namespace Core.Monads
 
       public override TResult FlatMap<TResult>(Func<T, TResult> ifCompleted, Func<TResult> ifNotCompleted) => ifCompleted(value);
 
-      public override Completion<T> If(Action<T> action)
+      public override Completion<T> Map(Action<T> action)
       {
          action(value);
          return this;
       }
 
-      public override Completion<T> Else(Action action) => this;
+      public override Completion<T> UnMap(Action action) => this;
 
-      public override Completion<T> Else(Action<Exception> action) => this;
+      public override Completion<T> UnMap(Action<Exception> action) => this;
 
       public override Completion<T> Do(Action<T> ifCompleted, Action ifNotCompleted)
       {
@@ -83,7 +83,7 @@ namespace Core.Monads
 
       public override Completion<TResult> Select<TResult>(Completion<T> result, Func<T, TResult> func) => func(value).Completed();
 
-      public override bool If(out T value)
+      public override bool Map(out T value)
       {
          value = this.value;
          return true;
@@ -97,7 +97,7 @@ namespace Core.Monads
          return false;
       }
 
-      public override bool If(out T value, out Maybe<Exception> _exception)
+      public override bool Map(out T value, out Maybe<Exception> _exception)
       {
          value = this.value;
          _exception = none<Exception>();
@@ -105,13 +105,13 @@ namespace Core.Monads
          return true;
       }
 
-      public override bool IfNot(out Maybe<Exception> _exception)
+      public override bool UnMap(out Maybe<Exception> _exception)
       {
          _exception = none<Exception>();
          return false;
       }
 
-      public override bool Else<TOther>(out Completion<TOther> result)
+      public override bool UnMap<TOther>(out Completion<TOther> result)
       {
          result = default;
          return false;
@@ -177,7 +177,7 @@ namespace Core.Monads
          return true;
       }
 
-      public override bool ValueEqualTo(Completion<T> otherCompletion) => otherCompletion.If(out var otherValue) && EqualToValueOf(otherValue);
+      public override bool ValueEqualTo(Completion<T> otherCompletion) => otherCompletion.Map(out var otherValue) && EqualToValueOf(otherValue);
 
       public override bool EqualToValueOf(T otherValue) => value.Equals(otherValue);
 

@@ -31,7 +31,7 @@ namespace Core.Data.Setups
             let _connection = new Connection(connectionGroup)
             let type = _connection.Type.ToLower()
             select (_parameters, _fields, _command, _connection);
-         if (result.If(out var parameters, out var fields, out var command, out var connection, out var exception))
+         if (result.Map(out var parameters, out var fields, out var command, out var connection, out var exception))
          {
             var type = connection.Type.ToLower();
             var _connectionString = type switch

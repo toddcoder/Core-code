@@ -150,7 +150,7 @@ namespace Core.Tests
          var _result =
             from existing in subFolder.TryTo.Existing()
             select existing;
-         if (_result.If(out var folder, out var exception))
+         if (_result.Map(out var folder, out var exception))
          {
             foreach (var file in folder.Files)
             {

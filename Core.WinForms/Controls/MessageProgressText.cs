@@ -59,7 +59,7 @@ namespace Core.WinForms.Controls
             from existingFont in _font
             from existingColor in _color
             select (existingRectangle, existingFont, existingColor);
-         if (_arguments.If(out var rectangle, out var font, out var color, out var exception))
+         if (_arguments.Map(out var rectangle, out var font, out var color, out var exception))
          {
             try
             {

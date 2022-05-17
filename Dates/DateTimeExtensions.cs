@@ -48,8 +48,8 @@ namespace Core.Dates
 
          protected Result<DateTime> validate()
          {
-            if (Year.If(out var year, out var exception) && Month.If(out var month, out exception) &&
-               Day.If(out var day, out exception))
+            if (Year.Map(out var year, out var exception) && Month.Map(out var month, out exception) &&
+               Day.Map(out var day, out exception))
             {
                return valid(year, month, day);
             }
@@ -212,7 +212,7 @@ namespace Core.Dates
          }
          else
          {
-            if (pattern.Matches("/(['+-']? /d*) ['//|'] /(['+-']? /d*) ['//|'] /(['+-']? /d*); f").If(out var result))
+            if (pattern.Matches("/(['+-']? /d*) ['//|'] /(['+-']? /d*) ['//|'] /(['+-']? /d*); f").Map(out var result))
             {
                var match = result.GetMatch(0);
                if (match.Groups.Assign(out _, out var year, out var month, out var day).IsSuccessful)

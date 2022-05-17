@@ -36,11 +36,11 @@ namespace Core.Monads
 
       public abstract TResult FlatMap<TResult>(Func<T, TResult> ifCompleted, Func<TResult> ifNotCompleted);
 
-      public abstract Completion<T> If(Action<T> action);
+      public abstract Completion<T> Map(Action<T> action);
 
-      public abstract Completion<T> Else(Action action);
+      public abstract Completion<T> UnMap(Action action);
 
-      public abstract Completion<T> Else(Action<Exception> action);
+      public abstract Completion<T> UnMap(Action<Exception> action);
 
       public abstract Completion<T> Do(Action<T> ifCompleted, Action ifNotCompleted);
 
@@ -61,17 +61,17 @@ namespace Core.Monads
 
       public abstract Completion<TResult> Select<TResult>(Completion<T> result, Func<T, TResult> func);
 
-      public abstract bool If(out T value);
+      public abstract bool Map(out T value);
 
       public abstract bool IfCancelled();
 
       public abstract bool IfInterrupted(out Exception exception);
 
-      public abstract bool If(out T value, out Maybe<Exception> _exception);
+      public abstract bool Map(out T value, out Maybe<Exception> _exception);
 
-      public abstract bool IfNot(out Maybe<Exception> _exception);
+      public abstract bool UnMap(out Maybe<Exception> _exception);
 
-      public abstract bool Else<TOther>(out Completion<TOther> result);
+      public abstract bool UnMap<TOther>(out Completion<TOther> result);
 
       public abstract Completion<TOther> NotCompleted<TOther>();
 

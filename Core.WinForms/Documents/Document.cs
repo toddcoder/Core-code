@@ -82,7 +82,7 @@ namespace Core.WinForms.Documents
                Dirty();
             }
 
-            if (_colorizer.If(out var c))
+            if (_colorizer.Map(out var c))
             {
                c.Colorize(textBox);
             }
@@ -264,7 +264,7 @@ namespace Core.WinForms.Documents
       public virtual void Open(FileName fileName)
       {
          _file = fileName;
-         if (_file.If(out var file))
+         if (_file.Map(out var file))
          {
             textBox.Text = file.Lines.ToString("\r\n");
          }
@@ -277,7 +277,7 @@ namespace Core.WinForms.Documents
          if (displayFileName)
          {
             var title = new StringBuilder();
-            if (_file.If(out var file))
+            if (_file.Map(out var file))
             {
                title.Append(file);
                title.Append(" - ");
@@ -317,7 +317,7 @@ namespace Core.WinForms.Documents
 
       protected virtual void save()
       {
-         if (_file.If(out var file))
+         if (_file.Map(out var file))
          {
             if (file.Exists())
             {

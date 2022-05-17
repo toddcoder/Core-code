@@ -33,7 +33,7 @@ namespace Core.Markup.Rtf
 
          public override Maybe<StringHash> Table()
          {
-            if (source.Matches(@"'{\f' /(/d+) /s+ /(-[';']+)").If(out var result))
+            if (source.Matches(@"'{\f' /(/d+) /s+ /(-[';']+)").Map(out var result))
             {
                var table = new StringHash(true);
                foreach (var match in result)
@@ -52,7 +52,7 @@ namespace Core.Markup.Rtf
 
          public override IEnumerable<Slice> Instances()
          {
-            if (source.Matches(@"-(< '{') '\f' /(/d+)").If(out var result))
+            if (source.Matches(@"-(< '{') '\f' /(/d+)").Map(out var result))
             {
                foreach (var match in result)
                {

@@ -35,7 +35,7 @@ namespace Core.Matching.Parsers
             foreach (var parser in parsers)
             {
                var result = parser.Scan(source, ref index);
-               if (result.If(out var r))
+               if (result.Map(out var r))
                {
                   if (r == "]")
                   {

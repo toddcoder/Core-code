@@ -33,7 +33,7 @@ namespace Core.Enumerables
 
          public bool MoveNext()
          {
-            if (_current.If(out var current))
+            if (_current.Map(out var current))
             {
                current += increment;
                _current = current.Some();
@@ -52,7 +52,7 @@ namespace Core.Enumerables
          {
             get
             {
-               if (_current.If(out var current))
+               if (_current.Map(out var current))
                {
                   return current;
                }

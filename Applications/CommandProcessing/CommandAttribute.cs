@@ -17,7 +17,7 @@ namespace Core.Applications.CommandProcessing
          var items = source.Unjoin(@"/s* -(< '\') ';' /s*").Select(i => i.Replace(@"\;", ";")).ToArray();
          foreach (var item in items)
          {
-            if (item.Matches("^ /(-[':']+) ':' /s* /(.+) $").If(out var result))
+            if (item.Matches("^ /(-[':']+) ':' /s* /(.+) $").Map(out var result))
             {
                var (key, value) = result;
                hash[key.TrimEnd()] = value;

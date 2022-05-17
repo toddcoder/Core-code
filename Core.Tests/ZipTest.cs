@@ -18,7 +18,7 @@ namespace Core.Tests
       public void Initialize()
       {
          FolderName zipFolder = SOURCE_FOLDER;
-         if (zipFolder.TryToZip("tsqlcop").If(out var zipFile, out var exception))
+         if (zipFolder.TryToZip("tsqlcop").Map(out var zipFile, out var exception))
          {
             Console.WriteLine($"Zipped to {zipFile}");
          }
@@ -33,12 +33,12 @@ namespace Core.Tests
       {
          FolderName zipFolder = ZIPS_FOLDER;
          var anyFiles = zipFolder.TryTo.Files;
-         if (anyFiles.If(out var files, out var exception))
+         if (anyFiles.Map(out var files, out var exception))
          {
             var lastFile = files.Where(f => f.Extension == ".zip").MaxOrFail(f => f.CreationTime, () => "No file found");
-            if (lastFile.If(out var zipFile, out exception))
+            if (lastFile.Map(out var zipFile, out exception))
             {
-               if (zipFile.TryToUnzip().If(out var folder, out exception))
+               if (zipFile.TryToUnzip().Map(out var folder, out exception))
                {
                   folder.Must().Exist().OrThrow();
                   Console.WriteLine(folder.FullPath);

@@ -429,7 +429,7 @@ namespace Core.Computers
          get
          {
             var clone = Clone();
-            if (clone.Folder.Parent.If(out var folderName))
+            if (clone.Folder.Parent.Map(out var folderName))
             {
                clone.Folder = folderName;
                return clone;
@@ -1053,7 +1053,7 @@ namespace Core.Computers
       public FileName Serialize(int limit = 1000)
       {
          var baseName = name;
-         if (baseName.Matches("'-' /d+ $").If(out var result))
+         if (baseName.Matches("'-' /d+ $").Map(out var result))
          {
             baseName = baseName.Drop(-result.Length);
          }

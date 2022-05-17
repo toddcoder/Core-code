@@ -51,11 +51,11 @@ namespace Core.Tests
          var counter = new Counter(100_000L);
          var source = new CancellationTokenSource(30.Seconds());
          var completion = Task.Run(() => counter.CountAsync(source), source.Token);
-         if (completion.Result.If(out var value, out var anyException))
+         if (completion.Result.Map(out var value, out var anyException))
          {
             Console.WriteLine($"Value is {value}");
          }
-         else if (anyException.If(out var exception))
+         else if (anyException.Map(out var exception))
          {
             Console.WriteLine($"Interrupted with: {exception.Message}");
          }
@@ -72,11 +72,11 @@ namespace Core.Tests
          var source = new CancellationTokenSource(30.Seconds());
          var completion = Task.Run(() => counter.CountAsync(source), source.Token);
          source.Cancel();
-         if (completion.Result.If(out var value, out var anyException))
+         if (completion.Result.Map(out var value, out var anyException))
          {
             Console.WriteLine($"Value is {value}");
          }
-         else if (anyException.If(out var exception))
+         else if (anyException.Map(out var exception))
          {
             Console.WriteLine($"Interrupted with: {exception.Message}");
          }
@@ -92,11 +92,11 @@ namespace Core.Tests
          var counter = new Counter(100_000L, true);
          var source = new CancellationTokenSource(30.Seconds());
          var completion = Task.Run(() => counter.CountAsync(source), source.Token);
-         if (completion.Result.If(out var value, out var anyException))
+         if (completion.Result.Map(out var value, out var anyException))
          {
             Console.WriteLine($"Value is {value}");
          }
-         else if (anyException.If(out var exception))
+         else if (anyException.Map(out var exception))
          {
             Console.WriteLine($"Interrupted with: {exception.Message}");
          }
@@ -122,11 +122,11 @@ namespace Core.Tests
             from two in getTwo(token)
             from three in getThree(token)
             select one + two + three;
-         if (result.Result.If(out var six, out var anyException))
+         if (result.Result.Map(out var six, out var anyException))
          {
             Console.WriteLine($"Value: {six}");
          }
-         else if (anyException.If(out var exception))
+         else if (anyException.Map(out var exception))
          {
             Console.WriteLine($"Exception: {exception.Message}");
          }
@@ -140,7 +140,7 @@ namespace Core.Tests
       public void ExtensionsTest()
       {
          var result = (1, "foo").Success();
-         if (result.If(out var i, out var s, out var exception))
+         if (result.Map(out var i, out var s, out var exception))
          {
             Console.WriteLine(i);
             Console.WriteLine(s);
@@ -156,13 +156,13 @@ namespace Core.Tests
       {
          var result = (1, "foobar").Some();
          var result1 = result.Map((i, s) => i + s);
-         if (result1.If(out var aString))
+         if (result1.Map(out var aString))
          {
             Console.WriteLine(aString);
          }
 
          var result2 = result.Map((i, s) => (s, i));
-         if (result2.If(out aString, out var anInt))
+         if (result2.Map(out aString, out var anInt))
          {
             Console.WriteLine(aString);
             Console.WriteLine(anInt);
@@ -172,12 +172,12 @@ namespace Core.Tests
       [TestMethod]
       public void SomeIfTest()
       {
-         if ((1 > 0).SomeIf(() => "foobar").If(out var text))
+         if ((1 > 0).SomeIf(() => "foobar").Map(out var text))
          {
             Console.WriteLine(text);
          }
 
-         if (func(() => 1 > 0).SomeIf(() => "foobar").If(out text))
+         if (func(() => 1 > 0).SomeIf(() => "foobar").Map(out text))
          {
             Console.WriteLine(text);
          }

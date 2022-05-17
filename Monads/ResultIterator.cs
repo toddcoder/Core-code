@@ -19,14 +19,14 @@ namespace Core.Monads
 
       protected void handle(Result<T> result)
       {
-         if (result.If(out var value, out var exception))
+         if (result.Map(out var value, out var exception))
          {
-            if (success.If(out var action))
+            if (success.Map(out var action))
             {
                action(value);
             }
          }
-         else if (failure.If(out var faction))
+         else if (failure.Map(out var faction))
          {
             faction(exception);
          }
@@ -49,7 +49,7 @@ namespace Core.Monads
          foreach (var result in enumerable)
          {
             handle(result);
-            if (result.If(out var t))
+            if (result.Map(out var t))
             {
                list.Add(t);
             }
@@ -65,7 +65,7 @@ namespace Core.Monads
          foreach (var result in enumerable)
          {
             handle(result);
-            if (result.IfNot(out var e))
+            if (result.UnMap(out var e))
             {
                list.Add(e);
             }
@@ -81,7 +81,7 @@ namespace Core.Monads
          foreach (var result in enumerable)
          {
             handle(result);
-            if (result.If(out var value, out var exception))
+            if (result.Map(out var value, out var exception))
             {
                list.Add(value);
             }
@@ -101,7 +101,7 @@ namespace Core.Monads
          foreach (var result in enumerable)
          {
             handle(result);
-            if (result.If(out var value, out var exception))
+            if (result.Map(out var value, out var exception))
             {
                list.Add(value);
             }

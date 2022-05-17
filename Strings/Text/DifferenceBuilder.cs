@@ -72,7 +72,7 @@ namespace Core.Strings.Text
             {
                if (calculateEditLength(oldModification.HashedItems, oldStart, oldEnd, newModification.HashedItems, newStart, newEnd, forwardDiagonal,
                      reverseDiagonal)
-                  .If(out var result, out var exception))
+                  .Map(out var result, out var exception))
                {
                   if (result.EditLength <= 0)
                   {
@@ -99,7 +99,7 @@ namespace Core.Strings.Text
                      from resultA in buildModifications(oldStart, result.OldStart, newStart, result.NewStart, forwardDiagonal, reverseDiagonal)
                      from resultB in buildModifications(result.OldEnd, oldEnd, result.NewEnd, newEnd, forwardDiagonal, reverseDiagonal)
                      select resultB;
-                  if (resultAll.IfNot(out exception))
+                  if (resultAll.UnMap(out exception))
                   {
                      return exception;
                   }
@@ -276,7 +276,7 @@ namespace Core.Strings.Text
          buildItemHashes(itemHash, oldModification, ignoreWhiteSpace, ignoreCase);
          buildItemHashes(itemHash, newModification, ignoreWhiteSpace, ignoreCase);
 
-         if (buildModifications().IfNot(out var exception))
+         if (buildModifications().UnMap(out var exception))
          {
             return exception;
          }

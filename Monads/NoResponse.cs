@@ -53,7 +53,7 @@ namespace Core.Monads
 
       public override Responding<TResult> Select<TResult>(Responding<T> result, Func<T, TResult> func) => new NoResponse<TResult>();
 
-      public override bool If(out T value)
+      public override bool Map(out T value)
       {
          value = default;
          return false;
@@ -67,7 +67,7 @@ namespace Core.Monads
          return false;
       }
 
-      public override bool If(out T value, out Maybe<Exception> _exception)
+      public override bool Map(out T value, out Maybe<Exception> _exception)
       {
          value = default;
          _exception = Maybe<Exception>.nil;

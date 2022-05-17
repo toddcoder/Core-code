@@ -25,7 +25,7 @@ namespace Core.Services.Loggers
          try
          {
             var _baseFolder = configuration.RequireValue("baseFolder").Map(bf => (FolderName)bf);
-            if (_baseFolder.If(out var baseFolder, out var exception))
+            if (_baseFolder.Map(out var baseFolder, out var exception))
             {
                var folder = configuration.GetValue("logs").Map(logs => ((FolderName)logs).Subfolder(baseFolder.Name))
                   .DefaultTo(() => baseFolder[jobName]);
@@ -45,7 +45,7 @@ namespace Core.Services.Loggers
       protected static Result<ServiceLogger> fromConfiguration(Configuration configuration,
          Func<FolderName, string, int, TimeSpan, Maybe<EventLogger>, Result<ServiceLogger>> creator)
       {
-         if (configuration.GetValue("name").If(out var jobName))
+         if (configuration.GetValue("name").Map(out var jobName))
          {
             var _loggingGroup = configuration.GetGroup("logging");
             var sizeLimit = _loggingGroup.Map(g => g.GetValue("sizeLimit")).Map(Maybe.Int32).DefaultTo(() => 1000000);
@@ -319,7 +319,7 @@ namespace Core.Services.Loggers
          }
          catch (Exception exception)
          {
-            if (_eventLogger.If(out var eventLogger))
+            if (_eventLogger.Map(out var eventLogger))
             {
                eventLogger.Write(text);
                eventLogger.Write(exception.Message);

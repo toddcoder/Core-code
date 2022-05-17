@@ -23,7 +23,7 @@ namespace Core.WinForms.Consoles
 		{
 			if (value != '\r')
          {
-            if (_buffer.If(out var buffer))
+            if (_buffer.Map(out var buffer))
             {
                buffer.Append(value);
             }
@@ -48,7 +48,7 @@ namespace Core.WinForms.Consoles
 
 		protected void flush()
 		{
-			if (_buffer.If(out var buffer))
+			if (_buffer.Map(out var buffer))
 			{
 				if (AutoStop)
             {

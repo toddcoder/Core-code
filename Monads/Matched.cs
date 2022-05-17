@@ -42,11 +42,11 @@ namespace Core.Monads
 
       public abstract TResult FlatMap<TResult>(Func<T, TResult> ifMatched, Func<TResult> ifNotOrFailed);
 
-      public abstract Matched<T> If(Action<T> action);
+      public abstract Matched<T> Map(Action<T> action);
 
-      public abstract Matched<T> Else(Action action);
+      public abstract Matched<T> UnMap(Action action);
 
-      public abstract Matched<T> Else(Action<Exception> action);
+      public abstract Matched<T> UnMap(Action<Exception> action);
 
       public abstract Matched<T> Do(Action<T> ifMatched, Action ifNotOrFailed);
 
@@ -67,7 +67,7 @@ namespace Core.Monads
 
       public abstract Matched<TResult> Select<TResult>(Matched<T> result, Func<T, TResult> func);
 
-      public abstract bool If(out T value);
+      public abstract bool Map(out T value);
 
       public abstract bool IfNotMatched();
 
@@ -79,11 +79,11 @@ namespace Core.Monads
       [Obsolete("Use If")]
       public abstract bool ValueOrCast<TMatched>(out T value, out Matched<TMatched> matched);
 
-      public abstract bool If(out T value, out Maybe<Exception> exception);
+      public abstract bool Map(out T value, out Maybe<Exception> exception);
 
       public abstract bool IfNot(out Maybe<Exception> anyException);
 
-      public abstract bool Else<TOther>(out Matched<TOther> result);
+      public abstract bool UnMap<TOther>(out Matched<TOther> result);
 
       public abstract Matched<TOther> Unmatched<TOther>();
 

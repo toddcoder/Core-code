@@ -45,7 +45,7 @@ namespace Core.Assertions.Monads
                constraints.Add(new Constraint(() => constraintFunction(otherT), message, not, name, resultImage(result)));
                break;
             case Result<T> anyValue:
-               if (anyValue.If(out var value, out var exception))
+               if (anyValue.Map(out var value, out var exception))
                {
                   constraints.Add(new Constraint(() => constraintFunction(value), message, not, name, resultImage(result)));
                }

@@ -48,13 +48,13 @@ namespace Core.Configurations
             var lines = new List<string>();
             while (source.Length > 0)
             {
-               if (source.Matches("^ /s* '}' ([/r /n]+ | $); f").If(out var result))
+               if (source.Matches("^ /s* '}' ([/r /n]+ | $); f").Map(out var result))
                {
                   return (source.Drop(result.Length), lines.ToString(","), true);
                }
-               else if (source.Matches("^ /s* /(-[/r /n]*) ('/r/n')?; f").If(out result))
+               else if (source.Matches("^ /s* /(-[/r /n]*) ('/r/n')?; f").Map(out result))
                {
-                  if (getString(result.FirstGroup).If(out _, out var @string, out _, out var exception))
+                  if (getString(result.FirstGroup).Map(out _, out var @string, out _, out var exception))
                   {
                      source = source.Drop(result.Length);
                      lines.Add(@string);
@@ -71,17 +71,17 @@ namespace Core.Configurations
 
          Result<(string newSource, string str, bool isArray)> getString(string source)
          {
-            if (source.Matches("^ /s* /[quote]; f").If(out var result))
+            if (source.Matches("^ /s* /[quote]; f").Map(out var result))
             {
                var quote = result.FirstGroup[0];
                return getQuotedString(source.Drop(result.Length), quote);
             }
-            else if (source.Matches("^ /s* '{' [/r /n]+; f").If(out result))
+            else if (source.Matches("^ /s* '{' [/r /n]+; f").Map(out result))
             {
                var newSource = source.Drop(result.Length);
                return getLinesAsArray(newSource);
             }
-            else if (source.Matches("^ /s* /(-[/r /n]*) ('/r/n')?; f").If(out result))
+            else if (source.Matches("^ /s* /(-[/r /n]*) ('/r/n')?; f").Map(out result))
             {
                var foundReturn = false;
                var builder = new StringBuilder();
@@ -207,11 +207,11 @@ namespace Core.Configurations
 
          while (source.Length > 0)
          {
-            if (source.Matches("^ /s* '['; f").If(out var result))
+            if (source.Matches("^ /s* '['; f").Map(out var result))
             {
                var key = GetKey("?");
                var group = new Group(key);
-               if (peekGroup().If(out var parentGroup))
+               if (peekGroup().Map(out var parentGroup))
                {
                   parentGroup.SetItem(key, group);
                }
@@ -224,11 +224,11 @@ namespace Core.Configurations
 
                source = source.Drop(result.Length);
             }
-            else if (source.Matches($"^ /s* {REGEX_KEY} /s* '['; f").If(out result))
+            else if (source.Matches($"^ /s* {REGEX_KEY} /s* '['; f").Map(out result))
             {
                var key = GetKey(result.FirstGroup);
                var group = new Group(key);
-               if (peekGroup().If(out var parentGroup))
+               if (peekGroup().Map(out var parentGroup))
                {
                   parentGroup.SetItem(key, group);
                }
@@ -241,11 +241,11 @@ namespace Core.Configurations
 
                source = source.Drop(result.Length);
             }
-            else if (source.Matches("^ /s* ']'; f").If(out result))
+            else if (source.Matches("^ /s* ']'; f").Map(out result))
             {
-               if (popGroup().If(out var group))
+               if (popGroup().Map(out var group))
                {
-                  if (peekGroup().If(out var parentGroup))
+                  if (peekGroup().Map(out var parentGroup))
                   {
                      parentGroup.SetItem(group.Key, group);
                   }
@@ -261,11 +261,11 @@ namespace Core.Configurations
 
                source = source.Drop(result.Length);
             }
-            else if (source.Matches($"^ /s* {REGEX_KEY} '.'; f").If(out result))
+            else if (source.Matches($"^ /s* {REGEX_KEY} '.'; f").Map(out result))
             {
                var key = GetKey(result.FirstGroup);
                var group = new Group(key);
-               if (peekGroup().If(out var parentGroup))
+               if (peekGroup().Map(out var parentGroup))
                {
                   parentGroup.SetItem(key, group);
                }
@@ -276,21 +276,21 @@ namespace Core.Configurations
 
                source = source.Drop(result.Length);
             }
-            else if (source.Matches("^ /s* '#' -[/r /n]*; f").If(out result))
+            else if (source.Matches("^ /s* '#' -[/r /n]*; f").Map(out result))
             {
                source = source.Drop(result.Length);
             }
-            else if (source.Matches("^ /s* ':' /s*; f").If(out result))
+            else if (source.Matches("^ /s* ':' /s*; f").Map(out result))
             {
                var key = GenerateKey();
                var remainder = source.Drop(result.Length);
-               if (getString(source.Drop(result.Length)).If(out source, out var value, out var isArray))
+               if (getString(source.Drop(result.Length)).Map(out source, out var value, out var isArray))
                {
                   var item = new Item(key, value)
                   {
                      IsArray = isArray
                   };
-                  if (peekGroup().If(out var group))
+                  if (peekGroup().Map(out var group))
                   {
                      group.SetItem(item.Key, item);
                   }
@@ -304,17 +304,17 @@ namespace Core.Configurations
                   return fail($"Didn't understand value {remainder}");
                }
             }
-            else if (source.Matches($"^ /s* {REGEX_KEY} ':' /s*; f").If(out result))
+            else if (source.Matches($"^ /s* {REGEX_KEY} ':' /s*; f").Map(out result))
             {
                var key = GetKey(result.FirstGroup);
                var remainder = source.Drop(result.Length);
-               if (getString(source.Drop(result.Length)).If(out source, out var value, out var isArray))
+               if (getString(source.Drop(result.Length)).Map(out source, out var value, out var isArray))
                {
                   var item = new Item(key, value)
                   {
                      IsArray = isArray
                   };
-                  if (peekGroup().If(out var group))
+                  if (peekGroup().Map(out var group))
                   {
                      group.SetItem(item.Key, item);
                   }
@@ -332,14 +332,14 @@ namespace Core.Configurations
             {
                break;
             }
-            else if (getString(source.TrimLeft()).If(out source, out var value, out var isArray))
+            else if (getString(source.TrimLeft()).Map(out source, out var value, out var isArray))
             {
                var key = GenerateKey();
                var item = new Item(key, value)
                {
                   IsArray = isArray
                };
-               if (peekGroup().If(out var group))
+               if (peekGroup().Map(out var group))
                {
                   group.SetItem(item.Key, item);
                }
@@ -350,9 +350,9 @@ namespace Core.Configurations
             }
          }
 
-         while (popGroup().If(out var group))
+         while (popGroup().Map(out var group))
          {
-            if (peekGroup().If(out var parentGroup))
+            if (peekGroup().Map(out var parentGroup))
             {
                parentGroup.SetItem(group.Key, group);
             }

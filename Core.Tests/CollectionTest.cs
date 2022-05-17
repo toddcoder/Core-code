@@ -28,7 +28,7 @@ namespace Core.Tests
          {
             intStack.Push(number);
 
-            if (_op.If(out var op))
+            if (_op.Map(out var op))
             {
                charStack.Push(op);
             }
@@ -64,7 +64,7 @@ namespace Core.Tests
             queue.Enqueue(item);
          }
 
-         while (queue.Dequeue().If(out var item))
+         while (queue.Dequeue().Map(out var item))
          {
             Console.WriteLine(item);
          }
@@ -163,7 +163,7 @@ namespace Core.Tests
          stack.Push("bravo");
          stack.Push("charlie");
 
-         if (stack.Item(0).If(out var item, out var exception))
+         if (stack.Item(0).Map(out var item, out var exception))
          {
             Console.WriteLine(item);
          }
@@ -172,7 +172,7 @@ namespace Core.Tests
             Console.WriteLine(exception.Message);
          }
 
-         if (stack.Item(-1).If(out item, out exception))
+         if (stack.Item(-1).Map(out item, out exception))
          {
             Console.WriteLine(item);
          }

@@ -32,13 +32,13 @@ namespace Core.Services.Scheduling.Parsers
 
       public Maybe<ScheduleIncrement> Parse(string source)
       {
-         if (source.Matches(Pattern + PATTERN_BRACKET).If(out var result))
+         if (source.Matches(Pattern + PATTERN_BRACKET).Map(out var result))
          {
             tokens = result.Groups(0);
             var lastIndex = tokens.Length - 1;
             var values = tokens.Where((_, i) => i.Between(1).Until(lastIndex)).Select(t => Value.Int32(t, -1)).ToArray();
             var bracketSource = result[0, lastIndex];
-            if (bracketSource.Matches(PATTERN_UNADORNED_BRACKET).If(out result))
+            if (bracketSource.Matches(PATTERN_UNADORNED_BRACKET).Map(out result))
             {
                Bracket = new LimitedBracket(result.FirstGroup, result.SecondGroup);
             }

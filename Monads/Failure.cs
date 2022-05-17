@@ -19,7 +19,7 @@ namespace Core.Monads
 
       public Exception Exception => exception;
 
-      public override bool If(out T value, out Exception exception)
+      public override bool Map(out T value, out Exception exception)
       {
          value = default;
          exception = this.exception;
@@ -95,19 +95,19 @@ namespace Core.Monads
 
       public override Matched<T> Match() => failedMatch<T>(exception);
 
-      public override bool If(out T value)
+      public override bool Map(out T value)
       {
          value = default;
          return false;
       }
 
-      public override bool IfNot(out Exception exception)
+      public override bool UnMap(out Exception exception)
       {
          exception = this.exception;
          return true;
       }
 
-      public override bool IfNot(out T value, out Exception exception)
+      public override bool UnMap(out T value, out Exception exception)
       {
          value = default;
          exception = this.exception;

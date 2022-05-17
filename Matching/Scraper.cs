@@ -35,7 +35,7 @@ namespace Core.Matching
             return noMatch<Scraper>();
          }
 
-         if (pattern.MatchedBy(source.Current).If(out var result, out var _exception))
+         if (pattern.MatchedBy(source.Current).Map(out var result, out var _exception))
          {
             var groups = result.Groups(0).Skip(1).ToArray();
             var minLength = groups.Length.MinOf(names.Length);
@@ -47,7 +47,7 @@ namespace Core.Matching
             source.Advance(result.Length);
             return this.Match();
          }
-         else if (_exception.If(out var exception))
+         else if (_exception.Map(out var exception))
          {
             return failedMatch<Scraper>(exception);
          }
@@ -64,7 +64,7 @@ namespace Core.Matching
             return noMatch<Scraper>();
          }
 
-         if (pattern.MatchedBy(source.Current).If(out var result, out var _exception))
+         if (pattern.MatchedBy(source.Current).Map(out var result, out var _exception))
          {
             foreach (var group in result.Groups(0).Skip(1))
             {
@@ -75,7 +75,7 @@ namespace Core.Matching
             source.Advance(result.Length);
             return this.Match();
          }
-         else if (_exception.If(out var exception))
+         else if (_exception.Map(out var exception))
          {
             return failedMatch<Scraper>(exception);
          }
@@ -109,12 +109,12 @@ namespace Core.Matching
             return noMatch<Scraper>();
          }
 
-         if (pattern.MatchedBy(source.Current).If(out var result, out var _exception))
+         if (pattern.MatchedBy(source.Current).Map(out var result, out var _exception))
          {
             source.Advance(result.Length);
             return this.Match();
          }
-         else if (_exception.If(out var exception))
+         else if (_exception.Map(out var exception))
          {
             return failedMatch<Scraper>(exception);
          }
@@ -143,7 +143,7 @@ namespace Core.Matching
 
       public Matched<Scraper> Push(Pattern pattern)
       {
-         if (pattern.MatchedBy(source.Current).If(out var result, out var _exception))
+         if (pattern.MatchedBy(source.Current).Map(out var result, out var _exception))
          {
             var scraper = new Scraper(source.Current.Keep(result.Length));
             source.Advance(result.Length);
@@ -151,7 +151,7 @@ namespace Core.Matching
 
             return scraper.Match();
          }
-         else if (_exception.If(out var exception))
+         else if (_exception.Map(out var exception))
          {
             return failedMatch<Scraper>(exception);
          }
@@ -163,9 +163,9 @@ namespace Core.Matching
 
       public Matched<Scraper> Pop()
       {
-         if (scraperStack.Pop().If(out var scraper))
+         if (scraperStack.Pop().Map(out var scraper))
          {
-            if (scraper.AnyHash().If(out var poppedVariables, out var exception))
+            if (scraper.AnyHash().Map(out var poppedVariables, out var exception))
             {
                foreach (var (variable, value) in variables)
                {

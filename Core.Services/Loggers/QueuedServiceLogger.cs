@@ -51,7 +51,7 @@ namespace Core.Services.Loggers
       {
          lock (queue)
          {
-            while (queue.Dequeue().If(out var item))
+            while (queue.Dequeue().Map(out var item))
             {
                baseWrite(item);
             }

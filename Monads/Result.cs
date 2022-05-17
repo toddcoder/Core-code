@@ -47,7 +47,7 @@ namespace Core.Monads
 
       public static Result<T> Nil(string message) => new Failure<T>(new Exception(message));
 
-      public abstract bool If(out T value, out Exception exception);
+      public abstract bool Map(out T value, out Exception exception);
 
       [Obsolete("Use If()")]
       public abstract bool ValueOrOriginal(out T value, out Result<T> original);
@@ -92,11 +92,11 @@ namespace Core.Monads
 
       public abstract Matched<T> Match();
 
-      public abstract bool If(out T value);
+      public abstract bool Map(out T value);
 
-      public abstract bool IfNot(out Exception exception);
+      public abstract bool UnMap(out Exception exception);
 
-      public abstract bool IfNot(out T value, out Exception exception);
+      public abstract bool UnMap(out T value, out Exception exception);
 
       public abstract void Force();
 

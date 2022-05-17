@@ -74,7 +74,7 @@ namespace Core.Services.Plugins
 
       public void InnerDispatch()
       {
-         if (_retrier.If(out var r))
+         if (_retrier.Map(out var r))
          {
             r.Execute();
             if (r.AllRetriesFailed)
@@ -118,9 +118,9 @@ namespace Core.Services.Plugins
             var exceptionsGroup = jobGroup.GroupAt("exceptions");
             var exceptionsTitle = exceptionsGroup.ValueAt("title");
 
-            if (exceptionsGroup.GroupAt("address").Deserialize<Address>().If(out address, out var exception))
+            if (exceptionsGroup.GroupAt("address").Deserialize<Address>().Map(out address, out var exception))
             {
-               if (ServiceLogger.FromConfiguration(configuration).If(out var serviceLogger, out exception))
+               if (ServiceLogger.FromConfiguration(configuration).Map(out var serviceLogger, out exception))
                {
                   retries = jobGroup.GetValue("retries").Map(Maybe.Int32).DefaultTo(() => 0);
                   SetRetrier();
@@ -155,7 +155,7 @@ namespace Core.Services.Plugins
       public void SetRetrier()
       {
          _retrier = maybe(retries > 0, () => new Retrier(retries, InnerDispatch, retryException));
-         if (_retrier.If(out var retrier))
+         if (_retrier.Map(out var retrier))
          {
             retrier.Successful += (_, e) => SuccessfulInnerDispatch(e.RetryCount);
             retrier.Failed += (_, e) => FailedInnerDispatch(e.RetryCount);

@@ -58,7 +58,7 @@ namespace Core.Dates
       {
          text = text.RemoveWhitespace();
 
-         if (text.Matches("^ /(/d1%2) ( ':' /(/d1%2))? ( ':' /(/d1%2))? ( '.' /(/d1%3))? $; f").If(out var result))
+         if (text.Matches("^ /(/d1%2) ( ':' /(/d1%2))? ( ':' /(/d1%2))? ( '.' /(/d1%3))? $; f").Map(out var result))
          {
             result.Must().HaveMatchCountOf(1).OrThrow("Couldn't determine parts of time to parse");
             var (hour, minute, second, millisecond) = result;
@@ -96,7 +96,7 @@ namespace Core.Dates
             builder.Add(seconds == 1 ? "1 second" : $"{seconds} seconds");
          }
 
-         if (_milliseconds.If(out var milliseconds) && milliseconds > 0)
+         if (_milliseconds.Map(out var milliseconds) && milliseconds > 0)
          {
             builder.Add(milliseconds == 1 ? "1 millisecond" : $"{milliseconds} milliseconds");
          }
@@ -140,7 +140,7 @@ namespace Core.Dates
             list.Add("sec(s)".Plural(seconds));
          }
 
-         if (_milliseconds.If(out var milliseconds) && milliseconds > 0)
+         if (_milliseconds.Map(out var milliseconds) && milliseconds > 0)
          {
             list.Add("msec(s)".Plural(milliseconds));
          }

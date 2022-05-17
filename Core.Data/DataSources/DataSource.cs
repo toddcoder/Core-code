@@ -72,7 +72,7 @@ namespace Core.Data.DataSources
             var name = signature.Name;
             var pattern = $"'{{{name}}}'; f";
             var value = evaluator[signature].ToNonNullString().Replace("'", "''");
-            if (text.Matches(pattern).If(out var result))
+            if (text.Matches(pattern).Map(out var result))
             {
                for (var i = 0; i < result.MatchCount; i++)
                {
@@ -103,7 +103,7 @@ namespace Core.Data.DataSources
 
          try
          {
-            if (Command.If(out var dbCommand) & _connection.If(out var dbConnection))
+            if (Command.Map(out var dbCommand) & _connection.Map(out var dbConnection))
             {
                dbCommand.Connection = dbConnection;
             }
@@ -128,7 +128,7 @@ namespace Core.Data.DataSources
 
                FillOrdinals(reader, inFields);
 
-               if (_activeObject.If(out var activeObject))
+               if (_activeObject.Map(out var activeObject))
                {
                   activeObject.BeforeExecute();
                }
@@ -141,14 +141,14 @@ namespace Core.Data.DataSources
                   cancel = new CancelEventArgs().Cancel;
                }
 
-               if (_activeObject.If(out activeObject))
+               if (_activeObject.Map(out activeObject))
                {
                   activeObject.AfterExecute();
                }
             }
             else
             {
-               if (_activeObject.If(out var activeObject))
+               if (_activeObject.Map(out var activeObject))
                {
                   activeObject.BeforeExecute();
                }
@@ -156,7 +156,7 @@ namespace Core.Data.DataSources
                recordsAffected = dbCommand.ExecuteNonQuery();
                FillOutput(entity, dbCommand.Parameters, parameters);
 
-               if (_activeObject.If(out activeObject))
+               if (_activeObject.Map(out activeObject))
                {
                   activeObject.AfterExecute();
                }
@@ -190,7 +190,7 @@ namespace Core.Data.DataSources
             AddParameters(entity, parameters);
 
             setCommand(entity, command);
-            if (Command.If(out var dbCommand) & _connection.If(out var connection))
+            if (Command.Map(out var dbCommand) & _connection.Map(out var connection))
             {
                dbCommand.Connection = connection;
             }
@@ -208,7 +208,7 @@ namespace Core.Data.DataSources
             FillOutput(entity, dbCommand.Parameters, parameters);
             FillOrdinals(reader, inFields);
 
-            if (_activeObject.If(out var activeObject))
+            if (_activeObject.Map(out var activeObject))
             {
                activeObject.BeforeExecute();
             }
@@ -226,7 +226,7 @@ namespace Core.Data.DataSources
       protected void setCommand(object entity, string command)
       {
          var commandText = modifyCommand(entity, command);
-         if (Command.If(out var dbCommand))
+         if (Command.Map(out var dbCommand))
          {
             dbCommand.CommandText = commandText;
             changeCommandType(dbCommand, commandText);
@@ -239,7 +239,7 @@ namespace Core.Data.DataSources
 
       internal Maybe<object> NextReading(object entity)
       {
-         if (Reader.If(out var reader) && reader.Read())
+         if (Reader.Map(out var reader) && reader.Read())
          {
             HasRows = true;
             fill(entity, reader);
@@ -253,9 +253,9 @@ namespace Core.Data.DataSources
 
       internal void EndReading()
       {
-         if (Reader.If(out var reader))
+         if (Reader.Map(out var reader))
          {
-            if (_activeObject.If(out var activeObject))
+            if (_activeObject.Map(out var activeObject))
             {
                activeObject.AfterExecute();
             }
@@ -359,7 +359,7 @@ namespace Core.Data.DataSources
 
       protected void allocateConnection()
       {
-         if (_connection.If(out var connection))
+         if (_connection.Map(out var connection))
          {
             if (connection.State == ConnectionState.Closed)
             {
@@ -382,7 +382,7 @@ namespace Core.Data.DataSources
 
       protected void disposeCommand()
       {
-         if (Command.If(out var command))
+         if (Command.Map(out var command))
          {
             command.Dispose();
             Command = nil;
@@ -391,7 +391,7 @@ namespace Core.Data.DataSources
 
       protected void disposeConnection()
       {
-         if (_connection.If(out var connection))
+         if (_connection.Map(out var connection))
          {
             connection.Dispose();
             _connection = nil;
@@ -400,7 +400,7 @@ namespace Core.Data.DataSources
 
       protected string getFileConnectionString(Maybe<FileName> associatedFile)
       {
-         if (associatedFile.If(out var file))
+         if (associatedFile.Map(out var file))
          {
             var formatter = Formatter.WithStandard(true);
             formatter["file"] = file.ToNonNullString();
@@ -424,7 +424,7 @@ namespace Core.Data.DataSources
 
          setCommand(entity, command);
 
-         if (Command.If(out var c))
+         if (Command.Map(out var c))
          {
             return c.ExecuteReader(CommandBehavior.CloseConnection);
          }

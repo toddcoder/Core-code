@@ -88,7 +88,7 @@ namespace Core.Applications
                      break;
                   case ConsoleKey.Backspace when key.Modifiers.HasFlag(ConsoleModifiers.Control):
                   {
-                     if (_input.Map(i => i.Length).If(out var length) && length > 0)
+                     if (_input.Map(i => i.Length).Map(out var length) && length > 0)
                      {
                         var backspaces = '\b'.Repeat(length);
                         Console.Write(backspaces);

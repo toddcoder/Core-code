@@ -11,7 +11,7 @@ namespace Core.Objects
 
       public Signature(string signature)
       {
-         if (signature.Find("[").If(out var openIndex))
+         if (signature.Find("[").Map(out var openIndex))
          {
             Name = signature.Keep(openIndex);
             Index = Maybe.Int32(signature.Drop(openIndex + 1).KeepUntil("]"));

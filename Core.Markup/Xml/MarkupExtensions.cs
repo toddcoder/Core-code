@@ -36,7 +36,7 @@ namespace Core.Markup.Xml
 
          document.Save(writer);
 
-         if (fromStream(stream, encoding).If(out var text))
+         if (fromStream(stream, encoding).Map(out var text))
          {
             return includeHeader ? text : text.Substitute(PATTERN_HEADER, string.Empty).Trim();
          }

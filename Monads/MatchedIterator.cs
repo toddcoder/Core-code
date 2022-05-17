@@ -21,15 +21,15 @@ namespace Core.Monads
 
       void handle(Matched<T> match)
       {
-         if (match.If(out var value, out var exception) && matched.If(out var action))
+         if (match.Map(out var value, out var exception) && matched.Map(out var action))
          {
             action(value);
          }
-         else if (exception.If(out var e) && failure.If(out var exAction))
+         else if (exception.Map(out var e) && failure.Map(out var exAction))
          {
             exAction(e);
          }
-         else if (notMatched.If(out var nAction))
+         else if (notMatched.Map(out var nAction))
          {
             nAction();
          }
@@ -50,7 +50,7 @@ namespace Core.Monads
          foreach (var match in enumerable)
          {
             handle(match);
-            if (match.If(out var value))
+            if (match.Map(out var value))
             {
                yield return value;
             }
@@ -62,7 +62,7 @@ namespace Core.Monads
          foreach (var match in enumerable)
          {
             handle(match);
-            if (!match.If(out _, out var exception) && exception.If(out var e))
+            if (!match.Map(out _, out var exception) && exception.Map(out var e))
             {
                yield return e;
             }

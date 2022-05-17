@@ -19,7 +19,7 @@ namespace Core.Exceptions
 
       public void Add<T>(Result<T> result)
       {
-         if (result.IfNot(out var exception))
+         if (result.UnMap(out var exception))
          {
             Add(exception);
          }

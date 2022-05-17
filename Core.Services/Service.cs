@@ -47,7 +47,7 @@ namespace Core.Services
          serviceMessage = new ServiceMessage(name);
          serviceMessage.Add(serviceLogger);
          serviceMessage.Add(new NamedExceptions(exceptionAddress, name, $"{name} Exceptions", 5));
-         if (_serviceMessage.If(out var newServiceMessage))
+         if (_serviceMessage.Map(out var newServiceMessage))
          {
             serviceMessage.Add(newServiceMessage);
          }

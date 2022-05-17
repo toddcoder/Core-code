@@ -135,7 +135,7 @@ namespace Core.Markup.Rtf
                if (j < count)
                {
                   var cellData = row[j];
-                  if (cellData.ImageFile.If(out var imageFile) && cellData.ImageFileType.If(out var imageFileType))
+                  if (cellData.ImageFile.Map(out var imageFile) && cellData.ImageFileType.Map(out var imageFileType))
                   {
                      tableCell.Image(imageFile.FullPath, imageFileType);
                   }
@@ -285,7 +285,7 @@ namespace Core.Markup.Rtf
 
       public void ActivatePendingMerges()
       {
-         while (pendingMerges.Dequeue().If(out var topRow, out var leftColumn, out var rowSpan, out var colSpan))
+         while (pendingMerges.Dequeue().Map(out var topRow, out var leftColumn, out var rowSpan, out var colSpan))
          {
             Merge(topRow, leftColumn, rowSpan, colSpan);
          }
@@ -681,19 +681,19 @@ namespace Core.Markup.Rtf
                   }
                }
 
-               if (this[i, j].BackgroundColor.If(out var backgroundColor))
+               if (this[i, j].BackgroundColor.Map(out var backgroundColor))
                {
                   result.Append($@"\clcbpat{backgroundColor.Value}");
                }
-               else if (i == 0 && HeaderBackgroundColor.If(out var headerBackgroundColor))
+               else if (i == 0 && HeaderBackgroundColor.Map(out var headerBackgroundColor))
                {
                   result.Append($@"\clcbpat{headerBackgroundColor.Value}");
                }
-               else if (RowBackgroundColor.If(out var rowBackgroundColor) && (RowAltBackgroundColor.IsNone || i % 2 == 0))
+               else if (RowBackgroundColor.Map(out var rowBackgroundColor) && (RowAltBackgroundColor.IsNone || i % 2 == 0))
                {
                   result.Append($@"\clcbpat{rowBackgroundColor.Value}");
                }
-               else if (RowBackgroundColor.IsSome && RowAltBackgroundColor.If(out var rowAltBackgroundColor) && i % 2 != 0)
+               else if (RowBackgroundColor.IsSome && RowAltBackgroundColor.Map(out var rowAltBackgroundColor) && i % 2 != 0)
                {
                   result.Append($@"\clcbpat{rowAltBackgroundColor.Value}");
                }

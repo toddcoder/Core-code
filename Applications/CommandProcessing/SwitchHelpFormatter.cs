@@ -16,7 +16,7 @@ namespace Core.Applications.CommandProcessing
    {
       protected static string expand(string source)
       {
-         if (source.Matches("'{' /(-['.']+) '...' /(-['}']+) '}'; f").If(out var result))
+         if (source.Matches("'{' /(-['.']+) '...' /(-['}']+) '}'; f").Map(out var result))
          {
             for (var i = 0; i < result.MatchCount; i++)
             {
@@ -59,7 +59,7 @@ namespace Core.Applications.CommandProcessing
          foreach (var (name, (type, argument, _shortCut)) in switchHelp)
          {
             var builder = new StringBuilder($"{prefix}{name}");
-            if (_shortCut.If(out var shortCut))
+            if (_shortCut.Map(out var shortCut))
             {
                builder.Append($" ({shortCutPrefix}{shortCut})");
             }
@@ -92,7 +92,7 @@ namespace Core.Applications.CommandProcessing
 
             foreach (var line in source.Unjoin("/s* ';' /s*; f"))
             {
-               if (_divider.If(out var divider))
+               if (_divider.Map(out var divider))
                {
                   writer.WriteLine(divider);
                }
@@ -101,7 +101,7 @@ namespace Core.Applications.CommandProcessing
                   _divider = "-".Repeat(length);
                }
 
-               if (line.Matches(@"-(> '\') /('$' /w [/w '-']*) /('?')?; f").If(out var result))
+               if (line.Matches(@"-(> '\') /('$' /w [/w '-']*) /('?')?; f").Map(out var result))
                {
                   for (var i = 0; i < result.MatchCount; i++)
                   {

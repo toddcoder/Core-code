@@ -29,7 +29,7 @@ namespace Core.WinForms.Documents
       public void Menu(string text, string shortcut = "")
       {
          var item = new ToolStripMenuItem(text) { Name = MenuName(text) };
-         if (shortcut.IsNotEmpty() && shortcutKeys(shortcut).If(out var keys))
+         if (shortcut.IsNotEmpty() && shortcutKeys(shortcut).Map(out var keys))
          {
             item.ShortcutKeys = keys;
          }
@@ -42,7 +42,7 @@ namespace Core.WinForms.Documents
       {
          var item = new ToolStripMenuItem(text) { Name = MenuName(text), Checked = isChecked };
          item.Click += handler;
-         if (shortcut.IsNotEmpty() && shortcutKeys(shortcut).If(out var keys))
+         if (shortcut.IsNotEmpty() && shortcutKeys(shortcut).Map(out var keys))
          {
             item.ShortcutKeys = keys;
          }
@@ -67,7 +67,7 @@ namespace Core.WinForms.Documents
 
       protected static void setShortcut(ToolStripMenuItem item, string shortcut)
       {
-         if (shortcut.IsNotEmpty() && shortcutKeys(shortcut).If(out var keys))
+         if (shortcut.IsNotEmpty() && shortcutKeys(shortcut).Map(out var keys))
          {
             item.ShortcutKeys = keys;
          }
@@ -110,7 +110,7 @@ namespace Core.WinForms.Documents
 
       public void AddHandler(string parentText, string text, EventHandler handler)
       {
-         if (Submenus(parentText).If(out var submenus) && submenus.If(text, out var toolStripMenuItem))
+         if (Submenus(parentText).Map(out var submenus) && submenus.If(text, out var toolStripMenuItem))
          {
             toolStripMenuItem.Click += handler;
          }
@@ -165,7 +165,7 @@ namespace Core.WinForms.Documents
 
       protected static Result<Keys> shortcutKeys(string text)
       {
-         if (text.Matches("^ /(['^%|']+)? /(/w+) $; f").If(out var result))
+         if (text.Matches("^ /(['^%|']+)? /(/w+) $; f").Map(out var result))
          {
             var keys = (Keys)0;
             var prefix = result[0, 1];

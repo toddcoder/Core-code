@@ -54,7 +54,7 @@ namespace Core.Matching.Parsers
                .Select(parser => parser.Scan(source, ref index))
                .Where(result => result.IsSome))
             {
-               if (result.If(out var r))
+               if (result.Map(out var r))
                {
                   content.Append(r);
                }

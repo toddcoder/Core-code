@@ -45,7 +45,7 @@ namespace Core.Monads
 
       public override Matched<TResult> Select<TResult>(Matched<T> result, Func<T, TResult> func) => func(value).Match();
 
-      public override bool If(out T value)
+      public override bool Map(out T value)
       {
          value = this.value;
          return true;
@@ -77,7 +77,7 @@ namespace Core.Monads
          return true;
       }
 
-      public override bool If(out T value, out Maybe<Exception> exception)
+      public override bool Map(out T value, out Maybe<Exception> exception)
       {
          value = this.value;
          exception = none<Exception>();
@@ -91,7 +91,7 @@ namespace Core.Monads
          return false;
       }
 
-      public override bool Else<TOther>(out Matched<TOther> result)
+      public override bool UnMap<TOther>(out Matched<TOther> result)
       {
          result = noMatch<TOther>();
          return false;
@@ -121,7 +121,7 @@ namespace Core.Monads
          exception = none<Exception>();
       }
 
-      public override bool EqualToValueOf(Matched<T> otherMatched) => otherMatched.If(out var otherValue) && ValueEqualTo(otherValue);
+      public override bool EqualToValueOf(Matched<T> otherMatched) => otherMatched.Map(out var otherValue) && ValueEqualTo(otherValue);
 
       public override bool ValueEqualTo(T otherValue) => value.Equals(otherValue);
 
@@ -205,15 +205,15 @@ namespace Core.Monads
 
       public override TResult FlatMap<TResult>(Func<T, TResult> ifMatched, Func<TResult> ifNotOrFailed) => ifMatched(value);
 
-      public override Matched<T> If(Action<T> action)
+      public override Matched<T> Map(Action<T> action)
       {
          action(value);
          return this;
       }
 
-      public override Matched<T> Else(Action action) => this;
+      public override Matched<T> UnMap(Action action) => this;
 
-      public override Matched<T> Else(Action<Exception> action) => this;
+      public override Matched<T> UnMap(Action<Exception> action) => this;
 
       public bool Equals(Match<T> other)
       {

@@ -24,7 +24,7 @@ namespace Core.WinForms.Controls
       {
          public static ResponderButton FromText(Form form, string specifier)
          {
-            if (specifier.Matches(@"^ /(['!?.$']?) /(-['|']+) '|' /s* /(.+) $; f").If(out var result))
+            if (specifier.Matches(@"^ /(['!?.$']?) /(-['|']+) '|' /s* /(.+) $; f").Map(out var result))
             {
                var personalityShortcut = result.FirstGroup;
                var label = result.SecondGroup.TrimEnd();

@@ -456,7 +456,7 @@ namespace Core.WinForms.Controls
          var offset = leftMargin - 2;
          foreach (var (_, line, point) in VisibleLines)
          {
-            if (line.Matches("^ /(/t1%7); f").If(out var result))
+            if (line.Matches("^ /(/t1%7); f").Map(out var result))
             {
                using var pen = new Pen(Color.Gray) { DashStyle = DashStyle.Dot };
                drawTabLine(graphics, pen, point, offset, height);
@@ -647,7 +647,7 @@ namespace Core.WinForms.Controls
 
       public IEnumerable<(Rectangle rectangle, string word)> RectangleWords(Graphics graphics, bool visibleOnly = true)
       {
-         if (Text.Matches("/w+; f").If(out var result))
+         if (Text.Matches("/w+; f").Map(out var result))
          {
             for (var i = 0; i < result.MatchCount; i++)
             {
@@ -663,7 +663,7 @@ namespace Core.WinForms.Controls
 
       public IEnumerable<(int start, int length)> Words()
       {
-         if (Text.Matches("/w+; f").If(out var result))
+         if (Text.Matches("/w+; f").Map(out var result))
          {
             for (var i = 0; i < result.MatchCount; i++)
             {
@@ -675,7 +675,7 @@ namespace Core.WinForms.Controls
 
       public IEnumerable<(char, Rectangle)> RectangleWhitespace(Graphics graphics, bool visibleOnly = true)
       {
-         if (Text.Matches("[' /t']; f").If(out var result))
+         if (Text.Matches("[' /t']; f").Map(out var result))
          {
             for (var i = 0; i < result.MatchCount; i++)
             {

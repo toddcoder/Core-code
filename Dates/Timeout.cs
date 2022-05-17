@@ -22,7 +22,7 @@ namespace Core.Dates
       {
          get
          {
-            if (targetDateTime.If(out var tdt)) { }
+            if (targetDateTime.Map(out var tdt)) { }
             else
             {
                tdt = NowServer.Now + timeoutPeriod;

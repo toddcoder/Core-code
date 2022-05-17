@@ -44,7 +44,7 @@ namespace Core.Services.Scheduling
          {
             DateIncrementer now = NowServer.Now;
 
-            if (_day.If(out var day))
+            if (_day.Map(out var day))
             {
                if (year > 0)
                {
@@ -56,7 +56,7 @@ namespace Core.Services.Scheduling
                      from setHour in current.SetHour(hour)
                      from setMinute in current.SetMinute(minute)
                      select current;
-                  if (_target.If(out var target, out var exception))
+                  if (_target.Map(out var target, out var exception))
                   {
                      if (target <= now)
                      {
@@ -81,7 +81,7 @@ namespace Core.Services.Scheduling
                      from setHour in current.SetHour(hour)
                      from setMinute in current.SetMinute(minute)
                      select current;
-                  if (_target.If(out var target, out var exception))
+                  if (_target.Map(out var target, out var exception))
                   {
                      if (target <= now)
                      {
@@ -104,7 +104,7 @@ namespace Core.Services.Scheduling
                      from setHour in current.SetHour(hour)
                      from setMinute in current.SetMinute(minute)
                      select current;
-                  if (_target.If(out var target, out var exception))
+                  if (_target.Map(out var target, out var exception))
                   {
                      if (target <= now)
                      {
@@ -121,7 +121,7 @@ namespace Core.Services.Scheduling
                else if (hour > 0)
                {
                   var target = now.Clone();
-                  if (target.SetMinute(minute).If(out _, out var exception))
+                  if (target.SetMinute(minute).Map(out _, out var exception))
                   {
                      if (target <= now)
                      {

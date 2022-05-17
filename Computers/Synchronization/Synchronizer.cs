@@ -64,11 +64,11 @@ namespace Core.Computers.Synchronization
       protected void handleFile(FileName sourceFile, FolderName currentTargetFolder)
       {
          var targetFile = currentTargetFolder + sourceFile;
-         if (copyIfNeeded(sourceFile, targetFile).If(out var file, out var _exception))
+         if (copyIfNeeded(sourceFile, targetFile).Map(out var file, out var _exception))
          {
             Success?.Invoke(this, new FileArgs(file, targetFile, $"{sourceFile} {(move ? "moved" : "copied")} to {targetFile}"));
          }
-         else if (_exception.If(out var exception))
+         else if (_exception.Map(out var exception))
          {
             Failure?.Invoke(this, new FailedFileArgs(sourceFile, targetFile, exception));
          }
@@ -87,7 +87,7 @@ namespace Core.Computers.Synchronization
                from sourceLastWriteTime in sourceFile.TryTo.LastWriteTime
                from targetLastWriteTime in targetFile.TryTo.LastWriteTime
                select !targetExists || sourceLastWriteTime > targetLastWriteTime;
-            if (result.If(out var mustCopy, out var exception))
+            if (result.Map(out var mustCopy, out var exception))
             {
                if (mustCopy)
                {
@@ -113,7 +113,7 @@ namespace Core.Computers.Synchronization
       {
          var targetFileFolder = targetFile.Folder;
          var _wasCreated = targetFileFolder.TryTo.WasCreated();
-         if (_wasCreated.If(out var wasCreated, out var exception))
+         if (_wasCreated.Map(out var wasCreated, out var exception))
          {
             if (wasCreated)
             {
@@ -126,11 +126,11 @@ namespace Core.Computers.Synchronization
             return failedMatch<FileName>("Folder creation failed; no action taken".Throws());
          }
 
-         if (sourceFile.TryTo.CopyTo(targetFile, true).If(out _, out exception))
+         if (sourceFile.TryTo.CopyTo(targetFile, true).Map(out _, out exception))
          {
             if (move)
             {
-               if (sourceFile.TryTo.Delete().If(out _, out exception))
+               if (sourceFile.TryTo.Delete().Map(out _, out exception))
                {
                   return targetFile.Match();
                }

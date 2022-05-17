@@ -134,7 +134,7 @@ namespace Core.Applications
 
       protected static string namePattern(string name)
       {
-         if (name.Matches("['A-Z']; f").If(out var result))
+         if (name.Matches("['A-Z']; f").Map(out var result))
          {
             for (var i = 0; i < result.MatchCount; i++)
             {
@@ -232,7 +232,7 @@ namespace Core.Applications
 
       protected static object getStringArray(string rest)
       {
-         if (rest.Matches("^/s* '[' /s*  /(.*) /s* ']'; f").If(out var result))
+         if (rest.Matches("^/s* '[' /s*  /(.*) /s* ']'; f").Map(out var result))
          {
             var list = result.FirstGroup;
             var array = list.Unjoin("/s* ',' /s*; f");
@@ -260,7 +260,7 @@ namespace Core.Applications
                return true.Success<object>();
             }
 
-            if (commandLine.Matches(itemPrefix).If(out var result))
+            if (commandLine.Matches(itemPrefix).Map(out var result))
             {
                var rest = result.FirstGroup;
                if (type == typeof(bool))
@@ -296,7 +296,7 @@ namespace Core.Applications
                   return $"Can't handle type {type.Name}".Failure<object>();
                }
             }
-            else if (_defaultValue.If(out var defaultValue))
+            else if (_defaultValue.Map(out var defaultValue))
             {
                return defaultValue.Success();
             }
@@ -325,7 +325,7 @@ namespace Core.Applications
 
       protected string fixCommand(string commandLine, string prefix, string suffix)
       {
-         if (commandLine.Matches($"^ /({REGEX_PARAMETER}) /s*; f").If(out var result))
+         if (commandLine.Matches($"^ /({REGEX_PARAMETER}) /s*; f").Map(out var result))
          {
             var command = result.FirstGroup;
             result.FirstGroup = $"{prefix}{command}{suffix}true";
@@ -338,7 +338,7 @@ namespace Core.Applications
             return commandLine;
          }
 
-         if (commandLine.Matches($"'{ShortPrefix}' /['a-zA-Z0-9'] '{ShortSuffix}'; f").If(out result))
+         if (commandLine.Matches($"'{ShortPrefix}' /['a-zA-Z0-9'] '{ShortSuffix}'; f").Map(out result))
          {
             var shortcuts = getShortcuts(Shortcuts);
             for (var matchIndex = 0; matchIndex < result.MatchCount; matchIndex++)
@@ -362,7 +362,7 @@ namespace Core.Applications
 
       protected bool setPossibleAlias(string commandLine)
       {
-         if (commandLine.Matches("^ /s+ /([/w '-']+) /s+ /(.*) $; f").If(out var result))
+         if (commandLine.Matches("^ /s+ /([/w '-']+) /s+ /(.*) $; f").Map(out var result))
          {
             var aliasName = result.FirstGroup;
             var command = result.SecondGroup;
@@ -405,7 +405,7 @@ namespace Core.Applications
          }
          else
          {
-            if (commandLine.Matches($"^ /({REGEX_PARAMETER})'{suffix}'; f").If(out var result))
+            if (commandLine.Matches($"^ /({REGEX_PARAMETER})'{suffix}'; f").Map(out var result))
             {
                var commandName = result.FirstGroup;
                var remainder = commandLine.Drop(commandName.Length);
@@ -428,12 +428,12 @@ namespace Core.Applications
       {
          commandLine = removeExecutableFromCommandLine(commandLine);
 
-         if (getCommandsFromFile(prefix, suffix, commandLine).If(out var newCommandLine))
+         if (getCommandsFromFile(prefix, suffix, commandLine).Map(out var newCommandLine))
          {
             commandLine = newCommandLine;
          }
 
-         if (getCommand(commandLine).If(out var command))
+         if (getCommand(commandLine).Map(out var command))
          {
             if (command == "alias")
             {
@@ -450,7 +450,7 @@ namespace Core.Applications
 
          commandLine = fixCommand(commandLine, prefix, suffix);
 
-         if (getEntryPoint().If(out var tuple, out var entryPointException))
+         if (getEntryPoint().Map(out var tuple, out var entryPointException))
          {
             var (methodInfo, type) = tuple;
             switch (type)
@@ -484,9 +484,9 @@ namespace Core.Applications
             .Select(p => (p.Name, p.ParameterType, defaultValue: maybe(p.HasDefaultValue, () => p.DefaultValue)))
             .Select(t => retrieveItem(t.Name, t.ParameterType, t.defaultValue, prefix, suffix, commandLine))
             .ToArray();
-         if (arguments.FirstOrNone(p => p.IsFailed).If(out var failure))
+         if (arguments.FirstOrNone(p => p.IsFailed).Map(out var failure))
          {
-            if (failure.IfNot(out var exception))
+            if (failure.UnMap(out var exception))
             {
                HandleException(exception);
             }
@@ -521,7 +521,7 @@ namespace Core.Applications
             from obj in parameterInfo.ParameterType.TryCreate()
             from filledObject in fillObject(obj, prefix, suffix, commandLine)
             select filledObject;
-         if (_argument.If(out var argument, out var argumentException))
+         if (_argument.Map(out var argument, out var argumentException))
          {
             try
             {
@@ -550,7 +550,7 @@ namespace Core.Applications
 
       protected void useWithThis(MethodInfo methodInfo, string prefix, string suffix, string commandLine)
       {
-         if (fillObject(this, prefix, suffix, commandLine).If(out _, out var filledException))
+         if (fillObject(this, prefix, suffix, commandLine).Map(out _, out var filledException))
          {
             try
             {
@@ -579,7 +579,7 @@ namespace Core.Applications
 
       protected static string xmlToPascal(string name)
       {
-         if (name.Matches("'-' /(/w); f").If(out var result))
+         if (name.Matches("'-' /(/w); f").Map(out var result))
          {
             for (var matchIndex = 0; matchIndex < result.MatchCount; matchIndex++)
             {
@@ -606,7 +606,7 @@ namespace Core.Applications
             }
 
             var pattern = $"'{prefix}' /({REGEX_PARAMETER}) ('{suffix}' | ['+-'] ('{suffix}' | $) | $); f";
-            if (commandLine.Matches(pattern).If(out var result))
+            if (commandLine.Matches(pattern).Map(out var result))
             {
                var isFirstMatch = true;
                foreach (var match in result)

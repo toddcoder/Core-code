@@ -30,7 +30,7 @@ namespace Core.Services.Plugins
                from jobGroup in jobsGroup.RequireGroup(jobName)
                from newJob in Job.New(jobGroup, TypeManager, configuration)
                select newJob;
-            if (_job.If(out var job, out var exception))
+            if (_job.Map(out var job, out var exception))
             {
                if (job.Enabled)
                {
@@ -46,7 +46,7 @@ namespace Core.Services.Plugins
 
       public override Result<Unit> Dispatch()
       {
-         if (configuration.RequireGroup("jobs").If(out var jobsGroup, out var exception))
+         if (configuration.RequireGroup("jobs").Map(out var jobsGroup, out var exception))
          {
             var tasks = getJobs(jobsGroup).Select(job => Task.Run(job.ExecutePlugin)).ToArray();
             Task.WaitAll(tasks);

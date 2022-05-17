@@ -64,7 +64,7 @@ namespace Core.Collections.Expiring
 
       public void StartMonitoring()
       {
-         if (anyTimer.If(out var timer))
+         if (anyTimer.Map(out var timer))
          {
             timer.Enabled = true;
          }
@@ -72,7 +72,7 @@ namespace Core.Collections.Expiring
 
       public void StopMonitoring()
       {
-         if (anyTimer.If(out var timer))
+         if (anyTimer.Map(out var timer))
          {
             timer.Enabled = false;
          }

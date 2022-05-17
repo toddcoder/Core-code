@@ -31,7 +31,7 @@ namespace Core.Data.Fields
 
       public Fields(Maybe<Group> _fieldsGroup) : this()
       {
-         if (_fieldsGroup.If(out var fieldsGraph))
+         if (_fieldsGroup.Map(out var fieldsGraph))
          {
             foreach (var field in fieldsGraph.Groups().Select(t => Field.Parse(t.group)))
             {

@@ -82,9 +82,9 @@ namespace Core.Services
             {
                return type;
             }
-            else if (getTypeName(name).If(out var typeName, out var exception))
+            else if (getTypeName(name).Map(out var typeName, out var exception))
             {
-               if (typeName.Matches("^ -/{<} '<' -/{:} ':' /s* -/{>} '>' $; f").If(out var result))
+               if (typeName.Matches("^ -/{<} '<' -/{:} ':' /s* -/{>} '>' $; f").Map(out var result))
                {
                   var (possibleTypeName, subTypeName, subAssemblyName) = result;
                   typeName = $"{possibleTypeName}`1";
@@ -93,7 +93,7 @@ namespace Core.Services
                      from typeFromAssembly in getTypeFromAssembly(assembly, typeName)
                      from subType in Type(subAssemblyName, subTypeName)
                      select type.MakeGenericType(subType);
-                  if (_result.If(out type))
+                  if (_result.Map(out type))
                   {
                      typeCache[name] = type;
                   }
@@ -103,7 +103,7 @@ namespace Core.Services
                else
                {
                   var _result = getTypeFromAssembly(assembly, typeName);
-                  if (_result.If(out type))
+                  if (_result.Map(out type))
                   {
                      typeCache[name] = type;
                   }

@@ -145,7 +145,7 @@ namespace Core.WinForms.Controls
                   {
                      var args = new AutomaticMessageArgs();
                      AutomaticMessage?.Invoke(this, args);
-                     if (args.GetText().If(out var automaticText))
+                     if (args.GetText().Map(out var automaticText))
                      {
                         Text = automaticText;
                      }
@@ -678,7 +678,7 @@ namespace Core.WinForms.Controls
 
          if (Enabled)
          {
-            if (_lastType.If(out var lastType))
+            if (_lastType.Map(out var lastType))
             {
                ShowMessage(text, lastType);
                _lastType = nil;
@@ -688,7 +688,7 @@ namespace Core.WinForms.Controls
                ShowMessage(text, MessageProgressType.Uninitialized);
             }
 
-            if (_lastEnabled.If(out var enabled))
+            if (_lastEnabled.Map(out var enabled))
             {
                timer.Enabled = enabled;
                _lastEnabled = nil;

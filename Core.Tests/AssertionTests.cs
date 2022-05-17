@@ -37,7 +37,7 @@ namespace Core.Tests
             from greater in value.Must().BeGreaterThan(100).OrFailure()
             from less in value.Must().BeLessThanOrEqual(200).OrFailure()
             select less;
-         if (result.If(out var integer, out var exception))
+         if (result.Map(out var integer, out var exception))
          {
             Console.WriteLine($"integer is {integer}");
          }

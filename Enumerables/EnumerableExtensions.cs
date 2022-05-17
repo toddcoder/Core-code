@@ -968,7 +968,7 @@ namespace Core.Enumerables
          var _currentValue = Maybe<T>.nil;
          foreach (var item in enumerable)
          {
-            if (_currentValue.If(out var currentValue))
+            if (_currentValue.Map(out var currentValue))
             {
                if (item.ComparedTo(currentValue) > 0)
                {
@@ -997,7 +997,7 @@ namespace Core.Enumerables
          foreach (var item in enumerable)
          {
             var mappedItem = mappingFunc(item);
-            if (_currentValue.If(out var currentValue))
+            if (_currentValue.Map(out var currentValue))
             {
                if (mappedItem.ComparedTo(currentValue) > 0)
                {
@@ -1024,7 +1024,7 @@ namespace Core.Enumerables
          var _currentValue = Maybe<T>.nil;
          foreach (var item in enumerable)
          {
-            if (_currentValue.If(out var currentValue))
+            if (_currentValue.Map(out var currentValue))
             {
                if (item.ComparedTo(currentValue) < 0)
                {
@@ -1053,7 +1053,7 @@ namespace Core.Enumerables
          foreach (var item in enumerable)
          {
             var mappedItem = mappingFunc(item);
-            if (_currentValue.If(out var currentValue))
+            if (_currentValue.Map(out var currentValue))
             {
                if (mappedItem.ComparedTo(currentValue) < 0)
                {

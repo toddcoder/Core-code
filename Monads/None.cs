@@ -42,13 +42,13 @@ namespace Core.Monads
       [Obsolete("Use |")]
       public override Maybe<T> Or(T other) => other.Some();
 
-      public override bool If(out T value)
+      public override bool Map(out T value)
       {
          value = default;
          return false;
       }
 
-      public override bool Else(out T value)
+      public override bool UnMap(out T value)
       {
          value = default;
          return true;

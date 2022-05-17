@@ -24,11 +24,11 @@ namespace Core.Data
          try
          {
             string command;
-            if (commandGroup.GetValue("text").If(out var text))
+            if (commandGroup.GetValue("text").Map(out var text))
             {
                command = text;
             }
-            else if (commandGroup.GetValue("file").If(out var fileName))
+            else if (commandGroup.GetValue("file").Map(out var fileName))
             {
                FileName file = fileName;
                command = file.Text;
@@ -51,11 +51,11 @@ namespace Core.Data
       public Command(Group commandGroup)
       {
          Name = commandGroup.Key;
-         if (commandGroup.GetValue("text").If(out var text))
+         if (commandGroup.GetValue("text").Map(out var text))
          {
             Text = text;
          }
-         else if (commandGroup.GetValue("file").If(out var fileName))
+         else if (commandGroup.GetValue("file").Map(out var fileName))
          {
             FileName file = fileName;
             Text = file.Text;

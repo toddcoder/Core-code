@@ -267,7 +267,7 @@ namespace Core.Collections
          var result = new Hash<TKey, TValue>();
          foreach (var item in enumerable)
          {
-            if (valueSelector(item).If(out var selector, out var exception))
+            if (valueSelector(item).Map(out var selector, out var exception))
             {
                result[keySelector(item)] = selector;
             }
@@ -286,7 +286,7 @@ namespace Core.Collections
          var result = new StringHash<TValue>(ignoreCase);
          foreach (var item in enumerable)
          {
-            if (valueSelector(item).If(out var selector, out var exception))
+            if (valueSelector(item).Map(out var selector, out var exception))
             {
                result[keySelector(item)] = selector;
             }
@@ -305,7 +305,7 @@ namespace Core.Collections
          var result = new Hash<TKey, TValue>(comparer);
          foreach (var item in enumerable)
          {
-            if (valueSelector(item).If(out var selector, out var exception))
+            if (valueSelector(item).Map(out var selector, out var exception))
             {
                result[keySelector(item)] = selector;
             }
@@ -328,7 +328,7 @@ namespace Core.Collections
                from selector in valueSelector(item)
                from key in keySelector(item)
                select (value: selector, key);
-            if (pair.If(out var keyValue, out var exception))
+            if (pair.Map(out var keyValue, out var exception))
             {
                result[keyValue.key] = keyValue.value;
             }
@@ -351,7 +351,7 @@ namespace Core.Collections
                from selector in valueSelector(item)
                from key in keySelector(item)
                select (value: selector, key);
-            if (pair.If(out var keyValue, out var exception))
+            if (pair.Map(out var keyValue, out var exception))
             {
                result[keyValue.key] = keyValue.value;
             }
@@ -374,7 +374,7 @@ namespace Core.Collections
                from selector in valueSelector(item)
                from key in keySelector(item)
                select (value: selector, key);
-            if (pair.If(out var keyValue, out var exception))
+            if (pair.Map(out var keyValue, out var exception))
             {
                result[keyValue.key] = keyValue.value;
             }
@@ -393,7 +393,7 @@ namespace Core.Collections
          var result = new Hash<TKey, TValue>();
          foreach (var item in enumerable)
          {
-            if (tryTo(() => valueSelector(item)).If(out var selector, out var exception))
+            if (tryTo(() => valueSelector(item)).Map(out var selector, out var exception))
             {
                result[keySelector(item)] = selector;
             }
@@ -412,7 +412,7 @@ namespace Core.Collections
          var result = new StringHash<TValue>(ignoreCase);
          foreach (var item in enumerable)
          {
-            if (tryTo(() => valueSelector(item)).If(out var selector, out var exception))
+            if (tryTo(() => valueSelector(item)).Map(out var selector, out var exception))
             {
                result[keySelector(item)] = selector;
             }
@@ -431,7 +431,7 @@ namespace Core.Collections
          var result = new Hash<TKey, TValue>(comparer);
          foreach (var item in enumerable)
          {
-            if (tryTo(() => valueSelector(item)).If(out var selector, out var exception))
+            if (tryTo(() => valueSelector(item)).Map(out var selector, out var exception))
             {
                result[keySelector(item)] = selector;
             }
@@ -450,7 +450,7 @@ namespace Core.Collections
       {
          try
          {
-            if (hash.AnyHash().If(out var internalHash, out var exception))
+            if (hash.AnyHash().Map(out var internalHash, out var exception))
             {
                var group = new Group();
                foreach (var (key, value) in internalHash)
@@ -475,7 +475,7 @@ namespace Core.Collections
       public static Result<Configuration> ToConfiguration<TKey, TValue>(this IHash<TKey, TValue> hash, FileName file, string name = Group.ROOT_NAME,
          bool save = false)
       {
-         if (hash.ToGroup().Map(g => new Configuration(file, g.items, name)).If(out var configuration, out var exception))
+         if (hash.ToGroup().Map(g => new Configuration(file, g.items, name)).Map(out var configuration, out var exception))
          {
             if (save)
             {

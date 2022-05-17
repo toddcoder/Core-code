@@ -82,7 +82,7 @@ namespace Core.Dates
 
          foreach (var span in spans)
          {
-            if (span.If(out var timeSpan))
+            if (span.Map(out var timeSpan))
             {
                newSpan = newSpan.Add(timeSpan);
             }
@@ -103,7 +103,7 @@ namespace Core.Dates
 
          foreach (var span in spans)
          {
-            if (span.If(out var timeSpan, out var exception))
+            if (span.Map(out var timeSpan, out var exception))
             {
                newSpan = newSpan.Add(timeSpan);
             }

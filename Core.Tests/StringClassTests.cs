@@ -126,7 +126,7 @@ namespace Core.Tests
       {
          var text = "alpha\rbravo\rcharlie\n\ndelta\r\necho";
          var source = new Source(text);
-         while (source.NextLine().If(out var line))
+         while (source.NextLine().Map(out var line))
          {
             Console.WriteLine($"'{line}'");
          }
@@ -138,19 +138,19 @@ namespace Core.Tests
          var text = ":alpha\n:bravo\n-charlie\n-delta\n-echo\nfoxtrot";
          var source = new Source(text);
 
-         while (source.NextLine("^ ':'").If(out var line))
+         while (source.NextLine("^ ':'").Map(out var line))
          {
             Console.WriteLine($": -> '{line}'");
          }
          Console.WriteLine("========");
 
-         while (source.NextLine("^ '-'").If(out var line))
+         while (source.NextLine("^ '-'").Map(out var line))
          {
             Console.WriteLine($"- -> '{line}'");
          }
          Console.WriteLine("========");
 
-         while (source.NextLine().If(out var line))
+         while (source.NextLine().Map(out var line))
          {
             Console.WriteLine($"  -> '{line}'");
          }
@@ -161,7 +161,7 @@ namespace Core.Tests
       {
          var text = "[a -> alpha]This is line 1\n[b -> bravo]This is line 2\n[c -> charlie]This is line 3";
          var source = new Source(text);
-         while (source.NextLineMatch("^ '[' /(/w) /s* '->' /s* /(/w+) ']'").If(out var result, out var line))
+         while (source.NextLineMatch("^ '[' /(/w) /s* '->' /s* /(/w+) ']'").Map(out var result, out var line))
          {
             var (tag, value) = result;
             var remainder = line.Drop(result.Length);

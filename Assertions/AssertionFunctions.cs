@@ -26,7 +26,7 @@ namespace Core.Assertions
          static string getName(string expressionText)
          {
             var name = expressionText;
-            if (name.Matches("'value(' .+ ').' /(.+?) ')'* $; f").If(out var result))
+            if (name.Matches("'value(' .+ ').' /(.+?) ')'* $; f").Map(out var result))
             {
                name = result.FirstGroup;
             }
@@ -62,7 +62,7 @@ namespace Core.Assertions
 
       public static string hashImage<TKey, TValue>(IHash<TKey, TValue> hash)
       {
-         return hash.AnyHash().If(out var h) ? dictionaryImage(h) : hash.ToString();
+         return hash.AnyHash().Map(out var h) ? dictionaryImage(h) : hash.ToString();
       }
 
       public static string maybeImage<T>(Maybe<T> maybe)
@@ -77,11 +77,11 @@ namespace Core.Assertions
 
       public static string matchedImage<T>(Matched<T> matched)
       {
-         if (matched.If(out var value, out var anyException))
+         if (matched.Map(out var value, out var anyException))
          {
             return value.ToNonNullString();
          }
-         else if (anyException.If(out var exception))
+         else if (anyException.Map(out var exception))
          {
             return $"failedMatch<{typeof(T).Name}>({exception.Message})";
          }
@@ -93,11 +93,11 @@ namespace Core.Assertions
 
       public static string completionImage<T>(Completion<T> completion)
       {
-         if (completion.If(out var value, out var _exception))
+         if (completion.Map(out var value, out var _exception))
          {
             return value.ToNonNullString();
          }
-         else if (_exception.If(out var exception))
+         else if (_exception.Map(out var exception))
          {
             return $"interrupted<{typeof(T).Name}>({exception.Message})";
          }
@@ -115,7 +115,7 @@ namespace Core.Assertions
 
       public static void orThrow<T>(IAssertion<T> assertion)
       {
-         if (assertion.Constraints.FirstOrNone(c => !c.IsTrue()).If(out var constraint))
+         if (assertion.Constraints.FirstOrNone(c => !c.IsTrue()).Map(out var constraint))
          {
             throw constraint.Message.Throws();
          }

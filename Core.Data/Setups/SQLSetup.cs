@@ -97,7 +97,7 @@ namespace Core.Data.Setups
 
       protected void loadAttributes(Maybe<Group> _attributesGroup)
       {
-         if (_attributesGroup.If(out var attributesGroup))
+         if (_attributesGroup.Map(out var attributesGroup))
          {
             foreach (var (key, value) in attributesGroup.Values())
             {
@@ -108,7 +108,7 @@ namespace Core.Data.Setups
 
       protected void loadAttributes(IHash<string, string> hash)
       {
-         if (hash.AnyHash().If(out var actualHash))
+         if (hash.AnyHash().Map(out var actualHash))
          {
             foreach (var (key, value) in actualHash)
             {

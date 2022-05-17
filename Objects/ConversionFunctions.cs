@@ -383,7 +383,7 @@ namespace Core.Objects
 
          foreach (var span in spans)
          {
-            if (span.If(out var timeSpan, out var exception))
+            if (span.Map(out var timeSpan, out var exception))
             {
                newSpan = newSpan.Add(timeSpan);
             }

@@ -15,7 +15,7 @@ namespace Core.Tests
       public void FirstOrNoneTest()
       {
          var testArray = 'f'.DownTo('a');
-         if (testArray.FirstOrNone().If(out var ch))
+         if (testArray.FirstOrNone().Map(out var ch))
          {
             ch.ToString().Must().Equal("f").OrThrow();
             Console.WriteLine($"{ch} == 'f'");
@@ -26,7 +26,7 @@ namespace Core.Tests
       public void FirstOrFailTest()
       {
          var testArray = 0.UpUntil(10).ToArray();
-         if (testArray.FirstOrFail("Not found").If(out var first, out var exception))
+         if (testArray.FirstOrFail("Not found").Map(out var first, out var exception))
          {
             Console.WriteLine(first);
          }
@@ -36,7 +36,7 @@ namespace Core.Tests
          }
 
          testArray = array<int>();
-         if (testArray.FirstOrFail("Not found").If(out first, out exception))
+         if (testArray.FirstOrFail("Not found").Map(out first, out exception))
          {
             Console.WriteLine(first);
          }
@@ -52,34 +52,34 @@ namespace Core.Tests
          var source = array("alpha", "apples", "brat", "IP");
 
          Console.WriteLine("Index of max");
-         Console.WriteLine(source.IndexOfMax().If(out var index) ? source[index] : "empty");
+         Console.WriteLine(source.IndexOfMax().Map(out var index) ? source[index] : "empty");
 
          Console.WriteLine();
 
          Console.WriteLine("Index of max length");
-         Console.WriteLine(source.IndexOfMax(s => s.Length).If(out index) ? source[index] : "empty");
+         Console.WriteLine(source.IndexOfMax(s => s.Length).Map(out index) ? source[index] : "empty");
 
          Console.WriteLine();
 
          Console.WriteLine("Index of min");
-         Console.WriteLine(source.IndexOfMin().If(out index) ? source[index] : "empty");
+         Console.WriteLine(source.IndexOfMin().Map(out index) ? source[index] : "empty");
 
          Console.WriteLine();
 
          Console.WriteLine("Index of min length");
-         Console.WriteLine(source.IndexOfMin(s => s.Length).If(out index) ? source[index] : "empty");
+         Console.WriteLine(source.IndexOfMin(s => s.Length).Map(out index) ? source[index] : "empty");
       }
 
       [TestMethod]
       public void MonadMinMaxTest()
       {
          var strings = array("foobar", "foo", "a", "bar");
-         if (strings.MaxOrNone().If(out var max))
+         if (strings.MaxOrNone().Map(out var max))
          {
             Console.WriteLine($"Max value: {max}");
          }
 
-         if (strings.MaxOrNone(s => s.Length).If(out max))
+         if (strings.MaxOrNone(s => s.Length).Map(out max))
          {
             Console.WriteLine($"Max length: {max}");
          }

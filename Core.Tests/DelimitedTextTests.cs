@@ -61,7 +61,7 @@ namespace Core.Tests
          var result = delimitedText.Enumerable(source)
             .Where(t => t.status == DelimitedTextStatus.Outside && t.text.Contains("="))
             .ToArray();
-         if (result.Length == 1 && result[0].text.FindByRegex("/s+ ['!=<>'] '=' /s+; f").If(out var slice))
+         if (result.Length == 1 && result[0].text.FindByRegex("/s+ ['!=<>'] '=' /s+; f").Map(out var slice))
          {
             var index = slice.Index + result[0].index;
             var length = slice.Length;

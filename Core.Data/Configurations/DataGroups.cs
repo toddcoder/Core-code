@@ -14,10 +14,10 @@ namespace Core.Data.Configurations
 
       public Result<string> Command(string adapterName)
       {
-         if (AdaptersGroup.GetGroup(adapterName).If(out var adapterGroup))
+         if (AdaptersGroup.GetGroup(adapterName).Map(out var adapterGroup))
          {
             var commandName = adapterGroup.GetValue("command").DefaultTo(() => adapterName);
-            if (CommandsGroup.GetGroup(commandName).If(out var commandGroup))
+            if (CommandsGroup.GetGroup(commandName).Map(out var commandGroup))
             {
                var command = new Command(commandGroup);
                return command.Text;

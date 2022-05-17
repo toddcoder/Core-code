@@ -49,7 +49,7 @@ namespace Core.Data
       {
          try
          {
-            while (Next().If(out var entity))
+            while (Next().Map(out var entity))
             {
                yield return entity;
             }

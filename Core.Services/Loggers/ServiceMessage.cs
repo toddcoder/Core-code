@@ -94,7 +94,7 @@ namespace Core.Services.Loggers
          }
          catch (Exception exception)
          {
-            if (_eventWriter.If(out var eventWriter))
+            if (_eventWriter.Map(out var eventWriter))
             {
                eventWriter.EmitException(exception);
             }
@@ -113,7 +113,7 @@ namespace Core.Services.Loggers
             }
             catch (Exception innerException)
             {
-               if (_eventWriter.If(out var eventWriter))
+               if (_eventWriter.Map(out var eventWriter))
                {
                   eventWriter.EmitException(exception);
                   eventWriter.EmitException(innerException);
@@ -134,7 +134,7 @@ namespace Core.Services.Loggers
             }
             catch (Exception innerException)
             {
-               if (_eventWriter.If(out var eventWriter))
+               if (_eventWriter.Map(out var eventWriter))
                {
                   eventWriter.EmitExceptionAttempt(exception, retry);
                   eventWriter.EmitException(innerException);
@@ -153,14 +153,14 @@ namespace Core.Services.Loggers
                _errorMessage = new StringBuilder();
             }
 
-            if (_errorMessage.If(out var errorMessage))
+            if (_errorMessage.Map(out var errorMessage))
             {
                errorMessage.AppendLine(strMessage.Drop(1));
             }
 
             return false;
          }
-         else if (_errorMessage.If(out var errorMessage))
+         else if (_errorMessage.Map(out var errorMessage))
          {
             EmitExceptionMessage(errorMessage.ToString());
             return true;
@@ -185,7 +185,7 @@ namespace Core.Services.Loggers
                }
                catch (Exception exception)
                {
-                  if (_eventWriter.If(out var eventWriter))
+                  if (_eventWriter.Map(out var eventWriter))
                   {
                      eventWriter.EmitMessage(message);
                      eventWriter.EmitException(exception);
@@ -209,7 +209,7 @@ namespace Core.Services.Loggers
                }
                catch (Exception exception)
                {
-                  if (_eventWriter.If(out var eventWriter))
+                  if (_eventWriter.Map(out var eventWriter))
                   {
                      eventWriter.EmitMessage(message);
                      eventWriter.EmitException(exception);
@@ -231,7 +231,7 @@ namespace Core.Services.Loggers
             }
             catch (Exception exception)
             {
-               if (_eventWriter.If(out var eventWriter))
+               if (_eventWriter.Map(out var eventWriter))
                {
                   eventWriter.EmitExceptionMessage(message);
                   eventWriter.EmitException(exception);
@@ -252,7 +252,7 @@ namespace Core.Services.Loggers
             }
             catch (Exception exception)
             {
-               if (_eventWriter.If(out var eventWriter))
+               if (_eventWriter.Map(out var eventWriter))
                {
                   eventWriter.EmitExceptionMessage(message);
                   eventWriter.EmitException(exception);
@@ -273,7 +273,7 @@ namespace Core.Services.Loggers
             }
             catch (Exception e)
             {
-               if (_eventWriter.If(out var eventWriter))
+               if (_eventWriter.Map(out var eventWriter))
                {
                   eventWriter.EmitWarning(exception);
                   eventWriter.EmitException(e);
@@ -294,7 +294,7 @@ namespace Core.Services.Loggers
             }
             catch (Exception e)
             {
-               if (_eventWriter.If(out var eventWriter))
+               if (_eventWriter.Map(out var eventWriter))
                {
                   eventWriter.EmitWarningMessage(message);
                   eventWriter.EmitException(e);
@@ -314,7 +314,7 @@ namespace Core.Services.Loggers
             }
             catch (Exception e)
             {
-               if (_eventWriter.If(out var eventWriter))
+               if (_eventWriter.Map(out var eventWriter))
                {
                   eventWriter.EmitWarningMessage(message);
                   eventWriter.EmitException(e);
@@ -357,7 +357,7 @@ namespace Core.Services.Loggers
       {
          beginIfAutoBegin();
 
-         if (_result.If(out var result))
+         if (_result.Map(out var result))
          {
             EmitMessage(ifSuccessful(result));
          }
@@ -367,7 +367,7 @@ namespace Core.Services.Loggers
       {
          beginIfAutoBegin();
 
-         if (_result.IfNot(out var exception))
+         if (_result.UnMap(out var exception))
          {
             EmitException(exception);
          }
@@ -377,7 +377,7 @@ namespace Core.Services.Loggers
       {
          beginIfAutoBegin();
 
-         if (_result.IfNot(out var exception))
+         if (_result.UnMap(out var exception))
          {
             EmitException(exception);
             EmitExceptionMessage(ifFailure(exception));
@@ -400,7 +400,7 @@ namespace Core.Services.Loggers
             }
             catch (Exception exception)
             {
-               if (_eventWriter.If(out var eventWriter))
+               if (_eventWriter.Map(out var eventWriter))
                {
                   eventWriter.EmitException(exception);
                }

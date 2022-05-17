@@ -17,7 +17,7 @@ namespace Core.Tests
       [TestMethod]
       public void MatcherTest()
       {
-         if ("tsqlcop.sql.format.options.xml".Matches("(sql); u").If(out var result))
+         if ("tsqlcop.sql.format.options.xml".Matches("(sql); u").Map(out var result))
          {
             for (var matchIndex = 0; matchIndex < result.MatchCount; matchIndex++)
             {
@@ -40,17 +40,17 @@ namespace Core.Tests
       [TestMethod]
       public void MatchPatternsTest()
       {
-         if ("foobar(foo,baz)".Matches("^ /w+ '('; f").If(out var result))
+         if ("foobar(foo,baz)".Matches("^ /w+ '('; f").Map(out var result))
          {
             Console.Write(result);
             var lastResult = result;
-            while (result.MatchedBy("/w+ ','; f").If(out result))
+            while (result.MatchedBy("/w+ ','; f").Map(out result))
             {
                Console.Write(result);
                lastResult = result;
             }
 
-            if (lastResult.MatchedBy("/w+ ')'; f").If(out result))
+            if (lastResult.MatchedBy("/w+ ')'; f").Map(out result))
             {
                Console.WriteLine(result);
             }
@@ -61,7 +61,7 @@ namespace Core.Tests
       public void QuoteTest()
       {
          var pattern = "`quote /(-[`quote]+) `quote; f";
-         if ("\"Fee fi fo fum\" said the giant.".Matches(pattern).If(out var result))
+         if ("\"Fee fi fo fum\" said the giant.".Matches(pattern).Map(out var result))
          {
             Console.WriteLine(result.FirstGroup.Guillemetify());
          }
@@ -95,7 +95,7 @@ namespace Core.Tests
             from split2 in pushed2.Split("/s* ',' /s*; f", s => $"var1_{s}:{index2++}")
             from popped2 in split2.Pop()
             select popped2;
-         if (_result.If(out scraper, out var _exception))
+         if (_result.Map(out scraper, out var _exception))
          {
             var hash = scraper.AnyHash().ForceValue();
             var func1 = $"{hash["name1"]}({getVariables(hash, "var0_")})";
@@ -103,7 +103,7 @@ namespace Core.Tests
             Console.WriteLine(func1);
             Console.WriteLine(func2);
          }
-         else if (_exception.If(out var exception))
+         else if (_exception.Map(out var exception))
          {
             Console.WriteLine($"Exception: {exception.Message}");
          }

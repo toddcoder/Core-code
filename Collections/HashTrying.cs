@@ -22,7 +22,7 @@ namespace Core.Collections
          }
          else
          {
-            if (defaultValue(key).If(out var value, out var exception))
+            if (defaultValue(key).Map(out var value, out var exception))
             {
                if (addIfNotFound)
                {

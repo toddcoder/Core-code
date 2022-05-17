@@ -53,7 +53,7 @@ namespace Core.Tests
       public void ResultTest()
       {
          var charResult = ((Either<char, int>)'a').ResultFromLeft(i => $"Expected char; found {i}");
-         if (charResult.If(out var @char, out var exception))
+         if (charResult.Map(out var @char, out var exception))
          {
             Console.WriteLine($"char {@char} is good");
          }
@@ -63,7 +63,7 @@ namespace Core.Tests
          }
 
          var intResult = ((Either<char, int>)153).ResultFromLeft(i => $"Expected char; found {i}");
-         if (intResult.If(out @char, out exception))
+         if (intResult.Map(out @char, out exception))
          {
             Console.WriteLine($"char {@char} is good");
          }

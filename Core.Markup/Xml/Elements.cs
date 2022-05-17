@@ -34,7 +34,7 @@ namespace Core.Markup.Xml
       {
          get
          {
-            if (elements.Where(e => e.Name == name).FirstOrNone().If(out var value))
+            if (elements.Where(e => e.Name == name).FirstOrNone().Map(out var value))
             {
                return value;
             }

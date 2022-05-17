@@ -47,7 +47,7 @@ namespace Core.Markup.Xml
                      element.Text = reader.Value;
                      break;
                   case XmlNodeType.EndElement when reader.Value != "html":
-                     if (elementStack.Pop().If(out element))
+                     if (elementStack.Pop().Map(out element))
                      {
                      }
                      else

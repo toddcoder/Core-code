@@ -30,13 +30,13 @@ namespace Core.Tests
          var @enum = Enum2.Add | Enum2.Delete;
          @enum.Must().HaveAnyOf(Enum2.Overwrite, Enum2.Add).OrThrow();
 
-         if (@enum.Must().HaveAnyOf(Enum2.Overwrite).OrFailure().IfNot(out var exception))
+         if (@enum.Must().HaveAnyOf(Enum2.Overwrite).OrFailure().UnMap(out var exception))
          {
             Console.WriteLine(exception.Message);
          }
 
          @enum.Must().HaveAllOf(Enum2.Add, Enum2.Delete).OrFailure();
-         if (@enum.Must().HaveAllOf(Enum2.Add, Enum2.Delete, Enum2.Overwrite).OrFailure().IfNot(out exception))
+         if (@enum.Must().HaveAllOf(Enum2.Add, Enum2.Delete, Enum2.Overwrite).OrFailure().UnMap(out exception))
          {
             Console.WriteLine(exception.Message);
          }

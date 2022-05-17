@@ -54,7 +54,7 @@ namespace Core.Assertions.Monads
                constraints.Add(new Constraint(() => constraintFunction(otherT), message, not, name, maybeImage(maybe)));
                break;
             case Maybe<T> anyValue:
-               if (anyValue.If(out var value))
+               if (anyValue.Map(out var value))
                {
                   constraints.Add(new Constraint(() => constraintFunction(value), message, not, name, maybeImage(maybe)));
                }

@@ -35,7 +35,7 @@ namespace Core.WinForms.Documents
             textBox.ForeColor = Color.Black;
             textBox.BackColor = Color.White;
             var newPattern = pattern.WithMultiline(true);
-            if (textBox.Text.Matches(newPattern).If(out var result))
+            if (textBox.Text.Matches(newPattern).Map(out var result))
             {
                for (var i = 0; i < result.MatchCount; i++)
                {

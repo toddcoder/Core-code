@@ -94,7 +94,7 @@ namespace Core.Computers
          get => userName;
          set
          {
-            if (value.Matches(@"^ /([/w '-']+) '\' /([/w '-']+) $; f").If(out var result))
+            if (value.Matches(@"^ /([/w '-']+) '\' /([/w '-']+) $; f").Map(out var result))
             {
                domain = result.FirstGroup;
                userName = result.SecondGroup;
@@ -156,7 +156,7 @@ namespace Core.Computers
 
       protected void unimpersonate()
       {
-         if (_impersonatedUser.If(out var impersonatedUser) && impersonating)
+         if (_impersonatedUser.Map(out var impersonatedUser) && impersonating)
          {
             impersonatedUser.Undo();
 

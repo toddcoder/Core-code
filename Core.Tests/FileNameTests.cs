@@ -57,7 +57,7 @@ namespace Core.Tests
       public void IndexedFileTest()
       {
          FileName originalFile = @"C:\Enterprise\Working\_DDL\tsqlcop.json";
-         if (originalFile.Indexed().If(out var file))
+         if (originalFile.Indexed().Map(out var file))
          {
             originalFile.CopyTo(file);
          }
@@ -71,7 +71,7 @@ namespace Core.Tests
       public void UniqueFileNameTest()
       {
          FileName file = @"~\source\repos\toddcoder\Core\Core.Tests\TestData\connections.txt";
-         if (file.Unique().If(out var uniqueFile))
+         if (file.Unique().Map(out var uniqueFile))
          {
             Console.WriteLine(uniqueFile);
          }

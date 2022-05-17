@@ -81,7 +81,7 @@ namespace Core.Tests
          var resources = new Resources<ConfigurationTests>();
          var source = resources.String("TestData.connections.txt");
 
-         if (Group.FromString(source).If(out var group, out var exception))
+         if (Group.FromString(source).Map(out var group, out var exception))
          {
             var result =
                from connections in @group.GetGroup("connections")
@@ -89,7 +89,7 @@ namespace Core.Tests
                from _server in connection1.GetValue("server")
                from _database in connection1.GetValue("database")
                select (_server, _database);
-            if (result.If(out var server, out var database))
+            if (result.Map(out var server, out var database))
             {
                Console.WriteLine($"server: {server}");
                Console.WriteLine($"database: {database}");
@@ -111,7 +111,7 @@ namespace Core.Tests
          var resources = new Resources<ConfigurationTests>();
          var source = resources.String("TestData.connections2.txt");
 
-         if (Group.FromString(source).If(out var group, out var exception))
+         if (Group.FromString(source).Map(out var group, out var exception))
          {
             var result =
                from connections in @group.GetGroup("connections")
@@ -119,7 +119,7 @@ namespace Core.Tests
                from _server in connection1.GetValue("server")
                from _database in connection1.GetValue("database")
                select (_server, _database);
-            if (result.If(out var server, out var database))
+            if (result.Map(out var server, out var database))
             {
                Console.WriteLine($"server: {server}");
                Console.WriteLine($"database: {database}");
@@ -140,7 +140,7 @@ namespace Core.Tests
       {
          var resources = new Resources<ConfigurationTests>();
          var source = resources.String("TestData.Arrays.txt");
-         if (Group.FromString(source).If(out var group, out var exception))
+         if (Group.FromString(source).Map(out var group, out var exception))
          {
             Console.WriteLine(group);
          }
@@ -155,7 +155,7 @@ namespace Core.Tests
       {
          var resources = new Resources<ConfigurationTests>();
          var source = resources.String("TestData.connections.txt");
-         if (Group.FromString(source).If(out var group, out var exception))
+         if (Group.FromString(source).Map(out var group, out var exception))
          {
             Console.Write(group);
          }
@@ -178,7 +178,7 @@ namespace Core.Tests
             IsTrue = true,
             Escape = "\r \t \\ foobar"
          };
-         if (Group.Serialize(test, "test").If(out var group, out var exception))
+         if (Group.Serialize(test, "test").Map(out var group, out var exception))
          {
             Console.Write(group);
          }
@@ -194,10 +194,10 @@ namespace Core.Tests
          var resources = new Resources<ConfigurationTests>();
          var binary = resources.Bytes("TestData.guids.pdf");
          var package = new BinaryPackage { Payload = binary };
-         if (Group.Serialize(package, "guids").If(out var configuration, out var exception))
+         if (Group.Serialize(package, "guids").Map(out var configuration, out var exception))
          {
             Console.WriteLine(configuration);
-            if (configuration.Deserialize<BinaryPackage>().If(out var newPackage, out exception))
+            if (configuration.Deserialize<BinaryPackage>().Map(out var newPackage, out exception))
             {
                package.Must().Equal(newPackage).OrThrow();
             }
@@ -217,9 +217,9 @@ namespace Core.Tests
       {
          var source = @"enum: Bravo; intValue: 153; stringValue: foobar; file: C:\temp\temp.txt; doubles: 1.0, 5.0, 3.0; isTrue: true; " +
             @"escape: ""`r `t \ foobar""";
-         if (Group.FromString(source).If(out var configuration, out var exception))
+         if (Group.FromString(source).Map(out var configuration, out var exception))
          {
-            if (configuration.Deserialize<Test>().If(out var obj, out exception))
+            if (configuration.Deserialize<Test>().Map(out var obj, out exception))
             {
                Console.WriteLine(obj);
             }
@@ -255,10 +255,10 @@ namespace Core.Tests
                }
             }
          };
-         if (Group.Serialize(container, "data").If(out var configuration, out var exception))
+         if (Group.Serialize(container, "data").Map(out var configuration, out var exception))
          {
             Console.WriteLine(configuration);
-            if (configuration.Deserialize<Container>().If(out container, out exception))
+            if (configuration.Deserialize<Container>().Map(out container, out exception))
             {
                foreach (var test in container.Tests)
                {
@@ -288,7 +288,7 @@ namespace Core.Tests
             ["echo"] = "Eta",
             ["foxtrot"] = "Phi"
          };
-         if (hash.ToGroup().If(out var group, out var exception))
+         if (hash.ToGroup().Map(out var group, out var exception))
          {
             Console.WriteLine(group);
          }
@@ -317,7 +317,7 @@ namespace Core.Tests
             from source in file.TryTo.Text
             from group2 in Group.FromString(source)
             select @group.ToStringHash();
-         if (_result.If(out var result, out var exception))
+         if (_result.Map(out var result, out var exception))
          {
             foreach (var (key, value) in result)
             {
@@ -334,14 +334,14 @@ namespace Core.Tests
       public void EmptyStringItemTest()
       {
          var hash = new StringHash(true) { ["release"] = "", ["build"] = "http" };
-         if (hash.ToGroup().If(out var group, out var exception))
+         if (hash.ToGroup().Map(out var group, out var exception))
          {
             var source = group.ToString();
             Console.WriteLine(source);
             Console.WriteLine(group["release"]);
             Console.WriteLine(group["build"]);
 
-            if (Group.FromString(source).If(out group, out exception))
+            if (Group.FromString(source).Map(out group, out exception))
             {
                Console.WriteLine(group["release"]);
                Console.WriteLine(group["build"]);
@@ -387,7 +387,7 @@ namespace Core.Tests
          writer.WriteLine("   value2: \"$3\"");
          writer.WriteLine("]");
          var source = writer.ToString();
-         if (Group.FromString(source).If(out var group, out var exception))
+         if (Group.FromString(source).Map(out var group, out var exception))
          {
             foreach (var (key, innerGroup) in group.Groups())
             {
@@ -464,7 +464,7 @@ namespace Core.Tests
          writer.WriteLine("}");
          var source = writer.ToString();
 
-         if (Group.FromString(source).If(out var group, out var exception))
+         if (Group.FromString(source).Map(out var group, out var exception))
          {
             Console.WriteLine(group);
          }
@@ -473,9 +473,9 @@ namespace Core.Tests
             Console.WriteLine(exception.Message);
          }
 
-         if (group.Deserialize<ReleaseTarget>().If(out var releaseTarget, out exception))
+         if (group.Deserialize<ReleaseTarget>().Map(out var releaseTarget, out exception))
          {
-            if (Group.Serialize(typeof(ReleaseTarget), releaseTarget).If(out group, out exception))
+            if (Group.Serialize(typeof(ReleaseTarget), releaseTarget).Map(out group, out exception))
             {
                Console.WriteLine(group);
             }

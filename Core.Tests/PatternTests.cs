@@ -12,7 +12,7 @@ namespace Core.Tests
    {
       protected static void matcherTest(Pattern pattern)
       {
-         if ("tsqlcop.sql.format.options.xml".Matches(pattern).If(out var result))
+         if ("tsqlcop.sql.format.options.xml".Matches(pattern).Map(out var result))
          {
             foreach (var match in result)
             {
@@ -58,23 +58,23 @@ namespace Core.Tests
 
       protected static void matchPatternsTest(Pattern pattern1, Pattern pattern2, Pattern pattern3)
       {
-         if ("foobar(foo,baz)".Matches(pattern1).If(out var result))
+         if ("foobar(foo,baz)".Matches(pattern1).Map(out var result))
          {
             Console.Write(result.FirstMatch);
             Maybe<Exception> _exception;
             var lastResult = result;
-            while (result.MatchedBy(pattern2).If(out result, out _exception))
+            while (result.MatchedBy(pattern2).Map(out result, out _exception))
             {
                Console.Write(result.FirstMatch);
                lastResult = result;
             }
 
-            if (_exception.If(out var exception))
+            if (_exception.Map(out var exception))
             {
                Console.WriteLine($"Exception: {exception.Message}");
             }
 
-            if (lastResult.MatchedBy(pattern3).If(out result))
+            if (lastResult.MatchedBy(pattern3).Map(out result))
             {
                Console.WriteLine(result.FirstMatch);
             }
@@ -97,7 +97,7 @@ namespace Core.Tests
       public void FQuoteTest()
       {
          Pattern pattern = "`quote /(-[`quote]+) `quote; f";
-         if ("\"Fee fi fo fum\" said the giant.".Matches(pattern).If(out var result))
+         if ("\"Fee fi fo fum\" said the giant.".Matches(pattern).Map(out var result))
          {
             Console.WriteLine(result.FirstGroup.Guillemetify());
          }
@@ -140,7 +140,7 @@ namespace Core.Tests
       public void MatchTextTest()
       {
          var input = "This is a test I'm testing";
-         if (input.Matches("/b 'test' /w*; f").If(out var result))
+         if (input.Matches("/b 'test' /w*; f").Map(out var result))
          {
             foreach (var match in result)
             {

@@ -9,7 +9,7 @@ namespace Core.Git
    {
       public static implicit operator GitBranch(string branch)
       {
-         if (branch.Matches("^ /(-['//']+) '//' /(.+) $; f").If(out var result))
+         if (branch.Matches("^ /(-['//']+) '//' /(.+) $; f").Map(out var result))
          {
             return new GitBranch(result.SecondGroup) { Origin = result.FirstGroup };
          }
@@ -23,7 +23,7 @@ namespace Core.Git
       {
          get
          {
-            if (Git.TryTo.Execute("rev-parse --abbrev-ref HEAD").If(out var lines, out var exception))
+            if (Git.TryTo.Execute("rev-parse --abbrev-ref HEAD").Map(out var lines, out var exception))
             {
                return lines.Length > 0 ? lines[0].Trim() : throw "Branch not found".Fail();
             }

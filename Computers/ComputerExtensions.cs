@@ -30,7 +30,7 @@ namespace Core.Computers
       {
          foreach (var folder in folders)
          {
-            if (folder.LocalAndParentFiles.Where(f => predicate(f)).FirstOrNone().If(out var file))
+            if (folder.LocalAndParentFiles.Where(f => predicate(f)).FirstOrNone().Map(out var file))
             {
                return file.Success();
             }
@@ -65,7 +65,7 @@ namespace Core.Computers
       {
          foreach (var folder in folders)
          {
-            if (folder.LocalAndParentFolders.Where(f => predicate(f)).FirstOrNone().If(out var foundFolder))
+            if (folder.LocalAndParentFolders.Where(f => predicate(f)).FirstOrNone().Map(out var foundFolder))
             {
                return foundFolder.Success();
             }

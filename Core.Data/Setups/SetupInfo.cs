@@ -17,7 +17,7 @@ namespace Core.Data.Setups
 
       public string Command
       {
-         get => command.If(out var c) ? c : adapter;
+         get => command.Map(out var c) ? c : adapter;
          set => command = value;
       }
 

@@ -52,7 +52,7 @@ namespace Core.Services.Scheduling
          {
             var schedule = schedules[i];
             schedule.Next();
-            if (_nextTargetDateTime.If(out var nextTargetDateTime) && nextTargetDateTime > schedule.TargetDateTime || _nextTargetDateTime.IsNone)
+            if (_nextTargetDateTime.Map(out var nextTargetDateTime) && nextTargetDateTime > schedule.TargetDateTime || _nextTargetDateTime.IsNone)
             {
                nextScheduleIndex = i;
                _nextTargetDateTime = schedule.TargetDateTime;
@@ -100,7 +100,7 @@ namespace Core.Services.Scheduling
          for (var i = 0; i < schedules.Length; i++)
          {
             var schedule = schedules[i];
-            if (_nextTargetDateTime.If(out var nextTargetDateTime) && nextTargetDateTime > schedule.TargetDateTime || _nextTargetDateTime.IsNone)
+            if (_nextTargetDateTime.Map(out var nextTargetDateTime) && nextTargetDateTime > schedule.TargetDateTime || _nextTargetDateTime.IsNone)
             {
                nextScheduleIndex = i;
                _nextTargetDateTime = schedule.TargetDateTime;

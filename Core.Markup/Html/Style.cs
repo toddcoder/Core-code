@@ -8,7 +8,7 @@ namespace Core.Markup.Html
    {
       public static implicit operator Style(string source)
       {
-         if (source.Matches("^ /(-[':']+) /s* ':' /s* /(.+) $; f").If(out var result))
+         if (source.Matches("^ /(-[':']+) /s* ':' /s* /(.+) $; f").Map(out var result))
          {
             return new Style(result.FirstGroup, result.SecondGroup);
          }

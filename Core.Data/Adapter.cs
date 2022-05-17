@@ -39,7 +39,7 @@ namespace Core.Data
       public Adapter(T entity, ISetup setup)
       {
          DataSource = setup.DataSource;
-         if (setup is ISetupWithInfo setupWithInfo && setupWithInfo.Handler.If(out var handler))
+         if (setup is ISetupWithInfo setupWithInfo && setupWithInfo.Handler.Map(out var handler))
          {
             DataSource.SetMessageHandler(handler);
          }

@@ -16,7 +16,7 @@ namespace Core.Monads
 
 		public Matching<T, TResult> IfMatched(Func<T, TResult> ifMatched)
 		{
-			if (matched.If(out var value))
+			if (matched.Map(out var value))
          {
             action = func(() => ifMatched(value)).Some();
          }
@@ -36,7 +36,7 @@ namespace Core.Monads
 
 		public Matching<T, TResult> IfFailedMatch(Func<Exception, TResult> ifFailedMatch)
 		{
-			if (matched.IfNot(out var anyException) && anyException.If(out var exception))
+			if (matched.IfNot(out var anyException) && anyException.Map(out var exception))
          {
             action = func(() => ifFailedMatch(exception)).Some();
          }
@@ -46,7 +46,7 @@ namespace Core.Monads
 
 		public Matched<TResult> Map(Func<T, TResult> mapping)
 		{
-			if (matched.If(out var value))
+			if (matched.Map(out var value))
          {
             return mapping(value).Match();
          }
@@ -58,7 +58,7 @@ namespace Core.Monads
 
 		public Matched<TResult> Map(Func<T, Matched<TResult>> mapping)
 		{
-			if (matched.If(out var value))
+			if (matched.Map(out var value))
          {
             return mapping(value);
          }

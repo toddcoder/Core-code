@@ -56,9 +56,9 @@ namespace Core.Monads
       [Obsolete("Use |")]
       public abstract Maybe<T> Or(T other);
 
-      public abstract bool If(out T value);
+      public abstract bool Map(out T value);
 
-      public abstract bool Else(out T value);
+      public abstract bool UnMap(out T value);
 
       public abstract void Force(string message);
 

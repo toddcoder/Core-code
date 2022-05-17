@@ -37,7 +37,7 @@ namespace Core.Services.Scheduling
 
       public Result<DateTime> Next()
       {
-         if (increment.Next.If(out var next, out var exception))
+         if (increment.Next.Map(out var next, out var exception))
          {
             targetDateTime = next;
             return targetDateTime;

@@ -30,7 +30,7 @@ namespace Core.Applications.CommandProcessing
          var table = new TableMaker(("Command", Justification.Left), ("Help", Justification.Left)) { Title = "Commands" };
          foreach (var (command, (_helpText, _, _)) in commandHelp)
          {
-            if (_helpText.If(out var helpText))
+            if (_helpText.Map(out var helpText))
             {
                table.Add(command, helpText);
             }
@@ -74,12 +74,12 @@ namespace Core.Applications.CommandProcessing
          else if (commandHelp.If(command, out var tuple))
          {
             var (_helpText, _switchPattern, replacements) = tuple;
-            if (_helpText.If(out var helpText))
+            if (_helpText.Map(out var helpText))
             {
-               if (_switchPattern.If(out var switchPattern))
+               if (_switchPattern.Map(out var switchPattern))
                {
                   var formatter = new SwitchHelpFormatter(command, helpText, switchPattern, switchHelp, prefix, shortCut, replacements);
-                  if (formatter.Format().If(out var formattedHelp, out var exception))
+                  if (formatter.Format().Map(out var formattedHelp, out var exception))
                   {
                      return formattedHelp;
                   }

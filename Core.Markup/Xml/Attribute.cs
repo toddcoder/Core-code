@@ -13,7 +13,7 @@ namespace Core.Markup.Xml
 
       public static implicit operator Attribute(string source)
       {
-         if (source.Matches(PATTERN_ATTRIBUTE).If(out var result))
+         if (source.Matches(PATTERN_ATTRIBUTE).Map(out var result))
          {
             var (name, text) = result;
             return new Attribute(name, text, QuoteType.Single);

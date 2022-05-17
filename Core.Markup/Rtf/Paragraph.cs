@@ -169,7 +169,7 @@ namespace Core.Markup.Rtf
          {
             DisjointRange range;
 
-            if (format.Begin.If(out var begin) && format.End.If(out var end))
+            if (format.Begin.Map(out var begin) && format.End.Map(out var end))
             {
                if (begin <= end)
                {
@@ -448,7 +448,7 @@ namespace Core.Markup.Rtf
             result.Append(@"\pagebb");
          }
 
-         if (_lineSpacing.If(out var lineSpacing))
+         if (_lineSpacing.Map(out var lineSpacing))
          {
             result.Append($@"\sl-{lineSpacing.PointsToTwips()}\slmult0");
          }

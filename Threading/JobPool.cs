@@ -81,14 +81,14 @@ namespace Core.Threading
 
          for (var i = 0; i < processorCount; i++)
          {
-            while (queue.Dequeue(i).If(out var action))
+            while (queue.Dequeue(i).Map(out var action))
             {
                newQueue.Enqueue(action);
             }
          }
 
          queue.ResetCurrentAffinity();
-         while (newQueue.Dequeue().If(out var item))
+         while (newQueue.Dequeue().Map(out var item))
          {
             queue.Enqueue(item);
          }

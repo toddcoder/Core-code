@@ -45,7 +45,7 @@ namespace Core.Objects
                {
                   return null;
                }
-               else if (new ObjectInfo(current, s).Value.If(out var value))
+               else if (new ObjectInfo(current, s).Value.Map(out var value))
                {
                   current = value;
                }
@@ -153,9 +153,9 @@ namespace Core.Objects
                {
                   if (current is not null)
                   {
-                     if (ObjectInfo.PropertyInfo(current, singleSignature).If(out var info))
+                     if (ObjectInfo.PropertyInfo(current, singleSignature).Map(out var info))
                      {
-                        if (new ObjectInfo(current, singleSignature, info).Value.If(out var value))
+                        if (new ObjectInfo(current, singleSignature, info).Value.Map(out var value))
                         {
                            current = value;
                         }

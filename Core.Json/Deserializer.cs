@@ -39,7 +39,7 @@ namespace Core.Json
          void setItem(string value)
          {
             var key = _propertyName.DefaultTo(() => $"${itemCount()}");
-            if (peekGroup().If(out var group))
+            if (peekGroup().Map(out var group))
             {
                group.SetItem(key, new Item(key, value));
             }
@@ -64,7 +64,7 @@ namespace Core.Json
                      var key = _propertyName.DefaultTo(() => $"${itemCount()}");
                      _propertyName = nil;
                      var group = new Group(key);
-                     if (peekGroup().If(out var parentGroup))
+                     if (peekGroup().Map(out var parentGroup))
                      {
                         parentGroup.SetItem(key, group);
                      }
@@ -92,7 +92,7 @@ namespace Core.Json
                      var key = _propertyName.DefaultTo(() => $"${itemCount()}");
                      _propertyName = nil;
                      var group = new Group(key);
-                     if (peekGroup().If(out var parentGroup))
+                     if (peekGroup().Map(out var parentGroup))
                      {
                         parentGroup.SetItem(group.Key, group);
                      }

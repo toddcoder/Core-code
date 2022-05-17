@@ -43,11 +43,11 @@ namespace Core.Objects
       {
          get
          {
-            if (_value.If(out var value))
+            if (_value.Map(out var value))
             {
                return value;
             }
-            else if (_activator.If(out var activator))
+            else if (_activator.Map(out var activator))
             {
                var returnValue = activator();
                returnValue.Must().Not.BeNull().OrThrow();

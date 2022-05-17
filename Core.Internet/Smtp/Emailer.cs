@@ -72,7 +72,7 @@ namespace Core.Internet.Smtp
 
          message.IsBodyHtml = isHtml;
 
-         if (Attachments.If(out var attachments))
+         if (Attachments.Map(out var attachments))
          {
             foreach (var attachment in attachments)
             {

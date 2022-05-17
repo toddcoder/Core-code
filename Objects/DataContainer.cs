@@ -35,7 +35,7 @@ namespace Core.Objects
 
       public void BeforeExecute()
       {
-         if (_beforeExecute.If(out var beforeExecute))
+         if (_beforeExecute.Map(out var beforeExecute))
          {
             beforeExecute();
          }
@@ -43,7 +43,7 @@ namespace Core.Objects
 
       public void AfterExecute()
       {
-         if (_afterExecute.If(out var afterExecute))
+         if (_afterExecute.Map(out var afterExecute))
          {
             afterExecute();
          }

@@ -17,7 +17,7 @@ namespace Core.Objects
          this.index = index;
          this.length = length;
 
-         if (group.Text.Matches("^ /(/w+) /s* (/['$,:'] /s* /(.*))? $; f").If(out var result))
+         if (group.Text.Matches("^ /(/w+) /s* (/['$,:'] /s* /(.*))? $; f").Map(out var result))
          {
             var (mn, prefix, format) = result;
             memberName = mn;

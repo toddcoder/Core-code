@@ -29,7 +29,7 @@ namespace Core.Strings.Text
       public Result<DifferenceModel> BuildModel()
       {
          var differ = new DifferenceBuilder(oldText, newText, ignoreWhiteSpace, ignoreCase);
-         if (differ.Build().If(out var result, out var exception))
+         if (differ.Build().Map(out var result, out var exception))
          {
             var model = new DifferenceModel();
             ItemBuilder itemBuilder = buildItemsNoSub;
@@ -50,7 +50,7 @@ namespace Core.Strings.Text
 
          var differ = new DifferenceBuilder(oldWords, newWords, false, false);
 
-         if (differ.Build().If(out var wordResult))
+         if (differ.Build().Map(out var wordResult))
          {
             buildItems(wordResult, oldItems, newItems, nil);
          }
@@ -79,13 +79,13 @@ namespace Core.Strings.Text
                   oldPosition + 1);
                var newItem = new DifferenceItem(result.NewItems[i + diffBlock.NewInsertStart], DifferenceType.Inserted,
                   newPosition + 1);
-               if (_subItemBuilder.If(out var subItemBuilder))
+               if (_subItemBuilder.Map(out var subItemBuilder))
                {
                   var oldWords = result.OldItems[oldPosition].Unjoin("/s+; f");
                   var newWords = result.NewItems[newPosition].Unjoin("/s+; f");
                   var differ = new DifferenceBuilder(oldWords, newWords, false, false);
 
-                  if (differ.Build().If(out _))
+                  if (differ.Build().Map(out _))
                   {
                      subItemBuilder(result.OldItems[oldPosition], result.NewItems[newPosition], oldItem.SubItems, newItem.SubItems);
                      newItem.Type = DifferenceType.Modified;

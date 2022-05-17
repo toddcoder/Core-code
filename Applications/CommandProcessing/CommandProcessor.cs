@@ -128,7 +128,7 @@ namespace Core.Applications.CommandProcessing
          {
             return ("help", "");
          }
-         else if (commandLine.Matches("^ 'help' (/s+ /(.+))? $; f").If(out var result))
+         else if (commandLine.Matches("^ 'help' (/s+ /(.+))? $; f").Map(out var result))
          {
             return ("help", result.FirstGroup);
          }
@@ -136,7 +136,7 @@ namespace Core.Applications.CommandProcessing
          {
             return (commandLine, "");
          }
-         else if (commandLine.Matches("^ /('config') /s+ ('get' | 'set') /b; f").If(out result))
+         else if (commandLine.Matches("^ /('config') /s+ ('get' | 'set') /b; f").Map(out result))
          {
             return ("config", commandLine.Drop(result.FirstGroup.Length).TrimLeft());
          }
@@ -150,7 +150,7 @@ namespace Core.Applications.CommandProcessing
       {
          try
          {
-            if (InitializeConfiguration().IfNot(out configuration, out var exception))
+            if (InitializeConfiguration().UnMap(out configuration, out var exception))
             {
                HandleException(exception);
             }
@@ -167,7 +167,7 @@ namespace Core.Applications.CommandProcessing
 
       protected void run(string commandLine, bool seekCommandFile)
       {
-         if (splitCommandFromRest(commandLine).If(out var command, out var rest))
+         if (splitCommandFromRest(commandLine).Map(out var command, out var rest))
          {
             Command = command;
 
@@ -181,7 +181,7 @@ namespace Core.Applications.CommandProcessing
                   break;
                default:
                {
-                  if (getMethod(command).If(out var methodInfo, out var commandAttribute))
+                  if (getMethod(command).Map(out var methodInfo, out var commandAttribute))
                   {
                      if (commandAttribute.Initialize)
                      {
@@ -189,7 +189,7 @@ namespace Core.Applications.CommandProcessing
                      }
 
                      var result = executeMethod(methodInfo, rest);
-                     if (result.If(out _, out var exception))
+                     if (result.Map(out _, out var exception))
                      {
                         CleanUp();
                      }
@@ -246,7 +246,7 @@ namespace Core.Applications.CommandProcessing
          {
             help = generator.Help();
          }
-         else if (generator.Help(rest).IfNot(out help, out var exception))
+         else if (generator.Help(rest).UnMap(out help, out var exception))
          {
             ExceptionWriter.WriteExceptionLine(exception);
          }
@@ -289,14 +289,14 @@ namespace Core.Applications.CommandProcessing
             ResetConfiguration();
          }
          else if (rest.Matches($"^ /('{Prefix}set' | '{Prefix}get' | '{ShortCut}s' | '{ShortCut}g') /s+ /(/w [/w '-']*) /b /(.*) $; f")
-                  .If(out var result))
+                  .Map(out var result))
          {
             var (command, name, value) = result;
-            if (command.Matches($"^ '{Prefix}' /('set' | 'get'); f").If(out result))
+            if (command.Matches($"^ '{Prefix}' /('set' | 'get'); f").Map(out result))
             {
                command = result.FirstGroup;
             }
-            else if (command.Matches($"^ '{ShortCut}' /('s' | 'g'); f").If(out result))
+            else if (command.Matches($"^ '{ShortCut}' /('s' | 'g'); f").Map(out result))
             {
                command = result.FirstGroup;
             }
@@ -370,7 +370,7 @@ namespace Core.Applications.CommandProcessing
          var delimitedText = DelimitedText.BothQuotes();
          var noStrings = delimitedText.Destringify(source, true);
 
-         while (noStrings.Matches($"^ /s* /('{Prefix}' | '{ShortCut}') /(/w [/w '-']*) /b; f").If(out var result))
+         while (noStrings.Matches($"^ /s* /('{Prefix}' | '{ShortCut}') /(/w [/w '-']*) /b; f").Map(out var result))
          {
             var (prefix, name) = result;
             noStrings = noStrings.Drop(result.Length);
@@ -378,7 +378,7 @@ namespace Core.Applications.CommandProcessing
             {
                yield return (prefix, name, Maybe<string>.nil);
             }
-            else if (noStrings.Matches("^ /s* /([quote]) /(-[quote]*) /1; f").If(out result))
+            else if (noStrings.Matches("^ /s* /([quote]) /(-[quote]*) /1; f").Map(out result))
             {
                var value = delimitedText.Restringify(result.SecondGroup, RestringifyQuotes.None);
 
@@ -386,7 +386,7 @@ namespace Core.Applications.CommandProcessing
 
                noStrings = noStrings.Drop(result.Length);
             }
-            else if (noStrings.Matches("^ /s* /(-/s+); f").If(out result))
+            else if (noStrings.Matches("^ /s* /(-/s+); f").Map(out result))
             {
                yield return (prefix, name, result.FirstGroup);
 
@@ -464,7 +464,7 @@ namespace Core.Applications.CommandProcessing
       {
          var type = propertyInfo.PropertyType;
          var _object = Maybe<object>.nil;
-         if (_value.If(out var value))
+         if (_value.Map(out var value))
          {
             if (type == typeof(bool))
             {
@@ -496,7 +496,7 @@ namespace Core.Applications.CommandProcessing
                _object = getStringArray(value);
             }
 
-            if (_object.If(out var objValue))
+            if (_object.Map(out var objValue))
             {
                propertyInfo.SetValue(this, objValue);
                return unit;
@@ -519,7 +519,7 @@ namespace Core.Applications.CommandProcessing
          {
             return true.Some<object>();
          }
-         else if (value.Matches("^ /s* /('true' | 'false' | '+' | '-') /b; fi").If(out var result))
+         else if (value.Matches("^ /s* /('true' | 'false' | '+' | '-') /b; fi").Map(out var result))
          {
             return result.FirstGroup.AnySame("true", "+").Some<object>();
          }
@@ -611,7 +611,7 @@ namespace Core.Applications.CommandProcessing
 
       protected static Maybe<object> getStringArray(string value)
       {
-         if (value.Matches("^/s* '[' /s*  /(.*) /s* ']'; f").If(out var result))
+         if (value.Matches("^/s* '[' /s*  /(.*) /s* ']'; f").Map(out var result))
          {
             var list = result.FirstGroup;
             var array = list.Unjoin("/s* ',' /s*; f");

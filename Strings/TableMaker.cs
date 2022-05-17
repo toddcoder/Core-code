@@ -201,14 +201,14 @@ namespace Core.Strings
             var header = columnHeaders.Select(ch => ch.Render()).ToString(ColumnSeparator);
             headerWidth = header.Length;
 
-            if (Title.If(out var title))
+            if (Title.Map(out var title))
             {
                builder.Append(title.Center(headerWidth));
                builder.Append(getRowSeparator());
             }
 
             builder.AppendLine(header);
-            if (HeaderFoot.If(out var headerFoot))
+            if (HeaderFoot.Map(out var headerFoot))
             {
                builder.AppendLine(headerFoot.ToString().Repeat(headerWidth));
             }

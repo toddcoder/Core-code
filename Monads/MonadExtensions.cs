@@ -66,7 +66,7 @@ namespace Core.Monads
 
       public static Responding<T> FailedResponse<T>(this string message) => new FailedResponse<T>(new Exception(message));
 
-      public static bool NotNull<T>(this T obj, out T value) => obj.Some().If(out value);
+      public static bool NotNull<T>(this T obj, out T value) => obj.Some().Map(out value);
 
       public static Maybe<string> SomeIfNotEmpty(this string text) => maybe(text.IsNotEmpty(), text.Some);
 
@@ -104,7 +104,7 @@ namespace Core.Monads
       [DebuggerStepThrough]
       public static Result<TResult> Select<T, TResult>(this Result<T> result, Func<T, TResult> func)
       {
-         if (result.If(out var value, out var exception))
+         if (result.Map(out var value, out var exception))
          {
             return func(value).Success();
          }
@@ -256,7 +256,7 @@ namespace Core.Monads
       {
          foreach (var maybe in enumerable)
          {
-            if (maybe.If(out var value))
+            if (maybe.Map(out var value))
             {
                yield return value;
             }
@@ -267,7 +267,7 @@ namespace Core.Monads
       {
          foreach (var item in enumerable)
          {
-            if (predicate(item).If(out var value))
+            if (predicate(item).Map(out var value))
             {
                yield return (item, value);
             }
@@ -278,7 +278,7 @@ namespace Core.Monads
       {
          foreach (var result in enumerable)
          {
-            if (result.If(out var value))
+            if (result.Map(out var value))
             {
                yield return value;
             }
@@ -290,7 +290,7 @@ namespace Core.Monads
       {
          foreach (var item in enumerable)
          {
-            if (predicate(item).If(out var value))
+            if (predicate(item).Map(out var value))
             {
                yield return (item, value);
             }
@@ -301,7 +301,7 @@ namespace Core.Monads
       {
          foreach (var result in enumerable)
          {
-            if (result.If(out var value, out var exception))
+            if (result.Map(out var value, out var exception))
             {
                yield return value;
             }
@@ -316,7 +316,7 @@ namespace Core.Monads
       {
          foreach (var matched in enumerable)
          {
-            if (matched.If(out var value))
+            if (matched.Map(out var value))
             {
                yield return value;
             }
@@ -328,7 +328,7 @@ namespace Core.Monads
       {
          foreach (var item in enumerable)
          {
-            if (predicate(item).If(out var value))
+            if (predicate(item).Map(out var value))
             {
                yield return (item, value);
             }
@@ -339,7 +339,7 @@ namespace Core.Monads
       {
          foreach (var completion in enumerable)
          {
-            if (completion.If(out var value))
+            if (completion.Map(out var value))
             {
                yield return value;
             }
@@ -351,7 +351,7 @@ namespace Core.Monads
       {
          foreach (var item in enumerable)
          {
-            if (predicate(item).If(out var value))
+            if (predicate(item).Map(out var value))
             {
                yield return (item, value);
             }
@@ -363,7 +363,7 @@ namespace Core.Monads
          var result = new List<T>();
          foreach (var anyValue in enumerable)
          {
-            if (anyValue.If(out var value))
+            if (anyValue.Map(out var value))
             {
                result.Add(value);
             }
@@ -424,7 +424,7 @@ namespace Core.Monads
          Maybe<TResult> _firstItem = nil;
          foreach (var result in enumerable.Select(item => tryTo(() => func(item))))
          {
-            if (result.If(out var value, out var exception))
+            if (result.Map(out var value, out var exception))
             {
                if (_firstItem.IsNone)
                {
@@ -498,7 +498,7 @@ namespace Core.Monads
 
       public static T ThrowIfFailed<T>(this Result<T> result)
       {
-         if (result.If(out var value, out var exception))
+         if (result.Map(out var value, out var exception))
          {
             return value;
          }
@@ -511,7 +511,7 @@ namespace Core.Monads
       public static void ForEach<T>(this Result<IEnumerable<T>> enumerable, Action<T> ifSuccess,
          Action<Exception> ifFailure)
       {
-         if (enumerable.If(out var e, out var exception))
+         if (enumerable.Map(out var e, out var exception))
          {
             e.ForEach(ifSuccess, ifFailure);
          }
@@ -562,9 +562,9 @@ namespace Core.Monads
 
       public static Maybe<T> IfCast<T>(this object obj) => obj is T t ? t.Some() : none<T>();
 
-      public static bool If<T1, T2>(this Maybe<(T1, T2)> some, out T1 v1, out T2 v2)
+      public static bool Map<T1, T2>(this Maybe<(T1, T2)> some, out T1 v1, out T2 v2)
       {
-         if (some.If(out var value))
+         if (some.Map(out var value))
          {
             v1 = value.Item1;
             v2 = value.Item2;
@@ -580,9 +580,9 @@ namespace Core.Monads
          }
       }
 
-      public static bool If<T1, T2, T3>(this Maybe<(T1, T2, T3)> some, out T1 v1, out T2 v2, out T3 v3)
+      public static bool Map<T1, T2, T3>(this Maybe<(T1, T2, T3)> some, out T1 v1, out T2 v2, out T3 v3)
       {
-         if (some.If(out var value))
+         if (some.Map(out var value))
          {
             v1 = value.Item1;
             v2 = value.Item2;
@@ -600,10 +600,10 @@ namespace Core.Monads
          }
       }
 
-      public static bool If<T1, T2, T3, T4>(this Maybe<(T1, T2, T3, T4)> some, out T1 v1, out T2 v2, out T3 v3,
+      public static bool Map<T1, T2, T3, T4>(this Maybe<(T1, T2, T3, T4)> some, out T1 v1, out T2 v2, out T3 v3,
          out T4 v4)
       {
-         if (some.If(out var value))
+         if (some.Map(out var value))
          {
             v1 = value.Item1;
             v2 = value.Item2;
@@ -623,9 +623,9 @@ namespace Core.Monads
          }
       }
 
-      public static bool If<T1, T2>(this Result<(T1, T2)> result, out T1 v1, out T2 v2)
+      public static bool Map<T1, T2>(this Result<(T1, T2)> result, out T1 v1, out T2 v2)
       {
-         if (result.If(out var value))
+         if (result.Map(out var value))
          {
             v1 = value.Item1;
             v2 = value.Item2;
@@ -641,9 +641,9 @@ namespace Core.Monads
          }
       }
 
-      public static bool If<T1, T2>(this Result<(T1, T2)> result, out T1 v1, out T2 v2, out Exception exception)
+      public static bool Map<T1, T2>(this Result<(T1, T2)> result, out T1 v1, out T2 v2, out Exception exception)
       {
-         if (result.If(out var value, out exception))
+         if (result.Map(out var value, out exception))
          {
             v1 = value.Item1;
             v2 = value.Item2;
@@ -660,9 +660,9 @@ namespace Core.Monads
          }
       }
 
-      public static bool If<T1, T2, T3>(this Result<(T1, T2, T3)> result, out T1 v1, out T2 v2, out T3 v3)
+      public static bool Map<T1, T2, T3>(this Result<(T1, T2, T3)> result, out T1 v1, out T2 v2, out T3 v3)
       {
-         if (result.If(out var value))
+         if (result.Map(out var value))
          {
             v1 = value.Item1;
             v2 = value.Item2;
@@ -680,9 +680,9 @@ namespace Core.Monads
          }
       }
 
-      public static bool If<T1, T2, T3>(this Result<(T1, T2, T3)> result, out T1 v1, out T2 v2, out T3 v3, out Exception exception)
+      public static bool Map<T1, T2, T3>(this Result<(T1, T2, T3)> result, out T1 v1, out T2 v2, out T3 v3, out Exception exception)
       {
-         if (result.If(out var value, out exception))
+         if (result.Map(out var value, out exception))
          {
             v1 = value.Item1;
             v2 = value.Item2;
@@ -700,10 +700,10 @@ namespace Core.Monads
          }
       }
 
-      public static bool If<T1, T2, T3, T4>(this Result<(T1, T2, T3, T4)> result, out T1 v1, out T2 v2, out T3 v3,
+      public static bool Map<T1, T2, T3, T4>(this Result<(T1, T2, T3, T4)> result, out T1 v1, out T2 v2, out T3 v3,
          out T4 v4)
       {
-         if (result.If(out var value))
+         if (result.Map(out var value))
          {
             v1 = value.Item1;
             v2 = value.Item2;
@@ -723,10 +723,10 @@ namespace Core.Monads
          }
       }
 
-      public static bool If<T1, T2, T3, T4>(this Result<(T1, T2, T3, T4)> result, out T1 v1, out T2 v2, out T3 v3,
+      public static bool Map<T1, T2, T3, T4>(this Result<(T1, T2, T3, T4)> result, out T1 v1, out T2 v2, out T3 v3,
          out T4 v4, out Exception exception)
       {
-         if (result.If(out var value, out exception))
+         if (result.Map(out var value, out exception))
          {
             v1 = value.Item1;
             v2 = value.Item2;
@@ -746,9 +746,9 @@ namespace Core.Monads
          }
       }
 
-      public static bool If<T1, T2>(this Matched<(T1, T2)> matched, out T1 v1, out T2 v2)
+      public static bool Map<T1, T2>(this Matched<(T1, T2)> matched, out T1 v1, out T2 v2)
       {
-         if (matched.If(out var value))
+         if (matched.Map(out var value))
          {
             v1 = value.Item1;
             v2 = value.Item2;
@@ -764,9 +764,9 @@ namespace Core.Monads
          }
       }
 
-      public static bool If<T1, T2>(this Matched<(T1, T2)> matched, out T1 v1, out T2 v2, out Maybe<Exception> _exception)
+      public static bool Map<T1, T2>(this Matched<(T1, T2)> matched, out T1 v1, out T2 v2, out Maybe<Exception> _exception)
       {
-         if (matched.If(out var value, out _exception))
+         if (matched.Map(out var value, out _exception))
          {
             v1 = value.Item1;
             v2 = value.Item2;
@@ -782,29 +782,9 @@ namespace Core.Monads
          }
       }
 
-      public static bool If<T1, T2, T3>(this Matched<(T1, T2, T3)> matched, out T1 v1, out T2 v2, out T3 v3)
+      public static bool Map<T1, T2, T3>(this Matched<(T1, T2, T3)> matched, out T1 v1, out T2 v2, out T3 v3)
       {
-         if (matched.If(out var value))
-         {
-            v1 = value.Item1;
-            v2 = value.Item2;
-            v3 = value.Item3;
-
-            return true;
-         }
-         else
-         {
-            v1 = default;
-            v2 = default;
-            v3 = default;
-
-            return false;
-         }
-      }
-
-      public static bool If<T1, T2, T3>(this Matched<(T1, T2, T3)> matched, out T1 v1, out T2 v2, out T3 v3, out Maybe<Exception> _exception)
-      {
-         if (matched.If(out var value, out _exception))
+         if (matched.Map(out var value))
          {
             v1 = value.Item1;
             v2 = value.Item2;
@@ -822,10 +802,30 @@ namespace Core.Monads
          }
       }
 
-      public static bool If<T1, T2, T3, T4>(this Matched<(T1, T2, T3, T4)> matched, out T1 v1, out T2 v2, out T3 v3,
+      public static bool Map<T1, T2, T3>(this Matched<(T1, T2, T3)> matched, out T1 v1, out T2 v2, out T3 v3, out Maybe<Exception> _exception)
+      {
+         if (matched.Map(out var value, out _exception))
+         {
+            v1 = value.Item1;
+            v2 = value.Item2;
+            v3 = value.Item3;
+
+            return true;
+         }
+         else
+         {
+            v1 = default;
+            v2 = default;
+            v3 = default;
+
+            return false;
+         }
+      }
+
+      public static bool Map<T1, T2, T3, T4>(this Matched<(T1, T2, T3, T4)> matched, out T1 v1, out T2 v2, out T3 v3,
          out T4 v4)
       {
-         if (matched.If(out var value))
+         if (matched.Map(out var value))
          {
             v1 = value.Item1;
             v2 = value.Item2;
@@ -845,10 +845,10 @@ namespace Core.Monads
          }
       }
 
-      public static bool If<T1, T2, T3, T4>(this Matched<(T1, T2, T3, T4)> matched, out T1 v1, out T2 v2, out T3 v3,
+      public static bool Map<T1, T2, T3, T4>(this Matched<(T1, T2, T3, T4)> matched, out T1 v1, out T2 v2, out T3 v3,
          out T4 v4, out Maybe<Exception> _exception)
       {
-         if (matched.If(out var value, out _exception))
+         if (matched.Map(out var value, out _exception))
          {
             v1 = value.Item1;
             v2 = value.Item2;
@@ -868,9 +868,9 @@ namespace Core.Monads
          }
       }
 
-      public static bool If<T1, T2>(this Completion<(T1, T2)> completion, out T1 v1, out T2 v2)
+      public static bool Map<T1, T2>(this Completion<(T1, T2)> completion, out T1 v1, out T2 v2)
       {
-         if (completion.If(out var value))
+         if (completion.Map(out var value))
          {
             v1 = value.Item1;
             v2 = value.Item2;
@@ -886,9 +886,9 @@ namespace Core.Monads
          }
       }
 
-      public static bool If<T1, T2>(this Completion<(T1, T2)> completion, out T1 v1, out T2 v2, out Maybe<Exception> _exception)
+      public static bool Map<T1, T2>(this Completion<(T1, T2)> completion, out T1 v1, out T2 v2, out Maybe<Exception> _exception)
       {
-         if (completion.If(out var value, out _exception))
+         if (completion.Map(out var value, out _exception))
          {
             v1 = value.Item1;
             v2 = value.Item2;
@@ -904,9 +904,9 @@ namespace Core.Monads
          }
       }
 
-      public static bool If<T1, T2, T3>(this Completion<(T1, T2, T3)> completion, out T1 v1, out T2 v2, out T3 v3)
+      public static bool Map<T1, T2, T3>(this Completion<(T1, T2, T3)> completion, out T1 v1, out T2 v2, out T3 v3)
       {
-         if (completion.If(out var value))
+         if (completion.Map(out var value))
          {
             v1 = value.Item1;
             v2 = value.Item2;
@@ -924,10 +924,10 @@ namespace Core.Monads
          }
       }
 
-      public static bool If<T1, T2, T3>(this Completion<(T1, T2, T3)> completion, out T1 v1, out T2 v2, out T3 v3,
+      public static bool Map<T1, T2, T3>(this Completion<(T1, T2, T3)> completion, out T1 v1, out T2 v2, out T3 v3,
          out Maybe<Exception> _exception)
       {
-         if (completion.If(out var value, out _exception))
+         if (completion.Map(out var value, out _exception))
          {
             v1 = value.Item1;
             v2 = value.Item2;
@@ -945,9 +945,9 @@ namespace Core.Monads
          }
       }
 
-      public static bool If<T1, T2, T3, T4>(this Completion<(T1, T2, T3, T4)> completion, out T1 v1, out T2 v2, out T3 v3, out T4 v4)
+      public static bool Map<T1, T2, T3, T4>(this Completion<(T1, T2, T3, T4)> completion, out T1 v1, out T2 v2, out T3 v3, out T4 v4)
       {
-         if (completion.If(out var value))
+         if (completion.Map(out var value))
          {
             v1 = value.Item1;
             v2 = value.Item2;
@@ -967,10 +967,10 @@ namespace Core.Monads
          }
       }
 
-      public static bool If<T1, T2, T3, T4>(this Completion<(T1, T2, T3, T4)> completion, out T1 v1, out T2 v2, out T3 v3, out T4 v4,
+      public static bool Map<T1, T2, T3, T4>(this Completion<(T1, T2, T3, T4)> completion, out T1 v1, out T2 v2, out T3 v3, out T4 v4,
          out Maybe<Exception> _exception)
       {
-         if (completion.If(out var value, out _exception))
+         if (completion.Map(out var value, out _exception))
          {
             v1 = value.Item1;
             v2 = value.Item2;
@@ -990,9 +990,9 @@ namespace Core.Monads
          }
       }
 
-      public static bool If<T1, T2>(this Responding<(T1, T2)> responding, out T1 v1, out T2 v2)
+      public static bool Map<T1, T2>(this Responding<(T1, T2)> responding, out T1 v1, out T2 v2)
       {
-         if (responding.If(out var value))
+         if (responding.Map(out var value))
          {
             v1 = value.Item1;
             v2 = value.Item2;
@@ -1008,9 +1008,9 @@ namespace Core.Monads
          }
       }
 
-      public static bool If<T1, T2>(this Responding<(T1, T2)> responding, out T1 v1, out T2 v2, out Maybe<Exception> _exception)
+      public static bool Map<T1, T2>(this Responding<(T1, T2)> responding, out T1 v1, out T2 v2, out Maybe<Exception> _exception)
       {
-         if (responding.If(out var value, out _exception))
+         if (responding.Map(out var value, out _exception))
          {
             v1 = value.Item1;
             v2 = value.Item2;
@@ -1026,29 +1026,9 @@ namespace Core.Monads
          }
       }
 
-      public static bool If<T1, T2, T3>(this Responding<(T1, T2, T3)> responding, out T1 v1, out T2 v2, out T3 v3)
+      public static bool Map<T1, T2, T3>(this Responding<(T1, T2, T3)> responding, out T1 v1, out T2 v2, out T3 v3)
       {
-         if (responding.If(out var value))
-         {
-            v1 = value.Item1;
-            v2 = value.Item2;
-            v3 = value.Item3;
-
-            return true;
-         }
-         else
-         {
-            v1 = default;
-            v2 = default;
-            v3 = default;
-
-            return false;
-         }
-      }
-
-      public static bool If<T1, T2, T3>(this Responding<(T1, T2, T3)> responding, out T1 v1, out T2 v2, out T3 v3, out Maybe<Exception> _exception)
-      {
-         if (responding.If(out var value, out _exception))
+         if (responding.Map(out var value))
          {
             v1 = value.Item1;
             v2 = value.Item2;
@@ -1066,9 +1046,29 @@ namespace Core.Monads
          }
       }
 
-      public static bool If<T1, T2, T3, T4>(this Responding<(T1, T2, T3, T4)> responding, out T1 v1, out T2 v2, out T3 v3, out T4 v4)
+      public static bool Map<T1, T2, T3>(this Responding<(T1, T2, T3)> responding, out T1 v1, out T2 v2, out T3 v3, out Maybe<Exception> _exception)
       {
-         if (responding.If(out var value))
+         if (responding.Map(out var value, out _exception))
+         {
+            v1 = value.Item1;
+            v2 = value.Item2;
+            v3 = value.Item3;
+
+            return true;
+         }
+         else
+         {
+            v1 = default;
+            v2 = default;
+            v3 = default;
+
+            return false;
+         }
+      }
+
+      public static bool Map<T1, T2, T3, T4>(this Responding<(T1, T2, T3, T4)> responding, out T1 v1, out T2 v2, out T3 v3, out T4 v4)
+      {
+         if (responding.Map(out var value))
          {
             v1 = value.Item1;
             v2 = value.Item2;
@@ -1088,10 +1088,10 @@ namespace Core.Monads
          }
       }
 
-      public static bool If<T1, T2, T3, T4>(this Responding<(T1, T2, T3, T4)> responding, out T1 v1, out T2 v2, out T3 v3, out T4 v4,
+      public static bool Map<T1, T2, T3, T4>(this Responding<(T1, T2, T3, T4)> responding, out T1 v1, out T2 v2, out T3 v3, out T4 v4,
          out Maybe<Exception> _exception)
       {
-         if (responding.If(out var value, out _exception))
+         if (responding.Map(out var value, out _exception))
          {
             v1 = value.Item1;
             v2 = value.Item2;
@@ -1115,7 +1115,7 @@ namespace Core.Monads
       {
          foreach (var source in enumerable)
          {
-            if (source.If(out var value))
+            if (source.Map(out var value))
             {
                yield return value;
             }
@@ -1126,7 +1126,7 @@ namespace Core.Monads
       {
          foreach (var result in enumerable)
          {
-            if (result.If(out var value))
+            if (result.Map(out var value))
             {
                yield return value;
             }
@@ -1216,14 +1216,14 @@ namespace Core.Monads
          Func<T1, T2, T3> projection)
       {
          var t = await source;
-         if (t.If(out var tValue, out var _exception))
+         if (t.Map(out var tValue, out var _exception))
          {
             var u = await func(tValue);
-            if (u.If(out var uValue, out _exception))
+            if (u.Map(out var uValue, out _exception))
             {
                return projection(tValue, uValue).Completed();
             }
-            else if (_exception.If(out var exception))
+            else if (_exception.Map(out var exception))
             {
                return cancelledOrInterrupted<T3>(exception);
             }
@@ -1232,7 +1232,7 @@ namespace Core.Monads
                return cancelled<T3>();
             }
          }
-         else if (_exception.If(out var exception))
+         else if (_exception.Map(out var exception))
          {
             return cancelledOrInterrupted<T3>(exception);
          }
@@ -1244,11 +1244,11 @@ namespace Core.Monads
 
       public static Result<T> Result<T>(this Completion<T> completion)
       {
-         if (completion.If(out var value, out var _exception))
+         if (completion.Map(out var value, out var _exception))
          {
             return value.Success();
          }
-         else if (_exception.If(out var exception))
+         else if (_exception.Map(out var exception))
          {
             return failure<T>(exception);
          }

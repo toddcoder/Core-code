@@ -41,15 +41,15 @@ namespace Core.Monads
 
       public override TResult FlatMap<TResult>(Func<T, TResult> ifCompleted, Func<TResult> ifNotCompleted) => ifNotCompleted();
 
-      public override Completion<T> If(Action<T> action) => this;
+      public override Completion<T> Map(Action<T> action) => this;
 
-      public override Completion<T> Else(Action action)
+      public override Completion<T> UnMap(Action action)
       {
          action();
          return this;
       }
 
-      public override Completion<T> Else(Action<Exception> action) => this;
+      public override Completion<T> UnMap(Action<Exception> action) => this;
 
       public override Completion<T> Do(Action<T> ifCompleted, Action ifNotCompleted)
       {
@@ -78,7 +78,7 @@ namespace Core.Monads
 
       public override Completion<TResult> Select<TResult>(Completion<T> result, Func<T, TResult> func) => cancelled<TResult>();
 
-      public override bool If(out T value)
+      public override bool Map(out T value)
       {
          value = default;
          return false;
@@ -92,20 +92,20 @@ namespace Core.Monads
          return false;
       }
 
-      public override bool If(out T value, out Maybe<Exception> _exception)
+      public override bool Map(out T value, out Maybe<Exception> _exception)
       {
          value = default;
          _exception = none<Exception>();
          return false;
       }
 
-      public override bool IfNot(out Maybe<Exception> _exception)
+      public override bool UnMap(out Maybe<Exception> _exception)
       {
          _exception = none<Exception>();
          return true;
       }
 
-      public override bool Else<TOther>(out Completion<TOther> result)
+      public override bool UnMap<TOther>(out Completion<TOther> result)
       {
          result = cancelled<TOther>();
          return true;

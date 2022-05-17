@@ -44,13 +44,13 @@ namespace Core.Monads
       [Obsolete("Use |")]
       public override Maybe<T> Or(T other) => this;
 
-      public override bool If(out T value)
+      public override bool Map(out T value)
       {
          value = this.value;
          return true;
       }
 
-      public override bool Else(out T value)
+      public override bool UnMap(out T value)
       {
          value = this.value;
          return false;
@@ -72,7 +72,7 @@ namespace Core.Monads
          return this;
       }
 
-      public override bool EqualToValueOf(Maybe<T> otherMaybe) => otherMaybe.If(out var otherValue) && ValueEqualTo(otherValue);
+      public override bool EqualToValueOf(Maybe<T> otherMaybe) => otherMaybe.Map(out var otherValue) && ValueEqualTo(otherValue);
 
       public override bool ValueEqualTo(T otherValue) => value.Equals(otherValue);
 

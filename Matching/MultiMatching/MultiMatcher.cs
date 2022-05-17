@@ -56,7 +56,7 @@ namespace Core.Matching.MultiMatching
       {
          foreach (var (pattern, action) in patternActions)
          {
-            if (input.Matches(pattern).If(out var result))
+            if (input.Matches(pattern).Map(out var result))
             {
                try
                {
@@ -70,7 +70,7 @@ namespace Core.Matching.MultiMatching
             }
          }
 
-         if (_defaultAction.If(out var defaultAction))
+         if (_defaultAction.Map(out var defaultAction))
          {
             try
             {

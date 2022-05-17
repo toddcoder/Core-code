@@ -54,7 +54,7 @@ namespace Core.Data.DataSources
 
          foreach (var parameter in parameters)
          {
-            if (parameter.Type.If(out var parameterType))
+            if (parameter.Type.Map(out var parameterType))
             {
             }
             else
@@ -72,7 +72,7 @@ namespace Core.Data.DataSources
             {
                oledbParameter.Direction = ParameterDirection.Output;
             }
-            else if (parameter.Value.If(out var str))
+            else if (parameter.Value.Map(out var str))
             {
                if (parameterType == typeof(string))
                {
@@ -87,7 +87,7 @@ namespace Core.Data.DataSources
             else
             {
                var value = parameter.GetValue(entity).Required($"Parameter {parameter.Name}'s value couldn't be determined");
-               if (value is null && parameter.Default.If(out var defaultValue))
+               if (value is null && parameter.Default.Map(out var defaultValue))
                {
                   value = parameter.Type.Map(t => ChangeType(defaultValue, t)).DefaultTo(() => defaultValue);
                }
@@ -102,7 +102,7 @@ namespace Core.Data.DataSources
                oledbParameter.Value = value;
             }
 
-            if (Command.If(out var command))
+            if (Command.Map(out var command))
             {
                command.Parameters.Add(oledbParameter);
             }

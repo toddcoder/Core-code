@@ -71,7 +71,7 @@ namespace Core.Strings
       {
          if (source.IsNotEmpty())
          {
-            if (source.Matches(REGEX_NAME).If(out var result))
+            if (source.Matches(REGEX_NAME).Map(out var result))
             {
                return 0.Until(result.MatchCount).Select(i => result[i, 1]).ToArray();
             }
@@ -120,7 +120,7 @@ namespace Core.Strings
       {
          if (source.IsNotEmpty())
          {
-            if (source.Matches(REGEX_NAME).If(out var result))
+            if (source.Matches(REGEX_NAME).Map(out var result))
             {
                for (var i = 0; i < result.MatchCount; i++)
                {
@@ -159,7 +159,7 @@ namespace Core.Strings
       {
          if (names.If(name, out var text))
          {
-            if (format.IsNotEmpty() && text.ToObject().If(out var obj))
+            if (format.IsNotEmpty() && text.ToObject().Map(out var obj))
             {
                text = string.Format($"{{0{format}}}", obj);
             }

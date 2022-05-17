@@ -242,7 +242,7 @@ namespace Core.Strings
          else
          {
             var matches = source.Matched($"-/b /(['A-Z']{quantitative}); f");
-            if (matches.If(out var result))
+            if (matches.Map(out var result))
             {
                for (var i = 0; i < result.MatchCount; i++)
                {
@@ -278,7 +278,7 @@ namespace Core.Strings
          {
             var pattern = separator.Escape().SingleQuotify() + "/(['a-z']); f";
             var matches = source.Matched(pattern);
-            if (matches.If(out var result))
+            if (matches.Map(out var result))
             {
                for (var i = 0; i < result.MatchCount; i++)
                {
@@ -309,10 +309,10 @@ namespace Core.Strings
             text = text.SnakeToCamelCase(true);
          }
 
-         if (text.Matches("['A-Z'] ['a-z']*; f").If(out var result))
+         if (text.Matches("['A-Z'] ['a-z']*; f").Map(out var result))
          {
             var numeric = string.Empty;
-            if (text.Matches("/d+ $; f").If(out var numericResult))
+            if (text.Matches("/d+ $; f").Map(out var numericResult))
             {
                numeric = numericResult[0];
             }
@@ -320,7 +320,7 @@ namespace Core.Strings
             var builder = new StringBuilder();
             for (var i = 0; i < result.MatchCount; i++)
             {
-               if (result[i, 0].Matches("^ /uc? /lc* [/lv 'y' /uv 'Y']+ /(/lc?) /1? ['h']? ('e' $)?; f").If(out var subResult))
+               if (result[i, 0].Matches("^ /uc? /lc* [/lv 'y' /uv 'Y']+ /(/lc?) /1? ['h']? ('e' $)?; f").Map(out var subResult))
                {
                   for (var j = 0; j < subResult.MatchCount; j++)
                   {
@@ -484,7 +484,7 @@ namespace Core.Strings
          }
 
          var matcher = allowed;
-         if (matcher.Matched(source).If(out var result))
+         if (matcher.Matched(source).Map(out var result))
          {
             var builder = new StringBuilder();
             for (var i = 0; i < result.MatchCount; i++)
@@ -698,7 +698,7 @@ namespace Core.Strings
          }
 
          Pattern pattern = "'(' /(/w+) (',' /(/w+))? ')'; fi";
-         if (source.Matches(pattern).If(out var result))
+         if (source.Matches(pattern).Map(out var result))
          {
             if (number == 1)
             {
@@ -732,7 +732,7 @@ namespace Core.Strings
             var matcherText = result.ToString();
             var numberAccountedFor = false;
             pattern = @"-(< '\') /'#'; f";
-            if (matcherText.Matches(pattern).If(out result))
+            if (matcherText.Matches(pattern).Map(out result))
             {
                numberAccountedFor = true;
                foreach (var match in result)
@@ -743,7 +743,7 @@ namespace Core.Strings
             }
 
             pattern = @"/('\#'); f";
-            if (matcherText.Matches(pattern).If(out result))
+            if (matcherText.Matches(pattern).Map(out result))
             {
                for (var matchIndex = 0; matchIndex < result.MatchCount; matchIndex++)
                {
@@ -1307,7 +1307,7 @@ namespace Core.Strings
          if (value.IsSingle())
          {
             Pattern pattern = "^ /(.+) ['fF'] $; f";
-            if (value.Matches(pattern).If(out var result))
+            if (value.Matches(pattern).Map(out var result))
             {
                return Maybe.Single(result.FirstGroup);
             }
@@ -1316,7 +1316,7 @@ namespace Core.Strings
          if (value.IsDouble())
          {
             Pattern pattern = "^ /(.+) ['dD'] $; f";
-            if (value.Matches(pattern).If(out var result))
+            if (value.Matches(pattern).Map(out var result))
             {
                return Maybe.Double(result.FirstGroup);
             }
@@ -1325,7 +1325,7 @@ namespace Core.Strings
          if (value.IsDecimal())
          {
             Pattern pattern = "^ /(.+) ['mM'] $; f";
-            if (value.Matches(pattern).If(out var result))
+            if (value.Matches(pattern).Map(out var result))
             {
                return Maybe.Decimal(result.FirstGroup);
             }
@@ -1783,7 +1783,7 @@ namespace Core.Strings
             return string.Empty;
          }
 
-         if (source.Matches(pattern).If(out var result))
+         if (source.Matches(pattern).Map(out var result))
          {
             var count = result.Index + result.Length;
             return source.Drop(count);
@@ -1917,7 +1917,7 @@ namespace Core.Strings
             return string.Empty;
          }
 
-         if (source.Matches(pattern).If(out var result))
+         if (source.Matches(pattern).Map(out var result))
          {
             var count = result.Index + result.Length;
             return source.Keep(count);
@@ -2189,12 +2189,12 @@ namespace Core.Strings
          {
             return fail("Source is empty");
          }
-         else if (source.Matches("^ /(/d+) /['kmg']? $; f").If(out var result))
+         else if (source.Matches("^ /(/d+) /['kmg']? $; f").Map(out var result))
          {
             var valueSource = result.FirstGroup;
             var suffix = result.SecondGroup;
 
-            if (Maybe.Int64(valueSource).If(out var value))
+            if (Maybe.Int64(valueSource).Map(out var value))
             {
                if (suffix.IsEmpty())
                {
@@ -2278,7 +2278,7 @@ namespace Core.Strings
 
       public static Maybe<Slice> FindByRegex(this string source, Pattern pattern)
       {
-         if (source.Matches(pattern).If(out var result))
+         if (source.Matches(pattern).Map(out var result))
          {
             var (text, index, length) = result.GetMatch(0);
             return new Slice(text, index, length);
@@ -2294,7 +2294,7 @@ namespace Core.Strings
          var result = source.Find(substring, 0, ignoreCase);
          while (true)
          {
-            if (result.If(out var i))
+            if (result.Map(out var i))
             {
                yield return i;
             }
@@ -2309,7 +2309,7 @@ namespace Core.Strings
 
       public static IEnumerable<Slice> FindAllByRegex(this string source, Pattern pattern)
       {
-         if (source.Matches(pattern).If(out var result))
+         if (source.Matches(pattern).Map(out var result))
          {
             for (var i = 0; i < result.MatchCount; i++)
             {

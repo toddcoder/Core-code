@@ -50,7 +50,7 @@ namespace Core.Objects
 
          foreach (var info in memberInfos)
          {
-            if (getValue(obj, info).If(out var value, out var exception))
+            if (getValue(obj, info).Map(out var value, out var exception))
             {
                hash[info.Name] = value;
             }

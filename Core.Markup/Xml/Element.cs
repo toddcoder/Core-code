@@ -12,7 +12,7 @@ namespace Core.Markup.Xml
    {
       public static implicit operator Element(string source)
       {
-         if (source.Matches("^ /(['a-zA-Z_'] [/w '-']*) /s* '>' /s* [quote]? /(.*) $; f").If(out var result))
+         if (source.Matches("^ /(['a-zA-Z_'] [/w '-']*) /s* '>' /s* [quote]? /(.*) $; f").Map(out var result))
          {
             return new Element
             {
