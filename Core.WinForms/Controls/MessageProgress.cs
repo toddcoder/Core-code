@@ -101,7 +101,6 @@ namespace Core.WinForms.Controls
 
       public MessageProgress(Form form, bool center = false, bool is3D = true)
       {
-         form.Controls.Add(this);
          Center = center;
          Is3D = is3D;
 
@@ -177,6 +176,8 @@ namespace Core.WinForms.Controls
          _foreColor = nil;
          _backColor = nil;
          _style = nil;
+
+         form.Controls.Add(this);
       }
 
       public void SetForeColor(Color foreColor) => _foreColor = foreColor;
