@@ -9,6 +9,6 @@ namespace Core.Dates.Relative.DateOperations
 
       public override OperationType Type => OperationType.Month;
 
-      public override Result<DateTime> Operate(DateTime dateTime) => dateTime.AddMonths(amount).Success();
+      public override Result<DateTime> Operate(DateTime dateTime) => dateTime.AddMonths(amount);
    }
 }

@@ -6,11 +6,11 @@ namespace Core.Dates
    {
       public static implicit operator int(Month month) => month.Value;
 
-      public static Month operator +(Month month, int value) => new Month(month.date.AddMonths(value));
+      public static Month operator +(Month month, int value) => new(month.date.AddMonths(value));
 
-      public static Month operator -(Month month, int value) => new Month(month.date.AddMonths(-value));
+      public static Month operator -(Month month, int value) => new(month.date.AddMonths(-value));
 
-      DateTime date;
+      private DateTime date;
 
       public Month(DateTime date) : this() => this.date = date;
 

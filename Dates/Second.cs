@@ -6,11 +6,11 @@ namespace Core.Dates
    {
       public static implicit operator int(Second second) => second.Value;
 
-      public static Second operator +(Second second, int value) => new Second(second.date.AddSeconds(value));
+      public static Second operator +(Second second, int value) => new(second.date.AddSeconds(value));
 
-      public static Second operator -(Second second, int value) => new Second(second.date.AddSeconds(-value));
+      public static Second operator -(Second second, int value) => new(second.date.AddSeconds(-value));
 
-      DateTime date;
+      private DateTime date;
 
       public Second(DateTime date) : this() => this.date = date;
 

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using Core.Exceptions;
 using Core.Matching;
 using Core.Monads;
 using static Core.Monads.MonadFunctions;
@@ -95,17 +94,17 @@ namespace Core.Computers.Synchronization
                }
                else
                {
-                  return noMatch<FileName>();
+                  return nil;
                }
             }
             else
             {
-               return failedMatch<FileName>(exception);
+               return exception;
             }
          }
          catch (Exception exception)
          {
-            return failedMatch<FileName>(exception);
+            return exception;
          }
       }
 
@@ -123,7 +122,7 @@ namespace Core.Computers.Synchronization
          else
          {
             NewFolderFailure?.Invoke(this, new FailedFolderArgs(targetFileFolder, exception));
-            return failedMatch<FileName>("Folder creation failed; no action taken".Throws());
+            return fail("Folder creation failed; no action taken");
          }
 
          if (sourceFile.TryTo.CopyTo(targetFile, true).Map(out _, out exception))
@@ -132,21 +131,21 @@ namespace Core.Computers.Synchronization
             {
                if (sourceFile.TryTo.Delete().Map(out _, out exception))
                {
-                  return targetFile.Match();
+                  return targetFile;
                }
                else
                {
-                  return failedMatch<FileName>(exception);
+                  return exception;
                }
             }
             else
             {
-               return targetFile.Match();
+               return targetFile;
             }
          }
          else
          {
-            return failedMatch<FileName>(exception);
+            return exception;
          }
       }
 

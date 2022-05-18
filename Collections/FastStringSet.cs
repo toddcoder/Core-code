@@ -10,7 +10,7 @@ namespace Core.Collections
 
       protected static IEqualityComparer<string> getEqualityComparer(bool ignoreCase)
       {
-         return ignoreCase ? (IEqualityComparer<string>)new IgnoreCaseEqualityComparer() : EqualityComparer<string>.Default;
+         return ignoreCase ? new IgnoreCaseEqualityComparer() : EqualityComparer<string>.Default;
       }
 
       public FastStringSet(bool ignoreCase) : base(getEqualityComparer(ignoreCase))

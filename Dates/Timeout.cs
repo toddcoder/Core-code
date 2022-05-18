@@ -7,32 +7,34 @@ namespace Core.Dates
 {
    public class Timeout
    {
-      public static implicit operator Timeout(TimeSpan timeoutPeriod) => new Timeout(timeoutPeriod);
+      public static implicit operator Timeout(TimeSpan timeoutPeriod) => new(timeoutPeriod);
 
-      TimeSpan timeoutPeriod;
-      Maybe<DateTime> targetDateTime;
+      protected TimeSpan timeoutPeriod;
+      protected Maybe<DateTime> _targetDateTime;
 
       public Timeout(TimeSpan timeoutPeriod)
       {
          this.timeoutPeriod = timeoutPeriod;
-         targetDateTime = none<DateTime>();
+         _targetDateTime = nil;
       }
 
       public bool Expired
       {
          get
          {
-            if (targetDateTime.Map(out var tdt)) { }
+            if (_targetDateTime.Map(out var targetDateTime))
+            {
+            }
             else
             {
-               tdt = NowServer.Now + timeoutPeriod;
-               targetDateTime = tdt.Some();
+               targetDateTime = NowServer.Now + timeoutPeriod;
+               _targetDateTime = targetDateTime;
             }
 
-            var expired = NowServer.Now >= tdt;
+            var expired = NowServer.Now >= targetDateTime;
             if (expired)
             {
-               targetDateTime = none<DateTime>();
+               _targetDateTime = nil;
             }
 
             return expired;
@@ -45,10 +47,10 @@ namespace Core.Dates
          set
          {
             timeoutPeriod = value;
-            targetDateTime = none<DateTime>();
+            _targetDateTime = nil;
          }
       }
 
-      public Maybe<DateTime> TargetDateTime => targetDateTime;
+      public Maybe<DateTime> TargetDateTime => _targetDateTime;
    }
 }

@@ -6,11 +6,11 @@ namespace Core.Dates
    {
       public static implicit operator int(Minute minute) => minute.Value;
 
-      public static Minute operator +(Minute minute, int value) => new Minute(minute.date.AddMinutes(value));
+      public static Minute operator +(Minute minute, int value) => new(minute.date.AddMinutes(value));
 
-      public static Minute operator -(Minute minute, int value) => new Minute(minute.date.AddMinutes(-value));
+      public static Minute operator -(Minute minute, int value) => new(minute.date.AddMinutes(-value));
 
-      DateTime date;
+      private DateTime date;
 
       public Minute(DateTime date) : this() => this.date = date;
 

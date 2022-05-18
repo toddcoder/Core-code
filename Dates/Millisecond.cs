@@ -16,7 +16,7 @@ namespace Core.Dates
          return new Millisecond(millisecond.date.AddMilliseconds(-value));
       }
 
-      DateTime date;
+      private DateTime date;
 
       public Millisecond(DateTime date) : this() => this.date = date;
 

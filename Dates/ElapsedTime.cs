@@ -9,8 +9,8 @@ namespace Core.Dates
 
       public static implicit operator string(ElapsedTime elapsedTime) => elapsedTime.ToString();
 
-      bool includeMilliseconds;
-      Stopwatch stopwatch;
+      protected bool includeMilliseconds;
+      protected Stopwatch stopwatch;
 
       public ElapsedTime(bool includeMilliseconds = true)
       {

@@ -136,7 +136,7 @@ namespace Core.Collections
          }
       }
 
-      public Result<Hash<TKey, TValue>> AnyHash() => this.Success();
+      public Result<Hash<TKey, TValue>> AnyHash() => this;
 
       public TValue Find(TKey key, Func<TKey, TValue> defaultValue, bool addIfNotFound = false)
       {
@@ -291,11 +291,11 @@ namespace Core.Collections
          {
             var value = this[key];
             Remove(key);
-            return value.Some();
+            return value;
          }
          else
          {
-            return none<TValue>();
+            return nil;
          }
       }
 

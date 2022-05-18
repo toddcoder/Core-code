@@ -4,7 +4,7 @@ namespace Core.Dates.Now
 {
    public class TestNow : NowBase
    {
-      DateTime now;
+      protected DateTime now;
 
       public TestNow(DateIncrementer now) => this.now = now;
 

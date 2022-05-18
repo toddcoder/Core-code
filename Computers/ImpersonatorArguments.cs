@@ -2,11 +2,18 @@
 {
    public class ImpersonatorArguments
    {
-      public string Domain { get; set; } = "";
+      public ImpersonatorArguments()
+      {
+         Domain = "";
+         UserName = "";
+         Password = "";
+      }
 
-      public string UserName { get; set; } = "";
+      public string Domain { get; set; }
 
-      public string Password { get; set; } = "";
+      public string UserName { get; set; }
+
+      public string Password { get; set; }
 
       public bool Service { get; set; }
    }

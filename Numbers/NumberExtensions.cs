@@ -167,7 +167,7 @@ namespace Core.Numbers
 
       public static bool IsEven(this short value) => Abs(value) % 2 == 0;
 
-      public static bool IsEven(this byte value) => Abs(value) % 2 == 0;
+      public static bool IsEven(this byte value) => value % 2 == 0;
 
       public static bool IsOdd(this int value) => !value.IsEven();
 

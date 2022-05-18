@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Core.Arrays;
 using Core.Dates.DateIncrements;
-using Core.Exceptions;
 using Core.Matching;
 using Core.Monads;
 using Core.Strings;
@@ -155,7 +154,7 @@ namespace Core.Dates
                }
                else
                {
-                  throw $"Couldn't determine unit from {unit}".Fail();
+                  throw fail($"Couldn't determine unit from {unit}");
                }
             })
             select span;

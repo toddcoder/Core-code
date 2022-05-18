@@ -4,7 +4,7 @@ namespace Core.Collections.Expiring
 {
    public class PolicyExpiration<T> : ExpirationPolicy<T>
    {
-      Func<T, bool> mustExpire;
+      protected Func<T, bool> mustExpire;
 
       public PolicyExpiration(Func<T, bool> mustExpire) => this.mustExpire = mustExpire;
 

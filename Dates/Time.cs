@@ -62,7 +62,7 @@ namespace Core.Dates
          {
             result.Must().HaveMatchCountOf(1).OrThrow("Couldn't determine parts of time to parse");
             var (hour, minute, second, millisecond) = result;
-            return (Value.Int32(hour),Value.Int32( minute), Value.Int32(second), Value.Int32(millisecond));
+            return (Value.Int32(hour), Value.Int32(minute), Value.Int32(second), Value.Int32(millisecond));
          }
          else
          {
@@ -306,6 +306,7 @@ namespace Core.Dates
             result += minute * factor;
             factor *= 60;
             result += hour * factor;
+
             return result;
          }
          set

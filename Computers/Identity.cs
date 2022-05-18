@@ -152,7 +152,7 @@ namespace Core.Computers
          }
       }
 
-      protected static Maybe<WindowsImpersonationContext> getContext(WindowsIdentity identity) => identity.Impersonate().Some();
+      protected static Maybe<WindowsImpersonationContext> getContext(WindowsIdentity identity) => identity.Impersonate();
 
       protected void unimpersonate()
       {
@@ -170,7 +170,7 @@ namespace Core.Computers
                CloseHandle(dupTokenHandle);
             }
 
-            _impersonatedUser = none<WindowsImpersonationContext>();
+            _impersonatedUser = nil;
          }
 
          impersonating = false;

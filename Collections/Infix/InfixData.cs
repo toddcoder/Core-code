@@ -6,15 +6,15 @@ namespace Core.Collections.Infix
 {
    public class InfixData<TValue, TInfix> : IInfixData<TValue, TInfix>
    {
-      public InfixData(TValue value, Maybe<TInfix> infix)
+      public InfixData(TValue value, Maybe<TInfix> _infix)
       {
          Value = value;
-         Infix = infix;
+         Infix = _infix;
       }
 
       public InfixData(TValue value, TInfix infix) : this(value, infix.Some()) { }
 
-      public InfixData(TValue value) : this(value, none<TInfix>()) { }
+      public InfixData(TValue value) : this(value, nil) { }
 
       [Equatable]
       public TValue Value { get; }
@@ -24,10 +24,10 @@ namespace Core.Collections.Infix
 
       public override string ToString() => Value + Infix.Map(i => " " + i).DefaultTo(() => "");
 
-      public void Deconstruct(out TValue value, out Maybe<TInfix> infix)
+      public void Deconstruct(out TValue value, out Maybe<TInfix> _infix)
       {
          value = Value;
-         infix = Infix;
+         _infix = Infix;
       }
    }
 }

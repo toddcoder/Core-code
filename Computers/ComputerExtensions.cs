@@ -6,14 +6,15 @@ using System.Threading.Tasks;
 using Core.Enumerables;
 using Core.Monads;
 using static Core.Applications.Async.AsyncFunctions;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Computers
 {
    public static class ComputerExtensions
    {
-      public static Maybe<FileName> AsFileName(this string file) => ((FileName)file).Some();
+      public static Maybe<FileName> AsFileName(this string file) => (FileName)file;
 
-      public static Maybe<FolderName> AsFolderName(this string folder) => ((FolderName)folder).Some();
+      public static Maybe<FolderName> AsFolderName(this string folder) => (FolderName)folder;
 
       public static IEnumerable<FileName> LocalAndParentFiles(this IEnumerable<FolderName> folders)
       {
@@ -32,11 +33,11 @@ namespace Core.Computers
          {
             if (folder.LocalAndParentFiles.Where(f => predicate(f)).FirstOrNone().Map(out var file))
             {
-               return file.Success();
+               return file;
             }
          }
 
-         return "File not found".Failure<FileName>();
+         return fail("File not found");
       }
 
       public static async Task<Completion<FileName>> LocalAndParentFilesAsync(this IEnumerable<FolderName> folders, Predicate<FileName> predicate)
@@ -47,7 +48,7 @@ namespace Core.Computers
       public static async Task<Completion<FileName>> LocalAndParentFilesAsync(this IEnumerable<FolderName> folders, Predicate<FileName> predicate,
          CancellationToken token)
       {
-         return await runFromResultAsync(t => folders.LocalAndParentFiles(predicate), token);
+         return await runFromResultAsync(_ => folders.LocalAndParentFiles(predicate), token);
       }
 
       public static IEnumerable<FolderName> LocalAndParentFolders(this IEnumerable<FolderName> folders)
@@ -67,11 +68,11 @@ namespace Core.Computers
          {
             if (folder.LocalAndParentFolders.Where(f => predicate(f)).FirstOrNone().Map(out var foundFolder))
             {
-               return foundFolder.Success();
+               return foundFolder;
             }
          }
 
-         return "Folder not found".Failure<FolderName>();
+         return fail("Folder not found");
       }
 
       public static async Task<Completion<FolderName>> LocalAndParentFoldersAsync(this IEnumerable<FolderName> folders,
@@ -79,10 +80,11 @@ namespace Core.Computers
       {
          return await runFromResultAsync(() => folders.LocalAndParentFolders(predicate));
       }
+
       public static async Task<Completion<FolderName>> LocalAndParentFoldersAsync(this IEnumerable<FolderName> folders,
          Predicate<FolderName> predicate, CancellationToken token)
       {
-         return await runFromResultAsync(t => folders.LocalAndParentFolders(predicate), token);
+         return await runFromResultAsync(_ => folders.LocalAndParentFolders(predicate), token);
       }
    }
 }

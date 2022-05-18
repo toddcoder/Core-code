@@ -27,13 +27,13 @@ namespace Core.Exceptions
          public override string ToString() => $"{Key}: {Set.ToString(", ")} [{StackTrace}]";
       }
 
-      protected Hash<string, Set<T>> data;
-      Hash<string, string> stackTraces;
+      protected StringHash<Set<T>> data;
+      protected StringHash stackTraces;
 
       public GroupedExceptions()
       {
-         data = new Hash<string, Set<T>>();
-         stackTraces = new Hash<string, string>();
+         data = new StringHash<Set<T>>(true);
+         stackTraces = new StringHash(true);
       }
 
       public void Add<TState>(TState state, Exception exception, Func<TState, Exception, T> extract)

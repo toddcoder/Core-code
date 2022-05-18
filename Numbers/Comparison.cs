@@ -37,19 +37,19 @@ namespace Core.Numbers
       {
          pairs = new List<Pair> { new(left, right) };
 
-         _left = none<T>();
+         _left = nil;
       }
 
       public Comparison<T> And(T comparable)
       {
-         _left = comparable.Some();
+         _left = comparable;
          return this;
       }
 
       public Comparison<T> ComparedTo(T comparable)
       {
          pairs.Add(new Pair(_left.Required("Then not called"), comparable));
-         _left = none<T>();
+         _left = nil;
 
          return this;
       }

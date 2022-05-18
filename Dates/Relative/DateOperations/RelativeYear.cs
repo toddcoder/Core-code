@@ -9,6 +9,6 @@ namespace Core.Dates.Relative.DateOperations
 
       public override OperationType Type => OperationType.Year;
 
-      public override Result<DateTime> Operate(DateTime dateTime) => dateTime.AddYears(amount).Success();
+      public override Result<DateTime> Operate(DateTime dateTime) => dateTime.AddYears(amount);
    }
 }

@@ -6,11 +6,11 @@ namespace Core.Dates
    {
       public static implicit operator int(Day day) => day.Value;
 
-      public static Day operator +(Day day, int value) => new Day(day.date.AddDays(value));
+      public static Day operator +(Day day, int value) => new(day.date.AddDays(value));
 
-      public static Day operator -(Day day, int value) => new Day(day.date.AddDays(-value));
+      public static Day operator -(Day day, int value) => new(day.date.AddDays(-value));
 
-      DateTime date;
+      private DateTime date;
 
       public Day(DateTime date) : this() => this.date = date;
 

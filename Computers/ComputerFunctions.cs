@@ -16,6 +16,5 @@ namespace Core.Computers
             return path;
          }
       }
-
    }
 }

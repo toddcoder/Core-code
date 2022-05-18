@@ -6,11 +6,11 @@ namespace Core.Dates
    {
       public static implicit operator int(Hour hour) => hour.Value;
 
-      public static Hour operator +(Hour hour, int value) => new Hour(hour.date.AddHours(value));
+      public static Hour operator +(Hour hour, int value) => new(hour.date.AddHours(value));
 
-      public static Hour operator -(Hour hour, int value) => new Hour(hour.date.AddHours(-value));
+      public static Hour operator -(Hour hour, int value) => new(hour.date.AddHours(-value));
 
-      DateTime date;
+      private DateTime date;
 
       public Hour(DateTime date) : this() => this.date = date;
 

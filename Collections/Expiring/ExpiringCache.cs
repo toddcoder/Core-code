@@ -8,11 +8,11 @@ namespace Core.Collections.Expiring
 {
    public class ExpiringCache<TKey, TValue> : IHash<TKey, TValue>
    {
-      Hash<TKey, TValue> cache;
-      Hash<TKey, ExpirationPolicy<TValue>> expirationPolicies;
-      Maybe<Timer> anyTimer;
-      object locker;
-      Func<ExpirationPolicy<TValue>> newPolicy;
+      protected Hash<TKey, TValue> cache;
+      protected Hash<TKey, ExpirationPolicy<TValue>> expirationPolicies;
+      protected Maybe<Timer> _timer;
+      protected object locker;
+      protected Func<ExpirationPolicy<TValue>> newPolicy;
 
       public event EventHandler<ExpirationArgs<TKey, TValue>> Expired;
 
@@ -21,7 +21,7 @@ namespace Core.Collections.Expiring
          cache = new Hash<TKey, TValue>();
          expirationPolicies = new Hash<TKey, ExpirationPolicy<TValue>>();
          var newTimer = new Timer(activeMonitoringInterval.TotalMilliseconds);
-         newTimer.Elapsed += (sender, e) =>
+         newTimer.Elapsed += (_, _) =>
          {
             lock (locker)
             {
@@ -42,7 +42,7 @@ namespace Core.Collections.Expiring
             }
          };
 
-         anyTimer = newTimer.Some();
+         _timer = newTimer;
          locker = new object();
          NewPolicy = () => new NonExpiration<TValue>();
       }
@@ -51,7 +51,7 @@ namespace Core.Collections.Expiring
       {
          cache = new Hash<TKey, TValue>();
          expirationPolicies = new Hash<TKey, ExpirationPolicy<TValue>>();
-         anyTimer = none<Timer>();
+         _timer = nil;
          locker = new object();
          NewPolicy = () => new NonExpiration<TValue>();
       }
@@ -64,7 +64,7 @@ namespace Core.Collections.Expiring
 
       public void StartMonitoring()
       {
-         if (anyTimer.Map(out var timer))
+         if (_timer.Map(out var timer))
          {
             timer.Enabled = true;
          }
@@ -72,7 +72,7 @@ namespace Core.Collections.Expiring
 
       public void StopMonitoring()
       {
-         if (anyTimer.Map(out var timer))
+         if (_timer.Map(out var timer))
          {
             timer.Enabled = false;
          }
@@ -86,7 +86,7 @@ namespace Core.Collections.Expiring
             {
                if (cache.Map(key, out var value))
                {
-                  var policy = expirationPolicies.Find(key, k => newPolicy(), true);
+                  var policy = expirationPolicies.Find(key, _ => newPolicy(), true);
                   policy.Reset();
                   if (policy.ItemEvictable(value))
                   {

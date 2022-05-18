@@ -53,11 +53,11 @@ namespace Core.Exceptions
                stackArray[i] = frameText.Format(format);
             }
 
-            return stackArray.Some();
+            return stackArray;
          }
          else
          {
-            return none<string[]>();
+            return nil;
          }
       }
 

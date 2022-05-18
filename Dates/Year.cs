@@ -6,11 +6,11 @@ namespace Core.Dates
    {
       public static implicit operator int(Year year) => year.Value;
 
-      public static Year operator +(Year year, int value) => new Year(year.date.AddYears(value));
+      public static Year operator +(Year year, int value) => new(year.date.AddYears(value));
 
-      public static Year operator -(Year year, int value) => new Year(year.date.AddYears(-value));
+      public static Year operator -(Year year, int value) => new(year.date.AddYears(-value));
 
-      DateTime date;
+      private DateTime date;
 
       public Year(DateTime date) : this() => this.date = date;
 

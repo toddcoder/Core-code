@@ -2,13 +2,14 @@
 using Core.Monads;
 using Core.Numbers;
 using static System.Math;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Dates.Relative
 {
    public class Relation
    {
-      bool isRelative;
-      int amount;
+      protected bool isRelative;
+      protected int amount;
 
       public Relation(string source, int amount)
       {
@@ -30,23 +31,23 @@ namespace Core.Dates.Relative
 
       public DateTime Year(DateTime date) => isRelative ? date.AddYears(amount) : new DateTime(amount, date.Month, safeDay(date));
 
-      static int safeDay(DateTime date) => Min(date.Day, date.LastOfMonth().Day);
+      protected static int safeDay(DateTime date) => Min(date.Day, date.LastOfMonth().Day);
 
-      static int safeDay(DateTime date, int month) => Min(date.Day, month.LastOfMonth(date.Year));
+      protected static int safeDay(DateTime date, int month) => Min(date.Day, month.LastOfMonth(date.Year));
 
       public Result<DateTime> Month(DateTime date)
       {
          if (isRelative)
          {
-            return date.AddMonths(amount).Success();
+            return date.AddMonths(amount);
          }
          else if (amount.Between(1).And(12))
          {
-            return new DateTime(date.Year, date.Month, safeDay(date, amount)).Success();
+            return new DateTime(date.Year, date.Month, safeDay(date, amount));
          }
          else
          {
-            return $"Month {amount} must be in range 1 to 12".Failure<DateTime>();
+            return fail($"Month {amount} must be in range 1 to 12");
          }
       }
 
@@ -54,22 +55,22 @@ namespace Core.Dates.Relative
       {
          if (isRelative)
          {
-            return date.AddDays(amount).Success();
+            return date.AddDays(amount);
          }
          else if (amount == 0)
          {
-            return date.LastOfMonth().Success();
+            return date.LastOfMonth();
          }
          else
          {
             var lastOfMonth = date.Month.LastOfMonth(date.Year);
             if (amount <= lastOfMonth)
             {
-               return new DateTime(date.Year, date.Month, amount).Success();
+               return new DateTime(date.Year, date.Month, amount);
             }
             else
             {
-               return $"Day {amount} must be in range 1-{lastOfMonth} for {date.Month}/{date.Year}".Failure<DateTime>();
+               return fail($"Day {amount} must be in range 1-{lastOfMonth} for {date.Month}/{date.Year}");
             }
          }
       }
