@@ -78,7 +78,7 @@ namespace Core.Services
       {
          try
          {
-            if (typeCache.If(name, out var type))
+            if (typeCache.Map(name, out var type))
             {
                return type;
             }
@@ -130,11 +130,11 @@ namespace Core.Services
       {
          try
          {
-            if (assemblyCache.If(name, out var assembly))
+            if (assemblyCache.Map(name, out var assembly))
             {
                return assembly;
             }
-            else if (assemblyNames.If(name, out var path))
+            else if (assemblyNames.Map(name, out var path))
             {
                FolderName.Current = ((FileName)path).Folder;
                assembly = LoadFrom(path);

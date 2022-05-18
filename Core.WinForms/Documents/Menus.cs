@@ -110,7 +110,7 @@ namespace Core.WinForms.Documents
 
       public void AddHandler(string parentText, string text, EventHandler handler)
       {
-         if (Submenus(parentText).Map(out var submenus) && submenus.If(text, out var toolStripMenuItem))
+         if (Submenus(parentText).Map(out var submenus) && submenus.Map(text, out var toolStripMenuItem))
          {
             toolStripMenuItem.Click += handler;
          }

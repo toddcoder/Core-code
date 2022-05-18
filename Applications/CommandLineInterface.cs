@@ -344,7 +344,7 @@ namespace Core.Applications
             for (var matchIndex = 0; matchIndex < result.MatchCount; matchIndex++)
             {
                var key = result[matchIndex, 1][0];
-               if (shortcuts.If(key, out var replacement))
+               if (shortcuts.Map(key, out var replacement))
                {
                   result[matchIndex, 0] = $"{prefix}{replacement}{suffix}";
                }
@@ -442,7 +442,7 @@ namespace Core.Applications
                   return;
                }
             }
-            else if (aliases.If(command, out var replacement))
+            else if (aliases.Map(command, out var replacement))
             {
                commandLine = replacement;
             }

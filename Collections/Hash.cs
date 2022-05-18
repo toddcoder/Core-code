@@ -129,7 +129,7 @@ namespace Core.Collections
       {
          foreach (var key in keys)
          {
-            if (If(key, out var value))
+            if (Map(key, out var value))
             {
                yield return value;
             }
@@ -140,7 +140,7 @@ namespace Core.Collections
 
       public TValue Find(TKey key, Func<TKey, TValue> defaultValue, bool addIfNotFound = false)
       {
-         if (If(key, out var result))
+         if (Map(key, out var result))
          {
             return result;
          }
@@ -170,9 +170,9 @@ namespace Core.Collections
          return alwaysUseDefaultValue ? defaultValue(key) : Find(key, defaultValue, true);
       }
 
-      public bool If(TKey key, out TValue value, Func<TValue> valueToAdd)
+      public bool Map(TKey key, out TValue value, Func<TValue> valueToAdd)
       {
-         if (If(key, out value))
+         if (Map(key, out value))
          {
             return true;
          }
@@ -218,7 +218,7 @@ namespace Core.Collections
          }
       }
 
-      public HashTrying<TKey, TValue> TryTo => new HashTrying<TKey, TValue>(this);
+      public HashTrying<TKey, TValue> TryTo => new(this);
 
       public KeyValuePair<TKey, TValue>[] ItemsArray() => this.ToArray();
 
@@ -238,7 +238,7 @@ namespace Core.Collections
          }
       }
 
-      public bool If(TKey key, out TValue value, TValue defaultValue = default)
+      public bool Map(TKey key, out TValue value, TValue defaultValue = default)
       {
          if (ContainsKey(key))
          {
@@ -301,7 +301,7 @@ namespace Core.Collections
 
       public void Move(TKey oldKey, TKey newKey)
       {
-         if (If(oldKey, out var value))
+         if (Map(oldKey, out var value))
          {
             this[newKey] = value;
             Remove(oldKey);
@@ -309,7 +309,7 @@ namespace Core.Collections
       }
 
 
-      protected virtual Hash<TKey, TValue> getNewHash() => new Hash<TKey, TValue>(Comparer);
+      protected virtual Hash<TKey, TValue> getNewHash() => new(Comparer);
 
       public virtual Hash<TKey, TValue> Subset(params TKey[] keys)
       {

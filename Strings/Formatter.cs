@@ -157,7 +157,7 @@ namespace Core.Strings
 
       protected virtual string getText(string name, string format)
       {
-         if (names.If(name, out var text))
+         if (names.Map(name, out var text))
          {
             if (format.IsNotEmpty() && text.ToObject().Map(out var obj))
             {

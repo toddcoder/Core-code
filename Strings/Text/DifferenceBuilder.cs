@@ -27,7 +27,7 @@ namespace Core.Strings.Text
                item = item.ToUpperInvariant();
             }
 
-            if (itemHash.If(item, out var value))
+            if (itemHash.Map(item, out var value))
             {
                modification.HashedItems[i] = value;
             }

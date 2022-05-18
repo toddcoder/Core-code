@@ -107,7 +107,7 @@ namespace Core.Applications.CommandProcessing
                   {
                      var name = result[i, 1];
                      var optional = result[i, 2] == "?";
-                     if (replacements.If(name, out var replacement))
+                     if (replacements.Map(name, out var replacement))
                      {
                         var indent = _indent.DefaultTo(() => " ");
                         var prefix = optional ? $"{indent}[" : indent;

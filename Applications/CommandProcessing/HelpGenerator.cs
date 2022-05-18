@@ -71,7 +71,7 @@ namespace Core.Applications.CommandProcessing
          {
             return displayConfigurationHelp();
          }
-         else if (commandHelp.If(command, out var tuple))
+         else if (commandHelp.Map(command, out var tuple))
          {
             var (_helpText, _switchPattern, replacements) = tuple;
             if (_helpText.Map(out var helpText))

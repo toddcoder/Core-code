@@ -90,7 +90,7 @@ namespace Core.Collections
 
       public static string Format(this Hash<string, string> hash, string format) => new Formatter(hash).Format(format);
 
-      public static bool If<TKey, TValue>(this IHash<TKey, TValue> hash, TKey key, out TValue value)
+      public static bool Map<TKey, TValue>(this IHash<TKey, TValue> hash, TKey key, out TValue value)
       {
          if (hash.ContainsKey(key))
          {

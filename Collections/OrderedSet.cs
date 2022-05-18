@@ -51,7 +51,7 @@ namespace Core.Collections
 
       public bool Remove(T item)
       {
-         if (hash.If(item, out var node))
+         if (hash.Map(item, out var node))
          {
             hash.Remove(item);
             list.Remove(node.Value);

@@ -35,7 +35,7 @@ namespace Core.Data.ConnectionStrings
 
       public static Result<SqlConnectionString> FromConnection(Connection connection)
       {
-         if (connection.If("connection", out var connectionString))
+         if (connection.Map("connection", out var connectionString))
          {
             return new SqlConnectionString(connectionString, connection.Timeout);
          }

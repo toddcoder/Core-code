@@ -40,7 +40,7 @@ namespace Core.Collections
 
       public Result<TValue> Map(TKey key, string notFoundMessage)
       {
-         if (hash.If(key, out var value))
+         if (hash.Map(key, out var value))
          {
             return value;
          }
@@ -52,7 +52,7 @@ namespace Core.Collections
 
       public Result<TValue> Map(TKey key, Func<string> notFoundMessage)
       {
-         if (hash.If(key, out var value))
+         if (hash.Map(key, out var value))
          {
             return value;
          }

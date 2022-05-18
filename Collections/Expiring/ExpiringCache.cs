@@ -84,7 +84,7 @@ namespace Core.Collections.Expiring
          {
             lock (locker)
             {
-               if (cache.If(key, out var value))
+               if (cache.Map(key, out var value))
                {
                   var policy = expirationPolicies.Find(key, k => newPolicy(), true);
                   policy.Reset();

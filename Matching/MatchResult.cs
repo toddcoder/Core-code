@@ -249,7 +249,7 @@ namespace Core.Matching
          var hash = new Hash<string, string>();
          for (var i = 0; i < GroupCount(0); i++)
          {
-            if (indexesToNames.If(i, out var name))
+            if (indexesToNames.Map(i, out var name))
             {
                hash[name] = this[0, 1];
             }
@@ -263,7 +263,7 @@ namespace Core.Matching
          var hash = new StringHash<string>(ignoreCase);
          for (var i = 0; i < GroupCount(0); i++)
          {
-            if (indexesToNames.If(i, out var name))
+            if (indexesToNames.Map(i, out var name))
             {
                hash[name] = this[0, 1];
             }

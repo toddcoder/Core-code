@@ -40,7 +40,7 @@ namespace Core.Objects
 
       public Type Type(string signature)
       {
-         if (data.If(signature, out var value))
+         if (data.Map(signature, out var value))
          {
             return value?.GetType();
          }

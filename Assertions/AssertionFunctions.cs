@@ -253,7 +253,7 @@ namespace Core.Assertions
 
          var name = nameCache[key];
 
-         if (valueCache.If(key, out var obj))
+         if (valueCache.Map(key, out var obj))
          {
             return (name, (T)obj);
          }

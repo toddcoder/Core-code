@@ -80,7 +80,7 @@ namespace Core.Configurations
 
       public Maybe<IConfigurationItem> GetSomeItem(string key) => items.Map(key);
 
-      public bool If(string key, out IConfigurationItem item) => items.If(key, out item);
+      public bool If(string key, out IConfigurationItem item) => items.Map(key, out item);
 
       public void SetItem(string key, IConfigurationItem item) => items[key] = item;
 
@@ -96,7 +96,7 @@ namespace Core.Configurations
 
       public Maybe<Group> GetGroup(string key)
       {
-         if (items.If(key, out var item) && item is Group group)
+         if (items.Map(key, out var item) && item is Group group)
          {
             return group;
          }
