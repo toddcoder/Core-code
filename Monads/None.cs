@@ -20,15 +20,15 @@ namespace Core.Monads
 
       public override Maybe<TResult> Map<TResult>(Func<T, TResult> ifSome) => none<TResult>();
 
-      public override Maybe<TResult> Map<TResult>(Func<T, Maybe<TResult>> ifSome) => none<TResult>();
+      public override Maybe<TResult> Map<TResult>(Func<T, Maybe<TResult>> ifSome) => nil;
 
       public override T Required(string message) => throw new ApplicationException(message);
 
-      public override Result<T> Result(string message) => message.Failure<T>();
+      public override Result<T> Result(string message) => fail(message);
 
-      public override Matched<T> Matched() => Matched<T>.nil;
+      public override Matched<T> Matched() => nil;
 
-      public override Responding<T> Responding() => Responding<T>.nil;
+      public override Responding<T> Responding() => nil;
 
       [Obsolete("Use |")]
       public override Maybe<T> Or(Maybe<T> other) => other;
@@ -37,10 +37,10 @@ namespace Core.Monads
       public override Maybe<T> Or(Func<Maybe<T>> other) => other();
 
       [Obsolete("Use |")]
-      public override Maybe<T> Or(Func<T> other) => other().Some();
+      public override Maybe<T> Or(Func<T> other) => other();
 
       [Obsolete("Use |")]
-      public override Maybe<T> Or(T other) => other.Some();
+      public override Maybe<T> Or(T other) => other;
 
       public override bool Map(out T value)
       {
@@ -68,7 +68,7 @@ namespace Core.Monads
 
       public override bool ValueEqualTo(T otherValue) => false;
 
-      public override Maybe<TResult> CastAs<TResult>() => none<TResult>();
+      public override Maybe<TResult> CastAs<TResult>() => nil;
 
       public override Maybe<T> Where(Predicate<T> predicate) => this;
 

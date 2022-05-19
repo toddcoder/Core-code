@@ -255,7 +255,7 @@ namespace Core.Computers
       {
          if (count > 0)
          {
-            var _result = Maybe<FolderName>.nil;
+            Maybe<FolderName> _result = nil;
             var self = this;
             for (var i = 0; i < count; i++)
             {

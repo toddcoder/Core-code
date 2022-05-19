@@ -17,13 +17,13 @@ namespace Core.Monads
 
       public Exception Exception => exception;
 
-      public override Completion<TResult> Map<TResult>(Func<T, Completion<TResult>> ifCompleted) => interrupted<TResult>(exception);
+      public override Completion<TResult> Map<TResult>(Func<T, Completion<TResult>> ifCompleted) => exception;
 
-      public override Completion<TResult> Map<TResult>(Func<T, TResult> ifCompleted) => interrupted<TResult>(exception);
+      public override Completion<TResult> Map<TResult>(Func<T, TResult> ifCompleted) => exception;
 
       public override Completion<TResult> Map<TResult>(Func<T, Completion<TResult>> ifCompleted, Func<Completion<TResult>> ifCancelled)
       {
-         return interrupted<TResult>(exception);
+         return exception;
       }
 
       public override Completion<TResult> Map<TResult>(Func<T, Completion<TResult>> ifCompleted, Func<Exception, Completion<TResult>> ifInterrupted)
@@ -67,19 +67,19 @@ namespace Core.Monads
       }
 
       [Obsolete("Use exception")]
-      public override Completion<TOther> InterruptedAs<TOther>() => interrupted<TOther>(exception);
+      public override Completion<TOther> InterruptedAs<TOther>() => exception;
 
       public override Completion<T> Or(Completion<T> other) => other;
 
       public override Completion<T> Or(Func<Completion<T>> other) => other();
 
-      public override Completion<TResult> SelectMany<TResult>(Func<T, Completion<TResult>> projection) => interrupted<TResult>(exception);
+      public override Completion<TResult> SelectMany<TResult>(Func<T, Completion<TResult>> projection) => exception;
 
-      public override Completion<T2> SelectMany<T1, T2>(Func<T, Completion<T1>> func, Func<T, T1, T2> projection) => interrupted<T2>(exception);
+      public override Completion<T2> SelectMany<T1, T2>(Func<T, Completion<T1>> func, Func<T, T1, T2> projection) => exception;
 
-      public override Completion<TResult> SelectMany<TResult>(Func<T, TResult> func) => interrupted<TResult>(exception);
+      public override Completion<TResult> SelectMany<TResult>(Func<T, TResult> func) => exception;
 
-      public override Completion<TResult> Select<TResult>(Completion<T> result, Func<T, TResult> func) => interrupted<TResult>(exception);
+      public override Completion<TResult> Select<TResult>(Completion<T> result, Func<T, TResult> func) => exception;
 
       public override bool Map(out T value)
       {
@@ -98,24 +98,24 @@ namespace Core.Monads
       public override bool Map(out T value, out Maybe<Exception> _exception)
       {
          value = default;
-         _exception = exception.Some();
+         _exception = exception;
 
          return false;
       }
 
       public override bool UnMap(out Maybe<Exception> _exception)
       {
-         _exception = exception.Some();
+         _exception = exception;
          return true;
       }
 
       public override bool UnMap<TOther>(out Completion<TOther> result)
       {
-         result = interrupted<TOther>(exception);
+         result = exception;
          return true;
       }
 
-      public override Completion<TOther> NotCompleted<TOther>() => interrupted<TOther>(exception);
+      public override Completion<TOther> NotCompleted<TOther>() => exception;
 
       public override bool IsCompleted(out Completion<T> completed)
       {
@@ -137,12 +137,12 @@ namespace Core.Monads
 
       public override Completion<TOther> CancelledOnly<TOther>() => throw exception;
 
-      public override Completion<TOther> NotCompletedOnly<TOther>() => new Interrupted<TOther>(exception);
+      public override Completion<TOther> NotCompletedOnly<TOther>() => exception;
 
       public override void Deconstruct(out Maybe<T> value, out Maybe<Exception> _exception)
       {
          value = default;
-         _exception = exception.Some();
+         _exception = exception;
       }
 
       public override Completion<T> OnCompleted(Action<T> action) => this;
@@ -168,7 +168,7 @@ namespace Core.Monads
       public override bool ValueOrCast<TCompletion>(out T value, out Completion<TCompletion> completion)
       {
          value = default;
-         completion = interrupted<TCompletion>(exception);
+         completion = exception;
 
          return false;
       }
@@ -179,7 +179,7 @@ namespace Core.Monads
 
       public Completion<object> AsObject() => interrupted<object>(exception);
 
-      public override Completion<TResult> CastAs<TResult>() => interrupted<TResult>(exception);
+      public override Completion<TResult> CastAs<TResult>() => exception;
 
       public override Completion<T> Where(Predicate<T> predicate) => this;
 
@@ -187,11 +187,11 @@ namespace Core.Monads
 
       public override Completion<T> Where(Predicate<T> predicate, Func<string> exceptionMessage) => this;
 
-      public override Maybe<T> Maybe() => Maybe<T>.nil;
+      public override Maybe<T> Maybe() => nil;
 
-      public override Result<T> Result() => new Failure<T>(Exception);
+      public override Result<T> Result() => Exception;
 
-      public override Responding<T> Responding() => new FailedResponse<T>(Exception);
+      public override Responding<T> Responding() => Exception;
 
       public bool Equals(Interrupted<T> other)
       {

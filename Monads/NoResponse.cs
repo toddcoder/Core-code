@@ -18,9 +18,9 @@ namespace Core.Monads
 
       public override bool IsFailedResponse => false;
 
-      public override Responding<TResult> Map<TResult>(Func<T, Responding<TResult>> ifResponse) => new NoResponse<TResult>();
+      public override Responding<TResult> Map<TResult>(Func<T, Responding<TResult>> ifResponse) => nil;
 
-      public override Responding<TResult> Map<TResult>(Func<T, TResult> ifResponse) => new NoResponse<TResult>();
+      public override Responding<TResult> Map<TResult>(Func<T, TResult> ifResponse) => nil;
 
       public override Responding<TResult> Map<TResult>(Func<T, Responding<TResult>> ifResponse, Func<Responding<TResult>> ifNoResponse,
          Func<Exception, Responding<TResult>> ifFailedResponse)
@@ -45,13 +45,13 @@ namespace Core.Monads
 
       public override Responding<T> OnFailedResponse(Action<Exception> action) => this;
 
-      public override Responding<TResult> SelectMany<TResult>(Func<T, Responding<TResult>> projection) => new NoResponse<TResult>();
+      public override Responding<TResult> SelectMany<TResult>(Func<T, Responding<TResult>> projection) => nil;
 
-      public override Responding<T2> SelectMany<T1, T2>(Func<T, Responding<T1>> func, Func<T, T1, T2> projection) => new NoResponse<T2>();
+      public override Responding<T2> SelectMany<T1, T2>(Func<T, Responding<T1>> func, Func<T, T1, T2> projection) => nil;
 
-      public override Responding<TResult> SelectMany<TResult>(Func<T, TResult> func) => new NoResponse<TResult>();
+      public override Responding<TResult> SelectMany<TResult>(Func<T, TResult> func) => nil;
 
-      public override Responding<TResult> Select<TResult>(Responding<T> result, Func<T, TResult> func) => new NoResponse<TResult>();
+      public override Responding<TResult> Select<TResult>(Responding<T> result, Func<T, TResult> func) => nil;
 
       public override bool Map(out T value)
       {
@@ -70,28 +70,28 @@ namespace Core.Monads
       public override bool Map(out T value, out Maybe<Exception> _exception)
       {
          value = default;
-         _exception = Maybe<Exception>.nil;
+         _exception = nil;
 
          return false;
       }
 
       public override T Force() => throw fail("There is no value");
 
-      public override T DefaultTo(Func<Maybe<Exception>, T> func) => func(Maybe<Exception>.nil);
+      public override T DefaultTo(Func<Maybe<Exception>, T> func) => func(nil);
 
       public override void Deconstruction(out T value, out Maybe<Exception> _exception)
       {
          value = default;
-         _exception = Maybe<Exception>.nil;
+         _exception = nil;
       }
 
-      public override Maybe<T> Maybe() => new None<T>();
+      public override Maybe<T> Maybe() => nil;
 
-      public override Result<T> Result() => new Failure<T>(fail("There is no value"));
+      public override Result<T> Result() => fail("There is no value");
 
-      public override Matched<T> Matched() => new NoMatch<T>();
+      public override Matched<T> Matched() => nil;
 
-      public override Completion<T> Completion() => new Cancelled<T>();
+      public override Completion<T> Completion() => nil;
 
       public bool Equals(NoResponse<T> other) => true;
 

@@ -376,7 +376,7 @@ namespace Core.Applications.CommandProcessing
             noStrings = noStrings.Drop(result.Length);
             if (noStrings.IsEmpty() || noStrings.IsMatch($"^ /s* ('{Prefix}' | '{ShortCut}'); f"))
             {
-               yield return (prefix, name, Maybe<string>.nil);
+               yield return (prefix, name, nil);
             }
             else if (noStrings.Matches("^ /s* /([quote]) /(-[quote]*) /1; f").Map(out result))
             {
@@ -463,7 +463,7 @@ namespace Core.Applications.CommandProcessing
       protected Maybe<Unit> fillProperty(PropertyInfo propertyInfo, Maybe<string> _value)
       {
          var type = propertyInfo.PropertyType;
-         var _object = Maybe<object>.nil;
+         Maybe<object> _object = nil;
          if (_value.Map(out var value))
          {
             if (type == typeof(bool))
@@ -503,7 +503,7 @@ namespace Core.Applications.CommandProcessing
             }
             else
             {
-               return Maybe<Unit>.nil;
+               return nil;
             }
          }
          else
@@ -564,7 +564,7 @@ namespace Core.Applications.CommandProcessing
             }
             else
             {
-               return Maybe<object>.nil;
+               return nil;
             }
          }
          else if (type == typeof(FolderName))
@@ -585,7 +585,7 @@ namespace Core.Applications.CommandProcessing
             }
             else
             {
-               return Maybe<object>.nil;
+               return nil;
             }
          }
          else if (type == typeof(Maybe<FileName>))
@@ -598,12 +598,12 @@ namespace Core.Applications.CommandProcessing
             }
             else
             {
-               return Maybe<object>.nil;
+               return nil;
             }
          }
          else
          {
-            return Maybe<object>.nil;
+            return nil;
          }
       }
 
@@ -619,7 +619,7 @@ namespace Core.Applications.CommandProcessing
          }
          else
          {
-            return Maybe<object>.nil;
+            return nil;
          }
       }
 

@@ -1,11 +1,10 @@
 ﻿using System;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads
 {
    public abstract class Maybe<T>
    {
-      public static Maybe<T> nil => new None<T>();
-
       public static Maybe<T> operator |(Maybe<T> left, Maybe<T> right)
       {
          if (left.IsSome)
@@ -18,7 +17,7 @@ namespace Core.Monads
          }
          else
          {
-            return new None<T>();
+            return nil;
          }
       }
 

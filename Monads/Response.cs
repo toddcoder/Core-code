@@ -66,9 +66,9 @@ namespace Core.Monads
          return func(Value).Map(t1 => projection(Value, t1).Response(), noResponse<T2>, failedResponse<T2>);
       }
 
-      public override Responding<TResult> SelectMany<TResult>(Func<T, TResult> func) => func(Value).Response();
+      public override Responding<TResult> SelectMany<TResult>(Func<T, TResult> func) => func(Value);
 
-      public override Responding<TResult> Select<TResult>(Responding<T> result, Func<T, TResult> func) => func(Value).Response();
+      public override Responding<TResult> Select<TResult>(Responding<T> result, Func<T, TResult> func) => func(Value);
 
       public override bool Map(out T value)
       {
@@ -87,7 +87,7 @@ namespace Core.Monads
       public override bool Map(out T value, out Maybe<Exception> _exception)
       {
          value = Value;
-         _exception = Maybe<Exception>.nil;
+         _exception = nil;
 
          return true;
       }
@@ -99,7 +99,7 @@ namespace Core.Monads
       public override void Deconstruction(out T value, out Maybe<Exception> _exception)
       {
          value = Value;
-         _exception = Maybe<Exception>.nil;
+         _exception = nil;
       }
 
       public override Maybe<T> Maybe() => Value;

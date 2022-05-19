@@ -1,24 +1,25 @@
 ﻿using System;
 using static Core.Lambdas.LambdaFunctions;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads
 {
 	public class Matching<T, TResult>
 	{
-		Matched<T> matched;
-		Maybe<Func<TResult>> action;
+		protected Matched<T> matched;
+		protected Maybe<Func<TResult>> action;
 
 		public Matching(Matched<T> matched)
 		{
 			this.matched = matched;
-			action = MonadFunctions.none<Func<TResult>>();
+			action = nil;
 		}
 
 		public Matching<T, TResult> IfMatched(Func<T, TResult> ifMatched)
 		{
 			if (matched.Map(out var value))
          {
-            action = func(() => ifMatched(value)).Some();
+            action = func(() => ifMatched(value));
          }
 
          return this;
@@ -28,7 +29,7 @@ namespace Core.Monads
 		{
 			if (matched.IsNotMatched)
          {
-            action = ifNotMatched.Some();
+            action = ifNotMatched;
          }
 
          return this;
@@ -36,9 +37,9 @@ namespace Core.Monads
 
 		public Matching<T, TResult> IfFailedMatch(Func<Exception, TResult> ifFailedMatch)
 		{
-			if (matched.IfNot(out var anyException) && anyException.Map(out var exception))
+			if (matched.UnMap(out var anyException) && anyException.Map(out var exception))
          {
-            action = func(() => ifFailedMatch(exception)).Some();
+            action = func(() => ifFailedMatch(exception));
          }
 
          return this;
@@ -48,7 +49,7 @@ namespace Core.Monads
 		{
 			if (matched.Map(out var value))
          {
-            return mapping(value).Match();
+            return mapping(value);
          }
          else
          {
@@ -72,7 +73,7 @@ namespace Core.Monads
 		{
 			if (action.IsNone)
          {
-            action = ifDefault.Some();
+            action = ifDefault;
          }
 
          return this;

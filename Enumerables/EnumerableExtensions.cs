@@ -963,9 +963,9 @@ namespace Core.Enumerables
 
       public static Maybe<int> IndexOfMax<T>(this IEnumerable<T> enumerable) where T : IComparable<T>
       {
-         var _index = Maybe<int>.nil;
+         Maybe<int> _index = nil;
          var currentIndex = 0;
-         var _currentValue = Maybe<T>.nil;
+         Maybe<T> _currentValue = nil;
          foreach (var item in enumerable)
          {
             if (_currentValue.Map(out var currentValue))
@@ -991,9 +991,9 @@ namespace Core.Enumerables
       public static Maybe<int> IndexOfMax<TSource, TResult>(this IEnumerable<TSource> enumerable, Func<TSource, TResult> mappingFunc)
          where TResult : IComparable<TResult>
       {
-         var _index = Maybe<int>.nil;
+         Maybe<int> _index = nil;
          var currentIndex = 0;
-         var _currentValue = Maybe<TResult>.nil;
+         Maybe<TResult> _currentValue = nil;
          foreach (var item in enumerable)
          {
             var mappedItem = mappingFunc(item);
@@ -1019,9 +1019,9 @@ namespace Core.Enumerables
 
       public static Maybe<int> IndexOfMin<T>(this IEnumerable<T> enumerable) where T : IComparable<T>
       {
-         var _index = Maybe<int>.nil;
+         Maybe<int> _index = nil;
          var currentIndex = 0;
-         var _currentValue = Maybe<T>.nil;
+         Maybe<T> _currentValue = nil;
          foreach (var item in enumerable)
          {
             if (_currentValue.Map(out var currentValue))
@@ -1047,9 +1047,9 @@ namespace Core.Enumerables
       public static Maybe<int> IndexOfMin<TSource, TResult>(this IEnumerable<TSource> enumerable, Func<TSource, TResult> mappingFunc)
          where TResult : IComparable<TResult>
       {
-         var _index = Maybe<int>.nil;
+         Maybe<int> _index = nil;
          var currentIndex = 0;
-         var _currentValue = Maybe<TResult>.nil;
+         Maybe<TResult> _currentValue = nil;
          foreach (var item in enumerable)
          {
             var mappedItem = mappingFunc(item);

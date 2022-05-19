@@ -87,8 +87,8 @@ namespace Core.Applications.CommandProcessing
             var length = firstLine.Length.MaxOf(80);
             writer.WriteLine("=".Repeat(length));
 
-            var _divider = Maybe<string>.nil;
-            var _indent = Maybe<string>.nil;
+            Maybe<string> _divider = nil;
+            Maybe<string> _indent = nil;
 
             foreach (var line in source.Unjoin("/s* ';' /s*; f"))
             {

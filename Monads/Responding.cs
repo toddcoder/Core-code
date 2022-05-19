@@ -4,10 +4,6 @@ namespace Core.Monads
 {
    public abstract class Responding<T>
    {
-      public static Responding<T> nil => new NoResponse<T>();
-
-      public static Responding<T> Nil(string message) => new FailedResponse<T>(new Exception(message));
-
       public static Responding<T> operator |(Responding<T> left, Responding<T> right)
       {
          if (left.IsResponse)

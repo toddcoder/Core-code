@@ -40,7 +40,7 @@ namespace Core.Monads
       public override bool ValueOrCast<TResult>(out T value, out Result<TResult> result)
       {
          value = default;
-         result = failure<TResult>(exception);
+         result = exception;
 
          return false;
       }
@@ -50,25 +50,25 @@ namespace Core.Monads
       public override bool IsFailed => true;
 
       [Obsolete("Use exception")]
-      public override Result<TOther> ExceptionAs<TOther>() => failure<TOther>(exception);
+      public override Result<TOther> ExceptionAs<TOther>() => exception;
 
       [DebuggerStepThrough]
-      public override Result<TResult> Map<TResult>(Func<T, Result<TResult>> ifSuccessful) => failure<TResult>(exception);
+      public override Result<TResult> Map<TResult>(Func<T, Result<TResult>> ifSuccessful) => exception;
 
       [DebuggerStepThrough]
-      public override Result<TResult> Map<TResult>(Func<T, TResult> ifSuccessful) => failure<TResult>(exception);
+      public override Result<TResult> Map<TResult>(Func<T, TResult> ifSuccessful) => exception;
 
       [DebuggerStepThrough]
-      public override Result<TResult> SelectMany<TResult>(Func<T, Result<TResult>> projection) => failure<TResult>(exception);
+      public override Result<TResult> SelectMany<TResult>(Func<T, Result<TResult>> projection) => exception;
 
       [DebuggerStepThrough]
       public override Result<T2> SelectMany<T1, T2>(Func<T, Result<T1>> func, Func<T, T1, T2> projection)
       {
-         return failure<T2>(exception);
+         return exception;
       }
 
       [DebuggerStepThrough]
-      public override Result<TResult> SelectMany<TResult>(Func<T, TResult> func) => failure<TResult>(exception);
+      public override Result<TResult> SelectMany<TResult>(Func<T, TResult> func) => exception;
 
       [DebuggerStepThrough]
       public override T Recover(Func<Exception, T> recovery) => recovery(exception);
@@ -85,7 +85,7 @@ namespace Core.Monads
       [DebuggerStepThrough, Obsolete("Use |")]
       public override Result<T> Or(Func<T> other) => tryTo(other);
 
-      public override Result<Unit> Unit => failure<Unit>(exception);
+      public override Result<Unit> Unit => exception;
 
       public override Result<T> Always(Action action)
       {
@@ -93,7 +93,7 @@ namespace Core.Monads
          return this;
       }
 
-      public override Matched<T> Match() => failedMatch<T>(exception);
+      public override Matched<T> Match() => exception;
 
       public override bool Map(out T value)
       {
@@ -136,15 +136,15 @@ namespace Core.Monads
 
       public override void Deconstruct(out Maybe<T> value, out Exception exception)
       {
-         value = none<T>();
+         value = nil;
          exception = this.exception;
       }
 
       public override Result<T> Assert(Predicate<T> predicate, Func<string> exceptionMessage) => this;
 
-      public override Maybe<T> Maybe() => Maybe<T>.nil;
+      public override Maybe<T> Maybe() => nil;
 
-      public override Responding<T> Responding() => new FailedResponse<T>(Exception);
+      public override Responding<T> Responding() => Exception;
 
       public override bool EqualToValueOf(Result<T> otherResult) => false;
 
@@ -154,11 +154,11 @@ namespace Core.Monads
       {
          try
          {
-            return func(exception).Success();
+            return func(exception);
          }
          catch (Exception otherException)
          {
-            return failure<T>(otherException);
+            return otherException;
          }
       }
 
@@ -170,11 +170,11 @@ namespace Core.Monads
          }
          catch (Exception otherException)
          {
-            return failure<T>(otherException);
+            return otherException;
          }
       }
 
-      public override Result<TResult> CastAs<TResult>() => failure<TResult>(exception);
+      public override Result<TResult> CastAs<TResult>() => exception;
 
       public override Result<T> Where(Predicate<T> predicate, string exceptionMessage) => this;
 
@@ -184,7 +184,7 @@ namespace Core.Monads
 
       public override Result<T> ExceptionMessage(Func<Exception, string> message)
       {
-         return new Failure<T>(new FullStackException(message(exception), exception));
+         return new FullStackException(message(exception), exception);
       }
 
       public bool Equals(Failure<T> other)

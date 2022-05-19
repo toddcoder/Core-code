@@ -185,11 +185,11 @@ namespace Core.Monads
 
       public override Completion<T> Where(Predicate<T> predicate, Func<string> exceptionMessage) => this;
 
-      public override Maybe<T> Maybe() => Maybe<T>.nil;
+      public override Maybe<T> Maybe() => nil;
 
       public override Result<T> Result() => new Failure<T>(new CancelException());
 
-      public override Responding<T> Responding() => Responding<T>.nil;
+      public override Responding<T> Responding() => nil;
 
       public bool Equals(Cancelled<T> other) => true;
 

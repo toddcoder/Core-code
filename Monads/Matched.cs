@@ -4,8 +4,6 @@ namespace Core.Monads
 {
    public abstract class Matched<T>
    {
-      public static Matched<T> nil => new NoMatch<T>();
-
       public static Matched<T> Nil(string message) => new FailedMatch<T>(new Exception(message));
 
       public static implicit operator Matched<T>(T value) => value.Match();
@@ -79,9 +77,9 @@ namespace Core.Monads
       [Obsolete("Use If")]
       public abstract bool ValueOrCast<TMatched>(out T value, out Matched<TMatched> matched);
 
-      public abstract bool Map(out T value, out Maybe<Exception> exception);
+      public abstract bool Map(out T value, out Maybe<Exception> _exception);
 
-      public abstract bool IfNot(out Maybe<Exception> anyException);
+      public abstract bool UnMap(out Maybe<Exception> _exception);
 
       public abstract bool UnMap<TOther>(out Matched<TOther> result);
 
@@ -97,7 +95,7 @@ namespace Core.Monads
 
       public abstract Matched<TOther> UnmatchedOnly<TOther>();
 
-      public abstract void Deconstruct(out Maybe<T> value, out Maybe<Exception> exception);
+      public abstract void Deconstruct(out Maybe<T> value, out Maybe<Exception> _exception);
 
       public abstract bool EqualToValueOf(Matched<T> otherMatched);
 
