@@ -15,6 +15,7 @@ namespace Core.WinForms.Controls
    {
       protected const string BUSY_TEXT_PROCESSOR_NOT_INITIALIZED = "BusyTextProcessor not initialized";
       protected const string PROGRESS_DEFINITE_PROCESSOR_NOT_INITIALIZED = "Progress Definite Processor not initialized";
+      protected const string CHECK_MARK = "\u2713";
 
       protected static Hash<MessageProgressType, Color> globalForeColors;
       protected static Hash<MessageProgressType, Color> globalBackColors;
@@ -179,6 +180,8 @@ namespace Core.WinForms.Controls
 
          form.Controls.Add(this);
       }
+
+      public bool Checked { get; set; }
 
       public void SetForeColor(Color foreColor) => _foreColor = foreColor;
 
@@ -493,6 +496,18 @@ namespace Core.WinForms.Controls
             }
          }
 
+         if (Checked)
+         {
+            using var font = new Font("Verdana", 12);
+            var size = TextRenderer.MeasureText(e.Graphics, CHECK_MARK, font);
+            var location = new Point(ClientRectangle.Width - size.Width - 4, 4);
+            var backColor = getForeColor() == Color.Black ? Color.White : Color.Black;
+
+            using var invertedBrush = new SolidBrush(backColor);
+            var stringFormat = new StringFormat(StringFormatFlags.NoClip | StringFormatFlags.NoWrap);
+            e.Graphics.DrawString(CHECK_MARK, font, invertedBrush, location, stringFormat);
+         }
+
          Painting?.Invoke(this, e);
       }
 
@@ -598,6 +613,18 @@ namespace Core.WinForms.Controls
             pevent.Graphics.DrawLine(darkGrayPen, new Point(left, top), new Point(left, height));
             pevent.Graphics.DrawLine(lightPen, new Point(left, height), new Point(width, height));
             pevent.Graphics.DrawLine(lightPen, new Point(width, top), new Point(width, height));
+         }
+
+         if (Checked)
+         {
+            var font = new Font("Verdana", 12);
+            var size = TextRenderer.MeasureText(pevent.Graphics, CHECK_MARK, font);
+            var location = new Point(ClientRectangle.Width - size.Width - 4, 4);
+            var rectangle = new Rectangle(location, size);
+            var foreColor = getForeColor();
+
+            using var brush = new SolidBrush(foreColor);
+            pevent.Graphics.FillEllipse(brush, rectangle);
          }
 
          PaintingBackground?.Invoke(this, pevent);
