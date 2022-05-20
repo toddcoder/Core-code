@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Drawing.Text;
 using System.Windows.Forms;
 using Core.Collections;
 using Core.Monads;
@@ -433,6 +434,15 @@ namespace Core.WinForms.Controls
 
       protected MessageStyle getStyle() => _style.DefaultTo(() => styles[type]);
 
+      protected Rectangle getCheckRectangle(Graphics graphics)
+      {
+         using var font = new Font("Verdana", 12);
+         var size = TextRenderer.MeasureText(graphics, CHECK_MARK, font);
+         var location = new Point(ClientRectangle.Width - size.Width - 10, 4);
+
+         return new Rectangle(location, size);
+      }
+
       protected override void OnPaint(PaintEventArgs e)
       {
          base.OnPaint(e);
@@ -498,13 +508,15 @@ namespace Core.WinForms.Controls
 
          if (Checked)
          {
-            using var font = new Font("Verdana", 12);
-            var size = TextRenderer.MeasureText(e.Graphics, CHECK_MARK, font);
-            var location = new Point(ClientRectangle.Width - size.Width - 4, 4);
-            var backColor = getForeColor() == Color.Black ? Color.White : Color.Black;
+            var location = getCheckRectangle(e.Graphics).Location;
 
-            using var invertedBrush = new SolidBrush(backColor);
+            var foreColor = getForeColor();
+            using var invertedBrush = new SolidBrush(foreColor);
             var stringFormat = new StringFormat(StringFormatFlags.NoClip | StringFormatFlags.NoWrap);
+            e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+            e.Graphics.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
+            using var font = new Font("Verdana", 12);
             e.Graphics.DrawString(CHECK_MARK, font, invertedBrush, location, stringFormat);
          }
 
@@ -617,14 +629,13 @@ namespace Core.WinForms.Controls
 
          if (Checked)
          {
-            var font = new Font("Verdana", 12);
-            var size = TextRenderer.MeasureText(pevent.Graphics, CHECK_MARK, font);
-            var location = new Point(ClientRectangle.Width - size.Width - 4, 4);
-            var rectangle = new Rectangle(location, size);
-            var foreColor = getForeColor();
+            var rectangle = getCheckRectangle(pevent.Graphics);
 
-            using var brush = new SolidBrush(foreColor);
-            pevent.Graphics.FillEllipse(brush, rectangle);
+            var foreColor = getForeColor();
+            using var pen = new Pen(foreColor, 2);
+            pevent.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+            pevent.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+            pevent.Graphics.DrawEllipse(pen, rectangle);
          }
 
          PaintingBackground?.Invoke(this, pevent);
