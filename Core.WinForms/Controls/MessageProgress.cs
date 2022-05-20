@@ -438,7 +438,7 @@ namespace Core.WinForms.Controls
       {
          using var font = new Font("Verdana", 12);
          var size = TextRenderer.MeasureText(graphics, CHECK_MARK, font);
-         var location = new Point(ClientRectangle.Width - size.Width - 10, 4);
+         var location = new Point(4, 4);
 
          return new Rectangle(location, size);
       }
@@ -506,7 +506,7 @@ namespace Core.WinForms.Controls
             }
          }
 
-         if (Checked)
+         if (Checked && type is not MessageProgressType.Busy && type is not MessageProgressType.BusyText)
          {
             var location = getCheckRectangle(e.Graphics).Location;
 
@@ -627,7 +627,7 @@ namespace Core.WinForms.Controls
             pevent.Graphics.DrawLine(lightPen, new Point(width, top), new Point(width, height));
          }
 
-         if (Checked)
+         if (Checked && type is not MessageProgressType.Busy && type is not MessageProgressType.BusyText)
          {
             var rectangle = getCheckRectangle(pevent.Graphics);
 
