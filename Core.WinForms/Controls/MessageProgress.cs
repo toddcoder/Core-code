@@ -349,7 +349,11 @@ namespace Core.WinForms.Controls
       public string ClickText
       {
          get => _clickText.DefaultTo(() => text);
-         set => _clickText = maybe(value.IsNotEmpty(), () => value);
+         set
+         {
+            _clickText = maybe(value.IsNotEmpty(), () => value); 
+            this.Do(setToolTip);
+         }
       }
 
       public int Minimum { get; set; }
