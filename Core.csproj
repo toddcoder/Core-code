@@ -204,6 +204,7 @@
     <Compile Include="Configurations\ConfigurationExtensions.cs" />
     <Compile Include="Configurations\Group.cs" />
     <Compile Include="Configurations\GroupMaybe.cs" />
+    <Compile Include="Configurations\GroupRequired.cs" />
     <Compile Include="Configurations\GroupResult.cs" />
     <Compile Include="Configurations\GroupValue.cs" />
     <Compile Include="Configurations\IConfigurationItem.cs" />

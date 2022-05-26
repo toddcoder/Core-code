@@ -1,6 +1,5 @@
 ﻿using System;
 using Core.Computers;
-using Core.Monads;
 using Core.Strings;
 using static Core.Objects.ConversionFunctions;
 
@@ -19,24 +18,12 @@ namespace Core.Configurations
 
       public string String(string key, string defaultValue = "") => group.GetValue(key).DefaultTo(() => defaultValue);
 
-      public Maybe<string> this[string key]
-      {
-         get => String(key);
-         set
-         {
-            if (value.Map(out var @string))
-            {
-               group[key] = @string;
-            }
-         }
-      }
-
       public int Int32(string key, int defaultValue = 0)
       {
          return group.GetValue(key).Map(i => Value.Int32(i, defaultValue)).DefaultTo(() => defaultValue);
       }
 
-      public Maybe<long> Int64(string key, long defaultValue = 0)
+      public long Int64(string key, long defaultValue = 0)
       {
          return group.GetValue(key).Map(l => Value.Int64(l, defaultValue)).DefaultTo(() => defaultValue);
       }
@@ -69,6 +56,6 @@ namespace Core.Configurations
 
       public FolderName FolderName(string key) => group.ValueAt(key);
 
-      public byte[] Bytes(string key) => this[key].Map(s => s.FromBase64()).DefaultTo(Array.Empty<byte>);
+      public byte[] Bytes(string key) => String(key).FromBase64();
    }
 }

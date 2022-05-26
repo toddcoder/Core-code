@@ -541,5 +541,7 @@ namespace Core.Configurations
       public GroupMaybe Maybe => new(this);
 
       public GroupValue Value => new(this);
+
+      public GroupRequired Required => new(this);
    }
 }
