@@ -203,6 +203,9 @@
     <Compile Include="Configurations\Configuration.cs" />
     <Compile Include="Configurations\ConfigurationExtensions.cs" />
     <Compile Include="Configurations\Group.cs" />
+    <Compile Include="Configurations\GroupMaybe.cs" />
+    <Compile Include="Configurations\GroupResult.cs" />
+    <Compile Include="Configurations\GroupValue.cs" />
     <Compile Include="Configurations\IConfigurationItem.cs" />
     <Compile Include="Configurations\Item.cs" />
     <Compile Include="Configurations\Parser.cs" />

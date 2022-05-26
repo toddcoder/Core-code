@@ -11,10 +11,10 @@ using Core.Computers;
 using Core.Enumerables;
 using Core.Matching;
 using Core.Monads;
+using Core.Objects;
 using Core.Strings;
 using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
-using static Core.Objects.ConversionFunctions;
 
 namespace Core.Configurations
 {
@@ -239,19 +239,19 @@ namespace Core.Configurations
          }
          else if (type == typeof(int))
          {
-            return Value.Int32(source).Some<object>();
+            return ConversionFunctions.Value.Int32(source).Some<object>();
          }
          else if (type == typeof(long))
          {
-            return Value.Int64(source).Some<object>();
+            return ConversionFunctions.Value.Int64(source).Some<object>();
          }
          else if (type == typeof(float))
          {
-            return Value.Single(source).Some<object>();
+            return ConversionFunctions.Value.Single(source).Some<object>();
          }
          else if (type == typeof(double))
          {
-            return Value.Double(source).Some<object>();
+            return ConversionFunctions.Value.Double(source).Some<object>();
          }
          else if (type == typeof(bool))
          {
@@ -259,11 +259,11 @@ namespace Core.Configurations
          }
          else if (type == typeof(DateTime))
          {
-            return Value.DateTime(source).Some<object>();
+            return ConversionFunctions.Value.DateTime(source).Some<object>();
          }
          else if (type == typeof(Guid))
          {
-            return Value.Guid(source).Some<object>();
+            return ConversionFunctions.Value.Guid(source).Some<object>();
          }
          else if (type == typeof(FileName))
          {
@@ -480,7 +480,7 @@ namespace Core.Configurations
       {
          return
             from obj in tryTo(() => Deserialize(typeof(T)))
-            from cast in Result.Cast<T>(obj)
+            from cast in ConversionFunctions.Result.Cast<T>(obj)
             select cast;
       }
 
@@ -535,5 +535,11 @@ namespace Core.Configurations
             return fill(ref obj, type);
          }
       }
+
+      public GroupResult Result => new(this);
+
+      public GroupMaybe Maybe => new(this);
+
+      public GroupValue Value => new(this);
    }
 }
