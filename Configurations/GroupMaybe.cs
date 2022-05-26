@@ -52,6 +52,6 @@ namespace Core.Configurations
 
       public Maybe<byte[]> Bytes(string key) => this[key].Map(s => s.FromBase64());
 
-      public Maybe<string[]> Array(string key) => Group(key).Map(g => g.Values().Select(t => t.value).ToArray());
+      public Maybe<string[]> Strings(string key) => Group(key).Map(g => g.Values().Select(t => t.value).ToArray());
    }
 }

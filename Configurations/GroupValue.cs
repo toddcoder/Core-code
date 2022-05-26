@@ -59,7 +59,7 @@ namespace Core.Configurations
 
       public byte[] Bytes(string key) => String(key).FromBase64();
 
-      public string[] Array(string key)
+      public string[] Strings(string key)
       {
          if (group.ContainsKey(key))
          {

@@ -44,6 +44,6 @@ namespace Core.Configurations
 
       public byte[] Bytes(string key) => this[key].FromBase64();
 
-      public string[] Array(string key) => Group(key).Values().Select(t => t.value).ToArray();
+      public string[] Strings(string key) => Group(key).Values().Select(t => t.value).ToArray();
    }
 }
