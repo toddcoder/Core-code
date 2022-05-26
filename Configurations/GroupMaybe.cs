@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Core.Computers;
 using Core.Monads;
 using Core.Strings;
@@ -50,5 +51,7 @@ namespace Core.Configurations
       public Maybe<FolderName> FolderName(string key) => this[key].Map(s => (FolderName)s);
 
       public Maybe<byte[]> Bytes(string key) => this[key].Map(s => s.FromBase64());
+
+      public Maybe<string[]> Array(string key) => Group(key).Map(g => g.Values().Select(t => t.value).ToArray());
    }
 }

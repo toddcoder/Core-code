@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Core.Computers;
 using Core.Strings;
 using static Core.Objects.ConversionFunctions;
@@ -57,5 +58,17 @@ namespace Core.Configurations
       public FolderName FolderName(string key) => group.ValueAt(key);
 
       public byte[] Bytes(string key) => String(key).FromBase64();
+
+      public string[] Array(string key)
+      {
+         if (group.ContainsKey(key))
+         {
+            return group.Values().Select(t => t.value).ToArray();
+         }
+         else
+         {
+            return System.Array.Empty<string>();
+         }
+      }
    }
 }
