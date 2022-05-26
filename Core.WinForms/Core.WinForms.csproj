@@ -80,6 +80,9 @@
     <Compile Include="Controls\RichLabel.Designer.cs">
       <DependentUpon>RichLabel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\RoundedMessage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Controls\SelectedState.cs" />
     <Compile Include="Controls\StatusProgress.cs">
       <SubType>UserControl</SubType>

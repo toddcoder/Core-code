@@ -70,10 +70,7 @@ namespace Core.Tests
          var message = new MessageProgress(form);
          message.SetUp(0, 0, 300, 27, AnchorStyles.Left | AnchorStyles.Right);
          var stopwatch = new Stopwatch();
-         message.AutomaticMessage += (_, e) =>
-         {
-            e.Text = stopwatch.Elapsed.ToString();
-         };
+         message.AutomaticMessage += (_, e) => { e.Text = stopwatch.Elapsed.ToString(); };
          message.StartAutomatic();
          stopwatch.Start();
          form.ShowDialog();
@@ -91,10 +88,7 @@ namespace Core.Tests
             BackColor = Color.White
          };
          responder.SetUp(0, 0, 500, 100, 24);
-         responder.ButtonClick += (_, e) =>
-         {
-            form.Text = e.Key;
-         };
+         responder.ButtonClick += (_, e) => { form.Text = e.Key; };
          form.ShowDialog();
       }
 
@@ -138,6 +132,28 @@ namespace Core.Tests
          checkBox.Location = new Point(0, 35);
          form.Controls.Add(checkBox);
 
+         form.ShowDialog();
+      }
+
+      [TestMethod]
+      public void RoundedMessageTest()
+      {
+         var form = new Form();
+         var message = new RoundedMessage(form, true) { CornerRadius = 8 };
+         message.SetUp(4, 4, form.ClientSize.Width - 20, 27, AnchorStyles.Left);
+         message.Message("Round");
+         form.ShowDialog();
+      }
+
+      [TestMethod]
+      public void ClickableRoundedMessageTest()
+      {
+         var form = new Form();
+         var message = new RoundedMessage(form, true) { CornerRadius = 8 };
+         message.SetUp(4, 4, form.ClientSize.Width - 20, 27, AnchorStyles.Left);
+         message.Message("Round");
+         message.Click += (_, _) => message.Message("Clicked");
+         message.ClickText = "Click me!";
          form.ShowDialog();
       }
    }

@@ -351,7 +351,7 @@ namespace Core.WinForms.Controls
          get => _clickText.DefaultTo(() => text);
          set
          {
-            _clickText = maybe(value.IsNotEmpty(), () => value); 
+            _clickText = maybe(value.IsNotEmpty(), () => value);
             this.Do(setToolTip);
          }
       }
@@ -506,7 +506,7 @@ namespace Core.WinForms.Controls
                dashedPen.DashStyle = DashStyle.Dash;
                var rectangle = ClientRectangle;
                rectangle.Inflate(-2, -2);
-               e.Graphics.DrawRectangle(dashedPen, rectangle);
+               drawRectangle(e.Graphics, dashedPen, rectangle);
             }
          }
 
@@ -536,7 +536,7 @@ namespace Core.WinForms.Controls
             case MessageProgressType.Tape:
             {
                using var brush = new HatchBrush(HatchStyle.BackwardDiagonal, Color.Black, Color.Gold);
-               pevent.Graphics.FillRectangle(brush, ClientRectangle);
+               fillRectangle(pevent.Graphics, brush, ClientRectangle);
                break;
             }
             case MessageProgressType.ProgressIndefinite or MessageProgressType.Busy:
@@ -546,7 +546,7 @@ namespace Core.WinForms.Controls
                var location = new Point(x, y);
                var length = random.Next(ClientRectangle.Width - x - 5);
                using var brush = new SolidBrush(Color.DarkSlateGray);
-               pevent.Graphics.FillRectangle(brush, ClientRectangle);
+               fillRectangle(pevent.Graphics, brush, ClientRectangle);
 
                var endPoint = location;
                endPoint.Offset(length, 0);
@@ -569,38 +569,38 @@ namespace Core.WinForms.Controls
                var textRectangle = progressDefiniteProcessor.Value.TextRectangle;
 
                using var coralBrush = new SolidBrush(Color.Coral);
-               pevent.Graphics.FillRectangle(coralBrush, textRectangle);
+               fillRectangle(pevent.Graphics, coralBrush, textRectangle);
                var width = textRectangle.Width;
                var percentWidth = getPercentage(width);
                var location = textRectangle.Location;
                var size = new Size(percentWidth, textRectangle.Height);
                var rectangle = new Rectangle(location, size);
                using var cornflowerBlueBrush = new SolidBrush(Color.CornflowerBlue);
-               pevent.Graphics.FillRectangle(cornflowerBlueBrush, rectangle);
+               fillRectangle(pevent.Graphics, cornflowerBlueBrush, rectangle);
                break;
             }
             case MessageProgressType.Unselected:
             {
                using var brush = new SolidBrush(Color.White);
-               pevent.Graphics.FillRectangle(brush, ClientRectangle);
+               fillRectangle(pevent.Graphics, brush, ClientRectangle);
 
                using var pen = new Pen(Color.DarkGray, 10);
-               pevent.Graphics.DrawRectangle(pen, ClientRectangle);
+               drawRectangle(pevent.Graphics, pen, ClientRectangle);
                break;
             }
             case MessageProgressType.Selected:
             {
                using var brush = new SolidBrush(Color.White);
-               pevent.Graphics.FillRectangle(brush, ClientRectangle);
+               fillRectangle(pevent.Graphics, brush, ClientRectangle);
 
                using var pen = new Pen(Color.Black, 10);
-               pevent.Graphics.DrawRectangle(pen, ClientRectangle);
+               drawRectangle(pevent.Graphics, pen, ClientRectangle);
                break;
             }
             case MessageProgressType.BusyText:
             {
                using var brush = new SolidBrush(Color.Teal);
-               pevent.Graphics.FillRectangle(brush, ClientRectangle);
+               fillRectangle(pevent.Graphics, brush, ClientRectangle);
 
                busyTextProcessor.Value.OnPaint(pevent);
 
@@ -610,7 +610,7 @@ namespace Core.WinForms.Controls
             {
                var backColor = getBackColor();
                using var brush = new SolidBrush(backColor);
-               pevent.Graphics.FillRectangle(brush, ClientRectangle);
+               fillRectangle(pevent.Graphics, brush, ClientRectangle);
                break;
             }
          }
@@ -760,5 +760,9 @@ namespace Core.WinForms.Controls
             refresh();
          }
       }
+
+      protected virtual void drawRectangle(Graphics graphics, Pen pen, Rectangle rectangle) => graphics.DrawRectangle(pen, rectangle);
+
+      protected virtual void fillRectangle(Graphics graphics, Brush brush, Rectangle rectangle) => graphics.FillRectangle(brush, rectangle);
    }
 }
