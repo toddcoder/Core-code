@@ -52,6 +52,6 @@ namespace Core.Configurations
 
       public Result<byte[]> Bytes(string key) => this[key].Map(s => s.FromBase64());
 
-      public Result<string[]> Array(string key) => Group(key).Map(g => g.Values().Select(t => t.value).ToArray());
+      public Result<string[]> Strings(string key) => Group(key).Map(g => g.Values().Select(t => t.value).ToArray());
    }
 }
