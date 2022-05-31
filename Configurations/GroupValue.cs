@@ -59,16 +59,6 @@ namespace Core.Configurations
 
       public byte[] Bytes(string key) => String(key).FromBase64();
 
-      public string[] Strings(string key)
-      {
-         if (group.ContainsKey(key))
-         {
-            return group.Values().Select(t => t.value).ToArray();
-         }
-         else
-         {
-            return System.Array.Empty<string>();
-         }
-      }
+      public string[] Strings(string key) => Group(key).Values().Select(t => t.value).ToArray();
    }
 }
