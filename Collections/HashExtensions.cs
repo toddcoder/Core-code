@@ -261,6 +261,111 @@ namespace Core.Collections
          return result;
       }
 
+      public static Hash<TKey, TValue> ToHash<TKey, TValue>(this IEnumerable<(TKey, TValue)> enumerable)
+      {
+         var result = new Hash<TKey, TValue>();
+         foreach (var (key, value) in enumerable)
+         {
+            result[key] = value;
+         }
+
+         return result;
+      }
+
+      public static AutoHash<TKey, TValue> ToAutoHash<TKey, TValue>(this IEnumerable<(TKey, TValue)> enumerable, Func<TKey, TValue> defaultLambda,
+         bool autoAddDefault = false)
+      {
+         var result = new AutoHash<TKey, TValue>(defaultLambda, autoAddDefault);
+         foreach (var (key, value) in enumerable)
+         {
+            result[key] = value;
+         }
+
+         return result;
+      }
+
+      public static AutoHash<TKey, TValue> ToAutoHash<TKey, TValue>(this IEnumerable<(TKey, TValue)> enumerable, TValue defaultValue,
+         bool autoAddDefault = false)
+      {
+         var result = new AutoHash<TKey, TValue>(defaultValue, autoAddDefault);
+         foreach (var (key, value) in enumerable)
+         {
+            result[key] = value;
+         }
+
+         return result;
+      }
+
+      public static StringHash ToStringHash(this IEnumerable<(string, string)> enumerable, bool ignoreCase)
+      {
+         var result = new StringHash(ignoreCase);
+         foreach (var (key, value) in enumerable)
+         {
+            result[key] = value;
+         }
+
+         return result;
+      }
+
+      public static StringHash ToAutoStringHash(this IEnumerable<(string, string)> enumerable, bool ignoreCase, Func<string, string> defaultLambda,
+         bool autoAddDefault = false)
+      {
+         var result = new AutoStringHash(ignoreCase, defaultLambda, autoAddDefault);
+         foreach (var (key, value) in enumerable)
+         {
+            result[key] = value;
+         }
+
+         return result;
+      }
+
+      public static StringHash ToAutoStringHash(this IEnumerable<(string, string)> enumerable, bool ignoreCase, string defaultValue,
+         bool autoAddDefault = false)
+      {
+         var result = new AutoStringHash(ignoreCase, defaultValue, autoAddDefault);
+         foreach (var (key, value) in enumerable)
+         {
+            result[key] = value;
+         }
+
+         return result;
+      }
+
+      public static StringHash<TValue> ToStringHash<TValue>(this IEnumerable<(string, TValue)> enumerable, bool ignoreCase)
+      {
+         var result = new StringHash<TValue>(ignoreCase);
+         foreach (var (key, value) in enumerable)
+         {
+            result[key] = value;
+         }
+
+         return result;
+      }
+
+      public static AutoStringHash<TValue> ToAutoStringHash<TValue>(this IEnumerable<(string, TValue)> enumerable, bool ignoreCase,
+         Func<string, TValue> defaultLambda, bool autoAddDefault = false)
+      {
+         var result = new AutoStringHash<TValue>(ignoreCase, defaultLambda, autoAddDefault);
+         foreach (var (key, value) in enumerable)
+         {
+            result[key] = value;
+         }
+
+         return result;
+      }
+
+      public static AutoStringHash<TValue> ToAutoStringHash<TValue>(this IEnumerable<(string, TValue)> enumerable, bool ignoreCase,
+         TValue defaultValue, bool autoAddDefault = false)
+      {
+         var result = new AutoStringHash<TValue>(ignoreCase, defaultValue, autoAddDefault);
+         foreach (var (key, value) in enumerable)
+         {
+            result[key] = value;
+         }
+
+         return result;
+      }
+
       public static Result<Hash<TKey, TValue>> TryToHash<TKey, TValue, T>(this IEnumerable<T> enumerable, Func<T, TKey> keySelector,
          Func<T, Result<TValue>> valueSelector)
       {
