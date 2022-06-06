@@ -15,6 +15,7 @@
       ProgressDefinite,
       BusyText,
       Automatic,
-      Disabled
+      Disabled,
+      Caution
    }
 }

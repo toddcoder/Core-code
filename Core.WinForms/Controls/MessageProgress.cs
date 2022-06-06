@@ -37,7 +37,8 @@ namespace Core.WinForms.Controls
             [MessageProgressType.ProgressDefinite] = Color.White,
             [MessageProgressType.BusyText] = Color.White,
             [MessageProgressType.Automatic] = Color.Black,
-            [MessageProgressType.Disabled] = Color.LightGray
+            [MessageProgressType.Disabled] = Color.LightGray,
+            [MessageProgressType.Caution] = Color.Black
          };
          globalBackColors = new Hash<MessageProgressType, Color>
          {
@@ -49,7 +50,8 @@ namespace Core.WinForms.Controls
             [MessageProgressType.Selected] = Color.FromArgb(0, 127, 0),
             [MessageProgressType.Unselected] = Color.FromArgb(127, 0, 0),
             [MessageProgressType.Automatic] = Color.White,
-            [MessageProgressType.Disabled] = Color.DarkGray
+            [MessageProgressType.Disabled] = Color.DarkGray,
+            [MessageProgressType.Caution] = Color.CadetBlue
          };
          globalStyles = new Hash<MessageProgressType, MessageStyle>
          {
@@ -58,7 +60,8 @@ namespace Core.WinForms.Controls
             [MessageProgressType.Exception] = MessageStyle.Bold,
             [MessageProgressType.Success] = MessageStyle.Bold,
             [MessageProgressType.Failure] = MessageStyle.Bold,
-            [MessageProgressType.BusyText] = MessageStyle.ItalicBold
+            [MessageProgressType.BusyText] = MessageStyle.ItalicBold,
+            [MessageProgressType.Caution] = MessageStyle.Bold
          };
       }
 
@@ -325,6 +328,8 @@ namespace Core.WinForms.Controls
       public void Success(string message) => ShowMessage(message, MessageProgressType.Success);
 
       public void Failure(string message) => ShowMessage(message, MessageProgressType.Failure);
+
+      public void Caution(string message) => ShowMessage(message, MessageProgressType.Caution);
 
       public void Selected(string message) => ShowMessage(message, MessageProgressType.Selected);
 

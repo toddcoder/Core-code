@@ -156,5 +156,15 @@ namespace Core.Tests
          message.ClickText = "Click me!";
          form.ShowDialog();
       }
+
+      [TestMethod]
+      public void CautionTest()
+      {
+         var form = new Form();
+         var message = new MessageProgress(form, true);
+         message.SetUp(4, 4, form.ClientSize.Width - 20, 27, AnchorStyles.Left);
+         message.Caution("Caution!");
+         form.ShowDialog();
+      }
    }
 }
