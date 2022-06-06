@@ -1,9 +1,11 @@
 ﻿using System.Diagnostics;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using Core.Strings;
 using Core.WinForms.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Tests
 {
@@ -158,12 +160,20 @@ namespace Core.Tests
       }
 
       [TestMethod]
-      public void CautionTest()
+      public void StatusesTest()
       {
          var form = new Form();
-         var message = new MessageProgress(form, true);
-         message.SetUp(4, 4, form.ClientSize.Width - 20, 27, AnchorStyles.Left);
-         message.Caution("Caution!");
+         var messages = Enumerable.Range(0, 4).Select(_ => new MessageProgress(form, true)).ToArray();
+         var width = form.ClientSize.Width - 20;
+         for (var i = 0; i < 4; i++)
+         {
+            messages[i].SetUp(4, 4 + i * 27, width, 27, AnchorStyles.Left);
+         }
+         messages[0].Success("Success");
+         messages[1].Caution("Caution");
+         messages[2].Failure("Failure");
+         messages[3].Exception(fail("Exception"));
+
          form.ShowDialog();
       }
    }
