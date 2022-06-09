@@ -719,6 +719,8 @@ namespace Core.WinForms.Controls
          this.Do(() => timer.Enabled = false);
       }
 
+      public bool IsAutomaticRunning => timer.Enabled;
+
       protected override void OnEnabledChanged(EventArgs e)
       {
          base.OnEnabledChanged(e);
