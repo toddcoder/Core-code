@@ -185,6 +185,8 @@ namespace Core.WinForms.Controls
          form.Controls.Add(this);
       }
 
+      public MessageProgressType Type => type;
+
       public bool Checked { get; set; }
 
       public void SetForeColor(Color foreColor) => _foreColor = foreColor;
