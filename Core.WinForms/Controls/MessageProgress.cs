@@ -244,6 +244,13 @@ namespace Core.WinForms.Controls
          setUpFont(fontName, fontSize);
       }
 
+      public void SetUpInPanel(Panel panel, string fontName = "Consolas", float fontSize = 12f, DockStyle dockStyle = DockStyle.Fill)
+      {
+         Dock = dockStyle;
+         panel.Controls.Add(this);
+         setUpFont(fontName, fontSize);
+      }
+
       public void SetUp(int x, int y, int width, int height, string fontName = "Consolas", float fontSize = 12f)
       {
          setUpDimensions(x, y, width, height, fontName, fontSize);
