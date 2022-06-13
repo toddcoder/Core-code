@@ -204,11 +204,6 @@ namespace Core.WinForms.Controls
       {
          base.OnEnabledChanged(e);
 
-         /*foreach (var (_, button) in responderButtons)
-         {
-            button.Enabled = Enabled;
-            button.Refresh();
-         }*/
          foreach (var key in responderButtons.Keys)
          {
             responderButtons[key].Enabled = Enabled;

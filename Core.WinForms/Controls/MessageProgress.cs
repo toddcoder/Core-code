@@ -531,8 +531,7 @@ namespace Core.WinForms.Controls
             var foreColor = getForeColor();
             using var invertedBrush = new SolidBrush(foreColor);
             var stringFormat = new StringFormat(StringFormatFlags.NoClip | StringFormatFlags.NoWrap);
-            e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+            e.Graphics.HighQuality();
             e.Graphics.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
             using var font = new Font("Verdana", 12);
             e.Graphics.DrawString(CHECK_MARK, font, invertedBrush, location, stringFormat);
@@ -651,8 +650,7 @@ namespace Core.WinForms.Controls
 
             var foreColor = getForeColor();
             using var pen = new Pen(foreColor, 2);
-            pevent.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-            pevent.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+            pevent.Graphics.HighQuality();
             pevent.Graphics.DrawEllipse(pen, rectangle);
          }
 
