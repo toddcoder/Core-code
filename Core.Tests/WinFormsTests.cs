@@ -169,11 +169,43 @@ namespace Core.Tests
          {
             messages[i].SetUp(4, 4 + i * 27, width, 27, AnchorStyles.Left);
          }
+
          messages[0].Success("Success");
          messages[1].Caution("Caution");
          messages[2].Failure("Failure");
          messages[3].Exception(fail("Exception"));
 
+         form.ShowDialog();
+      }
+
+      [TestMethod]
+      public void ImageTest()
+      {
+         var form = new Form();
+         var message = new MessageProgress(form, true)
+         {
+            Dock = DockStyle.Fill
+         };
+
+         var image = Image.FromFile(@"..\..\TestData\build.jpg");
+         message.Image = image;
+         message.Message("Build");
+         form.ShowDialog();
+      }
+
+      [TestMethod]
+      public void StretchImageTest()
+      {
+         var form = new Form();
+         var message = new MessageProgress(form, true)
+         {
+            Dock = DockStyle.Fill
+         };
+
+         var image = Image.FromFile(@"..\..\TestData\build.jpg");
+         message.Image = image;
+         message.StretchImage = true;
+         message.Message("Build");
          form.ShowDialog();
       }
    }

@@ -159,6 +159,7 @@
     <Content Include="TestData\big file.sql" />
     <EmbeddedResource Include="TestData\connections2.txt" />
     <EmbeddedResource Include="TestData\connections.txt" />
+    <Content Include="TestData\build.jpg" />
     <Content Include="TestData\new.txt" />
     <Content Include="TestData\old.txt" />
     <Content Include="TestData\udtype-formatted.sql" />

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Text;
@@ -99,6 +100,7 @@ namespace Core.WinForms.Controls
       protected Maybe<Color> _lastForeColor;
       protected Maybe<Color> _lastBackColor;
       protected Maybe<MessageStyle> _lastStyle;
+      protected Maybe<Image> _image;
 
       public event EventHandler<AutomaticMessageArgs> AutomaticMessage;
       public event EventHandler<PaintEventArgs> Painting;
@@ -131,6 +133,7 @@ namespace Core.WinForms.Controls
          _lastForeColor = nil;
          _lastBackColor = nil;
          _lastStyle = nil;
+         _image = nil;
 
          timer = new Timer
          {
@@ -301,6 +304,23 @@ namespace Core.WinForms.Controls
       public AutoHash<MessageProgressType, Color> BackColors => backColors;
 
       public AutoHash<MessageProgressType, MessageStyle> Styles => styles;
+
+      public Image Image
+      {
+         set
+         {
+            _image = value;
+            refresh();
+         }
+      }
+
+      public void ClearImage()
+      {
+         _image = nil;
+         refresh();
+      }
+
+      public bool StretchImage { get; set; }
 
       protected Font getFont() => getStyle() switch
       {
@@ -642,6 +662,18 @@ namespace Core.WinForms.Controls
             pevent.Graphics.DrawLine(darkGrayPen, new Point(left, top), new Point(left, height));
             pevent.Graphics.DrawLine(lightPen, new Point(left, height), new Point(width, height));
             pevent.Graphics.DrawLine(lightPen, new Point(width, top), new Point(width, height));
+         }
+
+         if (_image.Map(out var image))
+         {
+            if (StretchImage)
+            {
+               pevent.Graphics.DrawImage(image, ClientRectangle with { X = 0, Y = 0 });
+            }
+            else
+            {
+               pevent.Graphics.DrawImage(image, Point.Empty);
+            }
          }
 
          if (Checked && type is not MessageProgressType.Busy && type is not MessageProgressType.BusyText)
