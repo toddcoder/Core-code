@@ -8,6 +8,21 @@ namespace Core.WinForms.Controls
 {
    public class MessageProgressText
    {
+      public static TextFormatFlags GetFlags(bool center)
+      {
+         var flags = TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix;
+         if (center)
+         {
+            flags |= TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter;
+         }
+         else
+         {
+            flags |= TextFormatFlags.VerticalCenter | TextFormatFlags.LeftAndRightPadding;
+         }
+
+         return flags;
+      }
+
       protected Result<Rectangle> _rectangle;
       protected Result<Font> _font;
       protected Result<Color> _color;
@@ -20,20 +35,7 @@ namespace Core.WinForms.Controls
          _color = fail("Color not set");
       }
 
-      public void Center(bool center)
-      {
-         var flags = TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix;
-         if (center)
-         {
-            flags |= TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter;
-         }
-         else
-         {
-            flags |= TextFormatFlags.VerticalCenter | TextFormatFlags.LeftAndRightPadding;
-         }
-
-         Flags = flags;
-      }
+      public void Center(bool center) => Flags = GetFlags(center);
 
       public Rectangle Rectangle
       {

@@ -208,5 +208,18 @@ namespace Core.Tests
          message.Message("Build");
          form.ShowDialog();
       }
+
+      [TestMethod]
+      public void SubTextTest()
+      {
+         var form = new Form();
+         var message = new MessageProgress(form, true)
+         {
+            Dock = DockStyle.Fill
+         };
+         message.SubText("now", 10, 10, "Verdana", 8);
+         message.Message("Message");
+         form.ShowDialog();
+      }
    }
 }

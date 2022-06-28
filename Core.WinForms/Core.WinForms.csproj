@@ -87,6 +87,7 @@
     <Compile Include="Controls\StatusProgress.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Controls\SubText.cs" />
     <Compile Include="ControlWrappers\MessageLabel.cs" />
     <Compile Include="ControlWrappers\MessageStyle.cs" />
     <Compile Include="ControlWrappers\StatusLabel.cs" />

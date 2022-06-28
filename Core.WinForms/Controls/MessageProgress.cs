@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Diagnostics;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Text;
@@ -101,6 +101,7 @@ namespace Core.WinForms.Controls
       protected Maybe<Color> _lastBackColor;
       protected Maybe<MessageStyle> _lastStyle;
       protected Maybe<Image> _image;
+      protected List<SubText> subTexts;
 
       public event EventHandler<AutomaticMessageArgs> AutomaticMessage;
       public event EventHandler<PaintEventArgs> Painting;
@@ -134,6 +135,7 @@ namespace Core.WinForms.Controls
          _lastBackColor = nil;
          _lastStyle = nil;
          _image = nil;
+         subTexts = new List<SubText>();
 
          timer = new Timer
          {
@@ -528,6 +530,23 @@ namespace Core.WinForms.Controls
             }
          }
 
+         foreach (var subText in subTexts)
+         {
+            using var font = new Font(subText.FontName, subText.FontSize);
+            var location = new Point(subText.X, subText.Y);
+            var flags = MessageProgressText.GetFlags(false);
+            var size = TextRenderer.MeasureText(e.Graphics, subText.Text, font, new Size(int.MaxValue, int.MaxValue), flags);
+
+            var rectangle = new Rectangle(location, size);
+            progressText = new MessageProgressText(false)
+            {
+               Color = getForeColor(),
+               Font = font,
+               Rectangle = rectangle
+            };
+            progressText.Write(subText.Text, e.Graphics);
+         }
+
          if (Clickable)
          {
             var color = getForeColor();
@@ -810,5 +829,16 @@ namespace Core.WinForms.Controls
       protected virtual void drawRectangle(Graphics graphics, Pen pen, Rectangle rectangle) => graphics.DrawRectangle(pen, rectangle);
 
       protected virtual void fillRectangle(Graphics graphics, Brush brush, Rectangle rectangle) => graphics.FillRectangle(brush, rectangle);
+
+      public void SubText(string text, int x, int y, string fontName = "Consolas", float fontSize = 12, FontStyle fontStyle = FontStyle.Regular)
+      {
+         subTexts.Add(new SubText(text, x, y, fontName, fontSize, fontStyle, getForeColor()));
+      }
+
+      public void SubText(string text, int x, int y, Color color, string fontName = "Consolas", float fontSize = 12,
+         FontStyle fontStyle = FontStyle.Regular)
+      {
+         subTexts.Add(new SubText(text, x, y, fontName, fontSize, fontStyle, color));
+      }
    }
 }
