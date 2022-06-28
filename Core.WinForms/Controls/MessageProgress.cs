@@ -840,5 +840,9 @@ namespace Core.WinForms.Controls
       {
          subTexts.Add(new SubText(text, x, y, fontName, fontSize, fontStyle, color));
       }
+
+      public void RemoveSubTextAt(int index) => subTexts.RemoveAt(index);
+
+      public void ClearSubTexts() => subTexts.Clear();
    }
 }
