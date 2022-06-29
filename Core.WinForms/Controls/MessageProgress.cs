@@ -39,7 +39,7 @@ namespace Core.WinForms.Controls
             [MessageProgressType.BusyText] = Color.White,
             [MessageProgressType.Automatic] = Color.Black,
             [MessageProgressType.Disabled] = Color.LightGray,
-            [MessageProgressType.Caution] = Color.Black
+            [MessageProgressType.Caution] = Color.White
          };
          globalBackColors = new Hash<MessageProgressType, Color>
          {
