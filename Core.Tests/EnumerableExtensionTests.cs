@@ -11,6 +11,21 @@ namespace Core.Tests
    [TestClass]
    public class EnumerableExtensionTests
    {
+      protected class ItemToSort
+      {
+         public ItemToSort(string key)
+         {
+            Key = key;
+            Ordinal = key[0];
+         }
+
+         public string Key { get; }
+
+         public int Ordinal { get; }
+
+         public override string ToString() => $"{Key}: {Ordinal}";
+      }
+
       [TestMethod]
       public void FirstOrNoneTest()
       {
@@ -134,6 +149,17 @@ namespace Core.Tests
             {
                Console.WriteLine(value);
             }
+         }
+      }
+
+      [TestMethod]
+      public void SortByListTest()
+      {
+         ItemToSort[] array = { new("a"), new("b"), new("c"), new("d"), new("e"), new("f") };
+         var enumerable = array.SortByList(i => i.Key, "f", "e", "b", "a", "c", "d");
+         foreach (var itemToSort in enumerable)
+         {
+            Console.WriteLine(itemToSort);
          }
       }
    }

@@ -1237,5 +1237,18 @@ namespace Core.Enumerables
             yield return array.Skip(i).Take(count);
          }
       }
+
+      public static IEnumerable<T> SortByList<T>(this IEnumerable<T> enumerable, Func<T, string> keyMap, params string[] keys)
+      {
+         var mapper = enumerable.ToStringHash(keyMap, true);
+         var keySet = new StringSet(true, keys);
+         foreach (var key in keySet)
+         {
+            if (mapper.Map(key, out var value))
+            {
+               yield return value;
+            }
+         }
+      }
    }
 }
