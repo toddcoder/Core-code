@@ -50,6 +50,24 @@ public class SubText
       return this;
    }
 
+   public SubText SetFontName(string fontName)
+   {
+      FontName = fontName;
+      return this;
+   }
+
+   public SubText SetFontSize(float fontSize)
+   {
+      FontSize = fontSize;
+      return this;
+   }
+
+   public SubText SetFontStyle(FontStyle fontStyle)
+   {
+      FontStyle = fontStyle;
+      return this;
+   }
+
    public SubText SetForeColor(Color foreColor)
    {
       ForeColor = foreColor;
