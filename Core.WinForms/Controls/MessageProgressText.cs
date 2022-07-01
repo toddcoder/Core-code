@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Drawing.Text;
 using System.Windows.Forms;
 using Core.Monads;
 using static Core.Monads.MonadFunctions;
@@ -65,6 +66,8 @@ namespace Core.WinForms.Controls
          {
             try
             {
+               graphics.HighQuality();
+               graphics.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
                TextRenderer.DrawText(graphics, text, font, rectangle, color, Flags);
                return unit;
             }

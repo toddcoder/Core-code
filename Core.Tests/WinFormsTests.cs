@@ -217,7 +217,11 @@ namespace Core.Tests
          {
             Dock = DockStyle.Fill
          };
-         message.SubText("now", 10, 10, "Verdana", 8);
+         message.SubText("now", 10, 10)
+            .SetForeColor(Color.White)
+            .SetBackColor(Color.Green)
+            .SetFont("Verdana", 8, FontStyle.Regular)
+            .SetOutline(true);
          message.Message("Message");
          form.ShowDialog();
       }

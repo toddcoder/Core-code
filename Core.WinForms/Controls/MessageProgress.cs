@@ -532,19 +532,7 @@ namespace Core.WinForms.Controls
 
          foreach (var subText in subTexts)
          {
-            using var font = new Font(subText.FontName, subText.FontSize);
-            var location = new Point(subText.X, subText.Y);
-            var flags = MessageProgressText.GetFlags(false);
-            var size = TextRenderer.MeasureText(e.Graphics, subText.Text, font, new Size(int.MaxValue, int.MaxValue), flags);
-
-            var rectangle = new Rectangle(location, size);
-            progressText = new MessageProgressText(false)
-            {
-               Color = getForeColor(),
-               Font = font,
-               Rectangle = rectangle
-            };
-            progressText.Write(subText.Text, e.Graphics);
+            subText.Draw(e.Graphics);
          }
 
          if (Clickable)
@@ -830,16 +818,14 @@ namespace Core.WinForms.Controls
 
       protected virtual void fillRectangle(Graphics graphics, Brush brush, Rectangle rectangle) => graphics.FillRectangle(brush, rectangle);
 
-      public void SubText(string text, int x, int y, string fontName = "Consolas", float fontSize = 12, FontStyle fontStyle = FontStyle.Regular)
+      public SubText SubText(string text, int x, int y)
       {
-         subTexts.Add(new SubText(text, x, y, fontName, fontSize, fontStyle, getForeColor()));
+         var subText = new SubText(text, x, y,getForeColor(), getBackColor());
+         subTexts.Add(subText);
+
+         return subText;
       }
 
-      public void SubText(string text, int x, int y, Color color, string fontName = "Consolas", float fontSize = 12,
-         FontStyle fontStyle = FontStyle.Regular)
-      {
-         subTexts.Add(new SubText(text, x, y, fontName, fontSize, fontStyle, color));
-      }
 
       public void RemoveSubTextAt(int index) => subTexts.RemoveAt(index);
 
