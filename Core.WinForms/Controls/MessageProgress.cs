@@ -263,6 +263,14 @@ namespace Core.WinForms.Controls
          setUpDimensions(x, y, width, height, fontName, fontSize);
       }
 
+      public void SetupInFlowLayoutPanel(FlowLayoutPanel flowLayoutPanel, string fontName = "Consolas", float fontSize = 12f,
+         DockStyle dockStyle = DockStyle.Fill)
+      {
+         Dock = dockStyle;
+         flowLayoutPanel.Controls.Add(this);
+         setUpFont(fontName, fontSize);
+      }
+
       public override Font Font
       {
          get => base.Font;
