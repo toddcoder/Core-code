@@ -380,6 +380,18 @@ namespace Core.WinForms.Controls
          refresh();
       }
 
+      public void Result(Result<(string, MessageProgressType)> _result)
+      {
+         if (_result.Map(out var message, out var messageProgressType, out var exception))
+         {
+            ShowMessage(message, messageProgressType);
+         }
+         else
+         {
+            Exception(exception);
+         }
+      }
+
       public bool Clickable => _clickText.IsSome;
 
       public string ClickText
