@@ -18,6 +18,7 @@ namespace Core.WinForms.Controls
       protected const string BUSY_TEXT_PROCESSOR_NOT_INITIALIZED = "BusyTextProcessor not initialized";
       protected const string PROGRESS_DEFINITE_PROCESSOR_NOT_INITIALIZED = "Progress Definite Processor not initialized";
       protected const string CHECK_MARK = "\u2713";
+      protected const string BUSY_PROCESSOR_NOT_INITIALIZED = "Busy Processor Not Initialized";
 
       protected static Hash<MessageProgressType, Color> globalForeColors;
       protected static Hash<MessageProgressType, Color> globalBackColors;
@@ -91,6 +92,7 @@ namespace Core.WinForms.Controls
       protected Maybe<string> _clickText;
       protected LateLazy<BusyTextProcessor> busyTextProcessor;
       protected LateLazy<ProgressDefiniteProcessor> progressDefiniteProcessor;
+      protected LateLazy<BusyProcessor> busyProcessor;
       protected Maybe<int> _percentage;
       protected Maybe<Color> _foreColor;
       protected Maybe<Color> _backColor;
@@ -162,6 +164,9 @@ namespace Core.WinForms.Controls
 
                      break;
                   }
+                  case MessageProgressType.Busy or MessageProgressType.ProgressIndefinite:
+                     busyProcessor.Value.Advance();
+                     break;
                }
             }
 
@@ -176,9 +181,11 @@ namespace Core.WinForms.Controls
 
          busyTextProcessor = new LateLazy<BusyTextProcessor>(true, BUSY_TEXT_PROCESSOR_NOT_INITIALIZED);
          progressDefiniteProcessor = new LateLazy<ProgressDefiniteProcessor>(errorMessage: PROGRESS_DEFINITE_PROCESSOR_NOT_INITIALIZED);
+         busyProcessor = new LateLazy<BusyProcessor>(true, BUSY_PROCESSOR_NOT_INITIALIZED);
          Resize += (_, _) =>
          {
             busyTextProcessor.ActivateWith(() => new BusyTextProcessor(Color.White, ClientRectangle));
+            busyProcessor.ActivateWith(() => new BusyProcessor(ClientRectangle));
             progressDefiniteProcessor.Reset();
          };
          _percentage = nil;
@@ -447,7 +454,6 @@ namespace Core.WinForms.Controls
 
       public void Busy(string text)
       {
-         ClearSubTexts();
          Text = text;
          type = MessageProgressType.BusyText;
          this.Do(() => timer.Enabled = true);
@@ -491,6 +497,9 @@ namespace Core.WinForms.Controls
             case MessageProgressType.ProgressIndefinite:
                progressText.Write(text, e.Graphics);
                break;
+            case MessageProgressType.Busy:
+               busyProcessor.Value.OnPaint(e.Graphics);
+               break;
             case MessageProgressType.ProgressDefinite:
             {
                var percentText = $"{getPercentage()}%";
@@ -522,9 +531,12 @@ namespace Core.WinForms.Controls
             }
          }
 
-         foreach (var subText in subTexts)
+         if (type is not MessageProgressType.Busy && type is not MessageProgressType.BusyText)
          {
-            subText.Draw(e.Graphics);
+            foreach (var subText in subTexts)
+            {
+               subText.Draw(e.Graphics);
+            }
          }
 
          if (Clickable)
@@ -573,25 +585,8 @@ namespace Core.WinForms.Controls
             }
             case MessageProgressType.ProgressIndefinite or MessageProgressType.Busy:
             {
-               var x = random.Next(ClientRectangle.Width - 5);
-               var y = random.Next(ClientRectangle.Height - 5);
-               var location = new Point(x, y);
-               var length = random.Next(ClientRectangle.Width - x - 5);
                using var brush = new SolidBrush(Color.DarkSlateGray);
                fillRectangle(pevent.Graphics, brush, ClientRectangle);
-
-               var endPoint = location;
-               endPoint.Offset(length, 0);
-
-               var location2 = location;
-               location2.Offset(1, 1);
-               var endPoint2 = endPoint;
-               endPoint2.Offset(1, 1);
-
-               using var whitePen = new Pen(Color.White, 5);
-               pevent.Graphics.DrawLine(whitePen, location2, endPoint2);
-               using var greenPen = new Pen(Color.Green, 5);
-               pevent.Graphics.DrawLine(greenPen, location, endPoint);
                break;
             }
             case MessageProgressType.ProgressDefinite:
@@ -740,7 +735,6 @@ namespace Core.WinForms.Controls
 
       public void Busy(bool enabled)
       {
-         ClearSubTexts();
          Text = "";
          type = MessageProgressType.Busy;
          this.Do(() => timer.Enabled = enabled);
@@ -813,12 +807,11 @@ namespace Core.WinForms.Controls
 
       public SubText SubText(string text, int x, int y)
       {
-         var subText = new SubText(text, x, y,getForeColor(), getBackColor());
+         var subText = new SubText(text, x, y, getForeColor(), getBackColor());
          subTexts.Add(subText);
 
          return subText;
       }
-
 
       public void RemoveSubTextAt(int index) => subTexts.RemoveAt(index);
 

@@ -70,8 +70,7 @@ namespace Core.WinForms.Controls
 
       protected static Rectangle getTextRectangle(Rectangle drawRectangle, Rectangle clientRectangle)
       {
-         return new Rectangle(clientRectangle.X + drawRectangle.Width, clientRectangle.Y, clientRectangle.Width - drawRectangle.Width,
-            clientRectangle.Height);
+         return clientRectangle with { X = clientRectangle.X + drawRectangle.Width, Width = clientRectangle.Width - drawRectangle.Width };
       }
 
       protected static PointF getCenter(Rectangle drawRectangle)
@@ -92,9 +91,11 @@ namespace Core.WinForms.Controls
 
       protected static void drawLine(Graphics graphics, PointF startPoint, PointF endPoint, Color color)
       {
-         using var pen = new Pen(color, SPOKE_THICKNESS);
-         pen.StartCap = LineCap.Round;
-         pen.EndCap = LineCap.Round;
+         using var pen = new Pen(color, SPOKE_THICKNESS)
+         {
+            StartCap = LineCap.Round,
+            EndCap = LineCap.Round
+         };
          graphics.DrawLine(pen, startPoint, endPoint);
       }
 

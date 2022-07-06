@@ -41,6 +41,16 @@ namespace Core.Tests
       }
 
       [TestMethod]
+      public void MessageProgressBusyIndefiniteTest()
+      {
+         var form = new Form();
+         var message = new MessageProgress(form);
+         message.SetUp(0, 0, 300, 27, AnchorStyles.Left | AnchorStyles.Right);
+         message.Busy(true);
+         form.ShowDialog();
+      }
+
+      [TestMethod]
       public void ProgressDefiniteTest()
       {
          var form = new Form();
