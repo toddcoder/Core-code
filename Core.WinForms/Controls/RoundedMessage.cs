@@ -7,7 +7,7 @@ namespace Core.WinForms.Controls
    {
       public int CornerRadius { get; set; }
 
-      public RoundedMessage(Form form, bool center = false) : base(form, center, false)
+      public RoundedMessage(Control control, bool center = false) : base(control, center, false)
       {
          CornerRadius = 8;
       }

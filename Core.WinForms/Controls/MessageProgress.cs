@@ -107,7 +107,7 @@ namespace Core.WinForms.Controls
       public event EventHandler<PaintEventArgs> Painting;
       public event EventHandler<PaintEventArgs> PaintingBackground;
 
-      public MessageProgress(Form form, bool center = false, bool is3D = true)
+      public MessageProgress(Control control, bool center = false, bool is3D = true)
       {
          Center = center;
          Is3D = is3D;
@@ -187,7 +187,7 @@ namespace Core.WinForms.Controls
          _backColor = nil;
          _style = nil;
 
-         form.Controls.Add(this);
+         control.Controls.Add(this);
       }
 
       public MessageProgressType Type => type;
@@ -223,13 +223,6 @@ namespace Core.WinForms.Controls
       {
          setUpDimensions(x, y, width, height, fontName, fontSize);
          Dock = dock;
-      }
-
-      [Obsolete("Use SetUpInTableLayoutPanel")]
-      public void SetUpAsDockFill(string fontName = "Consolas", float fontSize = 12f)
-      {
-         Dock = DockStyle.Fill;
-         setUpFont(fontName, fontSize);
       }
 
       public void SetUpInTableLayoutPanel(TableLayoutPanel tableLayoutPanel, int column, int row, int columnSpan = 1, int rowSpan = 1,
@@ -452,34 +445,13 @@ namespace Core.WinForms.Controls
          refresh();
       }
 
-      [Obsolete("Use Busy with string argument")]
-      public void BusyText(string text)
-      {
-         Text = text;
-         type = MessageProgressType.BusyText;
-         busyTextProcessor.ActivateWith(() => new BusyTextProcessor(Color.White, ClientRectangle));
-         this.Do(() => timer.Enabled = true);
-         refresh();
-      }
-
       public void Busy(string text)
       {
+         ClearSubTexts();
          Text = text;
          type = MessageProgressType.BusyText;
          this.Do(() => timer.Enabled = true);
          refresh();
-      }
-
-      [Obsolete("Use SetUp")]
-      public void AddToControls(ControlCollection controls, bool fill = true)
-      {
-         Font = new Font("Consolas", 12);
-         if (fill)
-         {
-            Dock = DockStyle.Fill;
-         }
-
-         controls.Add(this);
       }
 
       protected Color getForeColor(MessageProgressType type) => foreColors[type];
@@ -768,6 +740,7 @@ namespace Core.WinForms.Controls
 
       public void Busy(bool enabled)
       {
+         ClearSubTexts();
          Text = "";
          type = MessageProgressType.Busy;
          this.Do(() => timer.Enabled = enabled);

@@ -9,8 +9,8 @@ namespace Core.WinForms.Controls
       protected string selectedText;
       protected SelectedState state;
 
-      public StatusProgress(Form form, string uninitializedText, string unselectedText, string selectedText,
-         SelectedState state = SelectedState.Uninitialized) : base(form)
+      public StatusProgress(Control control, string uninitializedText, string unselectedText, string selectedText,
+         SelectedState state = SelectedState.Uninitialized) : base(control)
       {
          this.uninitializedText = uninitializedText;
          this.unselectedText = unselectedText;

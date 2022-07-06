@@ -22,7 +22,7 @@ namespace Core.WinForms.Controls
 
       public class ResponderButton : MessageProgress
       {
-         public static ResponderButton FromText(Form form, string specifier)
+         public static ResponderButton FromText(Control control, string specifier)
          {
             if (specifier.Matches(@"^ /(['!?.$']?) /(-['|']+) '|' /s* /(.+) $; f").Map(out var result))
             {
@@ -38,18 +38,18 @@ namespace Core.WinForms.Controls
                   _ => ResponderPersonality.Neutral
                };
 
-               return new ResponderButton(form, personality, label, key, true);
+               return new ResponderButton(control, personality, label, key, true);
             }
             else
             {
-               return new ResponderButton(form, ResponderPersonality.Failed, $"{specifier}?", uniqueID(), true);
+               return new ResponderButton(control, ResponderPersonality.Failed, $"{specifier}?", uniqueID(), true);
             }
          }
 
          protected string label;
 
-         public ResponderButton(Form form, ResponderPersonality personality, string label, string key, bool center = false, bool is3D = true) :
-            base(form, center, is3D)
+         public ResponderButton(Control control, ResponderPersonality personality, string label, string key, bool center = false, bool is3D = true) :
+            base(control, center, is3D)
          {
             Personality = personality;
             this.label = label;
@@ -67,9 +67,9 @@ namespace Core.WinForms.Controls
 
       public event EventHandler<ResponderButtonArgs> ButtonClick;
 
-      public Responder(Form form, params string[] buttonSpecifiers)
+      public Responder(Control control, params string[] buttonSpecifiers)
       {
-         form.Controls.Add(this);
+         control.Controls.Add(this);
 
          PositiveForeColor = Color.White;
          PositiveBackColor = Color.Green;
@@ -82,7 +82,7 @@ namespace Core.WinForms.Controls
          FailedForeColor = Color.Red;
          FailedBackColor = Color.White;
 
-         responderButtons = buttonSpecifiers.Select(specifier => ResponderButton.FromText(form, specifier)).ToStringHash(rb => rb.Key, true);
+         responderButtons = buttonSpecifiers.Select(specifier => ResponderButton.FromText(control, specifier)).ToStringHash(rb => rb.Key, true);
 
          foreach (var (_, responderButton) in responderButtons)
          {
