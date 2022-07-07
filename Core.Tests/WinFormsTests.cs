@@ -110,7 +110,7 @@ namespace Core.Tests
          var form = new Form();
          var message = new MessageProgress(form);
          message.SetUp(0, 0, 300, 30);
-         message.Checked = true;
+         message.CheckStyle = CheckStyle.Checked;
          message.Busy("working...");
 
          var checkBox = new CheckBox
@@ -132,8 +132,8 @@ namespace Core.Tests
          var responder = new Responder(form, "!OK|ok", "?Cancel|cancel");
          responder.SetUp(0, 0, 300, 30, 30);
          responder.ButtonClick += (_, e) => form.Text = e.Key;
-         responder["ok"].Checked = true;
-         responder["cancel"].Checked = true;
+         responder["ok"].CheckStyle = CheckStyle.Checked;
+         responder["cancel"].CheckStyle = CheckStyle.Unchecked;
 
          var checkBox = new CheckBox
          {

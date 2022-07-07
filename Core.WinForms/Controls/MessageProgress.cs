@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Drawing.Text;
 using System.Windows.Forms;
 using Core.Collections;
 using Core.Monads;
@@ -17,7 +16,6 @@ namespace Core.WinForms.Controls
    {
       protected const string BUSY_TEXT_PROCESSOR_NOT_INITIALIZED = "BusyTextProcessor not initialized";
       protected const string PROGRESS_DEFINITE_PROCESSOR_NOT_INITIALIZED = "Progress Definite Processor not initialized";
-      protected const string CHECK_MARK = "\u2713";
       protected const string BUSY_PROCESSOR_NOT_INITIALIZED = "Busy Processor Not Initialized";
 
       protected static Hash<MessageProgressType, Color> globalForeColors;
@@ -138,6 +136,7 @@ namespace Core.WinForms.Controls
          _lastStyle = nil;
          _image = nil;
          subTexts = new List<SubText>();
+         CheckStyle = CheckStyle.None;
 
          timer = new Timer
          {
@@ -199,7 +198,10 @@ namespace Core.WinForms.Controls
 
       public MessageProgressType Type => type;
 
+      [Obsolete("Use CheckStyle")]
       public bool Checked { get; set; }
+
+      public CheckStyle CheckStyle { get; set; }
 
       public void SetForeColor(Color foreColor) => _foreColor = foreColor;
 
@@ -472,20 +474,16 @@ namespace Core.WinForms.Controls
 
       protected MessageStyle getStyle() => _style.DefaultTo(() => styles[type]);
 
-      protected Rectangle getCheckRectangle(Graphics graphics)
-      {
-         using var font = new Font("Verdana", 12);
-         var size = TextRenderer.MeasureText(graphics, CHECK_MARK, font);
-         var location = new Point(4, 4);
-
-         return new Rectangle(location, size);
-      }
-
       protected override void OnPaint(PaintEventArgs e)
       {
          base.OnPaint(e);
 
-         var progressText = new MessageProgressText(Center)
+         var checkStyle = type switch
+         {
+            MessageProgressType.Busy or MessageProgressType.BusyText => CheckStyle.None,
+            _ => CheckStyle
+         };
+         var progressText = new MessageProgressText(Center, checkStyle)
          {
             Rectangle = ClientRectangle,
             Font = getFont(),
@@ -553,19 +551,6 @@ namespace Core.WinForms.Controls
                rectangle.Inflate(-2, -2);
                drawRectangle(e.Graphics, dashedPen, rectangle);
             }
-         }
-
-         if (Checked && type is not MessageProgressType.Busy && type is not MessageProgressType.BusyText)
-         {
-            var location = getCheckRectangle(e.Graphics).Location;
-
-            var foreColor = getForeColor();
-            using var invertedBrush = new SolidBrush(foreColor);
-            var stringFormat = new StringFormat(StringFormatFlags.NoClip | StringFormatFlags.NoWrap);
-            e.Graphics.HighQuality();
-            e.Graphics.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
-            using var font = new Font("Verdana", 12);
-            e.Graphics.DrawString(CHECK_MARK, font, invertedBrush, location, stringFormat);
          }
 
          Painting?.Invoke(this, e);
@@ -668,16 +653,6 @@ namespace Core.WinForms.Controls
             {
                pevent.Graphics.DrawImage(image, Point.Empty);
             }
-         }
-
-         if (Checked && type is not MessageProgressType.Busy && type is not MessageProgressType.BusyText)
-         {
-            var rectangle = getCheckRectangle(pevent.Graphics);
-
-            var foreColor = getForeColor();
-            using var pen = new Pen(foreColor, 2);
-            pevent.Graphics.HighQuality();
-            pevent.Graphics.DrawEllipse(pen, rectangle);
          }
 
          PaintingBackground?.Invoke(this, pevent);
