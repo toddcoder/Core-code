@@ -198,8 +198,11 @@ namespace Core.WinForms.Controls
 
       public MessageProgressType Type => type;
 
-      [Obsolete("Use CheckStyle")]
-      public bool Checked { get; set; }
+      public bool Checked
+      {
+         get => CheckStyle == CheckStyle.Checked;
+         set => CheckStyle = value ? CheckStyle.Checked : CheckStyle.Unchecked;
+      }
 
       public CheckStyle CheckStyle { get; set; }
 
