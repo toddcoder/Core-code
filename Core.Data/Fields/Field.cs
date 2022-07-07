@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Core.Matching;
 using Core.Monads;
 using Core.Objects;
@@ -10,6 +12,39 @@ namespace Core.Data.Fields
 {
    public class Field : PropertyInterface
    {
+      public static IEnumerable<Field> FieldsFromString(string input)
+      {
+         foreach (var _field in input.Unjoin("/s* ',' /s*; f").Select(FromString))
+         {
+            if (_field.Map(out var field))
+            {
+               yield return field;
+            }
+         }
+      }
+
+      public static Maybe<Field> FromString(string input)
+      {
+         if (input.Matches("^ /(/w+) /('?')? /s* ('[' /(/w+) ']')? (/s* ':' /s* /('$'? [/w '.']+))? $; f").Map(out var result))
+         {
+            var name = result.FirstGroup;
+            var optional = result.SecondGroup == "?";
+            var signature = result.ThirdGroup;
+            if (signature.IsEmpty())
+            {
+               signature = name.ToTitleCase();
+            }
+
+            var typeName = result.FourthGroup;
+            var _type = maybe(typeName.IsNotEmpty(), () => getType(typeName));
+
+            return new Field(name, signature, optional) { Type = _type };
+         }
+         else
+         {
+            return nil;
+         }
+      }
       public static Field Parse(Group fieldGroup)
       {
          var name = fieldGroup.Key;

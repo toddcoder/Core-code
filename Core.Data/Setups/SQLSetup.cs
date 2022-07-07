@@ -1,14 +1,19 @@
 ﻿using System;
 using System.Data.SqlClient;
+using Core.Assertions;
 using Core.Collections;
 using Core.Computers;
 using Core.Configurations;
 using Core.Data.Configurations;
 using Core.Data.ConnectionStrings;
 using Core.Data.DataSources;
+using Core.Data.Fields;
+using Core.Data.Parameters;
 using Core.Dates.DateIncrements;
 using Core.Monads;
+using Core.Strings;
 using static Core.Monads.MonadFunctions;
+using static Core.Objects.ConversionFunctions;
 
 namespace Core.Data.Setups
 {
@@ -93,6 +98,24 @@ namespace Core.Data.Setups
       {
          attributes = new StringHash(true);
          loadAttributes(attributesGroup);
+      }
+
+      public SqlSetup(StringHash setupData, string parameterSpecifiers="", string fieldSpecifiers = "")
+      {
+         var connectionString = setupData.Must().HaveValueAt("connectionString").Value;
+         ConnectionString = new SqlConnectionString(connectionString, 30.Seconds());
+         CommandText = setupData.Must().HaveValueAt("commandText").Value;
+         CommandTimeout = setupData.Map("commandTimeout").Map(Maybe.TimeSpan).DefaultTo(() => 30.Seconds());
+
+         if (parameterSpecifiers.IsNotEmpty())
+         {
+            Parameters = new Parameters.Parameters(Parameter.ParametersFromString(parameterSpecifiers));
+         }
+
+         if (fieldSpecifiers.IsNotEmpty())
+         {
+            Fields = new Fields.Fields(Field.FieldsFromString(fieldSpecifiers));
+         }
       }
 
       protected void loadAttributes(Maybe<Group> _attributesGroup)

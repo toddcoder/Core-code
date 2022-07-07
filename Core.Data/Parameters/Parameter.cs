@@ -1,15 +1,59 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Core.Matching;
 using Core.Monads;
 using Core.Objects;
 using Core.Strings;
 using static Core.Monads.MonadFunctions;
+using static Core.Objects.ConversionFunctions;
 using Group = Core.Configurations.Group;
 
 namespace Core.Data.Parameters
 {
    public class Parameter : PropertyInterface
    {
+      public static IEnumerable<Parameter> ParametersFromString(string input)
+      {
+         foreach (var _parameter in input.Unjoin("/s* ',' /s*; f").Select(FromString))
+         {
+            if (_parameter.Map(out var parameter))
+            {
+               yield return parameter;
+            }
+         }
+      }
+
+      public static Maybe<Parameter> FromString(string input)
+      {
+         if (input.Matches("^ '@'? /(/w+) /s* ('[' /('$'? /w+) ']')? /s* ':' /s* /([/w+ '.']) ('(' /(/d+) ')') (/s+ /('output'))? $; f").Map(out var result))
+         {
+            var name = result.FirstGroup;
+            var signature = result.SecondGroup;
+            if (signature.IsEmpty())
+            {
+               signature = name.ToTitleCase();
+            }
+
+            var typeName = fixTypeName(result.ThirdGroup);
+            var _type = getType(typeName);
+            var _size = Maybe.Int32(result.FourthGroup);
+            var output = result.FifthGroup.Same("output");
+
+            return new Parameter(name, signature)
+            {
+               Type = _type,
+               Size = _size,
+               Output = output,
+               Value = nil,
+               Default = nil
+            };
+         }
+         else
+         {
+            return nil;
+         }
+      }
       public static Parameter Parse(Group parameterGroup)
       {
          var name = parameterGroup.Key;
