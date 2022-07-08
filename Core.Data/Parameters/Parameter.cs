@@ -13,7 +13,7 @@ namespace Core.Data.Parameters
    {
       public static Maybe<Parameter> FromString(string input)
       {
-         if (input.Matches("^ '@'? /(/w+) /s* ('[' /('$'? /w+) ']')? /s* ':' /s* /([/w+ '.']) ('(' /(/d+) ')') (/s+ /('output'))? $; f")
+         if (input.Matches("^ '@'? /(/w+) /s* ('[' /(/w+) ']')? /s* ':' /s* /('$'? [/w+ '.']) ('(' /(/d+) ')') (/s+ /('output'))? $; f")
              .Map(out var result))
          {
             var name = result.FirstGroup;
