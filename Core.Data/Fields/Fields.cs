@@ -5,11 +5,23 @@ using Core.Collections;
 using Core.Configurations;
 using Core.Monads;
 using static Core.Monads.AttemptFunctions;
+using static Core.Matching.MatchingExtensions;
 
 namespace Core.Data.Fields
 {
    public class Fields : IEnumerable<Field>
    {
+      public static IEnumerable<Field> FieldsFromString(string input)
+      {
+         foreach (var _field in input.Unjoin("/s* ',' /s*; f").Select(Field.FromString))
+         {
+            if (_field.Map(out var field))
+            {
+               yield return field;
+            }
+         }
+      }
+
       protected StringHash<Field> fields;
       protected List<string> ordered;
 

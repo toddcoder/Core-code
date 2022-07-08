@@ -12,17 +12,6 @@ namespace Core.Data.Fields
 {
    public class Field : PropertyInterface
    {
-      public static IEnumerable<Field> FieldsFromString(string input)
-      {
-         foreach (var _field in input.Unjoin("/s* ',' /s*; f").Select(FromString))
-         {
-            if (_field.Map(out var field))
-            {
-               yield return field;
-            }
-         }
-      }
-
       public static Maybe<Field> FromString(string input)
       {
          if (input.Matches("^ /(/w+) /('?')? /s* ('[' /(/w+) ']')? (/s* ':' /s* /('$'? [/w '.']+))? $; f").Map(out var result))

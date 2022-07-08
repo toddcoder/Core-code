@@ -5,11 +5,23 @@ using Core.Collections;
 using Core.Configurations;
 using Core.Monads;
 using static Core.Monads.AttemptFunctions;
+using static Core.Matching.MatchingExtensions;
 
 namespace Core.Data.Parameters
 {
    public class Parameters : IEnumerable<Parameter>, IHash<string, Parameter>
    {
+      public static IEnumerable<Parameter> ParametersFromString(string input)
+      {
+         foreach (var _parameter in input.Unjoin("/s* ',' /s*; f").Select(Parameter.FromString))
+         {
+            if (_parameter.Map(out var parameter))
+            {
+               yield return parameter;
+            }
+         }
+      }
+
       public static Result<Parameters> FromGroup(Maybe<Group> parametersGroup) => tryTo(() => new Parameters(parametersGroup));
 
       protected StringHash<Parameter> parameters;

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using Core.Matching;
 using Core.Monads;
 using Core.Objects;
@@ -13,20 +11,10 @@ namespace Core.Data.Parameters
 {
    public class Parameter : PropertyInterface
    {
-      public static IEnumerable<Parameter> ParametersFromString(string input)
-      {
-         foreach (var _parameter in input.Unjoin("/s* ',' /s*; f").Select(FromString))
-         {
-            if (_parameter.Map(out var parameter))
-            {
-               yield return parameter;
-            }
-         }
-      }
-
       public static Maybe<Parameter> FromString(string input)
       {
-         if (input.Matches("^ '@'? /(/w+) /s* ('[' /('$'? /w+) ']')? /s* ':' /s* /([/w+ '.']) ('(' /(/d+) ')') (/s+ /('output'))? $; f").Map(out var result))
+         if (input.Matches("^ '@'? /(/w+) /s* ('[' /('$'? /w+) ']')? /s* ':' /s* /([/w+ '.']) ('(' /(/d+) ')') (/s+ /('output'))? $; f")
+             .Map(out var result))
          {
             var name = result.FirstGroup;
             var signature = result.SecondGroup;
@@ -54,6 +42,7 @@ namespace Core.Data.Parameters
             return nil;
          }
       }
+
       public static Parameter Parse(Group parameterGroup)
       {
          var name = parameterGroup.Key;

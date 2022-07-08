@@ -7,8 +7,6 @@ using Core.Configurations;
 using Core.Data.Configurations;
 using Core.Data.ConnectionStrings;
 using Core.Data.DataSources;
-using Core.Data.Fields;
-using Core.Data.Parameters;
 using Core.Dates.DateIncrements;
 using Core.Monads;
 using Core.Strings;
@@ -100,7 +98,7 @@ namespace Core.Data.Setups
          loadAttributes(attributesGroup);
       }
 
-      public SqlSetup(StringHash setupData, string parameterSpecifiers="", string fieldSpecifiers = "")
+      public SqlSetup(StringHash setupData, string parameterSpecifiers = "", string fieldSpecifiers = "")
       {
          var connectionString = setupData.Must().HaveValueAt("connectionString").Value;
          ConnectionString = new SqlConnectionString(connectionString, 30.Seconds());
@@ -109,12 +107,12 @@ namespace Core.Data.Setups
 
          if (parameterSpecifiers.IsNotEmpty())
          {
-            Parameters = new Parameters.Parameters(Parameter.ParametersFromString(parameterSpecifiers));
+            Parameters = new Parameters.Parameters(Data.Parameters.Parameters.ParametersFromString(parameterSpecifiers));
          }
 
          if (fieldSpecifiers.IsNotEmpty())
          {
-            Fields = new Fields.Fields(Field.FieldsFromString(fieldSpecifiers));
+            Fields = new Fields.Fields(Data.Fields.Fields.FieldsFromString(fieldSpecifiers));
          }
 
          attributes = new StringHash(true);
