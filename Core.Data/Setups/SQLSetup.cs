@@ -116,6 +116,8 @@ namespace Core.Data.Setups
          {
             Fields = new Fields.Fields(Field.FieldsFromString(fieldSpecifiers));
          }
+
+         attributes = new StringHash(true);
       }
 
       protected void loadAttributes(Maybe<Group> _attributesGroup)
