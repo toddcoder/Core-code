@@ -9,31 +9,44 @@ namespace Core.Data.ConnectionStrings
 {
    public class SqlConnectionString : IConnectionString
    {
-      public static string GetConnectionString(string server, string database, string application, bool integratedSecurity = true)
+      public static string GetConnectionString(string server, string database, string application, bool integratedSecurity = true,
+         bool readOnly = false)
       {
-         var baseValue = $"Data Source={server};Initial Catalog={database};Application Name={application};";
-         return integratedSecurity ? $"{baseValue}Integrated Security=SSPI;" : baseValue;
+         var connectionString = $"Data Source={server};Initial Catalog={database};Application Name={application};";
+         if (integratedSecurity)
+         {
+            connectionString = $"{connectionString}Integrated Security=SSPI;";
+         }
+
+         if (readOnly)
+         {
+            connectionString = $"{connectionString}ApplicationIntent=ReadOnly;";
+         }
+
+         return connectionString;
       }
 
-      public static string GetConnectionString(string server, string database, string application, string user, string password)
+      public static string GetConnectionString(string server, string database, string application, string user, string password,
+         bool readOnly = false)
       {
-         var baseValue = GetConnectionString(server, database, application, false);
+         var baseValue = GetConnectionString(server, database, application, false, readOnly);
          return user.IsNotEmpty() && password.IsNotEmpty() ? $"{baseValue}User ID={user}; Password={password}" : baseValue;
       }
 
-      public static string GetConnectionString(string server, string database, string application, Maybe<string> _user, Maybe<string> _password)
+      public static string GetConnectionString(string server, string database, string application, Maybe<string> _user, Maybe<string> _password,
+         bool readOnly = false)
       {
          if (_user.Map(out var user) && _password.Map(out var password))
          {
-            return GetConnectionString(server, database, application, user, password);
+            return GetConnectionString(server, database, application, user, password, readOnly);
          }
          else
          {
-            return GetConnectionString(server, database, application);
+            return GetConnectionString(server, database, application, readOnly);
          }
       }
 
-      public static Result<SqlConnectionString> FromConnection(Connection connection)
+      public static Result<SqlConnectionString> FromConnection(Connection connection, bool readOnly = false)
       {
          if (connection.Map("connection", out var connectionString))
          {
@@ -62,7 +75,7 @@ namespace Core.Data.ConnectionStrings
       {
          var user = connection.Map("user");
          var password = connection.Map("password");
-         connectionString = GetConnectionString(server, database, application, user, password);
+         connectionString = GetConnectionString(server, database, application, user, password, connection.ReadOnly);
          connectionTimeout = connection.Timeout;
       }
 
@@ -73,13 +86,15 @@ namespace Core.Data.ConnectionStrings
          var application = connection.Value("application");
          var user = connection.Map("user");
          var password = connection.Map("password");
-         connectionString = GetConnectionString(server, database, application, user, password);
+         var readOnly = connection.ReadOnly;
+         connectionString = GetConnectionString(server, database, application, user, password, readOnly);
          connectionTimeout = connection.Timeout;
       }
 
-      public SqlConnectionString(string server, string database, string application, string user = "", string password = "", string timeout = "")
+      public SqlConnectionString(string server, string database, string application, string user = "", string password = "", string timeout = "",
+         bool readOnly = false)
       {
-         connectionString = GetConnectionString(server, database, application, user, password);
+         connectionString = GetConnectionString(server, database, application, user, password, readOnly);
          connectionTimeout = timeout.IsEmpty() ? 30.Seconds() : Value.TimeSpan(timeout);
       }
 

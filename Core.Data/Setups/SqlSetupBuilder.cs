@@ -40,19 +40,20 @@ public class SqlSetupBuilder
       return this;
    }
 
-   public SqlSetupBuilder ConnectionString(string server, string database, string application, bool integratedSecurity = true)
+   public SqlSetupBuilder ConnectionString(string server, string database, string application, bool integratedSecurity = true, bool readOnly = false)
    {
-      return ConnectionString(SqlConnectionString.GetConnectionString(server, database, application, integratedSecurity));
+      return ConnectionString(SqlConnectionString.GetConnectionString(server, database, application, integratedSecurity, readOnly));
    }
 
-   public SqlSetupBuilder ConnectionString(string server, string database, string application, string user, string password)
+   public SqlSetupBuilder ConnectionString(string server, string database, string application, string user, string password, bool readOnly = false)
    {
-      return ConnectionString(SqlConnectionString.GetConnectionString(server, database, application, user, password));
+      return ConnectionString(SqlConnectionString.GetConnectionString(server, database, application, user, password, readOnly));
    }
 
-   public SqlSetupBuilder ConnectionString(string server, string database, string application, Maybe<string> _user, Maybe<string> _password)
+   public SqlSetupBuilder ConnectionString(string server, string database, string application, Maybe<string> _user, Maybe<string> _password,
+      bool readOnly = false)
    {
-      return ConnectionString(SqlConnectionString.GetConnectionString(server, database, application, _user, _password));
+      return ConnectionString(SqlConnectionString.GetConnectionString(server, database, application, _user, _password, readOnly));
    }
 
    public SqlSetupBuilder ConnectionString(Connection connection)
