@@ -78,12 +78,15 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reader.cs" />
     <Compile Include="Setups\CommandSourceType.cs" />
+    <Compile Include="Setups\FieldBuilder.cs" />
     <Compile Include="Setups\ISetup.cs" />
     <Compile Include="Setups\ISetupObject.cs" />
     <Compile Include="Setups\ISetupObjectWithSetters.cs" />
     <Compile Include="Setups\ISetupWithInfo.cs" />
     <Compile Include="Setups\OleDbSetup.cs" />
     <Compile Include="Setups\OleDbSetupInfo.cs" />
+    <Compile Include="Setups\ParameterBuilder.cs" />
+    <Compile Include="Setups\SqlSetupBuilder.cs" />
     <Compile Include="Setups\SetupInfo.cs" />
     <Compile Include="Setups\SqlSetup.cs" />
     <Compile Include="Setups\TextSetup.cs" />

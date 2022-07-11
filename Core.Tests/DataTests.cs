@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Core.Applications;
 using Core.Collections;
+using Core.Computers;
 using Core.Configurations;
 using Core.Data;
 using Core.Data.ConnectionStrings;
@@ -184,6 +185,39 @@ namespace Core.Tests
 
          obj.ObjectName = "PaperTicketStorageAssignment";
          Console.WriteLine(obj.SqlAdapter().ExecuteMaybe().IsSome ? $"{obj.ObjectName} exists" : $"{obj.ObjectName} doesn't exist");
+      }
+
+      [TestMethod]
+      public void FluentTest()
+      {
+         var setupBuilder = new SqlSetupBuilder();
+         var setup = setupBuilder
+            .ConnectionString(TRUE_CONNECTION_STRING)
+            .CommandText((FileName)@"~\source\repos\Eprod.TSqlCop\source\SqlConformance.Library\MetaData\Queries\Columns.sql")
+            .Parameter("@lObjectId")
+            .Signature("ObjectId")
+            .Type(typeof(int))
+            .EndParameter()
+            .Field("ObjectId")
+            .Type(typeof(int))
+            .EndField()
+            .Field("Name")
+            .Type(typeof(string))
+            .EndField()
+            .Field("TypeName")
+            .Type(typeof(string))
+            .EndField()
+            .Setup();
+         var entity = new ColumnData
+         {
+            ObjectId = 89
+         };
+         var adapter = new Adapter<ColumnData>(entity, setup);
+         if (adapter.TryTo.Execute().IsSuccessful)
+         {
+            Console.WriteLine(entity.Name);
+         }
+
       }
    }
 }
