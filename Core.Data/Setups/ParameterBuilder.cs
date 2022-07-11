@@ -1,5 +1,6 @@
 ﻿using System;
 using Core.Data.Parameters;
+using Core.Matching;
 using Core.Monads;
 using Core.Strings;
 using static Core.Monads.MonadFunctions;
@@ -68,7 +69,7 @@ public class ParameterBuilder
 
    public SqlSetupBuilder EndParameter()
    {
-      var signature = _signature.DefaultTo(() => name.ToUpper1());
+      var signature = _signature.DefaultTo(() => name.Substitute("^ '@'; f", "").ToUpper1());
       var parameter = new Parameter(name, signature)
       {
          Type = _type,
