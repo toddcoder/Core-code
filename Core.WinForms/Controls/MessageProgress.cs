@@ -405,6 +405,18 @@ namespace Core.WinForms.Controls
          }
       }
 
+      public void Result(Result<string> _result)
+      {
+         if (_result.Map(out var message, out var exception))
+         {
+            Success(message);
+         }
+         else
+         {
+            Exception(exception);
+         }
+      }
+
       public bool Clickable => _clickText.IsSome;
 
       public string ClickText
