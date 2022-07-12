@@ -235,5 +235,16 @@ namespace Core.Tests
          message.Message("Message");
          form.ShowDialog();
       }
+
+      [TestMethod]
+      public void StopwatchTest()
+      {
+         var form = new Form();
+         //form.Size = new Size(800, 100);
+         var message = new MessageProgress(form) { Stopwatch = true };
+         message.SetUp(0, 0, 300, 27, AnchorStyles.Left | AnchorStyles.Right);
+         message.Busy("Timing");
+         form.ShowDialog();
+      }
    }
 }

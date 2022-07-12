@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using Core.Collections;
+using Core.Dates;
 using Core.Monads;
 using Core.Objects;
 using Core.Strings;
@@ -102,6 +104,7 @@ namespace Core.WinForms.Controls
       protected Maybe<MessageStyle> _lastStyle;
       protected Maybe<Image> _image;
       protected List<SubText> subTexts;
+      protected Lazy<Stopwatch> stopwatch;
 
       public event EventHandler<AutomaticMessageArgs> AutomaticMessage;
       public event EventHandler<PaintEventArgs> Painting;
@@ -137,6 +140,7 @@ namespace Core.WinForms.Controls
          _image = nil;
          subTexts = new List<SubText>();
          CheckStyle = CheckStyle.None;
+         stopwatch = new Lazy<Stopwatch>(() => new Stopwatch());
 
          timer = new Timer
          {
@@ -441,6 +445,8 @@ namespace Core.WinForms.Controls
          }
       }
 
+      public bool Stopwatch { get; set; }
+
       public void Progress(int value, string text = "", bool asPercentage = false)
       {
          if (asPercentage)
@@ -471,6 +477,8 @@ namespace Core.WinForms.Controls
 
       public void Busy(string text)
       {
+         startStopwatch(true);
+
          Text = text;
          type = MessageProgressType.BusyText;
          this.Do(() => timer.Enabled = true);
@@ -493,6 +501,21 @@ namespace Core.WinForms.Controls
       {
          base.OnPaint(e);
 
+         void paintStopwatch()
+         {
+            if (Stopwatch)
+            {
+               var elapsed = stopwatch.Value.Elapsed.ToString(@"mm\:ss");
+               using var font = new Font("Consolas", 8);
+               var size = TextRenderer.MeasureText(e.Graphics, elapsed, font);
+               var location = new Point(ClientRectangle.Width - size.Width - 20, 4);
+               var rectangle = new Rectangle(location, size);
+               TextRenderer.DrawText(e.Graphics, elapsed, font, rectangle, Color.White);
+               using var pen = new Pen(Color.White);
+               e.Graphics.DrawRectangle(pen, rectangle);
+            }
+         }
+
          var checkStyle = type switch
          {
             MessageProgressType.Busy or MessageProgressType.BusyText => CheckStyle.None,
@@ -512,6 +535,7 @@ namespace Core.WinForms.Controls
                break;
             case MessageProgressType.Busy:
                busyProcessor.Value.OnPaint(e.Graphics);
+               paintStopwatch();
                break;
             case MessageProgressType.ProgressDefinite:
             {
@@ -531,6 +555,7 @@ namespace Core.WinForms.Controls
                progressText.Rectangle = busyTextProcessor.Value.TextRectangle;
                progressText.Center(true);
                progressText.Write(text, e.Graphics);
+               paintStopwatch();
                break;
             }
             default:
@@ -722,6 +747,21 @@ namespace Core.WinForms.Controls
       protected int getPercentage(int width) => (int)((float)value / maximum * width);
 
       public int Index(bool increment) => increment ? index++ : index;
+
+      protected void startStopwatch(bool enabled)
+      {
+         if (Stopwatch)
+         {
+            if (enabled)
+            {
+               stopwatch.Value.Restart();
+            }
+            else
+            {
+               stopwatch.Value.Stop();
+            }
+         }
+      }
 
       public void Busy(bool enabled)
       {
