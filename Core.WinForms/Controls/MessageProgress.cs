@@ -5,7 +5,6 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using Core.Collections;
-using Core.Dates;
 using Core.Monads;
 using Core.Objects;
 using Core.Strings;
@@ -215,70 +214,6 @@ namespace Core.WinForms.Controls
       public void SetBackColor(Color backColor) => _backColor = backColor;
 
       public void SetStyle(MessageStyle style) => _style = style;
-
-      protected void setUpFont(string fontName, float fontSize)
-      {
-         Font = new Font(fontName, fontSize);
-      }
-
-      protected void setUpDimensions(int x, int y, int width, int height, string fontName, float fontSize)
-      {
-         AutoSize = false;
-         Location = new Point(x, y);
-         Size = new Size(width, height);
-         setUpFont(fontName, fontSize);
-      }
-
-      public void SetUp(int x, int y, int width, int height, AnchorStyles anchor, string fontName = "Consolas", float fontSize = 12f)
-      {
-         setUpDimensions(x, y, width, height, fontName, fontSize);
-         Anchor = anchor;
-      }
-
-      public void SetUp(int x, int y, int width, int height, DockStyle dock, string fontName = "Consolas", float fontSize = 12f)
-      {
-         setUpDimensions(x, y, width, height, fontName, fontSize);
-         Dock = dock;
-      }
-
-      public void SetUpInTableLayoutPanel(TableLayoutPanel tableLayoutPanel, int column, int row, int columnSpan = 1, int rowSpan = 1,
-         string fontName = "Consolas", float fontSize = 12f, DockStyle dockStyle = DockStyle.Fill)
-      {
-         Dock = dockStyle;
-         tableLayoutPanel.Controls.Add(this, column, row);
-
-         if (columnSpan > 1)
-         {
-            tableLayoutPanel.SetColumnSpan(this, columnSpan);
-         }
-
-         if (rowSpan > 1)
-         {
-            tableLayoutPanel.SetRowSpan(this, rowSpan);
-         }
-
-         setUpFont(fontName, fontSize);
-      }
-
-      public void SetUpInPanel(Panel panel, string fontName = "Consolas", float fontSize = 12f, DockStyle dockStyle = DockStyle.Fill)
-      {
-         Dock = dockStyle;
-         panel.Controls.Add(this);
-         setUpFont(fontName, fontSize);
-      }
-
-      public void SetUp(int x, int y, int width, int height, string fontName = "Consolas", float fontSize = 12f)
-      {
-         setUpDimensions(x, y, width, height, fontName, fontSize);
-      }
-
-      public void SetupInFlowLayoutPanel(FlowLayoutPanel flowLayoutPanel, string fontName = "Consolas", float fontSize = 12f,
-         DockStyle dockStyle = DockStyle.Fill)
-      {
-         Dock = dockStyle;
-         flowLayoutPanel.Controls.Add(this);
-         setUpFont(fontName, fontSize);
-      }
 
       public override Font Font
       {
