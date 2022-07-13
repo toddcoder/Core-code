@@ -49,6 +49,14 @@ namespace Core.Monads
          return _exception.Map(e => (Responding<T>)new FailedResponse<T>(e)).DefaultTo(() => new NoResponse<T>());
       }
 
+      public static bool operator true(Responding<T> value) => value.IsResponse;
+
+      public static bool operator false(Responding<T> value) => !value.IsResponse;
+
+      public static bool operator !(Responding<T> value) => !value.IsResponse;
+
+      public static implicit operator bool(Responding<T> value) => value.IsResponse;
+
       public abstract bool IsResponse { get; }
 
       public abstract bool IsNoResponse { get; }

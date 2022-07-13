@@ -1,5 +1,7 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Windows.Forms;
 using Core.Strings;
@@ -240,10 +242,73 @@ namespace Core.Tests
       public void StopwatchTest()
       {
          var form = new Form();
-         //form.Size = new Size(800, 100);
          var message = new MessageProgress(form) { Stopwatch = true };
          message.SetUp(0, 0, 300, 27, AnchorStyles.Left | AnchorStyles.Right);
          message.Busy("Timing");
+         form.ShowDialog();
+      }
+
+      [TestMethod]
+      public void ExTextBoxTest()
+      {
+         var form = new Form();
+         var textBox = new ExTextBox { RefreshOnTextChange = true };
+         textBox.Font = new Font("Consolas", 12);
+         textBox.Width = form.ClientSize.Width;
+         textBox.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
+         form.Controls.Add(textBox);
+         textBox.Location = new Point(0, 0);
+         textBox.Paint += (_, e) =>
+         {
+            var pen = new Pen(Color.Green, 2);
+            e.Graphics.DrawRectangle(pen, textBox.Bounds);
+            foreach (var (rectangle, word) in textBox.RectangleWords(e.Graphics))
+            {
+               Console.WriteLine(word);
+               textBox.DrawHighlight(e.Graphics, rectangle, Color.White, Color.Red, DashStyle.Dot);
+            }
+         };
+         form.ShowDialog();
+      }
+
+      [TestMethod]
+      public void ExTextBoxTest2()
+      {
+         var form = new Form();
+         var textBox = new ExTextBox { RefreshOnTextChange = true };
+         textBox.Font = new Font("Consolas", 12);
+         textBox.Width = form.ClientSize.Width;
+         textBox.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
+         form.Controls.Add(textBox);
+         textBox.Location = new Point(0, 0);
+         textBox.Paint += (_, e) =>
+         {
+            var rectangle = new Rectangle(textBox.Bounds.Width - 16, 0, 16, textBox.Bounds.Height);
+            using var brush = new HatchBrush(HatchStyle.DiagonalBrick, Color.White, Color.Green);
+            e.Graphics.FillRectangle(brush, rectangle);
+         };
+         form.ShowDialog();
+      }
+
+      [TestMethod]
+      public void ExTextBoxTest3()
+      {
+         var form = new Form();
+         var textBox = new ExTextBox { RefreshOnTextChange = true };
+         textBox.Font = new Font("Consolas", 12);
+         textBox.Width = form.ClientSize.Width;
+         textBox.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
+         form.Controls.Add(textBox);
+         textBox.Location = new Point(0, 0);
+         textBox.BackColor = SystemColors.Control;
+         textBox.Paint += (_, e) =>
+         {
+            foreach (var (rectangle, word) in textBox.RectangleWords(e.Graphics))
+            {
+               Console.WriteLine(word);
+               textBox.DrawHighlight(e.Graphics, rectangle, Color.Black, Color.CadetBlue);
+            }
+         };
          form.ShowDialog();
       }
    }

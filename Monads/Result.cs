@@ -45,6 +45,14 @@ namespace Core.Monads
 
       public static implicit operator Result<T>(Exception exception) => new Failure<T>(exception);
 
+      public static bool operator true(Result<T> value) => value.IsSuccessful;
+
+      public static bool operator false(Result<T> value) => value.IsFailed;
+
+      public static bool operator !(Result<T> value) => !value.IsSuccessful;
+
+      public static implicit operator bool(Result<T> value) => value.IsSuccessful;
+
       public static Result<T> Nil(string message) => new Failure<T>(new Exception(message));
 
       public abstract bool Map(out T value, out Exception exception);

@@ -290,7 +290,7 @@ namespace Core.Markup.Rtf
             result.Append($@"{{\*\bkmkend {bookmark}}}");
          }
 
-         if (_localHyperlink.IsSome)
+         if (_localHyperlink)
          {
             result.Append(@"}}}");
          }

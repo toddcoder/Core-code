@@ -250,5 +250,21 @@ namespace Core.Tests
          var _items = items.Some();
          Console.WriteLine(_items.IsNone);
       }
+
+      [TestMethod]
+      public void BooleanTest()
+      {
+         Maybe<string> _string = nil;
+         if (!_string)
+         {
+            Console.WriteLine("not");
+         }
+
+         _string = "some";
+         if (_string)
+         {
+            Console.WriteLine("is");
+         }
+      }
    }
 }

@@ -33,6 +33,7 @@ namespace Core.WinForms.Controls
          public WindowExtender(ExRichTextBox baseControl)
          {
             this.baseControl = baseControl;
+
             canRender = false;
             ReinitializeCanvas();
          }
@@ -483,7 +484,7 @@ namespace Core.WinForms.Controls
          else if (text.Contains(" "))
          {
             var size = graphics.MeasureString(text, font).ToSize();
-            return new Size(size.Width + 8, size.Height);
+            return size with { Width = size.Width + 8 };
          }
          else
          {
@@ -504,7 +505,7 @@ namespace Core.WinForms.Controls
          var size = MeasureString(graphics, text, Font);
          if (expand)
          {
-            size = new Size(VisibleRectangle.Width, size.Height);
+            size = size with { Width = VisibleRectangle.Width };
          }
 
          var location = GetPositionFromCharIndex(start);

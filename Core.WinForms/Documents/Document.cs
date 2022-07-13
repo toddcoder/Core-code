@@ -304,7 +304,7 @@ namespace Core.WinForms.Documents
       {
          if (IsDirty)
          {
-            if (_file.IsSome)
+            if (_file)
             {
                save();
             }

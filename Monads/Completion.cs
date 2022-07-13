@@ -17,6 +17,14 @@ namespace Core.Monads
          return _exception.Map(e => (Completion<T>)new Interrupted<T>(e)).DefaultTo(() => new Cancelled<T>());
       }
 
+      public static bool operator true(Completion<T> value) => value is Completed<T>;
+
+      public static bool operator false(Completion<T> value) => value is not Completed<T>;
+
+      public static bool operator !(Completion<T> value) => value is not Completed<T>;
+
+      public static implicit operator bool(Completion<T> value) => value is Completed<T>;
+
       public abstract Completion<TResult> Map<TResult>(Func<T, Completion<TResult>> ifCompleted);
 
       public abstract Completion<TResult> Map<TResult>(Func<T, TResult> ifCompleted);
@@ -93,10 +101,10 @@ namespace Core.Monads
 
       public abstract Completion<T> OnInterrupted(Action<Exception> action);
 
-      [Obsolete("Use If")]
+      [Obsolete("Use Map")]
       public abstract bool ValueOrOriginal(out T value, out Completion<T> original);
 
-      [Obsolete("Use If")]
+      [Obsolete("Use Map")]
       public abstract bool ValueOrCast<TCompletion>(out T value, out Completion<TCompletion> completion);
 
       public abstract bool ValueEqualTo(Completion<T> otherCompletion);

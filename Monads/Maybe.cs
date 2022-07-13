@@ -7,11 +7,11 @@ namespace Core.Monads
    {
       public static Maybe<T> operator |(Maybe<T> left, Maybe<T> right)
       {
-         if (left.IsSome)
+         if (left)
          {
             return left;
          }
-         else if (right.IsSome)
+         else if (right)
          {
             return right;
          }
@@ -24,6 +24,14 @@ namespace Core.Monads
       public static implicit operator Maybe<T>(T value) => value.Some();
 
       public static implicit operator Maybe<T>(Nil _) => new None<T>();
+
+      public static bool operator true(Maybe<T> value) => value.IsSome;
+
+      public static bool operator false(Maybe<T> value) => value.IsNone;
+
+      public static bool operator !(Maybe<T> value) => !value.IsSome;
+
+      public static implicit operator bool(Maybe<T> value) => value.IsSome;
 
       public abstract bool IsSome { get; }
 

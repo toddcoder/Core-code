@@ -92,7 +92,7 @@ namespace Core.Internet.Smtp
          }
          finally
          {
-            if (Attachments.IsSome)
+            if (Attachments)
             {
                foreach (var attachment in message.Attachments)
                {

@@ -181,10 +181,10 @@ namespace Core.Tests
       public void HasRowsTest()
       {
          var obj = new Object { ObjectName = "Foobar" };
-         Console.WriteLine(obj.SqlAdapter().ExecuteMaybe().IsSome ? "Foobar exists" : "Foobar doesn't exist");
+         Console.WriteLine(obj.SqlAdapter().ExecuteMaybe() ? "Foobar exists" : "Foobar doesn't exist");
 
          obj.ObjectName = "PaperTicketStorageAssignment";
-         Console.WriteLine(obj.SqlAdapter().ExecuteMaybe().IsSome ? $"{obj.ObjectName} exists" : $"{obj.ObjectName} doesn't exist");
+         Console.WriteLine(obj.SqlAdapter().ExecuteMaybe() ? $"{obj.ObjectName} exists" : $"{obj.ObjectName} doesn't exist");
       }
 
       [TestMethod]

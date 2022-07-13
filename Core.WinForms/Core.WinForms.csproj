@@ -63,6 +63,9 @@
     <Compile Include="Controls\ExRichTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\ExTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\LineChangedEventArgs.cs" />
     <Compile Include="Controls\MessageProgressText.cs" />
     <Compile Include="Controls\MessageProgressType.cs" />

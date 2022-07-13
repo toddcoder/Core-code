@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Core.Monads;
@@ -19,7 +20,7 @@ namespace Core.Matching.Parsers
 
       public BaseParser()
       {
-         tokens = new string[0];
+         tokens = Array.Empty<string>();
          regexIdentifier = new RRegex(REGEX_IDENTIFIER, RegexOptions.Compiled);
          regexBalIdentifier = new RRegex(REGEX_BAL_IDENTIFIER, RegexOptions.Compiled);
       }
@@ -50,7 +51,7 @@ namespace Core.Matching.Parsers
             index += matches[0].Length;
             tokens = getGroups(matches[0]).Select(group => group.Value).ToArray();
             var result = Parse(source, ref index);
-            if (result.IsSome)
+            if (result)
             {
                return result;
             }
@@ -62,7 +63,7 @@ namespace Core.Matching.Parsers
          }
          else
          {
-            return none<string>();
+            return nil;
          }
       }
 
