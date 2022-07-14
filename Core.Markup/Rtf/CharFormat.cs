@@ -81,27 +81,27 @@ namespace Core.Markup.Rtf
 
       public void CopyFrom(CharFormat sourceFormat)
       {
-         if (_begin.IsNone && sourceFormat._begin.Map(out var begin))
+         if (!_begin && sourceFormat._begin.Map(out var begin))
          {
             _begin = begin;
          }
 
-         if (_end.IsNone && sourceFormat._end.Map(out var end))
+         if (!_end && sourceFormat._end.Map(out var end))
          {
             _end = end;
          }
 
-         if (_font.IsNone && sourceFormat._font.Map(out var font))
+         if (!_font && sourceFormat._font.Map(out var font))
          {
             _font = new FontDescriptor(font.Value);
          }
 
-         if (_ansiFont.IsNone && sourceFormat._ansiFont.Map(out var ansiFont))
+         if (!_ansiFont && sourceFormat._ansiFont.Map(out var ansiFont))
          {
             _ansiFont = new FontDescriptor(ansiFont.Value);
          }
 
-         if (_fontSize.IsNone && sourceFormat._fontSize.Map(out var fontSize))
+         if (!_fontSize && sourceFormat._fontSize.Map(out var fontSize))
          {
             _fontSize = fontSize;
          }
@@ -111,12 +111,12 @@ namespace Core.Markup.Rtf
             fontStyle = new FontStyle(sourceFormat.fontStyle);
          }
 
-         if (_backgroundColor.IsNone && sourceFormat._backgroundColor.Map(out var backgroundColor))
+         if (!_backgroundColor && sourceFormat._backgroundColor.Map(out var backgroundColor))
          {
             _backgroundColor = new ColorDescriptor(backgroundColor.Value);
          }
 
-         if (_foregroundColor.IsNone && sourceFormat._foregroundColor.Map(out var foregroundColor))
+         if (!_foregroundColor && sourceFormat._foregroundColor.Map(out var foregroundColor))
          {
             _foregroundColor = new ColorDescriptor(foregroundColor.Value);
          }

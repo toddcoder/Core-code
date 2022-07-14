@@ -356,7 +356,7 @@ namespace Core.WinForms.Controls
          }
       }
 
-      public bool Clickable => _clickText.IsSome;
+      public bool Clickable => _clickText;
 
       public string ClickText
       {

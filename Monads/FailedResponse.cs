@@ -12,11 +12,17 @@ namespace Core.Monads
 
       public Exception Exception { get; }
 
+#pragma warning disable CS0672
       public override bool IsResponse => false;
+#pragma warning restore CS0672
 
+#pragma warning disable CS0672
       public override bool IsNoResponse => false;
+#pragma warning restore CS0672
 
+#pragma warning disable CS0672
       public override bool IsFailedResponse => true;
+#pragma warning restore CS0672
 
       public override Responding<TResult> Map<TResult>(Func<T, Responding<TResult>> ifResponse) => new FailedResponse<TResult>(Exception);
 

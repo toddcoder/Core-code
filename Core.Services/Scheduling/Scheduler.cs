@@ -52,7 +52,7 @@ namespace Core.Services.Scheduling
          {
             var schedule = schedules[i];
             schedule.Next();
-            if (_nextTargetDateTime.Map(out var nextTargetDateTime) && nextTargetDateTime > schedule.TargetDateTime || _nextTargetDateTime.IsNone)
+            if (_nextTargetDateTime.Map(out var nextTargetDateTime) && nextTargetDateTime > schedule.TargetDateTime || !_nextTargetDateTime)
             {
                nextScheduleIndex = i;
                _nextTargetDateTime = schedule.TargetDateTime;
@@ -62,7 +62,7 @@ namespace Core.Services.Scheduling
 
       protected void setLastTargetDateTime()
       {
-         if (_nextTargetDateTime.IsSome)
+         if (_nextTargetDateTime)
          {
             _lastTargetDateTime = _nextTargetDateTime;
             lastScheduleIndex = nextScheduleIndex;
@@ -100,7 +100,7 @@ namespace Core.Services.Scheduling
          for (var i = 0; i < schedules.Length; i++)
          {
             var schedule = schedules[i];
-            if (_nextTargetDateTime.Map(out var nextTargetDateTime) && nextTargetDateTime > schedule.TargetDateTime || _nextTargetDateTime.IsNone)
+            if (_nextTargetDateTime.Map(out var nextTargetDateTime) && nextTargetDateTime > schedule.TargetDateTime || !_nextTargetDateTime)
             {
                nextScheduleIndex = i;
                _nextTargetDateTime = schedule.TargetDateTime;

@@ -10,11 +10,11 @@ namespace Core.Strings.Text
    {
       protected List<DifferenceItem> subItems;
 
-      public DifferenceItem(string text, DifferenceType type, Maybe<int> position)
+      public DifferenceItem(string text, DifferenceType type, Maybe<int> _position)
       {
          Text = text;
          Type = type;
-         Position = position;
+         Position = _position;
          subItems = new List<DifferenceItem>();
       }
 
@@ -22,7 +22,7 @@ namespace Core.Strings.Text
       {
       }
 
-      public DifferenceItem(string text, DifferenceType type) : this(text, type, none<int>())
+      public DifferenceItem(string text, DifferenceType type) : this(text, type, nil)
       {
       }
 
@@ -32,7 +32,7 @@ namespace Core.Strings.Text
 
       protected override bool equals(object other)
       {
-         return other is DifferenceItem otherDiffItem && Position.IsSome == otherDiffItem.Position.IsSome && subItemsEqual(otherDiffItem);
+         return other is DifferenceItem otherDiffItem && (bool)Position == (bool)otherDiffItem.Position && subItemsEqual(otherDiffItem);
       }
 
       [Equatable]

@@ -66,7 +66,7 @@ namespace Core.Strings
                maxCount = Math.Max(maxCount, Value.Int32(result[i, 1]));
                var length = Maybe.Int32(result[i, 3]);
                var item = new PadderItem { Length = length, PadType = getPadType(result[i, 4]) };
-               if (item.Length.IsNone && !hasNoLength)
+               if (!item.Length && !hasNoLength)
                {
                   hasNoLength = true;
                }
@@ -146,7 +146,7 @@ namespace Core.Strings
             {
                for (var j = 0; j < itemCount; j++)
                {
-                  if (items[j].Length.IsNone)
+                  if (!items[j].Length)
                   {
                      datum[j] = padder.Value.Pad(j, datum[j], items[j].PadType);
                   }

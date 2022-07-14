@@ -484,7 +484,7 @@ namespace Core.Applications
             .Select(p => (p.Name, p.ParameterType, defaultValue: maybe(p.HasDefaultValue, () => p.DefaultValue)))
             .Select(t => retrieveItem(t.Name, t.ParameterType, t.defaultValue, prefix, suffix, commandLine))
             .ToArray();
-         if (arguments.FirstOrNone(p => p.IsFailed).Map(out var failure))
+         if (arguments.FirstOrNone(p => !p).Map(out var failure))
          {
             if (failure.UnMap(out var exception))
             {

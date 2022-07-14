@@ -45,9 +45,13 @@ namespace Core.Monads
          return false;
       }
 
+#pragma warning disable CS0672
       public override bool IsSuccessful => false;
+#pragma warning restore CS0672
 
+#pragma warning disable CS0672
       public override bool IsFailed => true;
+#pragma warning restore CS0672
 
       [Obsolete("Use exception")]
       public override Result<TOther> ExceptionAs<TOther>() => exception;

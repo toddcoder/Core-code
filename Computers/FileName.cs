@@ -1048,7 +1048,7 @@ namespace Core.Computers
 
       public Result<FileName> Validate(bool allowRelativePaths = false) => ValidatePath(this, allowRelativePaths).Map(s => (FileName)s);
 
-      public bool IsValid => Validate(true).IsSuccessful;
+      public bool IsValid => Validate(true);
 
       public FileName Serialize(int limit = 1000)
       {

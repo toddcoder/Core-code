@@ -347,7 +347,7 @@ namespace Core.Data.DataSources
 
       protected void allocateCommand()
       {
-         if (Command.IsNone)
+         if (!Command)
          {
             var command = GetCommand();
             command.Connection = _connection.Required("Connection not properly initialized");

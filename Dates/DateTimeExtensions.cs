@@ -59,7 +59,7 @@ namespace Core.Dates
             }
          }
 
-         public Result<ValidDate> AndYear(int year) => (Month.IsSuccessful || Day.IsSuccessful).Result(() =>
+         public Result<ValidDate> AndYear(int year) => ((bool)Month || (bool)Day).Result(() =>
          {
             Year = year;
             return this;
@@ -71,7 +71,7 @@ namespace Core.Dates
             return validate();
          }
 
-         public Result<ValidDate> AndMonth(int month) => (Year.IsSuccessful || Day.IsSuccessful).Result(() =>
+         public Result<ValidDate> AndMonth(int month) => ((bool)Year || (bool)Day).Result(() =>
          {
             Month = month;
             return this;
@@ -83,7 +83,7 @@ namespace Core.Dates
             return validate();
          }
 
-         public Result<ValidDate> AndDay(int day) => (Year.IsSuccessful || Month.IsSuccessful).Result(() =>
+         public Result<ValidDate> AndDay(int day) => ((bool)Year || (bool)Month).Result(() =>
          {
             Day = day;
             return this;
@@ -215,7 +215,7 @@ namespace Core.Dates
             if (pattern.Matches("/(['+-']? /d*) ['//|'] /(['+-']? /d*) ['//|'] /(['+-']? /d*); f").Map(out var result))
             {
                var match = result.GetMatch(0);
-               if (match.Groups.Assign(out _, out var year, out var month, out var day).IsSuccessful)
+               if (match.Groups.Assign(out _, out var year, out var month, out var day))
                {
                   DateIncrementer builder = date;
                   if (year.Length > 0)
@@ -229,7 +229,7 @@ namespace Core.Dates
                      else
                      {
                         var setYearResult = builder.SetYear(yearAmount);
-                        if (setYearResult.IsFailed)
+                        if (!setYearResult)
                         {
                            return setYearResult;
                         }
@@ -247,7 +247,7 @@ namespace Core.Dates
                      else
                      {
                         var setMonthResult = builder.SetMonth(monthAmount);
-                        if (setMonthResult.IsFailed)
+                        if (!setMonthResult)
                         {
                            return setMonthResult;
                         }
@@ -265,7 +265,7 @@ namespace Core.Dates
                      else if (dayAmount == 0)
                      {
                         var setDayResult = builder.SetToLastDay();
-                        if (setDayResult.IsFailed)
+                        if (!setDayResult)
                         {
                            return setDayResult;
                         }
@@ -273,7 +273,7 @@ namespace Core.Dates
                      else
                      {
                         var setDayResult = builder.SetDay(dayAmount);
-                        if (setDayResult.IsFailed)
+                        if (!setDayResult)
                         {
                            return setDayResult;
                         }

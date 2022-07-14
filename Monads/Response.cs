@@ -13,11 +13,17 @@ namespace Core.Monads
 
       public T Value { get; }
 
+#pragma warning disable CS0672
       public override bool IsResponse => true;
+#pragma warning restore CS0672
 
+#pragma warning disable CS0672
       public override bool IsNoResponse => false;
+#pragma warning restore CS0672
 
+#pragma warning disable CS0672
       public override bool IsFailedResponse => false;
+#pragma warning restore CS0672
 
       public override Responding<TResult> Map<TResult>(Func<T, Responding<TResult>> ifResponse)
       {

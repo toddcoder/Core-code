@@ -25,7 +25,7 @@ namespace Core.Services.Scheduling.Parsers
          foreach (var parser in parsers)
          {
             var increment = parser.Parse(source);
-            if (increment.IsSome)
+            if (increment)
             {
                Bracket = parser.Bracket;
                return increment;

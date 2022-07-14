@@ -23,7 +23,7 @@ namespace Core.Collections.Infix
 
          var item = new InfixData<TValue, TInfix>(value, infix);
          list.Add(item);
-         stopped = item.Infix.IsNone;
+         stopped = !item.Infix;
       }
 
       public void Add(TValue value)
@@ -41,7 +41,7 @@ namespace Core.Collections.Infix
          stopped.Must().Not.BeTrue().OrThrow("Last item has been already added");
 
          list.Add(item);
-         stopped = item.Infix.IsNone;
+         stopped = !item.Infix;
       }
 
       public IEnumerator<IInfixData<TValue, TInfix>> GetEnumerator() => list.GetEnumerator();

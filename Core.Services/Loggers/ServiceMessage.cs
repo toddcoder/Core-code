@@ -52,12 +52,12 @@ namespace Core.Services.Loggers
       {
          messages.Add(serviceMessage);
 
-         if (_logger.IsNone && serviceMessage is ServiceLogger serviceLogger)
+         if (!_logger && serviceMessage is ServiceLogger serviceLogger)
          {
             _logger = serviceLogger;
          }
 
-         if (_namedExceptions.IsNone && serviceMessage is NamedExceptions namedExceptions)
+         if (!_namedExceptions && serviceMessage is NamedExceptions namedExceptions)
          {
             _namedExceptions = namedExceptions;
          }
@@ -65,7 +65,7 @@ namespace Core.Services.Loggers
 
       public void AddPossible(IServiceWriter serviceWriter)
       {
-         if (_serviceWriter.IsNone && serviceWriter is IServiceMessage serviceMessage)
+         if (!_serviceWriter && serviceWriter is IServiceMessage serviceMessage)
          {
             Add(serviceMessage);
             _serviceWriter = serviceWriter.Some();
@@ -148,7 +148,7 @@ namespace Core.Services.Loggers
          var strMessage = message?.ToString() ?? "";
          if (strMessage.StartsWith("!"))
          {
-            if (_errorMessage.IsNone)
+            if (!_errorMessage)
             {
                _errorMessage = new StringBuilder();
             }

@@ -426,7 +426,7 @@ namespace Core.Monads
          {
             if (result.Map(out var value, out var exception))
             {
-               if (_firstItem.IsNone)
+               if (!_firstItem)
                {
                   _firstItem = value;
                }

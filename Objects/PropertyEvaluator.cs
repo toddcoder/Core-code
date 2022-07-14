@@ -63,7 +63,7 @@ namespace Core.Objects
             {
                var current = obj;
 
-               var lastInfo = none<ObjectInfo>();
+               Maybe<ObjectInfo> _lastInfo = nil;
 
                foreach (var info in new SignatureCollection(signature).Select(s => new ObjectInfo(current, s)))
                {
@@ -73,17 +73,17 @@ namespace Core.Objects
                   }
 
                   var infoValue = info.Value.Required($"Signature {signature} doesn't exist");
-                  if (info.PropertyType.IsNone)
+                  if (!info.PropertyType)
                   {
                      throw $"Couldn't determine object at {signature}".Throws();
                   }
 
                   current = infoValue;
-                  lastInfo = info.Some();
+                  _lastInfo = info;
                }
 
-               var li = lastInfo.Required($"Couldn't derive {signature}");
-               li.Value = value.Some();
+               var li = _lastInfo.Required($"Couldn't derive {signature}");
+               li.Value = value;
             }
          }
       }
@@ -108,7 +108,7 @@ namespace Core.Objects
             hash[new Signature(pInfo.Name)] = this[pInfo.Name];
          }
 
-         return hash.Success();
+         return hash;
       }
 
       public object Object
@@ -198,7 +198,7 @@ namespace Core.Objects
             hash[pInfo.Name] = this[pInfo.Name];
          }
 
-         return hash.Success();
+         return hash;
       }
 
       public Signature[] Signatures
@@ -229,7 +229,7 @@ namespace Core.Objects
             return ((IHash<Signature, object>)this).Map(signature, o => (T)o);
          }
 
-         return none<T>();
+         return nil;
       }
 
       public IEnumerable<Signature> ValuesAtAttribute<TAttribute>() where TAttribute : Attribute

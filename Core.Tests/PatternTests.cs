@@ -126,7 +126,7 @@ namespace Core.Tests
       {
          var pattern = @"^ '\)'; f";
          var input = @"\)";
-         if (input.Matches(pattern).IsSome)
+         if (input.Matches(pattern))
          {
             Console.WriteLine("Matched");
          }

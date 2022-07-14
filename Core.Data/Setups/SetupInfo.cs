@@ -6,7 +6,7 @@ namespace Core.Data.Setups
    public class SetupInfo
    {
       protected string connection;
-      protected Maybe<string> command;
+      protected Maybe<string> _command;
       protected string adapter;
 
       public string Connection
@@ -17,8 +17,8 @@ namespace Core.Data.Setups
 
       public string Command
       {
-         get => command.Map(out var c) ? c : adapter;
-         set => command = value;
+         get => _command.Map(out var c) ? c : adapter;
+         set => _command = value;
       }
 
       public string Adapter
@@ -27,9 +27,9 @@ namespace Core.Data.Setups
          set
          {
             adapter = value;
-            if (command.IsNone)
+            if (!_command)
             {
-               command = adapter;
+               _command = adapter;
             }
          }
       }
@@ -37,7 +37,7 @@ namespace Core.Data.Setups
       public SetupInfo()
       {
          connection = string.Empty;
-         command = nil;
+         _command = nil;
          adapter = string.Empty;
       }
 
@@ -45,10 +45,10 @@ namespace Core.Data.Setups
       {
          connection = connectionName;
          adapter = adapterName;
-         command = commandName;
-         if (command.IsNone)
+         _command = commandName;
+         if (!_command)
          {
-            command = Adapter;
+            _command = Adapter;
          }
       }
 

@@ -12,9 +12,13 @@ namespace Core.Monads
       {
       }
 
+#pragma warning disable CS0672
       public override bool IsSome => false;
+#pragma warning restore CS0672
 
+#pragma warning disable CS0672
       public override bool IsNone => true;
+#pragma warning restore CS0672
 
       public override T DefaultTo(Func<T> func) => func();
 

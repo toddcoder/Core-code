@@ -247,8 +247,8 @@ namespace Core.Tests
       public void NullTupleItemTest()
       {
          (int, string, int) items = (1, null, 10);
-         var _items = items.Some();
-         Console.WriteLine(_items.IsNone);
+         Maybe<(int, string, int)> _items = items;
+         Console.WriteLine(!_items);
       }
 
       [TestMethod]

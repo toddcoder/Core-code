@@ -72,9 +72,9 @@ namespace Core.Assertions.Monads
          return this;
       }
 
-      public ResultAssertion<T> BeSuccessful() => add(() => result.IsSuccessful, "$name must $not be successful");
+      public ResultAssertion<T> BeSuccessful() => add(() => result, "$name must $not be successful");
 
-      public ResultAssertion<T> BeFailed() => add(() => result.IsFailed, "$name be $not be failed");
+      public ResultAssertion<T> BeFailed() => add(() => !result, "$name be $not be failed");
 
       public ResultAssertion<T> EqualToValueOf(Result<T> otherResult)
       {

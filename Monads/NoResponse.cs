@@ -12,11 +12,17 @@ namespace Core.Monads
          hashCode = new Lazy<int>(() => typeof(T).GetHashCode());
       }
 
+#pragma warning disable CS0672
       public override bool IsResponse => false;
+#pragma warning restore CS0672
 
+#pragma warning disable CS0672
       public override bool IsNoResponse => true;
+#pragma warning restore CS0672
 
+#pragma warning disable CS0672
       public override bool IsFailedResponse => false;
+#pragma warning restore CS0672
 
       public override Responding<TResult> Map<TResult>(Func<T, Responding<TResult>> ifResponse) => nil;
 

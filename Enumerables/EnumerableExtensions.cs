@@ -1098,8 +1098,7 @@ namespace Core.Enumerables
 
       public static bool AtLeastOne<T>(this IEnumerable<T> enumerable) => enumerable.FirstOrNone();
 
-      public static bool AtLeastOne<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate) =>
-         enumerable.FirstOrNone(predicate).IsSome;
+      public static bool AtLeastOne<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate) => enumerable.FirstOrNone(predicate);
 
       public static IEnumerable<T> Do<T>(this IEnumerable<T> enumerable, Action<T> action)
       {

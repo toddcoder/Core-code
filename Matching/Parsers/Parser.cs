@@ -52,7 +52,7 @@ namespace Core.Matching.Parsers
             var added = false;
             foreach (var result in parsers
                .Select(parser => parser.Scan(source, ref index))
-               .Where(result => result.IsSome))
+               .Where(result => result))
             {
                if (result.Map(out var r))
                {

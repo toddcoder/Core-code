@@ -71,8 +71,8 @@ namespace Core.Data.DataSources
                }
 
                var type = value?.GetType();
-               var underlyingType = type?.UnderlyingTypeOf() ?? none<Type>();
-               if (underlyingType.IsSome)
+               var underlyingType = type?.UnderlyingTypeOf() ?? nil;
+               if (underlyingType)
                {
                   value = type.InvokeMember("Value", BindingFlags.GetProperty, null, value, Array.Empty<object>());
                }

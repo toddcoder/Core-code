@@ -104,7 +104,7 @@ namespace Core.Services
             }
 
             _subscription = jobGroup.GetValue("subscription");
-            if (_subscription.IsNone)
+            if (!_subscription)
             {
                _scheduler = plugin.Scheduler();
             }
@@ -137,7 +137,7 @@ namespace Core.Services
 
       public bool Enabled { get; set; }
 
-      public bool Subscribing => _subscription.IsSome;
+      public bool Subscribing => _subscription;
 
       protected void enableTimer(bool timerEnabled)
       {

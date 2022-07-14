@@ -114,7 +114,7 @@ namespace Core.Applications.CommandProcessing
                         var suffix = optional ? "]\r\n" : "\r\n";
                         result[i] = $"{prefix}{replacement}{suffix}";
 
-                        if (_indent.IsNone)
+                        if (!_indent)
                         {
                            _indent = " ".Repeat(command.Length + 1);
                         }

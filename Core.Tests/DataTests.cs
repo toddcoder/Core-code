@@ -213,7 +213,7 @@ namespace Core.Tests
             ObjectId = 89
          };
          var adapter = new Adapter<ColumnData>(entity, setup);
-         if (adapter.TryTo.Execute().IsSuccessful)
+         if (adapter.TryTo.Execute())
          {
             Console.WriteLine(entity.Name);
          }

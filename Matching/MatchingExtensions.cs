@@ -12,7 +12,7 @@ namespace Core.Matching
    {
       public static bool IsMatch(this string input, Pattern pattern)
       {
-         return pattern.MatchedBy(input).IsResponse;
+         return pattern.MatchedBy(input);
       }
 
       public static string Substitute(this string input, Pattern pattern, string replacement)
@@ -266,7 +266,7 @@ namespace Core.Matching
          foreach (var pattern in patterns)
          {
             var _result = pattern.MatchedBy(input);
-            if (_result.IsResponse)
+            if (_result)
             {
                return _result.Maybe();
             }

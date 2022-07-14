@@ -7,11 +7,11 @@ namespace Core.Monads
    {
       public static Result<T> operator |(Result<T> left, Result<T> right)
       {
-         if (left.IsSuccessful)
+         if (left)
          {
             return left;
          }
-         else if (right.IsSuccessful)
+         else if (right)
          {
             return right;
          }
@@ -23,14 +23,14 @@ namespace Core.Monads
 
       public static Result<T> operator |(Result<T> left, Func<Result<T>> rightFunc)
       {
-         if (left.IsSuccessful)
+         if (left)
          {
             return left;
          }
          else
          {
             var right = rightFunc();
-            if (right.IsSuccessful)
+            if (right)
             {
                return right;
             }
@@ -45,13 +45,13 @@ namespace Core.Monads
 
       public static implicit operator Result<T>(Exception exception) => new Failure<T>(exception);
 
-      public static bool operator true(Result<T> value) => value.IsSuccessful;
+      public static bool operator true(Result<T> value) => value is Success<T>;
 
-      public static bool operator false(Result<T> value) => value.IsFailed;
+      public static bool operator false(Result<T> value) => value is Failure<T>;
 
-      public static bool operator !(Result<T> value) => !value.IsSuccessful;
+      public static bool operator !(Result<T> value) => value is Failure<T>;
 
-      public static implicit operator bool(Result<T> value) => value.IsSuccessful;
+      public static implicit operator bool(Result<T> value) => value is Success<T>;
 
       public static Result<T> Nil(string message) => new Failure<T>(new Exception(message));
 
@@ -63,8 +63,10 @@ namespace Core.Monads
       [Obsolete("Use If()")]
       public abstract bool ValueOrCast<TResult>(out T value, out Result<TResult> result);
 
+      [Obsolete("Use bool implicit cast")]
       public abstract bool IsSuccessful { get; }
 
+      [Obsolete("Use bool implicit cast")]
       public abstract bool IsFailed { get; }
 
       [Obsolete("Use exception")]

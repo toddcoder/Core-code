@@ -44,7 +44,7 @@ namespace Core.Matching.MultiMatching
 
       public MultiMatcher Else(Action action)
       {
-         if (_defaultAction.IsNone)
+         if (!_defaultAction)
          {
             _defaultAction = action;
          }

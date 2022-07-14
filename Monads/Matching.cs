@@ -71,7 +71,7 @@ namespace Core.Monads
 
 		public Matching<T, TResult> Default(Func<TResult> ifDefault)
 		{
-			if (action.IsNone)
+			if (!action)
          {
             action = ifDefault;
          }

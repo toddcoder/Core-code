@@ -30,7 +30,7 @@ namespace Core.Objects
       {
          activator.Must().Not.BeNull().OrThrow();
 
-         if (_activator.IsNone || overriding || reset)
+         if (!_activator || overriding || reset)
          {
             _activator = activator;
             _value = nil;
@@ -62,7 +62,7 @@ namespace Core.Objects
          }
       }
 
-      public bool IsActivated => _value.IsSome;
+      public bool IsActivated => _value;
 
       public Maybe<T> AnyValue => _value;
 

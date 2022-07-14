@@ -689,11 +689,11 @@ namespace Core.Markup.Rtf
                {
                   result.Append($@"\clcbpat{headerBackgroundColor.Value}");
                }
-               else if (RowBackgroundColor.Map(out var rowBackgroundColor) && (RowAltBackgroundColor.IsNone || i % 2 == 0))
+               else if (RowBackgroundColor.Map(out var rowBackgroundColor) && (!RowAltBackgroundColor || i % 2 == 0))
                {
                   result.Append($@"\clcbpat{rowBackgroundColor.Value}");
                }
-               else if (RowBackgroundColor.IsSome && RowAltBackgroundColor.Map(out var rowAltBackgroundColor) && i % 2 != 0)
+               else if (RowBackgroundColor && RowAltBackgroundColor.Map(out var rowAltBackgroundColor) && i % 2 != 0)
                {
                   result.Append($@"\clcbpat{rowAltBackgroundColor.Value}");
                }

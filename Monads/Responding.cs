@@ -6,11 +6,11 @@ namespace Core.Monads
    {
       public static Responding<T> operator |(Responding<T> left, Responding<T> right)
       {
-         if (left.IsResponse)
+         if (left)
          {
             return left;
          }
-         else if (right.IsResponse)
+         else if (right)
          {
             return right;
          }
@@ -22,14 +22,14 @@ namespace Core.Monads
 
       public static Responding<T> operator |(Responding<T> left, Func<Responding<T>> rightFunc)
       {
-         if (left.IsResponse)
+         if (left)
          {
             return left;
          }
          else
          {
             var right = rightFunc();
-            if (right.IsResponse)
+            if (right)
             {
                return right;
             }
@@ -49,18 +49,21 @@ namespace Core.Monads
          return _exception.Map(e => (Responding<T>)new FailedResponse<T>(e)).DefaultTo(() => new NoResponse<T>());
       }
 
-      public static bool operator true(Responding<T> value) => value.IsResponse;
+      public static bool operator true(Responding<T> value) => value is Response<T>;
 
-      public static bool operator false(Responding<T> value) => !value.IsResponse;
+      public static bool operator false(Responding<T> value) => value is not Response<T>;
 
-      public static bool operator !(Responding<T> value) => !value.IsResponse;
+      public static bool operator !(Responding<T> value) => value is not Response<T>;
 
-      public static implicit operator bool(Responding<T> value) => value.IsResponse;
+      public static implicit operator bool(Responding<T> value) => value is Response<T>;
 
+      [Obsolete("Use bool implicit cast")]
       public abstract bool IsResponse { get; }
 
+      [Obsolete("Use bool implicit cast")]
       public abstract bool IsNoResponse { get; }
 
+      [Obsolete("Use bool implicit cast")]
       public abstract bool IsFailedResponse { get; }
 
       public abstract Responding<TResult> Map<TResult>(Func<T, Responding<TResult>> ifResponse);

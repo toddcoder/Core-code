@@ -422,7 +422,7 @@ namespace Core.Applications.CommandProcessing
             if (prefix == Prefix)
             {
                var result = fillSwitch(switchAttributes, name, _value);
-               if (result.IsNone)
+               if (!result)
                {
                   return fail($"Switch {name} not successful");
                }
@@ -430,7 +430,7 @@ namespace Core.Applications.CommandProcessing
             else if (prefix == ShortCut)
             {
                var result = fillShortCut(switchAttributes, name, _value);
-               if (result.IsNone)
+               if (!result)
                {
                   return fail($"Shortcut {name} not successful");
                }

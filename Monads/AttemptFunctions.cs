@@ -9,11 +9,11 @@ namespace Core.Monads
       {
          try
          {
-            return func().Success();
+            return func();
          }
          catch (Exception exception)
          {
-            return failure<T>(exception);
+            return exception;
          }
       }
 
@@ -21,11 +21,11 @@ namespace Core.Monads
       {
          try
          {
-            return func().Completed();
+            return func();
          }
          catch (Exception exception)
          {
-            return interrupted<T>(exception);
+            return exception;
          }
       }
 
@@ -39,7 +39,7 @@ namespace Core.Monads
          }
          catch (Exception exception)
          {
-            return failure<T>(exception);
+            return exception;
          }
       }
 
@@ -51,7 +51,7 @@ namespace Core.Monads
          }
          catch (Exception exception)
          {
-            return interrupted<T>(exception);
+            return exception;
          }
       }
 
@@ -64,18 +64,18 @@ namespace Core.Monads
          }
          catch (Exception exception)
          {
-            return failure<Unit>(exception);
+            return exception;
          }
       }
 
       public static Result<Unit> attempt(Action<int> action, int attempts)
       {
-         var result = "Action to try hasn't been executed".Failure<Unit>();
+         Result<Unit> result = fail("Action to try hasn't been executed");
 
          for (var attempt = 0; attempt < attempts; attempt++)
          {
             result = tryTo(() => action(attempt));
-            if (result.IsSuccessful)
+            if (result)
             {
                return result;
             }

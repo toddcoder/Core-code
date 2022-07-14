@@ -947,13 +947,13 @@ namespace Core.Computers
          return subFullPath.Length > FullPath.Length && subFullPath.StartsWith(FullPath);
       }
 
-      public bool ContainsFile(string nameExtension, bool parallel = false) => ExistingFile(nameExtension, parallel).IsSome;
+      public bool ContainsFile(string nameExtension, bool parallel = false) => ExistingFile(nameExtension, parallel);
 
-      public bool ContainsFile(string nameExtension, CancellationToken token) => ExistingFile(nameExtension, token).IsSome;
+      public bool ContainsFile(string nameExtension, CancellationToken token) => ExistingFile(nameExtension, token);
 
-      public bool ContainsFolderName(string name, bool parallel = false) => ExistingFolderName(name, parallel).IsSome;
+      public bool ContainsFolderName(string name, bool parallel = false) => ExistingFolderName(name, parallel);
 
-      public bool ContainsFolderName(string name, CancellationToken token) => ExistingFolderName(name, token).IsSome;
+      public bool ContainsFolderName(string name, CancellationToken token) => ExistingFolderName(name, token);
 
       public FolderName Combine(string subPath) => Path.Combine(fullPath, subPath);
 
@@ -961,6 +961,6 @@ namespace Core.Computers
 
       public Result<FolderName> Validate(bool allowRelativePaths = false) => ValidatePath(this, allowRelativePaths).Map(s => (FolderName)s);
 
-      public bool IsValid => Validate(true).IsSuccessful;
+      public bool IsValid => Validate(true);
    }
 }

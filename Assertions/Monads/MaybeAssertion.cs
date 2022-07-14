@@ -81,7 +81,7 @@ namespace Core.Assertions.Monads
          return this;
       }
 
-      public MaybeAssertion<T> HaveValue() => add(() => maybe.IsSome, "$name must $not have a value");
+      public MaybeAssertion<T> HaveValue() => add(() => maybe, "$name must $not have a value");
 
       public MaybeAssertion<T> EqualToValueOf(Maybe<T> otherMaybe)
       {

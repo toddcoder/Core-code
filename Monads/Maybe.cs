@@ -25,16 +25,18 @@ namespace Core.Monads
 
       public static implicit operator Maybe<T>(Nil _) => new None<T>();
 
-      public static bool operator true(Maybe<T> value) => value.IsSome;
+      public static bool operator true(Maybe<T> value) => value is Some<T>;
 
-      public static bool operator false(Maybe<T> value) => value.IsNone;
+      public static bool operator false(Maybe<T> value) => value is None<T>;
 
-      public static bool operator !(Maybe<T> value) => !value.IsSome;
+      public static bool operator !(Maybe<T> value) => value is None<T>;
 
-      public static implicit operator bool(Maybe<T> value) => value.IsSome;
+      public static implicit operator bool(Maybe<T> value) => value is Some<T>;
 
+      [Obsolete("Use as bool")]
       public abstract bool IsSome { get; }
 
+      [Obsolete("Use as bool")]
       public abstract bool IsNone { get; }
 
       public abstract T DefaultTo(Func<T> func);
