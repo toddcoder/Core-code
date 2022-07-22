@@ -150,5 +150,16 @@ namespace Core.Tests
 
          writeWords("LEFT OUTER JOIN");
       }
+
+      [TestMethod]
+      public void SuccTest()
+      {
+         var text = "a";
+         for (var i = 0; i < 20; i++)
+         {
+            Console.WriteLine(text);
+            text = text.Succ();
+         }
+      }
    }
 }

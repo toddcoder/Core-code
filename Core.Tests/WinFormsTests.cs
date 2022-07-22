@@ -3,11 +3,14 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
+using Core.Dates.DateIncrements;
 using Core.Strings;
 using Core.WinForms.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Core.Monads.MonadFunctions;
+using Timer = System.Windows.Forms.Timer;
 
 namespace Core.Tests
 {
@@ -294,13 +297,16 @@ namespace Core.Tests
       public void ExTextBoxTest3()
       {
          var form = new Form();
-         var textBox = new ExTextBox { RefreshOnTextChange = true };
-         textBox.Font = new Font("Consolas", 12);
-         textBox.Width = form.ClientSize.Width;
-         textBox.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
+         var textBox = new ExTextBox
+         {
+            RefreshOnTextChange = true,
+            Font = new Font("Consolas", 12),
+            Width = form.ClientSize.Width,
+            Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top,
+            Location = new Point(0, 0),
+            BackColor = SystemColors.Control
+         };
          form.Controls.Add(textBox);
-         textBox.Location = new Point(0, 0);
-         textBox.BackColor = SystemColors.Control;
          textBox.Paint += (_, e) =>
          {
             foreach (var (rectangle, word) in textBox.RectangleWords(e.Graphics))
@@ -309,6 +315,45 @@ namespace Core.Tests
                textBox.DrawHighlight(e.Graphics, rectangle, Color.Black, Color.CadetBlue);
             }
          };
+         form.ShowDialog();
+      }
+
+      [TestMethod]
+      public void BackgroundTest()
+      {
+         var running = false;
+         var text = "a";
+
+         var form = new Form();
+         var messageProgress = new MessageProgress(form, true);
+         messageProgress.SetUp(0, 0, 400, 40, AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right);
+         messageProgress.Message("Ready");
+         messageProgress.Click += (_, _) =>
+         {
+            if (running)
+            {
+               running = false;
+               messageProgress.Success("Done");
+            }
+            else
+            {
+               messageProgress.ClickText = "Stop";
+               running = true;
+               messageProgress.RunWorkerAsync();
+            }
+         };
+         messageProgress.ClickText = "Start";
+         messageProgress.DoWork += (_, _) =>
+         {
+            while (running)
+            {
+               messageProgress.Busy(text);
+               Application.DoEvents();
+               text = text.Succ();
+               Thread.Sleep(500.Milliseconds());
+            }
+         };
+
          form.ShowDialog();
       }
    }

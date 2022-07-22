@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -104,10 +105,14 @@ namespace Core.WinForms.Controls
       protected Maybe<Image> _image;
       protected List<SubText> subTexts;
       protected Lazy<Stopwatch> stopwatch;
+      protected Lazy<BackgroundWorker> backgroundWorker;
 
       public event EventHandler<AutomaticMessageArgs> AutomaticMessage;
       public event EventHandler<PaintEventArgs> Painting;
       public event EventHandler<PaintEventArgs> PaintingBackground;
+      public event DoWorkEventHandler DoWork;
+      public event ProgressChangedEventHandler ProgressChanged;
+      public event RunWorkerCompletedEventHandler RunWorkerCompleted;
 
       public MessageProgress(Control control, bool center = false, bool is3D = true)
       {
@@ -195,6 +200,16 @@ namespace Core.WinForms.Controls
          _foreColor = nil;
          _backColor = nil;
          _style = nil;
+
+         backgroundWorker = new Lazy<BackgroundWorker>(() =>
+         {
+            var worker = new BackgroundWorker();
+            worker.DoWork += (_, e) => this.Do(() => DoWork?.Invoke(this, e));
+            worker.ProgressChanged += (_, e) => this.Do(() => ProgressChanged?.Invoke(this, e));
+            worker.RunWorkerCompleted += (_, e) => this.Do(() => RunWorkerCompleted?.Invoke(this, e));
+
+            return worker;
+         });
 
          control.Controls.Add(this);
       }
@@ -781,5 +796,25 @@ namespace Core.WinForms.Controls
       public void RemoveSubTextAt(int index) => subTexts.RemoveAt(index);
 
       public void ClearSubTexts() => subTexts.Clear();
+
+      public void RunWorkerAsync() => backgroundWorker.Value.RunWorkerAsync();
+
+      public void RunWorkerAsync(object argument) => backgroundWorker.Value.RunWorkerAsync(argument);
+
+      public bool IsBusy => backgroundWorker.Value.IsBusy;
+
+      public bool WorkReportsProgress
+      {
+         get => backgroundWorker.Value.WorkerReportsProgress;
+         set => backgroundWorker.Value.WorkerReportsProgress = value;
+      }
+
+      public void ReportProgress(int percentProgress, object userState) => backgroundWorker.Value.ReportProgress(percentProgress, userState);
+
+      public void ReportProgress(int percentProgress) => backgroundWorker.Value.ReportProgress(percentProgress);
+
+      public void CancelAsync() => backgroundWorker.Value.CancelAsync();
+
+      public bool CancellationPending => backgroundWorker.Value.CancellationPending;
    }
 }

@@ -826,7 +826,7 @@ namespace Core.Strings
                         continue;
                   }
 
-                  if (ch.ToString().IsMatch("[alnum]; u"))
+                  if (ch.ToString().IsMatch("[alnum]; f"))
                   {
                      builder[index] = (char)(builder[index] + 1);
                      return builder;
@@ -884,7 +884,7 @@ namespace Core.Strings
                         continue;
                   }
 
-                  if (ch.ToString().IsMatch("[alnum]; u"))
+                  if (ch.ToString().IsMatch("[alnum]; f"))
                   {
                      builder[index] = (char)(builder[index] - 1);
                      return builder;
