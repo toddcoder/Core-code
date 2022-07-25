@@ -109,6 +109,7 @@ namespace Core.WinForms.Controls
       public event EventHandler<AutomaticMessageArgs> AutomaticMessage;
       public event EventHandler<PaintEventArgs> Painting;
       public event EventHandler<PaintEventArgs> PaintingBackground;
+      public event EventHandler Initialize;
       public event EventHandler<ArgumentsArgs> Arguments;
       public event DoWorkEventHandler DoWork;
       public event ProgressChangedEventHandler ProgressChanged;
@@ -813,6 +814,7 @@ namespace Core.WinForms.Controls
       {
          if (!backgroundWorker.Value.IsBusy)
          {
+            Initialize?.Invoke(this, EventArgs.Empty);
             backgroundWorker.Value.RunWorkerAsync();
          }
       }
@@ -821,6 +823,7 @@ namespace Core.WinForms.Controls
       {
          if (!backgroundWorker.Value.IsBusy)
          {
+            Initialize?.Invoke(this, EventArgs.Empty);
             backgroundWorker.Value.RunWorkerAsync(argument);
          }
       }
