@@ -797,9 +797,21 @@ namespace Core.WinForms.Controls
 
       public void ClearSubTexts() => subTexts.Clear();
 
-      public void RunWorkerAsync() => backgroundWorker.Value.RunWorkerAsync();
+      public void RunWorkerAsync()
+      {
+         if (!backgroundWorker.Value.IsBusy)
+         {
+            backgroundWorker.Value.RunWorkerAsync();
+         }
+      }
 
-      public void RunWorkerAsync(object argument) => backgroundWorker.Value.RunWorkerAsync(argument);
+      public void RunWorkerAsync(object argument)
+      {
+         if (!backgroundWorker.Value.IsBusy)
+         {
+            backgroundWorker.Value.RunWorkerAsync(argument);
+         }
+      }
 
       public bool IsBusy => backgroundWorker.Value.IsBusy;
 
