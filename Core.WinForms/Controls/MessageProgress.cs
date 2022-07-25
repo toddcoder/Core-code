@@ -204,9 +204,9 @@ namespace Core.WinForms.Controls
          backgroundWorker = new Lazy<BackgroundWorker>(() =>
          {
             var worker = new BackgroundWorker();
-            worker.DoWork += (_, e) => this.Do(() => DoWork?.Invoke(this, e));
-            worker.ProgressChanged += (_, e) => this.Do(() => ProgressChanged?.Invoke(this, e));
-            worker.RunWorkerCompleted += (_, e) => this.Do(() => RunWorkerCompleted?.Invoke(this, e));
+            worker.DoWork += (_, e) => DoWork?.Invoke(this, e);
+            worker.ProgressChanged += (_, e) => ProgressChanged?.Invoke(this, e);
+            worker.RunWorkerCompleted += (_, e) => RunWorkerCompleted?.Invoke(this, e);
 
             return worker;
          });

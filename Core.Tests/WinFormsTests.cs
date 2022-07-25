@@ -7,6 +7,7 @@ using System.Threading;
 using System.Windows.Forms;
 using Core.Dates.DateIncrements;
 using Core.Strings;
+using Core.WinForms;
 using Core.WinForms.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Core.Monads.MonadFunctions;
@@ -347,7 +348,7 @@ namespace Core.Tests
          {
             while (running)
             {
-               messageProgress.Busy(text);
+               messageProgress.Do(() => messageProgress.Busy(text));
                Application.DoEvents();
                text = text.Succ();
                Thread.Sleep(500.Milliseconds());
