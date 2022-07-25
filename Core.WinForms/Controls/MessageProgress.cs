@@ -81,7 +81,6 @@ namespace Core.WinForms.Controls
       protected AutoHash<MessageProgressType, MessageStyle> styles;
       protected string text;
       protected MessageProgressType type;
-      protected Random random;
       protected int value;
       protected Timer timer;
       protected int maximum;
@@ -110,6 +109,7 @@ namespace Core.WinForms.Controls
       public event EventHandler<AutomaticMessageArgs> AutomaticMessage;
       public event EventHandler<PaintEventArgs> Painting;
       public event EventHandler<PaintEventArgs> PaintingBackground;
+      public event EventHandler<ArgumentsArgs> Arguments;
       public event DoWorkEventHandler DoWork;
       public event ProgressChangedEventHandler ProgressChanged;
       public event RunWorkerCompletedEventHandler RunWorkerCompleted;
@@ -133,8 +133,6 @@ namespace Core.WinForms.Controls
          SetStyle(ControlStyles.UserPaint, true);
          SetStyle(ControlStyles.DoubleBuffer, true);
          SetStyle(ControlStyles.AllPaintingInWmPaint, true);
-
-         random = new Random();
 
          _lastType = nil;
          _lastEnabled = nil;
@@ -796,6 +794,20 @@ namespace Core.WinForms.Controls
       public void RemoveSubTextAt(int index) => subTexts.RemoveAt(index);
 
       public void ClearSubTexts() => subTexts.Clear();
+
+      public void RunAsync()
+      {
+         var args = new ArgumentsArgs();
+         Arguments?.Invoke(this, args);
+         if (args.Arguments.Map(out var arguments))
+         {
+            RunWorkerAsync(arguments);
+         }
+         else
+         {
+            RunWorkerAsync();
+         }
+      }
 
       public void RunWorkerAsync()
       {
