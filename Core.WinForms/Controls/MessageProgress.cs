@@ -218,7 +218,11 @@ namespace Core.WinForms.Controls
       public bool Checked
       {
          get => CheckStyle == CheckStyle.Checked;
-         set => CheckStyle = value ? CheckStyle.Checked : CheckStyle.Unchecked;
+         set
+         {
+            CheckStyle = value ? CheckStyle.Checked : CheckStyle.Unchecked;
+            Refresh();
+         }
       }
 
       public CheckStyle CheckStyle { get; set; }
