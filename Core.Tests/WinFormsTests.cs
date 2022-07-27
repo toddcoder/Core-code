@@ -106,6 +106,7 @@ namespace Core.Tests
             BackColor = Color.White
          };
          responder.SetUp(0, 0, 500, 100, 24);
+         responder.Dock = DockStyle.Fill;
          responder.ButtonClick += (_, e) => { form.Text = e.Key; };
          form.ShowDialog();
       }
