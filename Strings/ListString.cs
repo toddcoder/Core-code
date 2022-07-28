@@ -11,12 +11,14 @@ namespace Core.Strings
       protected List<string> list;
       protected string separator;
       protected bool unique;
+      protected bool nonEmptyOnly;
 
-      public ListString(string initialString, string separator = ", ", bool unique = false)
+      public ListString(string initialString, string separator = ", ", bool unique = false, bool nonEmptyOnly = false)
       {
          list = new List<string> { initialString };
          this.separator = separator;
          this.unique = unique;
+         this.nonEmptyOnly = nonEmptyOnly;
       }
 
       public string Separator
@@ -31,11 +33,22 @@ namespace Core.Strings
          set => unique = value;
       }
 
+      public bool NonEmptyOnly
+      {
+         get => nonEmptyOnly;
+         set => nonEmptyOnly = value;
+      }
+
       public string Text
       {
          get => list.ToString(separator);
          set
          {
+            if (nonEmptyOnly && value.IsEmpty())
+            {
+               return;
+            }
+
             var contains = list.Contains(value);
             if (contains && !unique || !contains)
             {
