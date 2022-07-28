@@ -816,18 +816,18 @@ namespace Core.WinForms.Controls
 
       public void RunWorkerAsync()
       {
+         Initialize?.Invoke(this, EventArgs.Empty);
          if (!backgroundWorker.Value.IsBusy)
          {
-            Initialize?.Invoke(this, EventArgs.Empty);
             backgroundWorker.Value.RunWorkerAsync();
          }
       }
 
       public void RunWorkerAsync(object argument)
       {
+         Initialize?.Invoke(this, EventArgs.Empty);
          if (!backgroundWorker.Value.IsBusy)
          {
-            Initialize?.Invoke(this, EventArgs.Empty);
             backgroundWorker.Value.RunWorkerAsync(argument);
          }
       }
