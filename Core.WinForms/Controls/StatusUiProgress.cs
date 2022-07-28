@@ -2,14 +2,14 @@
 
 namespace Core.WinForms.Controls
 {
-   public class StatusProgress : MessageProgress
+   public class StatusUiProgress : UiAction
    {
       protected string uninitializedText;
       protected string unselectedText;
       protected string selectedText;
       protected SelectedState state;
 
-      public StatusProgress(Control control, string uninitializedText, string unselectedText, string selectedText,
+      public StatusUiProgress(Control control, string uninitializedText, string unselectedText, string selectedText,
          SelectedState state = SelectedState.Uninitialized) : base(control)
       {
          this.uninitializedText = uninitializedText;
@@ -39,10 +39,10 @@ namespace Core.WinForms.Controls
       {
          type = state switch
          {
-            SelectedState.Uninitialized => MessageProgressType.Uninitialized,
-            SelectedState.Unselected => MessageProgressType.Unselected,
-            SelectedState.Selected => MessageProgressType.Selected,
-            _ => MessageProgressType.Uninitialized
+            SelectedState.Uninitialized => UiActionType.Uninitialized,
+            SelectedState.Unselected => UiActionType.Unselected,
+            SelectedState.Selected => UiActionType.Selected,
+            _ => UiActionType.Uninitialized
          };
 
          text = state switch

@@ -39,10 +39,9 @@ namespace Core.Tests
       public void MessageProgressBusyTest()
       {
          var form = new Form();
-         //form.Size = new Size(800, 100);
-         var message = new MessageProgress(form);
-         message.SetUp(0, 0, 300, 27, AnchorStyles.Left | AnchorStyles.Right);
-         message.Busy("This message is in no way clickable!");
+         var uiAction = new UiAction(form);
+         uiAction.SetUp(0, 0, 300, 27, AnchorStyles.Left | AnchorStyles.Right);
+         uiAction.Busy("This message is in no way clickable!");
          form.ShowDialog();
       }
 
@@ -50,9 +49,9 @@ namespace Core.Tests
       public void MessageProgressBusyIndefiniteTest()
       {
          var form = new Form();
-         var message = new MessageProgress(form);
-         message.SetUp(0, 0, 300, 27, AnchorStyles.Left | AnchorStyles.Right);
-         message.Busy(true);
+         var uiAction = new UiAction(form);
+         uiAction.SetUp(0, 0, 300, 27, AnchorStyles.Left | AnchorStyles.Right);
+         uiAction.Busy(true);
          form.ShowDialog();
       }
 
@@ -60,9 +59,9 @@ namespace Core.Tests
       public void ProgressDefiniteTest()
       {
          var form = new Form();
-         var message = new MessageProgress(form);
-         message.SetUp(0, 0, 300, 27, AnchorStyles.Left | AnchorStyles.Right);
-         message.Maximum = 50;
+         var uiAction = new UiAction(form);
+         uiAction.SetUp(0, 0, 300, 27, AnchorStyles.Left | AnchorStyles.Right);
+         uiAction.Maximum = 50;
          var i = 0;
 
          var timer = new Timer();
@@ -70,7 +69,7 @@ namespace Core.Tests
          {
             if (i++ < 50)
             {
-               message.Progress("x".Repeat(i));
+               uiAction.Progress("x".Repeat(i));
             }
             else
             {
@@ -85,11 +84,11 @@ namespace Core.Tests
       public void AutomaticMessageTest()
       {
          var form = new Form();
-         var message = new MessageProgress(form);
-         message.SetUp(0, 0, 300, 27, AnchorStyles.Left | AnchorStyles.Right);
+         var uiAction = new UiAction(form);
+         uiAction.SetUp(0, 0, 300, 27, AnchorStyles.Left | AnchorStyles.Right);
          var stopwatch = new Stopwatch();
-         message.AutomaticMessage += (_, e) => { e.Text = stopwatch.Elapsed.ToString(); };
-         message.StartAutomatic();
+         uiAction.AutomaticMessage += (_, e) => { e.Text = stopwatch.Elapsed.ToString(); };
+         uiAction.StartAutomatic();
          stopwatch.Start();
          form.ShowDialog();
       }
@@ -115,17 +114,17 @@ namespace Core.Tests
       public void EnabledTest1()
       {
          var form = new Form();
-         var message = new MessageProgress(form);
-         message.SetUp(0, 0, 300, 30);
-         message.CheckStyle = CheckStyle.Checked;
-         message.Busy("working...");
+         var uiAction = new UiAction(form);
+         uiAction.SetUp(0, 0, 300, 30);
+         uiAction.CheckStyle = CheckStyle.Checked;
+         uiAction.Busy("working...");
 
          var checkBox = new CheckBox
          {
             Text = "Enabled",
             Checked = true
          };
-         checkBox.Click += (_, _) => message.Enabled = checkBox.Checked;
+         checkBox.Click += (_, _) => uiAction.Enabled = checkBox.Checked;
          checkBox.Location = new Point(0, 35);
          form.Controls.Add(checkBox);
 
@@ -158,7 +157,7 @@ namespace Core.Tests
       public void RoundedMessageTest()
       {
          var form = new Form();
-         var message = new RoundedMessage(form, true) { CornerRadius = 8 };
+         var message = new RoundedUiAction(form, true) { CornerRadius = 8 };
          message.SetUp(4, 4, form.ClientSize.Width - 20, 27, AnchorStyles.Left);
          message.Message("Round");
          form.ShowDialog();
@@ -168,7 +167,7 @@ namespace Core.Tests
       public void ClickableRoundedMessageTest()
       {
          var form = new Form();
-         var message = new RoundedMessage(form, true) { CornerRadius = 8 };
+         var message = new RoundedUiAction(form, true) { CornerRadius = 8 };
          message.SetUp(4, 4, form.ClientSize.Width - 20, 27, AnchorStyles.Left);
          message.Message("Round");
          message.Click += (_, _) => message.Message("Clicked");
@@ -180,17 +179,17 @@ namespace Core.Tests
       public void StatusesTest()
       {
          var form = new Form();
-         var messages = Enumerable.Range(0, 4).Select(_ => new MessageProgress(form, true)).ToArray();
+         var uiActions = Enumerable.Range(0, 4).Select(_ => new UiAction(form, true)).ToArray();
          var width = form.ClientSize.Width - 20;
          for (var i = 0; i < 4; i++)
          {
-            messages[i].SetUp(4, 4 + i * 27, width, 27, AnchorStyles.Left);
+            uiActions[i].SetUp(4, 4 + i * 27, width, 27, AnchorStyles.Left);
          }
 
-         messages[0].Success("Success");
-         messages[1].Caution("Caution");
-         messages[2].Failure("Failure");
-         messages[3].Exception(fail("Exception"));
+         uiActions[0].Success("Success");
+         uiActions[1].Caution("Caution");
+         uiActions[2].Failure("Failure");
+         uiActions[3].Exception(fail("Exception"));
 
          form.ShowDialog();
       }
@@ -199,14 +198,14 @@ namespace Core.Tests
       public void ImageTest()
       {
          var form = new Form();
-         var message = new MessageProgress(form, true)
+         var uiAction = new UiAction(form, true)
          {
             Dock = DockStyle.Fill
          };
 
          var image = Image.FromFile(@"..\..\TestData\build.jpg");
-         message.Image = image;
-         message.Message("Build");
+         uiAction.Image = image;
+         uiAction.Message("Build");
          form.ShowDialog();
       }
 
@@ -214,15 +213,15 @@ namespace Core.Tests
       public void StretchImageTest()
       {
          var form = new Form();
-         var message = new MessageProgress(form, true)
+         var uiAction = new UiAction(form, true)
          {
             Dock = DockStyle.Fill
          };
 
          var image = Image.FromFile(@"..\..\TestData\build.jpg");
-         message.Image = image;
-         message.StretchImage = true;
-         message.Message("Build");
+         uiAction.Image = image;
+         uiAction.StretchImage = true;
+         uiAction.Message("Build");
          form.ShowDialog();
       }
 
@@ -230,16 +229,16 @@ namespace Core.Tests
       public void SubTextTest()
       {
          var form = new Form();
-         var message = new MessageProgress(form, true)
+         var uiAction = new UiAction(form, true)
          {
             Dock = DockStyle.Fill
          };
-         message.SubText("now", 10, 10)
+         uiAction.SubText("now", 10, 10)
             .SetForeColor(Color.White)
             .SetBackColor(Color.Green)
             .SetFont("Verdana", 8, FontStyle.Regular)
             .SetOutline(true);
-         message.Message("Message");
+         uiAction.Message("Message");
          form.ShowDialog();
       }
 
@@ -247,9 +246,9 @@ namespace Core.Tests
       public void StopwatchTest()
       {
          var form = new Form();
-         var message = new MessageProgress(form) { Stopwatch = true };
-         message.SetUp(0, 0, 300, 27, AnchorStyles.Left | AnchorStyles.Right);
-         message.Busy("Timing");
+         var uiAction = new UiAction(form) { Stopwatch = true };
+         uiAction.SetUp(0, 0, 300, 27, AnchorStyles.Left | AnchorStyles.Right);
+         uiAction.Busy("Timing");
          form.ShowDialog();
       }
 
@@ -327,29 +326,29 @@ namespace Core.Tests
          var text = "a";
 
          var form = new Form();
-         var messageProgress = new MessageProgress(form, true);
-         messageProgress.SetUp(0, 0, 400, 40, AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right);
-         messageProgress.Message("Ready");
-         messageProgress.Click += (_, _) =>
+         var uiAction = new UiAction(form, true);
+         uiAction.SetUp(0, 0, 400, 40, AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right);
+         uiAction.Message("Ready");
+         uiAction.Click += (_, _) =>
          {
             if (running)
             {
                running = false;
-               messageProgress.Success("Done");
+               uiAction.Success("Done");
             }
             else
             {
-               messageProgress.ClickText = "Stop";
+               uiAction.ClickText = "Stop";
                running = true;
-               messageProgress.RunWorkerAsync();
+               uiAction.RunWorkerAsync();
             }
          };
-         messageProgress.ClickText = "Start";
-         messageProgress.DoWork += (_, _) =>
+         uiAction.ClickText = "Start";
+         uiAction.DoWork += (_, _) =>
          {
             while (running)
             {
-               messageProgress.Do(() => messageProgress.Busy(text));
+               uiAction.Do(() => uiAction.Busy(text));
                Application.DoEvents();
                text = text.Succ();
                Thread.Sleep(500.Milliseconds());

@@ -20,7 +20,7 @@ namespace Core.WinForms.Controls
          Failed
       }
 
-      public class ResponderButton : MessageProgress
+      public class ResponderButton : UiAction
       {
          public static ResponderButton FromText(Control control, string specifier)
          {

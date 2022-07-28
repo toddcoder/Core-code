@@ -1,6 +1,6 @@
 ﻿namespace Core.WinForms.Controls
 {
-   public enum MessageProgressType
+   public enum UiActionType
    {
       Uninitialized,
       Message,

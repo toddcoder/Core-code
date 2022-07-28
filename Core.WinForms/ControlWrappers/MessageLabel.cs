@@ -10,58 +10,58 @@ namespace Core.WinForms.ControlWrappers
    [Obsolete("Use MessageProgress")]
    public class MessageLabel
    {
-      protected static Hash<MessageProgressType, Color> globalForeColors;
-      protected static Hash<MessageProgressType, Color> globalBackColors;
-      protected static Hash<MessageProgressType, MessageStyle> globalStyles;
+      protected static Hash<UiActionType, Color> globalForeColors;
+      protected static Hash<UiActionType, Color> globalBackColors;
+      protected static Hash<UiActionType, MessageStyle> globalStyles;
 
       static MessageLabel()
       {
-         globalForeColors = new Hash<MessageProgressType, Color>
+         globalForeColors = new Hash<UiActionType, Color>
          {
-            [MessageProgressType.Uninitialized] = Color.White,
-            [MessageProgressType.Message] = Color.White,
-            [MessageProgressType.Exception] = Color.White,
-            [MessageProgressType.Success] = Color.White,
-            [MessageProgressType.Failure] = Color.Black,
-            [MessageProgressType.Busy] = Color.Black,
-            [MessageProgressType.Selected] = Color.White,
-            [MessageProgressType.Unselected] = Color.White
+            [UiActionType.Uninitialized] = Color.White,
+            [UiActionType.Message] = Color.White,
+            [UiActionType.Exception] = Color.White,
+            [UiActionType.Success] = Color.White,
+            [UiActionType.Failure] = Color.Black,
+            [UiActionType.Busy] = Color.Black,
+            [UiActionType.Selected] = Color.White,
+            [UiActionType.Unselected] = Color.White
          };
-         globalBackColors = new Hash<MessageProgressType, Color>
+         globalBackColors = new Hash<UiActionType, Color>
          {
-            [MessageProgressType.Uninitialized] = Color.Gray,
-            [MessageProgressType.Message] = Color.Blue,
-            [MessageProgressType.Exception] = Color.Red,
-            [MessageProgressType.Success] = Color.Green,
-            [MessageProgressType.Failure] = Color.Gold,
-            [MessageProgressType.Busy] = Color.White,
-            [MessageProgressType.Selected] = Color.FromArgb(0, 127, 0),
-            [MessageProgressType.Unselected] = Color.FromArgb(127, 0, 0)
+            [UiActionType.Uninitialized] = Color.Gray,
+            [UiActionType.Message] = Color.Blue,
+            [UiActionType.Exception] = Color.Red,
+            [UiActionType.Success] = Color.Green,
+            [UiActionType.Failure] = Color.Gold,
+            [UiActionType.Busy] = Color.White,
+            [UiActionType.Selected] = Color.FromArgb(0, 127, 0),
+            [UiActionType.Unselected] = Color.FromArgb(127, 0, 0)
          };
-         globalStyles = new Hash<MessageProgressType, MessageStyle>
+         globalStyles = new Hash<UiActionType, MessageStyle>
          {
-            [MessageProgressType.Uninitialized] = MessageStyle.Italic,
-            [MessageProgressType.Message] = MessageStyle.None,
-            [MessageProgressType.Exception] = MessageStyle.Bold,
-            [MessageProgressType.Success] = MessageStyle.Bold,
-            [MessageProgressType.Failure] = MessageStyle.Bold,
-            [MessageProgressType.Busy] = MessageStyle.Italic
+            [UiActionType.Uninitialized] = MessageStyle.Italic,
+            [UiActionType.Message] = MessageStyle.None,
+            [UiActionType.Exception] = MessageStyle.Bold,
+            [UiActionType.Success] = MessageStyle.Bold,
+            [UiActionType.Failure] = MessageStyle.Bold,
+            [UiActionType.Busy] = MessageStyle.Italic
          };
       }
 
-      public static Hash<MessageProgressType, Color> GlobalForeColors => globalForeColors;
+      public static Hash<UiActionType, Color> GlobalForeColors => globalForeColors;
 
-      public static Hash<MessageProgressType, Color> GlobalBackColors => globalBackColors;
+      public static Hash<UiActionType, Color> GlobalBackColors => globalBackColors;
 
-      public static Hash<MessageProgressType, MessageStyle> GlobalStyles => globalStyles;
+      public static Hash<UiActionType, MessageStyle> GlobalStyles => globalStyles;
 
       protected Label labelMessage;
       protected Font font;
       protected Font italicFont;
       protected Font boldFont;
-      protected AutoHash<MessageProgressType, Color> foreColors;
-      protected AutoHash<MessageProgressType, Color> backColors;
-      protected AutoHash<MessageProgressType, MessageStyle> styles;
+      protected AutoHash<UiActionType, Color> foreColors;
+      protected AutoHash<UiActionType, Color> backColors;
+      protected AutoHash<UiActionType, MessageStyle> styles;
 
       public MessageLabel(Label labelMessage)
       {
@@ -73,9 +73,9 @@ namespace Core.WinForms.ControlWrappers
          Center = false;
          Is3D = true;
 
-         foreColors = new AutoHash<MessageProgressType, Color>(mlt => globalForeColors[mlt]);
-         backColors = new AutoHash<MessageProgressType, Color>(mlt => globalBackColors[mlt]);
-         styles = new AutoHash<MessageProgressType, MessageStyle>(mlt => globalStyles[mlt]);
+         foreColors = new AutoHash<UiActionType, Color>(mlt => globalForeColors[mlt]);
+         backColors = new AutoHash<UiActionType, Color>(mlt => globalBackColors[mlt]);
+         styles = new AutoHash<UiActionType, MessageStyle>(mlt => globalStyles[mlt]);
       }
 
       public Font Font
@@ -101,15 +101,15 @@ namespace Core.WinForms.ControlWrappers
          set => labelMessage.BorderStyle = value ? BorderStyle.Fixed3D : BorderStyle.None;
       }
 
-      public AutoHash<MessageProgressType, Color> ForeColors => foreColors;
+      public AutoHash<UiActionType, Color> ForeColors => foreColors;
 
-      public AutoHash<MessageProgressType, Color> BackColors => backColors;
+      public AutoHash<UiActionType, Color> BackColors => backColors;
 
-      public AutoHash<MessageProgressType, MessageStyle> Styles => styles;
+      public AutoHash<UiActionType, MessageStyle> Styles => styles;
 
       public Label Label => labelMessage;
 
-      protected Font getFont(MessageProgressType type) => styles[type] switch
+      protected Font getFont(UiActionType type) => styles[type] switch
       {
          MessageStyle.None => font,
          MessageStyle.Italic => italicFont,
@@ -117,7 +117,7 @@ namespace Core.WinForms.ControlWrappers
          _ => font
       };
 
-      public void ShowMessage(string message, MessageProgressType type)
+      public void ShowMessage(string message, UiActionType type)
       {
          labelMessage.Do(() =>
          {
@@ -129,21 +129,21 @@ namespace Core.WinForms.ControlWrappers
          });
       }
 
-      public void Uninitialized(string message) => ShowMessage(message, MessageProgressType.Uninitialized);
+      public void Uninitialized(string message) => ShowMessage(message, UiActionType.Uninitialized);
 
-      public void Message(string message) => ShowMessage(message, MessageProgressType.Message);
+      public void Message(string message) => ShowMessage(message, UiActionType.Message);
 
-      public void Exception(Exception exception) => ShowMessage(exception.Message, MessageProgressType.Exception);
+      public void Exception(Exception exception) => ShowMessage(exception.Message, UiActionType.Exception);
 
-      public void Success(string message) => ShowMessage(message, MessageProgressType.Success);
+      public void Success(string message) => ShowMessage(message, UiActionType.Success);
 
-      public void Failure(string message) => ShowMessage(message, MessageProgressType.Failure);
+      public void Failure(string message) => ShowMessage(message, UiActionType.Failure);
 
-      public void Busy(string message) => ShowMessage(message, MessageProgressType.Busy);
+      public void Busy(string message) => ShowMessage(message, UiActionType.Busy);
 
-      public void Selected(string message) => ShowMessage(message, MessageProgressType.Selected);
+      public void Selected(string message) => ShowMessage(message, UiActionType.Selected);
 
-      public void Unselected(string message) => ShowMessage(message, MessageProgressType.Unselected);
+      public void Unselected(string message) => ShowMessage(message, UiActionType.Unselected);
 
       public void Tape()
       {
@@ -158,7 +158,7 @@ namespace Core.WinForms.ControlWrappers
          });
       }
 
-      public void Untape(string message, MessageProgressType type)
+      public void Untape(string message, UiActionType type)
       {
          labelMessage.Do(() => labelMessage.Image = null);
          ShowMessage(message, type);

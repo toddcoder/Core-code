@@ -3,11 +3,11 @@ using System.Windows.Forms;
 
 namespace Core.WinForms.Controls
 {
-   public class RoundedMessage : MessageProgress
+   public class RoundedUiAction : UiAction
    {
       public int CornerRadius { get; set; }
 
-      public RoundedMessage(Control control, bool center = false) : base(control, center, false)
+      public RoundedUiAction(Control control, bool center = false) : base(control, center, false)
       {
          CornerRadius = 8;
       }
