@@ -16,6 +16,8 @@
       BusyText,
       Automatic,
       Disabled,
-      Caution
+      Caution,
+      Labeled,
+      TextBoxLabel
    }
 }

@@ -58,7 +58,7 @@ namespace Core.WinForms.Controls
 
          public ResponderPersonality Personality { get; set; }
 
-         public string Label => label;
+         public new string Label => label;
 
          public string Key { get; }
       }

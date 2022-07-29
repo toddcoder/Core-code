@@ -1,5 +1,4 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Windows.Forms;
 
 namespace Core.WinForms.Controls
@@ -25,14 +24,13 @@ namespace Core.WinForms.Controls
       protected Rectangle getPercentRectangle(Graphics graphics, Rectangle clientRectangle)
       {
          var size = TextRenderer.MeasureText(graphics, "100%", font);
-         size = new Size(size.Width, clientRectangle.Height);
+         size = size with { Height = clientRectangle.Height };
          return new Rectangle(clientRectangle.Location, size);
       }
 
       protected Rectangle getTextRectangle(Rectangle clientRectangle)
       {
-         return new Rectangle(clientRectangle.X + percentRectangle.Width, clientRectangle.Y, clientRectangle.Width - percentRectangle.Width,
-            clientRectangle.Height);
+         return clientRectangle with { X = clientRectangle.X + percentRectangle.Width, Width = clientRectangle.Width - percentRectangle.Width };
       }
 
       public void OnPaint(Graphics graphics)

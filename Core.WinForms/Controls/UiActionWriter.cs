@@ -7,7 +7,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Controls
 {
-   public class MessageProgressText
+   public class UiActionWriter
    {
       protected const string CHECK_MARK = "\u2713";
 
@@ -31,7 +31,7 @@ namespace Core.WinForms.Controls
       protected Result<Font> _font;
       protected Result<Color> _color;
 
-      public MessageProgressText(bool center, CheckStyle checkStyle)
+      public UiActionWriter(bool center, CheckStyle checkStyle)
       {
          Center(center || checkStyle != CheckStyle.None);
          this.checkStyle = checkStyle;

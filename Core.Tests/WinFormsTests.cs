@@ -357,5 +357,41 @@ namespace Core.Tests
 
          form.ShowDialog();
       }
+
+      [TestMethod]
+      public void LabeledTest()
+      {
+         var form = new Form();
+         var uiAction = new UiAction(form, true);
+         form.Controls.Add(uiAction);
+         uiAction.SetUp(0, 0, 400, 40);
+         uiAction.LabeledText("Name", "July Maintenance Window");
+         form.ShowDialog();
+      }
+
+      [TestMethod]
+      public void LabeledLineTest()
+      {
+         var form = new Form();
+         var uiAction = new UiAction(form, true);
+         uiAction.SetUp(0, 0, 400, 40);
+         uiAction.LabeledText("Name", "July Maintenance Window", line: true);
+         form.ShowDialog();
+      }
+
+      [TestMethod]
+      public void TextBoxLabelTest()
+      {
+         var form = new Form();
+         var textBox = new TextBox();
+         form.Controls.Add(textBox);
+         textBox.Location = new Point(0, 30);
+         textBox.Width = form.ClientSize.Width;
+
+         var uiAction = new UiAction(form, true);
+         uiAction.AttachToTextBox("Name", textBox);
+
+         form.ShowDialog();
+      }
    }
 }

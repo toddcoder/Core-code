@@ -7,6 +7,7 @@ using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using Core.Collections;
 using Core.Monads;
+using Core.Numbers;
 using Core.Objects;
 using Core.Strings;
 using Core.WinForms.ControlWrappers;
@@ -40,7 +41,8 @@ namespace Core.WinForms.Controls
             [UiActionType.BusyText] = Color.White,
             [UiActionType.Automatic] = Color.Black,
             [UiActionType.Disabled] = Color.LightGray,
-            [UiActionType.Caution] = Color.White
+            [UiActionType.Caution] = Color.White,
+            [UiActionType.TextBoxLabel] = Color.White,
          };
          globalBackColors = new Hash<UiActionType, Color>
          {
@@ -53,7 +55,8 @@ namespace Core.WinForms.Controls
             [UiActionType.Unselected] = Color.FromArgb(127, 0, 0),
             [UiActionType.Automatic] = Color.White,
             [UiActionType.Disabled] = Color.DarkGray,
-            [UiActionType.Caution] = Color.CadetBlue
+            [UiActionType.Caution] = Color.CadetBlue,
+            [UiActionType.TextBoxLabel] = Color.CadetBlue,
          };
          globalStyles = new Hash<UiActionType, MessageStyle>
          {
@@ -105,6 +108,7 @@ namespace Core.WinForms.Controls
       protected List<SubText> subTexts;
       protected Lazy<Stopwatch> stopwatch;
       protected Lazy<BackgroundWorker> backgroundWorker;
+      protected Maybe<int> _labelWidth;
 
       public event EventHandler<AutomaticMessageArgs> AutomaticMessage;
       public event EventHandler<PaintEventArgs> Painting;
@@ -210,6 +214,10 @@ namespace Core.WinForms.Controls
             return worker;
          });
 
+         Label = string.Empty;
+         Line = false;
+         _labelWidth = nil;
+
          control.Controls.Add(this);
       }
 
@@ -294,6 +302,16 @@ namespace Core.WinForms.Controls
 
       public bool StretchImage { get; set; }
 
+      public string Label { get; set; }
+
+      public bool Line { get; set; }
+
+      public Maybe<int> LabelWidth
+      {
+         get => _labelWidth;
+         set => _labelWidth = value.Map(v => v.MaxOf(1).MinOf(Width));
+      }
+
       protected Font getFont() => getStyle() switch
       {
          MessageStyle.None => Font,
@@ -372,6 +390,37 @@ namespace Core.WinForms.Controls
          {
             Exception(exception);
          }
+      }
+
+      public void LabeledText(string label, string text, Maybe<int> _lineWidth, bool line = false)
+      {
+         Label = label;
+         Text = text;
+         type = UiActionType.Labeled;
+         LabelWidth = _lineWidth;
+         Line = line;
+
+         Refresh();
+      }
+
+      public void LabeledText(string label, string text, bool line = false) => LabeledText(label, text, nil, line);
+
+      public void AttachToTextBox(string text, TextBoxBase textBoxBase, string fontName = "Segoe UI", float fontSize = 9)
+      {
+         this.text = text;
+         type = UiActionType.TextBoxLabel;
+
+         textBoxBase.Move += (_, _) =>
+         {
+            Location = new Point(textBoxBase.Left, textBoxBase.Top - Height + 4);
+            Refresh();
+         };
+
+         using var font = new Font(fontName, fontSize);
+         var size = TextRenderer.MeasureText(this.text, font);
+         this.SetUp(textBoxBase.Left, textBoxBase.Top - size.Height + 1, size.Width + 20, size.Height, fontName, fontSize);
+
+         Refresh();
       }
 
       public bool Clickable => _clickText;
@@ -474,7 +523,7 @@ namespace Core.WinForms.Controls
             UiActionType.Busy or UiActionType.BusyText => CheckStyle.None,
             _ => CheckStyle
          };
-         var progressText = new MessageProgressText(Center, checkStyle)
+         var writer = new UiActionWriter(Center, checkStyle)
          {
             Rectangle = ClientRectangle,
             Font = getFont(),
@@ -484,7 +533,7 @@ namespace Core.WinForms.Controls
          switch (type)
          {
             case UiActionType.ProgressIndefinite:
-               progressText.Write(text, e.Graphics);
+               writer.Write(text, e.Graphics);
                break;
             case UiActionType.Busy:
                busyProcessor.Value.OnPaint(e.Graphics);
@@ -493,29 +542,38 @@ namespace Core.WinForms.Controls
             case UiActionType.ProgressDefinite:
             {
                var percentText = $"{getPercentage()}%";
-               progressText.Rectangle = progressDefiniteProcessor.Value.PercentRectangle;
-               progressText.Center(true);
-               progressText.Color = Color.Black;
-               progressText.Write(percentText, e.Graphics);
+               writer.Rectangle = progressDefiniteProcessor.Value.PercentRectangle;
+               writer.Center(true);
+               writer.Color = Color.Black;
+               writer.Write(percentText, e.Graphics);
 
-               progressText.Rectangle = progressDefiniteProcessor.Value.TextRectangle;
-               progressText.Color = getForeColor();
-               progressText.Write(text, e.Graphics);
+               writer.Rectangle = progressDefiniteProcessor.Value.TextRectangle;
+               writer.Color = getForeColor();
+               writer.Write(text, e.Graphics);
                break;
             }
             case UiActionType.BusyText:
             {
-               progressText.Rectangle = busyTextProcessor.Value.TextRectangle;
-               progressText.Center(true);
-               progressText.Write(text, e.Graphics);
+               writer.Rectangle = busyTextProcessor.Value.TextRectangle;
+               writer.Center(true);
+               writer.Write(text, e.Graphics);
                paintStopwatch();
                break;
             }
+            case UiActionType.Labeled:
+            {
+               var processor = new LabelProcessor(Label, text, Line, _labelWidth, getFont());
+               processor.OnPaint(e.Graphics, ClientRectangle);
+               break;
+            }
+            case UiActionType.TextBoxLabel:
+               writer.Write(text, e.Graphics);
+               break;
             default:
             {
                if (type != UiActionType.Tape)
                {
-                  progressText.Write(text, e.Graphics);
+                  writer.Write(text, e.Graphics);
                }
 
                break;
@@ -609,6 +667,18 @@ namespace Core.WinForms.Controls
 
                busyTextProcessor.Value.OnPaint(pevent);
 
+               break;
+            }
+            case UiActionType.Labeled:
+            {
+               var processor = new LabelProcessor(Label, text, Line, _labelWidth, getFont());
+               processor.OnPaintBackground(pevent.Graphics, ClientRectangle);
+               break;
+            }
+            case UiActionType.TextBoxLabel:
+            {
+               using var brush = new SolidBrush(Color.CadetBlue);
+               fillRectangle(pevent.Graphics, brush, ClientRectangle);
                break;
             }
             default:
