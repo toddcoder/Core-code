@@ -85,6 +85,7 @@ namespace Core.WinForms.Controls
       protected string text;
       protected UiActionType type;
       protected int value;
+      protected Timer timerPaint;
       protected Timer timer;
       protected int maximum;
       protected int index;
@@ -150,12 +151,12 @@ namespace Core.WinForms.Controls
          CheckStyle = CheckStyle.None;
          stopwatch = new Lazy<Stopwatch>(() => new Stopwatch());
 
-         timer = new Timer
+         timerPaint = new Timer
          {
             Interval = 100,
             Enabled = false
          };
-         timer.Tick += (_, _) =>
+         timerPaint.Tick += (_, _) =>
          {
             if (Enabled)
             {
@@ -178,14 +179,18 @@ namespace Core.WinForms.Controls
                   case UiActionType.Busy or UiActionType.ProgressIndefinite:
                      busyProcessor.Value.Advance();
                      break;
-                  default:
-                     Tick?.Invoke(this, EventArgs.Empty);
-                     break;
                }
             }
 
             this.Do(Refresh);
          };
+
+         timer = new Timer
+         {
+            Interval = 1000,
+            Enabled = false
+         };
+         timer.Tick += (_, _) => Tick?.Invoke(this, EventArgs.Empty);
 
          Minimum = 1;
          maximum = 0;
@@ -488,7 +493,7 @@ namespace Core.WinForms.Controls
 
          Text = text;
          type = UiActionType.BusyText;
-         this.Do(() => timer.Enabled = true);
+         this.Do(() => timerPaint.Enabled = true);
          refresh();
       }
 
@@ -795,22 +800,22 @@ namespace Core.WinForms.Controls
       {
          Text = "";
          type = UiActionType.Busy;
-         this.Do(() => timer.Enabled = enabled);
+         this.Do(() => timerPaint.Enabled = enabled);
       }
 
       public void StartAutomatic()
       {
          Text = "";
          type = UiActionType.Automatic;
-         this.Do(() => timer.Enabled = true);
+         this.Do(() => timerPaint.Enabled = true);
       }
 
       public void StopAutomatic()
       {
-         this.Do(() => timer.Enabled = false);
+         this.Do(() => timerPaint.Enabled = false);
       }
 
-      public bool IsAutomaticRunning => timer.Enabled;
+      public bool IsAutomaticRunning => timerPaint.Enabled;
 
       protected override void OnEnabledChanged(EventArgs e)
       {
@@ -830,7 +835,7 @@ namespace Core.WinForms.Controls
 
             if (_lastEnabled.Map(out var enabled))
             {
-               timer.Enabled = enabled;
+               timerPaint.Enabled = enabled;
                _lastEnabled = nil;
             }
 
@@ -843,8 +848,8 @@ namespace Core.WinForms.Controls
             _lastType = type;
             type = UiActionType.Disabled;
 
-            _lastEnabled = timer.Enabled;
-            timer.Enabled = false;
+            _lastEnabled = timerPaint.Enabled;
+            timerPaint.Enabled = false;
 
             _lastForeColor = _foreColor;
             _foreColor = nil;
@@ -923,8 +928,8 @@ namespace Core.WinForms.Controls
 
       public bool CancellationPending => backgroundWorker.Value.CancellationPending;
 
-      public void StartTimer() => timer.Start();
+      public void StartTimer() => timer.Enabled = true;
 
-      public void StopTimer() => timer.Stop();
+      public void StopTimer() => timer.Enabled = false;
    }
 }
