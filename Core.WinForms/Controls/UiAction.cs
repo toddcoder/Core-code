@@ -219,6 +219,7 @@ namespace Core.WinForms.Controls
          _labelWidth = nil;
 
          control.Controls.Add(this);
+         control.Resize += (_, _) => Refresh();
       }
 
       public UiActionType Type => type;
