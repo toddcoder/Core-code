@@ -118,6 +118,7 @@ namespace Core.WinForms.Controls
       public event DoWorkEventHandler DoWork;
       public event ProgressChangedEventHandler ProgressChanged;
       public event RunWorkerCompletedEventHandler RunWorkerCompleted;
+      public event EventHandler Tick;
 
       public UiAction(Control control, bool center = false, bool is3D = true)
       {
@@ -176,6 +177,9 @@ namespace Core.WinForms.Controls
                   }
                   case UiActionType.Busy or UiActionType.ProgressIndefinite:
                      busyProcessor.Value.Advance();
+                     break;
+                  default:
+                     Tick?.Invoke(this, EventArgs.Empty);
                      break;
                }
             }
@@ -918,5 +922,9 @@ namespace Core.WinForms.Controls
       public void CancelAsync() => backgroundWorker.Value.CancelAsync();
 
       public bool CancellationPending => backgroundWorker.Value.CancellationPending;
+
+      public void StartTimer() => timer.Start();
+
+      public void StopTimer() => timer.Stop();
    }
 }
