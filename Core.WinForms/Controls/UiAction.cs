@@ -933,7 +933,7 @@ namespace Core.WinForms.Controls
 
       public void StartTimer(TimeSpan interval)
       {
-         timer.Interval = interval.Milliseconds;
+         timer.Interval = (int)interval.TotalMilliseconds;
          timer.Enabled = true;
       }
 
