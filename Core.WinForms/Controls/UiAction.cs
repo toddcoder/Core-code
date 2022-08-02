@@ -940,5 +940,7 @@ namespace Core.WinForms.Controls
       public void StopTimer() => timer.Enabled = false;
 
       public void PerformClick() => OnClick(EventArgs.Empty);
+
+      public bool TimerEnabled => timer.Enabled;
    }
 }
