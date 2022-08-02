@@ -393,5 +393,17 @@ namespace Core.Tests
 
          form.ShowDialog();
       }
+
+      [TestMethod]
+      public void UiActionButtonTest()
+      {
+         var form = new Form();
+         var uiButton = new UiAction(form, true);
+         uiButton.SetUp(0, 0, 200, 40);
+         uiButton.Button("Push me");
+         uiButton.Click += (_, _) => form.Text = "Clicked";
+         uiButton.ClickText = "Click me";
+         form.ShowDialog();
+      }
    }
 }

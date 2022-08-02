@@ -43,6 +43,7 @@ namespace Core.WinForms.Controls
             [UiActionType.Disabled] = Color.LightGray,
             [UiActionType.Caution] = Color.White,
             [UiActionType.TextBoxLabel] = Color.White,
+            [UiActionType.Button] = Color.Black
          };
          globalBackColors = new Hash<UiActionType, Color>
          {
@@ -57,6 +58,7 @@ namespace Core.WinForms.Controls
             [UiActionType.Disabled] = Color.DarkGray,
             [UiActionType.Caution] = Color.CadetBlue,
             [UiActionType.TextBoxLabel] = Color.CadetBlue,
+            [UiActionType.Button] = Color.LightGray
          };
          globalStyles = new Hash<UiActionType, MessageStyle>
          {
@@ -345,6 +347,7 @@ namespace Core.WinForms.Controls
          Busy(false);
          Text = message;
          this.type = type;
+
          refresh();
       }
 
@@ -471,7 +474,6 @@ namespace Core.WinForms.Controls
          }
 
          Text = text;
-
          type = UiActionType.ProgressDefinite;
 
          refresh();
@@ -480,8 +482,8 @@ namespace Core.WinForms.Controls
       public void Progress(string text)
       {
          value = index++;
-         Text = text;
 
+         Text = text;
          type = UiActionType.ProgressDefinite;
 
          refresh();
@@ -493,6 +495,7 @@ namespace Core.WinForms.Controls
 
          Text = text;
          type = UiActionType.BusyText;
+
          this.Do(() => timerPaint.Enabled = true);
          refresh();
       }
@@ -802,13 +805,23 @@ namespace Core.WinForms.Controls
       {
          Text = "";
          type = UiActionType.Busy;
+
          this.Do(() => timerPaint.Enabled = enabled);
+      }
+
+      public void Button(string text)
+      {
+         Text = text;
+         type = UiActionType.Button;
+
+         Refresh();
       }
 
       public void StartAutomatic()
       {
          Text = "";
          type = UiActionType.Automatic;
+
          this.Do(() => timerPaint.Enabled = true);
       }
 
