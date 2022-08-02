@@ -7,10 +7,15 @@ namespace Core.WinForms.Controls;
 public class SubText
 {
    protected Color defaultBackColor;
+   protected bool useControlForeColor;
+   protected bool useControlBackColor;
 
    public SubText(string text, int x, int y, Color defaultForeColor, Color defaultBackColor)
    {
       this.defaultBackColor = defaultBackColor;
+
+      useControlForeColor = false;
+      useControlBackColor = false;
 
       Text = text;
       X = x;
@@ -40,6 +45,10 @@ public class SubText
    public Color BackColor { get; set; }
 
    public bool Outline { get; set; }
+
+   public bool UseControlForeColor => useControlForeColor;
+
+   public bool UseControlBackColor => useControlBackColor;
 
    public SubText SetFont(string fontName, float fontSize, FontStyle fontStyle)
    {
@@ -71,12 +80,16 @@ public class SubText
    public SubText SetForeColor(Color foreColor)
    {
       ForeColor = foreColor;
+      useControlForeColor = false;
+
       return this;
    }
 
    public SubText SetBackColor(Color backColor)
    {
       BackColor = backColor;
+      useControlBackColor = false;
+
       return this;
    }
 
@@ -86,7 +99,19 @@ public class SubText
       return this;
    }
 
-   public SubText Draw(Graphics graphics)
+   public SubText SetUseControlForeColor()
+   {
+      useControlForeColor = true;
+      return this;
+   }
+
+   public SubText SetUseControlBackColor()
+   {
+      useControlBackColor = true;
+      return this;
+   }
+
+   public SubText Draw(Graphics graphics, Color controlForeColor, Color controlBackColor)
    {
       using var font = new Font(FontName, FontSize);
       var location = new Point(X, Y);
@@ -98,7 +123,10 @@ public class SubText
       graphics.HighQuality();
       graphics.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
 
-      if (BackColor != defaultBackColor)
+      var backColor = useControlBackColor ? controlBackColor : BackColor;
+      var foreColor = useControlForeColor ? controlForeColor : ForeColor;
+
+      if (backColor != defaultBackColor)
       {
          using var brush = new SolidBrush(BackColor);
          graphics.FillRectangle(brush, rectangle);
@@ -106,11 +134,11 @@ public class SubText
 
       if (Outline)
       {
-         using var pen = new Pen(ForeColor);
+         using var pen = new Pen(foreColor);
          graphics.DrawRectangle(pen, rectangle);
       }
 
-      TextRenderer.DrawText(graphics, Text, font, rectangle, ForeColor, flags);
+      TextRenderer.DrawText(graphics, Text, font, rectangle, foreColor, flags);
 
       return this;
    }

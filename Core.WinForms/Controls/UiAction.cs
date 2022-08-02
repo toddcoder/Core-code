@@ -592,9 +592,11 @@ namespace Core.WinForms.Controls
 
          if (type is not UiActionType.Busy && type is not UiActionType.BusyText)
          {
+            var foreColor = getForeColor();
+            var backColor = getBackColor();
             foreach (var subText in subTexts)
             {
-               subText.Draw(e.Graphics);
+               subText.Draw(e.Graphics, foreColor, backColor);
             }
          }
 
