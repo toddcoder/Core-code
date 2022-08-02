@@ -931,6 +931,14 @@ namespace Core.WinForms.Controls
 
       public void StartTimer() => timer.Enabled = true;
 
+      public void StartTimer(TimeSpan interval)
+      {
+         timer.Interval = interval.Milliseconds;
+         timer.Enabled = true;
+      }
+
       public void StopTimer() => timer.Enabled = false;
+
+      public void PerformClick() => OnClick(EventArgs.Empty);
    }
 }
