@@ -24,7 +24,7 @@ namespace Core.Enumerables
             this.stop = stop;
             this.increment = increment;
             this.endingPredicate = endingPredicate;
-            _current = none<int>();
+            _current = nil;
          }
 
          public void Dispose()
@@ -36,17 +36,17 @@ namespace Core.Enumerables
             if (_current.Map(out var current))
             {
                current += increment;
-               _current = current.Some();
+               _current = current;
                return endingPredicate(current, stop);
             }
             else
             {
-               _current = start.Some();
+               _current = start;
                return endingPredicate(start, stop);
             }
          }
 
-         public void Reset() => _current = none<int>();
+         public void Reset() => _current = nil;
 
          public int Current
          {
@@ -75,23 +75,23 @@ namespace Core.Enumerables
       public Range(int start)
       {
          this.start = start;
-         _stop = none<int>();
+         _stop = nil;
          increment = 1;
-         _endingPredicate = none<Func<int, int, bool>>();
+         _endingPredicate = nil;
          inclusive = false;
       }
 
       public void To(int newStop)
       {
-         _stop = newStop.Some();
-         _endingPredicate = ((Func<int, int, bool>)((x, y) => x <= y)).Some();
+         _stop = newStop;
+         _endingPredicate = (Func<int, int, bool>)((x, y) => x <= y);
          inclusive = true;
       }
 
       public void Until(int newStop)
       {
-         _stop = newStop.Some();
-         _endingPredicate = ((Func<int, int, bool>)((x, y) => x < y)).Some();
+         _stop = newStop;
+         _endingPredicate = ((Func<int, int, bool>)((x, y) => x < y));
          inclusive = false;
       }
 
@@ -100,13 +100,13 @@ namespace Core.Enumerables
          increment = newIncrement.Must().Not.BeZero().Force();
          if (increment < 0)
          {
-            _endingPredicate = inclusive ? ((Func<int, int, bool>)((x, y) => x >= y)).Some() :
-               ((Func<int, int, bool>)((x, y) => x > y)).Some();
+            _endingPredicate = inclusive ? ((Func<int, int, bool>)((x, y) => x >= y)) :
+               ((Func<int, int, bool>)((x, y) => x > y));
          }
          else
          {
-            _endingPredicate = inclusive ? ((Func<int, int, bool>)((x, y) => x <= y)).Some() :
-               ((Func<int, int, bool>)((x, y) => x < y)).Some();
+            _endingPredicate = inclusive ? ((Func<int, int, bool>)((x, y) => x <= y)) :
+               ((Func<int, int, bool>)((x, y) => x < y));
          }
 
          return this;

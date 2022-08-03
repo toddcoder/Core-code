@@ -256,11 +256,10 @@ namespace Core.Tests
       public void ExTextBoxTest()
       {
          var form = new Form();
-         var textBox = new ExTextBox { RefreshOnTextChange = true };
+         var textBox = new ExTextBox(form) { RefreshOnTextChange = true };
          textBox.Font = new Font("Consolas", 12);
          textBox.Width = form.ClientSize.Width;
          textBox.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
-         form.Controls.Add(textBox);
          textBox.Location = new Point(0, 0);
          textBox.Paint += (_, e) =>
          {
@@ -279,11 +278,10 @@ namespace Core.Tests
       public void ExTextBoxTest2()
       {
          var form = new Form();
-         var textBox = new ExTextBox { RefreshOnTextChange = true };
+         var textBox = new ExTextBox(form) { RefreshOnTextChange = true };
          textBox.Font = new Font("Consolas", 12);
          textBox.Width = form.ClientSize.Width;
          textBox.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
-         form.Controls.Add(textBox);
          textBox.Location = new Point(0, 0);
          textBox.Paint += (_, e) =>
          {
@@ -298,7 +296,7 @@ namespace Core.Tests
       public void ExTextBoxTest3()
       {
          var form = new Form();
-         var textBox = new ExTextBox
+         var textBox = new ExTextBox(form)
          {
             RefreshOnTextChange = true,
             Font = new Font("Consolas", 12),
@@ -307,13 +305,33 @@ namespace Core.Tests
             Location = new Point(0, 0),
             BackColor = SystemColors.Control
          };
-         form.Controls.Add(textBox);
          textBox.Paint += (_, e) =>
          {
             foreach (var (rectangle, word) in textBox.RectangleWords(e.Graphics))
             {
                Console.WriteLine(word);
                textBox.DrawHighlight(e.Graphics, rectangle, Color.Black, Color.CadetBlue);
+            }
+         };
+         form.ShowDialog();
+      }
+
+      [TestMethod]
+      public void ExTextBoxTest4()
+      {
+         var form = new Form();
+         var textBox = new ExTextBox(form)
+         {
+            RefreshOnTextChange = true,
+            ForeColor = Color.White,
+            BackColor = Color.Blue
+         };
+         textBox.SetUp(0, 0, form.ClientSize.Width, 30);
+         textBox.Paint += (_, e) =>
+         {
+            foreach (var (rectangle, _) in textBox.RectangleWords(e.Graphics))
+            {
+               textBox.DrawHighlight(e.Graphics, rectangle, Color.White, Color.White, DashStyle.Dot);
             }
          };
          form.ShowDialog();

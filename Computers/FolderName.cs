@@ -62,6 +62,14 @@ namespace Core.Computers
          return file;
       }
 
+      public static bool operator true(FolderName folder) => folder.Exists();
+
+      public static bool operator false(FolderName folder) => !folder.Exists();
+
+      public static bool operator !(FolderName folder) => !folder.Exists();
+
+      public static implicit operator bool(FolderName folder) => folder.Exists();
+
       public static FolderName Create(string folder)
       {
          var newFolder = new FolderName(folder);

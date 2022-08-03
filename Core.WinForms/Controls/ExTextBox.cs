@@ -87,6 +87,11 @@ public class ExTextBox : TextBox
 
    public new event EventHandler<PaintEventArgs> Paint;
 
+   public ExTextBox(Control control) : this()
+   {
+      control.Controls.Add(this);
+   }
+
    public ExTextBox()
    {
       windowExtender = new WindowExtender(this);

@@ -62,11 +62,11 @@ namespace Core.Enumerables
 
       public abstract int Compare(TSource x, TSource y);
 
-      bool equal(TSource x, TSource y) => Compare(x, y) == 0;
+      protected bool equal(TSource x, TSource y) => Compare(x, y) == 0;
 
-      bool greater(TSource x, TSource y) => Compare(x, y) > 0;
+      protected bool greater(TSource x, TSource y) => Compare(x, y) > 0;
 
-      bool less(TSource x, TSource y) => Compare(x, y) < 0;
+      protected bool less(TSource x, TSource y) => Compare(x, y) < 0;
 
       public bool Includes(TSource value)
       {

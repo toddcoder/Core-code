@@ -50,6 +50,14 @@ namespace Core.Computers
          return target;
       }
 
+      public static bool operator true(FileName file) => file.Exists();
+
+      public static bool operator false(FileName file) => !file.Exists();
+
+      public static bool operator !(FileName file) => !file.Exists();
+
+      public static implicit operator bool(FileName file) => file.Exists();
+
       public static FolderName ResolveFolder(FolderName folder) => ResolveFolder(folder.ToString());
 
       public static string ResolveFolder(string folder)

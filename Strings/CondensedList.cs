@@ -10,10 +10,10 @@ namespace Core.Strings
       protected string separator;
       protected StringHash<int> counts;
 
-      public CondensedList(string separator = ", ")
+      public CondensedList(string separator = ", ", bool ignoreCase = true)
       {
          this.separator = separator;
-         counts = new StringHash<int>(true);
+         counts = new StringHash<int>(ignoreCase);
       }
 
       public void Add(string text)

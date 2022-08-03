@@ -6,13 +6,13 @@ using System.Drawing.Text;
 using System.Linq;
 using System.Windows.Forms;
 using Core.Applications;
-using Core.Arrays;
 using Core.Assertions;
 using Core.Exceptions;
 using Core.Matching;
 using Core.Monads;
 using Core.Numbers;
 using Core.Strings;
+using static Core.Arrays.ArrayFunctions;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Controls
@@ -107,12 +107,22 @@ namespace Core.WinForms.Controls
 
       public event EventHandler<LineChangedEventArgs> LineChanged;
 
+      public ExRichTextBox(Control control) : this()
+      {
+         control.Controls.Add(control);
+      }
+
       public ExRichTextBox()
       {
          windowExtender = new WindowExtender(this);
          windowExtender.AssignHandle(Handle);
 
-         SelectionTabs = ArrayFunctions.array(32, 64, 96, 128, 160, 192, 224);
+         SelectionTabs = array(32, 64, 96, 128, 160, 192, 224);
+         ModifiedGlyphColor = Color.Gold;
+         SavedGlyphColor = Color.Green;
+         ModificationGlyphWidth = 4f;
+         ModificationGlyphLeftMargin = 2;
+         AnnotationFont = new Font("Calibri", 12f, FontStyle.Bold);
          leftMargin = 0;
          modificationStates = new List<ModificationState>();
 
@@ -154,13 +164,13 @@ namespace Core.WinForms.Controls
          };
       }
 
-      public Color ModifiedGlyphColor { get; set; } = Color.Gold;
+      public Color ModifiedGlyphColor { get; set; }
 
-      public Color SavedGlyphColor { get; set; } = Color.Green;
+      public Color SavedGlyphColor { get; set; }
 
-      public float ModificationGlyphWidth { get; set; } = 4f;
+      public float ModificationGlyphWidth { get; set; }
 
-      public int ModificationGlyphLeftMargin { get; set; } = 2;
+      public int ModificationGlyphLeftMargin { get; set; }
 
       public int LeftMargin => leftMargin;
 
@@ -252,7 +262,7 @@ namespace Core.WinForms.Controls
 
       public void SetTabs(params int[] tabs) => SelectionTabs = tabs;
 
-      public Font AnnotationFont { get; set; } = new("Calibri", 12f, FontStyle.Bold);
+      public Font AnnotationFont { get; set; }
 
       public bool ModificationLocked { get; set; }
 
