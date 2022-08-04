@@ -158,6 +158,8 @@ namespace Core.Objects
                throw new ApplicationException(formatter.Format(message()));
             }
          }
+
+         public static T Cast<T>(object obj) => (T)obj;
       }
 
       public static class Maybe
