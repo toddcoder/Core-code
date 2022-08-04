@@ -7,7 +7,10 @@ namespace Core.Collections
    {
       protected Hash<TValue, TKey> backHash;
 
-      public BackHash() => backHash = new Hash<TValue, TKey>();
+      public BackHash()
+      {
+         backHash = new Hash<TValue, TKey>();
+      }
 
       public BackHash(BackHash<TValue, TKey> backHash)
       {
@@ -17,16 +20,25 @@ namespace Core.Collections
          }
       }
 
-      public BackHash(int capacity) : base(capacity) => backHash = new Hash<TValue, TKey>();
+      public BackHash(int capacity) : base(capacity)
+      {
+         backHash = new Hash<TValue, TKey>();
+      }
 
-      public BackHash(IEqualityComparer<TKey> comparer) : base(comparer) => backHash = new Hash<TValue, TKey>();
+      public BackHash(IEqualityComparer<TKey> comparer) : base(comparer)
+      {
+         backHash = new Hash<TValue, TKey>();
+      }
 
       public BackHash(int capacity, IEqualityComparer<TKey> comparer) : base(capacity, comparer)
       {
          backHash = new Hash<TValue, TKey>();
       }
 
-      public BackHash(IDictionary<TKey, TValue> dictionary) : base(dictionary) => backHash = new Hash<TValue, TKey>();
+      public BackHash(IDictionary<TKey, TValue> dictionary) : base(dictionary)
+      {
+         backHash = new Hash<TValue, TKey>();
+      }
 
       public BackHash(IDictionary<TKey, TValue> dictionary, IEqualityComparer<TKey> comparer) : base(dictionary, comparer)
       {
@@ -50,7 +62,7 @@ namespace Core.Collections
 
       public virtual TKey ValueToKey(TValue value) => backHash[value];
 
-      public virtual IHash<TValue, TKey> Back => backHash;
+      public virtual Hash<TValue, TKey> Back => backHash;
 
       public new void Clear()
       {
@@ -69,6 +81,12 @@ namespace Core.Collections
          }
 
          return newHash;
+      }
+
+      public void Deconstruct(out Hash<TKey, TValue> forward, out Hash<TValue, TKey> backward)
+      {
+         forward = new Hash<TKey, TValue>(this, Comparer);
+         backward = backHash;
       }
    }
 }
