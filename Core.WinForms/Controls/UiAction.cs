@@ -113,6 +113,7 @@ namespace Core.WinForms.Controls
       protected Lazy<BackgroundWorker> backgroundWorker;
       protected Maybe<int> _labelWidth;
       protected Maybe<SubText> _legend;
+      protected bool oneTimeTimer;
 
       public event EventHandler<AutomaticMessageArgs> AutomaticMessage;
       public event EventHandler<PaintEventArgs> Painting;
@@ -193,7 +194,15 @@ namespace Core.WinForms.Controls
             Interval = 1000,
             Enabled = false
          };
-         timer.Tick += (_, _) => Tick?.Invoke(this, EventArgs.Empty);
+         timer.Tick += (_, _) =>
+         {
+            Tick?.Invoke(this, EventArgs.Empty);
+            if (oneTimeTimer)
+            {
+               timer.Enabled = false;
+               oneTimeTimer = false;
+            }
+         };
 
          Minimum = 1;
          maximum = 0;
@@ -953,8 +962,9 @@ namespace Core.WinForms.Controls
 
       public void StartTimer() => timer.Enabled = true;
 
-      public void StartTimer(TimeSpan interval)
+      public void StartTimer(TimeSpan interval, bool oneTimeTimer = false)
       {
+         this.oneTimeTimer = oneTimeTimer;
          timer.Interval = (int)interval.TotalMilliseconds;
          timer.Enabled = true;
       }
@@ -990,6 +1000,10 @@ namespace Core.WinForms.Controls
          return Legend(text, false).Set.ForeColor(Color.Black).BackColor(Color.Gold).End;
       }
 
-      public void Legend() => _legend = nil;
+      public void Legend()
+      {
+         _legend = nil;
+         refresh();
+      }
    }
 }
