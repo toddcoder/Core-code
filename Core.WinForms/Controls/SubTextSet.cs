@@ -11,6 +11,24 @@ public class SubTextSet
       this.subText = subText;
    }
 
+   public SubTextSet Text(string text)
+   {
+      subText.Text = text;
+      return this;
+   }
+
+   public SubTextSet X(int x)
+   {
+      subText.X = x;
+      return this;
+   }
+
+   public SubTextSet Y(int y)
+   {
+      subText.Y = y;
+      return this;
+   }
+
    public SubTextSet Font(string fontName, float fontSize, FontStyle fontStyle = System.Drawing.FontStyle.Regular)
    {
       subText.FontName = fontName;

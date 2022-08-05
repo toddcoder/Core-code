@@ -29,11 +29,11 @@ public class SubText
       Outline = false;
    }
 
-   public string Text { get; }
+   public string Text { get; set; }
 
-   public int X { get; }
+   public int X { get; set; }
 
-   public int Y { get; }
+   public int Y { get; set; }
 
    public SubTextSet Set => new(this);
 

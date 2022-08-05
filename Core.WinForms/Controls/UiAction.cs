@@ -965,22 +965,29 @@ namespace Core.WinForms.Controls
 
       public bool TimerEnabled => timer.Enabled;
 
-      public SubText Legend(string text, int x = 20, int y = 2, bool useControlForeColor = true)
+      protected (int, int) legendLocation() => CheckStyle switch
       {
+         CheckStyle.None => (2, 2),
+         _ => (20, 2)
+      };
+
+      public SubText Legend(string text, bool useControlForeColor = true)
+      {
+         var (x, y) = legendLocation();
          var legend = SubText(text, x, y).Set.FontSize(8).Outline(true).UseControlForeColor(useControlForeColor).End;
          _legend = legend;
 
          return legend;
       }
 
-      public SubText SuccessLegend(string text, int x = 20, int y = 2)
+      public SubText SuccessLegend(string text)
       {
-         return Legend(text, x, y, false).Set.ForeColor(Color.White).BackColor(Color.Green).End;
+         return Legend(text, false).Set.ForeColor(Color.White).BackColor(Color.Green).End;
       }
 
-      public SubText FailureLegend(string text, int x = 20, int y = 2)
+      public SubText FailureLegend(string text)
       {
-         return Legend(text, x, y, false).Set.ForeColor(Color.Black).BackColor(Color.Gold).End;
+         return Legend(text, false).Set.ForeColor(Color.Black).BackColor(Color.Gold).End;
       }
 
       public void Legend() => _legend = nil;
