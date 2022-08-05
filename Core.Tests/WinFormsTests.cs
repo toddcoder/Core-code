@@ -233,11 +233,11 @@ namespace Core.Tests
          {
             Dock = DockStyle.Fill
          };
-         uiAction.SubText("now", 10, 10)
-            .SetForeColor(Color.White)
-            .SetBackColor(Color.Green)
-            .SetFont("Verdana", 8, FontStyle.Regular)
-            .SetOutline(true);
+         uiAction.SubText("now", 10, 10).Set
+            .ForeColor(Color.White)
+            .BackColor(Color.Green)
+            .Font("Verdana", 8)
+            .Outline(true);
          uiAction.Message("Message");
          form.ShowDialog();
       }

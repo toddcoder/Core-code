@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Drawing.Text;
 using System.Windows.Forms;
 
@@ -34,6 +35,8 @@ public class SubText
 
    public int Y { get; }
 
+   public SubTextSet Set => new(this);
+
    public string FontName { get; set; }
 
    public float FontSize { get; set; }
@@ -46,9 +49,17 @@ public class SubText
 
    public bool Outline { get; set; }
 
-   public bool UseControlForeColor => useControlForeColor;
+   public bool UseControlForeColor
+   {
+      get => useControlForeColor;
+      set => useControlForeColor = value;
+   }
 
-   public bool UseControlBackColor => useControlBackColor;
+   public bool UseControlBackColor
+   {
+      get => useControlBackColor;
+      set => useControlBackColor = value;
+   }
 
    public SubText SetFont(string fontName, float fontSize, FontStyle fontStyle)
    {
@@ -59,24 +70,28 @@ public class SubText
       return this;
    }
 
+   [Obsolete("Use .Set.FontName")]
    public SubText SetFontName(string fontName)
    {
       FontName = fontName;
       return this;
    }
 
+   [Obsolete("Use .Set.FontSize")]
    public SubText SetFontSize(float fontSize)
    {
       FontSize = fontSize;
       return this;
    }
 
+   [Obsolete("Use .Set.FontStyle")]
    public SubText SetFontStyle(FontStyle fontStyle)
    {
       FontStyle = fontStyle;
       return this;
    }
 
+   [Obsolete("Use Set.ForeColor")]
    public SubText SetForeColor(Color foreColor)
    {
       ForeColor = foreColor;
@@ -85,6 +100,7 @@ public class SubText
       return this;
    }
 
+   [Obsolete("Use Set.BackColor")]
    public SubText SetBackColor(Color backColor)
    {
       BackColor = backColor;
@@ -93,18 +109,21 @@ public class SubText
       return this;
    }
 
+   [Obsolete("Use Set.Outline")]
    public SubText SetOutline(bool outline)
    {
       Outline = outline;
       return this;
    }
 
+   [Obsolete("Use Set.UseControlForeColor")]
    public SubText SetUseControlForeColor()
    {
       useControlForeColor = true;
       return this;
    }
 
+   [Obsolete("Use Set.UserControlBackColor")]
    public SubText SetUseControlBackColor()
    {
       useControlBackColor = true;

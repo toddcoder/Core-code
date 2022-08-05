@@ -112,6 +112,7 @@ namespace Core.WinForms.Controls
       protected Lazy<Stopwatch> stopwatch;
       protected Lazy<BackgroundWorker> backgroundWorker;
       protected Maybe<int> _labelWidth;
+      protected Maybe<SubText> _legend;
 
       public event EventHandler<AutomaticMessageArgs> AutomaticMessage;
       public event EventHandler<PaintEventArgs> Painting;
@@ -231,6 +232,8 @@ namespace Core.WinForms.Controls
 
          control.Controls.Add(this);
          control.Resize += (_, _) => Refresh();
+
+         _legend = nil;
       }
 
       public UiActionType Type => type;
@@ -601,6 +604,11 @@ namespace Core.WinForms.Controls
             {
                subText.Draw(e.Graphics, foreColor, backColor);
             }
+
+            if (_legend.Map(out var legend))
+            {
+               legend.Draw(e.Graphics, foreColor, backColor);
+            }
          }
 
          if (Clickable)
@@ -956,5 +964,13 @@ namespace Core.WinForms.Controls
       public void PerformClick() => OnClick(EventArgs.Empty);
 
       public bool TimerEnabled => timer.Enabled;
+
+      public SubText Legend(string text, int x = 20, int y = 2)
+      {
+         var legend = SubText(text, x, y).Set.FontSize(8).Outline(true).UseControlForeColor(true).End;
+         _legend = legend;
+
+         return legend;
+      }
    }
 }
