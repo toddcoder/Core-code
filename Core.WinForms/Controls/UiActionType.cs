@@ -18,7 +18,7 @@
       Disabled,
       Caution,
       Labeled,
-      TextBoxLabel,
+      ControlLabel,
       Button
    }
 }

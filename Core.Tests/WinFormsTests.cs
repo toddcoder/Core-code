@@ -407,7 +407,7 @@ namespace Core.Tests
          textBox.Width = form.ClientSize.Width;
 
          var uiAction = new UiAction(form, true);
-         uiAction.AttachToTextBox("Name", textBox);
+         uiAction.AttachTo("Name", textBox);
 
          form.ShowDialog();
       }

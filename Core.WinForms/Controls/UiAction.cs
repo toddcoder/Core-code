@@ -42,7 +42,7 @@ namespace Core.WinForms.Controls
             [UiActionType.Automatic] = Color.Black,
             [UiActionType.Disabled] = Color.LightGray,
             [UiActionType.Caution] = Color.White,
-            [UiActionType.TextBoxLabel] = Color.White,
+            [UiActionType.ControlLabel] = Color.White,
             [UiActionType.Button] = Color.Black
          };
          globalBackColors = new Hash<UiActionType, Color>
@@ -57,7 +57,7 @@ namespace Core.WinForms.Controls
             [UiActionType.Automatic] = Color.White,
             [UiActionType.Disabled] = Color.DarkGray,
             [UiActionType.Caution] = Color.CadetBlue,
-            [UiActionType.TextBoxLabel] = Color.CadetBlue,
+            [UiActionType.ControlLabel] = Color.CadetBlue,
             [UiActionType.Button] = Color.LightGray
          };
          globalStyles = new Hash<UiActionType, MessageStyle>
@@ -421,20 +421,20 @@ namespace Core.WinForms.Controls
 
       public void LabeledText(string label, string text, bool line = false) => LabeledText(label, text, nil, line);
 
-      public void AttachToTextBox(string text, TextBoxBase textBoxBase, string fontName = "Segoe UI", float fontSize = 9)
+      public void AttachTo(string text, Control control, string fontName = "Segoe UI", float fontSize = 9)
       {
          this.text = text;
-         type = UiActionType.TextBoxLabel;
+         type = UiActionType.ControlLabel;
 
-         textBoxBase.Move += (_, _) =>
+         control.Move += (_, _) =>
          {
-            Location = new Point(textBoxBase.Left, textBoxBase.Top - Height + 4);
+            Location = new Point(control.Left, control.Top - Height + 4);
             Refresh();
          };
 
          using var font = new Font(fontName, fontSize);
          var size = TextRenderer.MeasureText(this.text, font);
-         this.SetUp(textBoxBase.Left, textBoxBase.Top - size.Height + 1, size.Width + 20, size.Height, fontName, fontSize);
+         this.SetUp(control.Left, control.Top - size.Height + 1, size.Width + 20, size.Height, fontName, fontSize);
 
          Refresh();
       }
@@ -582,7 +582,7 @@ namespace Core.WinForms.Controls
                processor.OnPaint(e.Graphics, ClientRectangle);
                break;
             }
-            case UiActionType.TextBoxLabel:
+            case UiActionType.ControlLabel:
                writer.Write(text, e.Graphics);
                break;
             default:
@@ -698,7 +698,7 @@ namespace Core.WinForms.Controls
                processor.OnPaintBackground(pevent.Graphics, ClientRectangle);
                break;
             }
-            case UiActionType.TextBoxLabel:
+            case UiActionType.ControlLabel:
             {
                using var brush = new SolidBrush(Color.CadetBlue);
                fillRectangle(pevent.Graphics, brush, ClientRectangle);
