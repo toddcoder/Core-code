@@ -962,14 +962,18 @@ namespace Core.WinForms.Controls
 
       public void StartTimer() => timer.Enabled = true;
 
-      public void StartTimer(TimeSpan interval, bool oneTimeTimer = false)
+      public void StartTimer(TimeSpan interval, bool oneTime = false)
       {
-         this.oneTimeTimer = oneTimeTimer;
+         oneTimeTimer = oneTime;
          timer.Interval = (int)interval.TotalMilliseconds;
          timer.Enabled = true;
       }
 
-      public void StopTimer() => timer.Enabled = false;
+      public void StopTimer()
+      {
+         timer.Enabled = false;
+         oneTimeTimer = false;
+      }
 
       public void PerformClick() => OnClick(EventArgs.Empty);
 
