@@ -988,7 +988,12 @@ namespace Core.WinForms.Controls
       public SubText Legend(string text, bool useControlForeColor = true)
       {
          var (x, y) = legendLocation();
-         var legend = SubText(text, x, y).Set.FontSize(8).Outline(true).UseControlForeColor(useControlForeColor).End;
+         var legend = new SubText(text, x, y, getForeColor(), getBackColor())
+            .Set
+            .FontSize(8)
+            .Outline(true)
+            .UseControlForeColor(useControlForeColor)
+            .End;
          _legend = legend;
 
          return legend;
