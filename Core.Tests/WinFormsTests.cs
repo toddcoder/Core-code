@@ -423,5 +423,21 @@ namespace Core.Tests
          uiButton.ClickText = "Click me";
          form.ShowDialog();
       }
+
+      [TestMethod]
+      public void UiActionWorkingTest()
+      {
+         var form = new Form();
+         var uiButton = new UiAction(form, true);
+         uiButton.SetUp(0, 0, 200, 40);
+         uiButton.Message("Not Working");
+         uiButton.Click += (_, _) =>
+         {
+            uiButton.Working = !uiButton.Working;
+            uiButton.Message(uiButton.Working ? "Working" : "Not Working");
+         };
+         uiButton.ClickText = "Toggle working";
+         form.ShowDialog();
+      }
    }
 }

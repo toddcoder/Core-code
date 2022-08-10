@@ -114,6 +114,8 @@ namespace Core.WinForms.Controls
       protected Maybe<int> _labelWidth;
       protected Maybe<SubText> _legend;
       protected bool oneTimeTimer;
+      protected Maybe<SubText> _working;
+      protected Timer workingTimer;
 
       public event EventHandler<AutomaticMessageArgs> AutomaticMessage;
       public event EventHandler<PaintEventArgs> Painting;
@@ -243,6 +245,31 @@ namespace Core.WinForms.Controls
          control.Resize += (_, _) => Refresh();
 
          _legend = nil;
+         _working = nil;
+
+         workingTimer = new Timer { Interval = 1000 };
+         workingTimer.Tick += (_, _) =>
+         {
+            if (_working)
+            {
+               _working = nil;
+            }
+            else
+            {
+               _working = getWorking();
+            }
+
+            Refresh();
+         };
+      }
+
+      protected SubText getWorking()
+      {
+         using var font = new Font("Consolas", 8);
+         var size = TextRenderer.MeasureText("working", font);
+         var y = ClientSize.Height - size.Height - 4;
+
+         return new SubText("working", 4, y, getForeColor(), getBackColor()).Set.FontSize(8).UseControlForeColor(true).Outline(true).End;
       }
 
       public UiActionType Type => type;
@@ -636,6 +663,16 @@ namespace Core.WinForms.Controls
             }
          }
 
+         if (Working)
+         {
+            if (_working.Map(out var warning))
+            {
+               var foreColor = getForeColor();
+               var backColor = getBackColor();
+               warning.Draw(e.Graphics, foreColor, backColor);
+            }
+         }
+
          Painting?.Invoke(this, e);
       }
 
@@ -1013,6 +1050,16 @@ namespace Core.WinForms.Controls
       {
          _legend = nil;
          refresh();
+      }
+
+      public bool Working
+      {
+         get => workingTimer.Enabled;
+         set
+         {
+            workingTimer.Enabled = value;
+            _working = nil;
+         }
       }
    }
 }
