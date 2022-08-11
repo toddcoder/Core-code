@@ -126,6 +126,7 @@ namespace Core.WinForms.Controls
       public event ProgressChangedEventHandler ProgressChanged;
       public event RunWorkerCompletedEventHandler RunWorkerCompleted;
       public event EventHandler Tick;
+      public event EventHandler<ValidatedArgs> ValidateText;
 
       public UiAction(Control control, bool center = false, bool is3D = true)
       {
@@ -1060,6 +1061,13 @@ namespace Core.WinForms.Controls
             workingTimer.Enabled = value;
             _working = nil;
          }
+      }
+
+      public void Validate(string text)
+      {
+         var args = new ValidatedArgs(text);
+         ValidateText?.Invoke(this, args);
+         ShowMessage(text, args.Type);
       }
    }
 }

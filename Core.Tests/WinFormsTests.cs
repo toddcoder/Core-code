@@ -408,6 +408,8 @@ namespace Core.Tests
 
          var uiAction = new UiAction(form, true);
          uiAction.AttachTo("Name", textBox);
+         uiAction.Click += (_, _) => textBox.Text = "";
+         uiAction.ClickText = "Clear text";
 
          form.ShowDialog();
       }

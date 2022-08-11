@@ -100,6 +100,7 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Controls\SubText.cs" />
+    <Compile Include="Controls\ValidatedArgs.cs" />
     <Compile Include="ControlWrappers\MessageStyle.cs" />
     <Compile Include="Documents\Colorizer.cs" />
     <Compile Include="Documents\ConsoleConfiguration.cs" />
