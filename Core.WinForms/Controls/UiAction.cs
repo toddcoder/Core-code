@@ -249,6 +249,7 @@ namespace Core.WinForms.Controls
 
          _legend = nil;
          _working = nil;
+         EmptyTextTitle = "none";
 
          workingTimer = new Timer { Interval = 1000 };
          workingTimer.Tick += (_, _) =>
@@ -578,7 +579,7 @@ namespace Core.WinForms.Controls
             UiActionType.Busy or UiActionType.BusyText => CheckStyle.None,
             _ => CheckStyle
          };
-         var writer = new UiActionWriter(Center, checkStyle)
+         var writer = new UiActionWriter(Center, checkStyle, EmptyTextTitle)
          {
             Rectangle = ClientRectangle,
             Font = getFont(),
@@ -617,7 +618,7 @@ namespace Core.WinForms.Controls
             }
             case UiActionType.Labeled:
             {
-               var processor = new LabelProcessor(Label, text, Line, _labelWidth, getFont());
+               var processor = new LabelProcessor(Label, text, Line, _labelWidth, getFont(), EmptyTextTitle);
                processor.OnPaint(e.Graphics, ClientRectangle);
                break;
             }
@@ -753,7 +754,7 @@ namespace Core.WinForms.Controls
             }
             case UiActionType.Labeled:
             {
-               var processor = new LabelProcessor(Label, text, Line, _labelWidth, getFont());
+               var processor = new LabelProcessor(Label, text, Line, _labelWidth, getFont(), EmptyTextTitle);
                processor.OnPaintBackground(pevent.Graphics, ClientRectangle);
                break;
             }
@@ -1113,5 +1114,7 @@ namespace Core.WinForms.Controls
       }
 
       public bool ShowFocus { get; set; }
+
+      public Maybe<string> EmptyTextTitle { get; set; }
    }
 }

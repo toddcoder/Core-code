@@ -512,5 +512,16 @@ namespace Core.Tests
 
          form.ShowDialog();
       }
+
+      [TestMethod]
+      public void EmptyTextTest()
+      {
+         var form = new Form();
+         var uiAction = new UiAction(form, true);
+         uiAction.SetUp(0, 0, 200, 40);
+         uiAction.Failure("");
+         form.ShowDialog();
+         Console.WriteLine($"<{uiAction.Text}>");
+      }
    }
 }

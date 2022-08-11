@@ -12,16 +12,18 @@ public class LabelProcessor
    protected bool line;
    protected Maybe<int> _labelWidth;
    protected Font font;
+   protected Maybe<string> _emptyTextTitle;
    protected Maybe<Rectangle> _labelRectangle;
    protected Maybe<Rectangle> _textRectangle;
 
-   public LabelProcessor(string label, string text, bool line, Maybe<int> _labelWidth, Font font)
+   public LabelProcessor(string label, string text, bool line, Maybe<int> _labelWidth, Font font, Maybe<string> _emptyTextTitle)
    {
       this.label = label;
       this.text = text;
       this.line = line;
       this._labelWidth = _labelWidth;
       this.font = font;
+      this._emptyTextTitle = _emptyTextTitle;
 
       _labelRectangle = nil;
       _textRectangle = nil;
@@ -90,7 +92,7 @@ public class LabelProcessor
    {
       var labelRectangle = getLabelRectangle(graphics, clientRectangle);
       using var labelFont = new Font(font, FontStyle.Bold);
-      var writer = new UiActionWriter(true, CheckStyle.None)
+      var writer = new UiActionWriter(true, CheckStyle.None, _emptyTextTitle)
       {
          Rectangle = labelRectangle,
          Font = labelFont,

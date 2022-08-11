@@ -33,6 +33,12 @@ namespace Core.Monads
 
       public static implicit operator bool(Maybe<T> value) => value is Some<T>;
 
+      public static implicit operator T(Maybe<T> value) => value switch
+      {
+         Some<T> some => some.Value,
+         _ => throw new InvalidCastException("Must be a Some to return a value")
+      };
+
       [Obsolete("Use as bool")]
       public abstract bool IsSome { get; }
 

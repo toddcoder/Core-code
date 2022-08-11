@@ -55,6 +55,13 @@ namespace Core.Monads
 
       public static Result<T> Nil(string message) => new Failure<T>(new Exception(message));
 
+      public static implicit operator T(Result<T> result) => result switch
+      {
+         Success<T> success => success.Value,
+         Failure<T> failure => throw failure.Exception,
+         _ => throw new InvalidCastException("Must be a Success to return a value")
+      };
+
       public abstract bool Map(out T value, out Exception exception);
 
       [Obsolete("Use If()")]

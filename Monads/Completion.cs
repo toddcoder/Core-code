@@ -25,6 +25,13 @@ namespace Core.Monads
 
       public static implicit operator bool(Completion<T> value) => value is Completed<T>;
 
+      public static implicit operator T(Completion<T> value) => value switch
+      {
+         Completed<T> completed => completed.Value,
+         Interrupted<T> interrupted => throw interrupted.Exception,
+         _ => throw new InvalidCastException("Must be a Completed to return a value")
+      };
+
       public abstract Completion<TResult> Map<TResult>(Func<T, Completion<TResult>> ifCompleted);
 
       public abstract Completion<TResult> Map<TResult>(Func<T, TResult> ifCompleted);

@@ -475,14 +475,7 @@ namespace Core.Monads
       {
          foreach (var item in enumerable)
          {
-            try
-            {
-               action(item);
-            }
-            catch (Exception exception)
-            {
-               return failure<TResult>(exception);
-            }
+            action(item);
          }
 
          return result();

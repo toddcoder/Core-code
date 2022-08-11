@@ -72,11 +72,11 @@ namespace Core.Tests
          var source = new CancellationTokenSource(30.Seconds());
          var completion = Task.Run(() => counter.CountAsync(source), source.Token);
          source.Cancel();
-         if (completion.Result.Map(out var value, out var anyException))
+         if (completion.Result.Map(out var value, out var _exception))
          {
             Console.WriteLine($"Value is {value}");
          }
-         else if (anyException.Map(out var exception))
+         else if (_exception.Map(out var exception))
          {
             Console.WriteLine($"Interrupted with: {exception.Message}");
          }
@@ -92,11 +92,11 @@ namespace Core.Tests
          var counter = new Counter(100_000L, true);
          var source = new CancellationTokenSource(30.Seconds());
          var completion = Task.Run(() => counter.CountAsync(source), source.Token);
-         if (completion.Result.Map(out var value, out var anyException))
+         if (completion.Result.Map(out var value, out var _exception))
          {
             Console.WriteLine($"Value is {value}");
          }
-         else if (anyException.Map(out var exception))
+         else if (_exception.Map(out var exception))
          {
             Console.WriteLine($"Interrupted with: {exception.Message}");
          }
@@ -122,11 +122,11 @@ namespace Core.Tests
             from two in getTwo(token)
             from three in getThree(token)
             select one + two + three;
-         if (result.Result.Map(out var six, out var anyException))
+         if (result.Result.Map(out var six, out var _exception))
          {
             Console.WriteLine($"Value: {six}");
          }
-         else if (anyException.Map(out var exception))
+         else if (_exception.Map(out var exception))
          {
             Console.WriteLine($"Exception: {exception.Message}");
          }
@@ -154,15 +154,15 @@ namespace Core.Tests
       [TestMethod]
       public void MappingExtensionsTest()
       {
-         var result = (1, "foobar").Some();
-         var result1 = result.Map((i, s) => i + s);
-         if (result1.Map(out var aString))
+         Maybe<(int, string)> _result = (1, "foobar");
+         var _result1 = _result.Map((i, s) => i + s);
+         if (_result1.Map(out var aString))
          {
             Console.WriteLine(aString);
          }
 
-         var result2 = result.Map((i, s) => (s, i));
-         if (result2.Map(out aString, out var anInt))
+         var _result2 = _result.Map((i, s) => (s, i));
+         if (_result2.Map(out aString, out var anInt))
          {
             Console.WriteLine(aString);
             Console.WriteLine(anInt);
@@ -186,9 +186,9 @@ namespace Core.Tests
       [TestMethod]
       public void MaybeOrTest()
       {
-         var some1 = 1.Some();
-         var some2 = 2.Some();
-         var none = none<int>();
+         Maybe<int> some1 = 1;
+         Maybe<int> some2 = 2;
+         Maybe<int> none = nil;
 
          var or1 = some1 | none;
          var or2 = none | some2;
@@ -206,9 +206,9 @@ namespace Core.Tests
       [TestMethod]
       public void ResultOrTest()
       {
-         var success1 = 1.Success();
-         var success2 = 2.Success();
-         var failure = "Divide by zero".Failure<int>();
+         Result<int> success1 = 1;
+         Result<int> success2 = 2;
+         Result<int> failure = fail("Divide by zero");
 
          var or1 = success1 | failure;
          var or2 = failure | success2;
@@ -227,20 +227,20 @@ namespace Core.Tests
       public void ImplicitMaybeTest()
       {
          Maybe<string> maybe = "foobar";
-         Console.WriteLine(maybe);
+         Console.WriteLine(maybe.ToString());
 
          maybe = nil;
-         Console.WriteLine(maybe);
+         Console.WriteLine(maybe.ToString());
       }
 
       [TestMethod]
       public void ImplicitResultTest()
       {
          Result<string> result = "Good!";
-         Console.WriteLine(result);
+         Console.WriteLine(result.ToString());
 
-         result = new Exception("Bad!");
-         Console.WriteLine(result);
+         result = fail("Bad!");
+         Console.WriteLine(result.ToString());
       }
 
       [TestMethod]
@@ -265,6 +265,18 @@ namespace Core.Tests
          {
             Console.WriteLine("is");
          }
+      }
+
+      [TestMethod]
+      public void ImplicitCastToParameterTest()
+      {
+         Maybe<string> maybe = "Test";
+         string text = maybe ? maybe : "nothing";
+         Console.WriteLine(text);
+
+         maybe = nil;
+         text = maybe ? maybe : "nothing";
+         Console.WriteLine(text);
       }
    }
 }

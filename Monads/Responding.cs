@@ -57,6 +57,13 @@ namespace Core.Monads
 
       public static implicit operator bool(Responding<T> value) => value is Response<T>;
 
+      public static implicit operator T(Responding<T> value) => value switch
+      {
+         Response<T> response => response.Value,
+         FailedResponse<T> failed => throw failed.Exception,
+         _ => throw new InvalidCastException("Must be a Response to return a value")
+      };
+
       [Obsolete("Use bool implicit cast")]
       public abstract bool IsResponse { get; }
 

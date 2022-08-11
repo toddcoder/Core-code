@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Drawing.Text;
 using System.Windows.Forms;
 using Core.Monads;
+using Core.Strings;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Controls
@@ -27,14 +28,16 @@ namespace Core.WinForms.Controls
       }
 
       protected CheckStyle checkStyle;
+      protected Maybe<string> _emptyTextTitle;
       protected Result<Rectangle> _rectangle;
       protected Result<Font> _font;
       protected Result<Color> _color;
 
-      public UiActionWriter(bool center, CheckStyle checkStyle)
+      public UiActionWriter(bool center, CheckStyle checkStyle, Maybe<string> emptyTextTitle)
       {
          Center(center || checkStyle != CheckStyle.None);
          this.checkStyle = checkStyle;
+         _emptyTextTitle = emptyTextTitle;
 
          _rectangle = fail("Rectangle not set");
          _font = fail("Font not set");
@@ -73,6 +76,12 @@ namespace Core.WinForms.Controls
             {
                graphics.HighQuality();
                graphics.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
+               var isReplaced = text.IsEmpty() && _emptyTextTitle;
+               if (isReplaced)
+               {
+                  text = _emptyTextTitle;
+                  font = new Font(font, FontStyle.Italic);
+               }
                TextRenderer.DrawText(graphics, text, font, rectangle, color, Flags);
 
                if (checkStyle != CheckStyle.None)
