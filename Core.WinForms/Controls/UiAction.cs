@@ -664,6 +664,16 @@ namespace Core.WinForms.Controls
             }
          }
 
+         if (ShowFocus && Focused)
+         {
+            var color = getForeColor();
+            using var dashedPen = new Pen(color, 2);
+            dashedPen.DashStyle = DashStyle.Dot;
+            var rectangle = ClientRectangle;
+            rectangle.Inflate(-8, -8);
+            drawRectangle(e.Graphics, dashedPen, rectangle);
+         }
+
          if (Working)
          {
             if (_working.Map(out var warning))
@@ -1069,5 +1079,7 @@ namespace Core.WinForms.Controls
          ValidateText?.Invoke(this, args);
          ShowMessage(text, args.Type);
       }
+
+      public bool ShowFocus { get; set; }
    }
 }

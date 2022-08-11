@@ -441,5 +441,22 @@ namespace Core.Tests
          uiButton.ClickText = "Toggle working";
          form.ShowDialog();
       }
+
+      [TestMethod]
+      public void UiShowFocusTest()
+      {
+         var form = new Form();
+         var textBox = new TextBox();
+         form.Controls.Add(textBox);
+         textBox.SetUp(0, 60, 200, 40);
+         var uiButton = new UiAction(form, true) { ShowFocus = true };
+         uiButton.SetUp(0, 0, 200, 40);
+         uiButton.Message("Unfocused");
+         uiButton.GotFocus += (_, _) => uiButton.Message("Focused");
+         uiButton.LostFocus += (_, _) => uiButton.Message("Unfocused");
+         uiButton.Click += (_, _) => { };
+         uiButton.ClickText = "Does nothing";
+         form.ShowDialog();
+      }
    }
 }
