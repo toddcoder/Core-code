@@ -471,9 +471,45 @@ namespace Core.Tests
          {
             uiButton.Working = !uiButton.Working;
             uiButton.Message(uiButton.Working ? "Working" : "Not Working");
-            Task.Run(()=> uiButton.SuccessLegendAsync("saved", 2.Seconds()));
+            Task.Run(() => uiButton.SuccessLegendAsync("saved", 2.Seconds()));
          };
          uiButton.ClickText = "Toggle working";
+         form.ShowDialog();
+      }
+
+      [TestMethod]
+      public void ValidateTest()
+      {
+         var form = new Form();
+         var checkBox = new CheckBox { Text = "Toggle" };
+         form.Controls.Add(checkBox);
+         checkBox.SetUp(0, 0, 100, 40);
+         var uiButton = new UiAction(form, true);
+         uiButton.SetUp(0, 50, 200, 40);
+         uiButton.ValidateText += (_, e) => e.Type = checkBox.Checked ? UiActionType.Success : UiActionType.Failure;
+         uiButton.Uninitialized("toggled");
+         checkBox.Click += (_, _) => uiButton.Validate("Toggled");
+         form.ShowDialog();
+      }
+
+      [TestMethod]
+      public void BottomDockTest()
+      {
+         var form = new Form();
+         var panel = new Panel();
+         form.Controls.Add(panel);
+         panel.Location = new Point(0, 0);
+         panel.Size = new Size(200, 200);
+
+         var uiAction = new UiAction(form, true);
+         uiAction.SetUpInPanel(panel, dockStyle: DockStyle.Bottom);
+         uiAction.Height = 40;
+         uiAction.Message("Testing");
+
+         var label = new UiAction(form, true);
+         panel.Controls.Add(label);
+         label.AttachTo("label", uiAction);
+
          form.ShowDialog();
       }
    }
