@@ -4,8 +4,10 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Core.Collections;
+using Core.Dates.DateIncrements;
 using Core.Monads;
 using Core.Numbers;
 using Core.Objects;
@@ -1047,15 +1049,45 @@ namespace Core.WinForms.Controls
          return legend;
       }
 
+      public async Task LegendAsync(string text, TimeSpan delay, bool useControlForeColor = true )
+      {
+         Legend(text, useControlForeColor);
+         Refresh();
+
+         await Task.Delay(delay).ContinueWith(_ => _legend = nil);
+      }
+
+      public async Task LegendAsync(string text, bool useControlForeColor = true) => await LegendAsync(text, 2.Seconds(), useControlForeColor);
+
       public SubText SuccessLegend(string text)
       {
          return Legend(text, false).Set.ForeColor(Color.White).BackColor(Color.Green).End;
       }
 
+      public async Task SuccessLegendAsync(string text, TimeSpan delay)
+      {
+         SuccessLegend(text);
+         Refresh();
+
+         await Task.Delay(delay).ContinueWith(_ => _legend = nil);
+      }
+
+      public async Task SuccessLegendAsync(string text) => await SuccessLegendAsync(text, 2.Seconds());
+
       public SubText FailureLegend(string text)
       {
          return Legend(text, false).Set.ForeColor(Color.Black).BackColor(Color.Gold).End;
       }
+
+      public async Task FailureLegendAsync(string text, TimeSpan delay)
+      {
+         FailureLegend(text);
+         Refresh();
+
+         await Task.Delay(delay).ContinueWith(_ => _legend = nil);
+      }
+
+      public async Task FailureLegendAsync(string text) => await FailureLegendAsync(text, 2.Seconds());
 
       public void Legend()
       {

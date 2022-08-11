@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Core.Dates.DateIncrements;
 using Core.Strings;
@@ -456,6 +457,23 @@ namespace Core.Tests
          uiButton.LostFocus += (_, _) => uiButton.Message("Unfocused");
          uiButton.Click += (_, _) => { };
          uiButton.ClickText = "Does nothing";
+         form.ShowDialog();
+      }
+
+      [TestMethod]
+      public void DelayedButtonTest()
+      {
+         var form = new Form();
+         var uiButton = new UiAction(form, true);
+         uiButton.SetUp(0, 0, 200, 40);
+         uiButton.Message("Not Working");
+         uiButton.Click += (_, _) =>
+         {
+            uiButton.Working = !uiButton.Working;
+            uiButton.Message(uiButton.Working ? "Working" : "Not Working");
+            Task.Run(()=> uiButton.SuccessLegendAsync("saved", 2.Seconds()));
+         };
+         uiButton.ClickText = "Toggle working";
          form.ShowDialog();
       }
    }
