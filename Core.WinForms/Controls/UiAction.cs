@@ -1050,7 +1050,7 @@ namespace Core.WinForms.Controls
          return legend;
       }
 
-      public async Task LegendAsync(string text, TimeSpan delay, bool useControlForeColor = true )
+      public async Task LegendAsync(string text, TimeSpan delay, bool useControlForeColor = true)
       {
          Legend(text, useControlForeColor);
          Refresh();
@@ -1116,5 +1116,22 @@ namespace Core.WinForms.Controls
       public bool ShowFocus { get; set; }
 
       public Maybe<string> EmptyTextTitle { get; set; }
+
+      public async Task<Completion<TResult>> ExecuteAsync<TArgument, TResult>(TArgument argument, Func<TArgument, Completion<TResult>> func,
+         Action<TResult> postAction)
+      {
+         var _result = await ExecuteAsync(argument, func);
+         if (_result)
+         {
+            postAction(_result);
+         }
+
+         return _result;
+      }
+
+      public async Task<Completion<TResult>> ExecuteAsync<TArgument, TResult>(TArgument argument, Func<TArgument, Completion<TResult>> func)
+      {
+         return await Task.Run(() => func(argument));
+      }
    }
 }

@@ -32,6 +32,12 @@ namespace Core.Monads
          _ => throw new InvalidCastException("Must be a Completed to return a value")
       };
 
+      public static explicit operator Exception(Completion<T> value) => value switch
+      {
+         Interrupted<T> interrupted => interrupted.Exception,
+         _ => throw new InvalidCastException("Must be an Interrupted to return a value")
+      };
+
       public abstract Completion<TResult> Map<TResult>(Func<T, Completion<TResult>> ifCompleted);
 
       public abstract Completion<TResult> Map<TResult>(Func<T, TResult> ifCompleted);
