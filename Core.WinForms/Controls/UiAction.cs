@@ -461,7 +461,7 @@ namespace Core.WinForms.Controls
 
       public void LabeledText(string label, string text, bool line = false) => LabeledText(label, text, nil, line);
 
-      public void AttachTo(string text, Control control, string fontName = "Segoe UI", float fontSize = 9, int left = -1)
+      public void AttachTo(string text, Control control, string fontName = "Segoe UI", float fontSize = 9, int left = -1, bool stretch = false)
       {
          this.text = text;
          type = UiActionType.ControlLabel;
@@ -479,8 +479,9 @@ namespace Core.WinForms.Controls
          {
             left = control.Left;
          }
+         var width = stretch ? control.Width - left : size.Width + 20;
 
-         this.SetUp(left, control.Top - size.Height + 1, size.Width + 20, size.Height, fontName, fontSize);
+         this.SetUp(left, control.Top - size.Height + 1, width, size.Height, fontName, fontSize);
 
          Refresh();
       }

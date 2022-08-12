@@ -416,6 +416,27 @@ namespace Core.Tests
       }
 
       [TestMethod]
+      public void TestBoxLabelTest2()
+      {
+         var form = new Form();
+         var textBox = new TextBox();
+         form.Controls.Add(textBox);
+         textBox.Location = new Point(0, 30);
+         textBox.Width = form.ClientSize.Width;
+
+         var label = new UiAction(form, true);
+         label.AttachTo("Name", textBox);
+         label.Click += (_, _) => textBox.Text = "";
+         label.ClickText = "Clear text";
+
+         var status = new UiAction(form, true);
+         status.AttachTo("Name", textBox, left: 100, stretch: true);
+         status.Success("Success!");
+
+         form.ShowDialog();
+      }
+
+      [TestMethod]
       public void UiActionButtonTest()
       {
          var form = new Form();
