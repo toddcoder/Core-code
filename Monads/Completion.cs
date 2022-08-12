@@ -1,4 +1,5 @@
 ﻿using System;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads
 {
@@ -36,6 +37,12 @@ namespace Core.Monads
       {
          Interrupted<T> interrupted => interrupted.Exception,
          _ => throw new InvalidCastException("Must be an Interrupted to return a value")
+      };
+
+      public static explicit operator Maybe<Exception>(Completion<T> value) => value switch
+      {
+         Interrupted<T> interrupted => interrupted.Exception,
+         _ => nil
       };
 
       public abstract Completion<TResult> Map<TResult>(Func<T, Completion<TResult>> ifCompleted);

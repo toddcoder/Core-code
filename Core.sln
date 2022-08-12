@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31205.134
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32616.157
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core.csproj", "{FE997A92-D183-4C85-9A1A-FB032311EF62}"
 EndProject
@@ -26,6 +26,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Services", "Core.Services\Core.Services.csproj", "{DC7C3D31-254C-4D36-8A45-3CEFF224BB50}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Test", "Core.Test\Core.Test.csproj", "{DE184979-E19E-4938-BDD0-B126B7905CA6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Data.Sqlite", "Core.Data.Sqlite\Core.Data.Sqlite.csproj", "{B4371C23-FC5D-400A-819A-236417D0C917}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -81,6 +83,10 @@ Global
 		{DE184979-E19E-4938-BDD0-B126B7905CA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE184979-E19E-4938-BDD0-B126B7905CA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DE184979-E19E-4938-BDD0-B126B7905CA6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4371C23-FC5D-400A-819A-236417D0C917}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4371C23-FC5D-400A-819A-236417D0C917}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4371C23-FC5D-400A-819A-236417D0C917}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4371C23-FC5D-400A-819A-236417D0C917}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,4 +1,5 @@
 ﻿using System;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads
 {
@@ -60,14 +61,20 @@ namespace Core.Monads
       public static implicit operator T(Responding<T> value) => value switch
       {
          Response<T> response => response.Value,
-         FailedResponse<T> failed => throw failed.Exception,
+         FailedResponse<T> failedResponse => throw failedResponse.Exception,
          _ => throw new InvalidCastException("Must be a Response to return a value")
       };
 
       public static explicit operator Exception(Responding<T> value) => value switch
       {
-         FailedResponse<T> failed => failed.Exception,
+         FailedResponse<T> failedResponse => failedResponse.Exception,
          _ => throw new InvalidCastException("Must be a FailedResponse to return a value")
+      };
+
+      public static explicit operator Maybe<Exception>(Responding<T> value) => value switch
+      {
+         FailedResponse<T> failedResponse => failedResponse.Exception,
+         _ => nil
       };
 
       [Obsolete("Use bool implicit cast")]

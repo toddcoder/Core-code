@@ -21,6 +21,8 @@ namespace Core.Monads
          }
       }
 
+      public static T operator |(Maybe<T> maybe, T defaultValue) => maybe ? maybe : defaultValue;
+
       public static implicit operator Maybe<T>(T value) => value.Some();
 
       public static implicit operator Maybe<T>(Nil _) => new None<T>();

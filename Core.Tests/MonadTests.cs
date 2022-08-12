@@ -156,14 +156,16 @@ namespace Core.Tests
       {
          Maybe<(int, string)> _result = (1, "foobar");
          var _result1 = _result.Map((i, s) => i + s);
-         if (_result1.Map(out var aString))
+         if (_result1)
          {
-            Console.WriteLine(aString);
+            string value = _result1;
+            Console.WriteLine(value);
          }
 
          var _result2 = _result.Map((i, s) => (s, i));
-         if (_result2.Map(out aString, out var anInt))
+         if (_result2)
          {
+            var (aString, anInt) = ((string, int))_result2;
             Console.WriteLine(aString);
             Console.WriteLine(anInt);
          }
@@ -270,13 +272,24 @@ namespace Core.Tests
       [TestMethod]
       public void ImplicitCastToParameterTest()
       {
-         Maybe<string> maybe = "Test";
-         string text = maybe ? maybe : "nothing";
+         Maybe<string> _maybe = "Test";
+         var text = _maybe | "nothing";
          Console.WriteLine(text);
 
-         maybe = nil;
-         text = maybe ? maybe : "nothing";
+         _maybe = nil;
+         text = _maybe | "nothing";
          Console.WriteLine(text);
+
+         Result<int> _result = 153;
+         var result = _result | -1;
+         Console.WriteLine(result);
+
+         _result = fail("No number found");
+         result = _result | -1;
+         Console.WriteLine(result);
+
+         var exception = (Exception)_result;
+         Console.WriteLine(exception.Message);
       }
    }
 }
