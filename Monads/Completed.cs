@@ -204,6 +204,8 @@ namespace Core.Monads
          return predicate(value) ? this : exceptionMessage().Interrupted<T>();
       }
 
+      public override T DefaultTo(Func<Maybe<Exception>, T> defaultFunc) => Value;
+
       public override Maybe<T> Maybe() => Value;
 
       public override Result<T> Result() => Value;

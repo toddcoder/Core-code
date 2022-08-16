@@ -45,6 +45,10 @@ namespace Core.Monads
          _ => nil
       };
 
+      public static T operator |(Completion<T> completion, T defaultValue) => completion ? completion : defaultValue;
+
+      public static T operator |(Completion<T> completion, Func<T> defaultFunc) => completion ? completion : defaultFunc();
+
       public abstract Completion<TResult> Map<TResult>(Func<T, Completion<TResult>> ifCompleted);
 
       public abstract Completion<TResult> Map<TResult>(Func<T, TResult> ifCompleted);
@@ -144,6 +148,8 @@ namespace Core.Monads
          action(this);
          return this;
       }
+
+      public abstract T DefaultTo(Func<Maybe<Exception>, T> defaultFunc);
 
       public abstract Maybe<T> Maybe();
 

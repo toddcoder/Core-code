@@ -43,6 +43,10 @@ namespace Core.Monads
 
       public static T operator |(Result<T> result, T defaultValue) => result ? result : defaultValue;
 
+      public static T operator |(Result<T> result, Func<T> defaultValue) => result ? result : defaultValue();
+
+      public static T operator |(Result<T> result, Func<Exception, T> recoveryFunc) => result.Recover(recoveryFunc);
+
       public static implicit operator Result<T>(T value) => value.Success();
 
       public static implicit operator Result<T>(Exception exception) => new Failure<T>(exception);

@@ -187,6 +187,8 @@ namespace Core.Monads
 
       public override Completion<T> Where(Predicate<T> predicate, Func<string> exceptionMessage) => this;
 
+      public override T DefaultTo(Func<Maybe<Exception>, T> defaultFunc) => defaultFunc(Exception);
+
       public override Maybe<T> Maybe() => nil;
 
       public override Result<T> Result() => Exception;

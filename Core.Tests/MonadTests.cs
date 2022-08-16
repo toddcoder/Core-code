@@ -272,12 +272,24 @@ namespace Core.Tests
       [TestMethod]
       public void ImplicitCastToParameterTest()
       {
+         string defaultTo()
+         {
+            Console.WriteLine("defaultTo called");
+            return "default";
+         }
+
          Maybe<string> _maybe = "Test";
          var text = _maybe | "nothing";
          Console.WriteLine(text);
 
+         text = _maybe | defaultTo;
+         Console.WriteLine(text);
+
          _maybe = nil;
          text = _maybe | "nothing";
+         Console.WriteLine(text);
+
+         text=_maybe | defaultTo;
          Console.WriteLine(text);
 
          Result<int> _result = 153;
