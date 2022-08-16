@@ -468,7 +468,7 @@ namespace Core.WinForms.Controls
 
          control.Move += (_, _) =>
          {
-            Location = new Point(control.Left, control.Top - Height + 4);
+            Location = new Point(control.Left, control.Top - Height + 1);
             Refresh();
          };
 
@@ -479,9 +479,10 @@ namespace Core.WinForms.Controls
          {
             left = control.Left;
          }
+
          var width = stretch ? control.Width - left : size.Width + 20;
 
-         this.SetUp(left, control.Top - size.Height + 1, width, size.Height, fontName, fontSize);
+         this.SetUp(left, control.Top - size.Height - 3, width, size.Height + 4, fontName, fontSize);
 
          Refresh();
       }
