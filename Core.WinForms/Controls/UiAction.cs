@@ -1273,6 +1273,30 @@ namespace Core.WinForms.Controls
 
       public async Task ResultLegendAsync((string, UiActionType) result, int x, int y) => await ResultLegendAsync(result, x, y, 2.Seconds());
 
+      public SubText PopUp(string text) => Legend(text).Set.ForeColor(Color.Black).BackColor(Color.White).End;
+
+      public SubText PopUp(string text, int x, int y) => Legend(text, x, y).Set.ForeColor(Color.Black).BackColor(Color.White).End;
+
+      public async Task PopUpAsync(string text, TimeSpan delay)
+      {
+         PopUp(text);
+         Refresh();
+
+         await Task.Delay(delay).ContinueWith(_ => Legend());
+      }
+
+      public async Task PopUpAsync(string text) => await PopUpAsync(text, 2.Seconds());
+
+      public async Task PopUpAsync(string text, int x, int y, TimeSpan delay)
+      {
+         PopUp(text, x, y);
+         Refresh();
+
+         await Task.Delay(delay).ContinueWith(_ => Legend());
+      }
+
+      public async Task PopUpAsync(string text, int x, int y) => await PopUpAsync(text, x, y, 2.Seconds());
+
       public void Legend()
       {
          legends.Pop();
