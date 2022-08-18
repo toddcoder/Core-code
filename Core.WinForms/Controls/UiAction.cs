@@ -1273,29 +1273,29 @@ namespace Core.WinForms.Controls
 
       public async Task ResultLegendAsync((string, UiActionType) result, int x, int y) => await ResultLegendAsync(result, x, y, 2.Seconds());
 
-      public SubText PopUp(string text) => Legend(text).Set.ForeColor(Color.Black).BackColor(Color.White).End;
+      public SubText Notify(string text) => Legend(text, false).Set.ForeColor(Color.Black).BackColor(Color.White).End;
 
-      public SubText PopUp(string text, int x, int y) => Legend(text, x, y).Set.ForeColor(Color.Black).BackColor(Color.White).End;
+      public SubText Notify(string text, int x, int y) => Legend(text, x, y, false).Set.ForeColor(Color.Black).BackColor(Color.White).End;
 
-      public async Task PopUpAsync(string text, TimeSpan delay)
+      public async Task NotifyAsync(string text, TimeSpan delay)
       {
-         PopUp(text);
+         Notify(text);
          Refresh();
 
          await Task.Delay(delay).ContinueWith(_ => Legend());
       }
 
-      public async Task PopUpAsync(string text) => await PopUpAsync(text, 2.Seconds());
+      public async Task NotifyAsync(string text) => await NotifyAsync(text, 2.Seconds());
 
-      public async Task PopUpAsync(string text, int x, int y, TimeSpan delay)
+      public async Task NotifyAsync(string text, int x, int y, TimeSpan delay)
       {
-         PopUp(text, x, y);
+         Notify(text, x, y);
          Refresh();
 
          await Task.Delay(delay).ContinueWith(_ => Legend());
       }
 
-      public async Task PopUpAsync(string text, int x, int y) => await PopUpAsync(text, x, y, 2.Seconds());
+      public async Task NotifyAsync(string text, int x, int y) => await NotifyAsync(text, x, y, 2.Seconds());
 
       public void Legend()
       {
