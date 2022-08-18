@@ -1063,7 +1063,7 @@ namespace Core.WinForms.Controls
          Legend(text, useControlForeColor);
          Refresh();
 
-         await Task.Delay(delay).ContinueWith(_ => _legend = nil);
+         await Task.Delay(delay).ContinueWith(_ => Legend());
       }
 
       public async Task LegendAsync(string text, bool useControlForeColor = true) => await LegendAsync(text, 2.Seconds(), useControlForeColor);
@@ -1078,7 +1078,7 @@ namespace Core.WinForms.Controls
          SuccessLegend(text);
          Refresh();
 
-         await Task.Delay(delay).ContinueWith(_ => _legend = nil);
+         await Task.Delay(delay).ContinueWith(_ => Legend());
       }
 
       public async Task SuccessLegendAsync(string text) => await SuccessLegendAsync(text, 2.Seconds());
@@ -1093,10 +1093,69 @@ namespace Core.WinForms.Controls
          FailureLegend(text);
          Refresh();
 
-         await Task.Delay(delay).ContinueWith(_ => _legend = nil);
+         await Task.Delay(delay).ContinueWith(_ => Legend());
       }
 
       public async Task FailureLegendAsync(string text) => await FailureLegendAsync(text, 2.Seconds());
+
+      public SubText ExceptionLegend(Exception exception)
+      {
+         return Legend(exception.Message, false).Set.ForeColor(Color.White).BackColor(Color.Red).End;
+      }
+
+      public async Task ExceptionLegendSync(Exception exception, TimeSpan delay)
+      {
+         ExceptionLegend(exception);
+         Refresh();
+
+         await Task.Delay(delay).ContinueWith(_ => Legend());
+      }
+
+      public async Task ExceptionLegendSync(Exception exception) => await ExceptionLegendSync(exception, 2.Seconds());
+
+      public SubText ResultLegend(Result<string> _result)
+      {
+         if (_result.Map(out var result, out var exception))
+         {
+            return SuccessLegend(result);
+         }
+         else
+         {
+            return ExceptionLegend(exception);
+         }
+      }
+
+      public async Task ResultLegendSync(Result<string> _result, TimeSpan delay)
+      {
+         ResultLegend(_result);
+         Refresh();
+
+         await Task.Delay(delay).ContinueWith(_ => Legend());
+      }
+
+      public async Task ResultLegendSync(Result<string> _result) => await ResultLegendSync(_result, 2.Seconds());
+
+      public SubText ResultLegend((string, UiActionType) result)
+      {
+         var (message, uiActionType) = result;
+         return uiActionType switch
+         {
+            UiActionType.Success => SuccessLegend(message),
+            UiActionType.Failure => FailureLegend(message),
+            UiActionType.Exception => ExceptionLegend(fail(message)),
+            _ => Legend(message)
+         };
+      }
+
+      public async Task ResultLegendAsync((string, UiActionType) result, TimeSpan delay)
+      {
+         ResultLegend(result);
+         Refresh();
+
+         await Task.Delay(delay).ContinueWith(_ => Legend());
+      }
+
+      public async Task ResultLegendAsync((string, UiActionType) result) => await ResultLegendAsync(result, 2.Seconds());
 
       public void Legend()
       {

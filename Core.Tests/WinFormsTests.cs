@@ -492,7 +492,7 @@ namespace Core.Tests
          {
             uiButton.Working = !uiButton.Working;
             uiButton.Message(uiButton.Working ? "Working" : "Not Working");
-            Task.Run(() => uiButton.SuccessLegendAsync("saved", 2.Seconds()));
+            Task.Run(() => uiButton.SuccessLegendAsync("saved"));
          };
          uiButton.ClickText = "Toggle working";
          form.ShowDialog();
