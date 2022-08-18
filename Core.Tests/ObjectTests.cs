@@ -2,6 +2,7 @@
 using Core.Monads;
 using Core.Objects;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static Core.Objects.GetHashCodeGenerator;
 
 namespace Core.Tests
 {
@@ -16,6 +17,17 @@ namespace Core.Tests
 
          var maybe = obj.Some();
          Console.WriteLine(maybe.Map(t => t.Item1).DefaultTo(() => "none"));
+      }
+
+      [TestMethod]
+      public void GetHashCodeTest()
+      {
+         int hash = hashCode() + 153 + "foobar" + true;
+         Console.WriteLine(hash);
+         int hash2 = hashCode() + 153 + "foobar" + true;
+         Assert.AreEqual(hash, hash2);
+         hash2 = hashCode() + 154 + "foobaz" + false;
+         Console.WriteLine(hash2);
       }
    }
 }

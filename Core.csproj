@@ -328,6 +328,7 @@
     <Compile Include="Objects\EquatableBase.cs" />
     <Compile Include="Objects\EquatableComparableBase.cs" />
     <Compile Include="Objects\FieldGetter.cs" />
+    <Compile Include="Objects\GetHashCodeGenerator.cs" />
     <Compile Include="Objects\IEvaluator.cs" />
     <Compile Include="Objects\IFormatter.cs" />
     <Compile Include="Objects\IGetter.cs" />
