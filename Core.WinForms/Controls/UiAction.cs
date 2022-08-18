@@ -7,6 +7,7 @@ using System.Drawing.Drawing2D;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Core.Collections;
+using Core.DataStructures;
 using Core.Dates.DateIncrements;
 using Core.Monads;
 using Core.Numbers;
@@ -114,10 +115,10 @@ namespace Core.WinForms.Controls
       protected Lazy<Stopwatch> stopwatch;
       protected Lazy<BackgroundWorker> backgroundWorker;
       protected Maybe<int> _labelWidth;
-      protected Maybe<SubText> _legend;
       protected bool oneTimeTimer;
       protected Maybe<SubText> _working;
       protected Timer workingTimer;
+      protected MaybeStack<SubText> legends;
 
       public event EventHandler<AutomaticMessageArgs> AutomaticMessage;
       public event EventHandler<PaintEventArgs> Painting;
@@ -247,7 +248,7 @@ namespace Core.WinForms.Controls
          control.Controls.Add(this);
          control.Resize += (_, _) => Refresh();
 
-         _legend = nil;
+         legends = new MaybeStack<SubText>();
          _working = nil;
          EmptyTextTitle = "none";
 
@@ -653,7 +654,7 @@ namespace Core.WinForms.Controls
                subText.Draw(e.Graphics, foreColor, backColor);
             }
 
-            if (_legend.Map(out var legend))
+            if (legends.Peek().Map(out var legend))
             {
                legend.Draw(e.Graphics, foreColor, backColor);
             }
@@ -1053,7 +1054,7 @@ namespace Core.WinForms.Controls
             .Outline(true)
             .UseControlForeColor(useControlForeColor)
             .End;
-         _legend = legend;
+         legends.Push(legend);
 
          return legend;
       }
@@ -1066,7 +1067,7 @@ namespace Core.WinForms.Controls
             .Outline(true)
             .UseControlForeColor(useControlForeColor)
             .End;
-         _legend = legend;
+         legends.Push(legend);
 
          return legend;
       }
@@ -1274,7 +1275,13 @@ namespace Core.WinForms.Controls
 
       public void Legend()
       {
-         _legend = nil;
+         legends.Pop();
+         refresh();
+      }
+
+      public void ClearAllLegends()
+      {
+         legends.Clear();
          refresh();
       }
 
