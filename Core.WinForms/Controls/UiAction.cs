@@ -1075,7 +1075,7 @@ namespace Core.WinForms.Controls
       public async Task LegendAsync(string text, TimeSpan delay, bool useControlForeColor = true)
       {
          Legend(text, useControlForeColor);
-         Refresh();
+         refresh();
 
          await Task.Delay(delay).ContinueWith(_ => Legend());
       }
@@ -1085,7 +1085,7 @@ namespace Core.WinForms.Controls
       public async Task LegendAsync(string text, int x, int y, TimeSpan delay, bool useControlForeColor = true)
       {
          Legend(text, x, y, useControlForeColor);
-         Refresh();
+         refresh();
 
          await Task.Delay(delay).ContinueWith(_ => Legend());
       }
@@ -1122,7 +1122,7 @@ namespace Core.WinForms.Controls
       public async Task SuccessLegendAsync(string text, TimeSpan delay)
       {
          SuccessLegend(text);
-         Refresh();
+         refresh();
 
          await Task.Delay(delay).ContinueWith(_ => Legend());
       }
@@ -1132,7 +1132,7 @@ namespace Core.WinForms.Controls
       public async Task SuccessLegendAsync(string text, int x, int y, TimeSpan delay)
       {
          SuccessLegend(text, x, y);
-         Refresh();
+         refresh();
 
          await Task.Delay(delay).ContinueWith(_ => Legend());
       }
@@ -1163,7 +1163,7 @@ namespace Core.WinForms.Controls
       public async Task FailureLegendAsync(string text, TimeSpan delay)
       {
          FailureLegend(text);
-         Refresh();
+         refresh();
 
          await Task.Delay(delay).ContinueWith(_ => Legend());
       }
@@ -1173,7 +1173,7 @@ namespace Core.WinForms.Controls
       public async Task FailureLegendAsync(string text, int x, int y, TimeSpan delay)
       {
          FailureLegend(text, x, y);
-         Refresh();
+         refresh();
 
          await Task.Delay(delay).ContinueWith(_ => Legend());
       }
@@ -1204,7 +1204,7 @@ namespace Core.WinForms.Controls
       public async Task ExceptionLegendSync(Exception exception, TimeSpan delay)
       {
          ExceptionLegend(exception);
-         Refresh();
+         refresh();
 
          await Task.Delay(delay).ContinueWith(_ => Legend());
       }
@@ -1214,7 +1214,7 @@ namespace Core.WinForms.Controls
       public async Task ExceptionLegendSync(Exception exception, int x, int y, TimeSpan delay)
       {
          ExceptionLegend(exception, x, y);
-         Refresh();
+         refresh();
 
          await Task.Delay(delay).ContinueWith(_ => Legend());
       }
@@ -1259,7 +1259,7 @@ namespace Core.WinForms.Controls
       public async Task ResultLegendAsync(Result<string> _result, TimeSpan delay)
       {
          ResultLegend(_result);
-         Refresh();
+         refresh();
 
          await Task.Delay(delay).ContinueWith(_ => Legend());
       }
@@ -1269,7 +1269,7 @@ namespace Core.WinForms.Controls
       public async Task ResultLegendAsync(Result<string> _result, int x, int y, TimeSpan delay)
       {
          ResultLegend(_result, x, y);
-         Refresh();
+         refresh();
 
          await Task.Delay(delay).ContinueWith(_ => Legend());
       }
@@ -1314,7 +1314,7 @@ namespace Core.WinForms.Controls
       public async Task ResultLegendAsync((string, UiActionType) result, TimeSpan delay)
       {
          ResultLegend(result);
-         Refresh();
+         refresh();
 
          await Task.Delay(delay).ContinueWith(_ => Legend());
       }
@@ -1324,7 +1324,7 @@ namespace Core.WinForms.Controls
       public async Task ResultLegendAsync((string, UiActionType) result, int x, int y, TimeSpan delay)
       {
          ResultLegend(result, x, y);
-         Refresh();
+         refresh();
 
          await Task.Delay(delay).ContinueWith(_ => Legend());
       }
@@ -1349,7 +1349,7 @@ namespace Core.WinForms.Controls
       public async Task NotifyAsync(string text, TimeSpan delay)
       {
          Notify(text);
-         Refresh();
+         refresh();
 
          await Task.Delay(delay).ContinueWith(_ => Legend());
       }
@@ -1359,7 +1359,7 @@ namespace Core.WinForms.Controls
       public async Task NotifyAsync(string text, int x, int y, TimeSpan delay)
       {
          Notify(text, x, y);
-         Refresh();
+         refresh();
 
          await Task.Delay(delay).ContinueWith(_ => Legend());
       }
