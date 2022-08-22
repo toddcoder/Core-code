@@ -119,6 +119,7 @@ namespace Core.WinForms.Controls
       protected Maybe<SubText> _working;
       protected Timer workingTimer;
       protected MaybeStack<SubText> legends;
+      protected bool isDirty;
 
       public event EventHandler<AutomaticMessageArgs> AutomaticMessage;
       public event EventHandler<PaintEventArgs> Painting;
@@ -277,7 +278,15 @@ namespace Core.WinForms.Controls
          return new SubText("working", 4, y, getForeColor(), getBackColor()).Set.FontSize(8).UseControlForeColor(true).Outline(true).End;
       }
 
-      public UiActionType Type => type;
+      public UiActionType Type
+      {
+         get => type;
+         set
+         {
+            type = value;
+            refresh();
+         }
+      }
 
       public bool Checked
       {
@@ -694,6 +703,17 @@ namespace Core.WinForms.Controls
                var backColor = getBackColor();
                warning.Draw(e.Graphics, foreColor, backColor);
             }
+         }
+
+         if (IsDirty)
+         {
+            var bullet = "•";
+            var foreColor = getForeColor();
+            var backColor = getBackColor();
+            using var font = getFont();
+            var size = TextRenderer.MeasureText(e.Graphics, bullet, font);
+            var location = new Point(ClientRectangle.Width - size.Width - 4, 4);
+            TextRenderer.DrawText(e.Graphics, bullet, font, location, foreColor, backColor);
          }
 
          Painting?.Invoke(this, e);
@@ -1422,6 +1442,16 @@ namespace Core.WinForms.Controls
       public async Task<Completion<TResult>> ExecuteAsync<TArgument, TResult>(TArgument argument, Func<TArgument, Completion<TResult>> func)
       {
          return await Task.Run(() => func(argument));
+      }
+
+      public bool IsDirty
+      {
+         get => isDirty;
+         set
+         {
+            isDirty = value;
+            refresh();
+         }
       }
    }
 }

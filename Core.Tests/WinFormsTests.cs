@@ -544,5 +544,17 @@ namespace Core.Tests
          form.ShowDialog();
          Console.WriteLine($"<{uiAction.Text}>");
       }
+
+      [TestMethod]
+      public void DirtyUiActionTest()
+      {
+         var form = new Form();
+         var uiAction = new UiAction(form, true);
+         uiAction.SetUp(0, 0, 200, 40);
+         uiAction.Message("This is dirty");
+         uiAction.IsDirty = true;
+         uiAction.ClickText = "Click";
+         form.ShowDialog();
+      }
    }
 }
