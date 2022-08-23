@@ -43,6 +43,8 @@ namespace Core.Monads
          _ => throw new InvalidCastException("Must be a Some to return a value")
       };
 
+      public static Maybe<T> operator &(bool test, Maybe<T> value) => test ? value : nil;
+
       [Obsolete("Use as bool")]
       public abstract bool IsSome { get; }
 

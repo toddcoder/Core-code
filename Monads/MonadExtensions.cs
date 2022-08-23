@@ -1327,7 +1327,7 @@ namespace Core.Monads
          return isMatched(array.Length > 0, () => array.Max());
       }
 
-      public static Matched<T> maxOrNotMatched<T, TMax>(this IEnumerable<T> enumerable, Func<T, TMax> maxOnFunc)
+      public static Matched<T> MaxOrNotMatched<T, TMax>(this IEnumerable<T> enumerable, Func<T, TMax> maxOnFunc)
       {
          var array = enumerable.ToArray();
          return isMatched(array.Length > 0, () =>
@@ -1337,13 +1337,13 @@ namespace Core.Monads
          });
       }
 
-      public static Matched<T> minOrNotMatched<T>(this IEnumerable<T> enumerable)
+      public static Matched<T> MinOrNotMatched<T>(this IEnumerable<T> enumerable)
       {
          var array = enumerable.ToArray();
          return isMatched(array.Length > 0, () => array.Min());
       }
 
-      public static Matched<T> minOrNotMatched<T, TMin>(this IEnumerable<T> enumerable, Func<T, TMin> minOnFunc)
+      public static Matched<T> MinOrNotMatched<T, TMin>(this IEnumerable<T> enumerable, Func<T, TMin> minOnFunc)
       {
          var array = enumerable.ToArray();
          return isMatched(array.Length > 0, () =>

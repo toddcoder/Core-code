@@ -61,6 +61,7 @@
     <Compile Include="Controls\BusyProcessor.cs" />
     <Compile Include="Controls\BusyTextProcessor.cs" />
     <Compile Include="Controls\CheckStyle.cs" />
+    <Compile Include="Controls\Chooser.cs" />
     <Compile Include="Controls\ControlSetupExtensions.cs" />
     <Compile Include="Controls\ExRichTextBox.cs">
       <SubType>Component</SubType>

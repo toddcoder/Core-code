@@ -76,7 +76,7 @@ namespace Core.WinForms.Controls
             {
                graphics.HighQuality();
                graphics.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
-               var isReplaced = text.IsEmpty() && _emptyTextTitle;
+               var isReplaced = text.IsEmpty() && (bool)_emptyTextTitle;
                if (isReplaced)
                {
                   text = _emptyTextTitle;
