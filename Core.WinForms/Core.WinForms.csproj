@@ -61,6 +61,12 @@
     <Compile Include="Controls\BusyProcessor.cs" />
     <Compile Include="Controls\BusyTextProcessor.cs" />
     <Compile Include="Controls\CheckStyle.cs" />
+    <Compile Include="Controls\Chooser.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\Chooser.Designer.cs">
+      <DependentUpon>Chooser.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ControlSetupExtensions.cs" />
     <Compile Include="Controls\ExRichTextBox.cs">
       <SubType>Component</SubType>
@@ -134,6 +140,9 @@
     <Compile Include="WinFormsExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Controls\Chooser.resx">
+      <DependentUpon>Chooser.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ControlWrappers\tape.png" />
   </ItemGroup>
   <ItemGroup>

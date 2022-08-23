@@ -562,6 +562,11 @@ namespace Core.Tests
          var form = new Form();
          var uiAction = new UiAction(form, true);
          uiAction.SetUp(0, 0, 200, 40);
+         uiAction.Click += (_, _) =>
+         {
+            _ = uiAction.Choose("A,B,C", new[] { "Alpha", "Bravo", "Charlie" });
+         };
+         uiAction.ClickText = "Select item";
 
          form.ShowDialog();
       }

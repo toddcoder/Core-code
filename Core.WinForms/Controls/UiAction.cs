@@ -1453,5 +1453,20 @@ namespace Core.WinForms.Controls
             refresh();
          }
       }
+
+      public Maybe<string> Choose(string title, IEnumerable<string> choices)
+      {
+         var _choice = Chooser.Get(title, choices);
+         if (_choice)
+         {
+            Success(_choice);
+         }
+         else
+         {
+            Failure("");
+         }
+
+         return _choice;
+      }
    }
 }
