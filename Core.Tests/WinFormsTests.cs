@@ -5,7 +5,6 @@ using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
-using Core.Collections;
 using Core.Dates.DateIncrements;
 using Core.Strings;
 using Core.WinForms;
@@ -563,12 +562,7 @@ namespace Core.Tests
          var form = new Form();
          var uiAction = new UiAction(form, true);
          uiAction.SetUp(0, 0, 200, 40);
-         uiAction.Choices = new StringHash(true)
-         {
-            ["a"] = "Alpha",
-            ["b"] = "Bravo",
-            ["c"] = "Charlie"
-         };
+
          form.ShowDialog();
       }
    }

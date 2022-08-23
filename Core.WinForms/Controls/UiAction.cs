@@ -120,7 +120,6 @@ namespace Core.WinForms.Controls
       protected Timer workingTimer;
       protected MaybeStack<SubText> legends;
       protected bool isDirty;
-      protected Maybe<Chooser> _chooser;
 
       public event EventHandler<AutomaticMessageArgs> AutomaticMessage;
       public event EventHandler<PaintEventArgs> Painting;
@@ -268,8 +267,6 @@ namespace Core.WinForms.Controls
 
             Refresh();
          };
-
-         _chooser = nil;
       }
 
       protected SubText getWorking()
@@ -1456,42 +1453,5 @@ namespace Core.WinForms.Controls
             refresh();
          }
       }
-
-      protected void onClick(object sender, EventArgs e)
-      {
-         if (_chooser.Map(out var chooser))
-         {
-            var _value = chooser.Next();
-            if (_value)
-            {
-               Success(_value);
-            }
-            else
-            {
-               Failure("");
-            }
-         }
-      }
-
-      public Maybe<StringHash> Choices
-      {
-         get => _chooser.Map(chooser => chooser.Choices);
-         set
-         {
-            _chooser = value.Map(sh => new Chooser(sh));
-            if (_chooser)
-            {
-               Click += onClick;
-            }
-            else
-            {
-               Click -= onClick;
-            }
-         }
-      }
-
-      public Maybe<string> SelectedKey => _chooser.Map(chooser => chooser.Key);
-
-      public Maybe<string> SelectedValue => _chooser.Map(chooser => chooser.Value);
    }
 }
