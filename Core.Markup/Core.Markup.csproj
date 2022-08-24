@@ -48,6 +48,7 @@
     <Compile Include="Html\Selector.cs" />
     <Compile Include="Html\Style.cs" />
     <Compile Include="Html\StyleBuilder.cs" />
+    <Compile Include="Markdown\MarkdownWriter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rtf\Alignment.cs" />
     <Compile Include="Rtf\FieldType.cs" />
