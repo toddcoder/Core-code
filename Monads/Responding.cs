@@ -83,6 +83,16 @@ namespace Core.Monads
 
       public static T operator |(Responding<T> responding, Func<Maybe<Exception>, T> defaultFunc) => responding.DefaultTo(defaultFunc);
 
+      public static Responding<T> operator *(Responding<T> responding, Action<T> action)
+      {
+         if (responding)
+         {
+            action(responding);
+         }
+
+         return responding;
+      }
+
       [Obsolete("Use bool implicit cast")]
       public abstract bool IsResponse { get; }
 

@@ -45,6 +45,16 @@ namespace Core.Monads
 
       public static Maybe<T> operator &(bool test, Maybe<T> value) => test ? value : nil;
 
+      public static Maybe<T> operator *(Maybe<T> value, Action<T> action)
+      {
+         if (value)
+         {
+            action(value);
+         }
+
+         return value;
+      }
+
       [Obsolete("Use as bool")]
       public abstract bool IsSome { get; }
 

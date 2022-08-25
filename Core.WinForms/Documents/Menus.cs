@@ -17,6 +17,7 @@ namespace Core.WinForms.Documents
       protected Hash<ToolStripItem, Func<string>> dynamicTextItems;
       protected StringHash<int> tabIndexes;
       protected int tabIndex;
+      protected Result<string> _currentMenu;
 
       public Menus()
       {
@@ -24,6 +25,7 @@ namespace Core.WinForms.Documents
          dynamicTextItems = new Hash<ToolStripItem, Func<string>>();
          tabIndexes = new StringHash<int>(true);
          tabIndex = 0;
+         _currentMenu = fail("Parent menu not set");
       }
 
       public void Menu(string text, string shortcut = "")
@@ -36,6 +38,7 @@ namespace Core.WinForms.Documents
 
          menuItems[item.Name] = item;
          tabIndexes[item.Name] = tabIndex++;
+         _currentMenu = text;
       }
 
       public void ContextMenu(string text, EventHandler handler, string shortcut = "", bool isChecked = false)
@@ -89,6 +92,11 @@ namespace Core.WinForms.Documents
          }
       }
 
+      public void Menu(string text, EventHandler handler, string shortcut = "", bool isChecked = false, int index = -1)
+      {
+         Menu(_currentMenu, text, handler, shortcut, isChecked, index);
+      }
+
       public void Menu(string parentText, Func<string> textFunc, EventHandler handler, string shortcut = "", bool isChecked = false, int index = -1)
       {
          var parent = getParent(parentText);
@@ -108,6 +116,11 @@ namespace Core.WinForms.Documents
          dynamicTextItems[item] = textFunc;
       }
 
+      public void Menu(Func<string> textFunc, EventHandler handler, string shortcut = "", bool isChecked = false, int index = -1)
+      {
+         Menu(_currentMenu, textFunc, handler, shortcut, isChecked, index);
+      }
+
       public void AddHandler(string parentText, string text, EventHandler handler)
       {
          if (Submenus(parentText).Map(out var submenus) && submenus.Map(text, out var toolStripMenuItem))
@@ -122,12 +135,16 @@ namespace Core.WinForms.Documents
          from d in item.ClearEvent("Click").IfThen(_ => item.Click += handler)
          select d;
 
+      public Maybe<Delegate> ReplaceHandler(string text, EventHandler handler) => ReplaceHandler(_currentMenu, text, handler);
+
       public void MenuSeparator(string parentText)
       {
          var parent = getParent(parentText);
          var item = new ToolStripSeparator();
          parent.DropDownItems.Add(item);
       }
+
+      public void MenuSeparator() => MenuSeparator(_currentMenu);
 
       public void ContextMenuSeparator()
       {
@@ -150,6 +167,8 @@ namespace Core.WinForms.Documents
          parent.DropDownItems.Remove(item);
       }
 
+      public void RemoveMenu(string text) => RemoveMenu(_currentMenu, text);
+
       public void RemoveMenu(string parentText, int index)
       {
          var parent = getParent(parentText);
@@ -162,6 +181,8 @@ namespace Core.WinForms.Documents
 
          parent.DropDownItems.RemoveAt(index);
       }
+
+      public void RemoveMenu(int index) => RemoveMenu(_currentMenu, index);
 
       protected static Result<Keys> shortcutKeys(string text)
       {
