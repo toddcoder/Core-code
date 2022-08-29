@@ -282,7 +282,7 @@ namespace Core.Tests
          var text = _maybe | "nothing";
          Console.WriteLine(text);
 
-         text = _maybe | defaultTo;
+         text = _maybe | "def" + "ault";//defaultTo;
          Console.WriteLine(text);
 
          _maybe = nil;

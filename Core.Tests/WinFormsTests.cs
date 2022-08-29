@@ -157,7 +157,7 @@ namespace Core.Tests
       public void RoundedMessageTest()
       {
          var form = new Form();
-         var message = new RoundedUiAction(form, true) { CornerRadius = 8 };
+         var message = new UiAction(form, true) { Arrow = true };
          message.SetUp(4, 4, form.ClientSize.Width - 20, 27, AnchorStyles.Left);
          message.Message("Round");
          form.ShowDialog();
@@ -167,7 +167,7 @@ namespace Core.Tests
       public void ClickableRoundedMessageTest()
       {
          var form = new Form();
-         var message = new RoundedUiAction(form, true) { CornerRadius = 8 };
+         var message = new UiAction(form, true) { Arrow = true };
          message.SetUp(4, 4, form.ClientSize.Width - 20, 27, AnchorStyles.Left);
          message.Message("Round");
          message.Click += (_, _) => message.Message("Clicked");
@@ -562,10 +562,7 @@ namespace Core.Tests
          var form = new Form();
          var uiAction = new UiAction(form, true);
          uiAction.SetUp(0, 0, 200, 40);
-         uiAction.Click += (_, _) =>
-         {
-            _ = uiAction.Choose("A,B,C", new[] { "Alpha", "Bravo", "Charlie" });
-         };
+         uiAction.Click += (_, _) => { _ = uiAction.Choose("A,B,C", new[] { "Alpha", "Bravo", "Charlie" }); };
          uiAction.ClickText = "Select item";
 
          form.ShowDialog();

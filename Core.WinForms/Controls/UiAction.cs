@@ -23,6 +23,8 @@ namespace Core.WinForms.Controls
       protected const string BUSY_TEXT_PROCESSOR_NOT_INITIALIZED = "BusyTextProcessor not initialized";
       protected const string PROGRESS_DEFINITE_PROCESSOR_NOT_INITIALIZED = "Progress Definite Processor not initialized";
       protected const string BUSY_PROCESSOR_NOT_INITIALIZED = "Busy Processor Not Initialized";
+      protected const float START_AMOUNT = .9f;
+      protected const float SCALE_AMOUNT = .5f;
 
       protected static Hash<UiActionType, Color> globalForeColors;
       protected static Hash<UiActionType, Color> globalBackColors;
@@ -976,9 +978,85 @@ namespace Core.WinForms.Controls
          }
       }
 
-      protected virtual void drawRectangle(Graphics graphics, Pen pen, Rectangle rectangle) => graphics.DrawRectangle(pen, rectangle);
+      protected bool drawArrowRectangle(Graphics graphics, Pen pen, Rectangle rectangle)
+      {
+         if (Arrow)
+         {
+            graphics.HighQuality();
+            var arrowSection = rectangle.Width * START_AMOUNT;
+            var arrowPoints = new PointF[]
+            {
+               new(0, 0),
+               new(arrowSection, 0),
+               new(rectangle.Width, rectangle.Height / 2.0f),
+               new(arrowSection, Height),
+               new(0, rectangle.Height),
+               new(0, 0)
+            };
 
-      protected virtual void fillRectangle(Graphics graphics, Brush brush, Rectangle rectangle) => graphics.FillRectangle(brush, rectangle);
+            using var path = new GraphicsPath();
+            path.AddLines(arrowPoints);
+            path.CloseFigure();
+
+            using var matrix = new Matrix(1, 0, 0, 1, 0, 0);
+            path.Transform(matrix);
+            graphics.DrawPath(pen, path);
+
+            return true;
+         }
+         else
+         {
+            return false;
+         }
+      }
+
+      protected virtual void drawRectangle(Graphics graphics, Pen pen, Rectangle rectangle)
+      {
+         if (!drawArrowRectangle(graphics, pen, rectangle))
+         {
+            graphics.DrawRectangle(pen, rectangle);
+         }
+      }
+
+      protected bool fillArrowRectangle(Graphics graphics, Brush brush, Rectangle rectangle)
+      {
+         if (Arrow)
+         {
+            graphics.HighQuality();
+            var arrowSection = rectangle.Width * START_AMOUNT;
+            var arrowPoints = new PointF[]
+            {
+               new(0, 0),
+               new(arrowSection, 0),
+               new(rectangle.Width, rectangle.Height / 2.0f),
+               new(arrowSection, Height),
+               new(0, rectangle.Height),
+               new(0, 0)
+            };
+
+            using var path = new GraphicsPath();
+            path.AddLines(arrowPoints);
+            path.CloseFigure();
+
+            using var matrix = new Matrix(1, 0, 0, 1, 0, 0);
+            path.Transform(matrix);
+            graphics.FillPath(brush, path);
+
+            return true;
+         }
+         else
+         {
+            return false;
+         }
+      }
+
+      protected virtual void fillRectangle(Graphics graphics, Brush brush, Rectangle rectangle)
+      {
+         if (!fillArrowRectangle(graphics, brush, rectangle))
+         {
+            graphics.FillRectangle(brush, rectangle);
+         }
+      }
 
       public SubText SubText(string text, int x, int y)
       {
@@ -1468,5 +1546,7 @@ namespace Core.WinForms.Controls
 
          return _choice;
       }
+
+      public bool Arrow { get; set; }
    }
 }
