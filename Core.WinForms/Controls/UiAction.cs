@@ -986,11 +986,12 @@ namespace Core.WinForms.Controls
             var arrowSection = rectangle.Width * START_AMOUNT;
             var arrowPoints = new PointF[]
             {
-               new(0, 0),
+               new(5, 0),
                new(arrowSection, 0),
                new(rectangle.Width, rectangle.Height / 2.0f),
                new(arrowSection, Height),
                new(0, rectangle.Height),
+               new(rectangle.Width - arrowSection, rectangle.Height / 2.0f),
                new(0, 0)
             };
 
@@ -998,8 +999,8 @@ namespace Core.WinForms.Controls
             path.AddLines(arrowPoints);
             path.CloseFigure();
 
-            using var matrix = new Matrix(1, 0, 0, 1, 0, 0);
-            path.Transform(matrix);
+            /*using var matrix = new Matrix(1, 0, 0, 1, 0, 0);
+            path.Transform(matrix);*/
             graphics.DrawPath(pen, path);
 
             return true;
@@ -1031,6 +1032,7 @@ namespace Core.WinForms.Controls
                new(rectangle.Width, rectangle.Height / 2.0f),
                new(arrowSection, Height),
                new(0, rectangle.Height),
+               new(rectangle.Width - arrowSection, rectangle.Height / 2.0f),
                new(0, 0)
             };
 
@@ -1038,8 +1040,8 @@ namespace Core.WinForms.Controls
             path.AddLines(arrowPoints);
             path.CloseFigure();
 
-            using var matrix = new Matrix(1, 0, 0, 1, 0, 0);
-            path.Transform(matrix);
+            /*using var matrix = new Matrix(1, 0, 0, 1, 0, 0);
+            path.Transform(matrix);*/
             graphics.FillPath(brush, path);
 
             return true;

@@ -157,8 +157,8 @@ namespace Core.Tests
       public void RoundedMessageTest()
       {
          var form = new Form();
-         var message = new UiAction(form, true) { Arrow = true };
-         message.SetUp(4, 4, form.ClientSize.Width - 20, 27, AnchorStyles.Left);
+         var message = new UiAction(form, true, false) { Arrow = true };
+         message.SetUp(4, 4, form.ClientSize.Width - 20, 100, AnchorStyles.Left);
          message.Message("Round");
          form.ShowDialog();
       }
