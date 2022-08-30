@@ -24,7 +24,6 @@ namespace Core.WinForms.Controls
       protected const string PROGRESS_DEFINITE_PROCESSOR_NOT_INITIALIZED = "Progress Definite Processor not initialized";
       protected const string BUSY_PROCESSOR_NOT_INITIALIZED = "Busy Processor Not Initialized";
       protected const float START_AMOUNT = .9f;
-      protected const float SCALE_AMOUNT = .5f;
 
       protected static Hash<UiActionType, Color> globalForeColors;
       protected static Hash<UiActionType, Color> globalBackColors;
@@ -503,10 +502,10 @@ namespace Core.WinForms.Controls
 
       public string ClickText
       {
-         get => _clickText.DefaultTo(() => text);
+         get => _clickText | text;
          set
          {
-            _clickText = maybe(value.IsNotEmpty(), () => value);
+            _clickText = value.IsNotEmpty() & value.Some();
             this.Do(setToolTip);
          }
       }
@@ -565,19 +564,35 @@ namespace Core.WinForms.Controls
 
       protected Color getForeColor(UiActionType type) => foreColors[type];
 
-      protected Color getForeColor() => _foreColor.DefaultTo(() => foreColors[type]);
+      protected Color getForeColor() => _foreColor | (() => foreColors[type]);
 
       protected Color getBackColor(UiActionType type) => backColors[type];
 
-      protected Color getBackColor() => _backColor.DefaultTo(() => backColors[type]);
+      protected Color getBackColor() => _backColor | (() => backColors[type]);
 
       protected MessageStyle getStyle(UiActionType type) => styles[type];
 
-      protected MessageStyle getStyle() => _style.DefaultTo(() => styles[type]);
+      protected MessageStyle getStyle() => _style | (() => styles[type]);
+
+      protected Rectangle getClientRectangle()
+      {
+         if (Arrow)
+         {
+            var arrowSection = (int)(ClientRectangle.Width * START_AMOUNT);
+            var remainder = ClientRectangle.Width - arrowSection;
+            return ClientRectangle with { X = Width - arrowSection, Width = Width - 2 * remainder };
+         }
+         else
+         {
+            return ClientRectangle;
+         }
+      }
 
       protected override void OnPaint(PaintEventArgs e)
       {
          base.OnPaint(e);
+
+         var clientRectangle = getClientRectangle();
 
          void paintStopwatch()
          {
@@ -586,7 +601,7 @@ namespace Core.WinForms.Controls
                var elapsed = stopwatch.Value.Elapsed.ToString(@"mm\:ss");
                using var font = new Font("Consolas", 8);
                var size = TextRenderer.MeasureText(e.Graphics, elapsed, font);
-               var location = new Point(ClientRectangle.Width - size.Width - 20, 4);
+               var location = new Point(clientRectangle.Width - size.Width - 20, 4);
                var rectangle = new Rectangle(location, size);
                TextRenderer.DrawText(e.Graphics, elapsed, font, rectangle, Color.White);
                using var pen = new Pen(Color.White);
@@ -601,7 +616,7 @@ namespace Core.WinForms.Controls
          };
          var writer = new UiActionWriter(Center, checkStyle, EmptyTextTitle)
          {
-            Rectangle = ClientRectangle,
+            Rectangle = clientRectangle,
             Font = getFont(),
             Color = getForeColor()
          };
@@ -639,7 +654,7 @@ namespace Core.WinForms.Controls
             case UiActionType.Labeled:
             {
                var processor = new LabelProcessor(Label, text, Line, _labelWidth, getFont(), EmptyTextTitle);
-               processor.OnPaint(e.Graphics, ClientRectangle);
+               processor.OnPaint(e.Graphics, clientRectangle);
                break;
             }
             case UiActionType.ControlLabel:
@@ -675,13 +690,13 @@ namespace Core.WinForms.Controls
          {
             var color = getForeColor();
             using var pen = new Pen(color, 4);
-            e.Graphics.DrawLine(pen, ClientRectangle.Right - 4, 4, ClientRectangle.Right - 4, ClientRectangle.Bottom - 4);
+            e.Graphics.DrawLine(pen, clientRectangle.Right - 4, 4, clientRectangle.Right - 4, clientRectangle.Bottom - 4);
 
             if (mouseInside || mouseDown)
             {
                using var dashedPen = new Pen(color, 1);
                dashedPen.DashStyle = DashStyle.Dash;
-               var rectangle = ClientRectangle;
+               var rectangle = clientRectangle;
                rectangle.Inflate(-2, -2);
                drawRectangle(e.Graphics, dashedPen, rectangle);
             }
@@ -692,7 +707,7 @@ namespace Core.WinForms.Controls
             var color = getForeColor();
             using var dashedPen = new Pen(color, 2);
             dashedPen.DashStyle = DashStyle.Dot;
-            var rectangle = ClientRectangle;
+            var rectangle = clientRectangle;
             rectangle.Inflate(-8, -8);
             drawRectangle(e.Graphics, dashedPen, rectangle);
          }
@@ -714,7 +729,7 @@ namespace Core.WinForms.Controls
             var backColor = getBackColor();
             using var font = getFont();
             var size = TextRenderer.MeasureText(e.Graphics, bullet, font);
-            var location = new Point(ClientRectangle.Width - size.Width - 4, 4);
+            var location = new Point(clientRectangle.Width - size.Width - 4, 4);
             TextRenderer.DrawText(e.Graphics, bullet, font, location, foreColor, backColor);
          }
 
@@ -723,6 +738,8 @@ namespace Core.WinForms.Controls
 
       protected override void OnPaintBackground(PaintEventArgs pevent)
       {
+         var clientRectangle = getClientRectangle();
+
          base.OnPaintBackground(pevent);
 
          switch (type)
@@ -741,7 +758,7 @@ namespace Core.WinForms.Controls
             }
             case UiActionType.ProgressDefinite:
             {
-               progressDefiniteProcessor.ActivateWith(() => new ProgressDefiniteProcessor(Font, pevent.Graphics, ClientRectangle));
+               progressDefiniteProcessor.ActivateWith(() => new ProgressDefiniteProcessor(Font, pevent.Graphics, clientRectangle));
                progressDefiniteProcessor.Value.OnPaint(pevent.Graphics);
                var textRectangle = progressDefiniteProcessor.Value.TextRectangle;
 
@@ -771,7 +788,7 @@ namespace Core.WinForms.Controls
                fillRectangle(pevent.Graphics, brush, ClientRectangle);
 
                using var pen = new Pen(Color.Black, 10);
-               drawRectangle(pevent.Graphics, pen, ClientRectangle);
+               drawRectangle(pevent.Graphics, pen, clientRectangle);
                break;
             }
             case UiActionType.BusyText:
@@ -786,7 +803,7 @@ namespace Core.WinForms.Controls
             case UiActionType.Labeled:
             {
                var processor = new LabelProcessor(Label, text, Line, _labelWidth, getFont(), EmptyTextTitle);
-               processor.OnPaintBackground(pevent.Graphics, ClientRectangle);
+               processor.OnPaintBackground(pevent.Graphics, clientRectangle);
                break;
             }
             case UiActionType.ControlLabel:
@@ -809,10 +826,10 @@ namespace Core.WinForms.Controls
             using var darkGrayPen = new Pen(Color.DarkGray, 1);
             using var lightPen = new Pen(Color.White, 1);
 
-            var left = ClientRectangle.Left;
-            var top = ClientRectangle.Top;
-            var width = ClientRectangle.Width - 1;
-            var height = ClientRectangle.Height - 1;
+            var left = clientRectangle.Left;
+            var top = clientRectangle.Top;
+            var width = clientRectangle.Width - 1;
+            var height = clientRectangle.Height - 1;
 
             pevent.Graphics.DrawLine(darkGrayPen, new Point(left, top), new Point(width, top));
             pevent.Graphics.DrawLine(darkGrayPen, new Point(left, top), new Point(left, height));
@@ -824,7 +841,7 @@ namespace Core.WinForms.Controls
          {
             if (StretchImage)
             {
-               pevent.Graphics.DrawImage(image, ClientRectangle with { X = 0, Y = 0 });
+               pevent.Graphics.DrawImage(image, clientRectangle with { X = 0, Y = 0 });
             }
             else
             {
@@ -879,7 +896,7 @@ namespace Core.WinForms.Controls
          }
       }
 
-      protected int getPercentage() => _percentage.DefaultTo(() => (int)((float)value / maximum * 100));
+      protected int getPercentage() => _percentage | (() => (int)((float)value / maximum * 100));
 
       protected int getPercentage(int width) => (int)((float)value / maximum * width);
 
@@ -978,46 +995,7 @@ namespace Core.WinForms.Controls
          }
       }
 
-      protected bool drawArrowRectangle(Graphics graphics, Pen pen, Rectangle rectangle)
-      {
-         if (Arrow)
-         {
-            graphics.HighQuality();
-            var arrowSection = rectangle.Width * START_AMOUNT;
-            var arrowPoints = new PointF[]
-            {
-               new(5, 0),
-               new(arrowSection, 0),
-               new(rectangle.Width, rectangle.Height / 2.0f),
-               new(arrowSection, Height),
-               new(0, rectangle.Height),
-               new(rectangle.Width - arrowSection, rectangle.Height / 2.0f),
-               new(0, 0)
-            };
-
-            using var path = new GraphicsPath();
-            path.AddLines(arrowPoints);
-            path.CloseFigure();
-
-            /*using var matrix = new Matrix(1, 0, 0, 1, 0, 0);
-            path.Transform(matrix);*/
-            graphics.DrawPath(pen, path);
-
-            return true;
-         }
-         else
-         {
-            return false;
-         }
-      }
-
-      protected virtual void drawRectangle(Graphics graphics, Pen pen, Rectangle rectangle)
-      {
-         if (!drawArrowRectangle(graphics, pen, rectangle))
-         {
-            graphics.DrawRectangle(pen, rectangle);
-         }
-      }
+      protected virtual void drawRectangle(Graphics graphics, Pen pen, Rectangle rectangle) => graphics.DrawRectangle(pen, rectangle);
 
       protected bool fillArrowRectangle(Graphics graphics, Brush brush, Rectangle rectangle)
       {
@@ -1040,8 +1018,6 @@ namespace Core.WinForms.Controls
             path.AddLines(arrowPoints);
             path.CloseFigure();
 
-            /*using var matrix = new Matrix(1, 0, 0, 1, 0, 0);
-            path.Transform(matrix);*/
             graphics.FillPath(brush, path);
 
             return true;
