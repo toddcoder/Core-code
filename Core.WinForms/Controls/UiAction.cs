@@ -689,8 +689,7 @@ namespace Core.WinForms.Controls
          if (Clickable)
          {
             var color = getForeColor();
-            using var pen = new Pen(color, 4);
-            e.Graphics.DrawLine(pen, clientRectangle.Right - 4, 4, clientRectangle.Right - 4, clientRectangle.Bottom - 4);
+            drawClickGlyph(e, clientRectangle, color);
 
             if (mouseInside || mouseDown)
             {
@@ -734,6 +733,29 @@ namespace Core.WinForms.Controls
          }
 
          Painting?.Invoke(this, e);
+      }
+
+      private void drawClickGlyph(PaintEventArgs e, Rectangle clientRectangle, Color color)
+      {
+         using var pen = new Pen(color, 4);
+         if (Arrow)
+         {
+            var arrowSection = ClientRectangle.Width * START_AMOUNT;
+            var arrowPoints = new PointF[]
+            {
+               new(arrowSection, 4),
+               new(ClientRectangle.Width - 4, ClientRectangle.Height / 2.0f),
+               new(arrowSection, ClientRectangle.Height - 4)
+            };
+            using var path = new GraphicsPath();
+            path.AddLines(arrowPoints);
+
+            e.Graphics.DrawPath(pen, path);
+         }
+         else
+         {
+            e.Graphics.DrawLine(pen, clientRectangle.Right - 4, 4, clientRectangle.Right - 4, clientRectangle.Bottom - 4);
+         }
       }
 
       protected override void OnPaintBackground(PaintEventArgs pevent)
