@@ -121,6 +121,8 @@ namespace Core.WinForms.Controls
       protected Timer workingTimer;
       protected MaybeStack<SubText> legends;
       protected bool isDirty;
+      protected CheckStyle checkStyle;
+      protected Guid id;
 
       public event EventHandler<AutomaticMessageArgs> AutomaticMessage;
       public event EventHandler<PaintEventArgs> Painting;
@@ -132,6 +134,7 @@ namespace Core.WinForms.Controls
       public event RunWorkerCompletedEventHandler RunWorkerCompleted;
       public event EventHandler Tick;
       public event EventHandler<ValidatedArgs> ValidateText;
+      public event EventHandler<CheckStyleChangedArgs> CheckStyleChanged;
 
       public UiAction(Control control, bool center = false, bool is3D = true)
       {
@@ -268,7 +271,13 @@ namespace Core.WinForms.Controls
 
             Refresh();
          };
+
+         checkStyle = CheckStyle.None;
+         id=Guid.NewGuid();
+         ;
       }
+
+      public Guid Id => id;
 
       protected SubText getWorking()
       {
@@ -292,14 +301,25 @@ namespace Core.WinForms.Controls
       public bool Checked
       {
          get => CheckStyle == CheckStyle.Checked;
+         set => CheckStyle = value ? CheckStyle.Checked : CheckStyle.Unchecked;
+      }
+
+      public CheckStyle CheckStyle
+      {
+         get => checkStyle;
          set
          {
-            CheckStyle = value ? CheckStyle.Checked : CheckStyle.Unchecked;
+            checkStyle = value;
+            CheckStyleChanged?.Invoke(this, new CheckStyleChangedArgs(id, checkStyle));
             Refresh();
          }
       }
 
-      public CheckStyle CheckStyle { get; set; }
+      internal void SetCheckStyle(CheckStyle checkStyle)
+      {
+         this.checkStyle = checkStyle;
+         Refresh();
+      }
 
       public void SetForeColor(Color foreColor) => _foreColor = foreColor;
 
@@ -609,12 +629,12 @@ namespace Core.WinForms.Controls
             }
          }
 
-         var checkStyle = type switch
+         var style = type switch
          {
             UiActionType.Busy or UiActionType.BusyText => CheckStyle.None,
             _ => CheckStyle
          };
-         var writer = new UiActionWriter(Center, checkStyle, EmptyTextTitle)
+         var writer = new UiActionWriter(Center, style, EmptyTextTitle)
          {
             Rectangle = clientRectangle,
             Font = getFont(),

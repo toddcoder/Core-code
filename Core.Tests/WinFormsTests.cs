@@ -567,5 +567,32 @@ namespace Core.Tests
 
          form.ShowDialog();
       }
+
+      [TestMethod]
+      public void TogglerTest()
+      {
+         var form = new Form();
+         var uiAction1 = new UiAction(form, true);
+         uiAction1.SetUp(0, 0, 200, 40);
+         uiAction1.Checked = true;
+         uiAction1.Click += (_, _) => uiAction1.Checked = true;
+         uiAction1.ClickText = "Check 1";
+
+         var uiAction2 = new UiAction(form, true);
+         uiAction2.SetUp(210, 0, 200, 40);
+         uiAction2.Checked = false;
+         uiAction2.Click += (_, _) => uiAction2.Checked = true;
+         uiAction2.ClickText = "Check 2";
+
+         var uiAction3 = new UiAction(form, true);
+         uiAction3.SetUp(420, 0, 200, 40);
+         uiAction3.Checked = false;
+         uiAction3.Click += (_, _) => uiAction3.Checked = true;
+         uiAction3.ClickText = "Check 3";
+
+         _ = new UiActionCheckToggler(uiAction1, uiAction2, uiAction3);
+
+         form.ShowDialog();
+      }
    }
 }

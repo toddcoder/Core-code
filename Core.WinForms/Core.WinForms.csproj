@@ -60,6 +60,7 @@
     <Compile Include="Controls\AutomaticMessageArgs.cs" />
     <Compile Include="Controls\BusyProcessor.cs" />
     <Compile Include="Controls\BusyTextProcessor.cs" />
+    <Compile Include="Controls\CheckStyleChangedArgs.cs" />
     <Compile Include="Controls\CheckStyle.cs" />
     <Compile Include="Controls\Chooser.cs">
       <SubType>Form</SubType>
@@ -80,6 +81,7 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Controls\SubTextSet.cs" />
+    <Compile Include="Controls\UiActionCheckToggler.cs" />
     <Compile Include="Controls\UiActionWriter.cs" />
     <Compile Include="Controls\UiActionType.cs" />
     <Compile Include="Controls\UiAction.cs">
