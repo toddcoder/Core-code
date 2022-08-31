@@ -81,7 +81,6 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Controls\SubTextSet.cs" />
-    <Compile Include="Controls\UiActionCheckToggler.cs" />
     <Compile Include="Controls\UiActionWriter.cs" />
     <Compile Include="Controls\UiActionType.cs" />
     <Compile Include="Controls\UiAction.cs">

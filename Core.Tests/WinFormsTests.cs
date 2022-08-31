@@ -590,7 +590,7 @@ namespace Core.Tests
          uiAction3.Click += (_, _) => uiAction3.Checked = true;
          uiAction3.ClickText = "Check 3";
 
-         _ = new UiActionCheckToggler(uiAction1, uiAction2, uiAction3);
+         UiAction.Toggler.Group("test").Add(uiAction1, uiAction2, uiAction3);
 
          form.ShowDialog();
       }

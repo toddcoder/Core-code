@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Core.Collections;
@@ -20,6 +21,69 @@ namespace Core.WinForms.Controls
 {
    public class UiAction : UserControl
    {
+      public class CheckToggler
+      {
+         protected Hash<Guid, string> uiActions;
+         protected AutoStringHash<List<UiAction>> groups;
+         protected Result<string> _group;
+
+         public CheckToggler()
+         {
+            uiActions = new Hash<Guid, string>();
+            groups = new AutoStringHash<List<UiAction>>(true, _ => new List<UiAction>(), true);
+            _group = fail("Group not set");
+         }
+
+         public CheckToggler Group(string group)
+         {
+            _group = group;
+            return this;
+         }
+
+         public CheckToggler Group(Control control) => Group(control.Name);
+
+         protected Maybe<List<UiAction>> getUiActionList(Guid id)
+         {
+            return
+               from @group in uiActions.Map(id)
+               from list in groups.Map(@group)
+               select list;
+         }
+
+         protected void checkChanged(CheckStyleChangedArgs e)
+         {
+            var id = e.Id;
+            if (e.CheckStyle == CheckStyle.Checked && getUiActionList(id).Map(out var uiActionList))
+            {
+               foreach (var uiAction in uiActionList.Where(uiAction => uiAction.Id != id))
+               {
+                  uiAction.SetCheckStyle(CheckStyle.None);
+               }
+            }
+         }
+
+         public CheckToggler Add(UiAction uiAction)
+         {
+            uiAction.CheckStyleChanged += (_, e) => checkChanged(e);
+            uiActions[uiAction.Id] = _group;
+            groups[_group].Add(uiAction);
+
+            return this;
+         }
+
+         public CheckToggler Add(params UiAction[] uiActions) => AddRange(uiActions);
+
+         public CheckToggler AddRange(IEnumerable<UiAction> uiActions)
+         {
+            foreach (var uiAction in uiActions)
+            {
+               Add(uiAction);
+            }
+
+            return this;
+         }
+      }
+
       protected const string BUSY_TEXT_PROCESSOR_NOT_INITIALIZED = "BusyTextProcessor not initialized";
       protected const string PROGRESS_DEFINITE_PROCESSOR_NOT_INITIALIZED = "Progress Definite Processor not initialized";
       protected const string BUSY_PROCESSOR_NOT_INITIALIZED = "Busy Processor Not Initialized";
@@ -28,6 +92,7 @@ namespace Core.WinForms.Controls
       protected static Hash<UiActionType, Color> globalForeColors;
       protected static Hash<UiActionType, Color> globalBackColors;
       protected static Hash<UiActionType, MessageStyle> globalStyles;
+      protected static Lazy<CheckToggler> toggler;
 
       static UiAction()
       {
@@ -74,6 +139,7 @@ namespace Core.WinForms.Controls
             [UiActionType.BusyText] = MessageStyle.ItalicBold,
             [UiActionType.Caution] = MessageStyle.Bold
          };
+         toggler = new Lazy<CheckToggler>(() => new CheckToggler());
       }
 
       public static Hash<UiActionType, Color> GlobalForeColors => globalForeColors;
@@ -81,6 +147,8 @@ namespace Core.WinForms.Controls
       public static Hash<UiActionType, Color> GlobalBackColors => globalBackColors;
 
       public static Hash<UiActionType, MessageStyle> GlobalStyles => globalStyles;
+
+      public static CheckToggler Toggler => toggler.Value;
 
       protected Font italicFont;
       protected Font boldFont;
@@ -273,8 +341,7 @@ namespace Core.WinForms.Controls
          };
 
          checkStyle = CheckStyle.None;
-         id=Guid.NewGuid();
-         ;
+         id = Guid.NewGuid();
       }
 
       public Guid Id => id;
