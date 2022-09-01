@@ -32,11 +32,11 @@ namespace Core.Monads
                }
             }
 
-            return obj;
+            return new Some<T>(obj);
          }
          else
          {
-            return obj;
+            return new Some<T>(obj);
          }
       }
 
@@ -56,11 +56,11 @@ namespace Core.Monads
                }
             }
 
-            return obj;
+            return new Response<T>(obj);
          }
          else
          {
-            return obj;
+            return new Response<T>(obj);
          }
       }
 
@@ -130,11 +130,11 @@ namespace Core.Monads
                }
             }
 
-            return value;
+            return new Success<T>(value);
          }
          else
          {
-            return value;
+            return new Success<T>(value);
          }
       }
 
@@ -164,11 +164,11 @@ namespace Core.Monads
                }
             }
 
-            return matches;
+            return new Match<T>(matches);
          }
          else
          {
-            return matches;
+            return new Match<T>(matches);
          }
       }
 
