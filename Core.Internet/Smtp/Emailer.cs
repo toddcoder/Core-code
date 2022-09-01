@@ -80,7 +80,7 @@ namespace Core.Internet.Smtp
             }
          }
 
-         var client = Port.Map(port => new SmtpClient(Address.Server, port)).DefaultTo(() => new SmtpClient(Address.Server));
+         var client = Port.Map(port => new SmtpClient(Address.Server, port)) | (() => new SmtpClient(Address.Server));
          if (UseCredentials)
          {
             client.Credentials = Credentials;

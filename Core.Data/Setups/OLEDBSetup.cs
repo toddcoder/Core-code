@@ -24,7 +24,7 @@ namespace Core.Data.Setups
             let _parameters = new Parameters.Parameters(adapterGroup.GetGroup("parameters"))
             let _fields = new Fields.Fields(adapterGroup.GetGroup("fields"))
             from connectionName in adapterGroup.RequireValue("connection")
-            let commandName = adapterGroup.GetValue("command").DefaultTo(() => adapterName)
+            let commandName = adapterGroup.GetValue("command") | adapterName
             from connectionGroup in dataGroups.ConnectionsGroup.RequireGroup(connectionName)
             from commandGroup in dataGroups.CommandsGroup.RequireGroup(commandName)
             let _command = new Command(commandGroup)

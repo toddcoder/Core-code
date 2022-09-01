@@ -29,11 +29,11 @@ namespace Core.Applications.Async
          }
          catch (OperationCanceledException)
          {
-            return cancelled<T>();
+            return nil;
          }
          catch (Exception exception)
          {
-            return interrupted<T>(exception);
+            return exception;
          }
       }
 
@@ -50,49 +50,45 @@ namespace Core.Applications.Async
          }
          catch (OperationCanceledException)
          {
-            return cancelled<T>();
+            return nil;
          }
          catch (Exception exception)
          {
-            return interrupted<T>(exception);
+            return exception;
          }
       }
 
       public static async Task<Completion<T>> runWithSourceAsync<T>(Func<CancellationToken, Completion<T>> func)
       {
-         using (var source = new CancellationTokenSource())
+         using var source = new CancellationTokenSource();
+         try
          {
-            try
-            {
-               return await Task.Run(() => func(source.Token), source.Token);
-            }
-            catch (OperationCanceledException)
-            {
-               return cancelled<T>();
-            }
-            catch (Exception exception)
-            {
-               return interrupted<T>(exception);
-            }
+            return await Task.Run(() => func(source.Token), source.Token);
+         }
+         catch (OperationCanceledException)
+         {
+            return nil;
+         }
+         catch (Exception exception)
+         {
+            return exception;
          }
       }
 
       public static async Task<Completion<T>> withWithSourceAsync<T>(Func<CancellationToken, Task<Completion<T>>> func)
       {
-         using (var source = new CancellationTokenSource())
+         using var source = new CancellationTokenSource();
+         try
          {
-            try
-            {
-               return await Task.Run(() => func(source.Token), source.Token);
-            }
-            catch (OperationCanceledException)
-            {
-               return cancelled<T>();
-            }
-            catch (Exception exception)
-            {
-               return interrupted<T>(exception);
-            }
+            return await Task.Run(() => func(source.Token), source.Token);
+         }
+         catch (OperationCanceledException)
+         {
+            return nil;
+         }
+         catch (Exception exception)
+         {
+            return exception;
          }
       }
 
@@ -105,11 +101,11 @@ namespace Core.Applications.Async
          }
          catch (OperationCanceledException)
          {
-            return cancelled<Unit>();
+            return nil;
          }
          catch (Exception exception)
          {
-            return interrupted<Unit>(exception);
+            return exception;
          }
       }
 
@@ -122,11 +118,11 @@ namespace Core.Applications.Async
          }
          catch (OperationCanceledException)
          {
-            return cancelled<Unit>();
+            return nil;
          }
          catch (Exception exception)
          {
-            return interrupted<Unit>(exception);
+            return exception;
          }
       }
 
@@ -138,7 +134,7 @@ namespace Core.Applications.Async
          }
          catch (Exception exception)
          {
-            return interrupted<T>(exception);
+            return exception;
          }
       }
 
@@ -150,11 +146,11 @@ namespace Core.Applications.Async
          }
          catch (OperationCanceledException)
          {
-            return cancelled<T>();
+            return nil;
          }
          catch (Exception exception)
          {
-            return interrupted<T>(exception);
+            return exception;
          }
       }
 
@@ -171,19 +167,19 @@ namespace Core.Applications.Async
          }
          catch (OperationCanceledException)
          {
-            return cancelled<T>();
+            return nil;
          }
          catch (Exception exception)
          {
-            return interrupted<T>(exception);
+            return exception;
          }
       }
 
-      public static async Task<Completion<T>> runInterrupted<T>(Exception exception) => await Task.Run(() => interrupted<T>(exception));
+      public static async Task<Completion<T>> runInterrupted<T>(Exception exception) => await Task.Run(() => exception);
 
       public static async Task<Completion<T>> runInterrupted<T>(string message) => await Task.Run(message.Interrupted<T>);
 
-      public static async Task<Completion<T>> runCancelled<T>() => await Task.Run(cancelled<T>);
+      public static async Task<Completion<T>> runCancelled<T>() => await Task.Run(() => nil);
 
       public static Task<TResult> taskFromFunction<TResult>(Func<TResult> func, CancellationToken token)
       {

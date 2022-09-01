@@ -32,11 +32,12 @@ namespace Core.Data.Fields
             return nil;
          }
       }
+
       public static Field Parse(Group fieldGroup)
       {
          var name = fieldGroup.Key;
-         var signature = fieldGroup.GetValue("signature").DefaultTo(() => name);
-         var optional = fieldGroup.GetValue("optional").Map(s => s == "true").DefaultTo(() => false);
+         var signature = fieldGroup.GetValue("signature") | name;
+         var optional = fieldGroup.GetValue("optional").Map(s => s == "true") | false;
          var typeName = fieldGroup.GetValue("type");
          var type = typeName.Map(getType);
 
@@ -81,6 +82,6 @@ namespace Core.Data.Fields
 
       public Maybe<Type> Type { get; set; }
 
-      public override Type PropertyType => Type.DefaultTo(() => base.PropertyType);
+      public override Type PropertyType => Type | (() => base.PropertyType);
    }
 }

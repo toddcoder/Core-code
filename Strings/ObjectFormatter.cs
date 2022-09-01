@@ -25,6 +25,6 @@ namespace Core.Strings
          }
 
          return result.ToString();
-      }).DefaultTo(() => "");
+      }) | "";
    }
 }

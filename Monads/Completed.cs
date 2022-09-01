@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Core.Exceptions;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads
@@ -66,7 +65,7 @@ namespace Core.Monads
       }
 
       [Obsolete("Use exception")]
-      public override Completion<TOther> InterruptedAs<TOther>() => throw "There is no exception".Throws();
+      public override Completion<TOther> InterruptedAs<TOther>() => throw defaultException();
 
       public override Completion<T> Or(Completion<T> other) => this;
 
@@ -76,7 +75,9 @@ namespace Core.Monads
 
       public override Completion<T2> SelectMany<T1, T2>(Func<T, Completion<T1>> func, Func<T, T1, T2> projection)
       {
+#pragma warning disable CS0618
          return func(value).Map(t1 => projection(value, t1).Completed(), cancelled<T2>, interrupted<T2>);
+#pragma warning restore CS0618
       }
 
       public override Completion<TResult> SelectMany<TResult>(Func<T, TResult> func) => func(value).Completed();
@@ -100,14 +101,14 @@ namespace Core.Monads
       public override bool Map(out T value, out Maybe<Exception> _exception)
       {
          value = this.value;
-         _exception = none<Exception>();
+         _exception = nil;
 
          return true;
       }
 
       public override bool UnMap(out Maybe<Exception> _exception)
       {
-         _exception = none<Exception>();
+         _exception = nil;
          return false;
       }
 
@@ -117,7 +118,7 @@ namespace Core.Monads
          return false;
       }
 
-      public  override Completion<TOther> NotCompleted<TOther>() => cancelled<TOther>();
+      public override Completion<TOther> NotCompleted<TOther>() => nil;
 
       public override  bool IsCompleted(out Completion<T> completed)
       {
@@ -137,16 +138,16 @@ namespace Core.Monads
 
       public  override T ForceValue() => value;
 
-      public override  Completion<T> CancelledOnly() => cancelled<T>();
+      public override Completion<T> CancelledOnly() => nil;
 
-      public override Completion<TOther> CancelledOnly<TOther>() => cancelled<TOther>();
+      public override Completion<TOther> CancelledOnly<TOther>() => nil;
 
-      public override Completion<TOther> NotCompletedOnly<TOther>() => cancelled<TOther>();
+      public override Completion<TOther> NotCompletedOnly<TOther>() => nil;
 
       public override void Deconstruct(out Maybe<T> value, out Maybe<Exception> _exception)
       {
          value = this.value.Some();
-         _exception = none<Exception>();
+         _exception = nil;
       }
 
       public override Completion<T> OnCompleted(Action<T> action)
@@ -195,7 +196,7 @@ namespace Core.Monads
          }
       }
 
-      public override Completion<T> Where(Predicate<T> predicate) => predicate(value) ? this : cancelled<T>();
+      public override Completion<T> Where(Predicate<T> predicate) => predicate(value) ? this : nil;
 
       public override Completion<T> Where(Predicate<T> predicate, string exceptionMessage) => predicate(value) ? this : exceptionMessage.Interrupted<T>();
 

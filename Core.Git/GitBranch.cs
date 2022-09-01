@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using Core.Exceptions;
 using Core.Matching;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Git
 {
@@ -25,7 +25,7 @@ namespace Core.Git
          {
             if (Git.TryTo.Execute("rev-parse --abbrev-ref HEAD").Map(out var lines, out var exception))
             {
-               return lines.Length > 0 ? lines[0].Trim() : throw "Branch not found".Fail();
+               return lines.Length > 0 ? lines[0].Trim() : throw fail("Branch not found");
             }
             else
             {

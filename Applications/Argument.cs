@@ -15,8 +15,8 @@ namespace Core.Applications
       {
          this.text = text;
          this.index = index;
-         fileName = none<FileName>();
-         folderName = none<FolderName>();
+         fileName = nil;
+         folderName = nil;
       }
 
       public string Text => text;
@@ -32,7 +32,7 @@ namespace Core.Applications
             }
             else
             {
-               fileName = none<FileName>();
+               fileName = nil;
             }
 
             return fileName;
@@ -50,7 +50,7 @@ namespace Core.Applications
             }
             else
             {
-               folderName = none<FolderName>();
+               folderName = nil;
             }
 
             return folderName;
@@ -59,6 +59,6 @@ namespace Core.Applications
 
       public int Index => index;
 
-      public ArgumentTrying TryTo => new ArgumentTrying(this);
+      public ArgumentTrying TryTo => new(this);
    }
 }

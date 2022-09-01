@@ -106,7 +106,7 @@ namespace Core.Strings
 
       public static string Slice(this string source, Maybe<int> startIndex, Maybe<int> stopIndex)
       {
-         return source.Slice(startIndex.DefaultTo(() => 0), stopIndex.DefaultTo(() => source.Length - 1));
+         return source.Slice(startIndex | 0, stopIndex | (() => source.Length - 1));
       }
 
       public static string Truncate(this string source, int limit, bool addEllipses = true)
@@ -540,12 +540,12 @@ namespace Core.Strings
 
       public static string Unquotify(this string source)
       {
-         return source.Map(s => s.Matches("^ `quote /(.*) `quote $; f").Map(result => result.FirstGroup).DefaultTo(() => s));
+         return source.Map(s => s.Matches("^ `quote /(.*) `quote $; f").Map(result => result.FirstGroup) | s);
       }
 
       public static string SingleUnquotify(this string source)
       {
-         return source.Map(s => source.Matches("^ `apos /(.*) `apos $; f").Map(result => result.FirstGroup).DefaultTo(() => s));
+         return source.Map(s => source.Matches("^ `apos /(.*) `apos $; f").Map(result => result.FirstGroup) | s);
       }
 
       public static string Guillemetify(this string source) => source.Map(s => $"«{s}»");
@@ -739,6 +739,7 @@ namespace Core.Strings
                {
                   match.FirstGroup = number.ToString();
                }
+
                matcherText = result.ToString();
             }
 
@@ -1285,7 +1286,7 @@ namespace Core.Strings
 
       public static string ExtractFromQuotes(this string source)
       {
-         return source.Map(s => s.Matches("^ [quote] /(.*?) [quote] $; f").Map(result => result.FirstGroup).DefaultTo(() => s));
+         return source.Map(s => s.Matches("^ [quote] /(.*?) [quote] $; f").Map(result => result.FirstGroup) | s);
       }
 
       public static Maybe<object> ToObject(this string value)
@@ -2225,7 +2226,7 @@ namespace Core.Strings
 
       public static long ToByteSize(this string source, long defaultValue = 0)
       {
-         return source.AsByteSize().DefaultTo(() => defaultValue);
+         return source.AsByteSize() | defaultValue;
       }
 
       public static string Partition(this string source, int allowedLength, string splitPattern = @"-(< '\')','; f", int padding = 1)

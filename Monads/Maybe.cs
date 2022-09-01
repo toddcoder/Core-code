@@ -62,6 +62,7 @@ namespace Core.Monads
       [Obsolete("Use as bool")]
       public abstract bool IsNone { get; }
 
+      [Obsolete("Use |")]
       public abstract T DefaultTo(Func<T> func);
 
       public abstract Maybe<TResult> Map<TResult>(Func<T, TResult> ifSome);

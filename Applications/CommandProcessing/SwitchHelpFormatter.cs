@@ -69,7 +69,7 @@ namespace Core.Applications.CommandProcessing
                builder.Append($" <{type}>");
             }
 
-            var newArgument = commandReplacements.Map(name).DefaultTo(() => argument);
+            var newArgument = commandReplacements.Map(name) | argument;
             builder.Append($" : {newArgument}");
 
             replacements[$"${name}"] = builder.ToString();
@@ -109,7 +109,7 @@ namespace Core.Applications.CommandProcessing
                      var optional = result[i, 2] == "?";
                      if (replacements.Map(name, out var replacement))
                      {
-                        var indent = _indent.DefaultTo(() => " ");
+                        var indent = _indent | " ";
                         var prefix = optional ? $"{indent}[" : indent;
                         var suffix = optional ? "]\r\n" : "\r\n";
                         result[i] = $"{prefix}{replacement}{suffix}";

@@ -16,7 +16,7 @@ namespace Core.Tests
          Console.WriteLine(obj.AnyNull() ? "Is null" : "Is not null");
 
          var maybe = obj.Some();
-         Console.WriteLine(maybe.Map(t => t.Item1).DefaultTo(() => "none"));
+         Console.WriteLine(maybe.Map(t => t.Item1) | "none");
       }
 
       [TestMethod]

@@ -20,9 +20,10 @@ namespace Core.Monads
       public override bool IsNone => true;
 #pragma warning restore CS0672
 
+      [Obsolete("Use |")]
       public override T DefaultTo(Func<T> func) => func();
 
-      public override Maybe<TResult> Map<TResult>(Func<T, TResult> ifSome) => none<TResult>();
+      public override Maybe<TResult> Map<TResult>(Func<T, TResult> ifSome) => nil;
 
       public override Maybe<TResult> Map<TResult>(Func<T, Maybe<TResult>> ifSome) => nil;
 

@@ -45,7 +45,7 @@ namespace Core.Matching.Parsers
                   else
                   {
                      index = i + 1;
-                     return (prefix + builder + suffix).Some();
+                     return prefix + builder + suffix;
                   }
 
                   break;
@@ -68,7 +68,7 @@ namespace Core.Matching.Parsers
             }
          }
 
-         return none<string>();
+         return nil;
       }
    }
 }

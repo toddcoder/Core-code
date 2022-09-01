@@ -23,13 +23,16 @@ namespace Core.Exceptions
          return Activator.CreateInstance<TException>();
       }
 
+      [Obsolete("Use fail function")]
       public static ApplicationException Fail(this string message) => new FullStackException(message);
 
+      [Obsolete("Use fail function")]
       public static ApplicationException Fail(this string message, Exception innerException)
       {
          return new FullStackException(message, innerException);
       }
 
+      [Obsolete("Use fail function")]
       public static TException Fail<TException>(this object firstParameter, params object[] parameters) where TException : Exception
       {
          var list = new List<object> { firstParameter };
@@ -37,6 +40,7 @@ namespace Core.Exceptions
          return (TException)Activator.CreateInstance(typeof(TException), list.ToArray());
       }
 
+      [Obsolete("Use fail function")]
       public static TException Fail<TException>() where TException : Exception, new()
       {
          return Activator.CreateInstance<TException>();

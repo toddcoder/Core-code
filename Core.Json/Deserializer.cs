@@ -32,13 +32,13 @@ namespace Core.Json
                select parentGroup;
          }
 
-         int itemCount() => peekGroup().Map(group => group.AnyHash().Map(h => h.Values.Count).Recover(_ => 0)).DefaultTo(() => 0);
+         int itemCount() => peekGroup().Map(group => group.AnyHash().Map(h => h.Values.Count)) | 0;
 
          Maybe<string> _propertyName = nil;
 
          void setItem(string value)
          {
-            var key = _propertyName.DefaultTo(() => $"${itemCount()}");
+            var key = _propertyName | (() => $"${itemCount()}");
             if (peekGroup().Map(out var group))
             {
                group.SetItem(key, new Item(key, value));
@@ -61,7 +61,7 @@ namespace Core.Json
                {
                   case JsonToken.StartObject when firstObjectProcessed:
                   {
-                     var key = _propertyName.DefaultTo(() => $"${itemCount()}");
+                     var key = _propertyName | (() => $"${itemCount()}");
                      _propertyName = nil;
                      var group = new Group(key);
                      if (peekGroup().Map(out var parentGroup))
@@ -89,7 +89,7 @@ namespace Core.Json
                      break;
                   case JsonToken.StartArray:
                   {
-                     var key = _propertyName.DefaultTo(() => $"${itemCount()}");
+                     var key = _propertyName | (() => $"${itemCount()}");
                      _propertyName = nil;
                      var group = new Group(key);
                      if (peekGroup().Map(out var parentGroup))

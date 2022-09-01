@@ -20,7 +20,7 @@ namespace Core.Zip
          zipName.Must().Not.BeNullOrEmpty().OrThrow();
          include.Must().Not.BeNull().OrThrow();
 
-         var zipFolder = folder.Parent.DefaultTo(() => @"C:\");
+         var zipFolder = folder.Parent | @"C:\";
          var zipFile = zipFolder.UniqueFileName(zipName, ".zip");
 
          using var archive = ZipFile.Open(zipFile.FullPath, ZipArchiveMode.Create);

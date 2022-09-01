@@ -84,7 +84,7 @@ namespace Core.Collections
 
       public virtual bool Contains(T item) => content.Contains(item);
 
-      public Set<T> Clone() => _equalityComparer.Map(ec => new Set<T>(content.ToArray(), ec)).DefaultTo(() => new Set<T>(content.ToArray()));
+      public Set<T> Clone() => _equalityComparer.Map(ec => new Set<T>(content.ToArray(), ec)) | (() => new Set<T>(content.ToArray()));
 
       public Set<T> Union(IEnumerable<T> enumerable)
       {

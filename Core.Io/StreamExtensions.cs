@@ -3,7 +3,6 @@ using System.IO;
 using System.Text;
 using Core.Assertions;
 using Core.Monads;
-using static Core.Monads.MonadFunctions;
 
 namespace Core.Io
 {
@@ -22,7 +21,7 @@ namespace Core.Io
          }
          catch (Exception exception)
          {
-            return failure<string>(exception);
+            return exception;
          }
       }
    }

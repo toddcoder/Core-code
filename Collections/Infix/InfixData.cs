@@ -12,9 +12,13 @@ namespace Core.Collections.Infix
          Infix = _infix;
       }
 
-      public InfixData(TValue value, TInfix infix) : this(value, infix.Some()) { }
+      public InfixData(TValue value, TInfix infix) : this(value, infix.Some())
+      {
+      }
 
-      public InfixData(TValue value) : this(value, nil) { }
+      public InfixData(TValue value) : this(value, nil)
+      {
+      }
 
       [Equatable]
       public TValue Value { get; }
@@ -22,7 +26,7 @@ namespace Core.Collections.Infix
       [Equatable]
       public Maybe<TInfix> Infix { get; }
 
-      public override string ToString() => Value + Infix.Map(i => " " + i).DefaultTo(() => "");
+      public override string ToString() => Value + (Infix.Map(i => " " + i) | "");
 
       public void Deconstruct(out TValue value, out Maybe<TInfix> _infix)
       {

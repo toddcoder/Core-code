@@ -13,9 +13,9 @@ namespace Core.Monads
       {
       }
 
-      public override Completion<TResult> Map<TResult>(Func<T, Completion<TResult>> ifCompleted) => cancelled<TResult>();
+      public override Completion<TResult> Map<TResult>(Func<T, Completion<TResult>> ifCompleted) => nil;
 
-      public override Completion<TResult> Map<TResult>(Func<T, TResult> ifCompleted) => cancelled<TResult>();
+      public override Completion<TResult> Map<TResult>(Func<T, TResult> ifCompleted) => nil;
 
       public override Completion<TResult> Map<TResult>(Func<T, Completion<TResult>> ifCompleted, Func<Completion<TResult>> ifCancelled)
       {
@@ -25,7 +25,7 @@ namespace Core.Monads
       public override Completion<TResult> Map<TResult>(Func<T, Completion<TResult>> ifCompleted,
          Func<Exception, Completion<TResult>> ifInterrupted)
       {
-         return cancelled<TResult>();
+         return nil;
       }
 
       public override Completion<TResult> Map<TResult>(Func<T, Completion<TResult>> ifCompleted, Func<Completion<TResult>> ifCancelled,
@@ -70,13 +70,13 @@ namespace Core.Monads
 
       public override Completion<T> Or(Func<Completion<T>> other) => other();
 
-      public override Completion<TResult> SelectMany<TResult>(Func<T, Completion<TResult>> projection) => cancelled<TResult>();
+      public override Completion<TResult> SelectMany<TResult>(Func<T, Completion<TResult>> projection) => nil;
 
-      public override Completion<T2> SelectMany<T1, T2>(Func<T, Completion<T1>> func, Func<T, T1, T2> projection) => cancelled<T2>();
+      public override Completion<T2> SelectMany<T1, T2>(Func<T, Completion<T1>> func, Func<T, T1, T2> projection) => nil;
 
-      public override Completion<TResult> SelectMany<TResult>(Func<T, TResult> func) => cancelled<TResult>();
+      public override Completion<TResult> SelectMany<TResult>(Func<T, TResult> func) => nil;
 
-      public override Completion<TResult> Select<TResult>(Completion<T> result, Func<T, TResult> func) => cancelled<TResult>();
+      public override Completion<TResult> Select<TResult>(Completion<T> result, Func<T, TResult> func) => nil;
 
       public override bool Map(out T value)
       {
@@ -95,23 +95,23 @@ namespace Core.Monads
       public override bool Map(out T value, out Maybe<Exception> _exception)
       {
          value = default;
-         _exception = none<Exception>();
+         _exception = nil;
          return false;
       }
 
       public override bool UnMap(out Maybe<Exception> _exception)
       {
-         _exception = none<Exception>();
+         _exception = nil;
          return true;
       }
 
       public override bool UnMap<TOther>(out Completion<TOther> result)
       {
-         result = cancelled<TOther>();
+         result = nil;
          return true;
       }
 
-      public override Completion<TOther> NotCompleted<TOther>() => cancelled<TOther>();
+      public override Completion<TOther> NotCompleted<TOther>() => nil;
 
       public override bool IsCompleted(out Completion<T> completed)
       {
@@ -133,14 +133,14 @@ namespace Core.Monads
 
       public override Completion<T> CancelledOnly() => this;
 
-      public override Completion<TOther> CancelledOnly<TOther>() => cancelled<TOther>();
+      public override Completion<TOther> CancelledOnly<TOther>() => nil;
 
-      public override Completion<TOther> NotCompletedOnly<TOther>() => cancelled<TOther>();
+      public override Completion<TOther> NotCompletedOnly<TOther>() => nil;
 
       public override void Deconstruct(out Maybe<T> value, out Maybe<Exception> _exception)
       {
-         value = none<T>();
-         _exception = none<Exception>();
+         value = nil;
+         _exception = nil;
       }
 
       public override Completion<T> OnCompleted(Action<T> action) => this;
@@ -175,9 +175,9 @@ namespace Core.Monads
 
       public override bool EqualToValueOf(T otherValue) => false;
 
-      public Completion<object> AsObject() => cancelled<object>();
+      public Completion<object> AsObject() => nil;
 
-      public override Completion<TResult> CastAs<TResult>() => cancelled<TResult>();
+      public override Completion<TResult> CastAs<TResult>() => nil;
 
       public override Completion<T> Where(Predicate<T> predicate) => this;
 

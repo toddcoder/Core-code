@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using Core.Exceptions;
 using Core.Matching;
 using Core.Monads;
 using Core.Strings;
@@ -429,7 +428,7 @@ namespace Core.Objects
                }
                else
                {
-                  throw $"Couldn't determine unit from {unit}".Fail();
+                  throw fail($"Couldn't determine unit from {unit}");
                }
             })
             select span;

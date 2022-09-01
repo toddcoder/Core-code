@@ -101,7 +101,7 @@ namespace Core.Matching
 
       public string this[int matchIndex, int groupIndex]
       {
-         get => getGroupMaybe(getMatch(matchIndex), groupIndex).Map(g => g.GetSlice(slicer)).DefaultTo(() => "");
+         get => getGroupMaybe(getMatch(matchIndex), groupIndex).Map(g => g.GetSlice(slicer)) | "";
          set => getGroup(getMatch(matchIndex), groupIndex).SetSlice(slicer, value);
       }
 
@@ -127,7 +127,7 @@ namespace Core.Matching
 
       public string this[int matchIndex]
       {
-         get => getMatchMaybe(matchIndex).Map(m => m.GetSlice(slicer)).DefaultTo(() => "");
+         get => getMatchMaybe(matchIndex).Map(m => m.GetSlice(slicer)) | "";
          set => getMatch(matchIndex).SetSlice(slicer, value);
       }
 

@@ -29,14 +29,14 @@ namespace Core.Objects
       {
          this.obj = obj;
          _index = signature.Index;
-         _info = info.Some();
+         _info = info;
       }
 
       public ObjectInfo()
       {
-         obj = none<object>();
-         _index = none<int>();
-         _info = none<PropertyInfo>();
+         obj = new None<object>();
+         _index = nil;
+         _info = nil;
       }
 
       public object Object => obj;
@@ -54,20 +54,20 @@ namespace Core.Objects
                var parameters = info.GetIndexParameters();
                if (_index.Map(out var index))
                {
-                  return parameters.Length == 0 ? getValue(index) : info.GetValue(obj, getIndex(index)).Some();
+                  return parameters.Length == 0 ? getValue(index) : info.GetValue(obj, getIndex(index));
                }
                else if (parameters.Length > 0)
                {
-                  return none<object>();
+                  return nil;
                }
                else
                {
-                  return info.GetValue(obj, null).Some();
+                  return info.GetValue(obj, null);
                }
             }
             else
             {
-               return none<object>();
+               return nil;
             }
          }
          set
@@ -102,21 +102,21 @@ namespace Core.Objects
             var result = inf.GetValue(obj, null);
             if (result is null)
             {
-               return result.Some();
+               return result;
             }
             else
             {
                return result switch
                {
-                  Array array => array.GetValue(defaultIndex).Some(),
-                  IList list => list[defaultIndex].Some(),
-                  _ => none<object>()
+                  Array array => array.GetValue(defaultIndex),
+                  IList list => list[defaultIndex],
+                  _ => nil
                };
             }
          }
          else
          {
-            return none<object>();
+            return nil;
          }
       }
 

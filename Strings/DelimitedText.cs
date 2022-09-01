@@ -66,11 +66,11 @@ namespace Core.Strings
          this.beginPattern = beginPattern;
          this._endPattern = _endPattern;
          this.exceptPattern = exceptPattern;
-         _exceptReplacement = none<string>();
+         _exceptReplacement = nil;
 
          slicer = new LateLazy<Slicer>(true, "You must call Enumerable() before accessing this member");
          status = DelimitedTextStatus.Outside;
-         TransformingMap = none<Func<string, string>>();
+         TransformingMap = nil;
          strings = new List<string>();
       }
 
@@ -79,7 +79,7 @@ namespace Core.Strings
       {
       }
 
-      public DelimitedText(Pattern beginPattern, Pattern exceptPattern) : this(beginPattern, none<Pattern>(), exceptPattern)
+      public DelimitedText(Pattern beginPattern, Pattern exceptPattern) : this(beginPattern, nil, exceptPattern)
       {
       }
 
@@ -141,7 +141,7 @@ namespace Core.Strings
          var current = source;
          var insideStart = 0;
          var outsideStart = 0;
-         var _endMatcher = none<Pattern>();
+         Maybe<Pattern> _endMatcher = nil;
 
          var i = 0;
          while (i < source.Length)
@@ -152,14 +152,14 @@ namespace Core.Strings
             {
                if (current.Matches(exceptPattern).Map(out var result))
                {
-                  builder.Append(_exceptReplacement.DefaultTo(() => result[0]));
+                  builder.Append(_exceptReplacement | result[0]);
                   i += result.Length;
 
                   continue;
                }
                else if (_endMatcher.Map(out var endPattern) && current.Matches(endPattern).Map(out result))
                {
-                  _endMatcher = none<Pattern>();
+                  _endMatcher = nil;
 
                   yield return (builder.ToString(), insideStart, DelimitedTextStatus.Inside);
                   yield return (result[0], i, DelimitedTextStatus.EndDelimiter);
@@ -179,7 +179,7 @@ namespace Core.Strings
             {
                if (current.Matches(beginPattern).Map(out var result))
                {
-                  _endMatcher = _endPattern.DefaultTo(() => getEndPattern(ch)).Some();
+                  _endMatcher = _endPattern | (() => getEndPattern(ch));
 
                   yield return (builder.ToString(), outsideStart, DelimitedTextStatus.Outside);
                   yield return (result[0], i, DelimitedTextStatus.BeginDelimiter);
@@ -341,7 +341,7 @@ namespace Core.Strings
                foreach (var (index, _) in Substrings(source, text, ignoreCase))
                {
                   var item = source.Drop(startIndex).Keep(index - startIndex);
-                  item = TransformingMap.Map(m => m(item)).DefaultTo(() => item);
+                  item = TransformingMap.Map(m => m(item)) | item;
                   values.Add(item);
                   startIndex = index + text.Length;
                }
@@ -351,7 +351,7 @@ namespace Core.Strings
          var rest = source.Drop(startIndex);
          if (rest.Length > 0)
          {
-            rest = TransformingMap.Map(m => m(rest)).DefaultTo(() => rest);
+            rest = TransformingMap.Map(m => m(rest)) | rest;
             values.Add(rest);
          }
 

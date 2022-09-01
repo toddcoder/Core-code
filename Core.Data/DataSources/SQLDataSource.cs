@@ -43,8 +43,8 @@ namespace Core.Data.DataSources
             }
 
             var sqlParameter = parameter.Size
-               .Map(size => new SqlParameter(parameter.Name, typeToSqlType(parameterType), size))
-               .DefaultTo(() => new SqlParameter(parameter.Name, typeToSqlType(parameterType)));
+                  .Map(size => new SqlParameter(parameter.Name, typeToSqlType(parameterType), size))
+               | (() => new SqlParameter(parameter.Name, typeToSqlType(parameterType)));
 
             if (parameter.Output)
             {
@@ -67,7 +67,7 @@ namespace Core.Data.DataSources
                var value = parameter.GetValue(entity).Required($"Parameter {parameter.Name}'s value couldn't be determined");
                if (value is null && parameter.Default.Map(out var defaultValue))
                {
-                  value = parameter.Type.Map(t => ChangeType(defaultValue, t)).DefaultTo(() => defaultValue);
+                  value = parameter.Type.Map(t => ChangeType(defaultValue, t)) | (() => defaultValue);
                }
 
                var type = value?.GetType();

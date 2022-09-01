@@ -472,7 +472,7 @@ namespace Core.Computers
          }
          else
          {
-            folderSubfolders = folder.Matches(@"^ '\'1 /(.+) $; f").Map(result => result.FirstGroup).DefaultTo(() => string.Empty);
+            folderSubfolders = folder.Matches(@"^ '\'1 /(.+) $; f").Map(result => result.FirstGroup) | "";
          }
 
          if (folderSubfolders.StartsWith(@"\"))

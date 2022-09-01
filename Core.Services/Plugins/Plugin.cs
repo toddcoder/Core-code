@@ -122,7 +122,7 @@ namespace Core.Services.Plugins
             {
                if (ServiceLogger.FromConfiguration(configuration).Map(out var serviceLogger, out exception))
                {
-                  retries = jobGroup.GetValue("retries").Map(Maybe.Int32).DefaultTo(() => 0);
+                  retries = jobGroup.GetValue("retries").Map(Maybe.Int32) | 0;
                   SetRetrier();
                   finalExceptionMessage = $"All {retries} {"retr(y|ies)".Plural(retries)} failed";
 

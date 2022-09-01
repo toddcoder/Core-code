@@ -67,7 +67,7 @@ namespace Core.Assertions
 
       public static string maybeImage<T>(Maybe<T> maybe)
       {
-         return maybe.Map(v => v.ToNonNullString()).DefaultTo(() => $"none<{typeof(T).Name}>");
+         return maybe.Map(v => v.ToNonNullString()) | (() => $"none<{typeof(T).Name}>");
       }
 
       public static string resultImage<T>(Result<T> result)
@@ -77,11 +77,11 @@ namespace Core.Assertions
 
       public static string matchedImage<T>(Matched<T> matched)
       {
-         if (matched.Map(out var value, out var anyException))
+         if (matched.Map(out var value, out var _exception))
          {
             return value.ToNonNullString();
          }
-         else if (anyException.Map(out var exception))
+         else if (_exception.Map(out var exception))
          {
             return $"failedMatch<{typeof(T).Name}>({exception.Message})";
          }
@@ -201,17 +201,17 @@ namespace Core.Assertions
 
       public static Result<T> orFailure<T>(IAssertion<T> assertion)
       {
-         return assertion.Constraints.FirstOrNone(c => !c.IsTrue()).Map(c => c.Message.Failure<T>()).DefaultTo(() => assertion.Value.Success());
+         return assertion.Constraints.FirstOrNone(c => !c.IsTrue()).Map(c => c.Message.Failure<T>()) | (() => assertion.Value);
       }
 
       public static Result<T> orFailure<T>(IAssertion<T> assertion, string message)
       {
-         return assertion.Constraints.Any(c => !c.IsTrue()) ? message.Failure<T>() : assertion.Value.Success();
+         return assertion.Constraints.Any(c => !c.IsTrue()) ? message.Failure<T>() : assertion.Value;
       }
 
       public static Result<T> orFailure<T>(IAssertion<T> assertion, Func<string> messageFunc)
       {
-         return assertion.Constraints.Any(c => !c.IsTrue()) ? messageFunc().Failure<T>() : assertion.Value.Success();
+         return assertion.Constraints.Any(c => !c.IsTrue()) ? messageFunc().Failure<T>() : assertion.Value;
       }
 
       public static Maybe<T> orNone<T>(IAssertion<T> assertion)
@@ -224,8 +224,7 @@ namespace Core.Assertions
          return await runAsync(t =>
             assertion.Constraints
                .FirstOrNone(c => !c.IsTrue())
-               .Map(c => c.Message.Interrupted<T>())
-               .DefaultTo(() => assertion.Value.Completed(t)), token);
+               .Map(c => c.Message.Interrupted<T>()) | (() => assertion.Value.Completed(t)), token);
       }
 
       public static async Task<Completion<T>> orFailureAsync<T>(IAssertion<T> assertion, string message, CancellationToken token)

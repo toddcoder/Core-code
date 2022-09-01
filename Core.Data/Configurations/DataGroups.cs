@@ -16,7 +16,7 @@ namespace Core.Data.Configurations
       {
          if (AdaptersGroup.GetGroup(adapterName).Map(out var adapterGroup))
          {
-            var commandName = adapterGroup.GetValue("command").DefaultTo(() => adapterName);
+            var commandName = adapterGroup.GetValue("command") | adapterName;
             if (CommandsGroup.GetGroup(commandName).Map(out var commandGroup))
             {
                var command = new Command(commandGroup);

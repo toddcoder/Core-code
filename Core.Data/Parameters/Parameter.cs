@@ -46,12 +46,12 @@ namespace Core.Data.Parameters
       public static Parameter Parse(Group parameterGroup)
       {
          var name = parameterGroup.Key;
-         var signature = parameterGroup.GetValue("signature").DefaultTo(() => name);
-         var typeName = parameterGroup.GetValue("type").DefaultTo(() => "$string");
+         var signature = parameterGroup.GetValue("signature") | name;
+         var typeName = parameterGroup.GetValue("type") | "$string";
          typeName = fixTypeName(typeName);
          var _type = getType(typeName);
          var _size = parameterGroup.GetValue("size").Map(s => ConversionFunctions.Value.Int32(s));
-         var output = parameterGroup.GetValue("output").Map(s => s == "true").DefaultTo(() => false);
+         var output = parameterGroup.GetValue("output").Map(s => s == "true") | false;
          var _value = parameterGroup.GetValue("value");
          var _default = parameterGroup.GetValue("default");
 

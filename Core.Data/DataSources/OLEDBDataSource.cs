@@ -65,8 +65,8 @@ namespace Core.Data.DataSources
             }
 
             var oledbParameter = parameter.Size
-               .Map(size => new OleDbParameter(parameter.Name, typeToOleDbType(parameterType), size))
-               .DefaultTo(() => new OleDbParameter(parameter.Name, typeToDBType(parameterType)));
+                  .Map(size => new OleDbParameter(parameter.Name, typeToOleDbType(parameterType), size)) |
+               (() => new OleDbParameter(parameter.Name, typeToDBType(parameterType)));
 
             if (parameter.Output)
             {
@@ -89,11 +89,11 @@ namespace Core.Data.DataSources
                var value = parameter.GetValue(entity).Required($"Parameter {parameter.Name}'s value couldn't be determined");
                if (value is null && parameter.Default.Map(out var defaultValue))
                {
-                  value = parameter.Type.Map(t => ChangeType(defaultValue, t)).DefaultTo(() => defaultValue);
+                  value = parameter.Type.Map(t => ChangeType(defaultValue, t)) | (() => defaultValue);
                }
 
                var type = value?.GetType();
-               var underlyingType = type?.UnderlyingTypeOf() ?? none<Type>();
+               var underlyingType = type?.UnderlyingTypeOf() ?? nil;
                if (underlyingType)
                {
                   value = type.InvokeMember("Value", BindingFlags.GetProperty, null, value, Array.Empty<object>());

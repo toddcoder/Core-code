@@ -47,7 +47,7 @@ namespace Core.Monads
 
       public static implicit operator Responding<T>(Maybe<Exception> _exception)
       {
-         return _exception.Map(e => (Responding<T>)new FailedResponse<T>(e)).DefaultTo(() => new NoResponse<T>());
+         return _exception.Map(e => (Responding<T>)new FailedResponse<T>(e)) | (() => new NoResponse<T>());
       }
 
       public static bool operator true(Responding<T> value) => value is Response<T>;

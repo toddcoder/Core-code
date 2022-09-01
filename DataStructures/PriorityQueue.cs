@@ -65,9 +65,7 @@ namespace Core.DataStructures
                break;
             }
 
-            var temp = list[compareIndex];
-            list[compareIndex] = list[pivotIndex];
-            list[pivotIndex] = temp;
+            (list[compareIndex], list[pivotIndex]) = (list[pivotIndex], list[compareIndex]);
 
             compareIndex = pivotIndex;
          }
@@ -79,7 +77,7 @@ namespace Core.DataStructures
       {
          if (list.Count == 0)
          {
-            return none<T>();
+            return nil;
          }
 
          var lastIndex = list.Count - 1;
@@ -109,9 +107,7 @@ namespace Core.DataStructures
                break;
             }
 
-            var temp = list[pivotIndex];
-            list[pivotIndex] = list[currentIndex];
-            list[currentIndex] = temp;
+            (list[pivotIndex], list[currentIndex]) = (list[currentIndex], list[pivotIndex]);
 
             pivotIndex = currentIndex;
          }

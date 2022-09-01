@@ -27,7 +27,7 @@ namespace Core.Data.Setups
             from adapterGraph in adaptersGroup.RequireGroup(adapterName)
             from connectionName in adapterGraph.RequireValue("connection")
             from connectionGroup in connectionsGroup.RequireGroup(connectionName)
-            let commandName = adaptersGroup.GetValue("command").DefaultTo(() => adapterName)
+            let commandName = adaptersGroup.GetValue("command") | adapterName
             from commandGraph in commandsGroup.RequireGroup(commandName)
             let connection = new Connection(connectionGroup)
             from connectionString in SqlConnectionString.FromConnection(connection)
@@ -106,7 +106,7 @@ namespace Core.Data.Setups
          var connectionString = setupData.Must().HaveValueAt("connectionString").Value;
          ConnectionString = new SqlConnectionString(connectionString, 30.Seconds());
          CommandText = setupData.Must().HaveValueAt("commandText").Value;
-         CommandTimeout = setupData.Map("commandTimeout").Map(Maybe.TimeSpan).DefaultTo(() => 30.Seconds());
+         CommandTimeout = setupData.Map("commandTimeout").Map(Maybe.TimeSpan) | (() => 30.Seconds());
 
          if (parameterSpecifiers.IsNotEmpty())
          {

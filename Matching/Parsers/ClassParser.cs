@@ -45,7 +45,7 @@ namespace Core.Matching.Parsers
                         value = $"({value})";
                      }
 
-                     return value.Some();
+                     return value;
                   }
                   else
                   {
@@ -58,11 +58,11 @@ namespace Core.Matching.Parsers
 
             if (!added)
             {
-               return none<string>();
+               return nil;
             }
          }
 
-         return none<string>();
+         return nil;
       }
    }
 }

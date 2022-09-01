@@ -15,9 +15,9 @@ namespace Core.Data
       {
          data = new StringHash(true);
          Name = connectionGroup.Key;
-         Type = connectionGroup.Maybe.String("type").DefaultTo(() => "sql");
-         Timeout = connectionGroup.Maybe.String("timeout").Map(Maybe.TimeSpan).DefaultTo(() => 30.Seconds());
-         ReadOnly = connectionGroup.Maybe.Boolean("read-only").DefaultTo(() => false);
+         Type = connectionGroup.Maybe.String("type") | "sql";
+         Timeout = connectionGroup.Maybe.String("timeout").Map(Maybe.TimeSpan) | (() => 30.Seconds());
+         ReadOnly = connectionGroup.Maybe.Boolean("read-only") | false;
          foreach (var (key, value) in connectionGroup.Values())
          {
             data[key] = value;

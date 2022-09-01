@@ -69,7 +69,7 @@ public class ParameterBuilder
 
    public SqlSetupBuilder EndParameter()
    {
-      var signature = _signature.DefaultTo(() => name.Substitute("^ '@'; f", "").ToUpper1());
+      var signature = _signature | (() => name.Substitute("^ '@'; f", "").ToUpper1());
       var parameter = new Parameter(name, signature)
       {
          Type = _type,

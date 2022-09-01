@@ -9,9 +9,9 @@ namespace Core.Matching.Parsers
 
       public override Maybe<string> Parse(string source, ref int index) => tokens[1].ToLower() switch
       {
-         "quote" => "\"".Some(),
-         "apos" => "'".Some(),
-         _ => none<string>()
+         "quote" => "\"",
+         "apos" => "'",
+         _ => nil
       };
    }
 }

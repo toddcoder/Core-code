@@ -3,7 +3,6 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Core.Monads;
-using static Core.Monads.MonadFunctions;
 
 namespace Core.Internet.Http
 {
@@ -20,7 +19,7 @@ namespace Core.Internet.Http
          }
          catch (Exception exception)
          {
-            return interrupted<string>(exception);
+            return exception;
          }
       }
    }

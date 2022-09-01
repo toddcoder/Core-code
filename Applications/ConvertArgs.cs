@@ -9,10 +9,11 @@ namespace Core.Applications
       public ConvertArgs(string source)
       {
          Source = source;
+         Result = nil;
       }
 
       public string Source { get; }
 
-      public Maybe<object> Result { get; set; } = none<object>();
+      public Maybe<object> Result { get; set; }
    }
 }

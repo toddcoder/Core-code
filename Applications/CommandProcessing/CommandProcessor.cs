@@ -118,8 +118,7 @@ namespace Core.Applications.CommandProcessing
       protected static string removeExecutableFromCommandLine(string commandLine)
       {
          return commandLine.Matches("^ (.+? ('.exe' | '.dll') /s* [quote]? /s*) /s* /(.*) $; f")
-            .Map(result => result.FirstGroup)
-            .DefaultTo(() => commandLine);
+            .Map(result => result.FirstGroup) | commandLine;
       }
 
       protected static Maybe<(string command, string rest)> splitCommandFromRest(string commandLine)
@@ -455,7 +454,7 @@ namespace Core.Applications.CommandProcessing
       protected Maybe<Unit> fillShortCut((PropertyInfo propertyInfo, SwitchAttribute attribute)[] switchAttributes, string name, Maybe<string> _value)
       {
          return
-            from propertyInfo in switchAttributes.FirstOrNone((_, a) => a.ShortCut.DefaultTo(() => "") == name).Select(t => t.Item1)
+            from propertyInfo in switchAttributes.FirstOrNone((_, a) => (a.ShortCut | "") == name).Select(t => t.Item1)
             from filled in fillProperty(propertyInfo, _value)
             select filled;
       }

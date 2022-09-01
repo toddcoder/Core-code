@@ -7,7 +7,6 @@ using System.Linq;
 using System.Windows.Forms;
 using Core.Applications;
 using Core.Assertions;
-using Core.Exceptions;
 using Core.Matching;
 using Core.Monads;
 using Core.Numbers;
@@ -437,7 +436,7 @@ namespace Core.WinForms.Controls
 
       public Rectangle RectangleFromCurrentLine(Graphics graphics) => RectangleFrom(graphics, CurrentLineNumber);
 
-      public void DrawCurrentLineBar(Graphics graphics, Color foreColor, Color backColor, DashStyle dashStyle = DashStyle.Dot,         int alpha = 30)
+      public void DrawCurrentLineBar(Graphics graphics, Color foreColor, Color backColor, DashStyle dashStyle = DashStyle.Dot, int alpha = 30)
       {
          if (TextLength > 0)
          {
@@ -614,7 +613,7 @@ namespace Core.WinForms.Controls
       {
          if (!lineNumber.Between(0).Until(Lines.Length))
          {
-            throw $"Line number {lineNumber} out of range".Fail();
+            throw fail($"Line number {lineNumber} out of range");
          }
 
          var line = Lines[lineNumber];
@@ -838,7 +837,7 @@ namespace Core.WinForms.Controls
       protected void drawLineNumber(Graphics graphics, int lineNumber, Point point, int lineSize, Brush brush, Color backColor)
       {
          PointF pointF = point;
-         pointF = new PointF(0, pointF.Y);
+         pointF = pointF with { X = 0 };
          var str = (lineNumber + 1).ToString().RightJustify(lineSize);
          var size = MeasureString(graphics, str, Font);
 

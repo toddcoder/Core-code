@@ -109,7 +109,7 @@ namespace Core.Services
                _scheduler = plugin.Scheduler();
             }
 
-            interval = jobGroup.GetValue("interval").Map(Value.TimeSpan).DefaultTo(() => 1.Second());
+            interval = jobGroup.GetValue("interval").Map(Value.TimeSpan) | (() => 1.Second());
 
             plugin.After = jobGroup.GetGroup("after").Map(afterGroup =>
             {

@@ -102,7 +102,7 @@ public class SqlSetupBuilder
       CommandText = _commandText.Required("CommandText must be called"),
       Fields = new Fields.Fields(fields),
       Parameters = new Parameters.Parameters(parameters),
-      CommandTimeout = _commandTimeout.DefaultTo(() => 30.Seconds())
+      CommandTimeout = _commandTimeout | (() => 30.Seconds())
    };
 
    public Result<SqlSetup> TrySetup() => tryTo(Setup);

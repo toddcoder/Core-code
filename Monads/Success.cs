@@ -63,7 +63,7 @@ namespace Core.Monads
          }
          catch (Exception exception)
          {
-            return failure<TResult>(exception);
+            return exception;
          }
       }
 
@@ -72,11 +72,11 @@ namespace Core.Monads
       {
          try
          {
-            return ifSuccessful(value).Success();
+            return ifSuccessful(value);
          }
          catch (Exception exception)
          {
-            return failure<TResult>(exception);
+            return exception;
          }
       }
 
@@ -89,7 +89,7 @@ namespace Core.Monads
          }
          catch (Exception exception)
          {
-            return failure<TResult>(exception);
+            return exception;
          }
       }
 
@@ -108,7 +108,7 @@ namespace Core.Monads
          }
          catch (Exception exception)
          {
-            return failure<TResult>(exception);
+            return exception;
          }
       }
 

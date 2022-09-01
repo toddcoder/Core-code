@@ -64,8 +64,8 @@ namespace Core.Test
 
          try
          {
-            Console.BackgroundColor = consoleColorFromName(prompt.BackColor).DefaultTo(() => backColor);
-            Console.ForegroundColor = consoleColorFromName(prompt.ForeColor).DefaultTo(() => foreColor);
+            Console.BackgroundColor = consoleColorFromName(prompt.BackColor) | backColor;
+            Console.ForegroundColor = consoleColorFromName(prompt.ForeColor) | foreColor;
             Console.WriteLine(message);
          }
          catch (Exception exception)

@@ -24,7 +24,7 @@ namespace Core.Matching.Parsers
                case true when ch == '/':
                   index = i + 1;
                   var escaped = escape(contents.ToString());
-                  return $"(?#{escaped})".Some();
+                  return $"(?#{escaped})";
                default:
                   contents.Append(ch);
                   star = false;
@@ -32,7 +32,7 @@ namespace Core.Matching.Parsers
             }
          }
 
-         return none<string>();
+         return nil;
       }
    }
 }

@@ -121,7 +121,7 @@ namespace Core.Computers
 
       public static bool IsValidFileName(string name)
       {
-         return ResolvedFileName(name).Map(IsValidUnresolvedFileName).DefaultTo(() => false);
+         return ResolvedFileName(name).Map(IsValidUnresolvedFileName) | false;
       }
 
       public static bool IsValidShortFileName(string name) => name.IsMatch(@"^ (-['//:*?<>|' /n '\']+)+ $; f");

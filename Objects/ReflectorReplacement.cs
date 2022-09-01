@@ -25,7 +25,7 @@ namespace Core.Objects
             {
                "," or ":" => some<StandardFormatter, IFormatter>(new StandardFormatter(prefix + format)),
                "$" => some<NewFormatter, IFormatter>(new NewFormatter(format)),
-               _ => none<IFormatter>()
+               _ => nil
             };
          }
       }
@@ -35,7 +35,7 @@ namespace Core.Objects
       public void Replace(object obj, IGetter getter, Slicer slicer)
       {
          var value = getter.GetValue(obj);
-         slicer[index, length] = _formatter.Map(f => f.Format(value)).DefaultTo(() => value.ToNonNullString());
+         slicer[index, length] = _formatter.Map(f => f.Format(value)) | (() => value.ToNonNullString());
       }
    }
 }

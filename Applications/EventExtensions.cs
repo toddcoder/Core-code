@@ -21,17 +21,17 @@ namespace Core.Applications
 				if (eventHandler != null)
 				{
 					eventHandlerList.RemoveHandler(propertyValue, eventHandler);
-					return eventHandler.Some();
+					return eventHandler;
 				}
 				else
             {
-               return none<Delegate>();
+               return nil;
             }
          }
 			catch
-			{
-				return none<Delegate>();
-			}
+         {
+            return nil;
+         }
 		}
 	}
 }

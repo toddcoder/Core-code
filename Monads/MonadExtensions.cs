@@ -20,7 +20,7 @@ namespace Core.Monads
       {
          if (obj is null)
          {
-            return none<T>();
+            return nil;
          }
          else if (obj is ITuple tuple)
          {
@@ -28,15 +28,15 @@ namespace Core.Monads
             {
                if (tuple[i] is null)
                {
-                  return none<T>();
+                  return nil;
                }
             }
 
-            return new Some<T>(obj);
+            return obj;
          }
          else
          {
-            return new Some<T>(obj);
+            return obj;
          }
       }
 
@@ -44,7 +44,7 @@ namespace Core.Monads
       {
          if (obj is null)
          {
-            return new FailedResponse<T>(new Exception("Responses cannot be null"));
+            return fail("Responses cannot be null");
          }
          else if (obj is ITuple tuple)
          {
@@ -52,19 +52,19 @@ namespace Core.Monads
             {
                if (tuple[i] is null)
                {
-                  return new FailedResponse<T>(new Exception("No tuple item can be null"));
+                  return fail("No tuple item can be null");
                }
             }
 
-            return new Response<T>(obj);
+            return obj;
          }
          else
          {
-            return new Response<T>(obj);
+            return obj;
          }
       }
 
-      public static Responding<T> FailedResponse<T>(this string message) => new FailedResponse<T>(new Exception(message));
+      public static Responding<T> FailedResponse<T>(this string message) => fail(message);
 
       public static bool NotNull<T>(this T obj, out T value) => obj.Some().Map(out value);
 
@@ -74,7 +74,7 @@ namespace Core.Monads
       {
          if (obj is null)
          {
-            return none<Type>();
+            return nil;
          }
          else
          {
@@ -91,14 +91,14 @@ namespace Core.Monads
          }
          else
          {
-            return none<Type>();
+            return nil;
          }
       }
 
       [DebuggerStepThrough]
       public static Result<TResult> SelectMany<T, TResult>(this Maybe<T> maybe, Func<T, Result<TResult>> projection)
       {
-         return maybe.Map(projection).DefaultTo(() => "Value not provided".Failure<TResult>());
+         return maybe.Map(projection) | (() => fail("Value not provided"));
       }
 
       [DebuggerStepThrough]
@@ -106,11 +106,11 @@ namespace Core.Monads
       {
          if (result.Map(out var value, out var exception))
          {
-            return func(value).Success();
+            return func(value);
          }
          else
          {
-            return failure<TResult>(exception);
+            return exception;
          }
       }
 
@@ -118,7 +118,7 @@ namespace Core.Monads
       {
          if (value is null)
          {
-            return "Value cannot be null".Failure<T>();
+            return fail("Value cannot be null");
          }
          else if (value is ITuple tuple)
          {
@@ -126,33 +126,33 @@ namespace Core.Monads
             {
                if (tuple[i] is null)
                {
-                  return "No tuple value can be null".Failure<T>();
+                  return fail("No tuple value can be null");
                }
             }
 
-            return new Success<T>(value);
+            return value;
          }
          else
          {
-            return new Success<T>(value);
+            return value;
          }
       }
 
-      public static Result<T> Failure<T>(this string message) => failure<T>(new Exception(message));
+      public static Result<T> Failure<T>(this string message) => fail(message);
 
       public static Result<T> Failure<T, TException>(this object firstItem, params object[] args) where TException : Exception
       {
          var list = new List<object> { firstItem };
          list.AddRange(args);
 
-         return failure<T>((TException)typeof(TException).Create(list.ToArray()));
+         return (TException)typeof(TException).Create(list.ToArray());
       }
 
       public static Matched<T> Match<T>(this T matches)
       {
          if (matches is null)
          {
-            return "Matches cannot be null".FailedMatch<T>();
+            return fail("Matches cannot be null");
          }
          else if (matches is ITuple tuple)
          {
@@ -160,15 +160,15 @@ namespace Core.Monads
             {
                if (tuple[i] is null)
                {
-                  return "No tuple item can be null".FailedMatch<T>();
+                  return fail("No tuple item can be null");
                }
             }
 
-            return new Match<T>(matches);
+            return matches;
          }
          else
          {
-            return new Match<T>(matches);
+            return matches;
          }
       }
 
@@ -188,11 +188,11 @@ namespace Core.Monads
       {
          if (test)
          {
-            return ifFunc().Success();
+            return ifFunc();
          }
          else
          {
-            return exceptionMessage.Failure<T>();
+            return fail(exceptionMessage);
          }
       }
 
@@ -200,11 +200,11 @@ namespace Core.Monads
       {
          if (test)
          {
-            return ifFunc().Success();
+            return ifFunc();
          }
          else
          {
-            return exceptionMessage().Failure<T>();
+            return fail(exceptionMessage());
          }
       }
 
@@ -216,7 +216,7 @@ namespace Core.Monads
          }
          else
          {
-            return exceptionMessage.Failure<T>();
+            return fail(exceptionMessage);
          }
       }
 
@@ -229,7 +229,7 @@ namespace Core.Monads
          }
          else
          {
-            return exceptionMessage().Failure<T>();
+            return fail(exceptionMessage());
          }
       }
 
@@ -239,16 +239,16 @@ namespace Core.Monads
          {
             if (test)
             {
-               return ifFunc().Match();
+               return ifFunc();
             }
             else
             {
-               return noMatch<T>();
+               return nil;
             }
          }
          catch (Exception exception)
          {
-            return failedMatch<T>(exception);
+            return exception;
          }
       }
 
@@ -369,11 +369,11 @@ namespace Core.Monads
             }
             else
             {
-               return none<IEnumerable<T>>();
+               return nil;
             }
          }
 
-         return result.Some<IEnumerable<T>>();
+         return result;
       }
 
       public static IEnumerable<Result<T>> All<T>(this IEnumerable<Result<T>> enumerable, Action<T> success = null,
@@ -446,23 +446,29 @@ namespace Core.Monads
          return enumerable.Map(e => e.ForAny(func));
       }
 
-      public static Result<TResult> ForAny<TSource, TResult>(this IEnumerable<TSource> enumerable,
-         Action<TSource> action, TResult result) => tryTo(() =>
+      public static Result<TResult> ForAny<TSource, TResult>(this IEnumerable<TSource> enumerable, Action<TSource> action, TResult result)
       {
-         foreach (var item in enumerable)
+         try
          {
-            try
+            foreach (var item in enumerable)
             {
-               action(item);
+               try
+               {
+                  action(item);
+               }
+               catch (Exception exception)
+               {
+                  return exception;
+               }
             }
-            catch (Exception exception)
-            {
-               return failure<TResult>(exception);
-            }
-         }
 
-         return result.Success();
-      });
+            return result;
+         }
+         catch (Exception exception)
+         {
+            return exception;
+         }
+      }
 
       public static Result<TResult> ForAny<TSource, TResult>(this Result<IEnumerable<TSource>> enumerable,
          Action<TSource> action, TResult result)
@@ -487,7 +493,7 @@ namespace Core.Monads
          return enumerable.Map(e => e.ForAny(action, result));
       }
 
-      public static Result<T> Flat<T>(this Result<Result<T>> result) => result.Recover(failure<T>);
+      public static Result<T> Flat<T>(this Result<Result<T>> result) => result.Recover(e => e);
 
       public static T ThrowIfFailed<T>(this Result<T> result)
       {
@@ -553,7 +559,7 @@ namespace Core.Monads
          }
       }
 
-      public static Maybe<T> IfCast<T>(this object obj) => obj is T t ? t.Some() : none<T>();
+      public static Maybe<T> IfCast<T>(this object obj) => obj is T t ? t : nil;
 
       public static bool Map<T1, T2>(this Maybe<(T1, T2)> some, out T1 v1, out T2 v2)
       {
@@ -1154,7 +1160,7 @@ namespace Core.Monads
       {
          if (token.IsCancellationRequested)
          {
-            return cancelled<T>();
+            return nil;
          }
          else
          {
@@ -1169,40 +1175,40 @@ namespace Core.Monads
          var list = new List<object> { firstItem };
          list.AddRange(args);
 
-         return interrupted<T>((TException)typeof(TException).Create(list.ToArray()));
+         return (TException)typeof(TException).Create(list.ToArray());
       }
 
-      public static Completion<T> Completion<T>(this Result<T> result) => result.Map(v => v.Completed()).Recover(interrupted<T>);
+      public static Completion<T> Completion<T>(this Result<T> result) => result.Map(v => v.Completed()).Recover(e => e);
 
       public static Completion<T> Completion<T>(this Result<T> result, CancellationToken token)
       {
-         return result.Map(v => v.Completed(token)).Recover(interrupted<T>);
+         return result.Map(v => v.Completed(token)).Recover(e => e);
       }
 
       public static Completion<T> Completion<T>(this Matched<T> matched)
       {
-         return matched.FlatMap(v => v.Completed(), cancelled<T>, interrupted<T>);
+         return matched.FlatMap(v => v.Completed(), () => nil, e => e);
       }
 
       public static Completion<T> Completion<T>(this Matched<T> matched, CancellationToken token)
       {
-         return matched.FlatMap(v => v.Completed(token), cancelled<T>, interrupted<T>);
+         return matched.FlatMap(v => v.Completed(token), () => nil, e => e);
       }
 
-      public static Completion<T> Completion<T>(this Maybe<T> maybe) => maybe.Map(v => v.Completed()).DefaultTo(cancelled<T>);
+      public static Completion<T> Completion<T>(this Maybe<T> maybe) => maybe.Map(v => new Completed<T>(v)) | nil;
 
       public static Completion<T> Completion<T>(this Maybe<T> maybe, CancellationToken token)
       {
-         return maybe.Map(v => v.Completed(token)).DefaultTo(cancelled<T>);
+         return maybe.Map(v => v.Completed(token)) | (() => new Cancelled<T>());
       }
 
       private static Completion<T> cancelledOrInterrupted<T>(Exception exception) => exception switch
       {
-         OperationCanceledException => cancelled<T>(),
-         ObjectDisposedException => cancelled<T>(),
+         OperationCanceledException => nil,
+         ObjectDisposedException => nil,
          FullStackException { InnerException: { } and not FullStackException } fullStackException => cancelledOrInterrupted<T>(fullStackException
             .InnerException),
-         _ => interrupted<T>(exception)
+         _ => exception
       };
 
       public static async Task<Completion<T3>> SelectMany<T1, T2, T3>(this Task<Completion<T1>> source, Func<T1, Task<Completion<T2>>> func,
@@ -1222,7 +1228,7 @@ namespace Core.Monads
             }
             else
             {
-               return cancelled<T3>();
+               return nil;
             }
          }
          else if (_exception.Map(out var exception))
@@ -1231,7 +1237,7 @@ namespace Core.Monads
          }
          else
          {
-            return cancelled<T3>();
+            return nil;
          }
       }
 
@@ -1239,15 +1245,15 @@ namespace Core.Monads
       {
          if (completion.Map(out var value, out var _exception))
          {
-            return value.Success();
+            return value;
          }
          else if (_exception.Map(out var exception))
          {
-            return failure<T>(exception);
+            return exception;
          }
          else
          {
-            return "Cancelled".Failure<T>();
+            return fail("Cancelled");
          }
       }
 
@@ -1473,22 +1479,22 @@ namespace Core.Monads
 
       public static Maybe<T> SomeIf<T>(this Func<bool> boolExpression, Func<T> value)
       {
-         return boolExpression() ? value().Some() : none<T>();
+         return boolExpression() ? value() : nil;
       }
 
       public static Maybe<T> SomeIf<T>(this Func<bool> boolExpression, Func<Maybe<T>> value)
       {
-         return boolExpression() ? value() : none<T>();
+         return boolExpression() ? value() : nil;
       }
 
       public static Maybe<T> SomeIf<T>(this bool boolExpression, Func<T> value)
       {
-         return boolExpression ? value().Some() : none<T>();
+         return boolExpression ? value() : nil;
       }
 
       public static Maybe<T> SomeIf<T>(this bool boolExpression, Func<Maybe<T>> value)
       {
-         return boolExpression ? value() : none<T>();
+         return boolExpression ? value() : nil;
       }
    }
 }

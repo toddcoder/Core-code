@@ -28,7 +28,7 @@ namespace Core.Services.Loggers
             if (_baseFolder.Map(out var baseFolder, out var exception))
             {
                var folder = configuration.GetValue("logs").Map(logs => ((FolderName)logs).Subfolder(baseFolder.Name))
-                  .DefaultTo(() => baseFolder[jobName]);
+                  | (() => baseFolder[jobName]);
                return folder.Subfolder(jobName);
             }
             else
@@ -48,8 +48,8 @@ namespace Core.Services.Loggers
          if (configuration.GetValue("name").Map(out var jobName))
          {
             var _loggingGroup = configuration.GetGroup("logging");
-            var sizeLimit = _loggingGroup.Map(g => g.GetValue("sizeLimit")).Map(Maybe.Int32).DefaultTo(() => 1000000);
-            var expiry = _loggingGroup.Map(g => g.GetValue("expiry")).Map(Maybe.TimeSpan).DefaultTo(() => 7.Days());
+            var sizeLimit = _loggingGroup.Map(g => g.GetValue("sizeLimit")).Map(Maybe.Int32) | 1000000;
+            var expiry = _loggingGroup.Map(g => g.GetValue("expiry")).Map(Maybe.TimeSpan) | (() => 7.Days());
             Maybe<EventLogger> _eventLogger;
             try
             {
@@ -228,8 +228,8 @@ namespace Core.Services.Loggers
 
          if (group.If("logging", out var loggingGroup))
          {
-            SizeLimit = loggingGroup.GetValue("sizeLimit").Map(Maybe.Int32).DefaultTo(() => 1000000);
-            Expiry = loggingGroup.GetValue("expiry").Map(Maybe.TimeSpan).DefaultTo(() => 7.Days());
+            SizeLimit = loggingGroup.GetValue("sizeLimit").Map(Maybe.Int32) | 1000000;
+            Expiry = loggingGroup.GetValue("expiry").Map(Maybe.TimeSpan) | (() => 7.Days());
          }
          else
          {

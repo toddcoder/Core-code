@@ -22,6 +22,7 @@ namespace Core.Monads
       public override bool IsNone => false;
 #pragma warning restore CS0672
 
+      [Obsolete("Use |")]
       public override T DefaultTo(Func<T> func) => value;
 
       public override Maybe<TResult> Map<TResult>(Func<T, TResult> ifSome) => ifSome(value).Some();
@@ -84,15 +85,15 @@ namespace Core.Monads
       {
          if (value is TResult result)
          {
-            return result.Some();
+            return result;
          }
          else
          {
-            return none<TResult>();
+            return nil;
          }
       }
 
-      public override Maybe<T> Where(Predicate<T> predicate) => predicate(value) ? this : none<T>();
+      public override Maybe<T> Where(Predicate<T> predicate) => predicate(value) ? this : nil;
 
       public override Maybe<T> Initialize(Func<T> initializer) => this;
 

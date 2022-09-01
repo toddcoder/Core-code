@@ -44,7 +44,7 @@ public class FieldBuilder
 
    public SqlSetupBuilder EndField()
    {
-      var signature = _signature.DefaultTo(() => name.ToUpper1());
+      var signature = _signature | (() => name.ToUpper1());
       var field = new Field(name, signature, optional) { Type = _type };
       setupBuilder.AddField(field);
 

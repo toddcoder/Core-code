@@ -58,21 +58,21 @@ namespace Core.Monads
 
       public override void Deconstruct(out Maybe<TLeft> left, out Maybe<TRight> right)
       {
-         left = value.Some();
-         right = none<TRight>();
+         left = value;
+         right = nil;
       }
 
-      public override Maybe<TLeft> MaybeFromLeft() => value.Some();
+      public override Maybe<TLeft> MaybeFromLeft() => value;
 
-      public override Maybe<TRight> MaybeFromRight() => none<TRight>();
+      public override Maybe<TRight> MaybeFromRight() => nil;
 
-      public override Result<TLeft> ResultFromLeft(string exceptionMessage) => value.Success();
+      public override Result<TLeft> ResultFromLeft(string exceptionMessage) => value;
 
-      public override Result<TLeft> ResultFromLeft(Func<TRight, string> exceptionMessage) => value.Success();
+      public override Result<TLeft> ResultFromLeft(Func<TRight, string> exceptionMessage) => value;
 
-      public override Result<TRight> ResultFromRight(string exceptionMessage) => exceptionMessage.Failure<TRight>();
+      public override Result<TRight> ResultFromRight(string exceptionMessage) => fail(exceptionMessage);
 
-      public override Result<TRight> ResultFromRight(Func<TLeft, string> exceptionMessage) => exceptionMessage(value).Failure<TRight>();
+      public override Result<TRight> ResultFromRight(Func<TLeft, string> exceptionMessage) => fail(exceptionMessage(value));
 
       public override Either<TLeft, TRight> OnLeft(Action<TLeft> action)
       {

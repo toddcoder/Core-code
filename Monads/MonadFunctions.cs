@@ -20,6 +20,7 @@ namespace Core.Monads
          return new Some<TParent>(value);
       }
 
+      [Obsolete("Use nil")]
       public static Maybe<T> none<T>() => new None<T>();
 
       public static Result<T> success<T>(T value) => new Success<T>(value);
@@ -29,8 +30,10 @@ namespace Core.Monads
          return new Success<TParent>(value);
       }
 
+      [Obsolete("Use exception")]
       public static Result<T> failure<T>(Exception exception) => new Failure<T>(exception);
 
+      [Obsolete("Use exception")]
       public static Responding<T> failedResponse<T>(Exception exception) => new FailedResponse<T>(exception);
 
       public static Matched<TParent> matched<TChild, TParent>(TChild value) where TChild : TParent
@@ -71,14 +74,17 @@ namespace Core.Monads
          }
       }
 
+      [Obsolete("Use exception")]
       public static Responding<T> noResponse<T>() => new NoResponse<T>();
 
-      public static Maybe<T> maybe<T>(bool test, Func<T> ifTrue) => test ? ifTrue().Some() : none<T>();
+      public static Maybe<T> maybe<T>(bool test, Func<T> ifTrue) => test ? ifTrue().Some() : nil;
 
-      public static Maybe<T> maybe<T>(bool test, Func<Maybe<T>> ifTrue) => test ? ifTrue() : none<T>();
+      public static Maybe<T> maybe<T>(bool test, Func<Maybe<T>> ifTrue) => test ? ifTrue() : nil;
 
+      [Obsolete("Use nil")]
       public static Completion<T> cancelled<T>() => new Cancelled<T>();
 
+      [Obsolete("Use exception")]
       public static Completion<T> interrupted<T>(Exception exception) => new Interrupted<T>(exception);
 
       public static Result<T> assert<T>(bool test, Func<T> ifTrue, Func<string> ifFalse)
@@ -89,7 +95,7 @@ namespace Core.Monads
          }
          catch (Exception exception)
          {
-            return failure<T>(exception);
+            return exception;
          }
       }
 
@@ -101,7 +107,7 @@ namespace Core.Monads
          }
          catch (Exception exception)
          {
-            return failure<T>(exception);
+            return exception;
          }
       }
 

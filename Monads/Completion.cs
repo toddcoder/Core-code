@@ -5,6 +5,8 @@ namespace Core.Monads
 {
    public abstract class Completion<T>
    {
+      protected Exception defaultException() => fail("There is no exception");
+
       public static implicit operator Completion<T>(T value) => value.Completed();
 
       public static implicit operator Completion<T>(Exception exception) => new Interrupted<T>(exception);
@@ -15,7 +17,7 @@ namespace Core.Monads
 
       public static implicit operator Completion<T>(Maybe<Exception> _exception)
       {
-         return _exception.Map(e => (Completion<T>)new Interrupted<T>(e)).DefaultTo(() => new Cancelled<T>());
+         return _exception.Map(e => (Completion<T>)new Interrupted<T>(e)) | (() => new Cancelled<T>());
       }
 
       public static bool operator true(Completion<T> value) => value is Completed<T>;

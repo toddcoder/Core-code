@@ -16,7 +16,7 @@ namespace Core.Monads
 
       public static implicit operator Matched<T>(Maybe<Exception> _exception)
       {
-         return _exception.Map(e => (Matched<T>)new FailedMatch<T>(e)).DefaultTo(() => new NoMatch<T>());
+         return _exception.Map(e => (Matched<T>)new FailedMatch<T>(e)) | (() => new NoMatch<T>());
       }
 
       public abstract bool IsMatched { get; }

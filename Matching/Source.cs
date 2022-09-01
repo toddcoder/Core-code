@@ -74,8 +74,7 @@ namespace Core.Matching
          if (More)
          {
             var (line, lineLength) = Current.Matches(REGEX_NEXT_LINE)
-               .Map(result => (result.FirstGroup, result.Length))
-               .DefaultTo(() => (Current, Current.Length));
+               .Map(result => (result.FirstGroup, result.Length)) | (() => (Current, Current.Length));
 
             if (line.Matches(pattern).Map(out var lineResult))
             {
@@ -93,8 +92,7 @@ namespace Core.Matching
          if (More)
          {
             var (line, lineLength) = Current.Matches(REGEX_NEXT_LINE)
-               .Map(result => (result.FirstGroup, result.Length))
-               .DefaultTo(() => (Current, Current.Length));
+               .Map(result => (result.FirstGroup, result.Length)) | (() => (Current, Current.Length));
             if (line.Matches(pattern).Map(out var lineResult))
             {
                _peekLength = lineLength;

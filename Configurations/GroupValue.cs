@@ -15,43 +15,43 @@ namespace Core.Configurations
          this.group = group;
       }
 
-      public Group Group(string key) => group.GetGroup(key).DefaultTo(() => new Group(key));
+      public Group Group(string key) => group.GetGroup(key) | (() => new Group(key));
 
-      public string String(string key, string defaultValue = "") => group.GetValue(key).DefaultTo(() => defaultValue);
+      public string String(string key, string defaultValue = "") => group.GetValue(key) | defaultValue;
 
       public int Int32(string key, int defaultValue = 0)
       {
-         return group.GetValue(key).Map(i => Value.Int32(i, defaultValue)).DefaultTo(() => defaultValue);
+         return group.GetValue(key).Map(i => Value.Int32(i, defaultValue)) | defaultValue;
       }
 
       public long Int64(string key, long defaultValue = 0)
       {
-         return group.GetValue(key).Map(l => Value.Int64(l, defaultValue)).DefaultTo(() => defaultValue);
+         return group.GetValue(key).Map(l => Value.Int64(l, defaultValue)) | defaultValue;
       }
 
       public float Single(string key, float defaultValue = 0)
       {
-         return group.GetValue(key).Map(f => Value.Single(f, defaultValue)).DefaultTo(() => defaultValue);
+         return group.GetValue(key).Map(f => Value.Single(f, defaultValue)) | defaultValue;
       }
 
       public double Double(string key, double defaultValue = 0)
       {
-         return group.GetValue(key).Map(d => Value.Double(d, defaultValue)).DefaultTo(() => defaultValue);
+         return group.GetValue(key).Map(d => Value.Double(d, defaultValue)) | defaultValue;
       }
 
       public bool Boolean(string key, bool defaultValue = false)
       {
-         return group.GetValue(key).Map(b => Value.Boolean(b, defaultValue)).DefaultTo(() => defaultValue);
+         return group.GetValue(key).Map(b => Value.Boolean(b, defaultValue)) | defaultValue;
       }
 
       public DateTime DateTime(string key, DateTime defaultValue)
       {
-         return group.GetValue(key).Map(d => Value.DateTime(d, defaultValue)).DefaultTo(() => defaultValue);
+         return group.GetValue(key).Map(d => Value.DateTime(d, defaultValue)) | defaultValue;
       }
 
       public DateTime DateTime(string key) => DateTime(key, System.DateTime.MinValue);
 
-      public Guid Guid(string key) => group.GetValue(key).Map(Value.Guid).DefaultTo(() => System.Guid.Empty);
+      public Guid Guid(string key) => group.GetValue(key).Map(Value.Guid) | System.Guid.Empty;
 
       public FileName FileName(string key) => group.ValueAt(key);
 

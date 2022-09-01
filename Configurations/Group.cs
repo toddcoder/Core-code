@@ -88,11 +88,11 @@ namespace Core.Configurations
 
       public string ValueAt(string key) => GetValue(key).Required($"Couldn't find value '{key}'");
 
-      public string[] GetArray(string key) => GetValue(key).Map(s => s.Unjoin("/s* ',' /s*; f")).DefaultTo(() => new[] { key });
+      public string[] GetArray(string key) => GetValue(key).Map(s => s.Unjoin("/s* ',' /s*; f")) | (() => new[] { key });
 
       public Result<string> RequireValue(string key) => items.Require(key).Map(i => i.RequireValue(key));
 
-      public string At(string key) => GetValue(key).DefaultTo(() => "");
+      public string At(string key) => GetValue(key) | "";
 
       public Maybe<Group> GetGroup(string key)
       {
@@ -298,7 +298,7 @@ namespace Core.Configurations
                }
                else
                {
-                  return none<object>();
+                  return nil;
                }
             }
          }
@@ -308,7 +308,7 @@ namespace Core.Configurations
          }
          else
          {
-            return none<object>();
+            return nil;
          }
       }
 
@@ -406,7 +406,6 @@ namespace Core.Configurations
                               IsArray = true
                            };
                            group.SetItem(key, item);
-
                         }
                         else
                         {

@@ -193,7 +193,7 @@ namespace Core.Strings
          string getRowSeparator()
          {
             var rowSeparator = "\r\n";
-            return RowSeparator.Map(rs => rowSeparator + rs.Repeat(headerWidth) + rowSeparator).DefaultTo(() => rowSeparator);
+            return RowSeparator.Map(rs => rowSeparator + rs.Repeat(headerWidth) + rowSeparator) | rowSeparator;
          }
 
          if (hasHeaders)

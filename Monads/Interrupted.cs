@@ -6,6 +6,7 @@ namespace Core.Monads
 {
    public class Interrupted<T> : Completion<T>, IEquatable<Interrupted<T>>
    {
+      // ReSharper disable once UnusedParameter.Global
       public static implicit operator bool(Interrupted<T> _) => false;
 
       protected Exception exception;
@@ -177,7 +178,7 @@ namespace Core.Monads
 
       public override bool EqualToValueOf(T otherValue) => false;
 
-      public Completion<object> AsObject() => interrupted<object>(exception);
+      public Completion<object> AsObject() => exception;
 
       public override Completion<TResult> CastAs<TResult>() => exception;
 

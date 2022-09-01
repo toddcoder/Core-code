@@ -366,7 +366,7 @@ namespace Core.WinForms.Documents
 
       protected DialogResult getSaveResponse()
       {
-         var message = _file.Map(f => $"File {f} not saved").DefaultTo(() => "File not saved");
+         var message = _file.Map(f => $"File {f} not saved") | "File not saved";
          var text = $"{documentName} File Not Saved";
 
          return MessageBox.Show(message, text, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);

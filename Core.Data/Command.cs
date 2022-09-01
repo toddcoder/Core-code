@@ -38,7 +38,7 @@ namespace Core.Data
                return fail("Require 'text' or 'file' values");
             }
 
-            var timeout = commandGroup.GetValue("timeout").Map(Maybe.TimeSpan).DefaultTo(() => 30.Seconds());
+            var timeout = commandGroup.GetValue("timeout").Map(Maybe.TimeSpan) | (() => 30.Seconds());
 
             return (command, timeout);
          }
@@ -65,7 +65,7 @@ namespace Core.Data
             throw "Require 'text' or 'file' values".Throws();
          }
 
-         CommandTimeout = commandGroup.GetValue("timeout").Map(Maybe.TimeSpan).DefaultTo(() => 30.Seconds());
+         CommandTimeout = commandGroup.GetValue("timeout").Map(Maybe.TimeSpan) | (() => 30.Seconds());
       }
 
       internal Command()

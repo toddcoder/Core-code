@@ -69,7 +69,7 @@ namespace Core.Monads
 
       public override Responding<T2> SelectMany<T1, T2>(Func<T, Responding<T1>> func, Func<T, T1, T2> projection)
       {
-         return func(Value).Map(t1 => projection(Value, t1).Response(), noResponse<T2>, failedResponse<T2>);
+         return func(Value).Map(t1 => projection(Value, t1).Response(), () => nil, e => e);
       }
 
       public override Responding<TResult> SelectMany<TResult>(Func<T, TResult> func) => func(Value);

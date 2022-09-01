@@ -18,7 +18,7 @@ namespace Core.Data.Setups
             from adapterGraph in adaptersGroup.RequireGroup(adapterName)
             from connectionName in adapterGraph.RequireValue("connection")
             from connectionGroup in connectionsGroup.RequireGroup(connectionName)
-            let commandName = adaptersGroup.GetValue("command").DefaultTo(() => adapterName)
+            let commandName = adaptersGroup.GetValue("command") | adapterName
             from commandGraph in commandsGroup.RequireGroup(commandName)
             let connection = new Connection(connectionGroup) { ["file"] = fileName }
             from connectionString in SqlConnectionString.FromConnection(connection)

@@ -95,23 +95,23 @@ namespace Core.Objects
                var memberInfos = type.GetMember(reflectorReplacement.MemberName, memberTypes, bindingFlags);
                if (memberInfos.Length != 0)
                {
-                  var chosen = none<IGetter>();
+                  Maybe<IGetter> _chosen = nil;
                   foreach (var info in memberInfos)
                   {
                      if (info is FieldInfo fieldInfo)
                      {
-                        chosen = new FieldGetter(fieldInfo).Some<IGetter>();
+                        _chosen = new FieldGetter(fieldInfo).Some<IGetter>();
                         break;
                      }
 
                      if (info is PropertyInfo propertyInfo)
                      {
-                        chosen = new PropertyGetter(propertyInfo).Some<IGetter>();
+                        _chosen = new PropertyGetter(propertyInfo).Some<IGetter>();
                         break;
                      }
                   }
 
-                  if (chosen.Map(out var ch))
+                  if (_chosen.Map(out var ch))
                   {
                      members[reflectorReplacement.MemberName] = new Pair(reflectorReplacement, ch);
                   }
@@ -132,7 +132,7 @@ namespace Core.Objects
 
       protected static Result<MemberData> failedFind(Type type, string memberName)
       {
-         return $"Member {memberName} in type {type} couldn't be found".Failure<MemberData>();
+         return fail($"Member {memberName} in type {type} couldn't be found");
       }
 
       protected object obj;
@@ -163,9 +163,9 @@ namespace Core.Objects
 
       protected Result<object> getValue(MemberInfo info) => info switch
       {
-         FieldInfo fieldInfo => fieldInfo.GetValue(obj).Success(),
-         PropertyInfo propertyInfo => propertyInfo.GetValue(obj).Success(),
-         _ => $"Couldn't invoke member {info.Name}".Failure<object>()
+         FieldInfo fieldInfo => fieldInfo.GetValue(obj),
+         PropertyInfo propertyInfo => propertyInfo.GetValue(obj),
+         _ => fail($"Couldn't invoke member {info.Name}")
       };
    }
 }

@@ -6,7 +6,7 @@ namespace Core.Strings.Text
    {
       public static Difference FromDifferenceItem(DifferenceItem item)
       {
-         var position = item.Position.DefaultTo(() => -1);
+         var position = item.Position | -1;
          return new Difference(item.Text, item.Type, position);
       }
       public Difference(string text, DifferenceType type, int position)

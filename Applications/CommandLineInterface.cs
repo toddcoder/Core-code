@@ -204,7 +204,7 @@ namespace Core.Applications
             {
                var args = new ConvertArgs(source);
                Convert.Invoke(this, args);
-               return args.Result.DefaultTo(() => source);
+               return args.Result | (object)source;
             }
             else
             {
@@ -310,8 +310,7 @@ namespace Core.Applications
       protected static string removeExecutableFromCommandLine(string commandLine)
       {
          return commandLine.Matches("^ (.+? ('.exe' | '.dll') /s* [quote]? /s*) /s* /(.*) $; f")
-            .Map(result => result.FirstGroup)
-            .DefaultTo(() => commandLine);
+            .Map(result => result.FirstGroup) | commandLine;
       }
 
       protected static Hash<char, string> getShortcuts(string source)
@@ -420,7 +419,7 @@ namespace Core.Applications
                }
             }
 
-            return none<string>();
+            return nil;
          }
       }
 
@@ -555,7 +554,7 @@ namespace Core.Applications
             try
             {
                Running = true;
-               methodInfo.Invoke(this, new object[0]);
+               methodInfo.Invoke(this, Array.Empty<object>());
             }
             catch (Exception exception)
             {
@@ -627,7 +626,7 @@ namespace Core.Applications
                         evaluator[name] = getBoolean(rest, suffix);
                      }
                      else if (type == typeof(string) || type == typeof(Maybe<string>) || type == typeof(FileName) || type == typeof(FolderName) ||
-                        type == typeof(Maybe<FileName>) || type == typeof(Maybe<FolderName>))
+                              type == typeof(Maybe<FileName>) || type == typeof(Maybe<FolderName>))
                      {
                         evaluator[name] = getString(rest, type);
                      }
@@ -676,7 +675,7 @@ namespace Core.Applications
          }
          catch (Exception exception)
          {
-            return failure<object>(exception);
+            return exception;
          }
       }
 

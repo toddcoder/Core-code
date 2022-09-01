@@ -14,9 +14,9 @@ namespace Core.Matching.Parsers
 
          return type switch
          {
-            ">" => (negative ? "(?!" : "(?=").Some(),
-            "<" => (negative ? "(?<!" : "(?<=").Some(),
-            _ => none<string>()
+            ">" => negative ? "(?!" : "(?=",
+            "<" => negative ? "(?<!" : "(?<=",
+            _ => nil
          };
       }
    }

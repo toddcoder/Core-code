@@ -83,7 +83,7 @@ namespace Core.Assertions.Computers
       public FolderNameAssertion ChildOf(FolderName otherFolder)
       {
          var message = $"$name must $not be child of {otherFolder}";
-         return add(() => folder.Parent.Map(parent => parent == otherFolder).DefaultTo(() => false), message);
+         return add(() => folder.Parent.Map(parent => parent == otherFolder) | false, message);
       }
 
       public FolderNameAssertion Equal(FolderName otherFolder)

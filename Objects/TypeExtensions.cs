@@ -77,7 +77,7 @@ namespace Core.Objects
          }
          catch (Exception exception)
          {
-            return failure<Type>(exception);
+            return exception;
          }
       }
 

@@ -29,9 +29,9 @@ namespace Core.Markup.Rtf
          BackgroundColor = nil;
       }
 
-      public bool IsBeginOfColumnSpan => mergeInfo.AnyValue.Map(mergeInfo => mergeInfo.ColumnIndex == 0).DefaultTo(() => false);
+      public bool IsBeginOfColumnSpan => mergeInfo.AnyValue.Map(mergeInfo => mergeInfo.ColumnIndex == 0) | false;
 
-      public bool IsBeginOfRowSpan => mergeInfo.AnyValue.Map(mergeInfo => mergeInfo.RowIndex == 0).DefaultTo(() => false);
+      public bool IsBeginOfRowSpan => mergeInfo.AnyValue.Map(mergeInfo => mergeInfo.RowIndex == 0) | false;
 
       public bool IsMerged => mergeInfo.IsActivated;
 
