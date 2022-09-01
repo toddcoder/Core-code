@@ -122,5 +122,7 @@ namespace Core.Monads
             return exception;
          }
       }
+
+      public static Maybe<T>.If maybe<T>(bool test) => new(test);
    }
 }

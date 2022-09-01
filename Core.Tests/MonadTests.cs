@@ -278,21 +278,21 @@ namespace Core.Tests
             return "default";
          }
 
-         Maybe<string> _maybe = "Test";
+         var _maybe = (Maybe<string>)"Test";
          var text = _maybe | "nothing";
          Console.WriteLine(text);
 
-         text = _maybe | "def" + "ault";//defaultTo;
+         text = _maybe | "def" + "ault";
          Console.WriteLine(text);
 
          _maybe = nil;
          text = _maybe | "nothing";
          Console.WriteLine(text);
 
-         text=_maybe | defaultTo;
+         text = _maybe | defaultTo;
          Console.WriteLine(text);
 
-         Result<int> _result = 153;
+         var _result = (Result<int>)153;
          var result = _result | -1;
          Console.WriteLine(result);
 
@@ -302,6 +302,29 @@ namespace Core.Tests
 
          var exception = (Exception)_result;
          Console.WriteLine(exception.Message);
+      }
+
+      [TestMethod]
+      public void MaybeIfTest()
+      {
+         var date = DateTime.Now;
+         var _result = maybe<string>(date.Second < 30) & "seconds < 30";
+         if (_result)
+         {
+            Console.WriteLine((string)_result);
+         }
+         else
+         {
+            Console.WriteLine(date.Second);
+         }
+      }
+
+      [TestMethod]
+      public void MaybeIfWithDefaultTest()
+      {
+         var date = DateTime.Now;
+         var result = maybe<string>(date.Second < 30) & "seconds < 30" | date.Second.ToString;
+         Console.WriteLine(result);
       }
    }
 }

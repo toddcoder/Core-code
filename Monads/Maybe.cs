@@ -5,6 +5,40 @@ namespace Core.Monads
 {
    public abstract class Maybe<T>
    {
+      public class If
+      {
+         public static Maybe<T> operator &(If @if, T value)
+         {
+            if (@if.test)
+            {
+               return value;
+            }
+            else
+            {
+               return nil;
+            }
+         }
+
+         public static Maybe<T> operator &(If @if, Func<T> func)
+         {
+            if (@if.test)
+            {
+               return func();
+            }
+            else
+            {
+               return nil;
+            }
+         }
+
+         protected bool test;
+
+         public If(bool test)
+         {
+            this.test = test;
+         }
+      }
+
       public static Maybe<T> operator |(Maybe<T> left, Maybe<T> right)
       {
          if (left)
