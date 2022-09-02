@@ -1619,16 +1619,16 @@ namespace Core.WinForms.Controls
          }
       }
 
-      public Maybe<string> Choose(string title, IEnumerable<string> choices)
+      public Maybe<string> Choose(string title, IEnumerable<string> choices, bool modifyTitle = true, string emptyTitle = "")
       {
          var _choice = Chooser.Get(title, choices);
-         if (_choice)
+         if (_choice && modifyTitle)
          {
             Success(_choice);
          }
-         else
+         else if (modifyTitle)
          {
-            Failure("");
+            Failure(emptyTitle);
          }
 
          return _choice;
