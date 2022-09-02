@@ -46,22 +46,6 @@ namespace Core.Computers
 
       public static bool operator !=(FolderName lhs, FolderName rhs) => !(lhs == rhs);
 
-      public static Target operator |(FolderName folder, Target.Option option) => new(folder, option);
-
-      public static FileName operator |(FolderName folder, FileName file)
-      {
-         file.CopyTo(folder);
-
-         return file;
-      }
-
-      public static FileName operator &(FolderName folder, FileName file)
-      {
-         file.MoveTo(folder);
-
-         return file;
-      }
-
       public static bool operator true(FolderName folder) => folder.Exists();
 
       public static bool operator false(FolderName folder) => !folder.Exists();

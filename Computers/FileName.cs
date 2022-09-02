@@ -38,18 +38,6 @@ namespace Core.Computers
 
       protected const string REGEX_VALID_FILENAME = @"^ ((['a-zA-Z'] ':' | '\') ('\' -['\']+)* '\')? (-['.']+ ('.' -['.\']+)?) $; f";
 
-      public static FileName operator |(FileName target, FileName source)
-      {
-         source.CopyTo(target, true);
-         return target;
-      }
-
-      public static FileName operator &(FileName target, FileName source)
-      {
-         source.MoveTo(target, true);
-         return target;
-      }
-
       public static bool operator true(FileName file) => file.Exists();
 
       public static bool operator false(FileName file) => !file.Exists();
