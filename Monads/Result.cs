@@ -1,10 +1,50 @@
 ﻿using System;
+using static Core.Lambdas.LambdaFunctions;
 using static Core.Monads.AttemptFunctions;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads
 {
    public abstract class Result<T>
    {
+      public class If
+      {
+         public static If operator &(If @if, bool test) => @if.test && test ? new If(test, nil, nil) : new If(false, nil, nil);
+
+         public static If operator &(If @if, T value) => @if.test ? new If(@if.test, func(() => value), nil) : @if;
+
+         public static If operator &(If @if, Func<T> value) => @if.test ? new If(@if.test, value, nil) : @if;
+
+         public static Result<T> operator &(If @if, Exception exception)
+         {
+            if (@if.test)
+            {
+               return @if._value.Map(v => v().Success()) | exception;
+            }
+            else
+            {
+               return exception;
+            }
+         }
+
+         protected bool test;
+         protected Maybe<Func<T>> _value;
+         protected Maybe<Exception> _exception;
+
+         internal If(bool test, Maybe<Func<T>> _value, Maybe<Exception> exception)
+         {
+            this.test = test;
+            this._value = _value;
+            this._exception = exception;
+         }
+
+         public bool Test => test;
+
+         public Maybe<Func<T>> Value => _value;
+
+         public Maybe<Exception> Exception => _exception;
+      }
+
       public static Result<T> operator |(Result<T> left, Result<T> right)
       {
          if (left)

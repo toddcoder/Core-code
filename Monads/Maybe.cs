@@ -7,33 +7,15 @@ namespace Core.Monads
    {
       public class If
       {
-         public static Maybe<T> operator &(If @if, T value)
-         {
-            if (@if.test)
-            {
-               return value;
-            }
-            else
-            {
-               return nil;
-            }
-         }
+         public static If operator &(If @if, bool test) => @if.test && test ? new If(test) : new If(false);
 
-         public static Maybe<T> operator &(If @if, Func<T> func)
-         {
-            if (@if.test)
-            {
-               return func();
-            }
-            else
-            {
-               return nil;
-            }
-         }
+         public static Maybe<T> operator &(If @if, T value) => @if.test ? value : nil;
+
+         public static Maybe<T> operator &(If @if, Func<T> func) => @if.test ? func() : nil;
 
          protected bool test;
 
-         public If(bool test)
+         internal If(bool test)
          {
             this.test = test;
          }

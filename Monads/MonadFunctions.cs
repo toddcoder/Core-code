@@ -123,6 +123,8 @@ namespace Core.Monads
          }
       }
 
-      public static Maybe<T>.If maybe<T>(bool test) => new(test);
+      public static Maybe<T>.If maybe<T>() => new(true);
+
+      public static Result<T>.If result<T>() => new(true, nil, nil);
    }
 }

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Core.Dates.DateIncrements;
 using Core.Exceptions;
 using Core.Monads;
+using Core.Strings;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Core.Applications.Async.AsyncFunctions;
 using static Core.Lambdas.LambdaFunctions;
@@ -308,7 +309,7 @@ namespace Core.Tests
       public void MaybeIfTest()
       {
          var date = DateTime.Now;
-         var _result = maybe<string>(date.Second < 30) & "seconds < 30";
+         var _result = maybe<string>() & date.Second < 30 & "seconds < 30";
          if (_result)
          {
             Console.WriteLine((string)_result);
@@ -323,8 +324,25 @@ namespace Core.Tests
       public void MaybeIfWithDefaultTest()
       {
          var date = DateTime.Now;
-         var result = maybe<string>(date.Second < 30) & "seconds < 30" | date.Second.ToString;
+         var result = maybe<string>() & date.Second < 30 & "seconds < 30" | date.Second.ToString;
          Console.WriteLine(result);
+      }
+
+      [TestMethod]
+      public void ResultIfTest()
+      {
+         var date = DateTime.Now;
+         var _result = result<string>() & date.Second < 30 & "seconds < 30" & fail($"Only {"second(s)".Plural(date.Second)}");
+         if (_result)
+         {
+            string result = _result;
+            Console.WriteLine(result);
+         }
+         else
+         {
+            var exception = (Exception)_result;
+            Console.WriteLine(exception.Message);
+         }
       }
    }
 }
