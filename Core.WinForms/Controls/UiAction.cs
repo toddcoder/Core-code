@@ -137,7 +137,8 @@ namespace Core.WinForms.Controls
             [UiActionType.Success] = MessageStyle.Bold,
             [UiActionType.Failure] = MessageStyle.Bold,
             [UiActionType.BusyText] = MessageStyle.ItalicBold,
-            [UiActionType.Caution] = MessageStyle.Bold
+            [UiActionType.Caution] = MessageStyle.Bold,
+            [UiActionType.ControlLabel] = MessageStyle.Bold
          };
          toggler = new Lazy<CheckToggler>(() => new CheckToggler());
       }
