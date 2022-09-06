@@ -68,6 +68,8 @@
     <Compile Include="Controls\Chooser.Designer.cs">
       <DependentUpon>Chooser.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ChooserSet.cs" />
+    <Compile Include="Controls\Chosen.cs" />
     <Compile Include="Controls\ControlSetupExtensions.cs" />
     <Compile Include="Controls\ExRichTextBox.cs">
       <SubType>Component</SubType>

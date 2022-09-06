@@ -3,74 +3,147 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using Core.Collections;
+using Core.Enumerables;
 using Core.Monads;
 using static Core.Monads.MonadFunctions;
 
-namespace Core.WinForms.Controls
+namespace Core.WinForms.Controls;
+
+public partial class Chooser : Form
 {
-   public partial class Chooser : Form
+   public Maybe<Chosen> Get()
    {
-      public static Maybe<string> Get(string title, IEnumerable<string> choices)
+      ShowDialog();
+      return Choice;
+   }
+
+   protected string title;
+   protected UiAction uiAction;
+   protected StringSet choices;
+   protected Maybe<Color> _foreColor;
+   protected Maybe<Color> _backColor;
+   protected Maybe<string> _nilItem;
+   protected bool modifyTitle;
+   protected string emptyTitle;
+
+   public Chooser(string title, UiAction uiAction)
+   {
+      this.title = title;
+      this.uiAction = uiAction;
+
+      choices = new StringSet(true);
+      _foreColor = nil;
+      _backColor = nil;
+      _nilItem = "none";
+      modifyTitle = true;
+      emptyTitle = "";
+
+      InitializeComponent();
+
+      Choice = nil;
+   }
+
+   public UiAction UiAction => uiAction;
+
+   public ChooserSet Set => new(this);
+
+   public string Title
+   {
+      get => title;
+      set => title = value;
+   }
+
+   public IEnumerable<string> Choices
+   {
+      get => choices;
+      set => choices = value.ToStringSet(true);
+   }
+
+   public Color ChoiceForeColor
+   {
+      get => _foreColor | Color.Black;
+      set => _foreColor = value;
+   }
+
+   public Color ChoiceBackColor
+   {
+      get => _backColor | Color.Gold;
+      set => _backColor = value;
+   }
+
+   public Maybe<string> NilItem
+   {
+      get => _nilItem;
+      set => _nilItem = value;
+   }
+
+  public bool ModifyTitle
+   {
+      get => modifyTitle;
+      set => modifyTitle = value;
+   }
+
+   public string EmptyTitle
+   {
+      get => emptyTitle;
+      set => emptyTitle = value;
+   }
+
+   public Maybe<Chosen> Choice { get; set; }
+
+   protected void addItem(string text, Color foreColor, Color backColor)
+   {
+      var item = listViewItems.Items.Add(text);
+      item.UseItemStyleForSubItems = true;
+      item.ForeColor = foreColor;
+      item.BackColor = backColor;
+   }
+
+   protected void Chooser_Load(object sender, EventArgs e)
+   {
+      Location = Cursor.Position;
+      if (_nilItem)
       {
-         using var chooser = new Chooser(title, choices);
-         chooser.ShowDialog();
-         return chooser.Choice;
+         addItem(_nilItem, _foreColor | Color.Black, _backColor | Color.Gold);
       }
 
-      protected string title;
-      protected StringSet choices;
-
-      public Chooser(string title, IEnumerable<string> choices)
+      if (!_foreColor)
       {
-         this.title = title;
-         this.choices = new StringSet(true, choices);
-
-         InitializeComponent();
-
-         Choice = nil;
+         _foreColor = Color.White;
       }
 
-      public Maybe<string> Choice { get; set; }
-
-      protected void addItem(string text, Color foreColor, Color backColor)
+      if (!_backColor)
       {
-         var item = listViewItems.Items.Add(text);
-         item.UseItemStyleForSubItems = true;
-         item.ForeColor = foreColor;
-         item.BackColor = backColor;
+         _backColor = Color.Green;
       }
 
-      protected void Chooser_Load(object sender, EventArgs e)
+      foreach (var choice in choices)
       {
-         Location = Cursor.Position;
-         addItem("none", Color.Black, Color.Gold);
-
-         foreach (var choice in choices)
-         {
-            addItem(choice, Color.White, Color.Green);
-         }
-
-         listViewItems.Columns[0].Width = ClientSize.Width;
-         listViewItems.Columns[0].Text = title;
-
-         var lastItem = listViewItems.Items[listViewItems.Items.Count - 1];
-         var bounds = lastItem.Bounds;
-         var bottom = bounds.Bottom;
-         Height = bottom + 4;
+         addItem(choice, _foreColor, _backColor);
       }
 
-      protected void Chooser_MouseDown(object sender, MouseEventArgs e)
-      {
-         if (!ClientRectangle.Contains(Cursor.Position))
-         {
-            Close();
-         }
-      }
+      listViewItems.Columns[0].Width = ClientSize.Width;
+      listViewItems.Columns[0].Text = title;
 
-      protected void listViewItems_SelectedIndexChanged(object sender, EventArgs e)
+      var lastItem = listViewItems.Items[listViewItems.Items.Count - 1];
+      var bounds = lastItem.Bounds;
+      var bottom = bounds.Bottom;
+      Height = bottom + 4;
+   }
+
+   protected void Chooser_MouseDown(object sender, MouseEventArgs e)
+   {
+      if (!ClientRectangle.Contains(Cursor.Position))
       {
-         Choice = listViewItems.SelectedText().Map(t => t.index > 0 & t.text.Some());
          Close();
       }
+   }
+
+   protected bool returnSome(int index) => _nilItem.Map(_ => index > 0) | (() => index > -1);
+
+   protected void listViewItems_SelectedIndexChanged(object sender, EventArgs e)
+   {
+      Choice = listViewItems.SelectedItem().Map(item => maybe<Chosen>() & returnSome(item.Index) & new Chosen(item));
+      Close();
    }
 }

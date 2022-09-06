@@ -562,7 +562,29 @@ namespace Core.Tests
          var form = new Form();
          var uiAction = new UiAction(form, true);
          uiAction.SetUp(0, 0, 200, 40);
-         uiAction.Click += (_, _) => { _ = uiAction.Choose("A,B,C", new[] { "Alpha", "Bravo", "Charlie" }); };
+         uiAction.Click += (_, _) =>
+         {
+            var _ = uiAction.Choose("A,B,C").Choices("Alpha", "Bravo", "Charlie").Choose();
+         };
+         uiAction.ClickText = "Select item";
+
+         form.ShowDialog();
+      }
+
+      [TestMethod]
+      public void Chooser2Test()
+      {
+         var form = new Form();
+         var uiAction = new UiAction(form, true);
+         uiAction.SetUp(0, 0, 200, 40);
+         uiAction.Click += (_, _) =>
+         {
+            var _chosen = uiAction.Choose("A,B,C").Choices("Alpha", "Bravo", "Charlie").ModifyTitle(false).NilItem(nil).Choose();
+            if (_chosen.Map(out var chosen))
+            {
+               MessageBox.Show(chosen.Text);
+            }
+         };
          uiAction.ClickText = "Select item";
 
          form.ShowDialog();

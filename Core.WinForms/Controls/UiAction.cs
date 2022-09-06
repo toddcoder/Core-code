@@ -1620,19 +1620,10 @@ namespace Core.WinForms.Controls
          }
       }
 
-      public Maybe<string> Choose(string title, IEnumerable<string> choices, bool modifyTitle = true, string emptyTitle = "")
+      public ChooserSet Choose(string title = "")
       {
-         var _choice = Chooser.Get(title, choices);
-         if (_choice && modifyTitle)
-         {
-            Success(_choice);
-         }
-         else if (modifyTitle)
-         {
-            Failure(emptyTitle);
-         }
-
-         return _choice;
+         var chooser = new Chooser(title, this);
+         return new ChooserSet(chooser);
       }
 
       public bool Arrow { get; set; }
