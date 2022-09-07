@@ -1627,5 +1627,7 @@ namespace Core.WinForms.Controls
       }
 
       public bool Arrow { get; set; }
+
+      public void ControlLabel(string text) => ShowMessage(text, UiActionType.ControlLabel);
    }
 }
