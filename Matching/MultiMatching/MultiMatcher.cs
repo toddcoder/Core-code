@@ -5,63 +5,87 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Matching.MultiMatching
 {
-   public class PatternAction
+   public class MultiMatcher<T>
    {
-      public PatternAction(Pattern pattern, Action<MatchResult> action)
+      public class PatternAction
       {
-         Pattern = pattern;
-         Action = action;
+         public PatternAction(Pattern pattern, Func<MatchResult, T> func)
+         {
+            Pattern = pattern;
+            Func = func;
+         }
+
+         public Pattern Pattern { get; }
+
+         public Func<MatchResult, T> Func { get; }
+
+         public void Deconstruct(out Pattern pattern, out Func<MatchResult, T> func)
+         {
+            pattern = Pattern;
+            func = Func;
+         }
       }
 
-      public Pattern Pattern { get; }
-
-      public Action<MatchResult> Action { get; }
-
-      public void Deconstruct(out Pattern pattern, out Action<MatchResult> action)
+      public class Case
       {
-         pattern = Pattern;
-         action = Action;
-      }
-   }
+         public static MultiMatcher<T> operator &(Case @case, Func<MatchResult, T> func) => @case.Then(func);
 
-   public class MultiMatcher
-   {
+         protected MultiMatcher<T> multiMatcher;
+
+         public Case(MultiMatcher<T> multiMatcher, Pattern pattern)
+         {
+            this.multiMatcher = multiMatcher;
+            Pattern = pattern;
+         }
+
+         public Pattern Pattern { get; }
+
+         public MultiMatcher<T> Then(Func<MatchResult, T> func)
+         {
+            multiMatcher.AddPattern(Pattern, func);
+            return multiMatcher;
+         }
+      }
+
+      public static Case operator &(MultiMatcher<T> multiMatcher, Pattern pattern) => multiMatcher.When(pattern);
+
+      public static MultiMatcher<T> operator &(MultiMatcher<T> multiMatcher, Func<T> func) => multiMatcher.Else(func);
+
       protected string input;
       protected List<PatternAction> patternActions;
-      protected Maybe<Action> _defaultAction;
+      protected Maybe<Func<T>> _defaultResult;
 
       internal MultiMatcher(string input)
       {
          this.input = input;
 
          patternActions = new List<PatternAction>();
-         _defaultAction = nil;
+         _defaultResult = nil;
       }
 
       public Case When(Pattern pattern) => new(this, pattern);
 
-      internal void AddPattern(Pattern pattern, Action<MatchResult> action) => patternActions.Add(new PatternAction(pattern, action));
+      internal void AddPattern(Pattern pattern, Func<MatchResult, T> func) => patternActions.Add(new PatternAction(pattern, func));
 
-      public MultiMatcher Else(Action action)
+      public MultiMatcher<T> Else(Func<T> func)
       {
-         if (!_defaultAction)
+         if (!_defaultResult)
          {
-            _defaultAction = action;
+            _defaultResult = func;
          }
 
          return this;
       }
 
-      public Responding<MatchResult> Result()
+      public Responding<T> Result()
       {
-         foreach (var (pattern, action) in patternActions)
+         foreach (var (pattern, func) in patternActions)
          {
             if (input.Matches(pattern).Map(out var result))
             {
                try
                {
-                  action(result);
-                  return result;
+                  return func(result);
                }
                catch (Exception exception)
                {
@@ -70,11 +94,11 @@ namespace Core.Matching.MultiMatching
             }
          }
 
-         if (_defaultAction.Map(out var defaultAction))
+         if (_defaultResult.Map(out var defaultAction))
          {
             try
             {
-               defaultAction();
+               return defaultAction();
             }
             catch (Exception exception)
             {

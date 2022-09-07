@@ -5,7 +5,6 @@ using Core.Collections;
 using Core.Enumerables;
 using Core.Matching;
 using Core.Matching.MultiMatching;
-using Core.Monads;
 using Core.Strings;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -132,27 +131,24 @@ namespace Core.Tests
       [TestMethod]
       public void MultiMatcherTest()
       {
-         static Responding<MatchResult> match(string input)
-         {
-            return input.Matching()
-               .When("^ 'foobaz' $; f").Then(_ => Console.WriteLine("1. Foobaz"))
-               .When("^ 'foo' /(.3) $; f").Then(r => Console.WriteLine($"2. Foo{r.FirstGroup}"))
-               .Else(() => Console.WriteLine("3. No match"))
-               .Result();
-         }
-
          foreach (var input in new[] { "foobar", "foobaz", "???" })
          {
-            var _result = match(input);
-            var message = _result switch
+            var matcher = input.Matching<string>()
+               & "^ 'foobaz' $; f" & (_ => "1. Foobaz")
+               & "^ 'foo' /(.3) $; f" & (r => $"2. Foo{r.FifthGroup}")
+               & (() => "3. No match");
+            if (matcher.Result().Map(out var text, out var _exception))
             {
-               Response<MatchResult> response => $"This was the match result: {response}",
-               NoResponse<MatchResult> => "Default happened",
-               FailedResponse<MatchResult> failedResponse => $"Exception: {failedResponse.Exception.Message}",
-               _ => "???"
-            };
-            Console.WriteLine(message);
-            Console.WriteLine();
+               Console.WriteLine($"This was the match result: {text}");
+            }
+            else if (_exception.Map(out var exception))
+            {
+               Console.WriteLine($"Exception: {exception.Message}");
+            }
+            else
+            {
+               Console.WriteLine("Default happened");
+            }
          }
       }
    }
