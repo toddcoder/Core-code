@@ -380,20 +380,42 @@ namespace Core.Tests
       public void LabeledTest()
       {
          var form = new Form();
-         var uiAction = new UiAction(form, true);
+         var uiAction = new UiAction(form);
          form.Controls.Add(uiAction);
          uiAction.SetUp(0, 0, 400, 40);
-         uiAction.LabeledText("Name", "July Maintenance Window");
+         uiAction.Label("Name").End.Success("July Maintenance Window");
          form.ShowDialog();
       }
 
       [TestMethod]
-      public void LabeledLineTest()
+      public void LabeledCenterTest()
       {
          var form = new Form();
          var uiAction = new UiAction(form, true);
          uiAction.SetUp(0, 0, 400, 40);
-         uiAction.LabeledText("Name", "July Maintenance Window", line: true);
+         uiAction.Label("Name").End.Failure("July Maintenance Window");
+         form.ShowDialog();
+      }
+
+      [TestMethod]
+      public void LabelWidthTest()
+      {
+         var form = new Form();
+
+         const int labelWidth = 110;
+
+         var uiFirstName = new UiAction(form);
+         uiFirstName.SetUp(0, 0, 400, 40);
+         uiFirstName.Label("First Name").LabelWidth(labelWidth).End.Message("Todd");
+
+         var uiMiddleName = new UiAction(form);
+         uiMiddleName.SetUp(0, 50, 400, 40);
+         uiMiddleName.Label("Middle Name").LabelWidth(labelWidth).End.Message("Edward");
+
+         var uiLastName = new UiAction(form);
+         uiLastName.SetUp(0, 100, 400, 40);
+         uiLastName.Label("Last Name").LabelWidth(labelWidth).End.Message("Bennett");
+
          form.ShowDialog();
       }
 

@@ -7,108 +7,70 @@ namespace Core.WinForms.Controls;
 
 public class LabelProcessor
 {
+   protected const int LABEL_MARGIN = 8;
    protected string label;
-   protected string text;
-   protected bool line;
    protected Maybe<int> _labelWidth;
    protected Font font;
    protected Maybe<string> _emptyTextTitle;
    protected Maybe<Rectangle> _labelRectangle;
-   protected Maybe<Rectangle> _textRectangle;
 
-   public LabelProcessor(string label, string text, bool line, Maybe<int> _labelWidth, Font font, Maybe<string> _emptyTextTitle)
+   public LabelProcessor(string label, Maybe<int> _labelWidth, Font font, Maybe<string> _emptyTextTitle)
    {
       this.label = label;
-      this.text = text;
-      this.line = line;
       this._labelWidth = _labelWidth;
       this.font = font;
       this._emptyTextTitle = _emptyTextTitle;
 
       _labelRectangle = nil;
-      _textRectangle = nil;
+   }
+
+   public Rectangle LabelRectangle(Graphics graphics, Rectangle clientRectangle)
+   {
+      if (!_labelRectangle)
+      {
+         _labelRectangle = getLabelRectangle(graphics, clientRectangle);
+      }
+
+      return _labelRectangle;
    }
 
    protected Rectangle getLabelRectangle(Graphics graphics, Rectangle clientRectangle)
    {
-      if (_labelRectangle.Map(out var labelRectangle))
+      if (_labelWidth.Map(out var labelWidth))
       {
-         return labelRectangle;
-      }
-      else if (_labelWidth.Map(out var labelWidth))
-      {
-         var rectangle = clientRectangle with { Width = labelWidth + 20 };
+         var rectangle = clientRectangle with { Width = labelWidth + LABEL_MARGIN };
          _labelRectangle = rectangle;
          return rectangle;
       }
       else
       {
-         var rectangle = clientRectangle with { Width = TextRenderer.MeasureText(graphics, label, font).Width + 20 };
+         var rectangle = clientRectangle with { Width = TextRenderer.MeasureText(graphics, label, font).Width + LABEL_MARGIN };
          _labelRectangle = rectangle;
          return rectangle;
       }
    }
 
-   protected Rectangle getTextRectangle(Graphics graphics, Rectangle clientRectangle)
+   public void OnPaintBackground(Graphics graphics)
    {
-      if (_textRectangle.Map(out var textRectangle))
+      if (_labelRectangle)
       {
-         return textRectangle;
-      }
-      else if (_labelWidth.Map(out var labelWidth))
-      {
-         var rectangle = clientRectangle with { X = labelWidth };
-         _textRectangle = rectangle;
-         return rectangle;
-      }
-      else
-      {
-         var labelRectangle = getLabelRectangle(graphics, clientRectangle);
-         var rectangle = clientRectangle with { X = clientRectangle.X + labelRectangle.Width };
-         return rectangle;
+         using var labelBrush = new SolidBrush(Color.CadetBlue);
+         graphics.FillRectangle(labelBrush, _labelRectangle);
       }
    }
 
-   public void OnPaintBackground(Graphics graphics, Rectangle clientRectangle)
+   public void OnPaint(Graphics graphics)
    {
-      if (line)
+      if (_labelRectangle)
       {
-         using var brush = new SolidBrush(Color.Gray);
-         graphics.FillRectangle(brush, clientRectangle);
-      }
-      else
-      {
-         var labelRectangle = getLabelRectangle(graphics, clientRectangle);
-         using var labelBrush = new SolidBrush(Color.DarkSlateGray);
-         graphics.FillRectangle(labelBrush, labelRectangle);
-
-         var textRectangle = getTextRectangle(graphics, clientRectangle);
-         using var textBrush = new SolidBrush(Color.Gray);
-         graphics.FillRectangle(textBrush, textRectangle);
-      }
-   }
-
-   public void OnPaint(Graphics graphics, Rectangle clientRectangle)
-   {
-      var labelRectangle = getLabelRectangle(graphics, clientRectangle);
-      using var labelFont = new Font(font, FontStyle.Bold);
-      var writer = new UiActionWriter(true, CheckStyle.None, _emptyTextTitle)
-      {
-         Rectangle = labelRectangle,
-         Font = labelFont,
-         Color = Color.White
-      };
-      writer.Write(label, graphics);
-
-      writer.Rectangle = getTextRectangle(graphics, clientRectangle);
-      writer.Center(false);
-      writer.Font = font;
-      writer.Write(text, graphics);
-
-      if (line)
-      {
-         using var pen = new Pen(Color.White);
-         graphics.DrawLine(pen, labelRectangle.Width, 0, labelRectangle.Width, clientRectangle.Height);
+         using var labelFont = new Font(font, FontStyle.Bold);
+         var writer = new UiActionWriter(false, CheckStyle.None, _emptyTextTitle)
+         {
+            Rectangle = _labelRectangle,
+            Font = labelFont,
+            Color = Color.White
+         };
+         writer.Write(label, graphics);
       }
    }
 }

@@ -11,7 +11,6 @@ using Core.Collections;
 using Core.DataStructures;
 using Core.Dates.DateIncrements;
 using Core.Monads;
-using Core.Numbers;
 using Core.Objects;
 using Core.Strings;
 using Core.WinForms.ControlWrappers;
@@ -82,6 +81,30 @@ namespace Core.WinForms.Controls
 
             return this;
          }
+      }
+
+      public class LabelSetter
+      {
+         protected UiAction uiAction;
+
+         public LabelSetter(UiAction uiAction)
+         {
+            this.uiAction = uiAction;
+         }
+
+         public LabelSetter Label(string label)
+         {
+            uiAction._label = label;
+            return this;
+         }
+
+         public LabelSetter LabelWidth(int labelWidth)
+         {
+            uiAction._labelWidth = labelWidth;
+            return this;
+         }
+
+         public UiAction End => uiAction;
       }
 
       protected const string BUSY_TEXT_PROCESSOR_NOT_INITIALIZED = "BusyTextProcessor not initialized";
@@ -184,6 +207,7 @@ namespace Core.WinForms.Controls
       protected List<SubText> subTexts;
       protected Lazy<Stopwatch> stopwatch;
       protected Lazy<BackgroundWorker> backgroundWorker;
+      protected Maybe<string> _label;
       protected Maybe<int> _labelWidth;
       protected bool oneTimeTimer;
       protected Maybe<SubText> _working;
@@ -315,8 +339,7 @@ namespace Core.WinForms.Controls
             return worker;
          });
 
-         Label = string.Empty;
-         Line = false;
+         _label = nil;
          _labelWidth = nil;
 
          control.Controls.Add(this);
@@ -456,16 +479,6 @@ namespace Core.WinForms.Controls
 
       public bool StretchImage { get; set; }
 
-      public string Label { get; set; }
-
-      public bool Line { get; set; }
-
-      public Maybe<int> LabelWidth
-      {
-         get => _labelWidth;
-         set => _labelWidth = value.Map(v => v.MaxOf(1).MinOf(Width));
-      }
-
       protected Font getFont() => getStyle() switch
       {
          MessageStyle.None => Font,
@@ -546,19 +559,6 @@ namespace Core.WinForms.Controls
             Exception(exception);
          }
       }
-
-      public void LabeledText(string label, string text, Maybe<int> _lineWidth, bool line = false)
-      {
-         Label = label;
-         Text = text;
-         type = UiActionType.Labeled;
-         LabelWidth = _lineWidth;
-         Line = line;
-
-         Refresh();
-      }
-
-      public void LabeledText(string label, string text, bool line = false) => LabeledText(label, text, nil, line);
 
       public void AttachTo(string text, Control control, string fontName = "Segoe UI", float fontSize = 9, int left = -1, bool stretch = false)
       {
@@ -662,13 +662,17 @@ namespace Core.WinForms.Controls
 
       protected MessageStyle getStyle() => _style | (() => styles[type]);
 
-      protected Rectangle getClientRectangle()
+      protected Rectangle getClientRectangle(Maybe<Rectangle> _labelRectangle)
       {
          if (Arrow)
          {
             var arrowSection = (int)(ClientRectangle.Width * START_AMOUNT);
             var remainder = ClientRectangle.Width - arrowSection;
             return ClientRectangle with { X = Width - arrowSection, Width = Width - 2 * remainder };
+         }
+         else if (_labelRectangle.Map(out var labelRectangle))
+         {
+            return ClientRectangle with { X = ClientRectangle.X + labelRectangle.Width, Width = ClientRectangle.Width - labelRectangle.Width };
          }
          else
          {
@@ -680,7 +684,13 @@ namespace Core.WinForms.Controls
       {
          base.OnPaint(e);
 
-         var clientRectangle = getClientRectangle();
+         var _labelProcessor = _label.Map(label => new LabelProcessor(label, _labelWidth, getFont(), EmptyTextTitle));
+         var clientRectangle = getClientRectangle(_labelProcessor.Map(lp => lp.LabelRectangle(e.Graphics, ClientRectangle)));
+
+         if (_labelProcessor.Map(out var labelProcessor))
+         {
+            labelProcessor.OnPaint(e.Graphics);
+         }
 
          void paintStopwatch()
          {
@@ -737,12 +747,6 @@ namespace Core.WinForms.Controls
                writer.Center(true);
                writer.Write(text, e.Graphics);
                paintStopwatch();
-               break;
-            }
-            case UiActionType.Labeled:
-            {
-               var processor = new LabelProcessor(Label, text, Line, _labelWidth, getFont(), EmptyTextTitle);
-               processor.OnPaint(e.Graphics, clientRectangle);
                break;
             }
             case UiActionType.ControlLabel:
@@ -848,22 +852,28 @@ namespace Core.WinForms.Controls
 
       protected override void OnPaintBackground(PaintEventArgs pevent)
       {
-         var clientRectangle = getClientRectangle();
+         var _labelProcessor = _label.Map(label => new LabelProcessor(label, _labelWidth, getFont(), EmptyTextTitle));
+         var clientRectangle = getClientRectangle(_labelProcessor.Map(lp => lp.LabelRectangle(pevent.Graphics, ClientRectangle)));
 
          base.OnPaintBackground(pevent);
+
+         if (_labelProcessor.Map(out var labelProcessor))
+         {
+            labelProcessor.OnPaintBackground(pevent.Graphics);
+         }
 
          switch (type)
          {
             case UiActionType.Tape:
             {
                using var brush = new HatchBrush(HatchStyle.BackwardDiagonal, Color.Black, Color.Gold);
-               fillRectangle(pevent.Graphics, brush, ClientRectangle);
+               fillRectangle(pevent.Graphics, brush, clientRectangle);
                break;
             }
             case UiActionType.ProgressIndefinite or UiActionType.Busy:
             {
                using var brush = new SolidBrush(Color.DarkSlateGray);
-               fillRectangle(pevent.Graphics, brush, ClientRectangle);
+               fillRectangle(pevent.Graphics, brush, clientRectangle);
                break;
             }
             case UiActionType.ProgressDefinite:
@@ -886,16 +896,16 @@ namespace Core.WinForms.Controls
             case UiActionType.Unselected:
             {
                using var brush = new SolidBrush(Color.White);
-               fillRectangle(pevent.Graphics, brush, ClientRectangle);
+               fillRectangle(pevent.Graphics, brush, clientRectangle);
 
                using var pen = new Pen(Color.DarkGray, 10);
-               drawRectangle(pevent.Graphics, pen, ClientRectangle);
+               drawRectangle(pevent.Graphics, pen, clientRectangle);
                break;
             }
             case UiActionType.Selected:
             {
                using var brush = new SolidBrush(Color.White);
-               fillRectangle(pevent.Graphics, brush, ClientRectangle);
+               fillRectangle(pevent.Graphics, brush, clientRectangle);
 
                using var pen = new Pen(Color.Black, 10);
                drawRectangle(pevent.Graphics, pen, clientRectangle);
@@ -904,29 +914,23 @@ namespace Core.WinForms.Controls
             case UiActionType.BusyText:
             {
                using var brush = new SolidBrush(Color.Teal);
-               fillRectangle(pevent.Graphics, brush, ClientRectangle);
+               fillRectangle(pevent.Graphics, brush, clientRectangle);
 
                busyTextProcessor.Value.OnPaint(pevent);
 
                break;
             }
-            case UiActionType.Labeled:
-            {
-               var processor = new LabelProcessor(Label, text, Line, _labelWidth, getFont(), EmptyTextTitle);
-               processor.OnPaintBackground(pevent.Graphics, clientRectangle);
-               break;
-            }
             case UiActionType.ControlLabel:
             {
                using var brush = new SolidBrush(Color.CadetBlue);
-               fillRectangle(pevent.Graphics, brush, ClientRectangle);
+               fillRectangle(pevent.Graphics, brush, clientRectangle);
                break;
             }
             default:
             {
                var backColor = getBackColor();
                using var brush = new SolidBrush(backColor);
-               fillRectangle(pevent.Graphics, brush, ClientRectangle);
+               fillRectangle(pevent.Graphics, brush, clientRectangle);
                break;
             }
          }
@@ -936,10 +940,10 @@ namespace Core.WinForms.Controls
             using var darkGrayPen = new Pen(Color.DarkGray, 1);
             using var lightPen = new Pen(Color.White, 1);
 
-            var left = clientRectangle.Left;
-            var top = clientRectangle.Top;
-            var width = clientRectangle.Width - 1;
-            var height = clientRectangle.Height - 1;
+            var left = ClientRectangle.Left;
+            var top = ClientRectangle.Top;
+            var width = ClientRectangle.Width - 1;
+            var height = ClientRectangle.Height - 1;
 
             pevent.Graphics.DrawLine(darkGrayPen, new Point(left, top), new Point(width, top));
             pevent.Graphics.DrawLine(darkGrayPen, new Point(left, top), new Point(left, height));
@@ -1629,5 +1633,7 @@ namespace Core.WinForms.Controls
       public bool Arrow { get; set; }
 
       public void ControlLabel(string text) => ShowMessage(text, UiActionType.ControlLabel);
+
+      public LabelSetter Label(string label) => new LabelSetter(this).Label(label);
    }
 }
