@@ -154,12 +154,12 @@ namespace Core.Tests
       }
 
       [TestMethod]
-      public void RoundedMessageTest()
+      public void ArrowMessageTest()
       {
          var form = new Form();
          var message = new UiAction(form, true, false) { Arrow = true };
          message.SetUp(4, 4, form.ClientSize.Width - 20, 100, AnchorStyles.Left);
-         message.Message("Round");
+         message.Message("Arrow");
          form.ShowDialog();
       }
 
@@ -167,7 +167,7 @@ namespace Core.Tests
       public void ClickableRoundedMessageTest()
       {
          var form = new Form();
-         var message = new UiAction(form, true, false) { Arrow = true };
+         var message = new RoundedUiAction(form, true);
          message.SetUp(4, 4, form.ClientSize.Width - 20, 100, AnchorStyles.Left);
          message.Message("Round");
          message.Click += (_, _) => message.Message("Clicked");
