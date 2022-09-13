@@ -142,12 +142,14 @@ namespace Core.Tests
          {
             Console.WriteLine($": -> '{line}'");
          }
+
          Console.WriteLine("========");
 
          while (source.NextLine("^ '-'").Map(out var line))
          {
             Console.WriteLine($"- -> '{line}'");
          }
+
          Console.WriteLine("========");
 
          while (source.NextLine().Map(out var line))
@@ -198,6 +200,36 @@ namespace Core.Tests
          table.Add("Hash Code", obj.GetHashCode());
 
          Console.WriteLine(table);
+      }
+
+      [TestMethod]
+      public void StringVariantsTest()
+      {
+         var variants = new StringVariants
+         {
+            ["x"] = "This is X: {xValue}",
+            ["y"] = "This is Y: {yValue} with {extra}",
+            ["z"] = "This is Z: {xValue}"
+         };
+         var _result = variants.Implement("x", ("xValue", "X!"));
+         if (_result.Map(out var result))
+         {
+            Console.WriteLine(result);
+         }
+
+         _result = variants.Implement("z");
+         if (_result.Map(out result))
+         {
+            Console.WriteLine(result);
+         }
+
+         _result = variants.Implement("y", ("yValue", "Y!"), ("extra", "Extra!"));
+         if (_result.Map(out result))
+         {
+            Console.WriteLine(result);
+         }
+
+         Console.WriteLine(variants);
       }
    }
 }
