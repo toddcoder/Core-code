@@ -134,7 +134,7 @@ namespace Core.Tests
          var match = match<string>()
             & "^ 'foobaz' $; f" & (_ => "1. Foobaz")
             & "^ 'foo' /(.3) $; f" & (r => $"2. Foo{r.FifthGroup}")
-            & (() => "3. No match");
+            & (_ => "3. No match");
          foreach (var input in new[] { "foobar", "foobaz", "???" })
          {
             if (match.Matches(input).Map(out var text, out var _exception))
@@ -158,7 +158,7 @@ namespace Core.Tests
          var matched = match()
             & "^ 'foobaz' $; f" & (_ => Console.WriteLine("1. Foobaz"))
             & "^ 'foo' /(.3) $; f" & (r => Console.WriteLine($"2. Foo{r.FifthGroup}"))
-            & (() => Console.WriteLine("3. No match"));
+            & (_ => Console.WriteLine("3. No match"));
          foreach (var input in new[] { "foobar", "foobaz", "???" })
          {
             matched.Matches(input);

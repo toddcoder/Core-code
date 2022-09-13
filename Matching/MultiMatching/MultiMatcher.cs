@@ -49,10 +49,10 @@ namespace Core.Matching.MultiMatching
 
       public static Case operator &(MultiMatcher<T> multiMatcher, Pattern pattern) => multiMatcher.When(pattern);
 
-      public static MultiMatcher<T> operator &(MultiMatcher<T> multiMatcher, Func<T> func) => multiMatcher.Else(func);
+      public static MultiMatcher<T> operator &(MultiMatcher<T> multiMatcher, Func<string, T> func) => multiMatcher.Else(func);
 
       protected List<PatternAction> patternActions;
-      protected Maybe<Func<T>> _defaultResult;
+      protected Maybe<Func<string, T>> _defaultResult;
 
       internal MultiMatcher()
       {
@@ -64,7 +64,7 @@ namespace Core.Matching.MultiMatching
 
       internal void AddPattern(Pattern pattern, Func<MatchResult, T> func) => patternActions.Add(new PatternAction(pattern, func));
 
-      public MultiMatcher<T> Else(Func<T> func)
+      public MultiMatcher<T> Else(Func<string, T> func)
       {
          if (!_defaultResult)
          {
@@ -95,7 +95,7 @@ namespace Core.Matching.MultiMatching
          {
             try
             {
-               return defaultAction();
+               return defaultAction(input);
             }
             catch (Exception exception)
             {
@@ -151,14 +151,14 @@ namespace Core.Matching.MultiMatching
 
       public static Case operator &(MultiMatcher multiMatcher, Pattern pattern) => multiMatcher.When(pattern);
 
-      public static MultiMatcher operator &(MultiMatcher multiMatcher, Action action) => multiMatcher.Else(action);
+      public static MultiMatcher operator &(MultiMatcher multiMatcher, Action<string> action) => multiMatcher.Else(action);
 
       protected List<PatternAction> patternActions;
-      protected Maybe<Action> _defaultAction;
+      protected Maybe<Action<string>> _defaultAction;
 
       internal MultiMatcher()
       {
-         patternActions=new List<PatternAction>();
+         patternActions = new List<PatternAction>();
          _defaultAction = nil;
       }
 
@@ -166,7 +166,7 @@ namespace Core.Matching.MultiMatching
 
       internal void AddPattern(Pattern pattern, Action<MatchResult> action) => patternActions.Add(new PatternAction(pattern, action));
 
-      public MultiMatcher Else(Action action)
+      public MultiMatcher Else(Action<string> action)
       {
          if (!_defaultAction)
          {
@@ -198,7 +198,7 @@ namespace Core.Matching.MultiMatching
          {
             try
             {
-               defaultAction();
+               defaultAction(input);
                return unit;
             }
             catch (Exception exception)
