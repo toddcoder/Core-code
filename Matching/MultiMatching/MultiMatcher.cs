@@ -51,14 +51,11 @@ namespace Core.Matching.MultiMatching
 
       public static MultiMatcher<T> operator &(MultiMatcher<T> multiMatcher, Func<T> func) => multiMatcher.Else(func);
 
-      protected string input;
       protected List<PatternAction> patternActions;
       protected Maybe<Func<T>> _defaultResult;
 
-      internal MultiMatcher(string input)
+      internal MultiMatcher()
       {
-         this.input = input;
-
          patternActions = new List<PatternAction>();
          _defaultResult = nil;
       }
@@ -77,7 +74,7 @@ namespace Core.Matching.MultiMatching
          return this;
       }
 
-      public Responding<T> Result()
+      public Responding<T> Matches(string input)
       {
          foreach (var (pattern, func) in patternActions)
          {

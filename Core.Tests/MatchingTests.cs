@@ -4,9 +4,9 @@ using Core.Assertions;
 using Core.Collections;
 using Core.Enumerables;
 using Core.Matching;
-using Core.Matching.MultiMatching;
 using Core.Strings;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static Core.Matching.MultiMatching.MultiMatchingFunctions;
 
 namespace Core.Tests
 {
@@ -131,13 +131,13 @@ namespace Core.Tests
       [TestMethod]
       public void MultiMatcherTest()
       {
+         var match = match<string>()
+            & "^ 'foobaz' $; f" & (_ => "1. Foobaz")
+            & "^ 'foo' /(.3) $; f" & (r => $"2. Foo{r.FifthGroup}")
+            & (() => "3. No match");
          foreach (var input in new[] { "foobar", "foobaz", "???" })
          {
-            var matcher = input.Matching<string>()
-               & "^ 'foobaz' $; f" & (_ => "1. Foobaz")
-               & "^ 'foo' /(.3) $; f" & (r => $"2. Foo{r.FifthGroup}")
-               & (() => "3. No match");
-            if (matcher.Result().Map(out var text, out var _exception))
+            if (match.Matches(input).Map(out var text, out var _exception))
             {
                Console.WriteLine($"This was the match result: {text}");
             }
