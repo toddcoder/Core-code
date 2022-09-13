@@ -8,15 +8,42 @@ namespace Core.Collections
 {
    public class StringVariants : IHash<string, string>
    {
+      public class KeyValue : IEquatable<KeyValue>
+      {
+         public KeyValue(string key, string value)
+         {
+            Key = key;
+            Value = value;
+         }
+
+         public string Key { get; }
+
+         public string Value { get; }
+
+         public bool Equals(KeyValue other) => Key == other.Key && Value == other.Value;
+
+         public override bool Equals(object obj) => obj is KeyValue other && Equals(other);
+
+         public override int GetHashCode()
+         {
+            unchecked
+            {
+               return (Key != null ? Key.GetHashCode() : 0) * 397 ^ (Value != null ? Value.GetHashCode() : 0);
+            }
+         }
+      }
+
       protected StringHash templates;
+      protected StringHash<KeyValue> keyValues;
       protected Maybe<string> _templateName;
-      protected (string key, string value)[] values;
+      protected string[] aliases;
 
       public StringVariants()
       {
          templates = new StringHash(true);
+         keyValues = new StringHash<KeyValue>(true);
          _templateName = nil;
-         values = Array.Empty<(string, string)>();
+         aliases = Array.Empty<string>();
       }
 
       public StringVariants(Dictionary<string, string> dictionary) : this()
@@ -37,38 +64,43 @@ namespace Core.Collections
 
       public Result<Hash<string, string>> AnyHash() => templates;
 
-      public Maybe<string> Implement(string templateName, params (string key, string value)[] values)
+      public StringVariants Alias(string alias, string key, string value)
       {
-         this.values = values;
-         return Implement(templateName);
+         keyValues[alias] = new KeyValue(key, value);
+         return this;
       }
 
-      public Maybe<string> Implement(string templateName)
+      public StringVariants Alias(string key, string value) => Alias($"{key}.{value}", key, value);
+
+      public StringVariants TemplateName(string templateName)
       {
-         if (this.Map(templateName, out var template))
+         _templateName = templateName;
+         return this;
+      }
+
+      public Maybe<string> Evaluate(params string[] aliases)
+      {
+         var _template =
+            from templateName in _templateName
+            from mappedTemplate in this.Map(templateName)
+            select mappedTemplate;
+         if (_template)
          {
             var formatter = new Formatter();
-            foreach (var (key, value) in values)
+            foreach (var alias in aliases)
             {
-               formatter[key] = value;
+               if (keyValues.Map(alias, out var keyValue))
+               {
+                  formatter[keyValue.Key] = keyValue.Value;
+               }
             }
 
-            _templateName = templateName;
-            return formatter.Format(template);
+            return formatter.Format(_template);
          }
          else
          {
             return nil;
          }
       }
-
-      public Maybe<string> Implement(params (string key, string value)[] values)
-      {
-         return _templateName.Map(template => Implement(template, values));
-      }
-
-      public Maybe<string> Implement() => _templateName.Map(template => Implement(template, values));
-
-      public override string ToString() => Implement() | "";
    }
 }

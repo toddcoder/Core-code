@@ -211,25 +211,28 @@ namespace Core.Tests
             ["y"] = "This is Y: {yValue} with {extra}",
             ["z"] = "This is Z: {xValue}"
          };
-         var _result = variants.Implement("x", ("xValue", "X!"));
+         variants
+            .Alias("xx", "xValue", "X!")
+            .Alias("yy1", "yValue", "Y!")
+            .Alias("yy2", "extra", "Extra!")
+            .Alias("zx", "xValue", "X!");
+         var _result = variants.TemplateName("x").Evaluate("xx");
          if (_result.Map(out var result))
          {
             Console.WriteLine(result);
          }
 
-         _result = variants.Implement("z");
+         _result = variants.TemplateName("y").Evaluate("yy1", "yy2");
          if (_result.Map(out result))
          {
             Console.WriteLine(result);
          }
 
-         _result = variants.Implement("y", ("yValue", "Y!"), ("extra", "Extra!"));
+         _result = variants.TemplateName("z").Evaluate("zx");
          if (_result.Map(out result))
          {
             Console.WriteLine(result);
          }
-
-         Console.WriteLine(variants);
       }
    }
 }
