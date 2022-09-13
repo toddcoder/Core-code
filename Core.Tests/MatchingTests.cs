@@ -151,5 +151,18 @@ namespace Core.Tests
             }
          }
       }
+
+      [TestMethod]
+      public void MultiMatcherActionTest()
+      {
+         var matched = match()
+            & "^ 'foobaz' $; f" & (_ => Console.WriteLine("1. Foobaz"))
+            & "^ 'foo' /(.3) $; f" & (r => Console.WriteLine($"2. Foo{r.FifthGroup}"))
+            & (() => Console.WriteLine("3. No match"));
+         foreach (var input in new[] { "foobar", "foobaz", "???" })
+         {
+            matched.Matches(input);
+         }
+      }
    }
 }

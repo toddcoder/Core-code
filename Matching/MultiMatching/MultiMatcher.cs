@@ -106,4 +106,108 @@ namespace Core.Matching.MultiMatching
          return nil;
       }
    }
+
+   public class MultiMatcher
+   {
+      public class PatternAction
+      {
+         public PatternAction(Pattern pattern, Action<MatchResult> action)
+         {
+            Pattern = pattern;
+            Action = action;
+         }
+
+         public Pattern Pattern { get; }
+
+         public Action<MatchResult> Action { get; }
+
+         public void Deconstruct(out Pattern pattern, out Action<MatchResult> action)
+         {
+            pattern = Pattern;
+            action = Action;
+         }
+      }
+
+      public class Case
+      {
+         public static MultiMatcher operator &(Case @case, Action<MatchResult> func) => @case.Then(func);
+
+         protected MultiMatcher multiMatcher;
+
+         public Case(MultiMatcher multiMatcher, Pattern pattern)
+         {
+            this.multiMatcher = multiMatcher;
+            Pattern = pattern;
+         }
+
+         public Pattern Pattern { get; }
+
+         public MultiMatcher Then(Action<MatchResult> action)
+         {
+            multiMatcher.AddPattern(Pattern, action);
+            return multiMatcher;
+         }
+      }
+
+      public static Case operator &(MultiMatcher multiMatcher, Pattern pattern) => multiMatcher.When(pattern);
+
+      public static MultiMatcher operator &(MultiMatcher multiMatcher, Action action) => multiMatcher.Else(action);
+
+      protected List<PatternAction> patternActions;
+      protected Maybe<Action> _defaultAction;
+
+      internal MultiMatcher()
+      {
+         patternActions=new List<PatternAction>();
+         _defaultAction = nil;
+      }
+
+      public Case When(Pattern pattern) => new(this, pattern);
+
+      internal void AddPattern(Pattern pattern, Action<MatchResult> action) => patternActions.Add(new PatternAction(pattern, action));
+
+      public MultiMatcher Else(Action action)
+      {
+         if (!_defaultAction)
+         {
+            _defaultAction = action;
+         }
+
+         return this;
+      }
+
+      public Responding<Unit> Matches(string input)
+      {
+         foreach (var (pattern, action) in patternActions)
+         {
+            if (input.Matches(pattern).Map(out var result))
+            {
+               try
+               {
+                  action(result);
+                  return unit;
+               }
+               catch (Exception exception)
+               {
+                  return exception;
+               }
+            }
+         }
+
+         if (_defaultAction.Map(out var defaultAction))
+         {
+            try
+            {
+               defaultAction();
+               return unit;
+            }
+            catch (Exception exception)
+            {
+               return exception;
+            }
+         }
+
+         return nil;
+      }
+   }
 }
