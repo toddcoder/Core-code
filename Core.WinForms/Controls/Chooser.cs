@@ -24,7 +24,7 @@ public partial class Chooser : Form
    protected bool modifyTitle;
    protected string emptyTitle;
 
-   public Chooser(string title, UiAction uiAction)
+   public Chooser(string title, UiAction uiAction, Maybe<int> _width)
    {
       this.title = title;
       this.uiAction = uiAction;
@@ -39,6 +39,11 @@ public partial class Chooser : Form
       InitializeComponent();
 
       Choice = nil;
+
+      if (_width)
+      {
+         Width = _width;
+      }
    }
 
    public UiAction UiAction => uiAction;

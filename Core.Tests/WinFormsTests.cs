@@ -628,6 +628,21 @@ namespace Core.Tests
       }
 
       [TestMethod]
+      public void Chooser4Test()
+      {
+         var form = new Form();
+         var uiAction = new UiAction(form, true);
+         uiAction.SetUp(0, 0, 200, 40);
+         uiAction.Click += (_, _) =>
+         {
+            var _ = uiAction.Choose("A,B,C", 800).Choices(("Alpha", "A"), ("Bravo", "B"), ("Charlie", "C")).Choose();
+         };
+         uiAction.ClickText = "Select item";
+
+         form.ShowDialog();
+      }
+
+      [TestMethod]
       public void TogglerTest()
       {
          var form = new Form();

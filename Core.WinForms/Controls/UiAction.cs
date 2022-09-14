@@ -1624,9 +1624,15 @@ namespace Core.WinForms.Controls
          }
       }
 
-      public ChooserSet Choose(string title = "")
+      public ChooserSet Choose(string title, int width)
       {
-         var chooser = new Chooser(title, this);
+         var chooser = new Chooser(title, this, width);
+         return new ChooserSet(chooser);
+      }
+
+      public ChooserSet Choose(string title)
+      {
+         var chooser = new Chooser(title, this, nil);
          return new ChooserSet(chooser);
       }
 
