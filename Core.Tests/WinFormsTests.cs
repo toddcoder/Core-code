@@ -604,8 +604,23 @@ namespace Core.Tests
             var _chosen = uiAction.Choose("A,B,C").Choices("Alpha", "Bravo", "Charlie").ModifyTitle(false).NilItem(nil).Choose();
             if (_chosen.Map(out var chosen))
             {
-               MessageBox.Show(chosen.Text);
+               MessageBox.Show(chosen.Value);
             }
+         };
+         uiAction.ClickText = "Select item";
+
+         form.ShowDialog();
+      }
+
+      [TestMethod]
+      public void Chooser3Test()
+      {
+         var form = new Form();
+         var uiAction = new UiAction(form, true);
+         uiAction.SetUp(0, 0, 200, 40);
+         uiAction.Click += (_, _) =>
+         {
+            var _ = uiAction.Choose("A,B,C").Choices(("Alpha", "A"), ("Bravo", "B"), ("Charlie", "C")).Choose();
          };
          uiAction.ClickText = "Select item";
 

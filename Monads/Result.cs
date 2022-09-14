@@ -35,7 +35,7 @@ namespace Core.Monads
          {
             this.test = test;
             this._value = _value;
-            this._exception = exception;
+            _exception = exception;
          }
 
          public bool Test => test;

@@ -5,19 +5,22 @@ namespace Core.WinForms.Controls;
 
 public class Chosen
 {
-   public Chosen(string text, int index, Color foreColor, Color backColor)
+   public Chosen(string value, string key, int index, Color foreColor, Color backColor)
    {
-      Text = text;
+      Value = value;
+      Key = key;
       Index = index;
       ForeColor = foreColor;
       BackColor = backColor;
    }
 
-   public Chosen(ListViewItem item) : this(item.Text, item.Index, item.ForeColor, item.BackColor)
+   public Chosen(string value, ListViewItem item) : this(value, item.Text, item.Index, item.ForeColor, item.BackColor)
    {
    }
 
-   public string Text { get; }
+   public string Key { get; }
+
+   public string Value { get; }
 
    public int Index { get; }
 
@@ -25,9 +28,10 @@ public class Chosen
 
    public Color BackColor { get; }
 
-   public void Deconstruct(out string text, out int index, out Color foreColor, out Color backColor)
+   public void Deconstruct(out string key, out string value, out int index, out Color foreColor, out Color backColor)
    {
-      text = Text;
+      key = Key;
+      value = Value;
       index = Index;
       foreColor = ForeColor;
       backColor = BackColor;

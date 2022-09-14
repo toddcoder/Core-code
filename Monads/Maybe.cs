@@ -13,6 +13,10 @@ namespace Core.Monads
 
          public static Maybe<T> operator &(If @if, Func<T> func) => @if.test ? func() : nil;
 
+         public static Maybe<T> operator &(If @if, Maybe<T> maybe) => @if.test ? maybe : nil;
+
+         public static Maybe<T> operator &(If @if, Func<Maybe<T>> maybe) => @if.test ? maybe() : nil;
+
          protected bool test;
 
          internal If(bool test)

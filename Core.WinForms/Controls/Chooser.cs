@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using Core.Collections;
-using Core.Enumerables;
 using Core.Monads;
 using static Core.Monads.MonadFunctions;
 
@@ -19,7 +17,7 @@ public partial class Chooser : Form
 
    protected string title;
    protected UiAction uiAction;
-   protected StringSet choices;
+   protected StringHash choices;
    protected Maybe<Color> _foreColor;
    protected Maybe<Color> _backColor;
    protected Maybe<string> _nilItem;
@@ -31,7 +29,7 @@ public partial class Chooser : Form
       this.title = title;
       this.uiAction = uiAction;
 
-      choices = new StringSet(true);
+      choices = new StringHash(true);
       _foreColor = nil;
       _backColor = nil;
       _nilItem = "none";
@@ -53,10 +51,10 @@ public partial class Chooser : Form
       set => title = value;
    }
 
-   public IEnumerable<string> Choices
+   public StringHash Choices
    {
       get => choices;
-      set => choices = value.ToStringSet(true);
+      set => choices = value;
    }
 
    public Color ChoiceForeColor
@@ -77,7 +75,7 @@ public partial class Chooser : Form
       set => _nilItem = value;
    }
 
-  public bool ModifyTitle
+   public bool ModifyTitle
    {
       get => modifyTitle;
       set => modifyTitle = value;
@@ -104,7 +102,7 @@ public partial class Chooser : Form
       Location = Cursor.Position;
       if (_nilItem)
       {
-         addItem(_nilItem, _foreColor | Color.Black, _backColor | Color.Gold);
+         addItem(_nilItem, _foreColor | Color.White, _backColor | Color.Blue);
       }
 
       if (!_foreColor)
@@ -117,7 +115,7 @@ public partial class Chooser : Form
          _backColor = Color.Green;
       }
 
-      foreach (var choice in choices)
+      foreach (var choice in choices.Keys)
       {
          addItem(choice, _foreColor, _backColor);
       }
@@ -141,9 +139,14 @@ public partial class Chooser : Form
 
    protected bool returnSome(int index) => _nilItem.Map(_ => index > 0) | (() => index > -1);
 
+   protected Maybe<Chosen> getChosen(ListViewItem item)
+   {
+      return choices.Map(item.Text).Map(value => new Chosen(value, item));
+   }
+
    protected void listViewItems_SelectedIndexChanged(object sender, EventArgs e)
    {
-      Choice = listViewItems.SelectedItem().Map(item => maybe<Chosen>() & returnSome(item.Index) & new Chosen(item));
+      Choice = listViewItems.SelectedItem().Map(item => maybe<Chosen>() & returnSome(item.Index) & (() => getChosen(item)));
       Close();
    }
 }

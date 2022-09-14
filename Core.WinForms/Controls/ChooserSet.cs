@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Drawing;
+﻿using System.Drawing;
+using Core.Collections;
 using Core.Monads;
 
 namespace Core.WinForms.Controls;
@@ -19,7 +19,7 @@ public class ChooserSet
       return this;
    }
 
-   public ChooserSet Choices(IEnumerable<string> choices)
+   public ChooserSet Choices(StringHash choices)
    {
       chooser.Choices = choices;
       return this;
@@ -27,7 +27,13 @@ public class ChooserSet
 
    public ChooserSet Choices(params string[] choices)
    {
-      chooser.Choices = choices;
+      chooser.Choices = choices.ToStringHash(c => c, c => c, true);
+      return this;
+   }
+
+   public ChooserSet Choices(params (string key, string value)[] choices)
+   {
+      chooser.Choices = choices.ToStringHash(true);
       return this;
    }
 
@@ -68,11 +74,11 @@ public class ChooserSet
       {
          if (_chosen.Map(out var chosen))
          {
-            chooser.UiAction.Success(chosen.Text);
+            chooser.UiAction.Success(chosen.Key);
          }
          else
          {
-            chooser.UiAction.Failure(chooser.EmptyTitle);
+            chooser.UiAction.Message(chooser.EmptyTitle);
          }
       }
 
