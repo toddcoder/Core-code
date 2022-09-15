@@ -228,6 +228,7 @@ namespace Core.WinForms.Controls
       public event EventHandler Tick;
       public event EventHandler<ValidatedArgs> ValidateText;
       public event EventHandler<CheckStyleChangedArgs> CheckStyleChanged;
+      public event EventHandler<AppearanceOverrideArgs> AppearanceOverride;
 
       public UiAction(Control control, bool center = false, bool is3D = true)
       {
@@ -1627,12 +1628,22 @@ namespace Core.WinForms.Controls
       public ChooserSet Choose(string title, int width)
       {
          var chooser = new Chooser(title, this, width);
+         if (AppearanceOverride is not null)
+         {
+            chooser.AppearanceOverride += (sender, args) => AppearanceOverride.Invoke(sender, args);
+         }
+
          return new ChooserSet(chooser);
       }
 
       public ChooserSet Choose(string title)
       {
          var chooser = new Chooser(title, this, nil);
+         if (AppearanceOverride is not null)
+         {
+            chooser.AppearanceOverride += (sender, args) => AppearanceOverride.Invoke(sender, args);
+         }
+
          return new ChooserSet(chooser);
       }
 

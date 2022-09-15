@@ -643,6 +643,28 @@ namespace Core.Tests
       }
 
       [TestMethod]
+      public void ChooserEventTest()
+      {
+         var form = new Form();
+         var uiAction = new UiAction(form, true);
+         uiAction.SetUp(0, 0, 200, 40);
+         uiAction.AppearanceOverride += (_, e) =>
+         {
+            e.ForeColor = Color.White;
+            e.BackColor = Color.Red;
+            e.Italic = true;
+            e.Override = true;
+         };
+         uiAction.Click += (_, _) =>
+         {
+            var _ = uiAction.Choose("A,B,C", 800).Choices(("Alpha", "A"), ("Bravo", "B"), ("Charlie", "C")).Choose();
+         };
+         uiAction.ClickText = "Select item";
+
+         form.ShowDialog();
+      }
+
+      [TestMethod]
       public void TogglerTest()
       {
          var form = new Form();

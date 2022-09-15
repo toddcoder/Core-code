@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using Core.Collections;
 using Core.Monads;
+using Core.Numbers;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Controls;
@@ -23,6 +24,8 @@ public partial class Chooser : Form
    protected Maybe<string> _nilItem;
    protected bool modifyTitle;
    protected string emptyTitle;
+
+   public event EventHandler<AppearanceOverrideArgs> AppearanceOverride;
 
    public Chooser(string title, UiAction uiAction, Maybe<int> _width)
    {
@@ -96,10 +99,45 @@ public partial class Chooser : Form
 
    protected void addItem(string text, Color foreColor, Color backColor)
    {
+      Maybe<Font> _font = nil;
+
+      if (AppearanceOverride is not null)
+      {
+         var args = new AppearanceOverrideArgs(text, foreColor, backColor);
+         AppearanceOverride.Invoke(this, args);
+         if (args.Override)
+         {
+            text = args.Text;
+            foreColor = args.ForeColor;
+            backColor = args.BackColor;
+
+            Bits32<FontStyle> style = FontStyle.Regular;
+            var modified = false;
+            if (args.Italic)
+            {
+               style[FontStyle.Italic] = true;
+               modified = true;
+            }
+
+            if (args.Bold)
+            {
+               style[FontStyle.Bold] = true;
+               modified = true;
+            }
+
+            _font = maybe<Font>() & modified & (() => new Font(listViewItems.Font, style));
+         }
+      }
+
       var item = listViewItems.Items.Add(text);
       item.UseItemStyleForSubItems = true;
       item.ForeColor = foreColor;
       item.BackColor = backColor;
+
+      if (_font)
+      {
+         item.Font = _font;
+      }
    }
 
    protected void Chooser_Load(object sender, EventArgs e)
