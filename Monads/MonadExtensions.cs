@@ -419,26 +419,33 @@ namespace Core.Monads
       }
 
       public static Result<TResult> ForAny<TSource, TResult>(this IEnumerable<TSource> enumerable,
-         Func<TSource, TResult> func) => tryTo(() =>
+         Func<TSource, TResult> func)
       {
-         Maybe<TResult> _firstItem = nil;
-         foreach (var result in enumerable.Select(item => tryTo(() => func(item))))
+         try
          {
-            if (result.Map(out var value, out var exception))
+            Maybe<TResult> _firstItem = nil;
+            foreach (var result in enumerable.Select(item => tryTo(() => func(item))))
             {
-               if (!_firstItem)
+               if (result.Map(out var value, out var exception))
                {
-                  _firstItem = value;
+                  if (!_firstItem)
+                  {
+                     _firstItem = value;
+                  }
+               }
+               else
+               {
+                  return exception;
                }
             }
-            else
-            {
-               return exception;
-            }
-         }
 
-         return _firstItem.Result("Enumerable empty");
-      });
+            return _firstItem.Result("Enumerable empty");
+         }
+         catch (Exception exception)
+         {
+            return exception;
+         }
+      }
 
       public static Result<TResult> ForAny<TSource, TResult>(this Result<IEnumerable<TSource>> enumerable,
          Func<TSource, TResult> func)

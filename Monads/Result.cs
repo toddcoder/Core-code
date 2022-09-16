@@ -118,7 +118,7 @@ namespace Core.Monads
          _ => throw new InvalidCastException("Must be a Success to return a value")
       };
 
-      public static explicit operator Exception(Result<T> result) => result switch
+      public static implicit operator Exception(Result<T> result) => result switch
       {
          Failure<T> failure => failure.Exception,
          _ => throw new InvalidCastException("Must be a Failure to return a value")

@@ -65,13 +65,13 @@ namespace Core.Monads
          _ => throw new InvalidCastException("Must be a Response to return a value")
       };
 
-      public static explicit operator Exception(Responding<T> value) => value switch
+      public static implicit operator Exception(Responding<T> value) => value switch
       {
          FailedResponse<T> failedResponse => failedResponse.Exception,
          _ => throw new InvalidCastException("Must be a FailedResponse to return a value")
       };
 
-      public static explicit operator Maybe<Exception>(Responding<T> value) => value switch
+      public static implicit operator Maybe<Exception>(Responding<T> value) => value switch
       {
          FailedResponse<T> failedResponse => failedResponse.Exception,
          _ => nil

@@ -430,66 +430,53 @@ namespace Core.Enumerables
 
       public static Result<T> LastOrFail<T>(this IEnumerable<T> enumerable, Predicate<T> predicate, Func<string> failureMessage)
       {
-         return tryTo(() =>
+         try
          {
-            try
-            {
-               return enumerable.LastOrNone(i => predicate(i)).Result(failureMessage());
-            }
-            catch
-            {
-               return fail(failureMessage());
-            }
-         });
+            return enumerable.LastOrNone(i => predicate(i)).Result(failureMessage());
+         }
+         catch (Exception exception)
+         {
+            return exception;
+         }
       }
 
       public static Result<(T1, T2)> LastOrFail<T1, T2>(this IEnumerable<(T1, T2)> enumerable, Func<T1, T2, bool> predicate,
          Func<string> failureMessage)
       {
-         return tryTo(() =>
+         try
          {
-            try
-            {
-               return enumerable.LastOrNone(i => predicate(i.Item1, i.Item2)).Result(failureMessage());
-            }
-            catch
-            {
-               return fail(failureMessage());
-            }
-         });
+            return enumerable.LastOrNone(i => predicate(i.Item1, i.Item2)).Result(failureMessage());
+         }
+         catch (Exception exception)
+         {
+            return exception;
+         }
       }
 
       public static Result<(T1, T2, T3)> LastOrFail<T1, T2, T3>(this IEnumerable<(T1, T2, T3)> enumerable,
-         Func<T1, T2, T3, bool> predicate,
-         Func<string> failureMessage)
+         Func<T1, T2, T3, bool> predicate, Func<string> failureMessage)
       {
-         return tryTo(() =>
+         try
          {
-            try
-            {
-               return enumerable.LastOrNone(i => predicate(i.Item1, i.Item2, i.Item3)).Result(failureMessage());
-            }
-            catch
-            {
-               return fail(failureMessage());
-            }
-         });
+            return enumerable.LastOrNone(i => predicate(i.Item1, i.Item2, i.Item3)).Result(failureMessage());
+         }
+         catch (Exception exception)
+         {
+            return exception;
+         }
       }
 
       public static Result<(T1, T2, T3, T4)> LastOrFail<T1, T2, T3, T4>(this IEnumerable<(T1, T2, T3, T4)> enumerable,
          Func<T1, T2, T3, T4, bool> predicate, Func<string> failureMessage)
       {
-         return tryTo(() =>
+         try
          {
-            try
-            {
-               return enumerable.LastOrNone(i => predicate(i.Item1, i.Item2, i.Item3, i.Item4)).Result(failureMessage());
-            }
-            catch
-            {
-               return fail(failureMessage());
-            }
-         });
+            return enumerable.LastOrNone(i => predicate(i.Item1, i.Item2, i.Item3, i.Item4)).Result(failureMessage());
+         }
+         catch (Exception exception)
+         {
+            return exception;
+         }
       }
 
       public static Maybe<T> FirstOrNone<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate)

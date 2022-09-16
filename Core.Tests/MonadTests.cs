@@ -340,7 +340,7 @@ namespace Core.Tests
          }
          else
          {
-            var exception = (Exception)_result;
+            Exception exception = _result;
             Console.WriteLine(exception.Message);
          }
       }
