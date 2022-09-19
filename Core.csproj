@@ -279,6 +279,7 @@
     <Compile Include="Monads\Completed.cs" />
     <Compile Include="Monads\Either.cs" />
     <Compile Include="Monads\EitherExtensions.cs" />
+    <Compile Include="Monads\EitherMaybe.cs" />
     <Compile Include="Monads\FailedMatch.cs" />
     <Compile Include="Monads\FailedResponse.cs" />
     <Compile Include="Monads\Failure.cs" />
@@ -392,6 +393,10 @@
     <Compile Include="Matching\Parsers\SpanBreakParser.cs" />
     <Compile Include="Matching\Parsers\StringParser.cs" />
     <Compile Include="Matching\Parsers\UnmodifiedParser.cs" />
+    <Compile Include="Settings\Parser.cs" />
+    <Compile Include="Settings\Setting.cs" />
+    <Compile Include="Settings\SettingBuilder.cs" />
+    <Compile Include="Settings\SettingMaybe.cs" />
     <Compile Include="Strings\CharacterExtensions.cs" />
     <Compile Include="Strings\CondensedList.cs" />
     <Compile Include="Strings\Csv.cs" />

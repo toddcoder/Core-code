@@ -47,5 +47,7 @@ namespace Core.Monads
       public abstract TLeft DefaultToLeft(Func<TLeft> map);
 
       public abstract TRight DefaultToRight(Func<TRight> map);
+
+      public EitherMaybe<TLeft, TRight> Maybe => new(this);
    }
 }

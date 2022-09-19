@@ -9,6 +9,7 @@ using Core.Computers;
 using Core.Configurations;
 using Core.Enumerables;
 using Core.Monads;
+using Core.Settings;
 using Core.Strings;
 using static Core.Strings.StringFunctions;
 
@@ -88,6 +89,36 @@ namespace Core.Tests
                from connection1 in connections.GetGroup("connection1")
                from _server in connection1.GetValue("server")
                from _database in connection1.GetValue("database")
+               select (_server, _database);
+            if (result.Map(out var server, out var database))
+            {
+               Console.WriteLine($"server: {server}");
+               Console.WriteLine($"database: {database}");
+            }
+            else
+            {
+               Console.WriteLine("Failed");
+            }
+         }
+         else
+         {
+            Console.WriteLine(exception.Message);
+         }
+      }
+
+      [TestMethod]
+      public void BasicSettingTest()
+      {
+         var resources = new Resources<ConfigurationTests>();
+         var source = resources.String("TestData.connections.txt");
+
+         if (Setting.FromString(source).Map(out var setting, out var exception))
+         {
+            var result =
+               from connections in setting.Maybe.GetSetting("connection")
+               from connection1 in connections.Maybe.GetSetting("connection1")
+               from _server in connection1.Maybe.String("server")
+               from _database in connection1.Maybe.String("database")
                select (_server, _database);
             if (result.Map(out var server, out var database))
             {
