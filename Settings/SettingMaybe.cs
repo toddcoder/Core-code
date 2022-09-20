@@ -22,35 +22,35 @@ namespace Core.Settings
 
       public Maybe<StringHash<Setting>> SubSettings => setting.Value.Maybe.Right;
 
-      public Maybe<Setting> GetSetting(string key) => SubSettings.Map(ss => ss.Map(key));
+      public Maybe<Setting> Setting(string key) => SubSettings.Map(ss => ss.Map(key));
 
       public Maybe<int> Int32() => Text.Map(Maybe.Int32);
 
-      public Maybe<int> Int32(string key) => GetSetting(key).Map(s => s.Maybe.Int32());
+      public Maybe<int> Int32(string key) => Setting(key).Map(s => s.Maybe.Int32());
 
       public Maybe<long> Int64() => Text.Map(Maybe.Int64);
 
-      public Maybe<long> Int64(string key) => GetSetting(key).Map(s => s.Maybe.Int64());
+      public Maybe<long> Int64(string key) => Setting(key).Map(s => s.Maybe.Int64());
 
       public Maybe<float> Single() => Text.Map(Maybe.Single);
 
-      public Maybe<float> Single(string key) => GetSetting(key).Map(s => s.Maybe.Single());
+      public Maybe<float> Single(string key) => Setting(key).Map(s => s.Maybe.Single());
 
       public Maybe<double> Double() => Text.Map(Maybe.Double);
 
-      public Maybe<double> Double(string key) => GetSetting(key).Map(s => s.Maybe.Double());
+      public Maybe<double> Double(string key) => Setting(key).Map(s => s.Maybe.Double());
 
       public Maybe<bool> Boolean() => Text.Map(Maybe.Boolean);
 
-      public Maybe<bool> Boolean(string key) => GetSetting(key).Map(s => s.Maybe.Boolean());
+      public Maybe<bool> Boolean(string key) => Setting(key).Map(s => s.Maybe.Boolean());
 
       public Maybe<DateTime> DateTime() => Text.Map(Maybe.DateTime);
 
-      public Maybe<DateTime> DateTime(string key) => GetSetting(key).Map(s => s.Maybe.DateTime());
+      public Maybe<DateTime> DateTime(string key) => Setting(key).Map(s => s.Maybe.DateTime());
 
       public Maybe<Guid> Guid() => Text.Map(Maybe.Guid);
 
-      public Maybe<Guid> Guid(string key) => GetSetting(key).Map(s => s.Maybe.Guid());
+      public Maybe<Guid> Guid(string key) => Setting(key).Map(s => s.Maybe.Guid());
 
       public Maybe<FileName> FileName()
       {
@@ -72,7 +72,7 @@ namespace Core.Settings
          }
       }
 
-      public Maybe<FileName> FileName(string key) => GetSetting(key).Map(s => s.Maybe.FileName());
+      public Maybe<FileName> FileName(string key) => Setting(key).Map(s => s.Maybe.FileName());
 
       public Maybe<FolderName> FolderName()
       {
@@ -94,7 +94,7 @@ namespace Core.Settings
          }
       }
 
-      public Maybe<FolderName> FolderName(string key) => GetSetting(key).Map(s => s.Maybe.FolderName());
+      public Maybe<FolderName> FolderName(string key) => Setting(key).Map(s => s.Maybe.FolderName());
 
       public Maybe<byte[]> Bytes()
       {
@@ -115,7 +115,7 @@ namespace Core.Settings
          }
       }
 
-      public Maybe<byte[]> Bytes(string key) => GetSetting(key).Map(s => s.Maybe.Bytes());
+      public Maybe<byte[]> Bytes(string key) => Setting(key).Map(s => s.Maybe.Bytes());
 
       public Maybe<string[]> Array()
       {
@@ -129,6 +129,6 @@ namespace Core.Settings
          }
       }
 
-      public Maybe<string> String(string key) => GetSetting(key).Map(s => s.Maybe.Text);
+      public Maybe<string> String(string key) => Setting(key).Map(s => s.Maybe.Text);
    }
 }

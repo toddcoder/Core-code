@@ -104,19 +104,14 @@ namespace Core.Tests
          {
             Console.WriteLine(exception.Message);
          }
-      }
 
-      [TestMethod]
-      public void BasicSettingTest()
-      {
-         var resources = new Resources<ConfigurationTests>();
-         var source = resources.String("TestData.connections.txt");
+         Console.WriteLine("=".Repeat(80));
 
-         if (Setting.FromString(source).Map(out var setting, out var exception))
+         if (Setting.FromString(source).Map(out var setting, out exception))
          {
             var result =
-               from connections in setting.Maybe.GetSetting("connection")
-               from connection1 in connections.Maybe.GetSetting("connection1")
+               from connections in setting.Maybe.Setting("connections")
+               from connection1 in connections.Maybe.Setting("connection1")
                from _server in connection1.Maybe.String("server")
                from _database in connection1.Maybe.String("database")
                select (_server, _database);
@@ -179,6 +174,17 @@ namespace Core.Tests
          {
             Console.WriteLine(exception.Message);
          }
+
+         Console.WriteLine("=".Repeat(80));
+
+         if (Setting.FromString(source).Map(out var setting, out exception))
+         {
+            Console.WriteLine(setting);
+         }
+         else
+         {
+            Console.WriteLine(exception.Message);
+         }
       }
 
       [TestMethod]
@@ -189,6 +195,17 @@ namespace Core.Tests
          if (Group.FromString(source).Map(out var group, out var exception))
          {
             Console.Write(group);
+         }
+         else
+         {
+            Console.WriteLine(exception.Message);
+         }
+
+         Console.WriteLine("=".Repeat(80));
+
+         if (Setting.FromString(source).Map(out var setting, out exception))
+         {
+            Console.WriteLine(setting);
          }
          else
          {
