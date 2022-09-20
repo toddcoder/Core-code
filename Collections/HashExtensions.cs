@@ -551,20 +551,20 @@ namespace Core.Collections
 
       public static IEnumerator<T> AsEnumerator<T>(this IEnumerable enumerable) => ((IEnumerable<T>)enumerable).GetEnumerator();
 
-      public static Result<Group> ToGroup<TKey, TValue>(this IHash<TKey, TValue> hash)
+      public static Result<Setting> ToSetting<TKey, TValue>(this IHash<TKey, TValue> hash)
       {
          try
          {
             if (hash.AnyHash().Map(out var internalHash, out var exception))
             {
-               var group = new Group();
+               var toSetting = new Setting();
                foreach (var (key, value) in internalHash)
                {
                   var keyAsString = key.ToString();
-                  group.SetItem(keyAsString, new Item(keyAsString, value.ToString()));
+                  toSetting.SetItem(keyAsString, new Item(keyAsString, value.ToString()));
                }
 
-               return group;
+               return toSetting;
             }
             else
             {
@@ -577,10 +577,10 @@ namespace Core.Collections
          }
       }
 
-      public static Result<Configuration> ToConfiguration<TKey, TValue>(this IHash<TKey, TValue> hash, FileName file, string name = Group.ROOT_NAME,
+      public static Result<Configuration> ToConfiguration<TKey, TValue>(this IHash<TKey, TValue> hash, FileName file, string name = Setting.ROOT_NAME,
          bool save = false)
       {
-         if (hash.ToGroup().Map(g => new Configuration(file, g.items, name)).Map(out var configuration, out var exception))
+         if (hash.ToSetting().Map(g => new Configuration(file, g.items, name)).Map(out var configuration, out var exception))
          {
             if (save)
             {

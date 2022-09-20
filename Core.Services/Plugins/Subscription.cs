@@ -12,8 +12,8 @@ namespace Core.Services.Plugins
    {
       protected StringSet jobNames;
 
-      public Subscription(string name, Configuration configuration, Group jobGroup)
-         : base(name, configuration, jobGroup)
+      public Subscription(string name, Configuration configuration, Setting jobSetting)
+         : base(name, configuration, jobSetting)
       {
          jobNames = new StringSet(true);
       }
@@ -22,13 +22,13 @@ namespace Core.Services.Plugins
 
       public bool IsSubscribed(string jobName) => jobNames.Contains(jobName);
 
-      protected IEnumerable<Job> getJobs(Group jobsGroup)
+      protected IEnumerable<Job> getJobs(Setting jobsSetting)
       {
          foreach (var jobName in jobNames)
          {
             var _job =
-               from jobGroup in jobsGroup.RequireGroup(jobName)
-               from newJob in Job.New(jobGroup, TypeManager, configuration)
+               from jobSetting in jobsSetting.Result.Setting(jobName)
+               from newJob in Job.New(jobSetting, TypeManager, configuration)
                select newJob;
             if (_job.Map(out var job, out var exception))
             {
@@ -46,9 +46,9 @@ namespace Core.Services.Plugins
 
       public override Result<Unit> Dispatch()
       {
-         if (configuration.RequireGroup("jobs").Map(out var jobsGroup, out var exception))
+         if (configuration.Result.Setting("jobs").Map(out var jobsSetting, out var exception))
          {
-            var tasks = getJobs(jobsGroup).Select(job => Task.Run(job.ExecutePlugin)).ToArray();
+            var tasks = getJobs(jobsSetting).Select(job => Task.Run(job.ExecutePlugin)).ToArray();
             Task.WaitAll(tasks);
 
             return unit;

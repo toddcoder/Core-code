@@ -1,11 +1,11 @@
 ﻿using System;
+using Core.Configurations;
 using Core.Matching;
 using Core.Monads;
 using Core.Objects;
 using Core.Strings;
 using static Core.Monads.MonadFunctions;
 using static Core.Objects.ConversionFunctions;
-using Group = Core.Configurations.Group;
 
 namespace Core.Data.Parameters
 {
@@ -43,17 +43,17 @@ namespace Core.Data.Parameters
          }
       }
 
-      public static Parameter Parse(Group parameterGroup)
+      public static Parameter Parse(Setting parameterSetting)
       {
-         var name = parameterGroup.Key;
-         var signature = parameterGroup.GetValue("signature") | name;
-         var typeName = parameterGroup.GetValue("type") | "$string";
+         var name = parameterSetting.Key;
+         var signature = parameterSetting.Maybe.String("signature") | name;
+         var typeName = parameterSetting.Maybe.String("type") | "$string";
          typeName = fixTypeName(typeName);
          var _type = getType(typeName);
-         var _size = parameterGroup.GetValue("size").Map(s => ConversionFunctions.Value.Int32(s));
-         var output = parameterGroup.GetValue("output").Map(s => s == "true") | false;
-         var _value = parameterGroup.GetValue("value");
-         var _default = parameterGroup.GetValue("default");
+         var _size = parameterSetting.Maybe.Int32("size");
+         var output = parameterSetting.Value.Boolean("output");
+         var _value = parameterSetting.Maybe.String("value");
+         var _default = parameterSetting.Maybe.String("default");
 
          return new Parameter(name, signature)
          {

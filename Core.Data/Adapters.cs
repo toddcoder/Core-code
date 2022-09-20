@@ -17,11 +17,11 @@ namespace Core.Data
 {
    public class Adapters<T> : IEnumerable<Adapter<T>> where T : class
    {
-      protected static StringHash<Func<DataGroups, string, ISetup>> setups;
+      protected static StringHash<Func<DataSettings, string, ISetup>> setups;
 
       static Adapters()
       {
-         setups = new StringHash<Func<DataGroups, string, ISetup>>(true)
+         setups = new StringHash<Func<DataSettings, string, ISetup>>(true)
          {
             ["sql"] = (dataGroups, adapterName) =>
             {
@@ -35,18 +35,18 @@ namespace Core.Data
 
       public static Maybe<SqlInfoMessageEventHandler> Handler { get; set; } = nil;
 
-      public static void RegisterSetup(string name, Func<DataGroups, string, ISetup> func) => setups[name] = func;
+      public static void RegisterSetup(string name, Func<DataSettings, string, ISetup> func) => setups[name] = func;
 
-      public static Result<Func<DataGroups, string, ISetup>> Setup(string setupType) => setups.Require(setupType);
+      public static Result<Func<DataSettings, string, ISetup>> Setup(string setupType) => setups.Require(setupType);
 
-      protected DataGroups dataGroups;
+      protected DataSettings dataSettings;
       protected StringHash<Adapter<T>> adapters;
       protected StringSet validAdapters;
       protected Predicate<string> isValidAdapterName;
 
-      public Adapters(DataGroups dataGroups, params string[] validAdapterNames)
+      public Adapters(DataSettings dataSettings, params string[] validAdapterNames)
       {
-         this.dataGroups = dataGroups;
+         this.dataSettings = dataSettings;
          adapters = new StringHash<Adapter<T>>(true);
          validAdapters = new StringSet(true);
          if (validAdapterNames.Length == 0)
@@ -60,9 +60,9 @@ namespace Core.Data
          }
       }
 
-      protected Adapters(DataGroups dataGroups, StringHash<Adapter<T>> adapters, StringSet validAdapters, Predicate<string> isValidAdapterName)
+      protected Adapters(DataSettings dataSettings, StringHash<Adapter<T>> adapters, StringSet validAdapters, Predicate<string> isValidAdapterName)
       {
-         this.dataGroups = dataGroups;
+         this.dataSettings = dataSettings;
          this.adapters = new StringHash<Adapter<T>>(true, adapters);
          this.validAdapters = new StringSet(true, validAdapters);
          this.isValidAdapterName = isValidAdapterName;
@@ -75,7 +75,7 @@ namespace Core.Data
 
       protected Result<string> adapterExists(string adapterName)
       {
-         return dataGroups.AdaptersGroup.RequireGroup(adapterName).Map(_ => adapterName);
+         return dataSettings.AdaptersSetting.Result.String(adapterName);
       }
 
       public Result<Adapter<T>> Adapter(string adapterName, T entity, string setupType = "sql")
@@ -96,17 +96,17 @@ namespace Core.Data
             select adapter;
       }
 
-      protected Result<Adapter<T>> getAdapter(T entity, string child, Func<DataGroups, string, ISetup> setup) => tryTo(() =>
+      protected Result<Adapter<T>> getAdapter(T entity, string child, Func<DataSettings, string, ISetup> setup) => tryTo(() =>
       {
-         var adapter = adapters.Find(child, an => new Adapter<T>(entity, setup(dataGroups, an)), true);
+         var adapter = adapters.Find(child, an => new Adapter<T>(entity, setup(dataSettings, an)), true);
          adapter.Entity = entity;
 
          return adapter;
       });
 
-      protected Result<Adapter<T>> getAdapter(Func<T> alwaysUse, string child, Func<DataGroups, string, ISetup> setup)
+      protected Result<Adapter<T>> getAdapter(Func<T> alwaysUse, string child, Func<DataSettings, string, ISetup> setup)
       {
-         return tryTo(() => adapters.Find(child, an => new Adapter<T>(alwaysUse(), setup(dataGroups, an)), true));
+         return tryTo(() => adapters.Find(child, an => new Adapter<T>(alwaysUse(), setup(dataSettings, an)), true));
       }
 
       public Result<TResult> Execute<TResult>(string adapterName, T entity, Func<T, TResult> map, string setupType = "sql")
@@ -232,12 +232,12 @@ namespace Core.Data
 
       public string[] Names => adapters.KeyArray();
 
-      public Adapters<T> Clone() => new(dataGroups, adapters, validAdapters, isValidAdapterName);
+      public Adapters<T> Clone() => new(dataSettings, adapters, validAdapters, isValidAdapterName);
    }
 
    public class Adapters : Adapters<DataContainer>
    {
-      public Adapters(DataGroups dataGroups, params string[] validAdapterNames) : base(dataGroups, validAdapterNames)
+      public Adapters(DataSettings dataSettings, params string[] validAdapterNames) : base(dataSettings, validAdapterNames)
       {
       }
    }

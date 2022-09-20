@@ -25,13 +25,13 @@ namespace Core.Configurations
 
       string At(string key);
 
-      Maybe<Group> GetGroup(string key);
+      Maybe<Setting> GetSetting(string key);
 
-      Result<Group> RequireGroup(string key);
+      Result<Setting> RequireSetting(string key);
 
-      Group GroupAt(string key);
+      Setting SettingAt(string key);
 
-      public IEnumerable<(string key, Group group)> Groups();
+      public IEnumerable<(string key, Setting setting)> Settings();
 
       public int Count { get; }
    }

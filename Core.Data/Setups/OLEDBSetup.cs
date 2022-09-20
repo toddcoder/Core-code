@@ -17,18 +17,18 @@ namespace Core.Data.Setups
 
       public static void RegisterType(string type, Func<IConnectionString> func) => registeredTypes[type] = func;
 
-      public static Result<OleDbSetup> FromDataGroups(DataGroups dataGroups, string adapterName, Maybe<FileName> file)
+      public static Result<OleDbSetup> FromDataGroups(DataSettings dataSettings, string adapterName, Maybe<FileName> file)
       {
          var result =
-            from adapterGroup in dataGroups.AdaptersGroup.RequireGroup(adapterName)
-            let _parameters = new Parameters.Parameters(adapterGroup.GetGroup("parameters"))
-            let _fields = new Fields.Fields(adapterGroup.GetGroup("fields"))
-            from connectionName in adapterGroup.RequireValue("connection")
-            let commandName = adapterGroup.GetValue("command") | adapterName
-            from connectionGroup in dataGroups.ConnectionsGroup.RequireGroup(connectionName)
-            from commandGroup in dataGroups.CommandsGroup.RequireGroup(commandName)
-            let _command = new Command(commandGroup)
-            let _connection = new Connection(connectionGroup)
+            from adapterSetting in dataSettings.AdaptersSetting.Result.Setting(adapterName)
+            let _parameters = new Parameters.Parameters(adapterSetting.Maybe.Setting("parameters"))
+            let _fields = new Fields.Fields(adapterSetting.Maybe.Setting("fields"))
+            from connectionName in adapterSetting.Result.String("connection")
+            let commandName = adapterSetting.Maybe.String("command") | adapterName
+            from connectionSetting in dataSettings.ConnectionsSetting.Result.Setting(connectionName)
+            from commandSetting in dataSettings.CommandsSetting.Result.Setting(commandName)
+            let _command = new Command(commandSetting)
+            let _connection = new Connection(connectionSetting)
             let type = _connection.Type.ToLower()
             select (_parameters, _fields, _command, _connection);
          if (result.Map(out var parameters, out var fields, out var command, out var connection, out var exception))

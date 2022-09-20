@@ -18,15 +18,15 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Configurations
 {
-   public class Group : IConfigurationItem, IHash<string, string>, IEnumerable<IConfigurationItem>
+   public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<ConfigurationItem>, IConfigurationItemGetter
    {
       public const string ROOT_NAME = "_$root";
 
-      public static Configuration operator +(Group group, FileName file) => new(file, group.items, group.Key);
+      public static Configuration operator +(Setting setting, FileName file) => new(file, setting.items, setting.Key);
 
       protected static Set<Type> baseTypes;
 
-      static Group()
+      static Setting()
       {
          baseTypes = new Set<Type>
          {
@@ -35,70 +35,32 @@ namespace Core.Configurations
          };
       }
 
-      public static implicit operator Group(string source) => FromString(source).ForceValue();
+      public static implicit operator Setting(string source) => FromString(source).ForceValue();
 
-      public static Result<Group> FromString(string source)
+      public static Result<Setting> FromString(string source)
       {
          var parser = new Parser(source);
          return parser.Parse();
       }
 
       protected bool isGeneratedKey;
-      internal StringHash<IConfigurationItem> items;
+      internal StringHash<ConfigurationItem> items;
 
-      public Group(string key = ROOT_NAME)
+      public Setting(string key = ROOT_NAME)
       {
          Key = key;
-         isGeneratedKey = Key.StartsWith("__$key");
+         isGeneratedKey = key.StartsWith("__$key");
 
-         items = new StringHash<IConfigurationItem>(true);
+         items = new StringHash<ConfigurationItem>(true);
       }
 
-      public string Key { get; }
+      public override string Key { get; }
 
-      public bool IsGeneratedKey => isGeneratedKey;
-
-      public string this[string key]
+      Maybe<Setting> IConfigurationItemGetter.GetSetting(string key)
       {
-         get => ValueAt(key);
-         set
+         if (items.Map(key, out var configurationItem) && configurationItem is Setting setting)
          {
-            if (value.StartsWith("["))
-            {
-               Group newGroup = $"{key}: {value}";
-               items[key] = newGroup;
-            }
-            else
-            {
-               var item = new Item(key, value);
-               items[key] = item;
-            }
-         }
-      }
-
-      public IConfigurationItem GetItem(string key) => items.Require(key).ForceValue();
-
-      public Maybe<IConfigurationItem> GetSomeItem(string key) => items.Map(key);
-
-      public bool If(string key, out IConfigurationItem item) => items.Map(key, out item);
-
-      public void SetItem(string key, IConfigurationItem item) => items[key] = item;
-
-      public Maybe<string> GetValue(string key) => items.Map(key).Map(i => i.GetValue(key));
-
-      public string ValueAt(string key) => GetValue(key).Required($"Couldn't find value '{key}'");
-
-      public string[] GetArray(string key) => GetValue(key).Map(s => s.Unjoin("/s* ',' /s*; f")) | (() => new[] { key });
-
-      public Result<string> RequireValue(string key) => items.Require(key).Map(i => i.RequireValue(key));
-
-      public string At(string key) => GetValue(key) | "";
-
-      public Maybe<Group> GetGroup(string key)
-      {
-         if (items.Map(key, out var item) && item is Group group)
-         {
-            return group;
+            return setting;
          }
          else
          {
@@ -106,33 +68,51 @@ namespace Core.Configurations
          }
       }
 
-      public Group GroupAt(string key) => GetGroup(key).Required($"Couldn't find group at '{key}'");
+      Maybe<Item> IConfigurationItemGetter.GetItem(string key)
+      {
+         if (items.Map(key, out var configurationItem) && configurationItem is Item item)
+         {
+            return item;
+         }
+         else
+         {
+            return nil;
+         }
+      }
 
-      public Result<Group> RequireGroup(string key) => GetGroup(key).Result($"Key {key} not found");
+      public override void SetItem(string key, ConfigurationItem item) => items[key] = item;
+
+      public bool IsGeneratedKey => isGeneratedKey;
+
+      public string this[string key]
+      {
+         get => Value.String(key);
+         set => items[key] = new Item(key, value);
+      }
 
       public bool ContainsKey(string key) => items.ContainsKey(key);
 
       public Result<Hash<string, string>> AnyHash() => items.ToStringHash(i => i.Key, i => i.Value.ToString(), true);
 
-      public StringHash ToStringHash() => Values().ToHash(t => t.key, t => t.value).ToStringHash(true);
+      public StringHash ToStringHash() => Items().ToHash(t => t.key, t => t.text).ToStringHash(true);
 
-      public IEnumerable<(string key, string value)> Values()
+      public override IEnumerable<(string key, string text)> Items()
       {
-         foreach (var (key, item) in items.Where(i => i.Value is Item))
+         foreach (var item in items.Where(i => i.Value is Item).Select(i=>(Item)i.Value))
          {
-            yield return (key, ((Item)item).Value);
+            yield return (item.Key, item.Text);
          }
       }
 
-      public IEnumerable<(string key, Group group)> Groups()
+      public override IEnumerable<(string key, Setting setting)> Settings()
       {
-         foreach (var (key, item) in items.Where(i => i.Value is Group))
+         foreach (var (key, item) in items.Where(i => i.Value is Setting))
          {
-            yield return (key, (Group)item);
+            yield return (key, (Setting)item);
          }
       }
 
-      public int Count => items.Count;
+      public override int Count => items.Count;
 
       public string ToString(int indent, bool ignoreSelf = false)
       {
@@ -158,8 +138,8 @@ namespace Core.Configurations
          {
             switch (value)
             {
-               case Group group:
-                  writer.Write(group.ToString(indent));
+               case Setting setting:
+                  writer.Write(setting.ToString(indent));
                   break;
                case Item item:
                   item.Indentation = indent;
@@ -181,7 +161,7 @@ namespace Core.Configurations
 
       public override string ToString() => ToString(true);
 
-      public IEnumerator<IConfigurationItem> GetEnumerator() => items.Values.GetEnumerator();
+      public IEnumerator<ConfigurationItem> GetEnumerator() => items.Values.GetEnumerator();
 
       IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
@@ -203,7 +183,7 @@ namespace Core.Configurations
          return newArray;
       }
 
-      protected static Maybe<object> makeArray(Type elementType, Group[] groups)
+      protected static Maybe<object> makeArray(Type elementType, Setting[] groups)
       {
          var length = groups.Length;
          var newArray = Array.CreateInstance(elementType, length);
@@ -291,9 +271,9 @@ namespace Core.Configurations
             }
             else
             {
-               if (FromString(source).Map(out var arrayGroup))
+               if (FromString(source).Map(out var arraySetting))
                {
-                  var groups = arrayGroup.Groups().Select(t => t.group).ToArray();
+                  var groups = arraySetting.Settings().Select(t => t.setting).ToArray();
                   return makeArray(elementType, groups);
                }
                else
@@ -361,9 +341,12 @@ namespace Core.Configurations
          return type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.SetProperty | BindingFlags.GetProperty);
       }
 
-      public static Result<Group> Serialize<T>(T obj, string name = ROOT_NAME) where T : class, new() => tryTo(() => Serialize(typeof(T), obj, name));
+      public static Result<Setting> Serialize<T>(T obj, string name = ROOT_NAME) where T : class, new()
+      {
+         return tryTo(() => Serialize(typeof(T), obj, name));
+      }
 
-      public static Result<Group> Serialize(Type type, object obj, string name = ROOT_NAME)
+      public static Result<Setting> Serialize(Type type, object obj, string name = ROOT_NAME)
       {
          if (type.IsValueType)
          {
@@ -375,7 +358,7 @@ namespace Core.Configurations
             {
                obj.Must().Not.BeNull().OrThrow();
 
-               var group = new Group(name);
+               var setting = new Setting(name);
 
                var allPropertyInfo = getPropertyInfo(obj.GetType());
                foreach (var propertyInfo in allPropertyInfo)
@@ -387,7 +370,7 @@ namespace Core.Configurations
                   {
                      if (isBaseType(propertyType))
                      {
-                        group.SetItem(key, new Item(key, toString(value, propertyType)));
+                        setting.SetItem(key, new Item(key, toString(value, propertyType)));
                      }
                      else if (value is Array array)
                      {
@@ -405,17 +388,17 @@ namespace Core.Configurations
                            {
                               IsArray = true
                            };
-                           group.SetItem(key, item);
+                           setting.SetItem(key, item);
                         }
                         else
                         {
-                           var arrayGroup = new Group(key);
+                           var arraySetting = new Setting(key);
                            for (var i = 0; i < array.Length; i++)
                            {
                               var generatedKey = Parser.GenerateKey();
                               if (Serialize(elementType, array.GetValue(i), generatedKey).Map(out var elementGroup, out var exception))
                               {
-                                 arrayGroup.SetItem(generatedKey, elementGroup);
+                                 arraySetting.SetItem(generatedKey, elementGroup);
                               }
                               else
                               {
@@ -423,14 +406,14 @@ namespace Core.Configurations
                               }
                            }
 
-                           group.SetItem(key, arrayGroup);
+                           setting.SetItem(key, arraySetting);
                         }
                      }
                      else
                      {
-                        if (Serialize(propertyType, value, key).Map(out var propertyGroup, out var exception))
+                        if (Serialize(propertyType, value, key).Map(out var propertySetting, out var exception))
                         {
-                           group.SetItem(key, propertyGroup);
+                           setting.SetItem(key, propertySetting);
                         }
                         else
                         {
@@ -440,7 +423,7 @@ namespace Core.Configurations
                   }
                }
 
-               return group;
+               return setting;
             }
             catch (Exception exception)
             {
@@ -457,7 +440,7 @@ namespace Core.Configurations
          }
 
          var elementType = type.GetElementType();
-         var array = Groups().Select(i => i.group).ToArray();
+         var array = Settings().Select(i => i.setting).ToArray();
 
          return makeArray(elementType, array).Required($"Couldn't make array of element type {elementType.FullName}");
       }
@@ -488,7 +471,7 @@ namespace Core.Configurations
          try
          {
             var allPropertyInfo = getPropertyInfo(type);
-            foreach (var (key, value) in Values())
+            foreach (var (key, value) in Items())
             {
                var name = key.ToPascal();
                if (allPropertyInfo.FirstOrNone(p => p.Name.Same(name)).Map(out var propertyInfo))
@@ -501,13 +484,13 @@ namespace Core.Configurations
                }
             }
 
-            foreach (var (key, group) in Groups())
+            foreach (var (key, setting) in Settings())
             {
                var name = key.ToPascal();
                if (allPropertyInfo.FirstOrNone(p => p.Name.Same(name)).Map(out var propertyInfo))
                {
                   var propertyType = propertyInfo.PropertyType;
-                  if (group.Deserialize(propertyType).Map(out var objValue))
+                  if (setting.Deserialize(propertyType).Map(out var objValue))
                   {
                      propertyInfo.SetValue(obj, objValue);
                   }
@@ -534,13 +517,5 @@ namespace Core.Configurations
             return fill(ref obj, type);
          }
       }
-
-      public GroupResult Result => new(this);
-
-      public GroupMaybe Maybe => new(this);
-
-      public GroupValue Value => new(this);
-
-      public GroupRequired Required => new(this);
    }
 }

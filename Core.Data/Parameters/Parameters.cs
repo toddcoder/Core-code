@@ -22,7 +22,7 @@ namespace Core.Data.Parameters
          }
       }
 
-      public static Result<Parameters> FromGroup(Maybe<Group> parametersGroup) => tryTo(() => new Parameters(parametersGroup));
+      public static Result<Parameters> FromSetting(Maybe<Setting> parametersGroup) => tryTo(() => new Parameters(parametersGroup));
 
       protected StringHash<Parameter> parameters;
 
@@ -36,11 +36,11 @@ namespace Core.Data.Parameters
          }
       }
 
-      public Parameters(Maybe<Group> _parametersGroup) : this()
+      public Parameters(Maybe<Setting> _parametersGroup) : this()
       {
          if (_parametersGroup.Map(out var parametersGroup))
          {
-            foreach (var (key, parameter) in parametersGroup.Groups().Select(t => (t.key, Parameter.Parse(t.group))))
+            foreach (var (key, parameter) in parametersGroup.Settings().Select(t => (t.key, Parameter.Parse(t.setting))))
             {
                this[key] = parameter;
             }

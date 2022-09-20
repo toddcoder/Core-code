@@ -1,10 +1,10 @@
 ﻿using System;
+using Core.Configurations;
 using Core.Matching;
 using Core.Monads;
 using Core.Objects;
 using Core.Strings;
 using static Core.Monads.MonadFunctions;
-using Group = Core.Configurations.Group;
 
 namespace Core.Data.Fields
 {
@@ -33,12 +33,12 @@ namespace Core.Data.Fields
          }
       }
 
-      public static Field Parse(Group fieldGroup)
+      public static Field Parse(Setting fieldSetting)
       {
-         var name = fieldGroup.Key;
-         var signature = fieldGroup.GetValue("signature") | name;
-         var optional = fieldGroup.GetValue("optional").Map(s => s == "true") | false;
-         var typeName = fieldGroup.GetValue("type");
+         var name = fieldSetting.Key;
+         var signature = fieldSetting.Maybe.String("signature") | name;
+         var optional = fieldSetting.Maybe.String("optional").Map(s => s == "true") | false;
+         var typeName = fieldSetting.Maybe.String("type");
          var type = typeName.Map(getType);
 
          return new Field(name, signature, optional) { Type = type };

@@ -21,25 +21,25 @@ namespace Core.Configurations
          this.source = source;
       }
 
-      public Result<Group> Parse()
+      public Result<Setting> Parse()
       {
-         var rootGroup = new Group();
-         var stack = new MaybeStack<IConfigurationItem>();
-         stack.Push(rootGroup);
+         var rootSetting = new Setting();
+         var stack = new MaybeStack<ConfigurationItem>();
+         stack.Push(rootSetting);
 
-         Maybe<Group> peekGroup()
+         Maybe<Setting> peekSetting()
          {
             return
                from parentItem in stack.Peek()
-               from parentGroup in parentItem.IfCast<Group>()
+               from parentGroup in parentItem.IfCast<Setting>()
                select parentGroup;
          }
 
-         Maybe<Group> popGroup()
+         Maybe<Setting> popSetting()
          {
             return
                from parentItem in stack.Pop()
-               from parentGroup in parentItem.IfCast<Group>()
+               from parentGroup in parentItem.IfCast<Setting>()
                select parentGroup;
          }
 
@@ -210,53 +210,53 @@ namespace Core.Configurations
             if (source.Matches("^ /s* '['; f").Map(out var result))
             {
                var key = GetKey("?");
-               var group = new Group(key);
-               if (peekGroup().Map(out var parentGroup))
+               var setting = new Setting(key);
+               if (peekSetting().Map(out var parentSetting))
                {
-                  parentGroup.SetItem(key, group);
+                  parentSetting.SetItem(key, setting);
                }
                else
                {
-                  return fail("No parent group found");
+                  return fail("No parent setting found");
                }
 
-               stack.Push(group);
+               stack.Push(setting);
 
                source = source.Drop(result.Length);
             }
             else if (source.Matches($"^ /s* {REGEX_KEY} /s* '['; f").Map(out result))
             {
                var key = GetKey(result.FirstGroup);
-               var group = new Group(key);
-               if (peekGroup().Map(out var parentGroup))
+               var setting = new Setting(key);
+               if (peekSetting().Map(out var parentSetting))
                {
-                  parentGroup.SetItem(key, group);
+                  parentSetting.SetItem(key, setting);
                }
                else
                {
-                  return fail("No parent group found");
+                  return fail("No parent setting found");
                }
 
-               stack.Push(group);
+               stack.Push(setting);
 
                source = source.Drop(result.Length);
             }
             else if (source.Matches("^ /s* ']'; f").Map(out result))
             {
-               if (popGroup().Map(out var group))
+               if (popSetting().Map(out var setting))
                {
-                  if (peekGroup().Map(out var parentGroup))
+                  if (peekSetting().Map(out var parentSetting))
                   {
-                     parentGroup.SetItem(group.Key, group);
+                     parentSetting.SetItem(setting.Key, setting);
                   }
                   else
                   {
-                     return fail("No parent group found");
+                     return fail("No parent setting found");
                   }
                }
                else
                {
-                  return fail("Not closing on group");
+                  return fail("Not closing on setting");
                }
 
                source = source.Drop(result.Length);
@@ -264,14 +264,14 @@ namespace Core.Configurations
             else if (source.Matches($"^ /s* {REGEX_KEY} '.'; f").Map(out result))
             {
                var key = GetKey(result.FirstGroup);
-               var group = new Group(key);
-               if (peekGroup().Map(out var parentGroup))
+               var setting = new Setting(key);
+               if (peekSetting().Map(out var parentSetting))
                {
-                  parentGroup.SetItem(key, group);
+                  parentSetting.SetItem(key, setting);
                }
                else
                {
-                  return fail("No parent group found");
+                  return fail("No parent setting found");
                }
 
                source = source.Drop(result.Length);
@@ -290,9 +290,9 @@ namespace Core.Configurations
                   {
                      IsArray = isArray
                   };
-                  if (peekGroup().Map(out var group))
+                  if (peekSetting().Map(out var setting))
                   {
-                     group.SetItem(item.Key, item);
+                     setting.SetItem(item.Key, item);
                   }
                }
                else if (source.IsMatch("^ /s+ $; f"))
@@ -314,7 +314,7 @@ namespace Core.Configurations
                   {
                      IsArray = isArray
                   };
-                  if (peekGroup().Map(out var group))
+                  if (peekSetting().Map(out var group))
                   {
                      group.SetItem(item.Key, item);
                   }
@@ -339,7 +339,7 @@ namespace Core.Configurations
                {
                   IsArray = isArray
                };
-               if (peekGroup().Map(out var group))
+               if (peekSetting().Map(out var group))
                {
                   group.SetItem(item.Key, item);
                }
@@ -350,11 +350,11 @@ namespace Core.Configurations
             }
          }
 
-         while (popGroup().Map(out var group))
+         while (popSetting().Map(out var setting))
          {
-            if (peekGroup().Map(out var parentGroup))
+            if (peekSetting().Map(out var parentSetting))
             {
-               parentGroup.SetItem(group.Key, group);
+               parentSetting.SetItem(setting.Key, setting);
             }
             else
             {
@@ -362,7 +362,7 @@ namespace Core.Configurations
             }
          }
 
-         return rootGroup;
+         return rootSetting;
       }
 
       public static string GenerateKey() => $"__$key_{uniqueID()}";

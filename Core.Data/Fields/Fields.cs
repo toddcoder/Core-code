@@ -25,7 +25,7 @@ namespace Core.Data.Fields
       protected StringHash<Field> fields;
       protected List<string> ordered;
 
-      public static Result<Fields> FromGroup(Maybe<Group> fieldsGroup) => tryTo(() => new Fields(fieldsGroup));
+      public static Result<Fields> FromSetting(Maybe<Setting> fieldsGroup) => tryTo(() => new Fields(fieldsGroup));
 
       public Fields()
       {
@@ -41,11 +41,11 @@ namespace Core.Data.Fields
          }
       }
 
-      public Fields(Maybe<Group> _fieldsGroup) : this()
+      public Fields(Maybe<Setting> _fieldsGroup) : this()
       {
          if (_fieldsGroup.Map(out var fieldsGraph))
          {
-            foreach (var field in fieldsGraph.Groups().Select(t => Field.Parse(t.group)))
+            foreach (var field in fieldsGraph.Settings().Select(t => Field.Parse(t.setting)))
             {
                Add(field);
             }

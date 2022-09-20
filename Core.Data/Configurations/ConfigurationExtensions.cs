@@ -5,13 +5,13 @@ namespace Core.Data.Configurations
 {
    public static class ConfigurationExtensions
    {
-      public static Maybe<DataGroups> DataGroups(this Group group)
+      public static Maybe<DataSettings> DataSettings(this Setting setting)
       {
          return
-            from connectionsGroup in @group.GetGroup("connections")
-            from commandsGroup in @group.GetGroup("commands")
-            from adaptersGroup in @group.GetGroup("adapters")
-            select new DataGroups { ConnectionsGroup = connectionsGroup, CommandsGroup = commandsGroup, AdaptersGroup = adaptersGroup };
+            from connectionsSetting in setting.Maybe.Setting("connections")
+            from commandsSetting in setting.Maybe.Setting("commands")
+            from adaptersSetting in setting.Maybe.Setting("adapters")
+            select new DataSettings { ConnectionsSetting = connectionsSetting, CommandsSetting = commandsSetting, AdaptersSetting = adaptersSetting };
       }
    }
 }

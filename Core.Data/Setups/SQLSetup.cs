@@ -17,24 +17,24 @@ namespace Core.Data.Setups
 {
    public class SqlSetup : ISetup, ISetupWithInfo
    {
-      public static Result<SqlSetup> FromDataGroups(DataGroups dataGroups, string adapterName)
+      public static Result<SqlSetup> FromDataGroups(DataSettings dataSettings, string adapterName)
       {
-         var connectionsGroup = dataGroups.ConnectionsGroup;
-         var commandsGroup = dataGroups.CommandsGroup;
-         var adaptersGroup = dataGroups.AdaptersGroup;
+         var connectionsSetting = dataSettings.ConnectionsSetting;
+         var commandsSetting = dataSettings.CommandsSetting;
+         var adaptersSetting = dataSettings.AdaptersSetting;
 
          return
-            from adapterGraph in adaptersGroup.RequireGroup(adapterName)
-            from connectionName in adapterGraph.RequireValue("connection")
-            from connectionGroup in connectionsGroup.RequireGroup(connectionName)
-            let commandName = adaptersGroup.GetValue("command") | adapterName
-            from commandGraph in commandsGroup.RequireGroup(commandName)
-            let connection = new Connection(connectionGroup)
+            from adapterSetting in adaptersSetting.Result.Setting(adapterName)
+            from connectionName in adapterSetting.Result.String("connection")
+            from connectionSetting in connectionsSetting.Result.Setting(connectionName)
+            let commandName = adaptersSetting.Maybe.String("command") | adapterName
+            from commandSetting in commandsSetting.Result.Setting(commandName)
+            let connection = new Connection(connectionsSetting)
             from connectionString in SqlConnectionString.FromConnection(connection)
-            from command in Command.FromGroup(commandGraph)
-            from parameters in Data.Parameters.Parameters.FromGroup(adapterGraph.GetGroup("parameters"))
-            from fields in Data.Fields.Fields.FromGroup(adapterGraph.GetGroup("fields"))
-            select new SqlSetup(connectionsGroup.GetGroup("attributes"))
+            from command in Command.FromSetting(commandSetting)
+            from parameters in Data.Parameters.Parameters.FromSetting(adaptersSetting.Maybe.Setting("parameters"))
+            from fields in Data.Fields.Fields.FromSetting(adapterSetting.Maybe.Setting("fields"))
+            select new SqlSetup(connectionsSetting.Maybe.Setting("attributes"))
             {
                CommandText = command.Text,
                CommandTimeout = command.CommandTimeout,
@@ -44,36 +44,36 @@ namespace Core.Data.Setups
             };
       }
 
-      public static Result<SqlSetup> FromGroup(Group group, string adapterName)
+      public static Result<SqlSetup> FromGroup(Setting setting, string adapterName)
       {
          return
-            from dataGraphs in @group.DataGroups().Result("Data graphs unavailable")
+            from dataGraphs in setting.DataSettings().Result("Data graphs unavailable")
             from setup in FromDataGroups(dataGraphs, adapterName)
             select setup;
       }
 
       protected StringHash attributes;
 
-      public SqlSetup(Group setupGroup)
+      public SqlSetup(Setting setupSetting)
       {
-         var connectionGroup = setupGroup.RequireGroup("connection").ForceValue();
-         var connection = new Connection(connectionGroup);
+         var setting = setupSetting.Required.Setting("connection");
+         var connection = new Connection(setting);
          ConnectionString = new SqlConnectionString(connection);
 
-         var commandGroup = setupGroup.RequireGroup("command").ForceValue();
-         var command = new Command(commandGroup);
+         var commandSetting = setupSetting.Required.Setting("command");
+         var command = new Command(commandSetting);
          CommandText = command.Text;
          CommandTimeout = command.CommandTimeout;
 
-         var parametersGroup = setupGroup.GetGroup("parameters");
-         Parameters = new Parameters.Parameters(parametersGroup);
+         var _parametersSetting = setupSetting.Maybe.Setting("parameters");
+         Parameters = new Parameters.Parameters(_parametersSetting);
 
-         var fieldsGroup = setupGroup.GetGroup("fields");
-         Fields = new Fields.Fields(fieldsGroup);
+         var _fieldsSetting = setupSetting.Maybe.Setting("fields");
+         Fields = new Fields.Fields(_fieldsSetting);
 
          attributes = new StringHash(true);
          Handler = nil;
-         loadAttributes(setupGroup.GetGroup("attributes"));
+         loadAttributes(setupSetting.Maybe.Setting("attributes"));
       }
 
       public SqlSetup(ISetupObject setupObject)
@@ -94,11 +94,11 @@ namespace Core.Data.Setups
          loadAttributes(setupObject.Attributes);
       }
 
-      internal SqlSetup(Maybe<Group> attributesGroup)
+      internal SqlSetup(Maybe<Setting> attributesSetting)
       {
          attributes = new StringHash(true);
          Handler = nil;
-         loadAttributes(attributesGroup);
+         loadAttributes(attributesSetting);
       }
 
       public SqlSetup(StringHash setupData, string parameterSpecifiers = "", string fieldSpecifiers = "")
@@ -128,11 +128,11 @@ namespace Core.Data.Setups
          Handler = nil;
       }
 
-      protected void loadAttributes(Maybe<Group> _attributesGroup)
+      protected void loadAttributes(Maybe<Setting> _attributesSetting)
       {
-         if (_attributesGroup.Map(out var attributesGroup))
+         if (_attributesSetting.Map(out var attributesSetting))
          {
-            foreach (var (key, value) in attributesGroup.Values())
+            foreach (var (key, value) in attributesSetting.Items())
             {
                attributes[key] = value;
             }

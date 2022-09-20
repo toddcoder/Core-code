@@ -7,17 +7,17 @@ using static Core.Monads.AttemptFunctions;
 
 namespace Core.Configurations
 {
-   public class Configuration : Group
+   public class Configuration : Setting
    {
       public static Result<Configuration> Open(FileName file)
       {
-         var _group =
+         var _setting =
             from source in file.TryTo.Text
-            from groupFromString in FromString(source)
-            select groupFromString;
-         if (_group.Map(out var group, out var exception))
+            from settingFromSource in FromString(source)
+            select settingFromSource;
+         if (_setting.Map(out var setting, out var exception))
          {
-            return new Configuration(file, group.items);
+            return new Configuration(file, setting.items);
          }
          else
          {
@@ -27,9 +27,9 @@ namespace Core.Configurations
 
       public static Result<Configuration> Serialize(FileName file, Type type, object obj, bool save = true, string name = ROOT_NAME)
       {
-         if (Serialize(type, obj, name).Map(out var group, out var exception))
+         if (Serialize(type, obj, name).Map(out var setting, out var exception))
          {
-            var configuration = new Configuration(file, group.items, name);
+            var configuration = new Configuration(file, setting.items, name);
             if (save)
             {
                return configuration.Save();
@@ -52,7 +52,7 @@ namespace Core.Configurations
 
       protected FileName file;
 
-      internal Configuration(FileName file, StringHash<IConfigurationItem> items, string name = ROOT_NAME) : base(name)
+      internal Configuration(FileName file, StringHash<ConfigurationItem> items, string name = ROOT_NAME) : base(name)
       {
          this.file = file;
          this.items = items;

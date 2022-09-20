@@ -11,7 +11,6 @@ using Core.Exceptions;
 using Core.Monads;
 using Core.Strings;
 using static Core.Monads.MonadFunctions;
-using static Core.Objects.ConversionFunctions;
 
 namespace Core.Services.Loggers
 {
@@ -24,11 +23,10 @@ namespace Core.Services.Loggers
       {
          try
          {
-            var _baseFolder = configuration.RequireValue("baseFolder").Map(bf => (FolderName)bf);
+            var _baseFolder = configuration.Result.FolderName("baseFolder");
             if (_baseFolder.Map(out var baseFolder, out var exception))
             {
-               var folder = configuration.GetValue("logs").Map(logs => ((FolderName)logs).Subfolder(baseFolder.Name))
-                  | (() => baseFolder[jobName]);
+               var folder = configuration.Maybe.FolderName("logs").Map(logs => logs.Subfolder(baseFolder.Name)) | (() => baseFolder[jobName]);
                return folder.Subfolder(jobName);
             }
             else
@@ -45,11 +43,11 @@ namespace Core.Services.Loggers
       protected static Result<ServiceLogger> fromConfiguration(Configuration configuration,
          Func<FolderName, string, int, TimeSpan, Maybe<EventLogger>, Result<ServiceLogger>> creator)
       {
-         if (configuration.GetValue("name").Map(out var jobName))
+         if (configuration.Maybe.String("name").Map(out var jobName))
          {
-            var _loggingGroup = configuration.GetGroup("logging");
-            var sizeLimit = _loggingGroup.Map(g => g.GetValue("sizeLimit")).Map(Maybe.Int32) | 1000000;
-            var expiry = _loggingGroup.Map(g => g.GetValue("expiry")).Map(Maybe.TimeSpan) | (() => 7.Days());
+            var _loggingSetting = configuration.Maybe.Setting("logging");
+            var sizeLimit = _loggingSetting.Map(g => g.Maybe.Int32("sizeLimit")) | 1000000;
+            var expiry = _loggingSetting.Map(g => g.Maybe.TimeSpan("expiry")) | (() => 7.Days());
             Maybe<EventLogger> _eventLogger;
             try
             {
@@ -221,15 +219,15 @@ namespace Core.Services.Loggers
 
       public void ResetTiming() => stopwatch.Reset();
 
-      protected void setData(Group group, string name, FolderName folder)
+      protected void setData(Setting setting, string name, FolderName folder)
       {
          jobName = name;
          baseFolder = folder;
 
-         if (group.If("logging", out var loggingGroup))
+         if (setting.Maybe.Setting("logging").Map(out var loggingSetting))
          {
-            SizeLimit = loggingGroup.GetValue("sizeLimit").Map(Maybe.Int32) | 1000000;
-            Expiry = loggingGroup.GetValue("expiry").Map(Maybe.TimeSpan) | (() => 7.Days());
+            SizeLimit = loggingSetting.Maybe.Int32("sizeLimit") | 1000000;
+            Expiry = loggingSetting.Maybe.TimeSpan("expiry") | (() => 7.Days());
          }
          else
          {

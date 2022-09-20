@@ -8,7 +8,6 @@ using Core.Services.Scheduling;
 using Core.Strings;
 using Standard.Services.Plugins;
 using static Core.Monads.MonadFunctions;
-using static Core.Objects.ConversionFunctions;
 
 namespace Core.Services.Plugins
 {
@@ -16,7 +15,7 @@ namespace Core.Services.Plugins
    {
       protected string name;
       protected Configuration configuration;
-      protected Group jobGroup;
+      protected Setting jobSetting;
       protected ServiceMessage serviceMessage;
       protected Address address;
       protected int retries;
@@ -26,11 +25,11 @@ namespace Core.Services.Plugins
       protected bool dispatchEnabled;
       protected string applicationName;
 
-      public Plugin(string name, Configuration configuration, Group jobGroup)
+      public Plugin(string name, Configuration configuration, Setting jobSetting)
       {
          this.name = name;
          this.configuration = configuration;
-         this.jobGroup = jobGroup;
+         this.jobSetting = jobSetting;
 
          dispatchEnabled = true;
          After = nil;
@@ -111,24 +110,24 @@ namespace Core.Services.Plugins
          try
          {
             object obj = this;
-            jobGroup.Fill(ref obj);
+            jobSetting.Fill(ref obj);
 
             createScheduler();
 
-            var exceptionsGroup = jobGroup.GroupAt("exceptions");
-            var exceptionsTitle = exceptionsGroup.ValueAt("title");
+            var exceptionsSetting = jobSetting.Value.Setting("exceptions");
+            var exceptionsTitle = exceptionsSetting.Value.String("title");
 
-            if (exceptionsGroup.GroupAt("address").Deserialize<Address>().Map(out address, out var exception))
+            if (exceptionsSetting.Value.Setting("address").Deserialize<Address>().Map(out address, out var exception))
             {
                if (ServiceLogger.FromConfiguration(configuration).Map(out var serviceLogger, out exception))
                {
-                  retries = jobGroup.GetValue("retries").Map(Maybe.Int32) | 0;
+                  retries = jobSetting.Maybe.Int32("retries") | 0;
                   SetRetrier();
                   finalExceptionMessage = $"All {retries} {"retr(y|ies)".Plural(retries)} failed";
 
                   var namedExceptions = new NamedExceptions(address, name, exceptionsTitle, retries);
 
-                  applicationName = configuration.ValueAt("name");
+                  applicationName = configuration.Value.String("name");
 
                   serviceMessage = new ServiceMessage(applicationName);
                   serviceMessage.Add(serviceLogger);
@@ -180,7 +179,7 @@ namespace Core.Services.Plugins
 
       protected virtual void createScheduler()
       {
-         _scheduler = jobGroup.GetValue("schedule").Map(getScheduler);
+         _scheduler = jobSetting.Maybe.String("schedule").Map(getScheduler);
       }
 
       public Maybe<Scheduler> Scheduler() => _scheduler;

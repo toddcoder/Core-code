@@ -13,9 +13,9 @@ namespace Core.Services
       protected static Result<Service> fromConfiguration(Configuration configuration, Maybe<IServiceMessage> _serviceMessage)
       {
          return
-            from name in configuration.RequireValue("name")
-            from addressGroup in configuration.RequireGroup("address")
-            from exceptionAddress in addressGroup.Deserialize<Address>()
+            from name in configuration.Result.String("name")
+            from addressSetting in configuration.Result.Setting("address")
+            from exceptionAddress in addressSetting.Deserialize<Address>()
             from typeManager in TypeManager.FromConfiguration(configuration)
             from serviceLogger in ServiceLogger.FromConfiguration(configuration)
             select new Service(configuration, name, exceptionAddress, typeManager, serviceLogger, _serviceMessage);

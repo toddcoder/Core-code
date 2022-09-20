@@ -7,35 +7,32 @@ using Core.Configurations;
 using Core.Enumerables;
 using Core.Matching;
 using Core.Monads;
-using Core.Services.Plugins;
-using Standard.Services.Plugins;
 using static System.Reflection.Assembly;
 using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
-using Group = Core.Configurations.Group;
 
 namespace Core.Services
 {
    public class TypeManager
    {
-      protected static StringHash assemblyNamesFrom(Group assembliesGroup)
+      protected static StringHash assemblyNamesFrom(Setting assembliesSetting)
       {
-         return assembliesGroup.Groups().ToStringHash(i => i.key, i => i.group.At("path"), true);
+         return assembliesSetting.Settings().ToStringHash(i => i.key, i => i.setting.Value.String("path"), true);
       }
 
-      protected static StringHash typeNamesFrom(Group typesGroup)
+      protected static StringHash typeNamesFrom(Setting typesSetting)
       {
-         return typesGroup.Values().ToStringHash(i => i.key, i => i.value, true);
+         return typesSetting.Items().ToStringHash(i => i.key, i => i.text, true);
       }
 
       public static Result<TypeManager> FromConfiguration(Configuration configuration)
       {
          return
-            from assembliesGroup in configuration.GetGroup("assemblies").Result("There are no assemblies defined")
-            let assemblyNames = assemblyNamesFrom(assembliesGroup)
+            from assembliesSetting in configuration.Result.Setting("assemblies")
+            let assemblyNames = assemblyNamesFrom(assembliesSetting)
             from assertedAssemblies in assemblyNames.Must().HaveCountOf(1).OrFailure()
-            from typesGroup in configuration.GetGroup("types").Result("There are no types defined")
-            let typeNames = typeNamesFrom(typesGroup)
+            from typesSetting in configuration.Result.Setting("types")
+            let typeNames = typeNamesFrom(typesSetting)
             from assertedTypes in typeNames.Must().HaveCountOf(1).OrFailure()
             select new TypeManager(assemblyNames, typeNames);
       }

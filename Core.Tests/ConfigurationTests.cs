@@ -81,13 +81,13 @@ namespace Core.Tests
          var resources = new Resources<ConfigurationTests>();
          var source = resources.String("TestData.connections.txt");
 
-         if (Group.FromString(source).Map(out var group, out var exception))
+         if (Setting.FromString(source).Map(out var setting, out var exception))
          {
             var result =
-               from connections in @group.GetGroup("connections")
-               from connection1 in connections.GetGroup("connection1")
-               from _server in connection1.GetValue("server")
-               from _database in connection1.GetValue("database")
+               from connections in setting.Maybe.Setting("connections")
+               from connection1 in connections.Maybe.Setting("connection1")
+               from _server in connection1.Maybe.String("server")
+               from _database in connection1.Maybe.String("database")
                select (_server, _database);
             if (result.Map(out var server, out var database))
             {
@@ -111,13 +111,13 @@ namespace Core.Tests
          var resources = new Resources<ConfigurationTests>();
          var source = resources.String("TestData.connections2.txt");
 
-         if (Group.FromString(source).Map(out var group, out var exception))
+         if (Setting.FromString(source).Map(out var setting, out var exception))
          {
             var result =
-               from connections in @group.GetGroup("connections")
-               from connection1 in connections.GetGroup("connection1")
-               from _server in connection1.GetValue("server")
-               from _database in connection1.GetValue("database")
+               from connections in setting.Maybe.Setting("connections")
+               from connection1 in connections.Maybe.Setting("connection1")
+               from _server in connection1.Maybe.String("server")
+               from _database in connection1.Maybe.String("database")
                select (_server, _database);
             if (result.Map(out var server, out var database))
             {
@@ -140,9 +140,9 @@ namespace Core.Tests
       {
          var resources = new Resources<ConfigurationTests>();
          var source = resources.String("TestData.Arrays.txt");
-         if (Group.FromString(source).Map(out var group, out var exception))
+         if (Setting.FromString(source).Map(out var setting, out var exception))
          {
-            Console.WriteLine(group);
+            Console.WriteLine(setting);
          }
          else
          {
@@ -155,9 +155,9 @@ namespace Core.Tests
       {
          var resources = new Resources<ConfigurationTests>();
          var source = resources.String("TestData.connections.txt");
-         if (Group.FromString(source).Map(out var group, out var exception))
+         if (Setting.FromString(source).Map(out var setting, out var exception))
          {
-            Console.Write(group);
+            Console.Write(setting);
          }
          else
          {
@@ -178,9 +178,9 @@ namespace Core.Tests
             IsTrue = true,
             Escape = "\r \t \\ foobar"
          };
-         if (Group.Serialize(test, "test").Map(out var group, out var exception))
+         if (Setting.Serialize(test, "test").Map(out var setting, out var exception))
          {
-            Console.Write(group);
+            Console.Write(setting);
          }
          else
          {
@@ -194,10 +194,10 @@ namespace Core.Tests
          var resources = new Resources<ConfigurationTests>();
          var binary = resources.Bytes("TestData.guids.pdf");
          var package = new BinaryPackage { Payload = binary };
-         if (Group.Serialize(package, "guids").Map(out var configuration, out var exception))
+         if (Setting.Serialize(package, "guids").Map(out var setting, out var exception))
          {
-            Console.WriteLine(configuration);
-            if (configuration.Deserialize<BinaryPackage>().Map(out var newPackage, out exception))
+            Console.WriteLine(setting);
+            if (setting.Deserialize<BinaryPackage>().Map(out var newPackage, out exception))
             {
                package.Must().Equal(newPackage).OrThrow();
             }
@@ -217,9 +217,9 @@ namespace Core.Tests
       {
          var source = @"enum: Bravo; intValue: 153; stringValue: foobar; file: C:\temp\temp.txt; doubles: 1.0, 5.0, 3.0; isTrue: true; " +
             @"escape: ""`r `t \ foobar""";
-         if (Group.FromString(source).Map(out var configuration, out var exception))
+         if (Setting.FromString(source).Map(out var setting, out var exception))
          {
-            if (configuration.Deserialize<Test>().Map(out var obj, out exception))
+            if (setting.Deserialize<Test>().Map(out var obj, out exception))
             {
                Console.WriteLine(obj);
             }
@@ -255,10 +255,10 @@ namespace Core.Tests
                }
             }
          };
-         if (Group.Serialize(container, "data").Map(out var configuration, out var exception))
+         if (Setting.Serialize(container, "data").Map(out var setting, out var exception))
          {
-            Console.WriteLine(configuration);
-            if (configuration.Deserialize<Container>().Map(out container, out exception))
+            Console.WriteLine(setting);
+            if (setting.Deserialize<Container>().Map(out container, out exception))
             {
                foreach (var test in container.Tests)
                {
@@ -288,9 +288,9 @@ namespace Core.Tests
             ["echo"] = "Eta",
             ["foxtrot"] = "Phi"
          };
-         if (hash.ToGroup().Map(out var group, out var exception))
+         if (hash.ToSetting().Map(out var setting, out var exception))
          {
-            Console.WriteLine(group);
+            Console.WriteLine(setting);
          }
          else
          {
@@ -311,12 +311,12 @@ namespace Core.Tests
             ["foxtrot"] = "Phi"
          };
          var _result =
-            from @group in hash.ToGroup()
+            from setting in hash.ToSetting()
             let file = (FileName)$@"C:\Temp\{uniqueID()}.txt"
-            from _ in file.TryTo.SetText(@group.ToString())
+            from _ in file.TryTo.SetText(setting.ToString())
             from source in file.TryTo.Text
-            from group2 in Group.FromString(source)
-            select @group.ToStringHash();
+            from group2 in Setting.FromString(source)
+            select setting.ToStringHash();
          if (_result.Map(out var result, out var exception))
          {
             foreach (var (key, value) in result)
@@ -334,17 +334,17 @@ namespace Core.Tests
       public void EmptyStringItemTest()
       {
          var hash = new StringHash(true) { ["release"] = "", ["build"] = "http" };
-         if (hash.ToGroup().Map(out var group, out var exception))
+         if (hash.ToSetting().Map(out var setting, out var exception))
          {
-            var source = group.ToString();
+            var source = setting.ToString();
             Console.WriteLine(source);
-            Console.WriteLine(group["release"]);
-            Console.WriteLine(group["build"]);
+            Console.WriteLine(setting["release"]);
+            Console.WriteLine(setting["build"]);
 
-            if (Group.FromString(source).Map(out group, out exception))
+            if (Setting.FromString(source).Map(out setting, out exception))
             {
-               Console.WriteLine(group["release"]);
-               Console.WriteLine(group["build"]);
+               Console.WriteLine(setting["release"]);
+               Console.WriteLine(setting["build"]);
             }
             else
             {
@@ -360,14 +360,14 @@ namespace Core.Tests
       [TestMethod]
       public void WritingTest()
       {
-         var group = new Group
+         var setting = new Setting
          {
             ["repository"] = @"\\vmdvw10estm57",
             ["server"] = ".",
             ["database"] = "local_tebennett"
          };
 
-         Console.WriteLine(group);
+         Console.WriteLine(setting);
       }
 
       [TestMethod]
@@ -387,19 +387,19 @@ namespace Core.Tests
          writer.WriteLine("   value2: \"$3\"");
          writer.WriteLine("]");
          var source = writer.ToString();
-         if (Group.FromString(source).Map(out var group, out var exception))
+         if (Setting.FromString(source).Map(out var setting, out var exception))
          {
-            foreach (var (key, innerGroup) in group.Groups())
+            foreach (var (key, innerSetting) in setting.Settings())
             {
                Console.WriteLine($"{key} [");
-               Console.WriteLine($"   value1: {innerGroup.ValueAt("value1")}");
-               Console.WriteLine($"   value2: {innerGroup.ValueAt("value2")}");
+               Console.WriteLine($"   value1: {innerSetting.Value.String("value1")}");
+               Console.WriteLine($"   value2: {innerSetting.Value.String("value2")}");
                Console.WriteLine("]");
             }
 
             Console.WriteLine("=".Repeat(80));
 
-            Console.WriteLine(group);
+            Console.WriteLine(setting);
          }
          else
          {
@@ -418,9 +418,9 @@ namespace Core.Tests
          writer.WriteLine("]");
          var source = writer.ToString();
 
-         var group = Group.FromString(source).ForceValue();
-         var (_, innerGroup) = group.Groups().FirstOrFail("No outer group").ForceValue();
-         foreach (var (key, value) in innerGroup.Values())
+         var setting = Setting.FromString(source).ForceValue();
+         var (_, innerSetting) = setting.Settings().FirstOrFail("No outer group").ForceValue();
+         foreach (var (key, value) in innerSetting.Items())
          {
             Console.WriteLine($"{key}: \"{value}\"");
          }
@@ -435,8 +435,8 @@ namespace Core.Tests
          writer.WriteLine("charlie");
          var source = writer.ToString();
 
-         var group = Group.FromString(source).ForceValue();
-         foreach (var (key, value) in group.Values())
+         var setting = Setting.FromString(source).ForceValue();
+         foreach (var (key, value) in setting.Items())
          {
             Console.WriteLine($"{key}: \"{value}\"");
          }
@@ -451,7 +451,7 @@ namespace Core.Tests
          writer.WriteLine(@"   bravo: ""^(Enqueuing task `""\[)[^\]]+(\]`"").+$; u""");
          writer.WriteLine("]");
          var source = writer.ToString();
-         _ = Group.FromString(source).ForceValue();
+         _ = Setting.FromString(source).ForceValue();
       }
 
       [TestMethod]
@@ -464,20 +464,20 @@ namespace Core.Tests
          writer.WriteLine("}");
          var source = writer.ToString();
 
-         if (Group.FromString(source).Map(out var group, out var exception))
+         if (Setting.FromString(source).Map(out var setting, out var exception))
          {
-            Console.WriteLine(group);
+            Console.WriteLine(setting);
          }
          else
          {
             Console.WriteLine(exception.Message);
          }
 
-         if (group.Deserialize<ReleaseTarget>().Map(out var releaseTarget, out exception))
+         if (setting.Deserialize<ReleaseTarget>().Map(out var releaseTarget, out exception))
          {
-            if (Group.Serialize(typeof(ReleaseTarget), releaseTarget).Map(out group, out exception))
+            if (Setting.Serialize(typeof(ReleaseTarget), releaseTarget).Map(out setting, out exception))
             {
-               Console.WriteLine(group);
+               Console.WriteLine(setting);
             }
             else
             {

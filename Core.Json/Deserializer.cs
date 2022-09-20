@@ -18,30 +18,30 @@ namespace Core.Json
          this.source = source;
       }
 
-      public Result<Group> Deserialize()
+      public Result<Setting> Deserialize()
       {
-         var rootGroup = new Group("/");
-         var stack = new MaybeStack<IConfigurationItem>();
-         stack.Push(rootGroup);
+         var rootSetting = new Setting("/");
+         var stack = new MaybeStack<ConfigurationItem>();
+         stack.Push(rootSetting);
 
-         Maybe<Group> peekGroup()
+         Maybe<Setting> peekSetting()
          {
             return
                from parentItem in stack.Peek()
-               from parentGroup in parentItem.IfCast<Group>()
+               from parentGroup in parentItem.IfCast<Setting>()
                select parentGroup;
          }
 
-         int itemCount() => peekGroup().Map(group => group.AnyHash().Map(h => h.Values.Count)) | 0;
+         int itemCount() => peekSetting().Map(setting => setting.AnyHash().Map(h => h.Values.Count)) | 0;
 
          Maybe<string> _propertyName = nil;
 
          void setItem(string value)
          {
             var key = _propertyName | (() => $"${itemCount()}");
-            if (peekGroup().Map(out var group))
+            if (peekSetting().Map(out var setting))
             {
-               group.SetItem(key, new Item(key, value));
+               setting.SetItem(key, new Item(key, value));
             }
 
             _propertyName = nil;
@@ -63,17 +63,17 @@ namespace Core.Json
                   {
                      var key = _propertyName | (() => $"${itemCount()}");
                      _propertyName = nil;
-                     var group = new Group(key);
-                     if (peekGroup().Map(out var parentGroup))
+                     var setting = new Setting(key);
+                     if (peekSetting().Map(out var parentSetting))
                      {
-                        parentGroup.SetItem(key, group);
+                        parentSetting.SetItem(key, setting);
                      }
                      else
                      {
-                        return fail("No parent group found");
+                        return fail("No parent setting found");
                      }
 
-                     stack.Push(group);
+                     stack.Push(setting);
                      break;
                   }
                   case JsonToken.StartObject:
@@ -91,24 +91,24 @@ namespace Core.Json
                   {
                      var key = _propertyName | (() => $"${itemCount()}");
                      _propertyName = nil;
-                     var group = new Group(key);
-                     if (peekGroup().Map(out var parentGroup))
+                     var setting = new Setting(key);
+                     if (peekSetting().Map(out var parentSetting))
                      {
-                        parentGroup.SetItem(group.Key, group);
+                        parentSetting.SetItem(setting.Key, setting);
                      }
                      else
                      {
-                        return fail("No parent group found");
+                        return fail("No parent setting found");
                      }
 
-                     stack.Push(group);
+                     stack.Push(setting);
 
                      break;
                   }
                   case JsonToken.EndArray:
                      if (stack.IsEmpty)
                      {
-                        return fail("No parent group available");
+                        return fail("No parent setting available");
                      }
 
                      stack.Pop();
@@ -137,7 +137,7 @@ namespace Core.Json
                }
             }
 
-            return rootGroup;
+            return rootSetting;
          }
          catch (Exception exception)
          {

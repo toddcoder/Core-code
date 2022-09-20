@@ -14,7 +14,6 @@ using Core.Objects;
 using Core.Strings;
 using static Core.Monads.MonadFunctions;
 using static Core.Objects.ConversionFunctions;
-using Group = Core.Configurations.Group;
 
 namespace Core.Applications.CommandProcessing
 {
@@ -68,7 +67,7 @@ namespace Core.Applications.CommandProcessing
             }
             else
             {
-               configuration = new Group() + configurationFile;
+               configuration = new Setting() + configurationFile;
                configurationFile.Folder.Guarantee();
                ResetConfiguration();
 
@@ -316,7 +315,7 @@ namespace Core.Applications.CommandProcessing
       public virtual void AllConfiguration()
       {
          var tableMaker = new TableMaker(("Key", Justification.Left), ("Value", Justification.Left)) { Title = "All Configurations" };
-         foreach (var (key, value) in configuration.Values())
+         foreach (var (key, value) in configuration.Items())
          {
             tableMaker.Add(key, value);
          }

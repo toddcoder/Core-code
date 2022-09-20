@@ -55,7 +55,7 @@
     <Compile Include="AdapterTrying.cs" />
     <Compile Include="Command.cs" />
     <Compile Include="Configurations\ConfigurationExtensions.cs" />
-    <Compile Include="Configurations\DataGroups.cs" />
+    <Compile Include="Configurations\DataSettings.cs" />
     <Compile Include="Connection.cs" />
     <Compile Include="ConnectionStrings\AccessConnectionString.cs" />
     <Compile Include="ConnectionStrings\CSVConnectionString.cs" />

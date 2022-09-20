@@ -11,24 +11,24 @@ namespace Core.Data
 {
    public class Command
    {
-      public static Result<Command> FromGroup(Group commandGroup)
+      public static Result<Command> FromSetting(Setting commandSetting)
       {
-         var name = commandGroup.Key;
+         var name = commandSetting.Key;
          return
-            from values in getValues(commandGroup)
+            from values in getValues(commandSetting)
             select new Command { Name = name, Text = values.text, CommandTimeout = values.timeout };
       }
 
-      protected static Result<(string text, TimeSpan timeout)> getValues(Group commandGroup)
+      protected static Result<(string text, TimeSpan timeout)> getValues(Setting commandSetting)
       {
          try
          {
             string command;
-            if (commandGroup.GetValue("text").Map(out var text))
+            if (commandSetting.Maybe.String("text").Map(out var text))
             {
                command = text;
             }
-            else if (commandGroup.GetValue("file").Map(out var fileName))
+            else if (commandSetting.Maybe.String("file").Map(out var fileName))
             {
                FileName file = fileName;
                command = file.Text;
@@ -38,7 +38,7 @@ namespace Core.Data
                return fail("Require 'text' or 'file' values");
             }
 
-            var timeout = commandGroup.GetValue("timeout").Map(Maybe.TimeSpan) | (() => 30.Seconds());
+            var timeout = commandSetting.Maybe.String("timeout").Map(Maybe.TimeSpan) | (() => 30.Seconds());
 
             return (command, timeout);
          }
@@ -48,14 +48,14 @@ namespace Core.Data
          }
       }
 
-      public Command(Group commandGroup)
+      public Command(Setting commandSetting)
       {
-         Name = commandGroup.Key;
-         if (commandGroup.GetValue("text").Map(out var text))
+         Name = commandSetting.Key;
+         if (commandSetting.Maybe.String("text").Map(out var text))
          {
             Text = text;
          }
-         else if (commandGroup.GetValue("file").Map(out var fileName))
+         else if (commandSetting.Maybe.String("file").Map(out var fileName))
          {
             FileName file = fileName;
             Text = file.Text;
@@ -65,7 +65,7 @@ namespace Core.Data
             throw "Require 'text' or 'file' values".Throws();
          }
 
-         CommandTimeout = commandGroup.GetValue("timeout").Map(Maybe.TimeSpan) | (() => 30.Seconds());
+         CommandTimeout = commandSetting.Maybe.String("timeout").Map(Maybe.TimeSpan) | (() => 30.Seconds());
       }
 
       internal Command()

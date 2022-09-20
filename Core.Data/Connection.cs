@@ -11,14 +11,14 @@ namespace Core.Data
    {
       protected StringHash data;
 
-      public Connection(Group connectionGroup)
+      public Connection(Setting connectionSetting)
       {
          data = new StringHash(true);
-         Name = connectionGroup.Key;
-         Type = connectionGroup.Maybe.String("type") | "sql";
-         Timeout = connectionGroup.Maybe.String("timeout").Map(Maybe.TimeSpan) | (() => 30.Seconds());
-         ReadOnly = connectionGroup.Maybe.Boolean("read-only") | false;
-         foreach (var (key, value) in connectionGroup.Values())
+         Name = connectionSetting.Key;
+         Type = connectionSetting.Maybe.String("type") | "sql";
+         Timeout = connectionSetting.Maybe.String("timeout").Map(Maybe.TimeSpan) | (() => 30.Seconds());
+         ReadOnly = connectionSetting.Maybe.Boolean("read-only") | false;
+         foreach (var (key, value) in connectionSetting.Items())
          {
             data[key] = value;
          }

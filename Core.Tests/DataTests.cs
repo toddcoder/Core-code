@@ -70,7 +70,7 @@ namespace Core.Tests
          var resources = new Resources<DataTests>();
          var source = resources.String("TestData.data.configuration");
          var _adapter =
-            from @group in Group.FromString(source)
+            from @group in Setting.FromString(source)
             from setup in SqlSetup.FromGroup(@group, "all")
             from adapter in Adapter<ColumnData>.FromSetup(setup, entity)
             select adapter;
@@ -94,7 +94,7 @@ namespace Core.Tests
          var resources = new Resources<DataTests>();
          var source = resources.String("TestData.data.configuration");
          var _adapter =
-            from configuration in Group.FromString(source)
+            from configuration in Setting.FromString(source)
             from setup in SqlSetup.FromGroup(configuration, "all2")
             from adapter in Adapter<ColumnData>.FromSetup(setup, new ColumnData { ObjectId = 5664280 })
             select adapter;

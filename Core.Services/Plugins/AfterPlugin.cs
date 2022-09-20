@@ -7,11 +7,11 @@ namespace Core.Services.Plugins
 {
    public abstract class AfterPlugin : Plugin
    {
-      protected Group parentGroup;
+      protected Setting parentSetting;
 
-      public AfterPlugin(string name, Configuration configuration, Group jobGroup, Group parentGroup) : base(name, configuration, jobGroup)
+      public AfterPlugin(string name, Configuration configuration, Setting jobSetting, Setting parentSetting) : base(name, configuration, jobSetting)
       {
-         this.parentGroup = parentGroup;
+         this.parentSetting = parentSetting;
       }
 
       public override Result<Unit> Dispatch() => unit;

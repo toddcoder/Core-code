@@ -8,59 +8,47 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Configurations
 {
-   public class Item : IConfigurationItem
+   public class Item : ConfigurationItem, IConfigurationItemGetter
    {
-      public Item(string key, string value)
+      public Item(string key, string text)
       {
          Key = key;
-         Value = value;
+         Text = text;
       }
 
-      public string Key { get; }
+      public override string Key { get; }
 
-      public string this[string key]
+      public string Text { get; }
+
+      Maybe<Setting> IConfigurationItemGetter.GetSetting(string key) => nil;
+
+      Maybe<Item> IConfigurationItemGetter.GetItem(string key) => nil;
+
+      public override void SetItem(string key, ConfigurationItem item)
       {
-         get => key == Key ? Value : string.Empty;
-         set { }
       }
+
+      public override IEnumerable<(string key, string text)> Items()
+      {
+         yield break;
+      }
+
+      public override IEnumerable<(string key, Setting setting)> Settings()
+      {
+         yield break;
+      }
+
+      public override int Count => 0;
+
+      public string this[string key] => key == Key ? Text : string.Empty;
 
       public bool IsArray { get; set; }
 
       public int Indentation { get; set; }
 
-      public IConfigurationItem GetItem(string key) => this;
-
-      public Maybe<IConfigurationItem> GetSomeItem(string key) => maybe(key == Key, () => (IConfigurationItem)this);
-
-      public void SetItem(string key, IConfigurationItem item)
-      {
-      }
-
-      public Maybe<string> GetValue(string key) => maybe(key.Same(Key), () => Value);
-
-      public string ValueAt(string key) => GetValue(key).Required($"Couldn't find value '{key}'");
-
-      public IEnumerable<(string key, string value)> Values() => Enumerable.Empty<(string, string)>();
-
-      public string At(string key) => GetValue(key) | "";
-
-      public Result<string> RequireValue(string key) => assert(key.Same(Key), () => Value, () => $"Key '{key}' doesn't match item key");
-
-      public Maybe<Group> GetGroup(string key) => nil;
-
-      public Group GroupAt(string key) => GetGroup(key).Required($"Couldn't find group at '{key}'");
-
-      public IEnumerable<(string key, Group group)> Groups() => Enumerable.Empty<(string, Group)>();
-
-      public int Count => 1;
-
-      public Result<Group> RequireGroup(string key) => fail("Not a group");
-
-      public string Value { get; }
-
       public override string ToString()
       {
-         var value = Value.ReplaceAll(("\t", @"`t"), ("\r", @"`r"), ("\n", @"`n"));
+         var value = Text.ReplaceAll(("\t", @"`t"), ("\r", @"`r"), ("\n", @"`n"));
          if (value.IsEmpty())
          {
             return $"{Key}: \"{value}\"";

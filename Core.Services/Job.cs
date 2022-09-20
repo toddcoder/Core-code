@@ -15,11 +15,11 @@ namespace Core.Services
 {
    public class Job : IDisposable, IEquatable<Job>, IAddServiceMessages
    {
-      public static Result<Job> New(Group jobGroup, TypeManager typeManager, Configuration configuration)
+      public static Result<Job> New(Setting jobSetting, TypeManager typeManager, Configuration configuration)
       {
          return
             from serviceLogger in ServiceLogger.FromConfiguration(configuration)
-            let job = new Job(jobGroup, configuration, serviceLogger)
+            let job = new Job(jobSetting, configuration, serviceLogger)
             from loaded in job.Load(typeManager)
             select job;
       }
@@ -31,16 +31,16 @@ namespace Core.Services
       protected bool stopped;
       protected Maybe<Scheduler> _scheduler;
       protected string name;
-      protected Group jobGroup;
+      protected Setting jobSetting;
       protected Configuration configuration;
       protected bool canStop;
       protected Maybe<string> _subscription;
       protected ServiceMessage serviceMessage;
 
-      protected Job(Group jobGroup, Configuration configuration, ServiceLogger serviceLogger)
+      protected Job(Setting jobSetting, Configuration configuration, ServiceLogger serviceLogger)
       {
-         this.jobGroup = jobGroup;
-         name = this.jobGroup.ValueAt("name");
+         this.jobSetting = jobSetting;
+         name = this.jobSetting.Value.String("name");
          this.configuration = configuration;
 
          serviceMessage = new ServiceMessage(name);
@@ -54,11 +54,11 @@ namespace Core.Services
          _subscription = nil;
       }
 
-      protected static Result<(string assemblyName, string typeName)> typeInfo(TypeManager typeManager, Group group)
+      protected static Result<(string assemblyName, string typeName)> typeInfo(TypeManager typeManager, Setting setting)
       {
          Result<string> getValue(string objectName, Func<Maybe<string>> defaultValue, string message)
          {
-            if (group.GetValue(objectName).Map(out var name))
+            if (setting.Maybe.String(objectName).Map(out var name))
             {
                return name;
             }
@@ -85,9 +85,9 @@ namespace Core.Services
       public Result<Unit> Load(TypeManager typeManager)
       {
          var _plugin =
-            from typeInfo in typeInfo(typeManager, jobGroup)
+            from typeInfo in typeInfo(typeManager, jobSetting)
             from pluginType in typeManager.Type(typeInfo.assemblyName, typeInfo.typeName)
-            from createdPlugin in pluginType.TryCreate(name, configuration, jobGroup).CastAs<Plugin>()
+            from createdPlugin in pluginType.TryCreate(name, configuration, jobSetting).CastAs<Plugin>()
             select createdPlugin;
          if (_plugin.Map(out plugin, out var exception))
          {
@@ -103,21 +103,21 @@ namespace Core.Services
                return exception;
             }
 
-            _subscription = jobGroup.GetValue("subscription");
+            _subscription = jobSetting.Maybe.String("subscription");
             if (!_subscription)
             {
                _scheduler = plugin.Scheduler();
             }
 
-            interval = jobGroup.GetValue("interval").Map(Value.TimeSpan) | (() => 1.Second());
+            interval = jobSetting.Maybe.String("interval").Map(Value.TimeSpan) | (() => 1.Second());
 
-            plugin.After = jobGroup.GetGroup("after").Map(afterGroup =>
+            plugin.After = jobSetting.Maybe.Setting("after").Map(afterSetting =>
             {
                var _afterPlugin =
-                  from afterName in afterGroup.RequireValue("name")
-                  from typeInfo in typeInfo(typeManager, afterGroup)
+                  from afterName in afterSetting.Result.String("name")
+                  from typeInfo in typeInfo(typeManager, afterSetting)
                   from afterPluginType in typeManager.Type(typeInfo.assemblyName, typeInfo.typeName)
-                  from afterPlugin in afterPluginType.TryCreate(afterName, configuration, afterGroup, jobGroup).CastAs<AfterPlugin>()
+                  from afterPlugin in afterPluginType.TryCreate(afterName, configuration, afterSetting, jobSetting).CastAs<AfterPlugin>()
                   from setUp in afterPlugin.SetUp()
                   select afterPlugin;
                return _afterPlugin.Maybe();
