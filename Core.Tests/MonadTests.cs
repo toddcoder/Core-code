@@ -8,6 +8,7 @@ using Core.Strings;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Core.Applications.Async.AsyncFunctions;
 using static Core.Lambdas.LambdaFunctions;
+using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Tests
@@ -341,6 +342,30 @@ namespace Core.Tests
          else
          {
             Exception exception = _result;
+            Console.WriteLine(exception.Message);
+         }
+      }
+
+      [TestMethod]
+      public void IfTest()
+      {
+         Maybe<string> _maybe = "foobar";
+         if (_maybe is Some<string> { Value: var value })
+         {
+            Console.WriteLine(value);
+         }
+
+         var x = 1;
+         var y = 10;
+         y -= 10;
+         var _result = tryTo(() => x / y);
+
+         if (_result is Success<int> { Value: var result })
+         {
+            Console.WriteLine($"x/y = {result}");
+         }
+         else if (_result is Failure<int> { Exception: var exception })
+         {
             Console.WriteLine(exception.Message);
          }
       }

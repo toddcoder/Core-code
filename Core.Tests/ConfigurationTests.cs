@@ -315,7 +315,7 @@ namespace Core.Tests
             let file = (FileName)$@"C:\Temp\{uniqueID()}.txt"
             from _ in file.TryTo.SetText(setting.ToString())
             from source in file.TryTo.Text
-            from group2 in Setting.FromString(source)
+            from setting2 in Setting.FromString(source)
             select setting.ToStringHash();
          if (_result.Map(out var result, out var exception))
          {

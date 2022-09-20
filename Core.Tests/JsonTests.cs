@@ -14,9 +14,9 @@ namespace Core.Tests
          FileName jsonFile = @"..\..\TestData\work-item.json";
          var source = jsonFile.Text;
          var deserializer = new Deserializer(source);
-         if (deserializer.Deserialize().Map(out var configuration, out var exception))
+         if (deserializer.Deserialize().Map(out var setting, out var exception))
          {
-            Console.WriteLine(configuration);
+            Console.WriteLine(setting);
          }
          else
          {
@@ -30,10 +30,10 @@ namespace Core.Tests
          FileName jsonFile = @"..\..\TestData\builds.json";
          var source = jsonFile.Text;
          var deserializer = new Deserializer(source);
-         if (deserializer.Deserialize().Map(out var group, out var exception))
+         if (deserializer.Deserialize().Map(out var setting, out var exception))
          {
-            Console.WriteLine(group.Count);
-            Console.WriteLine(group);
+            Console.WriteLine(setting.Count);
+            Console.WriteLine(setting);
          }
          else
          {
