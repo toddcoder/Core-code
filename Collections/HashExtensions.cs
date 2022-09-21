@@ -648,5 +648,27 @@ namespace Core.Collections
             return exception;
          }
       }
+
+      public static Result<Hash<TKey, TValue>> GroupToHash<T, TKey, TValue>(this IEnumerable<T> enumerable, Func<T, TKey> keyFunc,
+         Func<Maybe<TValue>, T, TValue> valueFunc)
+      {
+         try
+         {
+            var hash = new Hash<TKey, TValue>();
+            foreach (var item in enumerable)
+            {
+               var key = keyFunc(item);
+               var _value = hash.Map(key);
+               var value = valueFunc(_value, item);
+               hash[key] = value;
+            }
+
+            return hash;
+         }
+         catch (Exception exception)
+         {
+            return exception;
+         }
+      }
    }
 }
