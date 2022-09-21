@@ -86,14 +86,7 @@ namespace Core.Monads
 
       public abstract Completion<T> Do(Action<T> ifCompleted, Action ifCancelled, Action<Exception> ifInterrupted);
 
-      [Obsolete("Use exception")]
-      public abstract Completion<TOther> InterruptedAs<TOther>();
-
-      public abstract Completion<T> Or(Completion<T> other);
-
-      public abstract Completion<T> Or(Func<Completion<T>> other);
-
-      public abstract Completion<TResult> SelectMany<TResult>(Func<T, Completion<TResult>> projection);
+     public abstract Completion<TResult> SelectMany<TResult>(Func<T, Completion<TResult>> projection);
 
       public abstract Completion<T2> SelectMany<T1, T2>(Func<T, Completion<T1>> func, Func<T, T1, T2> projection);
 
@@ -137,13 +130,7 @@ namespace Core.Monads
 
       public abstract Completion<T> OnInterrupted(Action<Exception> action);
 
-      [Obsolete("Use Map")]
-      public abstract bool ValueOrOriginal(out T value, out Completion<T> original);
-
-      [Obsolete("Use Map")]
-      public abstract bool ValueOrCast<TCompletion>(out T value, out Completion<TCompletion> completion);
-
-      public abstract bool ValueEqualTo(Completion<T> otherCompletion);
+     public abstract bool ValueEqualTo(Completion<T> otherCompletion);
 
       public abstract bool EqualToValueOf(T otherValue);
 
@@ -168,5 +155,9 @@ namespace Core.Monads
       public abstract Result<T> Result();
 
       public abstract Responding<T> Responding();
+
+      public abstract T Value { get; }
+
+      public abstract Exception Exception { get; }
    }
 }

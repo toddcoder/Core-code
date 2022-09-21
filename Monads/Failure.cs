@@ -17,8 +17,6 @@ namespace Core.Monads
          this.exception = exception is FullStackException ? exception : new FullStackException(exception);
       }
 
-      public Exception Exception => exception;
-
       public override bool Map(out T value, out Exception exception)
       {
          value = default;
@@ -26,35 +24,6 @@ namespace Core.Monads
 
          return false;
       }
-
-      [Obsolete("Use If()")]
-      public override bool ValueOrOriginal(out T value, out Result<T> original)
-      {
-         value = default;
-         original = this;
-
-         return false;
-      }
-
-      [Obsolete("Use If()")]
-      public override bool ValueOrCast<TResult>(out T value, out Result<TResult> result)
-      {
-         value = default;
-         result = exception;
-
-         return false;
-      }
-
-#pragma warning disable CS0672
-      public override bool IsSuccessful => false;
-#pragma warning restore CS0672
-
-#pragma warning disable CS0672
-      public override bool IsFailed => true;
-#pragma warning restore CS0672
-
-      [Obsolete("Use exception")]
-      public override Result<TOther> ExceptionAs<TOther>() => exception;
 
       [DebuggerStepThrough]
       public override Result<TResult> Map<TResult>(Func<T, Result<TResult>> ifSuccessful) => exception;
@@ -77,19 +46,11 @@ namespace Core.Monads
       [DebuggerStepThrough]
       public override T Recover(Func<Exception, T> recovery) => recovery(exception);
 
-      [DebuggerStepThrough, Obsolete("Use |")]
-      public override Result<T> Or(Result<T> other) => other;
-
-      [DebuggerStepThrough, Obsolete("Use |")]
-      public override Result<T> Or(Func<Result<T>> other) => tryTo(other);
-
-      [DebuggerStepThrough, Obsolete("Use |")]
-      public override Result<T> Or(T other) => other.Success();
-
-      [DebuggerStepThrough, Obsolete("Use |")]
-      public override Result<T> Or(Func<T> other) => tryTo(other);
-
       public override Result<Unit> Unit => exception;
+
+      public override T Value => throw exception;
+
+      public override Exception Exception => exception;
 
       public override Result<T> Always(Action action)
       {

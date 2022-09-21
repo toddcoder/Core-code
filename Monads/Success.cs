@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using Core.Exceptions;
 using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
 
@@ -15,8 +14,6 @@ namespace Core.Monads
 
       internal Success(T value) => this.value = value;
 
-      public T Value => value;
-
       public override bool Map(out T value, out Exception exception)
       {
          value = this.value;
@@ -24,35 +21,6 @@ namespace Core.Monads
 
          return true;
       }
-
-      [Obsolete("Use If()")]
-      public override bool ValueOrOriginal(out T value, out Result<T> original)
-      {
-         value = this.value;
-         original = this;
-
-         return true;
-      }
-
-      [Obsolete("Use If()")]
-      public override bool ValueOrCast<TResult>(out T value, out Result<TResult> result)
-      {
-         value = this.value;
-         result = "Do not use this".Failure<TResult>();
-
-         return true;
-      }
-
-#pragma warning disable CS0672
-      public override bool IsSuccessful => true;
-#pragma warning restore CS0672
-
-#pragma warning disable CS0672
-      public override bool IsFailed => false;
-#pragma warning restore CS0672
-
-      [Obsolete("Use exception")]
-      public override Result<TOther> ExceptionAs<TOther>() => throw "There is no exception".Throws();
 
       [DebuggerStepThrough]
       public override Result<TResult> Map<TResult>(Func<T, Result<TResult>> ifSuccessful)
@@ -115,19 +83,11 @@ namespace Core.Monads
       [DebuggerStepThrough]
       public override T Recover(Func<Exception, T> recovery) => value;
 
-      [DebuggerStepThrough, Obsolete("Use |")]
-      public override Result<T> Or(Result<T> other) => this;
-
-      [DebuggerStepThrough, Obsolete("Use |")]
-      public override Result<T> Or(Func<Result<T>> other) => this;
-
-      [DebuggerStepThrough, Obsolete("Use |")]
-      public override Result<T> Or(T other) => this;
-
-      [DebuggerStepThrough, Obsolete("Use |")]
-      public override Result<T> Or(Func<T> other) => this;
-
       public override Result<Unit> Unit => unit;
+
+      public override T Value => value;
+
+      public override Exception Exception => throw fail("Success has no exception");
 
       public override Result<T> Always(Action action)
       {

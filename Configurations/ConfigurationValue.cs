@@ -1,5 +1,6 @@
 ﻿using System;
 using Core.Computers;
+using Core.Matching;
 using Core.Strings;
 using static Core.Objects.ConversionFunctions;
 
@@ -41,5 +42,7 @@ namespace Core.Configurations
       public byte[] Bytes(string key) => String(key).FromBase64();
 
       public TimeSpan TimeSpan(string key) => Value.TimeSpan(String(key));
+
+      public string[] Strings(string key) => String(key).Unjoin("/s* ',' /s*");
    }
 }

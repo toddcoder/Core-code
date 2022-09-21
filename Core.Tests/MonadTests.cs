@@ -313,7 +313,7 @@ namespace Core.Tests
          var _result = maybe<string>() & date.Second < 30 & "seconds < 30";
          if (_result)
          {
-            Console.WriteLine((string)_result);
+            Console.WriteLine(_result.Value);
          }
          else
          {
@@ -336,13 +336,11 @@ namespace Core.Tests
          var _result = result<string>() & date.Second < 30 & "seconds < 30" & fail($"Only {"second(s)".Plural(date.Second)}");
          if (_result)
          {
-            string result = _result;
-            Console.WriteLine(result);
+            Console.WriteLine(_result.Value);
          }
          else
          {
-            Exception exception = _result;
-            Console.WriteLine(exception.Message);
+            Console.WriteLine(_result.Exception.Message);
          }
       }
 
@@ -350,9 +348,9 @@ namespace Core.Tests
       public void IfTest()
       {
          Maybe<string> _maybe = "foobar";
-         if (_maybe is Some<string> { Value: var value })
+         if (_maybe)
          {
-            Console.WriteLine(value);
+            Console.WriteLine(_maybe.Value);
          }
 
          var x = 1;
@@ -360,14 +358,8 @@ namespace Core.Tests
          y -= 10;
          var _result = tryTo(() => x / y);
 
-         if (_result is Success<int> { Value: var result })
-         {
-            Console.WriteLine($"x/y = {result}");
-         }
-         else if (_result is Failure<int> { Exception: var exception })
-         {
-            Console.WriteLine(exception.Message);
-         }
+         var message = _result ? _result.Value.ToString() : _result.Exception.Message;
+         Console.WriteLine(message);
       }
    }
 }

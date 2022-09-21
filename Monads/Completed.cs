@@ -12,8 +12,6 @@ namespace Core.Monads
 
       internal Completed(T value) => this.value = value;
 
-      public T Value => value;
-
       public override Completion<TResult> Map<TResult>(Func<T, Completion<TResult>> ifCompleted) => ifCompleted(value);
 
       public override Completion<TResult> Map<TResult>(Func<T, TResult> ifCompleted) => ifCompleted(value).Completed();
@@ -64,14 +62,7 @@ namespace Core.Monads
          return this;
       }
 
-      [Obsolete("Use exception")]
-      public override Completion<TOther> InterruptedAs<TOther>() => throw defaultException();
-
-      public override Completion<T> Or(Completion<T> other) => this;
-
-      public override Completion<T> Or(Func<Completion<T>> other) => this;
-
-      public override Completion<TResult> SelectMany<TResult>(Func<T, Completion<TResult>> projection) => projection(value);
+     public override Completion<TResult> SelectMany<TResult>(Func<T, Completion<TResult>> projection) => projection(value);
 
       public override Completion<T2> SelectMany<T1, T2>(Func<T, Completion<T1>> func, Func<T, T1, T2> projection)
       {
@@ -160,24 +151,6 @@ namespace Core.Monads
 
       public override Completion<T> OnInterrupted(Action<Exception> action) => this;
 
-      [Obsolete("Use If")]
-      public override bool ValueOrOriginal(out T value, out Completion<T> original)
-      {
-         value = this.value;
-         original = this;
-
-         return true;
-      }
-
-      [Obsolete("Use If")]
-      public override bool ValueOrCast<TCompletion>(out T value, out Completion<TCompletion> completion)
-      {
-         value = this.value;
-         completion = "Do not use this".Interrupted<TCompletion>();
-
-         return true;
-      }
-
       public override bool ValueEqualTo(Completion<T> otherCompletion) => otherCompletion.Map(out var otherValue) && EqualToValueOf(otherValue);
 
       public override bool EqualToValueOf(T otherValue) => value.Equals(otherValue);
@@ -212,6 +185,10 @@ namespace Core.Monads
       public override Result<T> Result() => Value;
 
       public override Responding<T> Responding() => Value;
+
+      public override T Value => value;
+
+      public override Exception Exception => throw fail("Completed has no Exception");
 
       public bool Equals(Completed<T> other)
       {

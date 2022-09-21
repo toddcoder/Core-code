@@ -12,16 +12,7 @@ namespace Core.Monads
       {
       }
 
-#pragma warning disable CS0672
-      public override bool IsSome => false;
-#pragma warning restore CS0672
-
-#pragma warning disable CS0672
-      public override bool IsNone => true;
-#pragma warning restore CS0672
-
-      [Obsolete("Use |")]
-      public override T DefaultTo(Func<T> func) => func();
+      public override T Value => throw fail("None has no value");
 
       public override Maybe<TResult> Map<TResult>(Func<T, TResult> ifSome) => nil;
 
@@ -34,18 +25,6 @@ namespace Core.Monads
       public override Matched<T> Matched() => nil;
 
       public override Responding<T> Responding() => nil;
-
-      [Obsolete("Use |")]
-      public override Maybe<T> Or(Maybe<T> other) => other;
-
-      [Obsolete("Use |")]
-      public override Maybe<T> Or(Func<Maybe<T>> other) => other();
-
-      [Obsolete("Use |")]
-      public override Maybe<T> Or(Func<T> other) => other();
-
-      [Obsolete("Use |")]
-      public override Maybe<T> Or(T other) => other;
 
       public override bool Map(out T value)
       {

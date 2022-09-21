@@ -16,8 +16,6 @@ namespace Core.Monads
          this.exception = exception is FullStackException ? exception : new FullStackException(exception);
       }
 
-      public Exception Exception => exception;
-
       public override Completion<TResult> Map<TResult>(Func<T, Completion<TResult>> ifCompleted) => exception;
 
       public override Completion<TResult> Map<TResult>(Func<T, TResult> ifCompleted) => exception;
@@ -66,13 +64,6 @@ namespace Core.Monads
          ifInterrupted(exception);
          return this;
       }
-
-      [Obsolete("Use exception")]
-      public override Completion<TOther> InterruptedAs<TOther>() => exception;
-
-      public override Completion<T> Or(Completion<T> other) => other;
-
-      public override Completion<T> Or(Func<Completion<T>> other) => other();
 
       public override Completion<TResult> SelectMany<TResult>(Func<T, Completion<TResult>> projection) => exception;
 
@@ -156,24 +147,6 @@ namespace Core.Monads
          return this;
       }
 
-      [Obsolete("Use If")]
-      public override bool ValueOrOriginal(out T value, out Completion<T> original)
-      {
-         value = default;
-         original = this;
-
-         return false;
-      }
-
-      [Obsolete("Use If")]
-      public override bool ValueOrCast<TCompletion>(out T value, out Completion<TCompletion> completion)
-      {
-         value = default;
-         completion = exception;
-
-         return false;
-      }
-
       public override bool ValueEqualTo(Completion<T> otherCompletion) => false;
 
       public override bool EqualToValueOf(T otherValue) => false;
@@ -188,13 +161,17 @@ namespace Core.Monads
 
       public override Completion<T> Where(Predicate<T> predicate, Func<string> exceptionMessage) => this;
 
-      public override T DefaultTo(Func<Maybe<Exception>, T> defaultFunc) => defaultFunc(Exception);
+      public override T DefaultTo(Func<Maybe<Exception>, T> defaultFunc) => defaultFunc(exception);
 
       public override Maybe<T> Maybe() => nil;
 
-      public override Result<T> Result() => Exception;
+      public override Result<T> Result() => exception;
 
-      public override Responding<T> Responding() => Exception;
+      public override Responding<T> Responding() => exception;
+
+      public override T Value => throw exception;
+
+      public override Exception Exception => exception;
 
       public bool Equals(Interrupted<T> other)
       {

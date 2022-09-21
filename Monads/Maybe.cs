@@ -75,14 +75,7 @@ namespace Core.Monads
          return value;
       }
 
-      [Obsolete("Use as bool")]
-      public abstract bool IsSome { get; }
-
-      [Obsolete("Use as bool")]
-      public abstract bool IsNone { get; }
-
-      [Obsolete("Use |")]
-      public abstract T DefaultTo(Func<T> func);
+      public abstract T Value { get; }
 
       public abstract Maybe<TResult> Map<TResult>(Func<T, TResult> ifSome);
 
@@ -96,19 +89,7 @@ namespace Core.Monads
 
       public abstract Responding<T> Responding();
 
-      [Obsolete("Use |")]
-      public abstract Maybe<T> Or(Maybe<T> other);
-
-      [Obsolete("Use |")]
-      public abstract Maybe<T> Or(Func<Maybe<T>> other);
-
-      [Obsolete("Use |")]
-      public abstract Maybe<T> Or(Func<T> other);
-
-      [Obsolete("Use |")]
-      public abstract Maybe<T> Or(T other);
-
-      public abstract bool Map(out T value);
+     public abstract bool Map(out T value);
 
       public abstract bool UnMap(out T value);
 

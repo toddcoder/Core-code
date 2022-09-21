@@ -12,18 +12,7 @@ namespace Core.Monads
 
       internal Some(T value) => this.value = value;
 
-      public T Value => value;
-
-#pragma warning disable CS0672
-      public override bool IsSome => true;
-#pragma warning restore CS0672
-
-#pragma warning disable CS0672
-      public override bool IsNone => false;
-#pragma warning restore CS0672
-
-      [Obsolete("Use |")]
-      public override T DefaultTo(Func<T> func) => value;
+      public override T Value => value;
 
       public override Maybe<TResult> Map<TResult>(Func<T, TResult> ifSome) => ifSome(value).Some();
 
@@ -36,18 +25,6 @@ namespace Core.Monads
       public override Matched<T> Matched() => value;
 
       public override Responding<T> Responding() => value;
-
-      [Obsolete("Use |")]
-      public override Maybe<T> Or(Maybe<T> other) => this;
-
-      [Obsolete("Use |")]
-      public override Maybe<T> Or(Func<Maybe<T>> other) => this;
-
-      [Obsolete("Use |")]
-      public override Maybe<T> Or(Func<T> other) => this;
-
-      [Obsolete("Use |")]
-      public override Maybe<T> Or(T other) => this;
 
       public override bool Map(out T value)
       {

@@ -63,13 +63,6 @@ namespace Core.Monads
          return this;
       }
 
-      [Obsolete("Use exception")]
-      public override Completion<TOther> InterruptedAs<TOther>() => throw "There is no exception".Throws();
-
-      public override Completion<T> Or(Completion<T> other) => other;
-
-      public override Completion<T> Or(Func<Completion<T>> other) => other();
-
       public override Completion<TResult> SelectMany<TResult>(Func<T, Completion<TResult>> projection) => nil;
 
       public override Completion<T2> SelectMany<T1, T2>(Func<T, Completion<T1>> func, Func<T, T1, T2> projection) => nil;
@@ -153,24 +146,6 @@ namespace Core.Monads
 
       public override Completion<T> OnInterrupted(Action<Exception> action) => this;
 
-      [Obsolete("Use If")]
-      public override bool ValueOrOriginal(out T value, out Completion<T> original)
-      {
-         value = default;
-         original = this;
-
-         return false;
-      }
-
-      [Obsolete("Use If")]
-      public override bool ValueOrCast<TCompletion>(out T value, out Completion<TCompletion> completion)
-      {
-         value = default;
-         completion = cancelled<TCompletion>();
-
-         return false;
-      }
-
       public override bool ValueEqualTo(Completion<T> otherCompletion) => false;
 
       public override bool EqualToValueOf(T otherValue) => false;
@@ -192,6 +167,10 @@ namespace Core.Monads
       public override Result<T> Result() => new Failure<T>(new CancelException());
 
       public override Responding<T> Responding() => nil;
+
+      public override T Value => throw fail("Cancelled has no value");
+
+      public override Exception Exception => throw fail("Cancelled has no Exception");
 
       public bool Equals(Cancelled<T> other) => true;
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using Core.Computers;
+using Core.Matching;
 using Core.Monads;
 using Core.Strings;
 using static Core.Objects.ConversionFunctions;
@@ -74,5 +75,7 @@ namespace Core.Configurations
       }
 
       public Result<TimeSpan> TimeSpan(string key) => String(key).Map(Result.TimeSpan);
+
+      public Result<string[]> Strings(string key) => String(key).Map(s => s.Unjoin("/s* ',' /s*"));
    }
 }

@@ -126,21 +126,6 @@ namespace Core.Monads
 
       public abstract bool Map(out T value, out Exception exception);
 
-      [Obsolete("Use If()")]
-      public abstract bool ValueOrOriginal(out T value, out Result<T> original);
-
-      [Obsolete("Use If()")]
-      public abstract bool ValueOrCast<TResult>(out T value, out Result<TResult> result);
-
-      [Obsolete("Use bool implicit cast")]
-      public abstract bool IsSuccessful { get; }
-
-      [Obsolete("Use bool implicit cast")]
-      public abstract bool IsFailed { get; }
-
-      [Obsolete("Use exception")]
-      public abstract Result<TOther> ExceptionAs<TOther>();
-
       public abstract Result<TResult> Map<TResult>(Func<T, Result<TResult>> ifSuccessful);
 
       public abstract Result<TResult> Map<TResult>(Func<T, TResult> ifSuccessful);
@@ -153,19 +138,11 @@ namespace Core.Monads
 
       public abstract T Recover(Func<Exception, T> recovery);
 
-      [Obsolete("Use |")]
-      public abstract Result<T> Or(Result<T> other);
-
-      [Obsolete("Use |")]
-      public abstract Result<T> Or(Func<Result<T>> other);
-
-      [Obsolete("Use |")]
-      public abstract Result<T> Or(T other);
-
-      [Obsolete("Use |")]
-      public abstract Result<T> Or(Func<T> other);
-
       public abstract Result<Unit> Unit { get; }
+
+      public abstract T Value { get; }
+
+      public abstract Exception Exception { get; }
 
       public abstract Result<T> Always(Action action);
 

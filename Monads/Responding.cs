@@ -93,14 +93,9 @@ namespace Core.Monads
          return responding;
       }
 
-      [Obsolete("Use bool implicit cast")]
-      public abstract bool IsResponse { get; }
+      public abstract T Value { get; }
 
-      [Obsolete("Use bool implicit cast")]
-      public abstract bool IsNoResponse { get; }
-
-      [Obsolete("Use bool implicit cast")]
-      public abstract bool IsFailedResponse { get; }
+      public abstract Exception Exception { get; }
 
       public abstract Responding<TResult> Map<TResult>(Func<T, Responding<TResult>> ifResponse);
 

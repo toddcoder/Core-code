@@ -39,5 +39,7 @@ namespace Core.Configurations
       public byte[] Bytes(string key) => configurationItem.Result.Bytes(key);
 
       public TimeSpan TimeSpan(string key) => configurationItem.Result.TimeSpan(key);
+
+      public string[] Strings(string key) => configurationItem.Result.Strings(key);
    }
 }
