@@ -596,5 +596,57 @@ namespace Core.Collections
             return exception;
          }
       }
+
+      public static Result<Hash<TKey, TValue[]>> GroupToHash<T, TKey, TValue>(this IEnumerable<T> enumerable, Func<T, TKey> keyFunc,
+         Func<T, TValue> valueFunc)
+      {
+         try
+         {
+            var hash = new AutoHash<TKey, List<TValue>>(_ => new List<TValue>(), true);
+            foreach (var item in enumerable)
+            {
+               var key = keyFunc(item);
+               var value = valueFunc(item);
+               hash[key].Add(value);
+            }
+
+            var result = new Hash<TKey, TValue[]>();
+            foreach (var (key, value) in hash)
+            {
+               result[key] = value.ToArray();
+            }
+
+            return result;
+         }
+         catch (Exception exception)
+         {
+            return exception;
+         }
+      }
+
+      public static Result<Hash<TKey, T[]>> GroupToHash<T, TKey>(this IEnumerable<T> enumerable, Func<T, TKey> keyFunc)
+      {
+         try
+         {
+            var hash = new AutoHash<TKey, List<T>>(_ => new List<T>(), true);
+            foreach (var item in enumerable)
+            {
+               var key = keyFunc(item);
+               hash[key].Add(item);
+            }
+
+            var result = new Hash<TKey, T[]>();
+            foreach (var (key, value) in hash)
+            {
+               result[key] = value.ToArray();
+            }
+
+            return result;
+         }
+         catch (Exception exception)
+         {
+            return exception;
+         }
+      }
    }
 }

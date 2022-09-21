@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Core.Assertions;
 using Core.Collections;
 using Core.Strings;
@@ -34,8 +35,8 @@ namespace Core.Tests
       [TestMethod]
       public void AutoHashTest()
       {
-         test(new AutoHash<string, int>(k => -1), "No auto-add", k => -2);
-         test(new AutoHash<string, int>(k => -1, true), "Auto-add", k => -2);
+         test(new AutoHash<string, int>(_ => -1), "No auto-add", _ => -2);
+         test(new AutoHash<string, int>(_ => -1, true), "Auto-add", _ => -2);
 
          var autoHash = new AutoHash<string, int>(k => k.Length);
          autoHash.AddKeys(new List<string> { "alpha", "bravo" });
@@ -47,6 +48,21 @@ namespace Core.Tests
       {
          var hash = new StringHash<int>(true) { ["alpha"] = 0, ["bravo"] = 1, ["charlie"] = 2 };
          hash.Must().HaveKeyOf("Bravo").OrThrow();
+      }
+
+      [TestMethod]
+      public void GroupToHashTest()
+      {
+         var random = new Random(153);
+         var array = Enumerable.Range(0, 1000).Select(_ => random.Next(10)).ToArray();
+         var _hash = array.GroupToHash(i => i < 5 ? "lower" : "upper");
+         if (_hash)
+         {
+            foreach (var (key, value) in _hash.Value)
+            {
+               Console.WriteLine($"key {key}: {value.Length}");
+            }
+         }
       }
    }
 }
