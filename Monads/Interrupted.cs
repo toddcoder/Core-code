@@ -173,6 +173,8 @@ namespace Core.Monads
 
       public override Exception Exception => exception;
 
+      public override Maybe<Exception> AnyException => exception;
+
       public bool Equals(Interrupted<T> other)
       {
          return other is not null && ReferenceEquals(this, other) || Equals(exception, other.exception);

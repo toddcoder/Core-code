@@ -159,5 +159,7 @@ namespace Core.Monads
       public abstract T Value { get; }
 
       public abstract Exception Exception { get; }
+
+      public abstract Maybe<Exception> AnyException { get; }
    }
 }

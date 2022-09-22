@@ -172,6 +172,8 @@ namespace Core.Monads
 
       public override Exception Exception => throw fail("Cancelled has no Exception");
 
+      public override Maybe<Exception> AnyException => nil;
+
       public bool Equals(Cancelled<T> other) => true;
 
       public override bool Equals(object obj) => obj is Cancelled<T> other && Equals(other);

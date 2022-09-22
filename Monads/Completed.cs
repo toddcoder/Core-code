@@ -190,6 +190,8 @@ namespace Core.Monads
 
       public override Exception Exception => throw fail("Completed has no Exception");
 
+      public override Maybe<Exception> AnyException => nil;
+
       public bool Equals(Completed<T> other)
       {
          return other is not null && (ReferenceEquals(this, other) || EqualityComparer<T>.Default.Equals(value, other.value));
