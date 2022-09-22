@@ -16,6 +16,8 @@ namespace Core.Monads
 
       public override Exception Exception => throw fail("NoResponse has no Exception");
 
+      public override Maybe<Exception> AnyException => nil;
+
       public override Responding<TResult> Map<TResult>(Func<T, Responding<TResult>> ifResponse) => nil;
 
       public override Responding<TResult> Map<TResult>(Func<T, TResult> ifResponse) => nil;

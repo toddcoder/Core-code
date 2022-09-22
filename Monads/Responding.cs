@@ -97,6 +97,8 @@ namespace Core.Monads
 
       public abstract Exception Exception { get; }
 
+      public abstract Maybe<Exception> AnyException { get; }
+
       public abstract Responding<TResult> Map<TResult>(Func<T, Responding<TResult>> ifResponse);
 
       public abstract Responding<TResult> Map<TResult>(Func<T, TResult> ifResponse);
