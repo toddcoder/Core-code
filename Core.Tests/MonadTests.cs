@@ -361,5 +361,19 @@ namespace Core.Tests
          var message = _result ? _result.Value.ToString() : _result.Exception.Message;
          Console.WriteLine(message);
       }
+
+      [TestMethod]
+      public void DefaultShortCircuitTest()
+      {
+         int defaultValue()
+         {
+            Console.WriteLine("Calling default");
+            return 153;
+         }
+
+         Maybe<int> _number = 1;
+         Console.WriteLine(_number | defaultValue);
+         Console.WriteLine(_number ? _number : () => defaultValue());
+      }
    }
 }

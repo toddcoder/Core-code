@@ -1109,8 +1109,7 @@ namespace Core.Enumerables
          }
       }
 
-      public static IEnumerable<T> DoIfElse<T>(this IEnumerable<T> enumerable, Predicate<T> predicate, Action<T> ifTrue,
-         Action<T> ifFalse)
+      public static IEnumerable<T> DoIfElse<T>(this IEnumerable<T> enumerable, Predicate<T> predicate, Action<T> ifTrue, Action<T> ifFalse)
       {
          foreach (var value in enumerable)
          {
@@ -1127,8 +1126,7 @@ namespace Core.Enumerables
          }
       }
 
-      public static bool AllMatch<T1, T2>(this IEnumerable<T1> leftEnumerable, IEnumerable<T2> rightEnumerable,
-         Func<T1, T2, bool> matcher,
+      public static bool AllMatch<T1, T2>(this IEnumerable<T1> leftEnumerable, IEnumerable<T2> rightEnumerable, Func<T1, T2, bool> matcher,
          bool mustBeSameLength = true)
       {
          var left = leftEnumerable.ToArray();
@@ -1150,8 +1148,7 @@ namespace Core.Enumerables
          return true;
       }
 
-      public static IEnumerable<(T1, Maybe<T2>)> AllMatched<T1, T2>(this IEnumerable<T1> leftEnumerable,
-         IEnumerable<T2> rightEnumerable,
+      public static IEnumerable<(T1, Maybe<T2>)> AllMatched<T1, T2>(this IEnumerable<T1> leftEnumerable, IEnumerable<T2> rightEnumerable,
          Func<T1, T2, bool> matcher)
       {
          var rightArray = rightEnumerable.ToArray();
@@ -1205,8 +1202,7 @@ namespace Core.Enumerables
          }
       }
 
-      public static IEnumerable<(T1, T2, T3, T4)> For<T1, T2, T3, T4>(this IEnumerable<(T1, T2, T3, T4)> enumerable,
-         Action<T1, T2, T3, T4> action)
+      public static IEnumerable<(T1, T2, T3, T4)> For<T1, T2, T3, T4>(this IEnumerable<(T1, T2, T3, T4)> enumerable, Action<T1, T2, T3, T4> action)
       {
          foreach (var (item1, item2, item3, item4) in enumerable)
          {
