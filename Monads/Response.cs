@@ -120,6 +120,6 @@ namespace Core.Monads
 
       public static bool operator !=(Response<T> left, Response<T> right) => !Equals(left, right);
 
-      public override string ToString() => $"Response({value})";
+      public override string ToString() => value.ToString();
    }
 }

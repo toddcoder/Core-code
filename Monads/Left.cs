@@ -95,6 +95,6 @@ namespace Core.Monads
 
       public override int GetHashCode() => EqualityComparer<TLeft>.Default.GetHashCode(value);
 
-      public override string ToString() => $"Left({value})";
+      public override string ToString() => value.ToString();
    }
 }

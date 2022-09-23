@@ -191,6 +191,6 @@ namespace Core.Monads
 
       public override int GetHashCode() => value.GetHashCode();
 
-      public override string ToString() => $"Success({value})";
+      public override string ToString() => value.ToString();
    }
 }
