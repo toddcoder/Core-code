@@ -63,18 +63,6 @@ namespace Core.Monads
          _ => throw new InvalidCastException("Must be a Some to return a value")
       };
 
-      public static Maybe<T> operator &(bool test, Maybe<T> value) => test ? value : nil;
-
-      public static Maybe<T> operator *(Maybe<T> value, Action<T> action)
-      {
-         if (value)
-         {
-            action(value);
-         }
-
-         return value;
-      }
-
       public abstract T Value { get; }
 
       public abstract Maybe<TResult> Map<TResult>(Func<T, TResult> ifSome);
@@ -89,7 +77,7 @@ namespace Core.Monads
 
       public abstract Responding<T> Responding();
 
-     public abstract bool Map(out T value);
+      public abstract bool Map(out T value);
 
       public abstract bool UnMap(out T value);
 

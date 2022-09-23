@@ -99,16 +99,6 @@ namespace Core.Monads
 
       public static implicit operator bool(Result<T> value) => value is Success<T>;
 
-      public static Result<T> operator *(Result<T> value, Action<T> action)
-      {
-         if (value)
-         {
-            action(value);
-         }
-
-         return value;
-      }
-
       public static Result<T> Nil(string message) => new Failure<T>(new Exception(message));
 
       public static implicit operator T(Result<T> result) => result switch

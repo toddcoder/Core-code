@@ -594,7 +594,7 @@ namespace Core.WinForms.Controls
          get => _clickText | text;
          set
          {
-            _clickText = value.IsNotEmpty() & value.Some();
+            _clickText = maybe<string>() & value.IsNotEmpty() & value;
             this.Do(setToolTip);
          }
       }
