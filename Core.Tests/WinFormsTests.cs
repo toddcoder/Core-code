@@ -602,9 +602,9 @@ namespace Core.Tests
          uiAction.Click += (_, _) =>
          {
             var _chosen = uiAction.Choose("A,B,C").Choices("Alpha", "Bravo", "Charlie").ModifyTitle(false).NilItem(nil).Choose();
-            if (_chosen.Map(out var chosen))
+            if (_chosen)
             {
-               MessageBox.Show(chosen.Value);
+               MessageBox.Show(_chosen.Value.Value);
             }
          };
          uiAction.ClickText = "Select item";

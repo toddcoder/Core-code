@@ -10,6 +10,8 @@ namespace Core.WinForms.Controls;
 
 public partial class Chooser : Form
 {
+   private const int WM_NCACTIVATE = 0x86;
+
    public Maybe<Chosen> Get()
    {
       ShowDialog();
@@ -191,5 +193,16 @@ public partial class Chooser : Form
    {
       Choice = listViewItems.SelectedItem().Map(item => maybe<Chosen>() & returnSome(item.Index) & (() => getChosen(item)));
       Close();
+   }
+
+   protected override void WndProc(ref Message m)
+   {
+      base.WndProc(ref m);
+
+      if (m.Msg == WM_NCACTIVATE && Visible && !RectangleToScreen(DisplayRectangle).Contains(Cursor.Position))
+      {
+         modifyTitle = false;
+         Close();
+      }
    }
 }
