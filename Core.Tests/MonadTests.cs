@@ -375,5 +375,20 @@ namespace Core.Tests
          Console.WriteLine(_number | defaultValue);
          Console.WriteLine(_number ? _number : () => defaultValue());
       }
+
+      [TestMethod]
+      public void MaybeIfTest2()
+      {
+         var text = "Text";
+         var _text = text.MaybeIf(t => t.IsNotEmpty());
+         if (_text)
+         {
+            Console.WriteLine($"{_text} is not empty");
+         }
+         else
+         {
+            Console.WriteLine("empty");
+         }
+      }
    }
 }

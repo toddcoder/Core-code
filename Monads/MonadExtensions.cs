@@ -1503,5 +1503,187 @@ namespace Core.Monads
       {
          return boolExpression ? value() : nil;
       }
+
+      public static Maybe<T> MaybeIf<T>(this T value, Func<T, bool> predicate) => predicate(value) ? value : nil;
+
+      public static Result<T> ResultIf<T>(this T value, Func<T, bool> predicate, string failMessage)
+      {
+         try
+         {
+            return predicate(value) ? value : fail(failMessage);
+         }
+         catch (Exception exception)
+         {
+            return exception;
+         }
+      }
+
+      public static Result<T> ResultIf<T>(this T value, Func<T, bool> predicate, Func<string> failMessage)
+      {
+         try
+         {
+            return predicate(value) ? value : fail(failMessage());
+         }
+         catch (Exception exception)
+         {
+            return exception;
+         }
+      }
+
+      public static Result<T> ResultIf<T>(this T value, Func<T, bool> predicate, Exception exception)
+      {
+         try
+         {
+            return predicate(value) ? value : exception;
+         }
+         catch (Exception thrownException)
+         {
+            return thrownException;
+         }
+      }
+
+      public static Completion<T> CompletionIf<T>(this T value, Func<T, bool> predicate, Maybe<string> _failMessage)
+      {
+         try
+         {
+            if (predicate(value))
+            {
+               return value;
+            }
+            else if (_failMessage)
+            {
+               return fail(_failMessage);
+            }
+            else
+            {
+               return nil;
+            }
+         }
+         catch (Exception exception)
+         {
+            return exception;
+         }
+      }
+
+      public static Completion<T> CompletionIf<T>(this T value, Func<T, bool> predicate, Func<Maybe<string>> failMessage)
+      {
+         try
+         {
+            if (predicate(value))
+            {
+               return value;
+            }
+            else
+            {
+               var _failMessage = failMessage();
+               if (_failMessage)
+               {
+                  return fail(_failMessage);
+               }
+               else
+               {
+                  return nil;
+               }
+            }
+         }
+         catch (Exception exception)
+         {
+            return exception;
+         }
+      }
+
+      public static Completion<T> CompletionIf<T>(this T value, Func<T, bool> predicate, Maybe<Exception> _exception)
+      {
+         try
+         {
+            if (predicate(value))
+            {
+               return value;
+            }
+            else if (_exception)
+            {
+               return _exception;
+            }
+            else
+            {
+               return nil;
+            }
+         }
+         catch (Exception exception)
+         {
+            return exception;
+         }
+      }
+
+      public static Responding<T> RespondingIf<T>(this T value, Func<T, bool> predicate)
+      {
+         try
+         {
+            return predicate(value) ? value : nil;
+         }
+         catch (Exception exception)
+         {
+            return exception;
+         }
+      }
+
+      public static Responding<T> RespondingIf<T>(this T value, Func<T, bool> predicate, string failMessage)
+      {
+         try
+         {
+            return predicate(value) ? value : fail(failMessage);
+         }
+         catch (Exception exception)
+         {
+            return exception;
+         }
+      }
+
+      public static Responding<T> RespondingIf<T>(this T value, Func<T, bool> predicate, Func<string> failMessage)
+      {
+         try
+         {
+            return predicate(value) ? value : fail(failMessage());
+         }
+         catch (Exception exception)
+         {
+            return exception;
+         }
+      }
+
+      public static Responding<T> RespondingIf<T>(this T value, Func<T, bool> predicate, Exception exception)
+      {
+         try
+         {
+            return predicate(value) ? value : exception;
+         }
+         catch (Exception thrownException)
+         {
+            return thrownException;
+         }
+      }
+
+      public static Responding<T> RespondingIf<T>(this T value, Func<T, bool> predicate, Maybe<Exception> _exception)
+      {
+         try
+         {
+            if (predicate(value))
+            {
+               return value;
+            }
+            else if (_exception)
+            {
+               return _exception;
+            }
+            else
+            {
+               return nil;
+            }
+         }
+         catch (Exception exception)
+         {
+            return exception;
+         }
+      }
    }
 }
