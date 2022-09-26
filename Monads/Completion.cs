@@ -35,12 +35,14 @@ namespace Core.Monads
          _ => throw new InvalidCastException("Must be a Completed to return a value")
       };
 
+      [Obsolete("Use Exception property")]
       public static implicit operator Exception(Completion<T> value) => value switch
       {
          Interrupted<T> interrupted => interrupted.Exception,
          _ => throw new InvalidCastException("Must be an Interrupted to return a value")
       };
 
+      [Obsolete("Use AnyException property")]
       public static implicit operator Maybe<Exception>(Completion<T> value) => value switch
       {
          Interrupted<T> interrupted => interrupted.Exception,

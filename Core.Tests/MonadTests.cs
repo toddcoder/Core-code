@@ -302,7 +302,7 @@ namespace Core.Tests
          result = _result | -1;
          Console.WriteLine(result);
 
-         var exception = (Exception)_result;
+         var exception = _result.Exception;
          Console.WriteLine(exception.Message);
       }
 

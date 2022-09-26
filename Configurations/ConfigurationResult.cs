@@ -41,7 +41,7 @@ namespace Core.Configurations
          try
          {
             var _file = String(key).Map(s => (FileName)s);
-            return _file.Map(f => f.IsValid) | false ? _file : (Exception)_file;
+            return _file.Map(f => f.IsValid) | false ? _file : _file.Exception;
          }
          catch (Exception exception)
          {
@@ -54,7 +54,7 @@ namespace Core.Configurations
          try
          {
             var _folder = String(key).Map(s => (FolderName)s);
-            return _folder.Map(f => f.IsValid) | false ? _folder : (Exception)_folder;
+            return _folder.Map(f => f.IsValid) | false ? _folder : _folder.Exception;
          }
          catch (Exception exception)
          {

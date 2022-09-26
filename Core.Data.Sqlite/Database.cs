@@ -62,7 +62,7 @@ public abstract class Database
             }
             else
             {
-               RaiseDatabaseException((Exception)_result);
+               RaiseDatabaseException(_result.Exception);
             }
          }
       }

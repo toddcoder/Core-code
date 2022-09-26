@@ -56,7 +56,7 @@ public abstract class Table<TKey, TValue> : IEnumerable<TValue>, IHash<TKey, TVa
          }
          else
          {
-            return (Exception)_result;
+            return _result.Exception;
          }
       }
       finally
