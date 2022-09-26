@@ -16,15 +16,16 @@ namespace Core.Tests
       [TestMethod]
       public void MatcherTest()
       {
-         if ("tsqlcop.sql.format.options.xml".Matches("(sql); u").Map(out var result))
+         var _result = "tsqlcop.sql.format.options.xml".Matches("(sql); u");
+         if (_result)
          {
-            for (var matchIndex = 0; matchIndex < result.MatchCount; matchIndex++)
+            for (var matchIndex = 0; matchIndex < _result.Value.MatchCount; matchIndex++)
             {
-               result[matchIndex, 1] = "style";
+               _result.Value[matchIndex, 1] = "style";
             }
 
-            Console.WriteLine(result);
-            result.ToString().Must().Equal("tstylecop.style.format.options.xml").OrThrow();
+            Console.WriteLine(_result.Value);
+            _result.Value.ToString().Must().Equal("tstylecop.style.format.options.xml").OrThrow();
          }
       }
 
@@ -37,32 +38,13 @@ namespace Core.Tests
       }
 
       [TestMethod]
-      public void MatchPatternsTest()
-      {
-         if ("foobar(foo,baz)".Matches("^ /w+ '('; f").Map(out var result))
-         {
-            Console.Write(result);
-            var lastResult = result;
-            while (result.MatchedBy("/w+ ','; f").Map(out result))
-            {
-               Console.Write(result);
-               lastResult = result;
-            }
-
-            if (lastResult.MatchedBy("/w+ ')'; f").Map(out result))
-            {
-               Console.WriteLine(result);
-            }
-         }
-      }
-
-      [TestMethod]
       public void QuoteTest()
       {
          var pattern = "`quote /(-[`quote]+) `quote; f";
-         if ("\"Fee fi fo fum\" said the giant.".Matches(pattern).Map(out var result))
+         var _result = "\"Fee fi fo fum\" said the giant.".Matches(pattern);
+         if (_result)
          {
-            Console.WriteLine(result.FirstGroup.Guillemetify());
+            Console.WriteLine(_result.Value.FirstGroup.Guillemetify());
          }
       }
 
@@ -82,7 +64,7 @@ namespace Core.Tests
          var scraper = new Scraper("foo(a, b, c)\r\nbar(x,y , z); f");
          var index1 = 0;
          var index2 = 0;
-         var _result =
+         var _scraper =
             from name1 in scraper.Match("^ /(/w+) '('; f", "name1")
             from pushed1 in name1.Push("^ -[')']+; f")
             from split1 in pushed1.Split("/s* ',' /s*; f", s => $"var0_{s}:{index1++}")
@@ -94,7 +76,7 @@ namespace Core.Tests
             from split2 in pushed2.Split("/s* ',' /s*; f", s => $"var1_{s}:{index2++}")
             from popped2 in split2.Pop()
             select popped2;
-         if (_result.Map(out scraper, out var _exception))
+         if (_scraper)
          {
             var hash = scraper.AnyHash().ForceValue();
             var func1 = $"{hash["name1"]}({getVariables(hash, "var0_")})";
@@ -102,9 +84,9 @@ namespace Core.Tests
             Console.WriteLine(func1);
             Console.WriteLine(func2);
          }
-         else if (_exception.Map(out var exception))
+         else if (_scraper.AnyException)
          {
-            Console.WriteLine($"Exception: {exception.Message}");
+            Console.WriteLine($"Exception: {_scraper.Exception.Message}");
          }
          else
          {
@@ -137,13 +119,14 @@ namespace Core.Tests
             & (_ => "3. No match");
          foreach (var input in new[] { "foobar", "foobaz", "???" })
          {
-            if (match.Matches(input).Map(out var text, out var _exception))
+            var _text = match.Matches(input);
+            if (_text)
             {
-               Console.WriteLine($"This was the match result: {text}");
+               Console.WriteLine($"This was the match result: {_text}");
             }
-            else if (_exception.Map(out var exception))
+            else if (_text.AnyException)
             {
-               Console.WriteLine($"Exception: {exception.Message}");
+               Console.WriteLine($"Exception: {_text.Exception.Message}");
             }
             else
             {

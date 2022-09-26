@@ -19,77 +19,79 @@ namespace Core.Matching
       }
 
       protected Source source;
-      protected StringHash<string> variables;
+      protected StringHash variables;
 
       public Scraper(string source)
       {
          this.source = new Source(source);
 
-         variables = new StringHash<string>(true);
+         variables = new StringHash(true);
       }
 
-      public Matched<Scraper> Match(Pattern pattern, params string[] names)
+      public Responding<Scraper> Match(Pattern pattern, params string[] names)
       {
          if (!source.More)
          {
-            return noMatch<Scraper>();
+            return nil;
          }
 
-         if (pattern.MatchedBy(source.Current).Map(out var result, out var _exception))
+         var _result = pattern.MatchedBy(source.Current);
+         if (_result)
          {
-            var groups = result.Groups(0).Skip(1).ToArray();
+            var groups = _result.Value.Groups(0).Skip(1).ToArray();
             var minLength = groups.Length.MinOf(names.Length);
             for (var i = 0; i < minLength; i++)
             {
                variables[names[i]] = groups[i];
             }
 
-            source.Advance(result.Length);
-            return this.Match();
+            source.Advance(_result.Value.Length);
+            return this;
          }
-         else if (_exception.Map(out var exception))
+         else if (_result.AnyException)
          {
-            return failedMatch<Scraper>(exception);
+            return _result.Exception;
          }
          else
          {
-            return noMatch<Scraper>();
+            return nil;
          }
       }
 
-      public Matched<Scraper> Match(Pattern pattern, Func<string, string> nameFunc)
+      public Responding<Scraper> Match(Pattern pattern, Func<string, string> nameFunc)
       {
          if (!source.More)
          {
-            return noMatch<Scraper>();
+            return nil;
          }
 
-         if (pattern.MatchedBy(source.Current).Map(out var result, out var _exception))
+         var _result = pattern.MatchedBy(source.Current);
+         if (_result)
          {
-            foreach (var group in result.Groups(0).Skip(1))
+            foreach (var group in _result.Value.Groups(0).Skip(1))
             {
                var name = nameFunc(group);
                variables[name] = group;
             }
 
-            source.Advance(result.Length);
-            return this.Match();
+            source.Advance(_result.Value.Length);
+            return this;
          }
-         else if (_exception.Map(out var exception))
+         else if (_result.AnyException)
          {
-            return failedMatch<Scraper>(exception);
+            return _result.Exception;
          }
          else
          {
-            return noMatch<Scraper>();
+            return nil;
          }
       }
 
-      public Matched<Scraper> Split(Pattern pattern, Func<string, string> nameFunc)
+      public Responding<Scraper> Split(Pattern pattern, Func<string, string> nameFunc)
       {
          if (!source.More)
          {
-            return noMatch<Scraper>();
+            return nil;
          }
 
          var split = source.Current.Unjoin(pattern);
@@ -99,89 +101,94 @@ namespace Core.Matching
          }
 
          source.Advance(source.Current.Length);
-         return this.Match();
+         return this;
       }
 
-      public Matched<Scraper> Skip(Pattern pattern)
+      public Responding<Scraper> Skip(Pattern pattern)
       {
          if (!source.More)
          {
-            return noMatch<Scraper>();
+            return nil;
          }
 
-         if (pattern.MatchedBy(source.Current).Map(out var result, out var _exception))
+         var _result = pattern.MatchedBy(source.Current);
+         if (_result)
          {
-            source.Advance(result.Length);
-            return this.Match();
+            source.Advance(_result.Value.Length);
+            return this;
          }
-         else if (_exception.Map(out var exception))
+         else if (_result.AnyException)
          {
-            return failedMatch<Scraper>(exception);
+            return _result.Exception;
          }
          else
          {
-            return noMatch<Scraper>();
+            return nil;
          }
       }
 
-      public Matched<Scraper> Skip(int count)
+      public Responding<Scraper> Skip(int count)
       {
          if (!source.More)
          {
-            return noMatch<Scraper>();
+            return nil;
          }
 
          source.Advance(count);
-         return this.Match();
+         return this;
       }
 
       public string this[string key] => variables[key];
 
       public bool ContainsKey(string key) => variables.ContainsKey(key);
 
-      public Result<Hash<string, string>> AnyHash() => variables.Success<Hash<string, string>>();
+      public Result<Hash<string, string>> AnyHash() => variables;
 
-      public Matched<Scraper> Push(Pattern pattern)
+      public Responding<Scraper> Push(Pattern pattern)
       {
-         if (pattern.MatchedBy(source.Current).Map(out var result, out var _exception))
+         var _length = pattern.MatchedBy(source.Current).Map(r => r.Length);
+         if (_length)
          {
-            var scraper = new Scraper(source.Current.Keep(result.Length));
-            source.Advance(result.Length);
+            var scraper = new Scraper(source.Current.Keep(_length));
+            source.Advance(_length);
             scraperStack.Push(this);
 
-            return scraper.Match();
+            return scraper;
          }
-         else if (_exception.Map(out var exception))
+         else if (_length.AnyException)
          {
-            return failedMatch<Scraper>(exception);
+            return _length.Exception;
          }
          else
          {
-            return noMatch<Scraper>();
+            return nil;
          }
       }
 
-      public Matched<Scraper> Pop()
+      public Responding<Scraper> Pop()
       {
-         if (scraperStack.Pop().Map(out var scraper))
+         var _scraper = scraperStack.Pop();
+         if (_scraper)
          {
-            if (scraper.AnyHash().Map(out var poppedVariables, out var exception))
+            var _variables = _scraper.Value.AnyHash();
+            if (_variables)
             {
+               variables = _variables.Map(h => h.ToStringHash(true));
                foreach (var (variable, value) in variables)
                {
-                  poppedVariables[variable] = value;
+                  _variables.Value[variable] = value;
                }
 
-               return scraper.Match();
+               return _scraper.Responding();
             }
             else
             {
-               return failedMatch<Scraper>(exception);
+               return _variables.Exception;
             }
          }
          else
          {
-            return "Scraper stack empty".FailedMatch<Scraper>();
+            return fail("Scraper stack empty");
          }
       }
    }

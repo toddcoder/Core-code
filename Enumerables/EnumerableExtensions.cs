@@ -1224,13 +1224,44 @@ namespace Core.Enumerables
       {
          var mapper = enumerable.ToStringHash(keyMap, true);
          var keySet = new StringSet(true, keys);
-         foreach (var key in keySet)
+         foreach (var _value in keySet.Select(key => mapper.Map(key)).Where(_value => _value))
          {
-            if (mapper.Map(key, out var value))
-            {
-               yield return value;
-            }
+            yield return _value;
          }
       }
+
+      private static AutoHash<T, int> getPaired<T>(IEnumerable<T> orderItems, int defaultValue)
+      {
+         return orderItems.Select((v, i) => (value: v, index: i)).ToHash(i => i.value, i => i.index).ToAutoHash(defaultValue);
+      }
+
+      public static IEnumerable<T> OrderBy<T>(this IEnumerable<T> enumerable, IEnumerable<T> orderItems)
+      {
+         var paired = getPaired(orderItems, int.MaxValue);
+         return enumerable.OrderBy(i => paired[i]);
+      }
+
+      public static IEnumerable<T> OrderBy<T, TMember>(this IEnumerable<T> enumerable, Func<T, TMember> mapper, IEnumerable<TMember> orderItems)
+      {
+         var paired = getPaired(orderItems, int.MaxValue);
+         return enumerable.OrderBy(i => paired[mapper(i)]);
+      }
+
+      public static IEnumerable<T> Order<T>(this IEnumerable<T> enumerable) => enumerable.OrderBy(i => i);
+
+      public static IEnumerable<T> OrderByDescending<T>(this IEnumerable<T> enumerable, IEnumerable<T> orderItems)
+      {
+         var paired = getPaired(orderItems, int.MinValue);
+         return enumerable.OrderByDescending(i => paired[i]);
+      }
+
+      public static IEnumerable<T> OrderByDescending<T, TMember>(this IEnumerable<T> enumerable, Func<T, TMember> mapper,
+         IEnumerable<TMember> orderItems)
+      {
+         var paired = getPaired(orderItems, int.MinValue);
+         return enumerable.OrderByDescending(i => paired[mapper(i)]);
+      }
+
+      public static IEnumerable<T> OrderDescending<T>(this IEnumerable<T> enumerable) => enumerable.OrderByDescending(i => i);
    }
 }

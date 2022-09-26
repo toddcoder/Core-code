@@ -3,6 +3,7 @@ using System.Linq;
 using Core.Assertions;
 using Core.Enumerables;
 using Core.Monads;
+using Core.Strings;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Core.Arrays.ArrayFunctions;
 
@@ -26,14 +27,28 @@ namespace Core.Tests
          public override string ToString() => $"{Key}: {Ordinal}";
       }
 
+      protected class SortableItem
+      {
+         public SortableItem()
+         {
+            Branch = string.Empty;
+            Order = string.Empty;
+         }
+
+         public string Branch { get; set; }
+
+         public string Order { get; set; }
+      }
+
       [TestMethod]
       public void FirstOrNoneTest()
       {
          var testArray = 'f'.DownTo('a');
-         if (testArray.FirstOrNone().Map(out var ch))
+         var _char = testArray.FirstOrNone();
+         if (_char)
          {
-            ch.ToString().Must().Equal("f").OrThrow();
-            Console.WriteLine($"{ch} == 'f'");
+            _char.Value.ToString().Must().Equal("f").OrThrow();
+            Console.WriteLine($"{_char} == 'f'");
          }
       }
 
@@ -41,23 +56,25 @@ namespace Core.Tests
       public void FirstOrFailTest()
       {
          var testArray = 0.UpUntil(10).ToArray();
-         if (testArray.FirstOrFail("Not found").Map(out var first, out var exception))
+         var _first = testArray.FirstOrFail("Not found");
+         if (_first)
          {
-            Console.WriteLine(first);
+            Console.WriteLine(_first.Value);
          }
          else
          {
-            Console.WriteLine(exception.Message);
+            Console.WriteLine(_first.Exception.Message);
          }
 
          testArray = array<int>();
-         if (testArray.FirstOrFail("Not found").Map(out first, out exception))
+         _first = testArray.FirstOrFail("Not found");
+         if (_first)
          {
-            Console.WriteLine(first);
+            Console.WriteLine(_first.Value);
          }
          else
          {
-            Console.WriteLine(exception.Message);
+            Console.WriteLine(_first.Exception.Message);
          }
       }
 
@@ -89,14 +106,16 @@ namespace Core.Tests
       public void MonadMinMaxTest()
       {
          var strings = array("foobar", "foo", "a", "bar");
-         if (strings.MaxOrNone().Map(out var max))
+         var _max = strings.MaxOrNone();
+         if (_max)
          {
-            Console.WriteLine($"Max value: {max}");
+            Console.WriteLine($"Max value: {_max}");
          }
 
-         if (strings.MaxOrNone(s => s.Length).Map(out max))
+         _max = strings.MaxOrNone(s => s.Length);
+         if (_max)
          {
-            Console.WriteLine($"Max length: {max}");
+            Console.WriteLine($"Max length: {_max}");
          }
       }
 
@@ -160,6 +179,30 @@ namespace Core.Tests
          foreach (var itemToSort in enumerable)
          {
             Console.WriteLine(itemToSort);
+         }
+      }
+
+      [TestMethod]
+      public void ListOrderByTest()
+      {
+         SortableItem[] array =
+         {
+            new() { Branch = "alpha", Order = "Good" }, new() { Branch = "bravo", Order = "Good" },
+            new() { Branch = "charlie", Order = "Ugly" }, new() { Branch = "delta", Order = "Bad" },
+            new() { Branch = "echo", Order = "Good" }, new() { Branch = "foxtrot", Order = "Ugly" }
+         };
+         var sorted = array.OrderBy(i => i.Order, new[] { "Good", "Bad", "Ugly" });
+         foreach (var sortableItem in sorted)
+         {
+            Console.WriteLine($"{sortableItem.Branch}: {sortableItem.Order}");
+         }
+
+         Console.WriteLine("=".Repeat(80));
+
+         sorted = array.OrderByDescending(i => i.Order, new[] { "Good", "Bad", "Ugly" });
+         foreach (var sortableItem in sorted)
+         {
+            Console.WriteLine($"{sortableItem.Branch}: {sortableItem.Order}");
          }
       }
    }
