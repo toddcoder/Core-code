@@ -1235,33 +1235,59 @@ namespace Core.Enumerables
          return orderItems.Select((v, i) => (value: v, index: i)).ToHash(i => i.value, i => i.index).ToAutoHash(defaultValue);
       }
 
-      public static IEnumerable<T> OrderBy<T>(this IEnumerable<T> enumerable, IEnumerable<T> orderItems)
+      public static IOrderedEnumerable<T> OrderBy<T>(this IEnumerable<T> enumerable, IEnumerable<T> orderItems)
       {
          var paired = getPaired(orderItems, int.MaxValue);
          return enumerable.OrderBy(i => paired[i]);
       }
 
-      public static IEnumerable<T> OrderBy<T, TMember>(this IEnumerable<T> enumerable, Func<T, TMember> mapper, IEnumerable<TMember> orderItems)
+      public static IOrderedEnumerable<T> ThenBy<T>(this IOrderedEnumerable<T> enumerable, IEnumerable<T> orderItems)
+      {
+         var paired = getPaired(orderItems, int.MaxValue);
+         return enumerable.ThenBy(i => paired[i]);
+      }
+
+      public static IOrderedEnumerable<T> OrderBy<T, TMember>(this IEnumerable<T> enumerable, Func<T, TMember> mapper, IEnumerable<TMember> orderItems)
       {
          var paired = getPaired(orderItems, int.MaxValue);
          return enumerable.OrderBy(i => paired[mapper(i)]);
       }
 
-      public static IEnumerable<T> Order<T>(this IEnumerable<T> enumerable) => enumerable.OrderBy(i => i);
+      public static IOrderedEnumerable<T> ThenBy<T, TMember>(this IOrderedEnumerable<T> enumerable, Func<T, TMember> mapper,
+         IEnumerable<TMember> orderItems)
+      {
+         var paired = getPaired(orderItems, int.MaxValue);
+         return enumerable.ThenBy(i => paired[mapper(i)]);
+      }
 
-      public static IEnumerable<T> OrderByDescending<T>(this IEnumerable<T> enumerable, IEnumerable<T> orderItems)
+      public static IOrderedEnumerable<T> Order<T>(this IEnumerable<T> enumerable) => enumerable.OrderBy(i => i);
+
+      public static IOrderedEnumerable<T> OrderByDescending<T>(this IEnumerable<T> enumerable, IEnumerable<T> orderItems)
       {
          var paired = getPaired(orderItems, int.MinValue);
          return enumerable.OrderByDescending(i => paired[i]);
       }
 
-      public static IEnumerable<T> OrderByDescending<T, TMember>(this IEnumerable<T> enumerable, Func<T, TMember> mapper,
+      public static IOrderedEnumerable<T> ThenByDescending<T>(this IOrderedEnumerable<T> enumerable, IEnumerable<T> orderItems)
+      {
+         var paired = getPaired(orderItems, int.MinValue);
+         return enumerable.ThenByDescending(i => paired[i]);
+      }
+
+      public static IOrderedEnumerable<T> OrderByDescending<T, TMember>(this IEnumerable<T> enumerable, Func<T, TMember> mapper,
          IEnumerable<TMember> orderItems)
       {
          var paired = getPaired(orderItems, int.MinValue);
          return enumerable.OrderByDescending(i => paired[mapper(i)]);
       }
 
-      public static IEnumerable<T> OrderDescending<T>(this IEnumerable<T> enumerable) => enumerable.OrderByDescending(i => i);
+      public static IOrderedEnumerable<T> ThenByDescending<T, TMember>(this IOrderedEnumerable<T> enumerable, Func<T, TMember> mapper,
+         IEnumerable<TMember> orderItems)
+      {
+         var paired = getPaired(orderItems, int.MinValue);
+         return enumerable.ThenByDescending(i => paired[mapper(i)]);
+      }
+
+      public static IOrderedEnumerable<T> OrderDescending<T>(this IEnumerable<T> enumerable) => enumerable.OrderByDescending(i => i);
    }
 }

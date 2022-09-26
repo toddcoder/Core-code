@@ -199,7 +199,7 @@ namespace Core.Tests
 
          Console.WriteLine("=".Repeat(80));
 
-         sorted = array.OrderByDescending(i => i.Order, new[] { "Good", "Bad", "Ugly" });
+         sorted = array.OrderByDescending(i => i.Order, new[] { "Good", "Bad", "Ugly" }).ThenByDescending(i => i.Branch);
          foreach (var sortableItem in sorted)
          {
             Console.WriteLine($"{sortableItem.Branch}: {sortableItem.Order}");
