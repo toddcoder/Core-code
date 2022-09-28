@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Core.Assertions;
+using Core.Matching;
 using Core.Monads;
 using static Core.Monads.MonadFunctions;
 
@@ -123,6 +124,35 @@ namespace Core.Markup.Rtf
          return format;
       }
 
+      public Maybe<CharFormat> CharFormat(Pattern pattern)
+      {
+         var _result = text.ToString().Matches(pattern);
+         if (_result)
+         {
+            var begin = (~_result).Index;
+            var end = (~_result).Length + begin - 1;
+            return CharFormat(begin, end);
+         }
+         else
+         {
+            return nil;
+         }
+      }
+
+      public IEnumerable<CharFormat> CharFormats(Pattern pattern)
+      {
+         var _result = text.ToString().Matches(pattern);
+         if (_result)
+         {
+            foreach (var match in ~_result)
+            {
+               var begin = match.Index;
+               var end = match.Length + begin - 1;
+               yield return CharFormat(begin, end);
+            }
+         }
+      }
+
       public CharFormat CharFormat()
       {
          var format = new CharFormat();
@@ -169,8 +199,10 @@ namespace Core.Markup.Rtf
          {
             DisjointRange range;
 
-            if (format.Begin.Map(out var begin) && format.End.Map(out var end))
+            if (format.Begin && format.End)
             {
+               var begin = ~format.Begin;
+               var end = ~format.End;
                if (begin <= end)
                {
                   range = new DisjointRange { Head = begin, Tail = end, Format = format };

@@ -1,3 +1,5 @@
+using static Core.Objects.GetHashCodeGenerator;
+
 namespace Core.Markup.Rtf
 {
    public class Border
@@ -15,7 +17,7 @@ namespace Core.Markup.Rtf
 
       public override bool Equals(object obj) => obj is Border border && Style == border.Style && Width == border.Width;
 
-      public override int GetHashCode() => width.GetHashCode() * 1000 + (int)style;
+      public override int GetHashCode() => hashCode() + width + style;
 
       public BorderStyle Style
       {

@@ -135,9 +135,9 @@ namespace Core.Markup.Rtf
                if (j < count)
                {
                   var cellData = row[j];
-                  if (cellData.ImageFile.Map(out var imageFile) && cellData.ImageFileType.Map(out var imageFileType))
+                  if (cellData.ImageFile && cellData.ImageFileType)
                   {
-                     tableCell.Image(imageFile.FullPath, imageFileType);
+                     tableCell.Image((~cellData.ImageFile).FullPath, (~cellData.ImageFileType));
                   }
                   else
                   {

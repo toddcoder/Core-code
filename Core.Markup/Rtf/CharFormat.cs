@@ -81,29 +81,29 @@ namespace Core.Markup.Rtf
 
       public void CopyFrom(CharFormat sourceFormat)
       {
-         if (!_begin && sourceFormat._begin.Map(out var begin))
+         if (!_begin && sourceFormat.Begin)
          {
-            _begin = begin;
+            _begin = sourceFormat.Begin;
          }
 
-         if (!_end && sourceFormat._end.Map(out var end))
+         if (!_end && sourceFormat.End)
          {
-            _end = end;
+            _end = sourceFormat.End;
          }
 
-         if (!_font && sourceFormat._font.Map(out var font))
+         if (!_font && sourceFormat.Font)
          {
-            _font = new FontDescriptor(font.Value);
+            _font = sourceFormat.Font.Map(font => new FontDescriptor(font.Value));
          }
 
-         if (!_ansiFont && sourceFormat._ansiFont.Map(out var ansiFont))
+         if (!_ansiFont && sourceFormat.AnsiFont)
          {
-            _ansiFont = new FontDescriptor(ansiFont.Value);
+            _ansiFont = sourceFormat.AnsiFont.Map(font => new FontDescriptor(font.Value));
          }
 
-         if (!_fontSize && sourceFormat._fontSize.Map(out var fontSize))
+         if (!_fontSize && sourceFormat.FontSize)
          {
-            _fontSize = fontSize;
+            _fontSize = sourceFormat.FontSize;
          }
 
          if (fontStyle.IsEmpty && !sourceFormat.fontStyle.IsEmpty)
@@ -111,14 +111,14 @@ namespace Core.Markup.Rtf
             fontStyle = new FontStyle(sourceFormat.fontStyle);
          }
 
-         if (!_backgroundColor && sourceFormat._backgroundColor.Map(out var backgroundColor))
+         if (!_backgroundColor && sourceFormat.BackgroundColor)
          {
-            _backgroundColor = new ColorDescriptor(backgroundColor.Value);
+            _backgroundColor = sourceFormat.BackgroundColor.Map(color => new ColorDescriptor(color.Value));
          }
 
-         if (!_foregroundColor && sourceFormat._foregroundColor.Map(out var foregroundColor))
+         if (!_foregroundColor && sourceFormat.ForegroundColor)
          {
-            _foregroundColor = new ColorDescriptor(foregroundColor.Value);
+            _foregroundColor = sourceFormat.ForegroundColor.Map(color => new ColorDescriptor(color.Value));
          }
       }
 

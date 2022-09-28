@@ -2,6 +2,7 @@
 using Core.Markup.Rtf;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Core.Arrays.ArrayFunctions;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Tests
 {
@@ -27,12 +28,24 @@ namespace Core.Tests
 
          var paragraph = document.Paragraph("Test2: Character Formatting", timesFont);
 
-         var format = paragraph.CharFormat(0, 5);
+         var _format = paragraph.CharFormat("Test2:; u");
+         if (!_format)
+         {
+            throw fail("Couldn't extract text");
+         }
+
+         var format = ~_format; //paragraph.CharFormat(0, 5);
          format.ForegroundColor = blueColor;
          format.BackgroundColor = redColor;
          format.FontSize = 18f;
 
-         format = paragraph.CharFormat(7, 26);
+         _format = paragraph.CharFormat("Character Formatting; u");
+         if (!_format)
+         {
+            throw fail("Couldn't extract text");
+         }
+
+         format = ~_format; //paragraph.CharFormat(7, 26);
          format.FontStyle += FontStyleFlag.Bold;
          format.FontStyle += FontStyleFlag.Underline;
          format.Font = courierFont;
@@ -98,12 +111,14 @@ namespace Core.Tests
          var table = document.Table(12);
          var blueColor = document.Color("blue");
 
-         foreach (var (prompt, hyperlink) in array(("Pull Request", "http://foobar"), ("estreamps", "http://evokeps"), ("staging10ua", "http://evokeuat")))
+         foreach (var (prompt, hyperlink) in array(("Pull Request", "http://foobar"), ("estreamps", "http://evokeps"),
+                     ("staging10ua", "http://evokeuat")))
          {
             table.AddRow();
             table.AddColumn(prompt, FontStyleFlag.Bold);
             table.AddColumn(hyperlink, blueColor, (hyperlink, ""));
          }
+
          document.Save(@"C:\Temp\Test2.rtf");
       }
    }

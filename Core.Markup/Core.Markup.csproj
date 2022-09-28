@@ -54,7 +54,6 @@
     <Compile Include="Rtf\FieldType.cs" />
     <Compile Include="Rtf\ParagraphFunctions.cs" />
     <Compile Include="Rtf\TableCellArgs.cs" />
-    <Compile Include="Rtf\RtfConcatenator.cs" />
     <Compile Include="Rtf\VerticalAlignment.cs" />
     <Compile Include="Rtf\Block.cs" />
     <Compile Include="Rtf\Border.cs" />
