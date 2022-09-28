@@ -124,14 +124,23 @@ namespace Core.Markup.Rtf
          return format;
       }
 
-      public Maybe<CharFormat> CharFormat(Pattern pattern)
+      public Maybe<CharFormat> CharFormat(Pattern pattern, int groupIndex = 0)
       {
          var _result = text.ToString().Matches(pattern);
          if (_result)
          {
-            var begin = (~_result).Index;
-            var end = (~_result).Length + begin - 1;
-            return CharFormat(begin, end);
+            var result = ~_result;
+            if (groupIndex < result.GroupCount(0))
+            {
+               var group = result.GetGroup(0, groupIndex);
+               var begin = group.Index;
+               var end = group.Length + begin - 1;
+               return CharFormat(begin, end);
+            }
+            else
+            {
+               return nil;
+            }
          }
          else
          {
@@ -139,15 +148,29 @@ namespace Core.Markup.Rtf
          }
       }
 
-      public IEnumerable<CharFormat> CharFormats(Pattern pattern)
+      public IEnumerable<CharFormat> CharFormats(Pattern pattern, int groupIndex = 0)
       {
          var _result = text.ToString().Matches(pattern);
          if (_result)
          {
+            var tested = false;
             foreach (var match in ~_result)
             {
-               var begin = match.Index;
-               var end = match.Length + begin - 1;
+               if (!tested)
+               {
+                  if (match.Groups.Length >= groupIndex)
+                  {
+                     yield break;
+                  }
+                  else
+                  {
+                     tested = true;
+                  }
+               }
+
+               var group = match.Groups[groupIndex];
+               var begin = group.Index;
+               var end = group.Length + begin - 1;
                yield return CharFormat(begin, end);
             }
          }
