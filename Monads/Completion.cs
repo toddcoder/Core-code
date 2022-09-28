@@ -53,15 +53,7 @@ namespace Core.Monads
 
       public static T operator |(Completion<T> completion, Func<T> defaultFunc) => completion ? completion : defaultFunc();
 
-      public static Completion<T> operator *(Completion<T> completion, Action<T> action)
-      {
-         if (completion)
-         {
-            action(completion);
-         }
-
-         return completion;
-      }
+      public static T operator ~(Completion<T> completion) => completion.Value;
 
       public abstract Completion<TResult> Map<TResult>(Func<T, Completion<TResult>> ifCompleted);
 

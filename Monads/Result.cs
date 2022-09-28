@@ -115,6 +115,8 @@ namespace Core.Monads
          _ => throw new InvalidCastException("Must be a Failure to return a value")
       };
 
+      public static T operator ~(Result<T> result) => result.Value;
+
       public abstract bool Map(out T value, out Exception exception);
 
       public abstract Result<TResult> Map<TResult>(Func<T, Result<TResult>> ifSuccessful);

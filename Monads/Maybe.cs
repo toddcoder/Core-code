@@ -63,6 +63,8 @@ namespace Core.Monads
          _ => throw new InvalidCastException("Must be a Some to return a value")
       };
 
+      public static T operator ~(Maybe<T> maybe) => maybe.Value;
+
       public abstract T Value { get; }
 
       public abstract Maybe<TResult> Map<TResult>(Func<T, TResult> ifSome);

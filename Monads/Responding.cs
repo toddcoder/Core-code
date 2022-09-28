@@ -85,15 +85,7 @@ namespace Core.Monads
 
       public static T operator |(Responding<T> responding, Func<Maybe<Exception>, T> defaultFunc) => responding.DefaultTo(defaultFunc);
 
-      public static Responding<T> operator *(Responding<T> responding, Action<T> action)
-      {
-         if (responding)
-         {
-            action(responding);
-         }
-
-         return responding;
-      }
+      public static T operator ~(Responding<T> responding) => responding.Value;
 
       public abstract T Value { get; }
 

@@ -390,5 +390,15 @@ namespace Core.Tests
             Console.WriteLine("empty");
          }
       }
+
+      [TestMethod]
+      public void MaybeValueOperator()
+      {
+         Maybe<int> _number = 153;
+         if (_number)
+         {
+            Console.WriteLine(~_number);
+         }
+      }
    }
 }
