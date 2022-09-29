@@ -1615,6 +1615,48 @@ namespace Core.WinForms.Controls
          return await Task.Run(() => func(argument));
       }
 
+      public async Task<Completion<Unit>> ExecuteAsync<TArgument>(TArgument argument, Func<TArgument, Completion<Unit>> func, Action postAction)
+      {
+         var _result = await ExecuteAsync(argument, func);
+         if (_result)
+         {
+            postAction();
+         }
+
+         return _result;
+      }
+
+      public async Task<Completion<Unit>> ExecuteAsync<TArgument>(TArgument argument, Func<TArgument, Completion<Unit>> func)
+      {
+         return await Task.Run(() => func(argument));
+      }
+
+      public async Task<Completion<TResult>> ExecuteAsync<TResult>(Func<Completion<TResult>> func, Action<TResult> postAction)
+      {
+         var _result = await ExecuteAsync(func);
+         if (_result)
+         {
+            postAction(_result);
+         }
+
+         return _result;
+      }
+
+      public async Task<Completion<TResult>> ExecuteAsync<TResult>(Func<Completion<TResult>> func) => await Task.Run(func);
+
+      public async Task<Completion<Unit>> ExecuteAsync(Func<Completion<Unit>> func, Action postAction)
+      {
+         var _result = await ExecuteAsync(func);
+         if (_result)
+         {
+            postAction();
+         }
+
+         return _result;
+      }
+
+      public async Task<Completion<Unit>> ExecuteAsync(Func<Completion<Unit>> func) => await Task.Run(func);
+
       public bool IsDirty
       {
          get => isDirty;
