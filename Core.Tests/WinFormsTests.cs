@@ -697,6 +697,7 @@ namespace Core.Tests
          var form = new Form();
          var uiAction = new UiAction(form, true);
          uiAction.SetUp(0, 0, 200, 60);
+         uiAction.TextChanged += (_, _) => form.Text = uiAction.Text;
          uiAction.Http("http://google.com");
          form.ShowDialog();
       }

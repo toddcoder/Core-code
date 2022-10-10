@@ -236,6 +236,7 @@ namespace Core.WinForms.Controls
       public event EventHandler<ValidatedArgs> ValidateText;
       public event EventHandler<CheckStyleChangedArgs> CheckStyleChanged;
       public event EventHandler<AppearanceOverrideArgs> AppearanceOverride;
+      public new event EventHandler TextChanged;
 
       public UiAction(Control control, bool center = false, bool is3D = true)
       {
@@ -460,6 +461,7 @@ namespace Core.WinForms.Controls
          {
             text = value;
             this.Do(setToolTip);
+            TextChanged?.Invoke(this, EventArgs.Empty);
          }
       }
 
