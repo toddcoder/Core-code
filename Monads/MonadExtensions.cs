@@ -1685,5 +1685,13 @@ namespace Core.Monads
             return exception;
          }
       }
+
+      public static bool IsSome(this Maybe<bool> maybe) => maybe is Some<bool>;
+
+      public static bool IsSuccess(this Result<bool> result) => result is Success<bool>;
+
+      public static bool IsResponse(this Responding<bool> responding) => responding is Response<bool>;
+
+      public static bool IsCompletion(this Completion<bool> completion) => completion is Completed<bool>;
    }
 }

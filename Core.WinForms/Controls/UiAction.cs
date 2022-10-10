@@ -52,11 +52,15 @@ namespace Core.WinForms.Controls
          protected void checkChanged(CheckStyleChangedArgs e)
          {
             var id = e.Id;
-            if (e.CheckStyle == CheckStyle.Checked && getUiActionList(id).Map(out var uiActionList))
+            if (e.CheckStyle == CheckStyle.Checked)
             {
-               foreach (var uiAction in uiActionList.Where(uiAction => uiAction.Id != id))
+               var _actionList = getUiActionList(id);
+               if (_actionList)
                {
-                  uiAction.SetCheckStyle(CheckStyle.None);
+                  foreach (var uiAction in (~_actionList).Where(uiAction => uiAction.Id != id))
+                  {
+                     uiAction.SetCheckStyle(CheckStyle.None);
+                  }
                }
             }
          }
@@ -161,7 +165,8 @@ namespace Core.WinForms.Controls
             [UiActionType.Failure] = MessageStyle.Bold,
             [UiActionType.BusyText] = MessageStyle.ItalicBold,
             [UiActionType.Caution] = MessageStyle.Bold,
-            [UiActionType.ControlLabel] = MessageStyle.Bold
+            [UiActionType.ControlLabel] = MessageStyle.Bold,
+            [UiActionType.Http] = MessageStyle.Bold
          };
          toggler = new Lazy<CheckToggler>(() => new CheckToggler());
       }
@@ -216,6 +221,8 @@ namespace Core.WinForms.Controls
       protected bool isDirty;
       protected CheckStyle checkStyle;
       protected Guid id;
+      protected bool httpHandlerAdded;
+      protected bool isUrlGood;
 
       public event EventHandler<AutomaticMessageArgs> AutomaticMessage;
       public event EventHandler<PaintEventArgs> Painting;
@@ -278,9 +285,10 @@ namespace Core.WinForms.Controls
                   {
                      var args = new AutomaticMessageArgs();
                      AutomaticMessage?.Invoke(this, args);
-                     if (args.GetText().Map(out var automaticText))
+                     var _automaticText = args.GetText();
+                     if (_automaticText)
                      {
-                        Text = automaticText;
+                        Text = _automaticText;
                      }
 
                      break;
@@ -367,6 +375,8 @@ namespace Core.WinForms.Controls
 
          checkStyle = CheckStyle.None;
          id = Guid.NewGuid();
+         httpHandlerAdded = false;
+         isUrlGood = false;
       }
 
       public Guid Id => id;
@@ -504,6 +514,20 @@ namespace Core.WinForms.Controls
          Text = message;
          this.type = type;
 
+         if (type == UiActionType.Http)
+         {
+            if (!httpHandlerAdded)
+            {
+               Click += openUrl;
+               httpHandlerAdded = true;
+            }
+         }
+         else if (httpHandlerAdded)
+         {
+            Click -= openUrl;
+            httpHandlerAdded = false;
+         }
+
          refresh();
       }
 
@@ -539,25 +563,26 @@ namespace Core.WinForms.Controls
 
       public void Result(Result<(string, UiActionType)> _result)
       {
-         if (_result.Map(out var message, out var messageProgressType, out var exception))
+         if (_result)
          {
+            var (message, messageProgressType) = ~_result;
             ShowMessage(message, messageProgressType);
          }
          else
          {
-            Exception(exception);
+            Exception(_result.Exception);
          }
       }
 
       public void Result(Result<string> _result)
       {
-         if (_result.Map(out var message, out var exception))
+         if (_result)
          {
-            Success(message);
+            Success(_result);
          }
          else
          {
-            Exception(exception);
+            Exception(_result.Exception);
          }
       }
 
@@ -671,8 +696,9 @@ namespace Core.WinForms.Controls
             var remainder = ClientRectangle.Width - arrowSection;
             return ClientRectangle with { X = Width - arrowSection, Width = Width - 2 * remainder };
          }
-         else if (_labelRectangle.Map(out var labelRectangle))
+         else if (_labelRectangle)
          {
+            var labelRectangle = ~_labelRectangle;
             return ClientRectangle with { X = ClientRectangle.X + labelRectangle.Width, Width = ClientRectangle.Width - labelRectangle.Width };
          }
          else
@@ -688,9 +714,9 @@ namespace Core.WinForms.Controls
          var _labelProcessor = _label.Map(label => new LabelProcessor(label, _labelWidth, getFont(), EmptyTextTitle));
          var clientRectangle = getClientRectangle(_labelProcessor.Map(lp => lp.LabelRectangle(e.Graphics, ClientRectangle)));
 
-         if (_labelProcessor.Map(out var labelProcessor))
+         if (_labelProcessor)
          {
-            labelProcessor.OnPaint(e.Graphics);
+            (~_labelProcessor).OnPaint(e.Graphics);
          }
 
          void paintStopwatch()
@@ -713,17 +739,18 @@ namespace Core.WinForms.Controls
             UiActionType.Busy or UiActionType.BusyText => CheckStyle.None,
             _ => CheckStyle
          };
-         var writer = new UiActionWriter(Center, style, EmptyTextTitle)
+         var writer = new Lazy<UiActionWriter>(() => new UiActionWriter(Center, style, EmptyTextTitle)
          {
             Rectangle = clientRectangle,
             Font = getFont(),
             Color = getForeColor()
-         };
+         });
+         var httpWriter = new Lazy<HttpWriter>(() => new HttpWriter(text, clientRectangle, getFont()));
 
          switch (type)
          {
             case UiActionType.ProgressIndefinite:
-               writer.Write(text, e.Graphics);
+               writer.Value.Write(text, e.Graphics);
                break;
             case UiActionType.Busy:
                busyProcessor.Value.OnPaint(e.Graphics);
@@ -732,32 +759,37 @@ namespace Core.WinForms.Controls
             case UiActionType.ProgressDefinite:
             {
                var percentText = $"{getPercentage()}%";
-               writer.Rectangle = progressDefiniteProcessor.Value.PercentRectangle;
-               writer.Center(true);
-               writer.Color = Color.Black;
-               writer.Write(percentText, e.Graphics);
+               writer.Value.Rectangle = progressDefiniteProcessor.Value.PercentRectangle;
+               writer.Value.Center(true);
+               writer.Value.Color = Color.Black;
+               writer.Value.Write(percentText, e.Graphics);
 
-               writer.Rectangle = progressDefiniteProcessor.Value.TextRectangle;
-               writer.Color = getForeColor();
-               writer.Write(text, e.Graphics);
+               writer.Value.Rectangle = progressDefiniteProcessor.Value.TextRectangle;
+               writer.Value.Color = getForeColor();
+               writer.Value.Write(text, e.Graphics);
                break;
             }
             case UiActionType.BusyText:
             {
-               writer.Rectangle = busyTextProcessor.Value.TextRectangle;
-               writer.Center(true);
-               writer.Write(text, e.Graphics);
+               writer.Value.Rectangle = busyTextProcessor.Value.TextRectangle;
+               writer.Value.Center(true);
+               writer.Value.Write(text, e.Graphics);
                paintStopwatch();
                break;
             }
             case UiActionType.ControlLabel:
-               writer.Write(text, e.Graphics);
+               writer.Value.Write(text, e.Graphics);
                break;
+            case UiActionType.Http:
+            {
+               httpWriter.Value.OnPaint(e.Graphics, isUrlGood);
+               break;
+            }
             default:
             {
                if (type != UiActionType.Tape)
                {
-                  writer.Write(text, e.Graphics);
+                  writer.Value.Write(text, e.Graphics);
                }
 
                break;
@@ -773,9 +805,10 @@ namespace Core.WinForms.Controls
                subText.Draw(e.Graphics, foreColor, backColor);
             }
 
-            if (legends.Peek().Map(out var legend))
+            var _legend = legends.Peek();
+            if (_legend)
             {
-               legend.Draw(e.Graphics, foreColor, backColor);
+               (~_legend).Draw(e.Graphics, foreColor, backColor);
             }
          }
 
@@ -806,11 +839,11 @@ namespace Core.WinForms.Controls
 
          if (Working)
          {
-            if (_working.Map(out var warning))
+            if (_working)
             {
                var foreColor = getForeColor();
                var backColor = getBackColor();
-               warning.Draw(e.Graphics, foreColor, backColor);
+               (~_working).Draw(e.Graphics, foreColor, backColor);
             }
          }
 
@@ -858,9 +891,9 @@ namespace Core.WinForms.Controls
 
          base.OnPaintBackground(pevent);
 
-         if (_labelProcessor.Map(out var labelProcessor))
+         if (_labelProcessor)
          {
-            labelProcessor.OnPaintBackground(pevent.Graphics);
+            (~_labelProcessor).OnPaintBackground(pevent.Graphics);
          }
 
          switch (type)
@@ -927,6 +960,12 @@ namespace Core.WinForms.Controls
                fillRectangle(pevent.Graphics, brush, clientRectangle);
                break;
             }
+            case UiActionType.Http:
+            {
+               var httpWriter = new HttpWriter(text, clientRectangle, getFont());
+               httpWriter.OnPaintBackground(pevent.Graphics, isUrlGood, mouseInside);
+               break;
+            }
             default:
             {
                var backColor = getBackColor();
@@ -952,15 +991,15 @@ namespace Core.WinForms.Controls
             pevent.Graphics.DrawLine(lightPen, new Point(width, top), new Point(width, height));
          }
 
-         if (_image.Map(out var image))
+         if (_image)
          {
             if (StretchImage)
             {
-               pevent.Graphics.DrawImage(image, clientRectangle with { X = 0, Y = 0 });
+               pevent.Graphics.DrawImage(_image, clientRectangle with { X = 0, Y = 0 });
             }
             else
             {
-               pevent.Graphics.DrawImage(image, Point.Empty);
+               pevent.Graphics.DrawImage(_image, Point.Empty);
             }
          }
 
@@ -1069,9 +1108,9 @@ namespace Core.WinForms.Controls
 
          if (Enabled)
          {
-            if (_lastType.Map(out var lastType))
+            if (_lastType)
             {
-               ShowMessage(text, lastType);
+               ShowMessage(text, _lastType);
                _lastType = nil;
             }
             else
@@ -1079,9 +1118,9 @@ namespace Core.WinForms.Controls
                ShowMessage(text, UiActionType.Uninitialized);
             }
 
-            if (_lastEnabled.Map(out var enabled))
+            if (_lastEnabled.IsSome())
             {
-               timerPaint.Enabled = enabled;
+               timerPaint.Enabled = ~_lastEnabled;
                _lastEnabled = nil;
             }
 
@@ -1167,9 +1206,10 @@ namespace Core.WinForms.Controls
       {
          var args = new ArgumentsArgs();
          Arguments?.Invoke(this, args);
-         if (args.Arguments.Map(out var arguments))
+         var _arguments = args.Arguments;
+         if (_arguments)
          {
-            RunWorkerAsync(arguments);
+            RunWorkerAsync(~_arguments);
          }
          else
          {
@@ -1425,25 +1465,25 @@ namespace Core.WinForms.Controls
 
       public SubText ResultLegend(Result<string> _result)
       {
-         if (_result.Map(out var result, out var exception))
+         if (_result)
          {
-            return SuccessLegend(result);
+            return SuccessLegend(_result);
          }
          else
          {
-            return ExceptionLegend(exception);
+            return ExceptionLegend(_result.Exception);
          }
       }
 
       public SubText ResultLegend(Result<string> _result, int x, int y)
       {
-         if (_result.Map(out var result, out var exception))
+         if (_result)
          {
-            return SuccessLegend(result, x, y);
+            return SuccessLegend(_result, x, y);
          }
          else
          {
-            return ExceptionLegend(exception, x, y);
+            return ExceptionLegend(_result.Exception, x, y);
          }
       }
 
@@ -1694,5 +1734,22 @@ namespace Core.WinForms.Controls
       public void ControlLabel(string text) => ShowMessage(text, UiActionType.ControlLabel);
 
       public LabelSetter Label(string label) => new LabelSetter(this).Label(label);
+
+      public void Http(string url)
+      {
+         isUrlGood = HttpWriter.IsGoodUrl(url);
+         ShowMessage(url, UiActionType.Http);
+      }
+
+      protected void openUrl(object sender, EventArgs e)
+      {
+         if (text.IsNotEmpty())
+         {
+            using var process = new Process();
+            process.StartInfo.UseShellExecute = true;
+            process.StartInfo.FileName = text;
+            process.Start();
+         }
+      }
    }
 }

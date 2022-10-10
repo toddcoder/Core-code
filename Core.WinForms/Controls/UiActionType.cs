@@ -19,6 +19,7 @@
       Caution,
       Labeled,
       ControlLabel,
-      Button
+      Button,
+      Http
    }
 }

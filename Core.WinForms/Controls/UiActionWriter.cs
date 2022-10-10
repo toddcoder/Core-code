@@ -70,13 +70,14 @@ namespace Core.WinForms.Controls
             from existingFont in _font
             from existingColor in _color
             select (existingRectangle, existingFont, existingColor);
-         if (_arguments.Map(out var rectangle, out var font, out var color, out var exception))
+         if (_arguments)
          {
+            var (rectangle, font, color) = ~_arguments;
             try
             {
                graphics.HighQuality();
                graphics.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
-               var isReplaced = text.IsEmpty() && (bool)_emptyTextTitle;
+               var isReplaced = text.IsEmpty() && _emptyTextTitle;
                if (isReplaced)
                {
                   text = _emptyTextTitle;
@@ -103,14 +104,14 @@ namespace Core.WinForms.Controls
 
                return unit;
             }
-            catch (Exception exception1)
+            catch (Exception exception)
             {
-               return exception1;
+               return exception;
             }
          }
          else
          {
-            return exception;
+            return _arguments.Exception;
          }
       }
    }

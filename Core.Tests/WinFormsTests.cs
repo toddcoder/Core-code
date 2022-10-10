@@ -690,5 +690,15 @@ namespace Core.Tests
 
          form.ShowDialog();
       }
+
+      [TestMethod]
+      public void HttpTest()
+      {
+         var form = new Form();
+         var uiAction = new UiAction(form, true);
+         uiAction.SetUp(0, 0, 200, 60);
+         uiAction.Http("http://google.com");
+         form.ShowDialog();
+      }
    }
 }

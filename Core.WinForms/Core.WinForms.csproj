@@ -78,6 +78,7 @@
     <Compile Include="Controls\ExTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\HttpWriter.cs" />
     <Compile Include="Controls\LabelProcessor.cs" />
     <Compile Include="Controls\LineChangedEventArgs.cs" />
     <Compile Include="Controls\MessageProgress.cs">
