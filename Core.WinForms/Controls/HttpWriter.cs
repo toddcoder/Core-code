@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Http;
 using System.Windows.Forms;
 using Core.Dates.DateIncrements;
+using Core.Strings;
 
 namespace Core.WinForms.Controls;
 
@@ -38,6 +39,11 @@ public class HttpWriter
 
    public static bool IsGoodUrl(string url)
    {
+      if (url.IsEmpty())
+      {
+         return false;
+      }
+
       var response = httpClient.GetAsync(url).Result;
       return response.StatusCode == HttpStatusCode.OK;
    }
