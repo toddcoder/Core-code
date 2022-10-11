@@ -131,17 +131,22 @@ namespace Core.Markup.Rtf
          if (_result)
          {
             var result = ~_result;
-            if (groupIndex < result.GroupCount(0))
-            {
-               var group = result.GetGroup(0, groupIndex);
-               var begin = group.Index;
-               var end = group.Length + begin - 1;
-               return CharFormat(begin, end);
-            }
-            else
-            {
-               return nil;
-            }
+            return CharFormat(result, groupIndex);
+         }
+         else
+         {
+            return nil;
+         }
+      }
+
+      public Maybe<CharFormat> CharFormat(MatchResult result, int groupIndex = 0)
+      {
+         if (groupIndex < result.GroupCount(0))
+         {
+            var (_, begin, length) = result.GetGroup(0, groupIndex);
+            var end = length + begin - 1;
+
+            return CharFormat(begin, end);
          }
          else
          {
@@ -154,26 +159,34 @@ namespace Core.Markup.Rtf
          var _result = text.ToString().Matches(pattern);
          if (_result)
          {
-            var tested = false;
-            foreach (var match in ~_result)
+            foreach (var charFormat in CharFormats(_result, groupIndex))
             {
-               if (!tested)
-               {
-                  if (match.Groups.Length >= groupIndex)
-                  {
-                     yield break;
-                  }
-                  else
-                  {
-                     tested = true;
-                  }
-               }
-
-               var group = match.Groups[groupIndex];
-               var begin = group.Index;
-               var end = group.Length + begin - 1;
-               yield return CharFormat(begin, end);
+               yield return charFormat;
             }
+         }
+      }
+
+      public IEnumerable<CharFormat> CharFormats(MatchResult result, int groupIndex = 0)
+      {
+         var tested = false;
+         foreach (var match in result)
+         {
+            if (!tested)
+            {
+               if (match.Groups.Length >= groupIndex)
+               {
+                  yield break;
+               }
+               else
+               {
+                  tested = true;
+               }
+            }
+
+            var (_, begin, length) = match.Groups[groupIndex];
+            var end = length + begin - 1;
+
+            yield return CharFormat(begin, end);
          }
       }
 
