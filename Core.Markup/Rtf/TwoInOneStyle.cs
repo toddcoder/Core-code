@@ -1,12 +1,11 @@
-namespace Core.Markup.Rtf
+namespace Core.Markup.Rtf;
+
+public enum TwoInOneStyle
 {
-   public enum TwoInOneStyle
-   {
-      NotEnabled = 0,
-      None,
-      Parentheses,
-      SquareBrackets,
-      AngledBrackets,
-      Braces
-   }
+   NotEnabled = 0,
+   None,
+   Parentheses,
+   SquareBrackets,
+   AngledBrackets,
+   Braces
 }

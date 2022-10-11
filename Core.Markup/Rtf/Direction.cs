@@ -1,10 +1,9 @@
-namespace Core.Markup.Rtf
+namespace Core.Markup.Rtf;
+
+public enum Direction
 {
-   public enum Direction
-   {
-      Top = 0,
-      Right,
-      Bottom,
-      Left
-   }
+   Top = 0,
+   Right,
+   Bottom,
+   Left
 }

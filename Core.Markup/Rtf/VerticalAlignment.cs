@@ -1,9 +1,8 @@
-namespace Core.Markup.Rtf
+namespace Core.Markup.Rtf;
+
+public enum VerticalAlignment
 {
-   public enum VerticalAlignment
-   {
-      Top = 1,
-      Middle,
-      Bottom
-   }
+   Top = 1,
+   Middle,
+   Bottom
 }

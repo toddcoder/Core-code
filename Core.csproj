@@ -357,6 +357,7 @@
     <Compile Include="Objects\Signature.cs" />
     <Compile Include="Objects\SignatureCollection.cs" />
     <Compile Include="Objects\StandardFormatter.cs" />
+    <Compile Include="Objects\TaggedValue.cs" />
     <Compile Include="Objects\TypeExtensions.cs" />
     <Compile Include="Objects\TypeFunctions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -1,8 +1,7 @@
-namespace Core.Markup.Rtf
+namespace Core.Markup.Rtf;
+
+public enum SectionStartEnd
 {
-   public enum SectionStartEnd
-   {
-      Start,
-      End
-   }
+   Start,
+   End
 }

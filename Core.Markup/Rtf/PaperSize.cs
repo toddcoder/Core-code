@@ -1,9 +1,8 @@
-namespace Core.Markup.Rtf
+namespace Core.Markup.Rtf;
+
+public enum PaperSize
 {
-   public enum PaperSize
-   {
-      Letter = 1,
-      A4,
-      A3
-   }
+   Letter = 1,
+   A4,
+   A3
 }

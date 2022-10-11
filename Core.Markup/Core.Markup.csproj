@@ -51,8 +51,10 @@
     <Compile Include="Markdown\MarkdownWriter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rtf\Alignment.cs" />
+    <Compile Include="Rtf\Descriptor.cs" />
     <Compile Include="Rtf\FieldType.cs" />
     <Compile Include="Rtf\ParagraphFunctions.cs" />
+    <Compile Include="Rtf\RtfTemplate.cs" />
     <Compile Include="Rtf\TableCellArgs.cs" />
     <Compile Include="Rtf\VerticalAlignment.cs" />
     <Compile Include="Rtf\Block.cs" />

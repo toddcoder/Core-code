@@ -1,14 +1,8 @@
-namespace Core.Markup.Rtf
+namespace Core.Markup.Rtf;
+
+public class ColorDescriptor : Descriptor
 {
-   public class ColorDescriptor
+   public ColorDescriptor(int descriptor) : base(descriptor)
    {
-      protected int descriptor;
-
-      public ColorDescriptor(int descriptor)
-      {
-         this.descriptor = descriptor;
-      }
-
-      public int Value => descriptor;
    }
 }

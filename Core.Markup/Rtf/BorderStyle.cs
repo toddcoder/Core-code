@@ -1,11 +1,10 @@
-namespace Core.Markup.Rtf
+namespace Core.Markup.Rtf;
+
+public enum BorderStyle
 {
-   public enum BorderStyle
-   {
-      None = 0,
-      Single,
-      Dotted,
-      Dashed,
-      Double
-   }
+   None = 0,
+   Single,
+   Dotted,
+   Dashed,
+   Double
 }

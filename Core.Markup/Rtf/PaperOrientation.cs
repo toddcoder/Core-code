@@ -1,8 +1,7 @@
-namespace Core.Markup.Rtf
+namespace Core.Markup.Rtf;
+
+public enum PaperOrientation
 {
-   public enum PaperOrientation
-   {
-      Portrait = 1,
-      Landscape
-   }
+   Portrait = 1,
+   Landscape
 }

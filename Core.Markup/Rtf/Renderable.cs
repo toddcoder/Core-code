@@ -1,7 +1,6 @@
-namespace Core.Markup.Rtf
+namespace Core.Markup.Rtf;
+
+public abstract class Renderable
 {
-   public abstract class Renderable
-   {
-      public abstract string Render();
-   }
+   public abstract string Render();
 }

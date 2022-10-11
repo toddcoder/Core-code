@@ -1,14 +1,8 @@
-namespace Core.Markup.Rtf
+namespace Core.Markup.Rtf;
+
+public class FontDescriptor : Descriptor
 {
-   public class FontDescriptor
+   public FontDescriptor(int descriptor) : base(descriptor)
    {
-      protected int descriptor;
-
-      public FontDescriptor(int descriptor)
-      {
-         this.descriptor = descriptor;
-      }
-
-      public int Value => descriptor;
    }
 }

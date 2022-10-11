@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using Core.Computers;
 using Core.Configurations;
 using Core.Exceptions;
+using Core.Matching;
 using Core.Monads;
+using Core.Objects;
 using Core.Strings;
 using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
@@ -669,6 +671,20 @@ namespace Core.Collections
          {
             return exception;
          }
+      }
+
+      public static Maybe<TaggedValue<MatchResult>> Matches(this Hash<string, Pattern> patterns, string input)
+      {
+         foreach (var (name, pattern) in patterns)
+         {
+            var _result = input.Matches(pattern);
+            if (_result)
+            {
+               return new TaggedValue<MatchResult>(name, _result);
+            }
+         }
+
+         return nil;
       }
    }
 }

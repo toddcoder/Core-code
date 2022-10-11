@@ -1,40 +1,39 @@
 using static Core.Objects.GetHashCodeGenerator;
 
-namespace Core.Markup.Rtf
+namespace Core.Markup.Rtf;
+
+public class Border
 {
-   public class Border
+   private BorderStyle style;
+   private float width;
+   private ColorDescriptor colorDescriptor;
+
+   public Border()
    {
-      private BorderStyle style;
-      private float width;
-      private ColorDescriptor colorDescriptor;
+      style = BorderStyle.None;
+      width = 0.5F;
+      colorDescriptor = new ColorDescriptor(0);
+   }
 
-      public Border()
-      {
-         style = BorderStyle.None;
-         width = 0.5F;
-         colorDescriptor = new ColorDescriptor(0);
-      }
+   public override bool Equals(object obj) => obj is Border border && Style == border.Style && Width == border.Width;
 
-      public override bool Equals(object obj) => obj is Border border && Style == border.Style && Width == border.Width;
+   public override int GetHashCode() => hashCode() + width + style;
 
-      public override int GetHashCode() => hashCode() + width + style;
+   public BorderStyle Style
+   {
+      get => style;
+      set => style = value;
+   }
 
-      public BorderStyle Style
-      {
-         get => style;
-         set => style = value;
-      }
+   public float Width
+   {
+      get => width;
+      set => width = value;
+   }
 
-      public float Width
-      {
-         get => width;
-         set => width = value;
-      }
-
-      public ColorDescriptor Color
-      {
-         get => colorDescriptor;
-         set => colorDescriptor = value;
-      }
+   public ColorDescriptor Color
+   {
+      get => colorDescriptor;
+      set => colorDescriptor = value;
    }
 }

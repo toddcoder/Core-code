@@ -1,26 +1,25 @@
 using System.Linq;
 using Core.Assertions;
 
-namespace Core.Markup.Rtf
+namespace Core.Markup.Rtf;
+
+public class Borders
 {
-   public class Borders
+   protected Border[] borders;
+
+   public Borders()
    {
-      protected Border[] borders;
+      borders = Enumerable.Range(0, 4).Select(_ => new Border()).ToArray();
+   }
 
-      public Borders()
+   public Border this[Direction direction]
+   {
+      get
       {
-         borders = Enumerable.Range(0, 4).Select(_ => new Border()).ToArray();
-      }
+         var index = (int)direction;
+         index.Must().BeBetween(0).Until(borders.Length).OrThrow("Not a valid direction.");
 
-      public Border this[Direction direction]
-      {
-         get
-         {
-            var index = (int)direction;
-            index.Must().BeBetween(0).Until(borders.Length).OrThrow("Not a valid direction.");
-
-            return borders[index];
-         }
+         return borders[index];
       }
    }
 }

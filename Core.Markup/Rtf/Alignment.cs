@@ -1,12 +1,11 @@
-namespace Core.Markup.Rtf
+namespace Core.Markup.Rtf;
+
+public enum Alignment
 {
-   public enum Alignment
-   {
-      None = 0,
-      Left,
-      Right,
-      Center,
-      FullyJustify,
-      Distributed
-   }
+   None = 0,
+   Left,
+   Right,
+   Center,
+   FullyJustify,
+   Distributed
 }

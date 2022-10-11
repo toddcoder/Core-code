@@ -1,8 +1,7 @@
-namespace Core.Markup.Rtf
+namespace Core.Markup.Rtf;
+
+public enum HeaderFooterType
 {
-   public enum HeaderFooterType
-   {
-      Header = 1,
-      Footer
-   }
+   Header = 1,
+   Footer
 }
