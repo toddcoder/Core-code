@@ -69,6 +69,7 @@ namespace Core.Markup.Rtf
 
       public string Text
       {
+         get => text.ToString();
          set => text = new StringBuilder(value);
       }
 
