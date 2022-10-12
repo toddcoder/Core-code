@@ -31,9 +31,9 @@ public class RtfTemplate
          ["use-descriptor"] = $"^ '//' /({PATTERN_IN_SLASH}) '//; f",
          ["use-descriptor-format"] = $"'!' /({PATTERN_IN_BANG}) '!' /({PATTERN_IN_BANG}) '!'; f",
          ["font-size"] = $"^ '//font-size//' /({PATTERN_IN_SLASH}) '//; f",
-         ["font-size-format"]=$"'!font-size!' /({PATTERN_IN_BANG}) '!' /({PATTERN_IN_BANG}) '!'; f",
+         ["font-size-format"] = $"'!font-size!' /({PATTERN_IN_BANG}) '!' /({PATTERN_IN_BANG}) '!'; f",
          ["style"] = $"^ '//style//' /({PATTERN_IN_SLASH}) '//'; f",
-         ["style-format"]=$" '!style!' /({PATTERN_IN_BANG}) '!' /({PATTERN_IN_BANG}) '!'; f",
+         ["style-format"] = $" '!style!' /({PATTERN_IN_BANG}) '!' /({PATTERN_IN_BANG}) '!'; f",
          ["alignment"] = $"^ '//alignment//' /({PATTERN_IN_SLASH}) '//'; f"
       };
    }
@@ -92,10 +92,14 @@ public class RtfTemplate
 
    protected void useDescriptor(Paragraph paragraph, MatchResult result) => useDescriptor(paragraph.DefaultCharFormat, result);
 
-   protected string useDescriptor(CharFormat charFormat, MatchResult result, string line)
+   /*protected string useDescriptorFormat(Paragraph paragraph, MatchResult result, string line)
    {
-
-   }
+      var (_, extractedText) = result;
+      var begin = result.Index;
+      var end = begin + result.GetGroup(0, 2).Length - 1;
+      var charFormat = paragraph.CharFormat(begin, end);
+      useDescriptor(charFormat, result);
+   }*/
 
    protected void setFontSize(CharFormat charFormat, MatchResult result)
    {
