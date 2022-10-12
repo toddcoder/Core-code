@@ -111,6 +111,11 @@ namespace Core.Collections
          return maybe(hash.ContainsKey(key), () => hash[key]);
       }
 
+      public static Maybe<TValue> Of<TKey, TValue>(this IHash<TKey, TValue> hash, TKey key)
+      {
+         return maybe(hash.ContainsKey(key), () => hash[key]);
+      }
+
       public static Maybe<TResult> Map<TKey, TValue, TResult>(this IHash<TKey, TValue> hash, TKey key,
          Func<TValue, TResult> func)
       {

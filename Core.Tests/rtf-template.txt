@@ -1,0 +1,9 @@
+﻿/font/times/Times New Roman
+/font/courier/Courier New
+/color/red/0xff0000
+/color/blue/blue
+/color/table-header/0x76923c
+/color/table-row/0xd6e3bc
+/color/table-alt/0xffffff
+[font times, alignment left]Testing
+[font times, fg-color blue, bg-color red, font-size 18: Test2:] Character Formatting
