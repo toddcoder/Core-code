@@ -109,16 +109,6 @@ namespace Core.Arrays
 
       public static bool IsNotEmpty<T>(this T[] array) => array is { Length: > 0 };
 
-      public static T[] Slice<T>(this T[] array, int start, int length)
-      {
-         var stopIndex = Min(start + length - 1, array.Length - 1);
-         var newLength = stopIndex - start + 1;
-         var slice = new T[newLength];
-         Array.Copy(array, start, slice, 0, newLength);
-
-         return slice;
-      }
-
       public static T[] RangeOf<T>(this T[] array, int start, int stop)
       {
          start.Must().BeLessThanOrEqual(stop).OrThrow();
@@ -206,11 +196,12 @@ namespace Core.Arrays
 
       public static Maybe<T> Last<T>(this T[] array) => maybe(array.IsNotEmpty(), () => array[array.Length - 1]);
 
-      public static T[] Tail<T>(this T[] array) => array.IsEmpty() ? Array.Empty<T>() : array.Slice(1, array.Length - 1);
+      public static T[] Tail<T>(this T[] array) => array.IsEmpty() ? Array.Empty<T>() : array.Skip(1).ToArray();
 
-      public static T[] AllButLast<T>(this T[] array) => array.IsEmpty() ? Array.Empty<T>() : array.Slice(0, array.Length - 1);
+      public static T[] AllButLast<T>(this T[] array) => array.IsEmpty() ? Array.Empty<T>() : array.Take(array.Length - 1).ToArray();
 
-      public static Maybe<Slice<T>> Balanced<T>(this T[] array, Predicate<T> startCondition, Predicate<T> stopCondition, int startIndex = 0)
+      public static Maybe<Slice<T>> Balanced<T>(this T[] array, Predicate<T> startCondition, Predicate<T> stopCondition,
+         int startIndex = 0)
       {
          if (array.IsEmpty())
          {
