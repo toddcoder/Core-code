@@ -25,9 +25,9 @@ namespace Core.Tests
          var tableRowColor = document.Color(0xD6E3BC);
          var tableRowAltColor = document.Color(0xFFFFFF);
 
-         document.Paragraph("Testing\n", Alignment.Left, timesFont);
+         _ = document + ("Testing\n", Alignment.Left, timesFont);
 
-         var paragraph = document.Paragraph("Test2: Character Formatting", timesFont);
+         var paragraph = document + ("Test2: Character Formatting", timesFont);
 
          var _format = paragraph.CharFormat("Test2:; u");
          if (!_format)
@@ -51,16 +51,16 @@ namespace Core.Tests
          format.FontStyle += FontStyleFlag.Underline;
          format.Font = courierFont;
 
-         paragraph = document.Paragraph("Footnote");
-         paragraph.Footnote(7).Paragraph().Text = "Footnote details here.";
+         paragraph = document + "Footnote";
+         _ = paragraph.Footnote(7) + "Footnote details here.";
 
-         paragraph = document.Footer.Paragraph("Test : Page: / Date: Time:", Alignment.Center, 15f);
+         paragraph = document.Footer + ("Test : Page: / Date: Time:", Alignment.Center, 15f);
          paragraph.ControlWord(12, FieldType.Page);
          paragraph.ControlWord(13, FieldType.NumPages);
          paragraph.ControlWord(19, FieldType.Date);
          paragraph.ControlWord(25, FieldType.Time);
 
-         document.Header.Paragraph("Header");
+         _ = document.Header + "Header";
 
          var image = document.Image(@"C:\Temp\rabbit-mq.jpg");
          image.Width = 130;
@@ -87,18 +87,18 @@ namespace Core.Tests
 
          table.Merge(1, 0, 3, 1);
          table[4, 3].BackgroundColor = redColor;
-         table[4, 3].Paragraph().Text = "Table";
+         table[4, 3].Text = "Table";
 
-         paragraph = document.Paragraph("Test 7.1: Hyperlink to target (Test9)");
+         paragraph = document + "Test 7.1: Hyperlink to target (Test9)";
          format = paragraph.CharFormat(10, 18);
          format.LocalHyperlink = "target";
          format.LocalHyperlinkTip = "Link to target";
          format.ForegroundColor = blueColor;
 
-         paragraph = document.Paragraph("New page");
+         paragraph = document + "New page";
          paragraph.StartNewPage = true;
 
-         paragraph = document.Paragraph("Test9: Set bookmark");
+         paragraph = document + "Test9: Set bookmark";
          format = paragraph.CharFormat(0, 18);
          format.Bookmark = "target";
 
