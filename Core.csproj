@@ -276,6 +276,7 @@
     <Compile Include="Matching\MultiMatching\Case.cs" />
     <Compile Include="Matching\MultiMatching\MultiMatcher.cs" />
     <Compile Include="Matching\MultiMatching\MultiMatchingFunctions.cs" />
+    <Compile Include="Matching\SourceLines.cs" />
     <Compile Include="Monads\AttemptFunctions.cs" />
     <Compile Include="Monads\Cancelled.cs" />
     <Compile Include="Monads\Completed.cs" />

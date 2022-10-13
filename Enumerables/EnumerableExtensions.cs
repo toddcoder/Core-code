@@ -5,6 +5,7 @@ using Core.Arrays;
 using Core.Assertions;
 using Core.Collections;
 using Core.Exceptions;
+using Core.Matching;
 using Core.Monads;
 using Core.Numbers;
 using Core.Objects;
@@ -1247,7 +1248,8 @@ namespace Core.Enumerables
          return enumerable.ThenBy(i => paired[i]);
       }
 
-      public static IOrderedEnumerable<T> OrderBy<T, TMember>(this IEnumerable<T> enumerable, Func<T, TMember> mapper, IEnumerable<TMember> orderItems)
+      public static IOrderedEnumerable<T> OrderBy<T, TMember>(this IEnumerable<T> enumerable, Func<T, TMember> mapper,
+         IEnumerable<TMember> orderItems)
       {
          var paired = getPaired(orderItems, int.MaxValue);
          return enumerable.OrderBy(i => paired[mapper(i)]);

@@ -130,6 +130,13 @@ namespace Core.Tests
          {
             Console.WriteLine($"'{line}'");
          }
+
+         Console.WriteLine("---");
+         var sourceLines = new SourceLines(text);
+         foreach (var line in sourceLines.Lines())
+         {
+            Console.WriteLine($"'{line}'");
+         }
       }
 
       [TestMethod]
@@ -156,6 +163,28 @@ namespace Core.Tests
          {
             Console.WriteLine($"  -> '{line}'");
          }
+
+         Console.WriteLine("---");
+
+         var sourceLines = new SourceLines(text);
+         foreach (var line in sourceLines.While("^ ':'"))
+         {
+            Console.WriteLine($": -> '{line}'");
+         }
+
+         Console.WriteLine("========");
+
+         foreach (var line in sourceLines.While("^ '-'"))
+         {
+            Console.WriteLine($"- -> '{line}'");
+         }
+
+         Console.WriteLine("========");
+
+         foreach (var line in sourceLines.Lines())
+         {
+            Console.WriteLine($"  -> '{line}'");
+         }
       }
 
       [TestMethod]
@@ -163,7 +192,18 @@ namespace Core.Tests
       {
          var text = "[a -> alpha]This is line 1\n[b -> bravo]This is line 2\n[c -> charlie]This is line 3";
          var source = new Source(text);
-         while (source.NextLineMatch("^ '[' /(/w) /s* '->' /s* /(/w+) ']'").Map(out var result, out var line))
+         Pattern pattern = "^ '[' /(/w) /s* '->' /s* /(/w+) ']'; f";
+         while (source.NextLineMatch(pattern).Map(out var result, out var line))
+         {
+            var (tag, value) = result;
+            var remainder = line.Drop(result.Length);
+            Console.WriteLine($"[ {tag} -> {value} ] {remainder}");
+         }
+
+         Console.WriteLine("---");
+
+         var sourceLines = new SourceLines(text);
+         foreach (var (result, line) in sourceLines.WhileMatches(pattern))
          {
             var (tag, value) = result;
             var remainder = line.Drop(result.Length);
@@ -217,21 +257,21 @@ namespace Core.Tests
             .Alias("yy2", "extra", "Extra!")
             .Alias("zx", "xValue", "X!");
          var _result = variants.TemplateName("x").Evaluate("xx");
-         if (_result.Map(out var result))
+         if (_result)
          {
-            Console.WriteLine(result);
+            Console.WriteLine(~_result);
          }
 
          _result = variants.TemplateName("y").Evaluate("yy1", "yy2");
-         if (_result.Map(out result))
+         if (_result)
          {
-            Console.WriteLine(result);
+            Console.WriteLine(~_result);
          }
 
          _result = variants.TemplateName("z").Evaluate("zx");
-         if (_result.Map(out result))
+         if (_result)
          {
-            Console.WriteLine(result);
+            Console.WriteLine(~_result);
          }
       }
    }
