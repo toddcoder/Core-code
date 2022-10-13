@@ -14,6 +14,9 @@ public static class ParagraphFunctions
       {
          switch (specifier)
          {
+            case FontData fontData:
+               format.FontData = fontData;
+               break;
             case FontDescriptor fontDescriptor:
                format.Font = fontDescriptor;
                break;

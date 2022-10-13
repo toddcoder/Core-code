@@ -53,6 +53,7 @@
     <Compile Include="Rtf\Alignment.cs" />
     <Compile Include="Rtf\Descriptor.cs" />
     <Compile Include="Rtf\FieldType.cs" />
+    <Compile Include="Rtf\FontData.cs" />
     <Compile Include="Rtf\ParagraphFunctions.cs" />
     <Compile Include="Rtf\RtfTemplate.cs" />
     <Compile Include="Rtf\RtfWriter.cs" />

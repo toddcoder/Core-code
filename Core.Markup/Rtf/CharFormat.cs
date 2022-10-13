@@ -186,6 +186,11 @@ public class CharFormat
       set => twoInOneStyle = value;
    }
 
+   public FontData FontData
+   {
+      set => value.SetCharFormat(this);
+   }
+
    public string RenderHead()
    {
       var result = new StringBuilder("{");
