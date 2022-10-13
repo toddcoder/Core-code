@@ -76,12 +76,22 @@ public class Table : Block
       pendingMerges = new MaybeQueue<(int, int, int, int)>();
    }
 
+   [Obsolete("Use Row()")]
    public void AddRow()
    {
       rows.Add(new List<CellData>());
       rowIndex = rows.Count - 1;
    }
 
+   public Table Row()
+   {
+      rows.Add(new List<CellData>());
+      rowIndex = rows.Count - 1;
+
+      return this;
+   }
+
+   [Obsolete("Use Column")]
    public void AddColumn(string text, params object[] specifiers)
    {
       var cellData = new CellData { Text = text, Specifiers = specifiers };
@@ -93,6 +103,20 @@ public class Table : Block
       }
    }
 
+   public Table Column(string text, params object[] specifiers)
+   {
+      var cellData = new CellData { Text = text, Specifiers = specifiers };
+      var row = rows[rowIndex];
+      row.Add(cellData);
+      if (row.Count > maxColumnCount)
+      {
+         maxColumnCount = row.Count;
+      }
+
+      return this;
+   }
+
+   [Obsolete("Use Image")]
    public void AddImage(FileName imageFile, ImageFileType imageFileType)
    {
       var cellData = new CellData { ImageFile = imageFile, ImageFileType = imageFileType };
@@ -102,6 +126,19 @@ public class Table : Block
       {
          maxColumnCount = row.Count;
       }
+   }
+
+   public Table Image(FileName imageFile, ImageFileType imageFileType)
+   {
+      var cellData = new CellData { ImageFile = imageFile, ImageFileType = imageFileType };
+      var row = rows[rowIndex];
+      row.Add(cellData);
+      if (row.Count > maxColumnCount)
+      {
+         maxColumnCount = row.Count;
+      }
+
+      return this;
    }
 
    protected void createArrays()
@@ -137,7 +174,7 @@ public class Table : Block
                var cellData = row[j];
                if (cellData.ImageFile && cellData.ImageFileType)
                {
-                  tableCell.Image((~cellData.ImageFile).FullPath, (~cellData.ImageFileType));
+                  tableCell.Image((~cellData.ImageFile).FullPath, ~cellData.ImageFileType);
                }
                else
                {

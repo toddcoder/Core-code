@@ -70,10 +70,10 @@ namespace Core.Tests
 
          foreach (var row in 5.Times())
          {
-            table.AddRow();
+            table.Row();
             foreach (var column in 4.Times())
             {
-               table.AddColumn($"CELL {row}, {column}");
+               table.Column($"CELL {row}, {column}");
             }
          }
 
@@ -115,9 +115,9 @@ namespace Core.Tests
          foreach (var (prompt, hyperlink) in array(("Pull Request", "http://foobar"), ("estreamps", "http://evokeps"),
                      ("staging10ua", "http://evokeuat")))
          {
-            table.AddRow();
-            table.AddColumn(prompt, FontStyleFlag.Bold);
-            table.AddColumn(hyperlink, blueColor, (hyperlink, ""));
+            table.Row()
+               .Column(prompt, FontStyleFlag.Bold)
+               .Column(hyperlink, blueColor, (hyperlink, ""));
          }
 
          document.Save(@"C:\Temp\Test2.rtf");
