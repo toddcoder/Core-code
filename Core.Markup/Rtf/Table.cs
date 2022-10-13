@@ -33,6 +33,48 @@ public class Table : Block
       public Maybe<ImageFileType> ImageFileType { get; set; }
    }
 
+   public static Table operator +(Table table, string columnText)
+   {
+      return table.Column(columnText);
+   }
+
+   public static Table operator +(Table table, (string, object) columnData)
+   {
+      return table.Column(columnData.Item1, columnData.Item2);
+   }
+
+   public static Table operator +(Table table, (string, object, object) columnData)
+   {
+      return table.Column(columnData.Item1, columnData.Item2, columnData.Item3);
+   }
+
+   public static Table operator +(Table table, (string, object, object, object) columnData)
+   {
+      return table.Column(columnData.Item1, columnData.Item2, columnData.Item3, columnData.Item4);
+   }
+
+   public static Table operator +(Table table, (string, object, object, object, object) columnData)
+   {
+      return table.Column(columnData.Item1, columnData.Item2, columnData.Item3, columnData.Item4, columnData.Item5);
+   }
+
+   public static Table operator +(Table table, (string, object, object, object, object, object) columnData)
+   {
+      return table.Column(columnData.Item1, columnData.Item2, columnData.Item3, columnData.Item4, columnData.Item5, columnData.Item6);
+   }
+
+   public static Table operator +(Table table, (string, object, object, object, object, object, object) columnData)
+   {
+      return table.Column(columnData.Item1, columnData.Item2, columnData.Item3, columnData.Item4, columnData.Item5, columnData.Item6,
+         columnData.Item7);
+   }
+
+   public static Table operator +(Table table, (string, object, object, object, object, object, object, object) columnData)
+   {
+      return table.Column(columnData.Item1, columnData.Item2, columnData.Item3, columnData.Item4, columnData.Item5, columnData.Item6,
+         columnData.Item7, columnData.Item8);
+   }
+
    protected Alignment alignment;
    protected Margins margins;
    protected int rowCount;

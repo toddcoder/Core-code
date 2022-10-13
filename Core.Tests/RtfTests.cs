@@ -35,7 +35,7 @@ namespace Core.Tests
             throw fail("Couldn't extract text");
          }
 
-         var format = ~_format; //paragraph.CharFormat(0, 5);
+         var format = ~_format;
          format.ForegroundColor = blueColor;
          format.BackgroundColor = redColor;
          format.FontSize = 18f;
@@ -46,7 +46,7 @@ namespace Core.Tests
             throw fail("Couldn't extract text");
          }
 
-         format = ~_format; //paragraph.CharFormat(7, 26);
+         format = ~_format;
          format.FontStyle += FontStyleFlag.Bold;
          format.FontStyle += FontStyleFlag.Underline;
          format.Font = courierFont;
@@ -115,9 +115,7 @@ namespace Core.Tests
          foreach (var (prompt, hyperlink) in array(("Pull Request", "http://foobar"), ("estreamps", "http://evokeps"),
                      ("staging10ua", "http://evokeuat")))
          {
-            table.Row()
-               .Column(prompt, FontStyleFlag.Bold)
-               .Column(hyperlink, blueColor, (hyperlink, ""));
+            _ = table.Row() + (prompt, FontStyleFlag.Bold) + (hyperlink, blueColor, (hyperlink, ""));
          }
 
          document.Save(@"C:\Temp\Test2.rtf");
