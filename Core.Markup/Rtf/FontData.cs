@@ -17,6 +17,18 @@ public class FontData
       LocalHyperlinkTip = nil;
    }
 
+   public FontData(FontData otherFontData)
+   {
+      Font = otherFontData.Font;
+      FontSize = otherFontData.FontSize;
+      FontStyle = otherFontData.FontStyle;
+      ForegroundColor = otherFontData.ForegroundColor;
+      BackgroundColor = otherFontData.BackgroundColor;
+      Bookmark = otherFontData.Bookmark;
+      LocalHyperlink = otherFontData.LocalHyperlink;
+      LocalHyperlinkTip = otherFontData.LocalHyperlinkTip;
+   }
+
    public FontDescriptor Font { get; }
 
    public Maybe<float> FontSize { get; set; }
