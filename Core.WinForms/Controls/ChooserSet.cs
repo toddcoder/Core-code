@@ -1,4 +1,6 @@
-﻿using System.Drawing;
+﻿using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
 using Core.Collections;
 using Core.Monads;
 
@@ -37,6 +39,8 @@ public class ChooserSet
       return this;
    }
 
+   public ChooserSet Choices(IEnumerable<string> choices) => Choices(choices.ToArray());
+
    public ChooserSet ForeColor(Color foreColor)
    {
       chooser.ChoiceForeColor = foreColor;
@@ -72,9 +76,9 @@ public class ChooserSet
       var _chosen = chooser.Get();
       if (chooser.ModifyTitle)
       {
-         if (_chosen.Map(out var chosen))
+         if (_chosen)
          {
-            chooser.UiAction.Success(chosen.Key);
+            chooser.UiAction.Success((~_chosen).Key);
          }
          else
          {

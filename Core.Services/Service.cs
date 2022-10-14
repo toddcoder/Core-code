@@ -6,54 +6,53 @@ using Core.Services.Loggers;
 using Core.Services.Plugins;
 using static Core.Monads.MonadFunctions;
 
-namespace Core.Services
+namespace Core.Services;
+
+public class Service
 {
-   public class Service
+   protected static Result<Service> fromConfiguration(Configuration configuration, Maybe<IServiceMessage> _serviceMessage)
    {
-      protected static Result<Service> fromConfiguration(Configuration configuration, Maybe<IServiceMessage> _serviceMessage)
+      return
+         from name in configuration.Result.String("name")
+         from addressSetting in configuration.Result.Setting("address")
+         from exceptionAddress in addressSetting.Deserialize<Address>()
+         from typeManager in TypeManager.FromConfiguration(configuration)
+         from serviceLogger in ServiceLogger.FromConfiguration(configuration)
+         select new Service(configuration, name, exceptionAddress, typeManager, serviceLogger, _serviceMessage);
+   }
+
+   public static Result<Service> FromConfiguration(Configuration configuration) => fromConfiguration(configuration, nil);
+
+   public static Result<Service> FromConfiguration(Configuration configuration, IServiceMessage serviceMessage)
+   {
+      return fromConfiguration(configuration, serviceMessage.Some());
+   }
+
+   protected Configuration configuration;
+   protected string name;
+   protected Address exceptionAddress;
+   protected TypeManager typeManager;
+   protected StringHash<Job> jobs;
+   protected StringHash<Subscription> subscriptions;
+   protected ServiceMessage serviceMessage;
+
+   protected Service(Configuration configuration, string name, Address exceptionAddress, TypeManager typeManager, ServiceLogger serviceLogger,
+      Maybe<IServiceMessage> _serviceMessage)
+   {
+      this.configuration = configuration;
+      this.name = name;
+      this.exceptionAddress = exceptionAddress;
+      this.typeManager = typeManager;
+
+      serviceMessage = new ServiceMessage(name);
+      serviceMessage.Add(serviceLogger);
+      serviceMessage.Add(new NamedExceptions(exceptionAddress, name, $"{name} Exceptions", 5));
+      if (_serviceMessage)
       {
-         return
-            from name in configuration.Result.String("name")
-            from addressSetting in configuration.Result.Setting("address")
-            from exceptionAddress in addressSetting.Deserialize<Address>()
-            from typeManager in TypeManager.FromConfiguration(configuration)
-            from serviceLogger in ServiceLogger.FromConfiguration(configuration)
-            select new Service(configuration, name, exceptionAddress, typeManager, serviceLogger, _serviceMessage);
+         serviceMessage.Add(~_serviceMessage);
       }
 
-      public static Result<Service> FromConfiguration(Configuration configuration) => fromConfiguration(configuration, nil);
-
-      public static Result<Service> FromConfiguration(Configuration configuration, IServiceMessage serviceMessage)
-      {
-         return fromConfiguration(configuration, serviceMessage.Some());
-      }
-
-      protected Configuration configuration;
-      protected string name;
-      protected Address exceptionAddress;
-      protected TypeManager typeManager;
-      protected StringHash<Job> jobs;
-      protected StringHash<Subscription> subscriptions;
-      protected ServiceMessage serviceMessage;
-
-      protected Service(Configuration configuration, string name, Address exceptionAddress, TypeManager typeManager, ServiceLogger serviceLogger,
-         Maybe<IServiceMessage> _serviceMessage)
-      {
-         this.configuration = configuration;
-         this.name = name;
-         this.exceptionAddress = exceptionAddress;
-         this.typeManager = typeManager;
-
-         serviceMessage = new ServiceMessage(name);
-         serviceMessage.Add(serviceLogger);
-         serviceMessage.Add(new NamedExceptions(exceptionAddress, name, $"{name} Exceptions", 5));
-         if (_serviceMessage.Map(out var newServiceMessage))
-         {
-            serviceMessage.Add(newServiceMessage);
-         }
-
-         jobs = new StringHash<Job>(true);
-         subscriptions = new StringHash<Subscription>(true);
-      }
+      jobs = new StringHash<Job>(true);
+      subscriptions = new StringHash<Subscription>(true);
    }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using Core.Exceptions;
 using Core.Matching;
+using static Core.Objects.GetHashCodeGenerator;
 
 namespace Core.Markup.Html
 {
@@ -8,9 +9,11 @@ namespace Core.Markup.Html
    {
       public static implicit operator Style(string source)
       {
-         if (source.Matches("^ /(-[':']+) /s* ':' /s* /(.+) $; f").Map(out var result))
+         var _result = source.Matches("^ /(-[':']+) /s* ':' /s* /(.+) $; f");
+         if (_result)
          {
-            return new Style(result.FirstGroup, result.SecondGroup);
+            var (key, value) = ~_result;
+            return new Style(key, value);
          }
          else
          {
@@ -45,13 +48,7 @@ namespace Core.Markup.Html
          return obj is Style other && Equals(other);
       }
 
-      public override int GetHashCode()
-      {
-         unchecked
-         {
-            return (Key != null ? Key.GetHashCode() : 0) * 397 ^ (Value != null ? Value.GetHashCode() : 0);
-         }
-      }
+      public override int GetHashCode() => hashCode() + Key + Value;
 
       public static bool operator ==(Style left, Style right) => Equals(left, right);
 

@@ -6,59 +6,59 @@ using Core.Configurations;
 using Core.Monads;
 using static Core.Monads.MonadFunctions;
 
-namespace Core.Services.Plugins
+namespace Core.Services.Plugins;
+
+public class Subscription : Plugin, IRequiresTypeManager
 {
-   public class Subscription : Plugin, IRequiresTypeManager
+   protected StringSet jobNames;
+
+   public Subscription(string name, Configuration configuration, Setting jobSetting)
+      : base(name, configuration, jobSetting)
    {
-      protected StringSet jobNames;
+      jobNames = new StringSet(true);
+   }
 
-      public Subscription(string name, Configuration configuration, Setting jobSetting)
-         : base(name, configuration, jobSetting)
+   public void Subscribe(string jobName) => jobNames.Add(jobName);
+
+   public bool IsSubscribed(string jobName) => jobNames.Contains(jobName);
+
+   protected IEnumerable<Job> getJobs(Setting jobsSetting)
+   {
+      foreach (var jobName in jobNames)
       {
-         jobNames = new StringSet(true);
-      }
-
-      public void Subscribe(string jobName) => jobNames.Add(jobName);
-
-      public bool IsSubscribed(string jobName) => jobNames.Contains(jobName);
-
-      protected IEnumerable<Job> getJobs(Setting jobsSetting)
-      {
-         foreach (var jobName in jobNames)
+         var _job =
+            from jobSetting in jobsSetting.Result.Setting(jobName)
+            from newJob in Job.New(jobSetting, TypeManager, configuration)
+            select newJob;
+         if (_job)
          {
-            var _job =
-               from jobSetting in jobsSetting.Result.Setting(jobName)
-               from newJob in Job.New(jobSetting, TypeManager, configuration)
-               select newJob;
-            if (_job.Map(out var job, out var exception))
+            if ((~_job).Enabled)
             {
-               if (job.Enabled)
-               {
-                  yield return job;
-               }
+               yield return _job;
             }
-            else
-            {
-               serviceMessage.EmitException(exception);
-            }
-         }
-      }
-
-      public override Result<Unit> Dispatch()
-      {
-         if (configuration.Result.Setting("jobs").Map(out var jobsSetting, out var exception))
-         {
-            var tasks = getJobs(jobsSetting).Select(job => Task.Run(job.ExecutePlugin)).ToArray();
-            Task.WaitAll(tasks);
-
-            return unit;
          }
          else
          {
-            return exception;
+            serviceMessage.EmitException(_job.Exception);
          }
       }
-
-      public TypeManager TypeManager { get; set; }
    }
+
+   public override Result<Unit> Dispatch()
+   {
+      var _jobsSetting = configuration.Result.Setting("jobs");
+      if (_jobsSetting)
+      {
+         var tasks = getJobs(_jobsSetting).Select(job => Task.Run(job.ExecutePlugin)).ToArray();
+         Task.WaitAll(tasks);
+
+         return unit;
+      }
+      else
+      {
+         return _jobsSetting.Exception;
+      }
+   }
+
+   public TypeManager TypeManager { get; set; }
 }

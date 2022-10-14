@@ -5,101 +5,102 @@ using Core.DataStructures;
 using Core.Exceptions;
 using Core.Monads;
 
-namespace Core.Services.Loggers
+namespace Core.Services.Loggers;
+
+public class QueuedServiceLogger : ServiceLogger
 {
-   public class QueuedServiceLogger : ServiceLogger
+   protected class QueueItem
    {
-      protected class QueueItem
+      protected string text;
+      protected bool newLine;
+      protected bool exception;
+
+      public QueueItem(string text, bool newLine, bool exception)
       {
-         protected string text;
-         protected bool newLine;
-         protected bool exception;
-
-         public QueueItem(string text, bool newLine, bool exception)
-         {
-            this.text = text;
-            this.newLine = newLine;
-            this.exception = exception;
-         }
-
-         public string Text => text;
-
-         public bool NewLine => newLine;
-
-         public bool Exception => exception;
+         this.text = text;
+         this.newLine = newLine;
+         this.exception = exception;
       }
 
-      protected MaybeQueue<QueueItem> queue;
+      public string Text => text;
 
-      public new static Result<QueuedServiceLogger> FromConfiguration(Configuration configuration)
+      public bool NewLine => newLine;
+
+      public bool Exception => exception;
+   }
+
+   protected MaybeQueue<QueueItem> queue;
+
+   public new static Result<QueuedServiceLogger> FromConfiguration(Configuration configuration)
+   {
+      Result<ServiceLogger> creator(FolderName baseFolder, string jobName, int sizeLimit, TimeSpan expiry, Maybe<EventLogger> _eventLogger)
       {
-         Result<ServiceLogger> creator(FolderName baseFolder, string jobName, int sizeLimit, TimeSpan expiry, Maybe<EventLogger> _eventLogger)
-         {
-            return new QueuedServiceLogger(baseFolder, jobName, sizeLimit, expiry, _eventLogger);
-         }
-
-         return fromConfiguration(configuration, creator).Map(sl => (QueuedServiceLogger)sl);
+         return new QueuedServiceLogger(baseFolder, jobName, sizeLimit, expiry, _eventLogger);
       }
 
-      public QueuedServiceLogger(FolderName baseFolder, string jobName, int sizeLimit, TimeSpan expiry, Maybe<EventLogger> _eventLogger) :
-         base(baseFolder, jobName, sizeLimit, expiry, _eventLogger)
-      {
-         queue = new MaybeQueue<QueueItem>();
-      }
+      return fromConfiguration(configuration, creator).Map(sl => (QueuedServiceLogger)sl);
+   }
 
-      protected void dequeue()
+   public QueuedServiceLogger(FolderName baseFolder, string jobName, int sizeLimit, TimeSpan expiry, Maybe<EventLogger> _eventLogger) :
+      base(baseFolder, jobName, sizeLimit, expiry, _eventLogger)
+   {
+      queue = new MaybeQueue<QueueItem>();
+   }
+
+   protected void dequeue()
+   {
+      lock (queue)
       {
-         lock (queue)
+         var _item = queue.Dequeue();
+         while (_item)
          {
-            while (queue.Dequeue().Map(out var item))
-            {
-               baseWrite(item);
-            }
+            baseWrite(_item);
+            _item = queue.Dequeue();
          }
       }
+   }
 
-      protected virtual void baseWrite(QueueItem item)
+   protected virtual void baseWrite(QueueItem item)
+   {
+      if (item.NewLine)
       {
-         if (item.NewLine)
+         base.WriteLine(item.Exception ? $"< {item.Text} >" : item.Text);
+      }
+      else if (item.Exception)
+      {
+         base.Write($"< {item.Text} >");
+      }
+      else
+      {
+         base.Write(item.Text);
+      }
+   }
+
+   protected void enqueue(string text, bool newLine, bool exception)
+   {
+      var item = new QueueItem(text, newLine, exception);
+      lock (queue)
+      {
+         if (queue.Count == 0)
          {
-            base.WriteLine(item.Exception ? $"< {item.Text} >" : item.Text);
-         }
-         else if (item.Exception)
-         {
-            base.Write($"< {item.Text} >");
+            baseWrite(item);
          }
          else
          {
-            base.Write(item.Text);
+            queue.Enqueue(item);
          }
       }
 
-      protected void enqueue(string text, bool newLine, bool exception)
-      {
-         var item = new QueueItem(text, newLine, exception);
-         lock (queue)
-         {
-            if (queue.Count == 0)
-            {
-               baseWrite(item);
-            }
-            else
-            {
-               queue.Enqueue(item);
-            }
-         }
-
-         dequeue();
-      }
-
-      public override void WriteLine(string message) => enqueue(message, true, false);
-
-      public override void Write(string message) => enqueue(message, false, false);
-
-      public override void WriteExceptionLine(Exception exception) => enqueue(exception.DeepMessage(), true, true);
-
-      public override void WriteException(Exception exception) => enqueue(exception.DeepMessage(), false, true);
-
-      public override void Commit() => dequeue();
+      dequeue();
    }
+
+   public override void WriteLine(string message) => enqueue(message, true, false);
+
+   public override void Write(string message) => enqueue(message, false, false);
+
+   public override void WriteExceptionLine(Exception exception) => enqueue(exception.DeepMessage(), true, true);
+
+   public override void WriteException(Exception exception) => enqueue(exception.DeepMessage(), false, true);
+
+   public override void Commit() => dequeue();
 }

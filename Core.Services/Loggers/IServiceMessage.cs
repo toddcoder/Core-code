@@ -1,31 +1,30 @@
 ﻿using System;
 
-namespace Core.Services.Loggers
+namespace Core.Services.Loggers;
+
+public interface IServiceMessage
 {
-   public interface IServiceMessage
-   {
-      void Begin();
+   void Begin();
 
-      void EmitException(Exception exception);
+   void EmitException(Exception exception);
 
-      void EmitExceptionAttempt(Exception exception, int retry);
+   void EmitExceptionAttempt(Exception exception, int retry);
 
-      void EmitMessage(object message);
+   void EmitMessage(object message);
 
-      void EmitMessage(string message);
+   void EmitMessage(string message);
 
-      void EmitExceptionMessage(object message);
+   void EmitExceptionMessage(object message);
 
-      void EmitExceptionMessage(string message);
+   void EmitExceptionMessage(string message);
 
-      void EmitWarning(Exception exception);
+   void EmitWarning(Exception exception);
 
-      void EmitWarningMessage(object message);
+   void EmitWarningMessage(object message);
 
-      void EmitWarningMessage(string message);
+   void EmitWarningMessage(string message);
 
-      void Commit();
+   void Commit();
 
-      bool DateEnabled { get; set; }
-   }
+   bool DateEnabled { get; set; }
 }

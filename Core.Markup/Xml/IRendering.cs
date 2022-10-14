@@ -1,14 +1,13 @@
 ﻿using System;
 using Core.Computers;
 
-namespace Core.Markup.Xml
+namespace Core.Markup.Xml;
+
+public interface IRendering
 {
-   public interface IRendering
-   {
-      string ToStringRendering(Func<Element, bool> callback);
+   string ToStringRendering(Func<Element, bool> callback);
 
-      void RenderToFile(FileName file);
+   void RenderToFile(FileName file);
 
-      void RenderToFile(FileName file, Func<Element, bool> callback);
-   }
+   void RenderToFile(FileName file, Func<Element, bool> callback);
 }

@@ -1,7 +1,6 @@
-﻿namespace Core.Services.Plugins
+﻿namespace Core.Services.Plugins;
+
+public interface IRequiresTypeManager
 {
-   public interface IRequiresTypeManager
-   {
-      TypeManager TypeManager { get; set; }
-   }
+   TypeManager TypeManager { get; set; }
 }

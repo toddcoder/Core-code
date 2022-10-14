@@ -1,9 +1,8 @@
 ﻿using System;
 
-namespace Core.Services.Scheduling.Brackets
+namespace Core.Services.Scheduling.Brackets;
+
+public abstract class Bracket
 {
-   public abstract class Bracket
-   {
-      public abstract bool Within(DateTime now);
-   }
+   public abstract bool Within(DateTime now);
 }

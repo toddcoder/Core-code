@@ -1,7 +1,6 @@
-﻿namespace Core.Markup.Xml
+﻿namespace Core.Markup.Xml;
+
+public interface IText
 {
-   public interface IText
-   {
-      string Text { get; }
-   }
+   string Text { get; }
 }

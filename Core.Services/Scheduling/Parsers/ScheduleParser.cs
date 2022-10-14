@@ -3,38 +3,37 @@ using Core.Monads;
 using Core.Services.Scheduling.Brackets;
 using static Core.Monads.MonadFunctions;
 
-namespace Core.Services.Scheduling.Parsers
+namespace Core.Services.Scheduling.Parsers;
+
+public class ScheduleParser
 {
-   public class ScheduleParser
+   protected List<Parser> parsers;
+
+   public ScheduleParser() => parsers = new List<Parser>
    {
-      protected List<Parser> parsers;
+      new YearParser(),
+      new MonthParser(),
+      new DayParser(),
+      new DayOfWeekParser(),
+      new HourParser(),
+      new MinuteParser(),
+      new SecondParser()
+   };
 
-      public ScheduleParser() => parsers = new List<Parser>
+   public Maybe<ScheduleIncrement> Parse(string source)
+   {
+      foreach (var parser in parsers)
       {
-         new YearParser(),
-         new MonthParser(),
-         new DayParser(),
-         new DayOfWeekParser(),
-         new HourParser(),
-         new MinuteParser(),
-         new SecondParser()
-      };
-
-      public Maybe<ScheduleIncrement> Parse(string source)
-      {
-         foreach (var parser in parsers)
+         var increment = parser.Parse(source);
+         if (increment)
          {
-            var increment = parser.Parse(source);
-            if (increment)
-            {
-               Bracket = parser.Bracket;
-               return increment;
-            }
+            Bracket = parser.Bracket;
+            return increment;
          }
-
-         return nil;
       }
 
-      public Bracket Bracket { get; set; }
+      return nil;
    }
+
+   public Bracket Bracket { get; set; }
 }

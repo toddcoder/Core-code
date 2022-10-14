@@ -1,13 +1,11 @@
 ﻿using System;
-using Core.Services.Plugins;
 
-namespace Standard.Services.Plugins
+namespace Core.Services.Plugins;
+
+public class PluginException : ApplicationException
 {
-	public class PluginException : ApplicationException
-	{
-		public PluginException(Plugin plugin, Exception innerException)
-			: base($"Plugin: {plugin.Name}; {innerException.Message}")
-		{
-		}
-	}
+   public PluginException(Plugin plugin, Exception innerException)
+      : base($"Plugin: {plugin.Name}; {innerException.Message}")
+   {
+   }
 }

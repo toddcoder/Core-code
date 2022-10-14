@@ -6,206 +6,209 @@ using Core.Monads;
 using Core.Services.Loggers;
 using Core.Services.Scheduling;
 using Core.Strings;
-using Standard.Services.Plugins;
 using static Core.Monads.MonadFunctions;
 
-namespace Core.Services.Plugins
+namespace Core.Services.Plugins;
+
+public abstract class Plugin
 {
-   public abstract class Plugin
+   protected string name;
+   protected Configuration configuration;
+   protected Setting jobSetting;
+   protected ServiceMessage serviceMessage;
+   protected Address address;
+   protected int retries;
+   protected string finalExceptionMessage;
+   protected Maybe<Scheduler> _scheduler;
+   protected Maybe<Retrier> _retrier;
+   protected bool dispatchEnabled;
+   protected string applicationName;
+
+   public Plugin(string name, Configuration configuration, Setting jobSetting)
    {
-      protected string name;
-      protected Configuration configuration;
-      protected Setting jobSetting;
-      protected ServiceMessage serviceMessage;
-      protected Address address;
-      protected int retries;
-      protected string finalExceptionMessage;
-      protected Maybe<Scheduler> _scheduler;
-      protected Maybe<Retrier> _retrier;
-      protected bool dispatchEnabled;
-      protected string applicationName;
+      this.name = name;
+      this.configuration = configuration;
+      this.jobSetting = jobSetting;
 
-      public Plugin(string name, Configuration configuration, Setting jobSetting)
+      dispatchEnabled = true;
+      After = nil;
+   }
+
+   public string Name => name;
+
+   public DateTime TriggerDate { get; set; }
+
+   public DateTime TargetDate { get; set; }
+
+   public virtual void Initialize()
+   {
+   }
+
+   public virtual void Deinitialize()
+   {
+   }
+
+   public abstract Result<Unit> Dispatch();
+
+   public virtual void OnStart()
+   {
+   }
+
+   public virtual void OnStop()
+   {
+   }
+
+   public virtual void OnPause()
+   {
+   }
+
+   public virtual void OnContinue()
+   {
+   }
+
+   public virtual void AfterFirstScheduled(Schedule schedule)
+   {
+   }
+
+   public void InnerDispatch()
+   {
+      if (_retrier)
       {
-         this.name = name;
-         this.configuration = configuration;
-         this.jobSetting = jobSetting;
-
-         dispatchEnabled = true;
-         After = nil;
-      }
-
-      public string Name => name;
-
-      public DateTime TriggerDate { get; set; }
-
-      public DateTime TargetDate { get; set; }
-
-      public virtual void Initialize()
-      {
-      }
-
-      public virtual void Deinitialize()
-      {
-      }
-
-      public abstract Result<Unit> Dispatch();
-
-      public virtual void OnStart()
-      {
-      }
-
-      public virtual void OnStop()
-      {
-      }
-
-      public virtual void OnPause()
-      {
-      }
-
-      public virtual void OnContinue()
-      {
-      }
-
-      public virtual void AfterFirstScheduled(Schedule schedule)
-      {
-      }
-
-      public void InnerDispatch()
-      {
-         if (_retrier.Map(out var r))
+         var retrier = ~_retrier;
+         retrier.Execute();
+         if (retrier.AllRetriesFailed)
          {
-            r.Execute();
-            if (r.AllRetriesFailed)
-            {
-               serviceMessage.EmitExceptionMessage(finalExceptionMessage);
-            }
+            serviceMessage.EmitExceptionMessage(finalExceptionMessage);
          }
       }
+   }
 
-      public virtual void InnerDispatch(int retry)
-      {
-      }
+   public virtual void InnerDispatch(int retry)
+   {
+   }
 
-      public virtual void SuccessfulInnerDispatch(int retry)
-      {
-      }
+   public virtual void SuccessfulInnerDispatch(int retry)
+   {
+   }
 
-      public virtual void FailedInnerDispatch(int retry)
-      {
-      }
+   public virtual void FailedInnerDispatch(int retry)
+   {
+   }
 
-      protected void noRetryException(Exception exception, int retry)
-      {
-         serviceMessage.EmitException(new PluginException(this, exception));
-      }
+   protected void noRetryException(Exception exception, int retry)
+   {
+      serviceMessage.EmitException(new PluginException(this, exception));
+   }
 
-      protected void retryException(Exception exception, int retry)
-      {
-         serviceMessage.EmitExceptionAttempt(new PluginException(this, exception), retry);
-      }
+   protected void retryException(Exception exception, int retry)
+   {
+      serviceMessage.EmitExceptionAttempt(new PluginException(this, exception), retry);
+   }
 
-      public virtual Result<Unit> SetUp()
+   public virtual Result<Unit> SetUp()
+   {
+      try
       {
-         try
+         object obj = this;
+         jobSetting.Fill(ref obj);
+
+         createScheduler();
+
+         var exceptionsSetting = jobSetting.Value.Setting("exceptions");
+         var exceptionsTitle = exceptionsSetting.Value.String("title");
+
+         var _address = exceptionsSetting.Value.Setting("address").Deserialize<Address>();
+         if (_address)
          {
-            object obj = this;
-            jobSetting.Fill(ref obj);
-
-            createScheduler();
-
-            var exceptionsSetting = jobSetting.Value.Setting("exceptions");
-            var exceptionsTitle = exceptionsSetting.Value.String("title");
-
-            if (exceptionsSetting.Value.Setting("address").Deserialize<Address>().Map(out address, out var exception))
+            address = _address;
+            var _serviceLogger = ServiceLogger.FromConfiguration(configuration);
+            if (_serviceLogger)
             {
-               if (ServiceLogger.FromConfiguration(configuration).Map(out var serviceLogger, out exception))
-               {
-                  retries = jobSetting.Maybe.Int32("retries") | 0;
-                  SetRetrier();
-                  finalExceptionMessage = $"All {retries} {"retr(y|ies)".Plural(retries)} failed";
+               retries = jobSetting.Maybe.Int32("retries") | 0;
+               SetRetrier();
+               finalExceptionMessage = $"All {retries} {"retr(y|ies)".Plural(retries)} failed";
 
-                  var namedExceptions = new NamedExceptions(address, name, exceptionsTitle, retries);
+               var namedExceptions = new NamedExceptions(address, name, exceptionsTitle, retries);
 
-                  applicationName = configuration.Value.String("name");
+               applicationName = configuration.Value.String("name");
 
-                  serviceMessage = new ServiceMessage(applicationName);
-                  serviceMessage.Add(serviceLogger);
-                  serviceMessage.Add(namedExceptions);
+               serviceMessage = new ServiceMessage(applicationName);
+               serviceMessage.Add(~_serviceLogger);
+               serviceMessage.Add(namedExceptions);
 
-                  return unit;
-               }
-               else
-               {
-                  return exception;
-               }
+               return unit;
             }
             else
             {
-               return exception;
+               return _serviceLogger.Exception;
             }
          }
-         catch (Exception exception)
+         else
          {
-            return exception;
+            return _address.Exception;
          }
       }
-
-      public void SetRetrier()
+      catch (Exception exception)
       {
-         _retrier = maybe(retries > 0, () => new Retrier(retries, InnerDispatch, retryException));
-         if (_retrier.Map(out var retrier))
-         {
-            retrier.Successful += (_, e) => SuccessfulInnerDispatch(e.RetryCount);
-            retrier.Failed += (_, e) => FailedInnerDispatch(e.RetryCount);
-         }
+         return exception;
       }
-
-      public void SetRetrier(int retries)
-      {
-         this.retries = retries;
-         SetRetrier();
-      }
-
-      public void SetDefaultRetries(int retries)
-      {
-         if (retries < 0)
-         {
-            SetRetrier(retries);
-         }
-      }
-
-      protected static Maybe<Scheduler> getScheduler(string source) => maybe(source != "none", () => new Scheduler(source));
-
-      protected virtual void createScheduler()
-      {
-         _scheduler = jobSetting.Maybe.String("schedule").Map(getScheduler);
-      }
-
-      public Maybe<Scheduler> Scheduler() => _scheduler;
-
-      public virtual void BeforeDispatch(Schedule schedule)
-      {
-      }
-
-      public virtual void AfterDispatch(Schedule schedule)
-      {
-      }
-
-      public virtual bool DispatchEnabled
-      {
-         get => dispatchEnabled;
-         set => dispatchEnabled = value;
-      }
-
-      public virtual void TargetDateTimes(Scheduler jobScheduler)
-      {
-      }
-
-      public IServiceMessage ServiceMessage => serviceMessage;
-
-      public Maybe<AfterPlugin> After { get; set; }
-
-      public bool Tracing { get; set; }
    }
+
+   public void SetRetrier()
+   {
+      _retrier = maybe(retries > 0, () => new Retrier(retries, InnerDispatch, retryException));
+      if (_retrier)
+      {
+         var retrier = ~_retrier;
+         retrier.Successful += (_, e) => SuccessfulInnerDispatch(e.RetryCount);
+         retrier.Failed += (_, e) => FailedInnerDispatch(e.RetryCount);
+      }
+   }
+
+   public void SetRetrier(int retries)
+   {
+      this.retries = retries;
+      SetRetrier();
+   }
+
+   public void SetDefaultRetries(int retries)
+   {
+      if (retries < 0)
+      {
+         SetRetrier(retries);
+      }
+   }
+
+   protected static Maybe<Scheduler> getScheduler(string source) => maybe<Scheduler>() & source != "none" & (() => new Scheduler(source));
+
+   protected virtual void createScheduler()
+   {
+      _scheduler = jobSetting.Maybe.String("schedule").Map(getScheduler);
+   }
+
+   public Maybe<Scheduler> Scheduler() => _scheduler;
+
+   public virtual void BeforeDispatch(Schedule schedule)
+   {
+   }
+
+   public virtual void AfterDispatch(Schedule schedule)
+   {
+   }
+
+   public virtual bool DispatchEnabled
+   {
+      get => dispatchEnabled;
+      set => dispatchEnabled = value;
+   }
+
+   public virtual void TargetDateTimes(Scheduler jobScheduler)
+   {
+   }
+
+   public IServiceMessage ServiceMessage => serviceMessage;
+
+   public Maybe<AfterPlugin> After { get; set; }
+
+   public bool Tracing { get; set; }
 }

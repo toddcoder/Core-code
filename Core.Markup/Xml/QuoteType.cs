@@ -1,8 +1,7 @@
-﻿namespace Core.Markup.Xml
+﻿namespace Core.Markup.Xml;
+
+public enum QuoteType
 {
-   public enum QuoteType
-   {
-      Double,
-      Single
-   }
+   Double,
+   Single
 }

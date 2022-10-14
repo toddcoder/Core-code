@@ -4,6 +4,7 @@ using Core.Enumerables;
 using Core.Exceptions;
 using Core.Matching;
 using Core.Strings;
+using static Core.Objects.GetHashCodeGenerator;
 
 namespace Core.Markup.Html
 {
@@ -11,12 +12,12 @@ namespace Core.Markup.Html
    {
       public static implicit operator Selector(string source)
       {
-         if (source.Matches("^ /(-['{']+) /s* '{' (/s* /(.+))? $; f").Map(out var result))
+         var _result = source.Matches("^ /(-['{']+) /s* '{' (/s* /(.+))? $; f");
+         if (_result)
          {
-            var name = result.FirstGroup;
+            var (name, styleSource) = ~_result;
             var selector = new Selector(name);
 
-            var styleSource = result.SecondGroup;
             if (styleSource.IsNotEmpty())
             {
                Style style = styleSource;
@@ -67,13 +68,7 @@ namespace Core.Markup.Html
          return obj is Selector other && Equals(other);
       }
 
-      public override int GetHashCode()
-      {
-         unchecked
-         {
-            return (styles != null ? styles.GetHashCode() : 0) * 397 ^ (Name != null ? Name.GetHashCode() : 0);
-         }
-      }
+      public override int GetHashCode() => hashCode() + styles + Name;
 
       public static bool operator ==(Selector left, Selector right) => Equals(left, right);
 

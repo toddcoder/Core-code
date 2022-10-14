@@ -1,11 +1,10 @@
 ﻿using System;
 
-namespace Core.Services.Loggers
-{
-   public class NamedException
-   {
-      public string Name { get; set; }
+namespace Core.Services.Loggers;
 
-      public Exception Exception { get; set; }
-   }
+public class NamedException
+{
+   public string Name { get; set; }
+
+   public Exception Exception { get; set; }
 }

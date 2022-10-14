@@ -1,28 +1,27 @@
 ﻿using System.Diagnostics;
 
-namespace Core.Services.Loggers
+namespace Core.Services.Loggers;
+
+public class EventLogger
 {
-   public class EventLogger
+   protected string applicationName;
+
+   public EventLogger(string applicationName)
    {
-      protected string applicationName;
-
-      public EventLogger(string applicationName)
+      this.applicationName = applicationName;
+      if (!EventLog.SourceExists(this.applicationName))
       {
-         this.applicationName = applicationName;
-         if (!EventLog.SourceExists(this.applicationName))
-         {
-            EventLog.CreateEventSource(this.applicationName, "Application");
-         }
+         EventLog.CreateEventSource(this.applicationName, "Application");
       }
+   }
 
-      public void Write(string format, params object[] args)
+   public void Write(string format, params object[] args)
+   {
+      var message = string.Format(format, args);
+      try
       {
-         var message = string.Format(format, args);
-         try
-         {
-            EventLog.WriteEntry(applicationName, message, EventLogEntryType.Error);
-         }
-         catch { }
+         EventLog.WriteEntry(applicationName, message, EventLogEntryType.Error);
       }
+      catch { }
    }
 }

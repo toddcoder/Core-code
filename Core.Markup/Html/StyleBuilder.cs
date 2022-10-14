@@ -29,9 +29,9 @@ namespace Core.Markup.Html
 
       public void Add(string style, string code)
       {
-         if (_key.Map(out var key))
+         if (_key)
          {
-            add(key, style, code);
+            add(_key, style, code);
          }
       }
 

@@ -1,9 +1,8 @@
 ﻿using Core.Services.Loggers;
 
-namespace Core.Services
+namespace Core.Services;
+
+public interface IAddServiceMessages
 {
-   public interface IAddServiceMessages
-   {
-      void AddServiceMessages(params IServiceMessage[] serviceMessages);
-   }
+   void AddServiceMessages(params IServiceMessage[] serviceMessages);
 }

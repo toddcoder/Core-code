@@ -101,7 +101,6 @@
     <Compile Include="Xml\IText.cs" />
     <Compile Include="Xml\MarkupBuilder.cs" />
     <Compile Include="Xml\MarkupExtensions.cs" />
-    <Compile Include="Xml\MarkupReader.cs" />
     <Compile Include="Xml\MarkupTextHolder.cs" />
     <Compile Include="Xml\QuoteType.cs" />
   </ItemGroup>

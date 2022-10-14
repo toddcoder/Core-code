@@ -29,14 +29,9 @@ public class MarkdownWriter
    public static string FixNumberUrl(string url)
    {
       var flatText = flattenString(url);
-      if (flatText.Matches("/(/d+) -/d* $; f").Map(out var result))
-      {
-         return $"[{result.FirstGroup}]({url})";
-      }
-      else
-      {
-         return $"[{url}]({url})";
-      }
+      var _description = flatText.Matches("/(/d+) -/d* $; f").Map(r => r.FirstGroup);
+
+      return $"[{_description | url}]({url})";
    }
 
    protected void writeLine(string text)
