@@ -1,23 +1,7 @@
-using Core.Collections;
-
 namespace Core.Markup.Rtf;
 
 public class FieldControlWord : Renderable
 {
-   protected static AutoHash<FieldType, string> controlWords;
-
-   static FieldControlWord()
-   {
-      controlWords = new AutoHash<FieldType, string>(string.Empty)
-      {
-         [FieldType.None] = string.Empty,
-         [FieldType.Page] = @"{\field{\*\fldinst PAGE }}",
-         [FieldType.NumPages] = @"{\field{\*\fldinst NUMPAGES }}",
-         [FieldType.Date] = @"{\field{\*\fldinst DATE }}",
-         [FieldType.Time] = @"{\field{\*\fldinst TIME }}"
-      };
-   }
-
    protected int position;
    protected FieldType type;
 
@@ -29,5 +13,12 @@ public class FieldControlWord : Renderable
 
    public int Position => position;
 
-   public override string Render() => controlWords[type];
+   public override string Render() => type switch
+   {
+      FieldType.Page => @"{\field{\*\fldinst PAGE }}",
+      FieldType.NumPages => @"{\field{\*\fldinst NUMPAGES }}",
+      FieldType.Date => @"{\field{\*\fldinst DATE }}",
+      FieldType.Time => @"{\field{\*\fldinst TIME }}",
+      _ => ""
+   };
 }

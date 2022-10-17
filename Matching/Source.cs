@@ -189,5 +189,5 @@ public class Source
       }
    }
 
-   public Matched<Unit> Matched() => More ? unit : nil;
+   public Responding<Unit> Responding => More ? unit : nil;
 }

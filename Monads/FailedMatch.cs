@@ -3,6 +3,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads
 {
+   [Obsolete("Use FailedResponse")]
    public class FailedMatch<T> : Matched<T>, IEquatable<FailedMatch<T>>
    {
       public static implicit operator bool(FailedMatch<T> _) => false;

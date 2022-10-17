@@ -22,8 +22,6 @@ namespace Core.Monads
 
       public override Result<T> Result(string message) => value;
 
-      public override Matched<T> Matched() => value;
-
       public override Responding<T> Responding() => value;
 
       public override bool Map(out T value)

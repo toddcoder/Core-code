@@ -139,8 +139,6 @@ namespace Core.Monads
 
       public abstract Result<T> Always(Action action);
 
-      public abstract Matched<T> Match();
-
       public abstract bool Map(out T value);
 
       public abstract bool UnMap(out Exception exception);

@@ -5,6 +5,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads
 {
+   [Obsolete("Use Response")]
    public class Match<T> : Matched<T>, IEquatable<Match<T>>
    {
       public static implicit operator bool(Match<T> _) => true;
@@ -38,7 +39,7 @@ namespace Core.Monads
 
       public override Matched<T2> SelectMany<T1, T2>(Func<T, Matched<T1>> func, Func<T, T1, T2> projection)
       {
-         return func(value).Map(t1 => projection(value, t1).Match(), noMatch<T2>, failedMatch<T2>);
+         return func(value).Map(t1 => projection(value, t1), noMatch<T2>, failedMatch<T2>);
       }
 
       public override Matched<TResult> SelectMany<TResult>(Func<T, TResult> func) => func(value);

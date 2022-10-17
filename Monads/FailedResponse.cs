@@ -92,8 +92,6 @@ namespace Core.Monads
 
       public override Result<T> Result() => new Failure<T>(exception);
 
-      public override Matched<T> Matched() => new FailedMatch<T>(exception);
-
       public override Completion<T> Completion() => new Interrupted<T>(exception);
 
       public bool Equals(FailedResponse<T> other) => Equals(exception, other.exception);

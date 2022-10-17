@@ -95,8 +95,6 @@ namespace Core.Monads
          return this;
       }
 
-      public override Matched<T> Match() => value.Match();
-
       public override bool Map(out T value)
       {
          value = this.value;

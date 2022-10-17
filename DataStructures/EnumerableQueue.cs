@@ -3,41 +3,40 @@ using System.Collections.Generic;
 using Core.Monads;
 using static Core.Monads.MonadFunctions;
 
-namespace Core.DataStructures
+namespace Core.DataStructures;
+
+public class EnumerableQueue<T>
 {
-   public class EnumerableQueue<T>
+   protected IEnumerator<T> enumerator;
+
+   public EnumerableQueue(IEnumerable<T> enumerable)
    {
-      protected IEnumerator<T> enumerator;
+      enumerator = enumerable.GetEnumerator();
+   }
 
-      public EnumerableQueue(IEnumerable<T> enumerable)
+   public Responding<T> Next()
+   {
+      try
       {
-         enumerator = enumerable.GetEnumerator();
+         if (enumerator.MoveNext())
+         {
+            try
+            {
+               return enumerator.Current;
+            }
+            catch (Exception innerException)
+            {
+               return innerException;
+            }
+         }
+         else
+         {
+            return nil;
+         }
       }
-
-      public Responding<T> Next()
+      catch (Exception outerException)
       {
-         try
-         {
-            if (enumerator.MoveNext())
-            {
-               try
-               {
-                  return enumerator.Current;
-               }
-               catch (Exception innerException)
-               {
-                  return innerException;
-               }
-            }
-            else
-            {
-               return nil;
-            }
-         }
-         catch (Exception outerException)
-         {
-            return outerException;
-         }
+         return outerException;
       }
    }
 }

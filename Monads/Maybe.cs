@@ -75,8 +75,6 @@ namespace Core.Monads
 
       public abstract Result<T> Result(string message);
 
-      public abstract Matched<T> Matched();
-
       public abstract Responding<T> Responding();
 
       public abstract bool Map(out T value);

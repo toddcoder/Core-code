@@ -75,31 +75,31 @@ namespace Core.Assertions
          return result.Map(v => v.ToNonNullString()).Recover(e => $"failure<{typeof(T).Name}>({e.Message})");
       }
 
-      public static string matchedImage<T>(Matched<T> matched)
+      public static string respondingImage<T>(Responding<T> matched)
       {
-         if (matched.Map(out var value, out var _exception))
+         if (matched)
          {
-            return value.ToNonNullString();
+            return (~matched).ToNonNullString();
          }
-         else if (_exception.Map(out var exception))
+         else if (matched.AnyException)
          {
-            return $"failedMatch<{typeof(T).Name}>({exception.Message})";
+            return $"failedResponse<{typeof(T).Name}>({matched.Exception.Message})";
          }
          else
          {
-            return $"notMatched<{typeof(T).Name}>";
+            return $"noResponse<{typeof(T).Name}>";
          }
       }
 
       public static string completionImage<T>(Completion<T> completion)
       {
-         if (completion.Map(out var value, out var _exception))
+         if (completion)
          {
-            return value.ToNonNullString();
+            return (~completion).ToNonNullString();
          }
-         else if (_exception.Map(out var exception))
+         else if (completion.AnyException)
          {
-            return $"interrupted<{typeof(T).Name}>({exception.Message})";
+            return $"interrupted<{typeof(T).Name}>({completion.Exception.Message})";
          }
          else
          {

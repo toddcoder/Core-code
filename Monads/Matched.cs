@@ -2,11 +2,12 @@
 
 namespace Core.Monads
 {
+   [Obsolete("Use Responding")]
    public abstract class Matched<T>
    {
       public static Matched<T> Nil(string message) => new FailedMatch<T>(new Exception(message));
 
-      public static implicit operator Matched<T>(T value) => value.Match();
+      public static implicit operator Matched<T>(T value) => new Match<T>(value);
 
       public static implicit operator Matched<T>(Exception exception) => new FailedMatch<T>(exception);
 

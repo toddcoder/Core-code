@@ -58,8 +58,6 @@ namespace Core.Monads
          return this;
       }
 
-      public override Matched<T> Match() => exception;
-
       public override bool Map(out T value)
       {
          value = default;

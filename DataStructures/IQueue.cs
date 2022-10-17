@@ -1,25 +1,24 @@
 ﻿using Core.Monads;
 
-namespace Core.DataStructures
+namespace Core.DataStructures;
+
+public interface IQueue<T>
 {
-   public interface IQueue<T>
-   {
-      int Count { get; }
+   int Count { get; }
 
-      void Clear();
+   void Clear();
 
-      bool Contains(T item);
+   bool Contains(T item);
 
-      Result<T[]> ToArray(int arrayIndex = 0);
+   Result<T[]> ToArray(int arrayIndex = 0);
 
-      Maybe<T> Dequeue();
+   Maybe<T> Dequeue();
 
-      void Enqueue(T item);
+   void Enqueue(T item);
 
-      Maybe<T> Peek();
+   Maybe<T> Peek();
 
-      bool IsEmpty { get; }
+   bool IsEmpty { get; }
 
-      bool IsNotEmpty { get; }
-   }
+   bool IsNotEmpty { get; }
 }

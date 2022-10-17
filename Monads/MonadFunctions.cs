@@ -36,25 +36,30 @@ namespace Core.Monads
       [Obsolete("Use exception")]
       public static Responding<T> failedResponse<T>(Exception exception) => new FailedResponse<T>(exception);
 
+      [Obsolete]
       public static Matched<TParent> matched<TChild, TParent>(TChild value) where TChild : TParent
       {
          return new Match<TParent>(value);
       }
 
+      [Obsolete]
       public static Matched<TParent> matchedAs<TChild, TParent>(TChild value) where TChild : class where TParent : class
       {
          return new Match<TParent>(value as TParent);
       }
 
+      [Obsolete]
       public static Matched<T> noMatch<T>() => new NoMatch<T>();
 
+      [Obsolete]
       public static Matched<T> failedMatch<T>(Exception exception) => new FailedMatch<T>(exception);
 
+      [Obsolete]
       public static Matched<T> isMatched<T>(bool test, Func<T> result)
       {
          try
          {
-            return test ? result().Match() : noMatch<T>();
+            return test ? result() : noMatch<T>();
          }
          catch (Exception exception)
          {
@@ -62,6 +67,7 @@ namespace Core.Monads
          }
       }
 
+      [Obsolete]
       public static Matched<T> isMatched<T>(bool test, Func<Matched<T>> result)
       {
          try

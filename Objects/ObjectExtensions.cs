@@ -85,7 +85,7 @@ namespace Core.Objects
          }
       }
 
-      public static Matched<T> MatchAs<T>(this object obj)
+      public static Responding<T> RespondingAs<T>(this object obj)
       {
          try
          {

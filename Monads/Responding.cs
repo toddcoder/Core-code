@@ -132,8 +132,6 @@ namespace Core.Monads
 
       public abstract Result<T> Result();
 
-      public abstract Matched<T> Matched();
-
       public abstract Completion<T> Completion();
    }
 }

@@ -126,14 +126,14 @@ namespace Core.Data
          return entity;
       }
 
-      public Matched<T> ExecuteMatched()
+      public Responding<T> ExecuteResponding()
       {
          try
          {
             RecordsAffected = DataSource.Execute(entity, Command, Parameters, Fields);
             HasRows = DataSource.HasRows;
 
-            return HasRows ? entity.Match() : nil;
+            return HasRows ? entity : nil;
          }
          catch (Exception exception)
          {

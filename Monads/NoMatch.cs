@@ -4,6 +4,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads
 {
+   [Obsolete("Use NoResponse")]
    public class NoMatch<T> : Matched<T>, IEquatable<NoMatch<T>>
    {
       public static implicit operator bool(NoMatch<T> _) => false;

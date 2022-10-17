@@ -131,7 +131,6 @@
     <Compile Include="Assertions\IAssertion.cs" />
     <Compile Include="Assertions\ICanBeTrue.cs" />
     <Compile Include="Assertions\Monads\CompletionAssertion.cs" />
-    <Compile Include="Assertions\Monads\MatchedAssertion.cs" />
     <Compile Include="Assertions\Monads\MaybeAssertion.cs" />
     <Compile Include="Assertions\Monads\ResultAssertion.cs" />
     <Compile Include="Assertions\Objects\ObjectAssertion.cs" />
@@ -300,10 +299,7 @@
     <Compile Include="Monads\Result.cs" />
     <Compile Include="Monads\Left.cs" />
     <Compile Include="Monads\Match.cs" />
-    <Compile Include="Monads\MatchedIterator.cs" />
-    <Compile Include="Monads\Matching.cs" />
-    <Compile Include="Monads\MatchingContext.cs" />
-    <Compile Include="Monads\MatchingExtensions.cs" />
+    <Compile Include="Monads\ResponseIterator.cs" />
     <Compile Include="Monads\MonadExtensions.cs" />
     <Compile Include="Monads\MonadFunctions.cs" />
     <Compile Include="Monads\None.cs" />

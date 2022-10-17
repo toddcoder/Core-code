@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 using System.Text;
 using Core.Assertions;
+using Core.DataStructures;
 using Core.Matching;
 using Core.Monads;
+using Core.Strings;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Markup.Rtf;
@@ -139,6 +141,27 @@ public class Paragraph : Block
       }
    }
 
+   public Maybe<CharFormat> CharFormatFind(string substring, bool ignoreCase = false)
+   {
+      var _index = text.ToString().Find(substring, ignoreCase: ignoreCase);
+      if (_index)
+      {
+         return CharFormat(_index, _index + substring.Length - 1);
+      }
+      else
+      {
+         return nil;
+      }
+   }
+
+   public IEnumerable<CharFormat> CharFormatFindAll(string substring, bool ignoreCase = false)
+   {
+      foreach (var index in text.ToString().FindAll(substring, ignoreCase))
+      {
+         yield return CharFormat(index, index + substring.Length - 1);
+      }
+   }
+
    public Maybe<CharFormat> CharFormat(MatchResult result, int groupIndex = 0)
    {
       if (groupIndex < result.GroupCount(0))
@@ -196,6 +219,47 @@ public class Paragraph : Block
       charFormats.Add(format);
 
       return format;
+   }
+
+   public MaybeQueue<CharFormat> CharFormatTemplate(string charFormatTemplate)
+   {
+      var queue = new MaybeQueue<CharFormat>();
+      var _result = charFormatTemplate.Matches("'^'+; f");
+      if (_result)
+      {
+         foreach (var match in ~_result)
+         {
+            var begin = match.Index;
+            var end = begin + match.Length - 1;
+            queue.Enqueue(CharFormat(begin, end));
+         }
+      }
+
+      return queue;
+   }
+
+   public void ControlWorlds(string controlWorldTemplate)
+   {
+      var _result = controlWorldTemplate.Matches(@"['@#?!']");
+      if (_result)
+      {
+         var offset = 1;
+         foreach (var match in ~_result)
+         {
+            Maybe<FieldType> _fieldType = match.Text switch
+            {
+               "@" => FieldType.Page,
+               "#" => FieldType.NumPages,
+               "?" => FieldType.Date,
+               "!" => FieldType.Time,
+               _ => nil
+            };
+            if (_fieldType)
+            {
+               ControlWord(match.Index - offset++, _fieldType);
+            }
+         }
+      }
    }
 
    public Footnote Footnote(int position)

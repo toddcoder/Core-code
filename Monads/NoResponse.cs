@@ -89,8 +89,6 @@ namespace Core.Monads
 
       public override Result<T> Result() => fail("There is no value");
 
-      public override Matched<T> Matched() => nil;
-
       public override Completion<T> Completion() => nil;
 
       public bool Equals(NoResponse<T> other) => true;

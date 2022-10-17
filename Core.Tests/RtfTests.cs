@@ -28,8 +28,8 @@ namespace Core.Tests
          _ = document + ("Testing\n", Alignment.Left, timesFont);
 
          var paragraph = document + ("Test2: Character Formatting", timesFont);
-
-         var _format = paragraph.CharFormat("Test2:; u");
+         var queue = paragraph.CharFormatTemplate("^^^^^^");
+         var _format = queue.Dequeue();
          if (!_format)
          {
             throw fail("Couldn't extract text");
@@ -55,10 +55,7 @@ namespace Core.Tests
          _ = paragraph.Footnote(7) + "Footnote details here.";
 
          paragraph = document.Footer + ("Test : Page: / Date: Time:", Alignment.Center, 15f);
-         paragraph.ControlWord(12, FieldType.Page);
-         paragraph.ControlWord(13, FieldType.NumPages);
-         paragraph.ControlWord(19, FieldType.Date);
-         paragraph.ControlWord(25, FieldType.Time);
+         paragraph.ControlWorlds("Test : Page: @/# Date:? Time:!");
 
          _ = document.Header + "Header";
 
@@ -90,17 +87,24 @@ namespace Core.Tests
          table[4, 3].Text = "Table";
 
          paragraph = document + "Test 7.1: Hyperlink to target (Test9)";
-         format = paragraph.CharFormat(10, 18);
-         format.LocalHyperlink = "target";
-         format.LocalHyperlinkTip = "Link to target";
-         format.ForegroundColor = blueColor;
+         _format = paragraph.CharFormatTemplate("          ^^^^^^^^^").Dequeue();
+         if (_format)
+         {
+            format = ~_format;
+            format.LocalHyperlink = "target";
+            format.LocalHyperlinkTip = "Link to target";
+            format.ForegroundColor = blueColor;
+         }
 
          paragraph = document + "New page";
          paragraph.StartNewPage = true;
 
          paragraph = document + "Test9: Set bookmark";
-         format = paragraph.CharFormat(0, 18);
-         format.Bookmark = "target";
+         _format = paragraph.CharFormatTemplate("^^^^^^^^^^^^^^^^^^^").Dequeue();
+         if (_format)
+         {
+            (~_format).Bookmark = "target";
+         }
 
          document.Save(@"C:\Temp\Test.rtf");
       }

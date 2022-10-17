@@ -106,8 +106,6 @@ namespace Core.Monads
 
       public override Result<T> Result() => value;
 
-      public override Matched<T> Matched() => value;
-
       public override Completion<T> Completion() => value;
 
       public bool Equals(Response<T> other) => value.Equals(other.value);

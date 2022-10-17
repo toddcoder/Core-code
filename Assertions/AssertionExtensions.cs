@@ -323,25 +323,6 @@ namespace Core.Assertions
          return (ResultAssertion<T>)assertion.Named($"Result of {typeof(T).Name} {name}");
       }
 
-      public static MatchedAssertion<T> Must<T>(this Matched<T> value) => new(value);
-
-      [Obsolete("Use value version")]
-      public static MatchedAssertion<T> Must<T>(this Expression<Func<Matched<T>>> expression)
-      {
-         var (name, value) = resolve(expression);
-         var assertion = value.Must();
-
-         return (MatchedAssertion<T>)assertion.Named($"Match of {typeof(T).Name} {name}");
-      }
-
-      public static MatchedAssertion<T> Must<T>(this (Matched<T>, string) tuple)
-      {
-         var (value, name) = tuple;
-         var assertion = value.Must();
-
-         return (MatchedAssertion<T>)assertion.Named($"Match of {typeof(T).Name} {name}");
-      }
-
       public static CompletionAssertion<T> Must<T>(this Completion<T> value) => new(value);
 
       [Obsolete("Use value version")]
