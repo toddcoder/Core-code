@@ -66,7 +66,10 @@ public static class MonadExtensions
 
    public static Responding<T> FailedResponse<T>(this string message) => fail(message);
 
+   [Obsolete("Use NotNull() extension")]
    public static bool NotNull<T>(this T obj, out T value) => obj.Some().Map(out value);
+
+   public static Maybe<T> NotNull<T>(this T obj) => obj.Some();
 
    public static Maybe<string> SomeIfNotEmpty(this string text) => maybe(text.IsNotEmpty(), text.Some);
 

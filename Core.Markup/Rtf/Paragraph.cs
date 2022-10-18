@@ -393,9 +393,14 @@ public class Paragraph : Block
                   if (count == disjointRange.Head)
                   {
                      var newToken = new Token { IsControl = true, Text = disjointRange.Format.RenderHead() };
-                     while (node.Next.NotNull(out var next) && next.Value.IsControl)
+                     while (true)
                      {
-                        node = next;
+                        var _next = node.Next.NotNull();
+                        if (!_next || !(~_next).Value.IsControl)
+                        {
+                           break;
+                        }
+                        node = _next;
                      }
 
                      tokens.AddAfter(node, newToken);

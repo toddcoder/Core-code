@@ -50,9 +50,6 @@ namespace Core.Objects
          }
       }
 
-      [Obsolete("Use is not null construct")]
-      public static bool IsNotNull<T>(this T obj) => obj is not null;
-
       public static Type UnderlyingType(this Type type) => type.IsNullable() ? Nullable.GetUnderlyingType(type) : type;
 
       public static int HashCode(this object obj, int prime = 397)
