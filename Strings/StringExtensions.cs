@@ -2391,6 +2391,7 @@ namespace Core.Strings
          return split(source).ToArray().ToString("");
       }
 
+      [Obsolete("Use EqualTo")]
       public static Maybe<bool> IsExactlyEqualTo(this string left, string right)
       {
          if (left == right)
@@ -2404,6 +2405,22 @@ namespace Core.Strings
          else
          {
             return nil;
+         }
+      }
+
+      public static EqualTo EqualTo(this string left, string right)
+      {
+         if (left == right)
+         {
+            return Strings.EqualTo.ExactlyEqual;
+         }
+         else if (left.Same(right))
+         {
+            return Strings.EqualTo.Same;
+         }
+         else
+         {
+            return Strings.EqualTo.NotEqual;
          }
       }
 
