@@ -8,211 +8,210 @@ using Core.Collections;
 using Core.Strings;
 using static Core.Objects.ConversionFunctions;
 
-namespace Core.Io.Delimited
+namespace Core.Io.Delimited;
+
+public class DelimitedTextReader : IDataReader, IEnumerable<string[]>
 {
-   public class DelimitedTextReader : IDataReader, IEnumerable<string[]>
+   protected int fieldCount;
+   protected string[] fields;
+   protected Buffer buffer;
+   protected List<string> headers;
+   protected StringHash<int> indexes;
+   protected Hash<int, Func<string, object>> converters;
+   protected bool hasConverters;
+   protected bool emptyRecord;
+   protected int currentFieldCount;
+
+   public DelimitedTextReader(TextReader reader, int fieldCount, char delimiter, int bufferSize = 0x1000)
    {
-      protected int fieldCount;
-      protected string[] fields;
-      protected Buffer buffer;
-      protected List<string> headers;
-      protected StringHash<int> indexes;
-      protected Hash<int, Func<string, object>> converters;
-      protected bool hasConverters;
-      protected bool emptyRecord;
-      protected int currentFieldCount;
+      this.fieldCount = fieldCount;
+      fields = new string[fieldCount];
+      buffer = new Buffer(reader, bufferSize, delimiter);
+      headers = new List<string>();
+      indexes = new StringHash<int>(true);
+      converters = new Hash<int, Func<string, object>>();
+      hasConverters = false;
+      emptyRecord = false;
+      currentFieldCount = this.fieldCount;
+      Delimiter = delimiter;
+   }
 
-      public DelimitedTextReader(TextReader reader, int fieldCount, char delimiter, int bufferSize = 0x1000)
+   public char Delimiter { get; }
+
+   public bool FloatingFieldCount { get; set; }
+
+   public void AddHeader(string header)
+   {
+      if (headers.Count < fieldCount)
       {
-         this.fieldCount = fieldCount;
-         fields = new string[fieldCount];
-         buffer = new Buffer(reader, bufferSize, delimiter);
-         headers = new List<string>();
-         indexes = new StringHash<int>(true);
-         converters = new Hash<int, Func<string, object>>();
-         hasConverters = false;
-         emptyRecord = false;
-         currentFieldCount = this.fieldCount;
-         Delimiter = delimiter;
+         indexes[header] = headers.Count;
+         headers.Add(header);
+      }
+   }
+
+   public void AddHeaders(params string[] inHeaders)
+   {
+      foreach (var header in inHeaders.TakeWhile(_ => headers.Count < fieldCount))
+      {
+         headers.Add(header);
+      }
+   }
+
+   public void RegisterConverter(int fieldIndex, Func<string, object> conversion)
+   {
+      converters[fieldIndex] = conversion;
+      hasConverters = true;
+   }
+
+   public bool StopAtPartialRecord { get; set; }
+
+   public bool StoppedAtPartialRecord { get; set; }
+
+   public bool ReadRecord()
+   {
+      StopAtPartialRecord = false;
+
+      if (buffer.EndOfFile)
+      {
+         return false;
       }
 
-      public char Delimiter { get; }
-
-      public bool FloatingFieldCount { get; set; }
-
-      public void AddHeader(string header)
+      buffer.EndOfLine = false;
+      currentFieldCount = 0;
+      for (var i = 0; i < fieldCount && !buffer.EndOfLine && !buffer.EndOfFile; i++)
       {
-         if (headers.Count < fieldCount)
+         var field = buffer.NextField();
+         fields[i] = field;
+         currentFieldCount++;
+      }
+
+      emptyRecord = currentFieldCount == 0 && !buffer.EndOfFile;
+
+      if (currentFieldCount < fieldCount)
+      {
+         for (var i = currentFieldCount; i < fieldCount; i++)
          {
-            indexes[header] = headers.Count;
-            headers.Add(header);
+            fields[i] = string.Empty;
          }
-      }
 
-      public void AddHeaders(params string[] inHeaders)
-      {
-         foreach (var header in inHeaders.TakeWhile(_ => headers.Count < fieldCount))
+         if (StopAtPartialRecord)
          {
-            headers.Add(header);
-         }
-      }
+            StoppedAtPartialRecord = true;
 
-      public void RegisterConverter(int fieldIndex, Func<string, object> conversion)
-      {
-         converters[fieldIndex] = conversion;
-         hasConverters = true;
-      }
-
-      public bool StopAtPartialRecord { get; set; }
-
-      public bool StoppedAtPartialRecord { get; set; }
-
-      public bool ReadRecord()
-      {
-         StopAtPartialRecord = false;
-
-         if (buffer.EndOfFile)
-         {
             return false;
          }
-
-         buffer.EndOfLine = false;
-         currentFieldCount = 0;
-         for (var i = 0; i < fieldCount && !buffer.EndOfLine && !buffer.EndOfFile; i++)
-         {
-            var field = buffer.NextField();
-            fields[i] = field;
-            currentFieldCount++;
-         }
-
-         emptyRecord = currentFieldCount == 0 && !buffer.EndOfFile;
-
-         if (currentFieldCount < fieldCount)
-         {
-            for (var i = currentFieldCount; i < fieldCount; i++)
-            {
-               fields[i] = string.Empty;
-            }
-
-            if (StopAtPartialRecord)
-            {
-               StoppedAtPartialRecord = true;
-
-               return false;
-            }
-         }
-
-         return true;
       }
 
-      public bool EmptyRecord => emptyRecord;
+      return true;
+   }
 
-      public void CopyFields(string[] array) => Array.Copy(fields, array, FieldCount);
+   public bool EmptyRecord => emptyRecord;
 
-      public string GetName(int i) => headers[i];
+   public void CopyFields(string[] array) => Array.Copy(fields, array, FieldCount);
 
-      public string GetDataTypeName(int i) => typeof(string).FullName;
+   public string GetName(int i) => headers[i];
 
-      public Type GetFieldType(int i) => typeof(string);
+   public string GetDataTypeName(int i) => typeof(string).FullName;
 
-      public object GetValue(int i) => fields[i];
+   public Type GetFieldType(int i) => typeof(string);
 
-      public int GetValues(object[] values)
+   public object GetValue(int i) => fields[i];
+
+   public int GetValues(object[] values)
+   {
+      for (var i = 0; i < FieldCount; i++)
       {
-         for (var i = 0; i < FieldCount; i++)
-         {
-            values[i] = fields[i];
-         }
-
-         return FieldCount;
+         values[i] = fields[i];
       }
 
-      public int GetOrdinal(string name) => indexes.Value(name);
+      return FieldCount;
+   }
 
-      public bool GetBoolean(int i) => Value.Boolean(fields[i]);
+   public int GetOrdinal(string name) => indexes.Value(name);
 
-      public byte GetByte(int i) => Value.Byte(fields[i]);
+   public bool GetBoolean(int i) => Value.Boolean(fields[i]);
 
-      public long GetBytes(int i, long fieldOffset, byte[] buf, int bufferOffset, int length)
+   public byte GetByte(int i) => Value.Byte(fields[i]);
+
+   public long GetBytes(int i, long fieldOffset, byte[] buf, int bufferOffset, int length)
+   {
+      var value = fields[i];
+      var chars = value.ToCharArray((int)fieldOffset, length);
+      var source = new byte[chars.Length];
+      for (var j = 0; j < chars.Length; j++)
       {
-         var value = fields[i];
-         var chars = value.ToCharArray((int)fieldOffset, length);
-         var source = new byte[chars.Length];
-         for (var j = 0; j < chars.Length; j++)
-         {
-            source[j] = Convert.ToByte(chars[i]);
-         }
-
-         Array.Copy(source, 0, buf, fieldOffset, length);
-
-         return length;
+         source[j] = Convert.ToByte(chars[i]);
       }
 
-      public char GetChar(int i) => fields[i].IsNotEmpty() ? fields[i][0] : char.MinValue;
+      Array.Copy(source, 0, buf, fieldOffset, length);
 
-      public long GetChars(int i, long fieldOffset, char[] buf, int bufferOffset, int length)
-      {
-         var value = fields[i];
-         var chars = value.ToCharArray((int)fieldOffset, length);
-         Array.Copy(chars, 0, buf, bufferOffset, length);
+      return length;
+   }
 
-         return length;
-      }
+   public char GetChar(int i) => fields[i].IsNotEmpty() ? fields[i][0] : char.MinValue;
 
-      public Guid GetGuid(int i) => new(fields[i]);
+   public long GetChars(int i, long fieldOffset, char[] buf, int bufferOffset, int length)
+   {
+      var value = fields[i];
+      var chars = value.ToCharArray((int)fieldOffset, length);
+      Array.Copy(chars, 0, buf, bufferOffset, length);
 
-      public short GetInt16(int i) => short.Parse(fields[i]);
+      return length;
+   }
 
-      public int GetInt32(int i) => Value.Int32(fields[i]);
+   public Guid GetGuid(int i) => new(fields[i]);
 
-      public long GetInt64(int i) => Value.Int64(fields[i]);
+   public short GetInt16(int i) => short.Parse(fields[i]);
 
-      public float GetFloat(int i) => Value.Single(fields[i]);
+   public int GetInt32(int i) => Value.Int32(fields[i]);
 
-      public double GetDouble(int i) => Value.Double(fields[i]);
+   public long GetInt64(int i) => Value.Int64(fields[i]);
 
-      public string GetString(int i) => fields[i];
+   public float GetFloat(int i) => Value.Single(fields[i]);
 
-      public decimal GetDecimal(int i) => Value.Decimal(fields[i]);
+   public double GetDouble(int i) => Value.Double(fields[i]);
 
-      public DateTime GetDateTime(int i) => Value.DateTime(fields[i]);
+   public string GetString(int i) => fields[i];
 
-      public IDataReader GetData(int i) => i == 0 ? this : null;
+   public decimal GetDecimal(int i) => Value.Decimal(fields[i]);
 
-      public bool IsDBNull(int i) => fields[i].IsEmpty();
+   public DateTime GetDateTime(int i) => Value.DateTime(fields[i]);
 
-      public int FieldCount => FloatingFieldCount ? currentFieldCount : fieldCount;
+   public IDataReader GetData(int i) => i == 0 ? this : null;
 
-      object IDataRecord.this[int i] => fields[i];
+   public bool IsDBNull(int i) => fields[i].IsEmpty();
 
-      public object this[int i] => hasConverters ? converters.FlatMap(i, f => f(fields[i]), () => fields[i]) : fields[i];
+   public int FieldCount => FloatingFieldCount ? currentFieldCount : fieldCount;
 
-      object IDataRecord.this[string name] => fields[indexes.Value(name)];
+   object IDataRecord.this[int i] => fields[i];
 
-      public object this[string name] => fields[indexes.Value(name)];
+   public object this[int i] => hasConverters ? converters.FlatMap(i, f => f(fields[i]), () => fields[i]) : fields[i];
 
-      public void Close()
-      {
-      }
+   object IDataRecord.this[string name] => fields[indexes.Value(name)];
 
-      public DataTable GetSchemaTable() => null;
+   public object this[string name] => fields[indexes.Value(name)];
 
-      public bool NextResult() => false;
+   public void Close()
+   {
+   }
 
-      public bool Read() => ReadRecord();
+   public DataTable GetSchemaTable() => null;
 
-      public int Depth => 0;
+   public bool NextResult() => false;
 
-      public bool IsClosed => buffer.EndOfFile;
+   public bool Read() => ReadRecord();
 
-      public int RecordsAffected => -1;
+   public int Depth => 0;
 
-      public IEnumerator<string[]> GetEnumerator() => new DelimitedTextEnumerator(this);
+   public bool IsClosed => buffer.EndOfFile;
 
-      IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+   public int RecordsAffected => -1;
 
-      public void Dispose()
-      {
-      }
+   public IEnumerator<string[]> GetEnumerator() => new DelimitedTextEnumerator(this);
+
+   IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+   public void Dispose()
+   {
    }
 }

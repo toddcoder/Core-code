@@ -4,25 +4,24 @@ using System.Text;
 using Core.Assertions;
 using Core.Monads;
 
-namespace Core.Io
+namespace Core.Io;
+
+public static class StreamExtensions
 {
-   public static class StreamExtensions
+   public static Result<string> FromStream(this Stream stream, Encoding encoding)
    {
-      public static Result<string> FromStream(this Stream stream, Encoding encoding)
+      try
       {
-         try
-         {
-            stream.Must().Not.BeNull().OrThrow();
+         stream.Must().Not.BeNull().OrThrow();
 
-            stream.Position = 0;
+         stream.Position = 0;
 
-            using var reader = new StreamReader(stream, encoding);
-            return reader.ReadToEnd().Success();
-         }
-         catch (Exception exception)
-         {
-            return exception;
-         }
+         using var reader = new StreamReader(stream, encoding);
+         return reader.ReadToEnd();
+      }
+      catch (Exception exception)
+      {
+         return exception;
       }
    }
 }

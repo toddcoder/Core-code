@@ -1,9 +1,8 @@
-﻿namespace Core.Internet.Smtp
+﻿namespace Core.Internet.Smtp;
+
+public enum PriorityType
 {
-   public enum PriorityType
-   {
-      Normal,
-      High,
-      Low
-   }
+   Normal,
+   High,
+   Low
 }

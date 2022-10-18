@@ -1,12 +1,11 @@
-﻿namespace Core.Git
+﻿namespace Core.Git;
+
+public enum PromptColor
 {
-   public enum PromptColor
-   {
-      Normal,
-      Ahead,
-      Behind,
-      AheadBehind,
-      Modified,
-      Error
-   }
+   Normal,
+   Ahead,
+   Behind,
+   AheadBehind,
+   Modified,
+   Error
 }

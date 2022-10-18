@@ -2,41 +2,40 @@
 using System.Collections.Generic;
 using Core.Assertions;
 
-namespace Core.Io.Delimited
+namespace Core.Io.Delimited;
+
+public class DelimitedTextEnumerator : IEnumerator<string[]>
 {
-   public class DelimitedTextEnumerator : IEnumerator<string[]>
+   protected DelimitedTextReader reader;
+   protected string[] current;
+
+   public DelimitedTextEnumerator(DelimitedTextReader reader)
    {
-      protected DelimitedTextReader reader;
-      protected string[] current;
-
-      public DelimitedTextEnumerator(DelimitedTextReader reader)
-      {
-         this.reader = reader.Must().Not.BeNull().Force<DelimitedTextReader>();
-         current = new string[reader.FieldCount];
-      }
-
-      public void Dispose() => reader.Dispose();
-
-      public bool MoveNext()
-      {
-         if (reader.ReadRecord())
-         {
-            reader.CopyFields(current);
-
-            return true;
-         }
-         else
-         {
-            return false;
-         }
-      }
-
-      public void Reset()
-      {
-      }
-
-      public string[] Current => current;
-
-      object IEnumerator.Current => Current;
+      this.reader = reader.Must().Not.BeNull().Force<DelimitedTextReader>();
+      current = new string[reader.FieldCount];
    }
+
+   public void Dispose() => reader.Dispose();
+
+   public bool MoveNext()
+   {
+      if (reader.ReadRecord())
+      {
+         reader.CopyFields(current);
+
+         return true;
+      }
+      else
+      {
+         return false;
+      }
+   }
+
+   public void Reset()
+   {
+   }
+
+   public string[] Current => current;
+
+   object IEnumerator.Current => Current;
 }

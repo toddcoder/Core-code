@@ -1,6 +1,5 @@
-﻿namespace Core.Git
+﻿namespace Core.Git;
+
+public sealed class GitError : GitResult
 {
-   public sealed class GitError : GitResult
-   {
-   }
 }

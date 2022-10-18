@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Text;
 using Core.Assertions;
 using Core.Collections;
@@ -9,21 +10,30 @@ namespace Core.Markup.Rtf;
 
 public class CharFormat
 {
-   protected static Hash<FontStyleFlag, string> fontStyleMap;
+   //protected static Hash<FontStyleFlag, string> fontStyleMap;
 
-   static CharFormat()
+   protected static IEnumerable<FontStyleFlag> fontStyleFlags()
    {
-      fontStyleMap = new Hash<FontStyleFlag, string>
-      {
-         [FontStyleFlag.Bold] = "b",
-         [FontStyleFlag.Italic] = "i",
-         [FontStyleFlag.Scaps] = "scaps",
-         [FontStyleFlag.Strike] = "strike",
-         [FontStyleFlag.Sub] = "sub",
-         [FontStyleFlag.Super] = "super",
-         [FontStyleFlag.Underline] = "ul"
-      };
+      yield return FontStyleFlag.Bold;
+      yield return FontStyleFlag.Italic;
+      yield return FontStyleFlag.Scaps;
+      yield return FontStyleFlag.Strike;
+      yield return FontStyleFlag.Sub;
+      yield return FontStyleFlag.Super;
+      yield return FontStyleFlag.Underline;
    }
+
+   protected static Maybe<string> fontStyleKeyword(FontStyleFlag fontStyleFlag) => fontStyleFlag switch
+   {
+      FontStyleFlag.Bold => "b",
+      FontStyleFlag.Italic => "i",
+      FontStyleFlag.Scaps => "scaps",
+      FontStyleFlag.Strike => "strike",
+      FontStyleFlag.Sub => "sub",
+      FontStyleFlag.Super => "super",
+      FontStyleFlag.Underline => "ul",
+      _ => nil
+   };
 
    public static LateLazy<CharFormat> Lazy() => new(errorMessage: "DefaultCharFormat referenced before being set");
 
@@ -241,15 +251,19 @@ public class CharFormat
          result.Append($@"\chshdng0\chcbpat{backgroundColorValue}\cb{backgroundColorValue}");
       }
 
-      foreach (var (fontStyleFlag, value) in fontStyleMap)
+      foreach (var fontStyleFlag in fontStyleFlags())
       {
-         if (FontStyle.ContainsStyleAdd(fontStyleFlag))
+         var _keyword = fontStyleKeyword(fontStyleFlag);
+         if (_keyword)
          {
-            result.Append($@"\{value}");
-         }
-         else if (FontStyle.ContainsStyleRemove(fontStyleFlag))
-         {
-            result.Append($@"\{value}0");
+            if (FontStyle.ContainsStyleAdd(fontStyleFlag))
+            {
+               result.Append($@"\{_keyword}");
+            }
+            else if (FontStyle.ContainsStyleRemove(fontStyleFlag))
+            {
+               result.Append($@"\{_keyword}0");
+            }
          }
       }
 
