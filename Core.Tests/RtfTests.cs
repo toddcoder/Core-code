@@ -119,7 +119,7 @@ namespace Core.Tests
          foreach (var (prompt, hyperlink) in array(("Pull Request", "http://foobar"), ("estreamps", "http://evokeps"),
                      ("staging10ua", "http://evokeuat")))
          {
-            _ = table.Row() + (prompt, FontStyleFlag.Bold) + (hyperlink, blueColor, (hyperlink, ""));
+            _ = table.Row() + (prompt, Feature.Bold) + (hyperlink, blueColor, (hyperlink, ""));
          }
 
          document.Save(@"C:\Temp\Test2.rtf");
@@ -141,6 +141,19 @@ namespace Core.Tests
          {
             throw _document.Exception;
          }
+      }
+
+      [TestMethod]
+      public void BulletTest()
+      {
+         var document = new Document();
+         _ = document + "Top";
+         _ = document + ("Item 1", Feature.Bullet);
+         _ = document + ("Item 2", Feature.Bullet);
+         _ = document + ("Item 3", Feature.Bullet);
+         _ = document + "Bottom";
+
+         document.Save(@"C:\Temp\Test3.rtf");
       }
    }
 }

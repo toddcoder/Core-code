@@ -25,6 +25,7 @@ public class Paragraph : Block
    protected bool startNewPage;
    protected bool startNewPageAfter;
    protected float firstLineIndent;
+   protected bool bullet;
    protected CharFormat defaultCharFormat;
 
    protected struct Token
@@ -117,6 +118,12 @@ public class Paragraph : Block
    public override string BlockTail
    {
       set => blockTail = value;
+   }
+
+   public bool Bullet
+   {
+      get => bullet;
+      set => bullet = value;
    }
 
    public CharFormat CharFormat(int begin, int end)
@@ -400,6 +407,7 @@ public class Paragraph : Block
                         {
                            break;
                         }
+
                         node = _next;
                      }
 
@@ -609,6 +617,16 @@ public class Paragraph : Block
       if (margins[Direction.Right] > 0)
       {
          result.Append($@"\ri{margins[Direction.Right].PointsToTwips()}");
+      }
+
+      if (bullet)
+      {
+         if (margins[Direction.Left] == 0)
+         {
+            result.Append(@"\li500");
+         }
+
+         result.Append(@"\pntext\pn\pnlvlblt\bullet\tab");
       }
 
       result.Append($@"\fi{firstLineIndent.PointsToTwips()}");

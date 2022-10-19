@@ -14,6 +14,18 @@ public static class ParagraphFunctions
       {
          switch (specifier)
          {
+            case Feature.Italic:
+               format.FontStyle += FontStyleFlag.Italic;
+               break;
+            case Feature.Bold:
+               format.FontStyle += FontStyleFlag.Bold;
+               break;
+            case Feature.Underline:
+               format.FontStyle += FontStyleFlag.Underline;
+               break;
+            case Feature.Bullet:
+               paragraph.Bullet = true;
+               break;
             case FontData fontData:
                format.FontData = fontData;
                break;
@@ -39,6 +51,9 @@ public static class ParagraphFunctions
             case (string hyperlink, string hyperlinkTip):
                format.LocalHyperlink = hyperlink;
                format.LocalHyperlinkTip = hyperlinkTip;
+               break;
+            case bool bullet:
+               paragraph.Bullet = bullet;
                break;
             case Action<Paragraph> action:
                action(paragraph);

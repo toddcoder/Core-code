@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Text;
 using Core.Assertions;
-using Core.Collections;
 using Core.Monads;
 using Core.Objects;
 using static Core.Monads.MonadFunctions;
@@ -10,8 +9,6 @@ namespace Core.Markup.Rtf;
 
 public class CharFormat
 {
-   //protected static Hash<FontStyleFlag, string> fontStyleMap;
-
    protected static IEnumerable<FontStyleFlag> fontStyleFlags()
    {
       yield return FontStyleFlag.Bold;
