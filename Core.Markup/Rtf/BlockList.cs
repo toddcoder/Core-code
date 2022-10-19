@@ -88,6 +88,16 @@ public class BlockList : Renderable
       return paragraph;
    }
 
+   public Line Line()
+   {
+      allowParagraph.Must().BeTrue().OrThrow("Line is not allowed.");
+
+      var block = new Line();
+      blocks.Add(block);
+
+      return block;
+   }
+
    public string Text
    {
       set

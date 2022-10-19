@@ -152,6 +152,8 @@ namespace Core.Tests
          _ = document + ("Item 2", Feature.Bullet);
          _ = document + ("Item 3", Feature.Bullet);
          _ = document + "Bottom";
+         document.Line();
+         _ = document + "Under the line";
 
          document.Save(@"C:\Temp\Test3.rtf");
       }
