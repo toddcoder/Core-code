@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Core.Assertions;
@@ -11,6 +12,14 @@ namespace Core.Markup.Rtf;
 
 public class Paragraph : Block
 {
+   public static Formatter operator +(Paragraph paragraph, Func<Paragraph, Formatter> func) => func(paragraph);
+
+   public static Maybe<Formatter> operator +(Paragraph paragraph, Func<Paragraph, Maybe<Formatter>> func) => func(paragraph);
+
+   public static IEnumerable<Formatter> operator +(Paragraph paragraph, Func<Paragraph, IEnumerable<Formatter>> func) => func(paragraph);
+
+   public static MaybeQueue<Formatter> operator +(Paragraph paragraph, Func<Paragraph, MaybeQueue<Formatter>> func) => func(paragraph);
+
    protected StringBuilder text;
    protected Maybe<float> _lineSpacing;
    protected Margins margins;
@@ -239,6 +248,53 @@ public class Paragraph : Block
             var begin = match.Index;
             var end = begin + match.Length - 1;
             queue.Enqueue(CharFormat(begin, end));
+         }
+      }
+
+      return queue;
+   }
+
+   public Formatter Format(int begin, int end) => new(this, CharFormat(begin, end));
+
+   public Maybe<Formatter> Format(Pattern pattern, int groupIndex = 0)
+   {
+      var _format = CharFormat(pattern, groupIndex);
+      return _format.Map(f => new Formatter(this, f));
+   }
+
+   public Maybe<Formatter> FormatFind(string substring, bool ignoreCase = false)
+   {
+      var _format = CharFormatFind(substring, ignoreCase);
+      return _format.Map(f => new Formatter(this, f));
+   }
+
+   public IEnumerable<Formatter> FormatFindAll(string substring, bool ignoreCase = false)
+   {
+      foreach (var format in CharFormatFindAll(substring, ignoreCase))
+      {
+         yield return new Formatter(this, format);
+      }
+   }
+
+   public Maybe<Formatter> Format(MatchResult result, int groupIndex = 0)
+   {
+      var _format = CharFormat(result, groupIndex);
+      return _format.Map(f => new Formatter(this, f));
+   }
+
+   public Formatter Format() => new(this, CharFormat());
+
+   public MaybeQueue<Formatter> FormatTemplate(string formatTemplate)
+   {
+      var queue = new MaybeQueue<Formatter>();
+      var _result = formatTemplate.Matches("'^'+; f");
+      if (_result)
+      {
+         foreach (var match in ~_result)
+         {
+            var begin = match.Index;
+            var end = begin + match.Length - 1;
+            queue.Enqueue(Format(begin, end));
          }
       }
 

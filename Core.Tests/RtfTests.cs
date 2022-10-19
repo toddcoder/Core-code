@@ -3,6 +3,7 @@ using Core.Enumerables;
 using Core.Markup.Rtf;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Core.Arrays.ArrayFunctions;
+using static Core.Markup.Rtf.FormatterFunctions;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Tests
@@ -25,36 +26,33 @@ namespace Core.Tests
          var tableRowColor = document.Color(0xD6E3BC);
          var tableRowAltColor = document.Color(0xFFFFFF);
 
-         _ = document + ("Testing\n", Alignment.Left, timesFont);
+         _ = document + "Testing\n" + format() + Alignment.Left + timesFont;
 
          var paragraph = document + ("Test2: Character Formatting", timesFont);
-         var queue = paragraph.CharFormatTemplate("^^^^^^");
-         var _format = queue.Dequeue();
-         if (!_format)
+         var queue = paragraph + formatTemplate("^^^^^^");
+         var _formatter = queue.Dequeue();
+         if (!_formatter)
          {
             throw fail("Couldn't extract text");
          }
 
-         var format = ~_format;
-         format.ForegroundColor = blueColor;
-         format.BackgroundColor = redColor;
-         format.FontSize = 18f;
+         var formatter = ~_formatter;
+         _ = formatter + blueColor.Foreground + redColor.Background + 18f;
 
-         _format = paragraph.CharFormat("Character Formatting; u");
-         if (!_format)
+         _formatter = paragraph + format("Character Formatting; u");
+         if (!_formatter)
          {
             throw fail("Couldn't extract text");
          }
 
-         format = ~_format;
-         format.FontStyle += FontStyleFlag.Bold;
-         format.FontStyle += FontStyleFlag.Underline;
-         format.Font = courierFont;
+         formatter = ~_formatter;
+         _ = formatter + Feature.Bold + Feature.Underline + courierFont;
 
          paragraph = document + "Footnote";
          _ = paragraph.Footnote(7) + "Footnote details here.";
 
-         paragraph = document.Footer + ("Test : Page: / Date: Time:", Alignment.Center, 15f);
+         paragraph = document.Footer + "Test : Page: / Date: Time:";
+         _ = paragraph.Format() + Alignment.Center + 15f;
          paragraph.ControlWorlds("Test : Page: @/# Date:? Time:!");
 
          _ = document.Header + "Header";
@@ -87,23 +85,22 @@ namespace Core.Tests
          table[4, 3].Text = "Table";
 
          paragraph = document + "Test 7.1: Hyperlink to target (Test9)";
-         _format = paragraph.CharFormatTemplate("          ^^^^^^^^^").Dequeue();
-         if (_format)
+         _formatter = (paragraph + formatTemplate("          ^^^^^^^^^")).Dequeue();
+         if (_formatter)
          {
-            format = ~_format;
-            format.LocalHyperlink = "target";
-            format.LocalHyperlinkTip = "Link to target";
-            format.ForegroundColor = blueColor;
+            formatter = ~_formatter;
+            _ = formatter + ("target", "Link to target") + blueColor.Foreground;
          }
 
          paragraph = document + "New page";
          paragraph.StartNewPage = true;
 
          paragraph = document + "Test9: Set bookmark";
-         _format = paragraph.CharFormatTemplate("^^^^^^^^^^^^^^^^^^^").Dequeue();
-         if (_format)
+         _formatter = (paragraph + formatTemplate("^^^^^^^^^^^^^^^^^^^")).Dequeue();
+         if (_formatter)
          {
-            (~_format).Bookmark = "target";
+            formatter = ~_formatter;
+            formatter.Bookmark("target");
          }
 
          document.Save(@"C:\Temp\Test.rtf");
@@ -148,9 +145,9 @@ namespace Core.Tests
       {
          var document = new Document();
          _ = document + "Top";
-         _ = document + ("Item 1", Feature.Bullet);
-         _ = document + ("Item 2", Feature.Bullet);
-         _ = document + ("Item 3", Feature.Bullet);
+         _ = document + "Item 1" + format() + Feature.Bullet;
+         _ = document + "Item 2" + format() + Feature.Bullet;
+         _ = document + "Item 3" + format() + Feature.Bullet;
          _ = document + "Bottom";
          document.Line();
          _ = document + "Under the line";
