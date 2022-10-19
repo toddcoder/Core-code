@@ -28,7 +28,8 @@ namespace Core.Tests
 
          _ = document + "Testing\n" + format() + Alignment.Left + timesFont;
 
-         var paragraph = document + ("Test2: Character Formatting", timesFont);
+         var paragraph = document + "Test2: Character Formatting";
+         _ = paragraph + format() + timesFont;
          var queue = paragraph + formatTemplate("^^^^^^");
          var _formatter = queue.Dequeue();
          if (!_formatter)
@@ -36,23 +37,15 @@ namespace Core.Tests
             throw fail("Couldn't extract text");
          }
 
-         var formatter = ~_formatter;
-         _ = formatter + blueColor.Foreground + redColor.Background + 18f;
+         _ = ~_formatter + blueColor.Foreground + redColor.Background + 18f;
 
-         _formatter = paragraph + format("Character Formatting; u");
-         if (!_formatter)
-         {
-            throw fail("Couldn't extract text");
-         }
-
-         formatter = ~_formatter;
-         _ = formatter + Feature.Bold + Feature.Underline + courierFont;
+         _ = paragraph + format("Character Formatting; u") + Feature.Bold + Feature.Underline + courierFont;
 
          paragraph = document + "Footnote";
          _ = paragraph.Footnote(7) + "Footnote details here.";
 
          paragraph = document.Footer + "Test : Page: / Date: Time:";
-         _ = paragraph.Format() + Alignment.Center + 15f;
+         _ = paragraph + format() + Alignment.Center + 15f;
          paragraph.ControlWorlds("Test : Page: @/# Date:? Time:!");
 
          _ = document.Header + "Header";
@@ -85,22 +78,22 @@ namespace Core.Tests
          table[4, 3].Text = "Table";
 
          paragraph = document + "Test 7.1: Hyperlink to target (Test9)";
-         _formatter = (paragraph + formatTemplate("          ^^^^^^^^^")).Dequeue();
+         queue = paragraph + formatTemplate("          ^^^^^^^^^");
+         _formatter = queue.Dequeue();
          if (_formatter)
          {
-            formatter = ~_formatter;
-            _ = formatter + ("target", "Link to target") + blueColor.Foreground;
+            _ = ~_formatter + "target".Link("Link to target") + blueColor.Foreground;
          }
 
          paragraph = document + "New page";
          paragraph.StartNewPage = true;
 
          paragraph = document + "Test9: Set bookmark";
-         _formatter = (paragraph + formatTemplate("^^^^^^^^^^^^^^^^^^^")).Dequeue();
+         queue = paragraph + formatTemplate("^^^^^^^^^^^^^^^^^^^");
+         _formatter = queue.Dequeue();
          if (_formatter)
          {
-            formatter = ~_formatter;
-            formatter.Bookmark("target");
+            (~_formatter).Bookmark("target");
          }
 
          document.Save(@"C:\Temp\Test.rtf");
@@ -113,10 +106,10 @@ namespace Core.Tests
          var table = document.Table(12);
          var blueColor = document.Color("blue");
 
-         foreach (var (prompt, hyperlink) in array(("Pull Request", "http://foobar"), ("estreamps", "http://evokeps"),
-                     ("staging10ua", "http://evokeuat")))
+         foreach (var (link, linkTip) in array("http://foobar".Link("Pull Request"), "http://evokeps".Link("estreamps"),
+                     "http://evokeuat".Link("staging10ua")))
          {
-            _ = table.Row() + (prompt, Feature.Bold) + (hyperlink, blueColor, (hyperlink, ""));
+            _ = table.Row() + (linkTip, Feature.Bold) + (link, blueColor, link.Link());
          }
 
          document.Save(@"C:\Temp\Test2.rtf");
@@ -153,6 +146,54 @@ namespace Core.Tests
          _ = document + "Under the line";
 
          document.Save(@"C:\Temp\Test3.rtf");
+      }
+
+      [TestMethod]
+      public void FullDocument()
+      {
+         var document = new Document(paperOrientation: PaperOrientation.Landscape);
+
+         var calibriFont = document.Font("Calibri");
+         var highlightColor = document.Color("yellow");
+         var urlColor = document.Color("blue");
+         var standardFontData = new FontData(calibriFont) { FontSize = 11f };
+         var emphasizedFontData = new FontData(standardFontData) { Bold = true, Italic = true, BackgroundColor = highlightColor };
+         var urlFontData = new FontData(standardFontData) { Underline = true, ForegroundColor = urlColor };
+         document.DefaultCharFormat.FontData = standardFontData;
+
+         _ = document + "Estream Uncleansed database (EstreamPrd replica) – TSESTMUTL10CORP “migrationtest” (non-AG) – Update" + format() +
+            Feature.Bold + Feature.Underline;
+         _ = document + "";
+
+         var indent1 = 0.5f.InchesToPoints().FirstLineIndent();
+         var indent2 = 1f.InchesToPoints().FirstLineIndent();
+
+         var paragraph = document +
+            "a.\tRun partition cleanse steps for IntervalMeasurement data older than approx 2 years (2020-10-15) -- Completed";
+         _ = paragraph + format() + indent1;
+         _ = paragraph + formatFind("Completed") + emphasizedFontData;
+
+         paragraph = document + "b.\tRun Partition cleanse for log tables -- Completed";
+         _ = paragraph + format() + indent1;
+         _ = paragraph + formatFind("Completed") + emphasizedFontData;
+
+         paragraph = document + "i.\tRun partition cleanse steps for HierarchicalLog older than 60 days (2022-08-20)";
+         _ = paragraph + format() + indent2;
+
+         paragraph = document + "ii.\tRun partition cleanse steps for DistributionLog older than 45 days (2022-09-04)";
+         _ = paragraph + format() + indent2;
+
+         var url = "http://tfs.eprod.com/LS/_git/Estream/pullrequest/26899";
+         paragraph = document + $"c.\tDeploy the code base from {url} -- In-progress";
+         _ = paragraph + format() + indent1;
+         _ = paragraph + formatFind(url) + url.Link() + urlFontData;
+         _ = paragraph + formatFind("In-progress") + Feature.Bold + Feature.Italic;
+
+         paragraph = document + "d.\tRun partition reorganization steps for IntervalMeasurement to monthly. Monitor the TLOG fullness";
+         _ = paragraph + format() + indent1;
+         _ = paragraph + formatFind("Monitor the TLOG fullness") + Feature.Bold + 14f;
+
+         document.Save(@"C:\Temp\Test4.rtf");
       }
    }
 }

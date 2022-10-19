@@ -14,8 +14,6 @@ public class Paragraph : Block
 {
    public static Formatter operator +(Paragraph paragraph, Func<Paragraph, Formatter> func) => func(paragraph);
 
-   public static Maybe<Formatter> operator +(Paragraph paragraph, Func<Paragraph, Maybe<Formatter>> func) => func(paragraph);
-
    public static IEnumerable<Formatter> operator +(Paragraph paragraph, Func<Paragraph, IEnumerable<Formatter>> func) => func(paragraph);
 
    public static MaybeQueue<Formatter> operator +(Paragraph paragraph, Func<Paragraph, MaybeQueue<Formatter>> func) => func(paragraph);
@@ -256,16 +254,16 @@ public class Paragraph : Block
 
    public Formatter Format(int begin, int end) => new(this, CharFormat(begin, end));
 
-   public Maybe<Formatter> Format(Pattern pattern, int groupIndex = 0)
+   public Formatter Format(Pattern pattern, int groupIndex = 0)
    {
       var _format = CharFormat(pattern, groupIndex);
-      return _format.Map(f => new Formatter(this, f));
+      return _format.Map(f => new Formatter(this, f)) | (() => new NullFormatter(this));
    }
 
-   public Maybe<Formatter> FormatFind(string substring, bool ignoreCase = false)
+   public Formatter FormatFind(string substring, bool ignoreCase = false)
    {
       var _format = CharFormatFind(substring, ignoreCase);
-      return _format.Map(f => new Formatter(this, f));
+      return _format.Map(f => new Formatter(this, f)) | (() => new NullFormatter(this));
    }
 
    public IEnumerable<Formatter> FormatFindAll(string substring, bool ignoreCase = false)
@@ -276,10 +274,10 @@ public class Paragraph : Block
       }
    }
 
-   public Maybe<Formatter> Format(MatchResult result, int groupIndex = 0)
+   public Formatter Format(MatchResult result, int groupIndex = 0)
    {
       var _format = CharFormat(result, groupIndex);
-      return _format.Map(f => new Formatter(this, f));
+      return _format.Map(f => new Formatter(this, f)) | (() => new NullFormatter(this));
    }
 
    public Formatter Format() => new(this, CharFormat());

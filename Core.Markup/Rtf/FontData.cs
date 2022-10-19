@@ -45,6 +45,12 @@ public class FontData
 
    public Maybe<string> LocalHyperlinkTip { get; set; }
 
+   public bool Bold { get; set; }
+
+   public bool Italic { get; set; }
+
+   public bool Underline { get; set; }
+
    public void SetCharFormat(CharFormat charFormat)
    {
       charFormat.Font = Font;
@@ -52,6 +58,21 @@ public class FontData
       if (FontStyle)
       {
          charFormat.FontStyle += FontStyle;
+      }
+
+      if (Bold)
+      {
+         charFormat.FontStyle += FontStyleFlag.Bold;
+      }
+
+      if (Italic)
+      {
+         charFormat.FontStyle += FontStyleFlag.Italic;
+      }
+
+      if (Underline)
+      {
+         charFormat.FontStyle += FontStyleFlag.Underline;
       }
 
       charFormat.ForegroundColor = ForegroundColor;

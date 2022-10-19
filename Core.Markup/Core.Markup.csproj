@@ -55,12 +55,16 @@
     <Compile Include="Rtf\Descriptor.cs" />
     <Compile Include="Rtf\Feature.cs" />
     <Compile Include="Rtf\FieldType.cs" />
+    <Compile Include="Rtf\FirstLineIndent.cs" />
     <Compile Include="Rtf\FontData.cs" />
     <Compile Include="Rtf\ForegroundColorDescriptor.cs" />
     <Compile Include="Rtf\Formatter.cs" />
     <Compile Include="Rtf\FormatterFunctions.cs" />
     <Compile Include="Rtf\Line.cs" />
+    <Compile Include="Rtf\LocalHyperlink.cs" />
+    <Compile Include="Rtf\NullFormatter.cs" />
     <Compile Include="Rtf\ParagraphFunctions.cs" />
+    <Compile Include="Rtf\RtfExtensions.cs" />
     <Compile Include="Rtf\RtfTemplate.cs" />
     <Compile Include="Rtf\RtfWriter.cs" />
     <Compile Include="Rtf\TableCellArgs.cs" />

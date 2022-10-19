@@ -1,6 +1,4 @@
-﻿using Core.Strings;
-
-namespace Core.Markup.Rtf;
+﻿namespace Core.Markup.Rtf;
 
 public class Formatter
 {
@@ -21,14 +19,13 @@ public class Formatter
 
    public static Formatter operator +(Formatter formatter, BackgroundColorDescriptor backgroundColor) => formatter.BackgroundColor(backgroundColor);
 
-   public static Formatter operator +(Formatter formatter, (string hyperlink, string hyperlinkTip) local)
-   {
-      return formatter.LocalHyperlink(local.hyperlink, local.hyperlinkTip);
-   }
+   public static Formatter operator +(Formatter formatter, LocalHyperlink localHyperlink) => formatter.LocalHyperlink(localHyperlink);
 
    public static Formatter operator +(Formatter formatter, FontDescriptor font) => formatter.Font(font);
 
    public static Formatter operator +(Formatter formatter, float fontSize) => formatter.FontSize(fontSize);
+
+   public static Formatter operator +(Formatter formatter, FirstLineIndent firstLineIndent) => formatter.FirstLineIndent(firstLineIndent.Amount);
 
    protected Paragraph paragraph;
    protected CharFormat format;
@@ -39,7 +36,11 @@ public class Formatter
       this.format = format;
    }
 
-   public Formatter Italic(bool on = true)
+   public Paragraph Paragraph => paragraph;
+
+   public CharFormat CharFormat => format;
+
+   public virtual Formatter Italic(bool on = true)
    {
       if (on)
       {
@@ -53,7 +54,7 @@ public class Formatter
       return this;
    }
 
-   public Formatter Bold(bool on = true)
+   public virtual Formatter Bold(bool on = true)
    {
       if (on)
       {
@@ -67,7 +68,7 @@ public class Formatter
       return this;
    }
 
-   public Formatter Underline(bool on = true)
+   public virtual Formatter Underline(bool on = true)
    {
       if (on)
       {
@@ -81,68 +82,71 @@ public class Formatter
       return this;
    }
 
-   public Formatter Bullet()
+   public virtual Formatter Bullet()
    {
       paragraph.Bullet = true;
       return this;
    }
 
-   public Formatter FontData(FontData fontData)
+   public virtual Formatter FontData(FontData fontData)
    {
       format.FontData = fontData;
       return this;
    }
 
-   public Formatter FontSize(float fontSize)
+   public virtual Formatter FontSize(float fontSize)
    {
       format.FontSize = fontSize;
       return this;
    }
 
-   public Formatter Alignment(Alignment alignment)
+   public virtual Formatter Alignment(Alignment alignment)
    {
       paragraph.Alignment = alignment;
       return this;
    }
 
-   public Formatter ForegroundColor(ColorDescriptor foregroundColor)
+   public virtual Formatter ForegroundColor(ColorDescriptor foregroundColor)
    {
       format.ForegroundColor = foregroundColor;
       return this;
    }
 
-   public Formatter BackgroundColor(ColorDescriptor backgroundColor)
+   public virtual Formatter BackgroundColor(ColorDescriptor backgroundColor)
    {
       format.BackgroundColor = backgroundColor;
       return this;
    }
 
-   public Formatter Font(FontDescriptor font)
+   public virtual Formatter Font(FontDescriptor font)
    {
       format.Font = font;
       return this;
    }
 
-   public Formatter FontStyle(FontStyleFlag fontStyleFlag)
+   public virtual Formatter FontStyle(FontStyleFlag fontStyleFlag)
    {
       format.FontStyle += fontStyleFlag;
       return this;
    }
 
-   public Formatter LocalHyperlink(string localHyperlink, string localHyperlinkTip = "")
+   public virtual Formatter LocalHyperlink(LocalHyperlink localHyperlink)
    {
-      format.LocalHyperlink = localHyperlink;
-      if (localHyperlinkTip.IsNotEmpty())
-      {
-         format.LocalHyperlinkTip = localHyperlinkTip;
-      }
+      format.LocalHyperlink = localHyperlink.Link;
+      format.LocalHyperlinkTip = localHyperlink.LinkTip;
 
       return this;
    }
 
-   public Formatter Bookmark(string bookmark)
+   public virtual Formatter Bookmark(string bookmark)
    {
       format.Bookmark = bookmark;
+      return this;
+   }
+
+   public virtual Formatter FirstLineIndent(float indentAmount)
+   {
+      paragraph.FirstLineIndent = indentAmount;
       return this;
    }
 }

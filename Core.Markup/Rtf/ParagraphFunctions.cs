@@ -38,6 +38,12 @@ public static class ParagraphFunctions
             case Alignment alignment:
                paragraph.Alignment = alignment;
                break;
+            case ForegroundColorDescriptor foregroundColor:
+               format.ForegroundColor = foregroundColor;
+               break;
+            case BackgroundColorDescriptor backgroundColor:
+               format.BackgroundColor = backgroundColor;
+               break;
             case ColorDescriptor colorDescriptor when firstColor:
                format.BackgroundColor = colorDescriptor;
                break;
@@ -48,9 +54,9 @@ public static class ParagraphFunctions
             case FontStyleFlag fontStyleFlag:
                format.FontStyle += fontStyleFlag;
                break;
-            case (string hyperlink, string hyperlinkTip):
-               format.LocalHyperlink = hyperlink;
-               format.LocalHyperlinkTip = hyperlinkTip;
+            case LocalHyperlink link:
+               format.LocalHyperlink = link.Link;
+               format.LocalHyperlinkTip = link.LinkTip;
                break;
             case bool bullet:
                paragraph.Bullet = bullet;
