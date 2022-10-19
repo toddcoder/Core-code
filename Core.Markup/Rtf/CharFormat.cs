@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Core.Assertions;
@@ -196,6 +197,25 @@ public class CharFormat
    public FontData FontData
    {
       set => value.SetCharFormat(this);
+   }
+
+   public Feature Feature
+   {
+      set
+      {
+         switch (value)
+         {
+            case Feature.Bold:
+               fontStyle += FontStyleFlag.Bold;
+               break;
+            case Feature.Italic:
+               fontStyle += FontStyleFlag.Italic;
+               break;
+            case Feature.Underline:
+               fontStyle += FontStyleFlag.Underline;
+               break;
+         }
+      }
    }
 
    public string RenderHead()
