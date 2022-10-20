@@ -24,5 +24,5 @@ public static class FormatterFunctions
 
    public static Func<Paragraph, MaybeQueue<Formatter>> formatTemplate(string formatTemplate) => p => p.FormatTemplate(formatTemplate);
 
-   public static Paragraph para() => new();
+   public static readonly Paragraph para = new();
 }

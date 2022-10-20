@@ -8,6 +8,8 @@ public class Formatter
       Feature.Italic => formatter.Italic(),
       Feature.Underline => formatter.Underline(),
       Feature.Bullet => formatter.Bullet(),
+      Feature.NewPage => formatter.NewPage(),
+      Feature.NewPageAfter => formatter.NewPageAfter(),
       _ => formatter
    };
 
@@ -87,6 +89,18 @@ public class Formatter
    public virtual Formatter Bullet()
    {
       paragraph.Bullet = true;
+      return this;
+   }
+
+   public virtual Formatter NewPage()
+   {
+      paragraph.StartNewPage = true;
+      return this;
+   }
+
+   public virtual Formatter NewPageAfter()
+   {
+      paragraph.StartNewPageAfter = true;
       return this;
    }
 

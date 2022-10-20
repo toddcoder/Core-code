@@ -28,21 +28,20 @@ namespace Core.Tests
 
          _ = document + "Testing\n" + format() + Alignment.Left + timesFont;
 
-         var queue = document + "Test2: Character Formatting" + format() + timesFont + para() + formatTemplate("^^^^^^");
+         var queue = document + "Test2: Character Formatting" + format() + timesFont + para + formatTemplate("^^^^^^");
          var _formatter = queue.Dequeue();
          if (!_formatter)
          {
             throw fail("Couldn't extract text");
          }
 
-         _ = ~_formatter + blueColor.Foreground + redColor.Background + 18f + para() + format("Character Formatting; u") + Feature.Bold +
+         _ = ~_formatter + blueColor.Foreground + redColor.Background + 18f + para + format("Character Formatting; u") + Feature.Bold +
             Feature.Underline + courierFont;
 
          var paragraph = document + "Footnote";
          _ = paragraph.Footnote(7) + "Footnote details here.";
 
-         paragraph = document.Footer + "Test : Page: / Date: Time:" + format() + Alignment.Center + 15f;
-         _ = paragraph + format() + Alignment.Center + 15f;
+         paragraph = document.Footer + "Test : Page: / Date: Time:" + format() + Alignment.Center + 15f + para;
          paragraph.ControlWorlds("Test : Page: @/# Date:? Time:!");
 
          _ = document.Header + "Header";
@@ -74,19 +73,16 @@ namespace Core.Tests
          table[4, 3].BackgroundColor = redColor;
          table[4, 3].Text = "Table";
 
-         paragraph = document + "Test 7.1: Hyperlink to target (Test9)";
-         queue = paragraph + formatTemplate("          ^^^^^^^^^");
+         queue = document + "Test 7.1: Hyperlink to target (Test9)" + formatTemplate("          ^^^^^^^^^");
          _formatter = queue.Dequeue();
          if (_formatter)
          {
             _ = ~_formatter + "target".Link("Link to target") + blueColor.Foreground;
          }
 
-         paragraph = document + "New page";
-         paragraph.StartNewPage = true;
+         _ = document + "New page" + format() + Feature.NewPage;
 
-         paragraph = document + "Test9: Set bookmark";
-         queue = paragraph + formatTemplate("^^^^^^^^^^^^^^^^^^^");
+         queue = document + "Test9: Set bookmark" + formatTemplate("^^^^^^^^^^^^^^^^^^^");
          _formatter = queue.Dequeue();
          if (_formatter)
          {
@@ -165,30 +161,21 @@ namespace Core.Tests
          var indent1 = 0.5f.InchesToPoints().FirstLineIndent();
          var indent2 = 1f.InchesToPoints().FirstLineIndent();
 
-         var paragraph = document +
-            "a.\tRun partition cleanse steps for IntervalMeasurement data older than approx 2 years (2020-10-15) -- Completed";
-         _ = paragraph + format() + indent1;
-         _ = paragraph + formatFind("Completed") + emphasizedFontData;
-
-         paragraph = document + "b.\tRun Partition cleanse for log tables -- Completed";
-         _ = paragraph + format() + indent1;
-         _ = paragraph + formatFind("Completed") + emphasizedFontData;
-
-         paragraph = document + "i.\tRun partition cleanse steps for HierarchicalLog older than 60 days (2022-08-20)";
-         _ = paragraph + format() + indent2;
-
-         paragraph = document + "ii.\tRun partition cleanse steps for DistributionLog older than 45 days (2022-09-04)";
-         _ = paragraph + format() + indent2;
+         _ = document +
+            "a.\tRun partition cleanse steps for IntervalMeasurement data older than approx 2 years (2020-10-15) -- Completed" + format() + indent1 +
+            para + formatFind("Completed") + emphasizedFontData;
+         _ = document + "b.\tRun Partition cleanse for log tables -- Completed" + format() + indent1 +
+            para + formatFind("Completed") + emphasizedFontData;
+         _ = document + "i.\tRun partition cleanse steps for HierarchicalLog older than 60 days (2022-08-20)" + format() + indent2;
+         _ = document + "ii.\tRun partition cleanse steps for DistributionLog older than 45 days (2022-09-04)" + format() + indent2;
 
          var url = "http://tfs.eprod.com/LS/_git/Estream/pullrequest/26899";
-         paragraph = document + $"c.\tDeploy the code base from {url} -- In-progress";
-         _ = paragraph + format() + indent1;
-         _ = paragraph + formatFind(url) + url.Link() + urlFontData;
-         _ = paragraph + formatFind("In-progress") + Feature.Bold + Feature.Italic;
+         _ = document + $"c.\tDeploy the code base from {url} -- In-progress" + format() + indent1 +
+            para + formatFind(url) + url.Link() + urlFontData +
+            para + formatFind("In-progress") + Feature.Bold + Feature.Italic;
 
-         paragraph = document + "d.\tRun partition reorganization steps for IntervalMeasurement to monthly. Monitor the TLOG fullness";
-         _ = paragraph + format() + indent1;
-         _ = paragraph + formatFind("Monitor the TLOG fullness") + Feature.Bold + 14f;
+         _ = document + "d.\tRun partition reorganization steps for IntervalMeasurement to monthly. Monitor the TLOG fullness" + format() + indent1 +
+            para + formatFind("Monitor the TLOG fullness") + Feature.Bold + 14f;
 
          document.Save(@"C:\Temp\Test4.rtf");
       }

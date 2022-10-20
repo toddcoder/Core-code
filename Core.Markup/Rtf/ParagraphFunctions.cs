@@ -26,6 +26,12 @@ public static class ParagraphFunctions
             case Feature.Bullet:
                paragraph.Bullet = true;
                break;
+            case Feature.NewPage:
+               paragraph.StartNewPage = true;
+               break;
+            case Feature.NewPageAfter:
+               paragraph.StartNewPageAfter = true;
+               break;
             case FontData fontData:
                format.FontData = fontData;
                break;

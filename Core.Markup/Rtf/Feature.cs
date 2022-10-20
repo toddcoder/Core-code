@@ -5,5 +5,7 @@ public enum Feature
    Bold,
    Italic,
    Underline,
-   Bullet
+   Bullet,
+   NewPage,
+   NewPageAfter
 }
