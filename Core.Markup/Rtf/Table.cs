@@ -94,6 +94,7 @@ public class Table : Block
    protected int rowIndex;
    protected bool arrayCreated;
    protected MaybeQueue<(int topRow, int leftColumn, int rowSpan, int colSpan)> pendingMerges;
+   protected Maybe<Action<Paragraph, int, int>> _formatAction;
 
    public Table(float horizontalWidth, float fontSize)
    {
@@ -116,13 +117,13 @@ public class Table : Block
       rowIndex = -1;
       arrayCreated = false;
       pendingMerges = new MaybeQueue<(int, int, int, int)>();
+
+      _formatAction = nil;
    }
 
-   [Obsolete("Use Row()")]
-   public void AddRow()
+   public Action<Paragraph, int, int> FormatAction
    {
-      rows.Add(new List<CellData>());
-      rowIndex = rows.Count - 1;
+      set => _formatAction = value;
    }
 
    public Table Row()
@@ -131,18 +132,6 @@ public class Table : Block
       rowIndex = rows.Count - 1;
 
       return this;
-   }
-
-   [Obsolete("Use Column")]
-   public void AddColumn(string text, params object[] specifiers)
-   {
-      var cellData = new CellData { Text = text, Specifiers = specifiers };
-      var row = rows[rowIndex];
-      row.Add(cellData);
-      if (row.Count > maxColumnCount)
-      {
-         maxColumnCount = row.Count;
-      }
    }
 
    public Table Column(string text, params object[] specifiers)
@@ -158,19 +147,7 @@ public class Table : Block
       return this;
    }
 
-   [Obsolete("Use Image")]
-   public void AddImage(FileName imageFile, ImageFileType imageFileType)
-   {
-      var cellData = new CellData { ImageFile = imageFile, ImageFileType = imageFileType };
-      var row = rows[rowIndex];
-      row.Add(cellData);
-      if (row.Count > maxColumnCount)
-      {
-         maxColumnCount = row.Count;
-      }
-   }
-
-   public Table Image(FileName imageFile, ImageFileType imageFileType)
+  public Table Image(FileName imageFile, ImageFileType imageFileType)
    {
       var cellData = new CellData { ImageFile = imageFile, ImageFileType = imageFileType };
       var row = rows[rowIndex];
@@ -221,7 +198,15 @@ public class Table : Block
                else
                {
                   var paragraph = tableCell.Paragraph();
-                  SetParagraphProperties(paragraph, cellData.Text, cellData.Specifiers);
+                  if (_formatAction)
+                  {
+                     paragraph.Text = cellData.Text;
+                     (~_formatAction)(paragraph, i, j);
+                  }
+                  else
+                  {
+                     SetParagraphProperties(paragraph, cellData.Text, cellData.Specifiers);
+                  }
                }
             }
          }

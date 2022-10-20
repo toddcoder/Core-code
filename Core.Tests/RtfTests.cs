@@ -2,7 +2,6 @@
 using Core.Enumerables;
 using Core.Markup.Rtf;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using static Core.Arrays.ArrayFunctions;
 using static Core.Markup.Rtf.FormatterFunctions;
 using static Core.Monads.MonadFunctions;
 
@@ -98,12 +97,22 @@ namespace Core.Tests
          var document = new Document();
          var table = document.Table(12);
          var blueColor = document.Color("blue");
-
-         foreach (var (link, linkTip) in array("http://foobar".Link("Pull Request"), "http://evokeps".Link("estreamps"),
-                     "http://evokeuat".Link("staging10ua")))
+         table.FormatAction = (p, i, j) =>
          {
-            _ = table.Row() + (linkTip, Feature.Bold) + (link, blueColor, link.Link());
-         }
+            switch (j)
+            {
+               case 0:
+                  _ = p + format() + Feature.Bold;
+                  break;
+               case 1:
+                  _ = p + format() + p.Text.Link("?") + blueColor.Foreground;
+                  break;
+            }
+         };
+
+         _ = table.Row() + "Pull Request" + "http://foobar";
+         _ = table.Row() + "estreamps" + "http://evokeps";
+         _ = table.Row() + "staging10ua" + "http://evokeuat";
 
          document.Save(@"C:\Temp\Test2.rtf");
       }
