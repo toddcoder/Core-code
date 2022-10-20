@@ -27,6 +27,8 @@ public class Formatter
 
    public static Formatter operator +(Formatter formatter, FirstLineIndent firstLineIndent) => formatter.FirstLineIndent(firstLineIndent.Amount);
 
+   public static Paragraph operator +(Formatter formatter, Paragraph _) => formatter.Paragraph;
+
    protected Paragraph paragraph;
    protected CharFormat format;
 

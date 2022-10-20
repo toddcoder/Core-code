@@ -14,6 +14,8 @@ public class Paragraph : Block
 {
    public static Formatter operator +(Paragraph paragraph, Func<Paragraph, Formatter> func) => func(paragraph);
 
+   public static Paragraph operator +(Paragraph paragraph, Paragraph _) => paragraph;
+
    public static IEnumerable<Formatter> operator +(Paragraph paragraph, Func<Paragraph, IEnumerable<Formatter>> func) => func(paragraph);
 
    public static MaybeQueue<Formatter> operator +(Paragraph paragraph, Func<Paragraph, MaybeQueue<Formatter>> func) => func(paragraph);

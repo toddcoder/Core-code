@@ -23,4 +23,6 @@ public static class FormatterFunctions
    public static Func<Paragraph, Formatter> format() => p => p.Format();
 
    public static Func<Paragraph, MaybeQueue<Formatter>> formatTemplate(string formatTemplate) => p => p.FormatTemplate(formatTemplate);
+
+   public static Paragraph para() => new();
 }

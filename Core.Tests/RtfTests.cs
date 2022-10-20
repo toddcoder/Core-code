@@ -28,23 +28,20 @@ namespace Core.Tests
 
          _ = document + "Testing\n" + format() + Alignment.Left + timesFont;
 
-         var paragraph = document + "Test2: Character Formatting";
-         _ = paragraph + format() + timesFont;
-         var queue = paragraph + formatTemplate("^^^^^^");
+         var queue = document + "Test2: Character Formatting" + format() + timesFont + para() + formatTemplate("^^^^^^");
          var _formatter = queue.Dequeue();
          if (!_formatter)
          {
             throw fail("Couldn't extract text");
          }
 
-         _ = ~_formatter + blueColor.Foreground + redColor.Background + 18f;
+         _ = ~_formatter + blueColor.Foreground + redColor.Background + 18f + para() + format("Character Formatting; u") + Feature.Bold +
+            Feature.Underline + courierFont;
 
-         _ = paragraph + format("Character Formatting; u") + Feature.Bold + Feature.Underline + courierFont;
-
-         paragraph = document + "Footnote";
+         var paragraph = document + "Footnote";
          _ = paragraph.Footnote(7) + "Footnote details here.";
 
-         paragraph = document.Footer + "Test : Page: / Date: Time:";
+         paragraph = document.Footer + "Test : Page: / Date: Time:" + format() + Alignment.Center + 15f;
          _ = paragraph + format() + Alignment.Center + 15f;
          paragraph.ControlWorlds("Test : Page: @/# Date:? Time:!");
 
