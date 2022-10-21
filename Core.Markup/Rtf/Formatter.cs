@@ -2,7 +2,7 @@
 
 public class Formatter
 {
-   public static Formatter operator +(Formatter formatter, Feature feature) => feature switch
+   public static Formatter operator |(Formatter formatter, Feature feature) => feature switch
    {
       Feature.Bold => formatter.Bold(),
       Feature.Italic => formatter.Italic(),
@@ -13,23 +13,23 @@ public class Formatter
       _ => formatter
    };
 
-   public static Formatter operator +(Formatter formatter, FontData fontData) => formatter.FontData(fontData);
+   public static Formatter operator |(Formatter formatter, FontData fontData) => formatter.FontData(fontData);
 
-   public static Formatter operator +(Formatter formatter, Alignment alignment) => formatter.Alignment(alignment);
+   public static Formatter operator |(Formatter formatter, Alignment alignment) => formatter.Alignment(alignment);
 
-   public static Formatter operator +(Formatter formatter, ForegroundColorDescriptor foregroundColor) => formatter.ForegroundColor(foregroundColor);
+   public static Formatter operator |(Formatter formatter, ForegroundColorDescriptor foregroundColor) => formatter.ForegroundColor(foregroundColor);
 
-   public static Formatter operator +(Formatter formatter, BackgroundColorDescriptor backgroundColor) => formatter.BackgroundColor(backgroundColor);
+   public static Formatter operator |(Formatter formatter, BackgroundColorDescriptor backgroundColor) => formatter.BackgroundColor(backgroundColor);
 
-   public static Formatter operator +(Formatter formatter, LocalHyperlink localHyperlink) => formatter.LocalHyperlink(localHyperlink);
+   public static Formatter operator |(Formatter formatter, LocalHyperlink localHyperlink) => formatter.LocalHyperlink(localHyperlink);
 
-   public static Formatter operator +(Formatter formatter, FontDescriptor font) => formatter.Font(font);
+   public static Formatter operator |(Formatter formatter, FontDescriptor font) => formatter.Font(font);
 
-   public static Formatter operator +(Formatter formatter, float fontSize) => formatter.FontSize(fontSize);
+   public static Formatter operator |(Formatter formatter, float fontSize) => formatter.FontSize(fontSize);
 
-   public static Formatter operator +(Formatter formatter, FirstLineIndent firstLineIndent) => formatter.FirstLineIndent(firstLineIndent.Amount);
+   public static Formatter operator |(Formatter formatter, FirstLineIndent firstLineIndent) => formatter.FirstLineIndent(firstLineIndent.Amount);
 
-   public static Paragraph operator +(Formatter formatter, Paragraph _) => formatter.Paragraph;
+   public static Paragraph operator |(Formatter formatter, Paragraph _) => formatter.Paragraph;
 
    protected Paragraph paragraph;
    protected CharFormat format;
