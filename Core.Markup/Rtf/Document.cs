@@ -43,6 +43,7 @@ public class Document : BlockList
 
       fontTable = new StringHash<int>(true) { [DefaultValue.FONT] = 0 };
       colorTable = new Hash<Color, int> { [new Color()] = 0 };
+      _ = Color("blue");
    }
 
    public Margins Margins

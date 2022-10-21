@@ -1,8 +1,9 @@
 ﻿using Core.Applications;
+using Core.Collections;
 using Core.Enumerables;
 using Core.Markup.Rtf;
+using Core.Strings;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using static Core.Arrays.ArrayFunctions;
 using static Core.Markup.Rtf.FormatterFunctions;
 using static Core.Monads.MonadFunctions;
 
@@ -26,25 +27,25 @@ namespace Core.Tests
          var tableRowColor = document.Color(0xD6E3BC);
          var tableRowAltColor = document.Color(0xFFFFFF);
 
-         _ = document + "Testing\n" + format() + Alignment.Left + timesFont;
+         _ = document | "Testing\n" | Alignment.Left | timesFont;
 
-         var queue = document + "Test2: Character Formatting" + format() + timesFont + para + formatTemplate("^^^^^^");
+         var queue = document | "Test2: Character Formatting" | timesFont | para | formatTemplate("^^^^^^");
          var _formatter = queue.Dequeue();
          if (!_formatter)
          {
             throw fail("Couldn't extract text");
          }
 
-         _ = ~_formatter + blueColor.Foreground + redColor.Background + 18f + para + format("Character Formatting; u") + Feature.Bold +
-            Feature.Underline + courierFont;
+         _ = ~_formatter | blueColor.Foreground | redColor.Background | 18f | para | format("Character Formatting; u") | Feature.Bold |
+            Feature.Underline | courierFont;
 
-         var paragraph = document + "Footnote";
-         _ = paragraph.Footnote(7) + "Footnote details here.";
+         var paragraph = document | "Footnote";
+         _ = paragraph.Footnote(7) | "Footnote details here.";
 
-         paragraph = document.Footer + "Test : Page: / Date: Time:" + format() + Alignment.Center + 15f + para;
+         paragraph = document.Footer | "Test : Page: / Date: Time:" | Alignment.Center | 15f | para;
          paragraph.ControlWorlds("Test : Page: @/# Date:? Time:!");
 
-         _ = document.Header + "Header";
+         _ = document.Header | "Header";
 
          var image = document.Image(@"C:\Temp\rabbit-mq.jpg");
          image.Width = 130;
@@ -73,16 +74,16 @@ namespace Core.Tests
          table[4, 3].BackgroundColor = redColor;
          table[4, 3].Text = "Table";
 
-         queue = document + "Test 7.1: Hyperlink to target (Test9)" + formatTemplate("          ^^^^^^^^^");
+         queue = document | "Test 7.1: Hyperlink to target (Test9)" | formatTemplate("          ^^^^^^^^^");
          _formatter = queue.Dequeue();
          if (_formatter)
          {
-            _ = ~_formatter + "target".Link("Link to target") + blueColor.Foreground;
+            _ = ~_formatter | "target".Link("Link to target") | blueColor.Foreground;
          }
 
-         _ = document + "New page" + format() + Feature.NewPage;
+         _ = document | "New page" | Feature.NewPage;
 
-         queue = document + "Test9: Set bookmark" + formatTemplate("^^^^^^^^^^^^^^^^^^^");
+         queue = document | "Test9: Set bookmark" | formatTemplate("^^^^^^^^^^^^^^^^^^^");
          _formatter = queue.Dequeue();
          if (_formatter)
          {
@@ -97,13 +98,34 @@ namespace Core.Tests
       {
          var document = new Document();
          var table = document.Table(12);
-         var blueColor = document.Color("blue");
-
-         foreach (var (link, linkTip) in array("http://foobar".Link("Pull Request"), "http://evokeps".Link("estreamps"),
-                     "http://evokeuat".Link("staging10ua")))
+         var urls = new StringHash(true)
          {
-            _ = table.Row() + (linkTip, Feature.Bold) + (link, blueColor, link.Link());
-         }
+            ["foobar"] = "http://foobar",
+            ["evokeps"] = "http://evokeps",
+            ["evokeuat"] = "http://evokeuat"
+         };
+         table.FormatAction = (p, i, j) =>
+         {
+            switch (j)
+            {
+               case 0:
+                  _ = p | Feature.Bold;
+                  break;
+               case 1:
+                  var key = p.Text.Drop(5).Drop(-1);
+                  var _url = urls.Maybe[key];
+                  if (_url)
+                  {
+                     _ = p | (~_url).Link(key);
+                  }
+
+                  break;
+            }
+         };
+
+         _ = table.Row() | "Pull Request" | "/url(foobar)";
+         _ = table.Row() | "estreamps" | "/url(evokeps)";
+         _ = table.Row() | "staging10ua" | "/url(evokeuat)";
 
          document.Save(@"C:\Temp\Test2.rtf");
       }
@@ -130,13 +152,13 @@ namespace Core.Tests
       public void BulletTest()
       {
          var document = new Document();
-         _ = document + "Top";
-         _ = document + "Item 1" + format() + Feature.Bullet;
-         _ = document + "Item 2" + format() + Feature.Bullet;
-         _ = document + "Item 3" + format() + Feature.Bullet;
-         _ = document + "Bottom";
+         _ = document | "Top";
+         _ = document | "Item 1" | Feature.Bullet;
+         _ = document | "Item 2" | Feature.Bullet;
+         _ = document | "Item 3" | Feature.Bullet;
+         _ = document | "Bottom";
          document.Line();
-         _ = document + "Under the line";
+         _ = document | "Under the line";
 
          document.Save(@"C:\Temp\Test3.rtf");
       }
@@ -148,36 +170,42 @@ namespace Core.Tests
 
          var calibriFont = document.Font("Calibri");
          var highlightColor = document.Color("yellow");
-         var urlColor = document.Color("blue");
          var standardFontData = new FontData(calibriFont) { FontSize = 11f };
          var emphasizedFontData = new FontData(standardFontData) { Bold = true, Italic = true, BackgroundColor = highlightColor };
-         var urlFontData = new FontData(standardFontData) { Underline = true, ForegroundColor = urlColor };
          document.DefaultCharFormat.FontData = standardFontData;
 
-         _ = document + "Estream Uncleansed database (EstreamPrd replica) – TSESTMUTL10CORP “migrationtest” (non-AG) – Update" + format() +
-            Feature.Bold + Feature.Underline;
-         _ = document + "";
+         _ = document | "Estream Uncleansed database (EstreamPrd replica) – TSESTMUTL10CORP “migrationtest” (non-AG) – Update" | Feature.Bold |
+            Feature.Underline;
+         _ = document | "";
 
          var indent1 = 0.5f.InchesToPoints().FirstLineIndent();
          var indent2 = 1f.InchesToPoints().FirstLineIndent();
 
-         _ = document +
-            "a.\tRun partition cleanse steps for IntervalMeasurement data older than approx 2 years (2020-10-15) -- Completed" + format() + indent1 +
-            para + formatFind("Completed") + emphasizedFontData;
-         _ = document + "b.\tRun Partition cleanse for log tables -- Completed" + format() + indent1 +
-            para + formatFind("Completed") + emphasizedFontData;
-         _ = document + "i.\tRun partition cleanse steps for HierarchicalLog older than 60 days (2022-08-20)" + format() + indent2;
-         _ = document + "ii.\tRun partition cleanse steps for DistributionLog older than 45 days (2022-09-04)" + format() + indent2;
+         _ = document |
+            "a.\tRun partition cleanse steps for IntervalMeasurement data older than approx 2 years (2020-10-15) -- Completed" | indent1 |
+            para | formatFind("Completed") | emphasizedFontData;
+         _ = document | "b.\tRun Partition cleanse for log tables -- Completed" | indent1 |
+            para | formatFind("Completed") | emphasizedFontData;
+         _ = document | "i.\tRun partition cleanse steps for HierarchicalLog older than 60 days (2022-08-20)" | indent2;
+         _ = document | "ii.\tRun partition cleanse steps for DistributionLog older than 45 days (2022-09-04)" | indent2;
 
          var url = "http://tfs.eprod.com/LS/_git/Estream/pullrequest/26899";
-         _ = document + $"c.\tDeploy the code base from {url} -- In-progress" + format() + indent1 +
-            para + formatFind(url) + url.Link() + urlFontData +
-            para + formatFind("In-progress") + Feature.Bold + Feature.Italic;
+         _ = document | "c.\tDeploy the code base from /url(pr) -- In-progress" | indent1 |
+            para | formatUrl("pr") | url.Link("PR") |
+            para | formatFind("In-progress") | Feature.Bold | Feature.Italic;
 
-         _ = document + "d.\tRun partition reorganization steps for IntervalMeasurement to monthly. Monitor the TLOG fullness" + format() + indent1 +
-            para + formatFind("Monitor the TLOG fullness") + Feature.Bold + 14f;
+         _ = document | "d.\tRun partition reorganization steps for IntervalMeasurement to monthly. Monitor the TLOG fullness" | indent1 |
+            para | formatFind("Monitor the TLOG fullness") | Feature.Bold | 14f;
 
          document.Save(@"C:\Temp\Test4.rtf");
+      }
+
+      [TestMethod]
+      public void HyperlinkTest()
+      {
+         var document = new Document();
+         _ = document | "This is the url to /url(google) is here!" | formatUrl("google") | "http://google.com".Link("Google");
+         document.Save(@"C:\Temp\Test5.rtf");
       }
    }
 }

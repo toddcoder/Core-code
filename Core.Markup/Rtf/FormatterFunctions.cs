@@ -22,6 +22,8 @@ public static class FormatterFunctions
 
    public static Func<Paragraph, Formatter> format() => p => p.Format();
 
+   public static Func<Paragraph, Formatter> formatUrl(string placeholder, bool ignoreCase = false) => p => p.FormatUrl(placeholder, ignoreCase);
+
    public static Func<Paragraph, MaybeQueue<Formatter>> formatTemplate(string formatTemplate) => p => p.FormatTemplate(formatTemplate);
 
    public static readonly Paragraph para = new();

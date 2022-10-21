@@ -12,13 +12,55 @@ namespace Core.Markup.Rtf;
 
 public class Paragraph : Block
 {
-   public static Formatter operator +(Paragraph paragraph, Func<Paragraph, Formatter> func) => func(paragraph);
+   public static Formatter operator |(Paragraph paragraph, Func<Paragraph, Formatter> func) => func(paragraph);
 
-   public static Paragraph operator +(Paragraph paragraph, Paragraph _) => paragraph;
+   public static Paragraph operator |(Paragraph paragraph, Paragraph _) => paragraph;
 
-   public static IEnumerable<Formatter> operator +(Paragraph paragraph, Func<Paragraph, IEnumerable<Formatter>> func) => func(paragraph);
+   public static IEnumerable<Formatter> operator |(Paragraph paragraph, Func<Paragraph, IEnumerable<Formatter>> func) => func(paragraph);
 
-   public static MaybeQueue<Formatter> operator +(Paragraph paragraph, Func<Paragraph, MaybeQueue<Formatter>> func) => func(paragraph);
+   public static MaybeQueue<Formatter> operator |(Paragraph paragraph, Func<Paragraph, MaybeQueue<Formatter>> func) => func(paragraph);
+
+   public static Formatter operator |(Paragraph paragraph, FontData fontData)
+   {
+      return new Formatter(paragraph, paragraph.DefaultCharFormat).FontData(fontData);
+   }
+
+   public static Formatter operator |(Paragraph paragraph, Alignment alignment)
+   {
+      return new Formatter(paragraph, paragraph.DefaultCharFormat).Alignment(alignment);
+   }
+
+   public static Formatter operator |(Paragraph paragraph, ForegroundColorDescriptor foregroundColor)
+   {
+      return new Formatter(paragraph, paragraph.DefaultCharFormat).ForegroundColor(foregroundColor);
+   }
+
+   public static Formatter operator |(Paragraph paragraph, BackgroundColorDescriptor backgroundColor)
+   {
+      return new Formatter(paragraph, paragraph.DefaultCharFormat).BackgroundColor(backgroundColor);
+   }
+
+   public static Formatter operator |(Paragraph paragraph, LocalHyperlink localHyperlink)
+   {
+      return new Formatter(paragraph, paragraph.DefaultCharFormat).LocalHyperlink(localHyperlink);
+   }
+
+   public static Formatter operator |(Paragraph paragraph, FontDescriptor font)
+   {
+      return new Formatter(paragraph, paragraph.DefaultCharFormat).Font(font);
+   }
+
+   public static Formatter operator |(Paragraph paragraph, float fontSize)
+   {
+      return new Formatter(paragraph, paragraph.DefaultCharFormat).FontSize(fontSize);
+   }
+
+   public static Formatter operator |(Paragraph paragraph, FirstLineIndent firstLineIndent)
+   {
+      return new Formatter(paragraph, paragraph.DefaultCharFormat).FirstLineIndent(firstLineIndent.Amount);
+   }
+
+   public static Formatter operator |(Paragraph paragraph, Feature feature) => paragraph.Format() | feature;
 
    protected StringBuilder text;
    protected Maybe<float> _lineSpacing;
@@ -282,7 +324,9 @@ public class Paragraph : Block
       return _format.Map(f => new Formatter(this, f)) | (() => new NullFormatter(this));
    }
 
-   public Formatter Format() => new(this, CharFormat());
+   public Formatter Format() => new(this, DefaultCharFormat);
+
+   public Formatter FormatUrl(string placeholder, bool ignoreCase = false) => FormatFind($"/url({placeholder})", ignoreCase);
 
    public MaybeQueue<Formatter> FormatTemplate(string formatTemplate)
    {
@@ -631,7 +675,18 @@ public class Paragraph : Block
          }
          else
          {
-            result.Append(node.Value.Text.UnicodeEncode());
+            var text = node.Value.Text;
+            var _result = text.Matches("'//url(' -[')']+ ')'");
+            if (_result)
+            {
+               var matchResult = ~_result;
+               text = text.Keep(matchResult.Index) + text.Drop(matchResult.Index + matchResult.Length);
+            }
+
+            if (text.IsNotEmpty())
+            {
+               result.Append(text.UnicodeEncode());
+            }
          }
 
          node = node.Next;

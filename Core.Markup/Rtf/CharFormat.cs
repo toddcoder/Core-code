@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Text;
 using Core.Assertions;
@@ -224,14 +223,8 @@ public class CharFormat
 
       if (_localHyperlink)
       {
-         result.Append(@"{\field{\*\fldinst HYPERLINK \\l ");
-         result.Append($"\"{_localHyperlink}\"");
-         if (_localHyperlinkTip)
-         {
-            result.Append($" \\\\o \"{_localHyperlinkTip}\"");
-         }
-
-         result.Append(@"}{\fldrslt{");
+         var localHyperlinkTip = _localHyperlinkTip | ~_localHyperlink;
+         result.Append($@"{{\field{{\*\fldinst HYPERLINK ""{_localHyperlink}""}}{{\fldrslt{{\ul\cf1{localHyperlinkTip}}}}}}}");
       }
 
       if (_font)
@@ -307,10 +300,10 @@ public class CharFormat
          }
       }
 
-      if (result.ToString().Contains(@"\"))
+      /*if (result.ToString().Contains(@"\"))
       {
          result.Append(" ");
-      }
+      }*/
 
       if (_bookmark)
       {
@@ -329,10 +322,10 @@ public class CharFormat
          result.Append($@"{{\*\bkmkend {_bookmark}}}");
       }
 
-      if (_localHyperlink)
+      /*if (_localHyperlink)
       {
          result.Append(@"}}}");
-      }
+      }*/
 
       result.Append("}");
 
