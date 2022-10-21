@@ -326,6 +326,8 @@ public class Paragraph : Block
 
    public Formatter Format() => new(this, DefaultCharFormat);
 
+   public Formatter FormatUrl(string placeholder, bool ignoreCase = false) => FormatFind($"/url({placeholder})", ignoreCase);
+
    public MaybeQueue<Formatter> FormatTemplate(string formatTemplate)
    {
       var queue = new MaybeQueue<Formatter>();
@@ -673,7 +675,18 @@ public class Paragraph : Block
          }
          else
          {
-            result.Append(node.Value.Text.UnicodeEncode());
+            var text = node.Value.Text;
+            var _result = text.Matches("'//url(' -[')']+ ')'");
+            if (_result)
+            {
+               var matchResult = ~_result;
+               text = text.Keep(matchResult.Index) + text.Drop(matchResult.Index + matchResult.Length);
+            }
+
+            if (text.IsNotEmpty())
+            {
+               result.Append(text.UnicodeEncode());
+            }
          }
 
          node = node.Next;

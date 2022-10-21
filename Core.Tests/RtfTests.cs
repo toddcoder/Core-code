@@ -1,6 +1,8 @@
 ﻿using Core.Applications;
+using Core.Collections;
 using Core.Enumerables;
 using Core.Markup.Rtf;
+using Core.Strings;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Core.Markup.Rtf.FormatterFunctions;
 using static Core.Monads.MonadFunctions;
@@ -96,7 +98,12 @@ namespace Core.Tests
       {
          var document = new Document();
          var table = document.Table(12);
-         var blueColor = document.Color("blue");
+         var urls = new StringHash(true)
+         {
+            ["foobar"] = "http://foobar",
+            ["evokeps"] = "http://evokeps",
+            ["evokeuat"] = "http://evokeuat"
+         };
          table.FormatAction = (p, i, j) =>
          {
             switch (j)
@@ -105,14 +112,20 @@ namespace Core.Tests
                   _ = p | Feature.Bold;
                   break;
                case 1:
-                  _ = p | p.Text.Link("?") | blueColor.Foreground;
+                  var key = p.Text.Drop(5).Drop(-1);
+                  var _url = urls.Maybe[key];
+                  if (_url)
+                  {
+                     _ = p | (~_url).Link(key);
+                  }
+
                   break;
             }
          };
 
-         _ = table.Row() | "Pull Request" | "http://foobar";
-         _ = table.Row() | "estreamps" | "http://evokeps";
-         _ = table.Row() | "staging10ua" | "http://evokeuat";
+         _ = table.Row() | "Pull Request" | "/url(foobar)";
+         _ = table.Row() | "estreamps" | "/url(evokeps)";
+         _ = table.Row() | "staging10ua" | "/url(evokeuat)";
 
          document.Save(@"C:\Temp\Test2.rtf");
       }
@@ -157,10 +170,8 @@ namespace Core.Tests
 
          var calibriFont = document.Font("Calibri");
          var highlightColor = document.Color("yellow");
-         var urlColor = document.Color("blue");
          var standardFontData = new FontData(calibriFont) { FontSize = 11f };
          var emphasizedFontData = new FontData(standardFontData) { Bold = true, Italic = true, BackgroundColor = highlightColor };
-         var urlFontData = new FontData(standardFontData) { Underline = true, ForegroundColor = urlColor };
          document.DefaultCharFormat.FontData = standardFontData;
 
          _ = document | "Estream Uncleansed database (EstreamPrd replica) – TSESTMUTL10CORP “migrationtest” (non-AG) – Update" | Feature.Bold |
@@ -179,14 +190,22 @@ namespace Core.Tests
          _ = document | "ii.\tRun partition cleanse steps for DistributionLog older than 45 days (2022-09-04)" | indent2;
 
          var url = "http://tfs.eprod.com/LS/_git/Estream/pullrequest/26899";
-         _ = document | $"c.\tDeploy the code base from {url} -- In-progress" | indent1 |
-            para | formatFind(url) | url.Link() | urlFontData |
+         _ = document | "c.\tDeploy the code base from /url(pr) -- In-progress" | indent1 |
+            para | formatUrl("pr") | url.Link("PR") |
             para | formatFind("In-progress") | Feature.Bold | Feature.Italic;
 
          _ = document | "d.\tRun partition reorganization steps for IntervalMeasurement to monthly. Monitor the TLOG fullness" | indent1 |
             para | formatFind("Monitor the TLOG fullness") | Feature.Bold | 14f;
 
          document.Save(@"C:\Temp\Test4.rtf");
+      }
+
+      [TestMethod]
+      public void HyperlinkTest()
+      {
+         var document = new Document();
+         _ = document | "This is the url to /url(google) is here!" | formatUrl("google") | "http://google.com".Link("Google");
+         document.Save(@"C:\Temp\Test5.rtf");
       }
    }
 }

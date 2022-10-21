@@ -328,23 +328,5 @@ public class Hash<TKey, TValue> : Dictionary<TKey, TValue>, IHash<TKey, TValue>
 
    public virtual Hash<TKey, TValue> Subset(IEnumerable<TKey> keys) => Subset(keys.ToArray());
 
-   public virtual Maybe<TValue> Of(TKey key)
-   {
-      if (ContainsKey(key))
-      {
-         try
-         {
-            locker.EnterReadLock();
-            return this[key];
-         }
-         finally
-         {
-            locker.ExitReadLock();
-         }
-      }
-      else
-      {
-         return nil;
-      }
-   }
+   public HashMaybe<TKey, TValue> Maybe => new(this);
 }
