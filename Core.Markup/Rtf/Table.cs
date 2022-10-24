@@ -20,6 +20,7 @@ public class Table : Block
       {
          Text = string.Empty;
          Specifiers = Array.Empty<object>();
+         PendingFormatter = nil;
          ImageFile = nil;
          ImageFileType = nil;
       }
@@ -28,51 +29,17 @@ public class Table : Block
 
       public object[] Specifiers { get; set; }
 
+      public Maybe<PendingFormatter> PendingFormatter { get; set; }
+
       public Maybe<FileName> ImageFile { get; set; }
 
       public Maybe<ImageFileType> ImageFileType { get; set; }
    }
 
-   public static Table operator |(Table table, string columnText)
+   public static RowBuilder operator |(Table table, string columnText)
    {
-      return table.Column(columnText);
-   }
-
-   public static Table operator |(Table table, (string, object) columnData)
-   {
-      return table.Column(columnData.Item1, columnData.Item2);
-   }
-
-   public static Table operator |(Table table, (string, object, object) columnData)
-   {
-      return table.Column(columnData.Item1, columnData.Item2, columnData.Item3);
-   }
-
-   public static Table operator |(Table table, (string, object, object, object) columnData)
-   {
-      return table.Column(columnData.Item1, columnData.Item2, columnData.Item3, columnData.Item4);
-   }
-
-   public static Table operator |(Table table, (string, object, object, object, object) columnData)
-   {
-      return table.Column(columnData.Item1, columnData.Item2, columnData.Item3, columnData.Item4, columnData.Item5);
-   }
-
-   public static Table operator |(Table table, (string, object, object, object, object, object) columnData)
-   {
-      return table.Column(columnData.Item1, columnData.Item2, columnData.Item3, columnData.Item4, columnData.Item5, columnData.Item6);
-   }
-
-   public static Table operator |(Table table, (string, object, object, object, object, object, object) columnData)
-   {
-      return table.Column(columnData.Item1, columnData.Item2, columnData.Item3, columnData.Item4, columnData.Item5, columnData.Item6,
-         columnData.Item7);
-   }
-
-   public static Table operator |(Table table, (string, object, object, object, object, object, object, object) columnData)
-   {
-      return table.Column(columnData.Item1, columnData.Item2, columnData.Item3, columnData.Item4, columnData.Item5, columnData.Item6,
-         columnData.Item7, columnData.Item8);
+      var rowBuilder = new RowBuilder(table);
+      return rowBuilder.Row(columnText);
    }
 
    protected Alignment alignment;
@@ -147,7 +114,21 @@ public class Table : Block
       return this;
    }
 
-  public Table Image(FileName imageFile, ImageFileType imageFileType)
+   public PendingFormatter ColumnPendingFormatter(string text)
+   {
+      var pendingFormatter = new PendingFormatter(this);
+      var cellData = new CellData { Text = text, PendingFormatter = pendingFormatter };
+      var row = rows[rowIndex];
+      row.Add(cellData);
+      if (row.Count > maxColumnCount)
+      {
+         maxColumnCount = row.Count;
+      }
+
+      return pendingFormatter;
+   }
+
+   public Table Image(FileName imageFile, ImageFileType imageFileType)
    {
       var cellData = new CellData { ImageFile = imageFile, ImageFileType = imageFileType };
       var row = rows[rowIndex];
@@ -202,6 +183,12 @@ public class Table : Block
                   {
                      paragraph.Text = cellData.Text;
                      (~_formatAction)(paragraph, i, j);
+                  }
+                  else if (cellData.PendingFormatter)
+                  {
+                     paragraph.Text = cellData.Text;
+                     var pendingFormatter = ~cellData.PendingFormatter;
+                     pendingFormatter.Formatter(paragraph, paragraph.DefaultCharFormat);
                   }
                   else
                   {

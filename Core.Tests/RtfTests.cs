@@ -1,8 +1,6 @@
 ﻿using Core.Applications;
-using Core.Collections;
 using Core.Enumerables;
 using Core.Markup.Rtf;
-using Core.Strings;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Core.Markup.Rtf.FormatterFunctions;
 using static Core.Monads.MonadFunctions;
@@ -98,34 +96,9 @@ namespace Core.Tests
       {
          var document = new Document();
          var table = document.Table(12);
-         var urls = new StringHash(true)
-         {
-            ["foobar"] = "http://foobar",
-            ["evokeps"] = "http://evokeps",
-            ["evokeuat"] = "http://evokeuat"
-         };
-         table.FormatAction = (p, i, j) =>
-         {
-            switch (j)
-            {
-               case 0:
-                  _ = p | Feature.Bold;
-                  break;
-               case 1:
-                  var key = p.Text.Drop(5).Drop(-1);
-                  var _url = urls.Maybe[key];
-                  if (_url)
-                  {
-                     _ = p | (~_url).Link(key);
-                  }
-
-                  break;
-            }
-         };
-
-         _ = table.Row() | "Pull Request" | "/url(foobar)";
-         _ = table.Row() | "estreamps" | "/url(evokeps)";
-         _ = table.Row() | "staging10ua" | "/url(evokeuat)";
+         _ = table | "Pull Request" | Feature.Bold | "" | "http://foobar".Link();
+         _ = table | "estreamps" | Feature.Bold | "" | "http://evokeps".Link();
+         _ = table | "staging10ua" | Feature.Bold | "" | "http://evokeuat".Link();
 
          document.Save(@"C:\Temp\Test2.rtf");
       }
