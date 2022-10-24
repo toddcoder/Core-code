@@ -5,6 +5,7 @@ using Core.Assertions;
 using Core.DataStructures;
 using Core.Matching;
 using Core.Monads;
+using Core.Numbers;
 using Core.Strings;
 using static Core.Monads.MonadFunctions;
 
@@ -78,6 +79,7 @@ public class Paragraph : Block
    protected float firstLineIndent;
    protected bool bullet;
    protected CharFormat defaultCharFormat;
+   protected List<(int, int, FontStyleFlag)> pendingCharFormats;
 
    protected struct Token
    {
@@ -119,12 +121,63 @@ public class Paragraph : Block
       startNewPage = false;
       firstLineIndent = 0;
       defaultCharFormat = new CharFormat();
+      pendingCharFormats = new List<(int, int, FontStyleFlag)>();
+   }
+
+   protected void setText(string newText)
+   {
+      var _result = newText.Matches("/(['*^%']) /(-['*^%']+) /(/1); f");
+      if (_result)
+      {
+         var result = ~_result;
+         var begin = result.Index;
+         var end = begin + result.GetGroup(0, 2).Length - 1;
+         Bits32<FontStyleFlag> flags = FontStyleFlag.None;
+         switch (result.FirstGroup)
+         {
+            case "*":
+               flags[FontStyleFlag.Italic] = true;
+               break;
+            case "^":
+               flags[FontStyleFlag.Bold] = true;
+               break;
+            case "%":
+               flags[FontStyleFlag.Italic] = true;
+               flags[FontStyleFlag.Bold] = true;
+               break;
+         }
+
+         pendingCharFormats.Add((begin, end, flags));
+         result.FirstGroup = "";
+         result.ThirdGroup = "";
+         setText(result.Text);
+      }
+      else
+      {
+         text = new StringBuilder(newText);
+
+         foreach (var (begin, end, flag) in pendingCharFormats)
+         {
+            var format = CharFormat(begin, end);
+            format.FontStyle += flag;
+         }
+      }
    }
 
    public string Text
    {
       get => text.ToString();
-      set => text = new StringBuilder(value);
+      set
+      {
+         if (value.StartsWith("/"))
+         {
+            setText(value.Drop(1));
+         }
+         else
+         {
+            text = new StringBuilder(value);
+         }
+      }
    }
 
    public Maybe<float> LineSpacing

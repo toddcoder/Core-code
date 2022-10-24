@@ -207,5 +207,16 @@ namespace Core.Tests
          _ = document | "This is the url to /url(google) is here!" | formatUrl("google") | "http://google.com".Link("Google");
          document.Save(@"C:\Temp\Test5.rtf");
       }
+
+      [TestMethod]
+      public void FormattingTest()
+      {
+         var document = new Document();
+         _ = document | "/This is *italic* text";
+         _ = document | "/This is ^bold^ text";
+         _ = document | "/This is %both%!";
+         _ = document | "/This is ^release^ with an ^outage^ for ^r-6.41.0^.";
+         document.Save(@"C:\Temp\Test6.rtf");
+      }
    }
 }

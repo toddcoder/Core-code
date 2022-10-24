@@ -147,6 +147,8 @@ namespace Core.Matching
 
       public override string ToString() => slicer.ToString();
 
+      public string Text => slicer.ToString();
+
       IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
       public void Deconstruct(out string group1, out string group2)
