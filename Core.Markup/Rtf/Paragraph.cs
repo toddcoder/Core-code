@@ -157,17 +157,48 @@ public class Paragraph : Block
          pendingCharFormats.Add((begin, end, flags));
          result.FirstGroup = "";
          result.ThirdGroup = "";
-         setText(result.Text);
+         setText(setControlWords(result.Text));
       }
       else
       {
-         text = new StringBuilder(newText);
+         text = new StringBuilder(setControlWords(newText));
 
          foreach (var (begin, end, flag) in pendingCharFormats)
          {
             var format = CharFormat(begin, end);
             format.FontStyle += flag;
          }
+      }
+   }
+
+   protected string setControlWords(string text)
+   {
+      var _result = text.Matches(@"['@#?!']");
+      if (_result)
+      {
+         var offset = 1;
+         foreach (var match in ~_result)
+         {
+            Maybe<FieldType> _fieldType = match.Text switch
+            {
+               "@" => FieldType.Page,
+               "#" => FieldType.NumPages,
+               "?" => FieldType.Date,
+               "!" => FieldType.Time,
+               _ => nil
+            };
+            if (_fieldType)
+            {
+               ControlWord(match.Index - offset++, _fieldType);
+               match.Text = "";
+            }
+         }
+
+         return (~_result).Text;
+      }
+      else
+      {
+         return text;
       }
    }
 

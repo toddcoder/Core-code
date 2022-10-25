@@ -41,8 +41,8 @@ namespace Core.Tests
          var paragraph = document | "Footnote";
          _ = paragraph.Footnote(7) | "Footnote details here.";
 
-         paragraph = document.Footer | "Test : Page: / Date: Time:" | Alignment.Center | 15f | para;
-         paragraph.ControlWorlds("Test : Page: @/# Date:? Time:!");
+         _ = document.Footer | "/Test : Page: @/# Date:? Time:!" | Alignment.Center | 15f;
+         //paragraph.ControlWorlds("Test : Page: @/# Date:? Time:!");
 
          _ = document.Header | "Header";
 
@@ -97,7 +97,7 @@ namespace Core.Tests
       {
          var margins = (8f, nil, nil, nil);
          var col1 = new Style() | Feature.Bold | margins;
-         var col2 = new Style() |  margins;
+         var col2 = new Style() | margins;
          var document = new Document();
          var table = document.Table(12);
          _ = table | "Pull Request" | col1 | "" | "http://foobar".Link() | col2;
