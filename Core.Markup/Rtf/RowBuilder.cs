@@ -1,4 +1,6 @@
-﻿namespace Core.Markup.Rtf;
+﻿using Core.Monads;
+
+namespace Core.Markup.Rtf;
 
 public class RowBuilder
 {
@@ -34,6 +36,11 @@ public class RowBuilder
    public static RowBuilder operator |(RowBuilder rowBuilder, float fontSize) => rowBuilder.FontSize(fontSize);
 
    public static RowBuilder operator |(RowBuilder rowBuilder, FirstLineIndent firstLineIndent) => rowBuilder.FirstLineIndent(firstLineIndent);
+
+   public static RowBuilder operator |(RowBuilder rowBuilder, (Maybe<float>, Maybe<float>, Maybe<float>, Maybe<float>) margins)
+   {
+      return rowBuilder.Margins(margins);
+   }
 
    public static RowBuilder operator |(RowBuilder rowBuilder, string columnText) => rowBuilder.Column(columnText);
 
@@ -141,6 +148,12 @@ public class RowBuilder
    public RowBuilder FirstLineIndent(FirstLineIndent firstLineIndent)
    {
       formatter.FirstLineIndent(firstLineIndent);
+      return this;
+   }
+
+   public RowBuilder Margins((Maybe<float>, Maybe<float>, Maybe<float>, Maybe<float>) margins)
+   {
+      formatter.Margins(margins);
       return this;
    }
 }

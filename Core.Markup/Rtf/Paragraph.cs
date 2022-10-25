@@ -63,6 +63,11 @@ public class Paragraph : Block
 
    public static Formatter operator |(Paragraph paragraph, Feature feature) => paragraph.Format() | feature;
 
+   public static Formatter operator |(Paragraph paragraph, (Maybe<float>, Maybe<float>, Maybe<float>, Maybe<float>) margins)
+   {
+      return new Formatter(paragraph, paragraph.DefaultCharFormat).Margins(margins);
+   }
+
    protected StringBuilder text;
    protected Maybe<float> _lineSpacing;
    protected Margins margins;

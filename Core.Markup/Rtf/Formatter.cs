@@ -1,4 +1,6 @@
-﻿namespace Core.Markup.Rtf;
+﻿using Core.Monads;
+
+namespace Core.Markup.Rtf;
 
 public class Formatter
 {
@@ -28,6 +30,11 @@ public class Formatter
    public static Formatter operator |(Formatter formatter, float fontSize) => formatter.FontSize(fontSize);
 
    public static Formatter operator |(Formatter formatter, FirstLineIndent firstLineIndent) => formatter.FirstLineIndent(firstLineIndent.Amount);
+
+   public static Formatter operator |(Formatter formatter, (Maybe<float>, Maybe<float>, Maybe<float>, Maybe<float>) margins)
+   {
+      return formatter.Margins(margins);
+   }
 
    public static Paragraph operator |(Formatter formatter, Paragraph _) => formatter.Paragraph;
 
@@ -163,6 +170,31 @@ public class Formatter
    public virtual Formatter FirstLineIndent(float indentAmount)
    {
       paragraph.FirstLineIndent = indentAmount;
+      return this;
+   }
+
+   public virtual Formatter Margins((Maybe<float> left, Maybe<float> top, Maybe<float> right, Maybe<float> bottom) margins)
+   {
+      if (margins.left)
+      {
+         paragraph.Margins[Direction.Left] = margins.left;
+      }
+
+      if (margins.top)
+      {
+         paragraph.Margins[Direction.Top] = margins.top;
+      }
+
+      if (margins.right)
+      {
+         paragraph.Margins[Direction.Right] = margins.right;
+      }
+
+      if (margins.bottom)
+      {
+         paragraph.Margins[Direction.Bottom] = margins.bottom;
+      }
+
       return this;
    }
 }

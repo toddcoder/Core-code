@@ -48,6 +48,7 @@ public class PendingFormatter
    protected Maybe<FontDescriptor> _font;
    protected Maybe<float> _fontSize;
    protected Maybe<FirstLineIndent> _firstLineIndent;
+   protected (Maybe<float>, Maybe<float>, Maybe<float>, Maybe<float>) margins;
 
    public PendingFormatter(Table table)
    {
@@ -62,6 +63,7 @@ public class PendingFormatter
       _font = nil;
       _fontSize = nil;
       _firstLineIndent = nil;
+      margins = (nil, nil, nil, nil);
    }
 
    public Table Table => table;
@@ -174,7 +176,11 @@ public class PendingFormatter
       return this;
    }
 
-
+   public PendingFormatter Margins((Maybe<float>, Maybe<float>, Maybe<float>, Maybe<float>) margins)
+   {
+      this.margins = margins;
+      return this;
+   }
 
    public Formatter Formatter(Paragraph paragraph, CharFormat format)
    {
@@ -224,6 +230,8 @@ public class PendingFormatter
       {
          formatter.FirstLineIndent((~_firstLineIndent).Amount);
       }
+
+      formatter.Margins(margins);
 
       return formatter;
    }

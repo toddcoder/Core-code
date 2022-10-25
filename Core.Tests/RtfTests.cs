@@ -1,6 +1,7 @@
 ﻿using Core.Applications;
 using Core.Enumerables;
 using Core.Markup.Rtf;
+using Core.Monads;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Core.Markup.Rtf.FormatterFunctions;
 using static Core.Monads.MonadFunctions;
@@ -94,11 +95,15 @@ namespace Core.Tests
       [TestMethod]
       public void TableDataTest()
       {
+         var margins = (8f, nil, nil, nil);
          var document = new Document();
          var table = document.Table(12);
-         _ = table | "Pull Request" | Feature.Bold | "" | "http://foobar".Link();
-         _ = table | "estreamps" | Feature.Bold | "" | "http://evokeps".Link();
-         _ = table | "staging10ua" | Feature.Bold | "" | "http://evokeuat".Link();
+         _ = table | "Pull Request" | Feature.Bold | margins | "" | "http://foobar".Link() | margins;
+         _ = table | "estreamps" | Feature.Bold | margins | "" | "http://evokeps".Link() | margins;
+         _ = table | "staging10ua" | Feature.Bold | margins | "" | "http://evokeuat".Link() | margins;
+
+         table.SetOuterBorder(BorderStyle.Double, 1);
+         table.SetInnerBorder(BorderStyle.Single, 1);
 
          document.Save(@"C:\Temp\Test2.rtf");
       }
