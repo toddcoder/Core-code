@@ -2,6 +2,7 @@
 
 public enum Feature
 {
+   None,
    Bold,
    Italic,
    Underline,
