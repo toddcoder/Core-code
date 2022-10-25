@@ -197,4 +197,10 @@ public class Formatter
 
       return this;
    }
+
+   public virtual Formatter Style(Style style)
+   {
+      style.Merge(this);
+      return this;
+   }
 }

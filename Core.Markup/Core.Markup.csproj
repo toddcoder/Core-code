@@ -69,6 +69,7 @@
     <Compile Include="Rtf\RtfExtensions.cs" />
     <Compile Include="Rtf\RtfTemplate.cs" />
     <Compile Include="Rtf\RtfWriter.cs" />
+    <Compile Include="Rtf\Style.cs" />
     <Compile Include="Rtf\TableCellArgs.cs" />
     <Compile Include="Rtf\VerticalAlignment.cs" />
     <Compile Include="Rtf\Block.cs" />

@@ -31,7 +31,7 @@ public class RowBuilder
 
    public static RowBuilder operator |(RowBuilder rowBuilder, LocalHyperlink localHyperlink) => rowBuilder.LocalHyperlink(localHyperlink);
 
-   public static RowBuilder operator |(RowBuilder rowBuilder, FontDescriptor font)=> rowBuilder.Font(font);
+   public static RowBuilder operator |(RowBuilder rowBuilder, FontDescriptor font) => rowBuilder.Font(font);
 
    public static RowBuilder operator |(RowBuilder rowBuilder, float fontSize) => rowBuilder.FontSize(fontSize);
 
@@ -41,6 +41,8 @@ public class RowBuilder
    {
       return rowBuilder.Margins(margins);
    }
+
+   public static RowBuilder operator |(RowBuilder rowBuilder, Style style) => rowBuilder.Style(style);
 
    public static RowBuilder operator |(RowBuilder rowBuilder, string columnText) => rowBuilder.Column(columnText);
 
@@ -154,6 +156,12 @@ public class RowBuilder
    public RowBuilder Margins((Maybe<float>, Maybe<float>, Maybe<float>, Maybe<float>) margins)
    {
       formatter.Margins(margins);
+      return this;
+   }
+
+   public RowBuilder Style(Style style)
+   {
+      formatter.Style(style);
       return this;
    }
 }

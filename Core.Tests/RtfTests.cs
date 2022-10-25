@@ -96,11 +96,13 @@ namespace Core.Tests
       public void TableDataTest()
       {
          var margins = (8f, nil, nil, nil);
+         var col1 = new Style() | Feature.Bold | margins;
+         var col2 = new Style() |  margins;
          var document = new Document();
          var table = document.Table(12);
-         _ = table | "Pull Request" | Feature.Bold | margins | "" | "http://foobar".Link() | margins;
-         _ = table | "estreamps" | Feature.Bold | margins | "" | "http://evokeps".Link() | margins;
-         _ = table | "staging10ua" | Feature.Bold | margins | "" | "http://evokeuat".Link() | margins;
+         _ = table | "Pull Request" | col1 | "" | "http://foobar".Link() | col2;
+         _ = table | "estreamps" | col1 | "" | "http://evokeps".Link() | col2;
+         _ = table | "staging10ua" | col1 | "" | "http://evokeuat".Link() | col2;
 
          table.SetOuterBorder(BorderStyle.Double, 1);
          table.SetInnerBorder(BorderStyle.Single, 1);

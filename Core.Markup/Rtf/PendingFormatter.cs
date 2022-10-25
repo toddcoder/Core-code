@@ -11,7 +11,7 @@ public class PendingFormatter
       return pendingFormatter.Table.ColumnPendingFormatter(columnText);
    }
 
-   public static PendingFormatter operator &(PendingFormatter formatter, Feature feature) => feature switch
+   public static PendingFormatter operator |(PendingFormatter formatter, Feature feature) => feature switch
    {
       Feature.Bold => formatter.Bold(),
       Feature.Italic => formatter.Italic(),
@@ -22,21 +22,35 @@ public class PendingFormatter
       _ => formatter
    };
 
-   public static PendingFormatter operator &(PendingFormatter formatter, FontData fontData) => formatter.FontData(fontData);
+   public static PendingFormatter operator |(PendingFormatter formatter, FontData fontData) => formatter.FontData(fontData);
 
-   public static PendingFormatter operator &(PendingFormatter formatter, Alignment alignment) => formatter.Alignment(alignment);
+   public static PendingFormatter operator |(PendingFormatter formatter, Alignment alignment) => formatter.Alignment(alignment);
 
-   public static PendingFormatter operator &(PendingFormatter formatter, ForegroundColorDescriptor foregroundColor) => formatter.ForegroundColor(foregroundColor);
+   public static PendingFormatter operator |(PendingFormatter formatter, ForegroundColorDescriptor foregroundColor)
+   {
+      return formatter.ForegroundColor(foregroundColor);
+   }
 
-   public static PendingFormatter operator &(PendingFormatter formatter, BackgroundColorDescriptor backgroundColor) => formatter.BackgroundColor(backgroundColor);
+   public static PendingFormatter operator |(PendingFormatter formatter, BackgroundColorDescriptor backgroundColor)
+   {
+      return formatter.BackgroundColor(backgroundColor);
+   }
 
-   public static PendingFormatter operator &(PendingFormatter formatter, LocalHyperlink localHyperlink) => formatter.LocalHyperlink(localHyperlink);
+   public static PendingFormatter operator |(PendingFormatter formatter, LocalHyperlink localHyperlink) => formatter.LocalHyperlink(localHyperlink);
 
-   public static PendingFormatter operator &(PendingFormatter formatter, FontDescriptor font) => formatter.Font(font);
+   public static PendingFormatter operator |(PendingFormatter formatter, FontDescriptor font) => formatter.Font(font);
 
-   public static PendingFormatter operator &(PendingFormatter formatter, float fontSize) => formatter.FontSize(fontSize);
+   public static PendingFormatter operator |(PendingFormatter formatter, float fontSize) => formatter.FontSize(fontSize);
 
-   public static PendingFormatter operator &(PendingFormatter formatter, FirstLineIndent firstLineIndent) => formatter.FirstLineIndent(firstLineIndent);
+   public static PendingFormatter operator |(PendingFormatter formatter, FirstLineIndent firstLineIndent)
+   {
+      return formatter.FirstLineIndent(firstLineIndent);
+   }
+
+   public static PendingFormatter operator |(PendingFormatter formatter, (Maybe<float>, Maybe<float>, Maybe<float>, Maybe<float>) margins)
+   {
+      return formatter.Margins(margins);
+   }
 
    protected Table table;
    protected Set<Feature> features;
@@ -49,6 +63,7 @@ public class PendingFormatter
    protected Maybe<float> _fontSize;
    protected Maybe<FirstLineIndent> _firstLineIndent;
    protected (Maybe<float>, Maybe<float>, Maybe<float>, Maybe<float>) margins;
+   protected Maybe<Style> _style;
 
    public PendingFormatter(Table table)
    {
@@ -64,6 +79,7 @@ public class PendingFormatter
       _fontSize = nil;
       _firstLineIndent = nil;
       margins = (nil, nil, nil, nil);
+      _style = nil;
    }
 
    public Table Table => table;
@@ -182,9 +198,15 @@ public class PendingFormatter
       return this;
    }
 
+   public PendingFormatter Style(Style style)
+   {
+      _style = style;
+      return this;
+   }
+
    public Formatter Formatter(Paragraph paragraph, CharFormat format)
    {
-      var formatter = new Formatter(paragraph, format);
+      var formatter = _style.Map(s => s.Formatter(paragraph, format)) | (() => new Formatter(paragraph, format));
 
       foreach (var feature in features)
       {

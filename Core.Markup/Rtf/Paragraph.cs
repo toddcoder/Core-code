@@ -68,6 +68,8 @@ public class Paragraph : Block
       return new Formatter(paragraph, paragraph.DefaultCharFormat).Margins(margins);
    }
 
+   public static Formatter operator |(Paragraph paragraph, Style style) => style.Formatter(paragraph);
+
    protected StringBuilder text;
    protected Maybe<float> _lineSpacing;
    protected Margins margins;
