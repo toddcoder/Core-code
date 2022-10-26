@@ -168,6 +168,7 @@
     <Compile Include="Collections\Infix\InfixList.cs" />
     <Compile Include="Collections\OrderedSet.cs" />
     <Compile Include="Collections\RequiredHash.cs" />
+    <Compile Include="Collections\Ring.cs" />
     <Compile Include="Collections\Set.cs" />
     <Compile Include="Collections\StringHash.cs" />
     <Compile Include="Collections\StringStringHash.cs" />

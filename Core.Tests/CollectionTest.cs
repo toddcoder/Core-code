@@ -181,5 +181,17 @@ namespace Core.Tests
             Console.WriteLine(exception.Message);
          }
       }
+
+      [TestMethod]
+      public void RingTest()
+      {
+         var ring = new Ring<string>("alpha", "bravo", "charlie");
+
+         for (var i = 0; i < 10; i++)
+         {
+            var item = ring.Next();
+            Console.WriteLine($"{i}: {item}");
+         }
+      }
    }
 }
