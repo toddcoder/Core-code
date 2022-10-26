@@ -189,6 +189,28 @@ namespace Core.Tests
       }
 
       [TestMethod]
+      public void HyperlinkTest2()
+      {
+         Maybe<string> _workItemId = "301905";
+
+         var document = new Document();
+         var font = document.Font("Calibri");
+         var codeFont = document.Font("Consolas");
+         var standardFont = new FontData(font) { FontSize = 12f };
+         document.DefaultCharFormat.FontData = standardFont;
+
+         var workItemUrl = ~_workItemId;
+         var branch = "b-ops-301905-orderdeleted-failed-message";
+
+         _ = document | $"/The backfill request for ^{branch}^ (/url(workItemId)) has been completed." |
+            para | formatUrl("workItemId") | codeFont | Feature.Bold | workItemUrl.Link(_workItemId);
+
+         _ = document | "Please merge master into your inflight branches. Thanks.";
+
+         document.Save(@"C:\Temp\Test5a.rtf");
+      }
+
+      [TestMethod]
       public void FormattingTest()
       {
          var document = new Document();
