@@ -667,6 +667,20 @@ namespace Core.WinForms.Controls
          refresh();
       }
 
+      public void StartStopwatch()
+      {
+         Stopwatch = true;
+         startStopwatch(true);
+         this.Do(() => timerPaint.Enabled = true);
+      }
+
+      public void StopStopwatch()
+      {
+         Stopwatch = false;
+         startStopwatch(false);
+         this.Do(() => timerPaint.Enabled = false);
+      }
+
       public void Busy(string text)
       {
          startStopwatch(true);
@@ -756,7 +770,7 @@ namespace Core.WinForms.Controls
                break;
             case UiActionType.Busy:
                busyProcessor.Value.OnPaint(e.Graphics);
-               paintStopwatch();
+               //paintStopwatch();
                break;
             case UiActionType.ProgressDefinite:
             {
@@ -776,7 +790,7 @@ namespace Core.WinForms.Controls
                writer.Value.Rectangle = busyTextProcessor.Value.TextRectangle;
                writer.Value.Center(true);
                writer.Value.Write(text, e.Graphics);
-               paintStopwatch();
+               //paintStopwatch();
                break;
             }
             case UiActionType.ControlLabel:
@@ -813,6 +827,8 @@ namespace Core.WinForms.Controls
                (~_legend).Draw(e.Graphics, foreColor, backColor);
             }
          }
+
+         paintStopwatch();
 
          if (Clickable)
          {

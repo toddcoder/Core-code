@@ -253,6 +253,17 @@ namespace Core.Tests
       }
 
       [TestMethod]
+      public void Stopwatch2Test()
+      {
+         var form = new Form();
+         var uiAction = new UiAction(form);
+         uiAction.SetUp(0, 0, 300, 27, AnchorStyles.Left | AnchorStyles.Right);
+         uiAction.Message("Stopwatch");
+         uiAction.StartStopwatch();
+         form.ShowDialog();
+      }
+
+      [TestMethod]
       public void ExTextBoxTest()
       {
          var form = new Form();
