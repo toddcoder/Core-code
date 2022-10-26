@@ -767,7 +767,7 @@ public class Paragraph : Block
          else
          {
             var text = node.Value.Text;
-            var _result = text.Matches("'//url(' -[')']+ ')'");
+            var _result = text.Matches("'//url(' -[')']+ ')'; fi");
             if (_result)
             {
                var matchResult = ~_result;
