@@ -1080,7 +1080,14 @@ namespace Core.WinForms.Controls
          {
             if (enabled)
             {
-               stopwatch.Value.Restart();
+               if (type is  UiActionType.Busy or UiActionType.BusyText)
+               {
+                  stopwatch.Value.Restart();
+               }
+               else
+               {
+                  stopwatch.Value.Start();
+               }
             }
             else
             {
