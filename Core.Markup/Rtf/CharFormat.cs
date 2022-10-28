@@ -44,8 +44,8 @@ public class CharFormat
    protected Maybe<ColorDescriptor> _foregroundColor;
    protected TwoInOneStyle twoInOneStyle;
    protected Maybe<string> _bookmark;
-   protected Maybe<string> _localHyperlink;
-   protected Maybe<string> _localHyperlinkTip;
+   protected Maybe<string> _hyperlink;
+   protected Maybe<string> _hyperlinkTip;
 
    public CharFormat()
    {
@@ -59,8 +59,8 @@ public class CharFormat
       _foregroundColor = nil;
       twoInOneStyle = TwoInOneStyle.NotEnabled;
       _bookmark = nil;
-      _localHyperlink = nil;
-      _localHyperlinkTip = nil;
+      _hyperlink = nil;
+      _hyperlinkTip = nil;
    }
 
    public CharFormat(int begin, int end, int textLength)
@@ -82,8 +82,8 @@ public class CharFormat
       _foregroundColor = nil;
       twoInOneStyle = TwoInOneStyle.NotEnabled;
       _bookmark = nil;
-      _localHyperlink = nil;
-      _localHyperlinkTip = nil;
+      _hyperlink = nil;
+      _hyperlinkTip = nil;
    }
 
    public void CopyFrom(CharFormat sourceFormat)
@@ -139,16 +139,16 @@ public class CharFormat
       set => _bookmark = value;
    }
 
-   public Maybe<string> LocalHyperlink
+   public Maybe<string> Hyperlink
    {
-      get => _localHyperlink;
-      set => _localHyperlink = value;
+      get => _hyperlink;
+      set => _hyperlink = value;
    }
 
-   public Maybe<string> LocalHyperlinkTip
+   public Maybe<string> HyperlinkTip
    {
-      get => _localHyperlinkTip;
-      set => _localHyperlinkTip = value;
+      get => _hyperlinkTip;
+      set => _hyperlinkTip = value;
    }
 
    public Maybe<FontDescriptor> Font
@@ -202,10 +202,10 @@ public class CharFormat
    {
       var result = new StringBuilder("{");
 
-      if (_localHyperlink)
+      if (_hyperlink)
       {
-         var localHyperlinkTip = _localHyperlinkTip | ~_localHyperlink;
-         result.Append($@"{{\field{{\*\fldinst HYPERLINK ""{_localHyperlink}""}}{{\fldrslt{{\ul\cf1{localHyperlinkTip}}}}}}}");
+         var localHyperlinkTip = _hyperlinkTip | ~_hyperlink;
+         result.Append($@"{{\field{{\*\fldinst HYPERLINK ""{_hyperlink}""}}{{\fldrslt{{\ul\cf1 {localHyperlinkTip}}}}}}}");
       }
 
       if (_font)

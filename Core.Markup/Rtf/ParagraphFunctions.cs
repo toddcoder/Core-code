@@ -57,9 +57,9 @@ public static class ParagraphFunctions
             case FontStyleFlag fontStyleFlag:
                format.FontStyle += fontStyleFlag;
                break;
-            case LocalHyperlink link:
-               format.LocalHyperlink = link.Link;
-               format.LocalHyperlinkTip = link.LinkTip;
+            case Hyperlink link:
+               format.Hyperlink = link.Link;
+               format.HyperlinkTip = link.LinkTip;
                break;
             case bool bullet:
                paragraph.Bullet = bullet;

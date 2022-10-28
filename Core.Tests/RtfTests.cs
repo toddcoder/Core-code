@@ -110,25 +110,7 @@ namespace Core.Tests
          document.Save(@"C:\Temp\Test2.rtf");
       }
 
-      [TestMethod]
-      public void RtfTemplateTest()
-      {
-         var resources = new Resources<RtfTests>();
-         var source = resources.String("rtf-template.txt");
-
-         var template = new RtfTemplate();
-         var _document = template.Render(source);
-         if (_document)
-         {
-            (~_document).Save(@"C:\Temp\Test3.rtf");
-         }
-         else
-         {
-            throw _document.Exception;
-         }
-      }
-
-      [TestMethod]
+     [TestMethod]
       public void BulletTest()
       {
          var document = new Document();

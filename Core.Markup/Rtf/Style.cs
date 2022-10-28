@@ -25,7 +25,7 @@ public class Style
 
    public static Style operator |(Style style, BackgroundColorDescriptor backgroundColor) => style.BackgroundColor(backgroundColor);
 
-   public static Style operator |(Style style, LocalHyperlink localHyperlink) => style.LocalHyperlink(localHyperlink);
+   public static Style operator |(Style style, Hyperlink hyperlink) => style.Hyperlink(hyperlink);
 
    public static Style operator |(Style style, FontDescriptor font) => style.Font(font);
 
@@ -42,7 +42,7 @@ public class Style
    protected Maybe<Alignment> _alignment;
    protected Maybe<ForegroundColorDescriptor> _foregroundColor;
    protected Maybe<BackgroundColorDescriptor> _backgroundColor;
-   protected Maybe<LocalHyperlink> _localHyperlink;
+   protected Maybe<Hyperlink> _hyperlink;
    protected Maybe<FontDescriptor> _font;
    protected Maybe<float> _fontSize;
    protected Maybe<FirstLineIndent> _firstLineIndent;
@@ -54,7 +54,7 @@ public class Style
       _alignment = nil;
       _foregroundColor = nil;
       _backgroundColor = nil;
-      _localHyperlink = nil;
+      _hyperlink = nil;
       _font = nil;
       _fontSize = nil;
       _firstLineIndent = nil;
@@ -123,10 +123,10 @@ public class Style
          charFormat.BackgroundColor = _backgroundColor.CastAs<ColorDescriptor>();
       }
 
-      if (_localHyperlink)
+      if (_hyperlink)
       {
-         charFormat.LocalHyperlink = _localHyperlink.Map(l => l.Link);
-         charFormat.LocalHyperlinkTip = _localHyperlink.Map(l => l.LinkTip);
+         charFormat.Hyperlink = _hyperlink.Map(l => l.Link);
+         charFormat.HyperlinkTip = _hyperlink.Map(l => l.LinkTip);
       }
 
       if (_font)
@@ -147,7 +147,7 @@ public class Style
       _alignment = otherStyle._alignment;
       _foregroundColor = otherStyle._foregroundColor;
       _backgroundColor = otherStyle._backgroundColor;
-      _localHyperlink = otherStyle._localHyperlink;
+      _hyperlink = otherStyle._hyperlink;
       _font = otherStyle._font;
       _fontSize = otherStyle._fontSize;
       _firstLineIndent = otherStyle._firstLineIndent;
@@ -234,9 +234,9 @@ public class Style
       return this;
    }
 
-   public Style LocalHyperlink(LocalHyperlink localHyperlink)
+   public Style Hyperlink(Hyperlink hyperlink)
    {
-      _localHyperlink = localHyperlink;
+      _hyperlink = hyperlink;
       return this;
    }
 
@@ -290,9 +290,9 @@ public class Style
          formatter.BackgroundColor(_backgroundColor);
       }
 
-      if (_localHyperlink)
+      if (_hyperlink)
       {
-         formatter.LocalHyperlink(_localHyperlink);
+         formatter.Hyperlink(_hyperlink);
       }
 
       if (_font)
@@ -337,9 +337,9 @@ public class Style
          formatter.BackgroundColor(_backgroundColor);
       }
 
-      if (_localHyperlink)
+      if (_hyperlink)
       {
-         formatter.LocalHyperlink(_localHyperlink);
+         formatter.Hyperlink(_hyperlink);
       }
 
       if (_font)

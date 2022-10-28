@@ -2,9 +2,9 @@
 
 public static class RtfExtensions
 {
-   public static LocalHyperlink Link(this string link, string linkTip) => new(link, linkTip);
+   public static Hyperlink Link(this string link, string linkTip) => new(link, linkTip);
 
-   public static LocalHyperlink Link(this string link) => new(link);
+   public static Hyperlink Link(this string link) => new(link);
 
    public static FirstLineIndent FirstLineIndent(this float amount) => new(amount);
 

@@ -3,15 +3,15 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Markup.Rtf;
 
-public class LocalHyperlink
+public class Hyperlink
 {
-   public LocalHyperlink(string link, string linkTip)
+   public Hyperlink(string link, string linkTip)
    {
       Link = link;
       LinkTip = linkTip;
    }
 
-   public LocalHyperlink(string link)
+   public Hyperlink(string link)
    {
       Link = link;
       LinkTip = nil;

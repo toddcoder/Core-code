@@ -36,9 +36,9 @@ public class Paragraph : Block
       return new Formatter(paragraph, paragraph.DefaultCharFormat).BackgroundColor(backgroundColor);
    }
 
-   public static Formatter operator |(Paragraph paragraph, LocalHyperlink localHyperlink)
+   public static Formatter operator |(Paragraph paragraph, Hyperlink hyperlink)
    {
-      return new Formatter(paragraph, paragraph.DefaultCharFormat).LocalHyperlink(localHyperlink);
+      return new Formatter(paragraph, paragraph.DefaultCharFormat).Hyperlink(hyperlink);
    }
 
    public static Formatter operator |(Paragraph paragraph, FontDescriptor font)

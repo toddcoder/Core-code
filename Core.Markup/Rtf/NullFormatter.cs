@@ -26,7 +26,7 @@ public class NullFormatter : Formatter
 
    public override Formatter FontStyle(FontStyleFlag fontStyleFlag) => this;
 
-   public override Formatter LocalHyperlink(LocalHyperlink localHyperlink) => this;
+   public override Formatter Hyperlink(Hyperlink hyperlink) => this;
 
    public override Formatter Bookmark(string bookmark) => this;
 

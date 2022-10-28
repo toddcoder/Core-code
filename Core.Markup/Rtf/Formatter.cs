@@ -23,7 +23,7 @@ public class Formatter
 
    public static Formatter operator |(Formatter formatter, BackgroundColorDescriptor backgroundColor) => formatter.BackgroundColor(backgroundColor);
 
-   public static Formatter operator |(Formatter formatter, LocalHyperlink localHyperlink) => formatter.LocalHyperlink(localHyperlink);
+   public static Formatter operator |(Formatter formatter, Hyperlink hyperlink) => formatter.Hyperlink(hyperlink);
 
    public static Formatter operator |(Formatter formatter, FontDescriptor font) => formatter.Font(font);
 
@@ -147,10 +147,10 @@ public class Formatter
       return this;
    }
 
-   public virtual Formatter LocalHyperlink(LocalHyperlink localHyperlink)
+   public virtual Formatter Hyperlink(Hyperlink hyperlink)
    {
-      format.LocalHyperlink = localHyperlink.Link;
-      format.LocalHyperlinkTip = localHyperlink.LinkTip;
+      format.Hyperlink = hyperlink.Link;
+      format.HyperlinkTip = hyperlink.LinkTip;
 
       return this;
    }

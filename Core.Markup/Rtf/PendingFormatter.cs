@@ -34,7 +34,7 @@ public class PendingFormatter
       return formatter.BackgroundColor(backgroundColor);
    }
 
-   public static PendingFormatter operator |(PendingFormatter formatter, LocalHyperlink localHyperlink) => formatter.LocalHyperlink(localHyperlink);
+   public static PendingFormatter operator |(PendingFormatter formatter, Hyperlink hyperlink) => formatter.Hyperlink(hyperlink);
 
    public static PendingFormatter operator |(PendingFormatter formatter, FontDescriptor font) => formatter.Font(font);
 
@@ -55,7 +55,7 @@ public class PendingFormatter
    protected Maybe<Alignment> _alignment;
    protected Maybe<ForegroundColorDescriptor> _foregroundColor;
    protected Maybe<BackgroundColorDescriptor> _backgroundColor;
-   protected Maybe<LocalHyperlink> _localHyperlink;
+   protected Maybe<Hyperlink> _hyperlink;
    protected Maybe<FontDescriptor> _font;
    protected Maybe<float> _fontSize;
    protected Maybe<FirstLineIndent> _firstLineIndent;
@@ -70,7 +70,7 @@ public class PendingFormatter
       _alignment = nil;
       _foregroundColor = nil;
       _backgroundColor = nil;
-      _localHyperlink = nil;
+      _hyperlink = nil;
       _font = nil;
       _fontSize = nil;
       _firstLineIndent = nil;
@@ -158,9 +158,9 @@ public class PendingFormatter
       return this;
    }
 
-   public PendingFormatter LocalHyperlink(LocalHyperlink localHyperlink)
+   public PendingFormatter Hyperlink(Hyperlink hyperlink)
    {
-      _localHyperlink = localHyperlink;
+      _hyperlink = hyperlink;
       return this;
    }
 
@@ -218,9 +218,9 @@ public class PendingFormatter
          formatter.BackgroundColor(_backgroundColor);
       }
 
-      if (_localHyperlink)
+      if (_hyperlink)
       {
-         formatter.LocalHyperlink(_localHyperlink);
+         formatter.Hyperlink(_hyperlink);
       }
 
       if (_font)

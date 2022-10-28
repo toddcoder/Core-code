@@ -27,7 +27,7 @@ public class RowBuilder
       return rowBuilder.BackgroundColor(backgroundColor);
    }
 
-   public static RowBuilder operator |(RowBuilder rowBuilder, LocalHyperlink localHyperlink) => rowBuilder.LocalHyperlink(localHyperlink);
+   public static RowBuilder operator |(RowBuilder rowBuilder, Hyperlink hyperlink) => rowBuilder.Hyperlink(hyperlink);
 
    public static RowBuilder operator |(RowBuilder rowBuilder, FontDescriptor font) => rowBuilder.Font(font);
 
@@ -121,9 +121,9 @@ public class RowBuilder
       return this;
    }
 
-   public RowBuilder LocalHyperlink(LocalHyperlink localHyperlink)
+   public RowBuilder Hyperlink(Hyperlink hyperlink)
    {
-      formatter.LocalHyperlink(localHyperlink);
+      formatter.Hyperlink(hyperlink);
       return this;
    }
 
