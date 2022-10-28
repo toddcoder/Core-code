@@ -12,35 +12,6 @@ public class BlockList : Renderable
 {
    public static Paragraph operator |(BlockList blockList, string text) => blockList.Paragraph(text);
 
-   public static Paragraph operator |(BlockList blockList, (string, object) items) => blockList.Paragraph(items.Item1, items.Item2);
-
-   public static Paragraph operator |(BlockList blockList, (string, object, object) items) => blockList.Paragraph(items.Item1, items.Item2, items.Item3);
-
-   public static Paragraph operator |(BlockList blockList, (string, object, object, object) items)
-   {
-      return blockList.Paragraph(items.Item1, items.Item2, items.Item3, items.Item4);
-   }
-
-   public static Paragraph operator |(BlockList blockList, (string, object, object, object, object) items)
-   {
-      return blockList.Paragraph(items.Item1, items.Item2, items.Item3, items.Item4, items.Item5);
-   }
-
-   public static Paragraph operator |(BlockList blockList, (string, object, object, object, object, object) items)
-   {
-      return blockList.Paragraph(items.Item1, items.Item2, items.Item3, items.Item4, items.Item5, items.Item6);
-   }
-
-   public static Paragraph operator |(BlockList blockList, (string, object, object, object, object, object, object) items)
-   {
-      return blockList.Paragraph(items.Item1, items.Item2, items.Item3, items.Item4, items.Item5, items.Item6, items.Item7);
-   }
-
-   public static Paragraph operator |(BlockList blockList, (string, object, object, object, object, object, object, object) items)
-   {
-      return blockList.Paragraph(items.Item1, items.Item2, items.Item3, items.Item4, items.Item5, items.Item6, items.Item7, items.Item8);
-   }
-
    protected List<Block> blocks;
    protected CharFormat defaultCharFormat;
    protected bool allowParagraph;
