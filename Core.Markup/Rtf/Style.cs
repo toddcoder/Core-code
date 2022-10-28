@@ -142,18 +142,26 @@ public class Style
       }
    }
 
-   public Style Copy() => new()
+   public Style Copy()
    {
-      features = features,
-      _alignment = _alignment,
-      _foregroundColor = _foregroundColor,
-      _backgroundColor = _backgroundColor,
-      _hyperlink = _hyperlink,
-      _font = _font,
-      _fontSize = _fontSize,
-      _firstLineIndent = _firstLineIndent,
-      margins = margins
-   };
+      var newStyle = new Style
+      {
+         _alignment = _alignment,
+         _foregroundColor = _foregroundColor,
+         _backgroundColor = _backgroundColor,
+         _hyperlink = _hyperlink,
+         _font = _font,
+         _fontSize = _fontSize,
+         _firstLineIndent = _firstLineIndent,
+         margins = margins
+      };
+      foreach (var feature in features)
+      {
+         newStyle.features.Add(feature);
+      }
+
+      return newStyle;
+   }
 
    public virtual Style CopyFrom(Style otherStyle)
    {

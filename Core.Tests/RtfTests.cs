@@ -110,7 +110,7 @@ namespace Core.Tests
          document.Save(@"C:\Temp\Test2.rtf");
       }
 
-     [TestMethod]
+      [TestMethod]
       public void BulletTest()
       {
          var document = new Document();
@@ -201,6 +201,22 @@ namespace Core.Tests
          _ = document | "/This is %both%!";
          _ = document | "/This is ^release^ with an ^outage^ for ^r-6.41.0^.";
          document.Save(@"C:\Temp\Test6.rtf");
+      }
+
+      [TestMethod]
+      public void CopyStyleTest()
+      {
+         var document = new Document();
+         var font = document.Font("Times New Roman");
+         var standard = new Style() | font | 12f;
+         document.DefaultCharFormat.Style = standard;
+         var italic = ~standard | Feature.Italic;
+         var bold = ~standard | Feature.Bold;
+
+         _ = document | "This is standard.";
+         _ = document | "This is italic." | italic;
+         _ = document | "This is bold." | bold;
+         document.Save(@"C:\Temp\Test7.rtf");
       }
    }
 }
