@@ -56,7 +56,6 @@
     <Compile Include="Rtf\Feature.cs" />
     <Compile Include="Rtf\FieldType.cs" />
     <Compile Include="Rtf\FirstLineIndent.cs" />
-    <Compile Include="Rtf\FontData.cs" />
     <Compile Include="Rtf\ForegroundColorDescriptor.cs" />
     <Compile Include="Rtf\Formatter.cs" />
     <Compile Include="Rtf\FormatterFunctions.cs" />

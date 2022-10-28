@@ -150,9 +150,9 @@ namespace Core.Tests
 
          var calibriFont = document.Font("Calibri");
          var highlightColor = document.Color("yellow");
-         var standardFontData = new FontData(calibriFont) { FontSize = 11f };
-         var emphasizedFontData = new FontData(standardFontData) { Bold = true, Italic = true, BackgroundColor = highlightColor };
-         document.DefaultCharFormat.FontData = standardFontData;
+         var standardStyle = new Style() | calibriFont | 11f;
+         var emphasizedStyle = new Style() | standardStyle | Feature.Bold | Feature.Italic | highlightColor.Background;
+         document.DefaultCharFormat.Style = standardStyle;
 
          _ = document | "Estream Uncleansed database (EstreamPrd replica) – TSESTMUTL10CORP “migrationtest” (non-AG) – Update" | Feature.Bold |
             Feature.Underline;
@@ -163,9 +163,9 @@ namespace Core.Tests
 
          _ = document |
             "a.\tRun partition cleanse steps for IntervalMeasurement data older than approx 2 years (2020-10-15) -- Completed" | indent1 |
-            para | formatFind("Completed") | emphasizedFontData;
+            para | formatFind("Completed") | emphasizedStyle;
          _ = document | "b.\tRun Partition cleanse for log tables -- Completed" | indent1 |
-            para | formatFind("Completed") | emphasizedFontData;
+            para | formatFind("Completed") | emphasizedStyle;
          _ = document | "i.\tRun partition cleanse steps for HierarchicalLog older than 60 days (2022-08-20)" | indent2;
          _ = document | "ii.\tRun partition cleanse steps for DistributionLog older than 45 days (2022-09-04)" | indent2;
 
@@ -196,8 +196,8 @@ namespace Core.Tests
          var document = new Document();
          var font = document.Font("Calibri");
          var codeFont = document.Font("Consolas");
-         var standardFont = new FontData(font) { FontSize = 12f };
-         document.DefaultCharFormat.FontData = standardFont;
+         var standardFont = new Style() | font | 12f;
+         document.DefaultCharFormat.Style = standardFont;
 
          var workItemUrl = ~_workItemId;
          var branch = "b-ops-301905-orderdeleted-failed-message";

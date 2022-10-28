@@ -22,8 +22,6 @@ public class PendingFormatter
       _ => formatter
    };
 
-   public static PendingFormatter operator |(PendingFormatter formatter, FontData fontData) => formatter.FontData(fontData);
-
    public static PendingFormatter operator |(PendingFormatter formatter, Alignment alignment) => formatter.Alignment(alignment);
 
    public static PendingFormatter operator |(PendingFormatter formatter, ForegroundColorDescriptor foregroundColor)
@@ -54,7 +52,6 @@ public class PendingFormatter
 
    protected Table table;
    protected Set<Feature> features;
-   protected Maybe<FontData> _fontData;
    protected Maybe<Alignment> _alignment;
    protected Maybe<ForegroundColorDescriptor> _foregroundColor;
    protected Maybe<BackgroundColorDescriptor> _backgroundColor;
@@ -70,7 +67,6 @@ public class PendingFormatter
       this.table = table;
 
       features = new Set<Feature>();
-      _fontData = nil;
       _alignment = nil;
       _foregroundColor = nil;
       _backgroundColor = nil;
@@ -144,12 +140,6 @@ public class PendingFormatter
       return this;
    }
 
-   public PendingFormatter FontData(FontData fontData)
-   {
-      _fontData = fontData;
-      return this;
-   }
-
    public PendingFormatter Alignment(Alignment alignment)
    {
       _alignment = alignment;
@@ -211,11 +201,6 @@ public class PendingFormatter
       foreach (var feature in features)
       {
          _ = formatter | feature;
-      }
-
-      if (_fontData)
-      {
-         formatter.FontData(_fontData);
       }
 
       if (_alignment)

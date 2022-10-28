@@ -32,9 +32,6 @@ public static class ParagraphFunctions
             case Feature.NewPageAfter:
                paragraph.StartNewPageAfter = true;
                break;
-            case FontData fontData:
-               format.FontData = fontData;
-               break;
             case FontDescriptor fontDescriptor:
                format.Font = fontDescriptor;
                break;

@@ -15,7 +15,7 @@ public class Formatter
       _ => formatter
    };
 
-   public static Formatter operator |(Formatter formatter, FontData fontData) => formatter.FontData(fontData);
+   public static Formatter operator |(Formatter formatter, Style style) => formatter.Style(style);
 
    public static Formatter operator |(Formatter formatter, Alignment alignment) => formatter.Alignment(alignment);
 
@@ -108,12 +108,6 @@ public class Formatter
    public virtual Formatter NewPageAfter()
    {
       paragraph.StartNewPageAfter = true;
-      return this;
-   }
-
-   public virtual Formatter FontData(FontData fontData)
-   {
-      format.FontData = fontData;
       return this;
    }
 

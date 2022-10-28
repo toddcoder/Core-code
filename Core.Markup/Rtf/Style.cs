@@ -17,7 +17,7 @@ public class Style
       _ => style
    };
 
-   public static Style operator |(Style style, FontData fontData) => style.FontData(fontData);
+   public static Style operator |(Style style, Style otherStyle) => style.Copy(otherStyle);
 
    public static Style operator |(Style style, Alignment alignment) => style.Alignment(alignment);
 
@@ -39,7 +39,6 @@ public class Style
    }
 
    protected Set<Feature> features;
-   protected Maybe<FontData> _fontData;
    protected Maybe<Alignment> _alignment;
    protected Maybe<ForegroundColorDescriptor> _foregroundColor;
    protected Maybe<BackgroundColorDescriptor> _backgroundColor;
@@ -52,7 +51,6 @@ public class Style
    public Style()
    {
       features = new Set<Feature>();
-      _fontData = nil;
       _alignment = nil;
       _foregroundColor = nil;
       _backgroundColor = nil;
@@ -61,6 +59,101 @@ public class Style
       _fontSize = nil;
       _firstLineIndent = nil;
       margins = (nil, nil, nil, nil);
+   }
+
+   public void SetParagraph(Paragraph paragraph)
+   {
+      if (_alignment)
+      {
+         paragraph.Alignment = _alignment;
+      }
+
+      if (_firstLineIndent)
+      {
+         paragraph.FirstLineIndent = (~_firstLineIndent).Amount;
+      }
+
+      var (_left, _top, _right, _bottom) = margins;
+      if (_left)
+      {
+         paragraph.Margins[Direction.Left] = _left;
+      }
+
+      if (_top)
+      {
+         paragraph.Margins[Direction.Top] = _top;
+      }
+
+      if (_right)
+      {
+         paragraph.Margins[Direction.Right] = _right;
+      }
+
+      if (_bottom)
+      {
+         paragraph.Margins[Direction.Bottom] = _bottom;
+      }
+   }
+
+   public void SetCharFormat(CharFormat charFormat)
+   {
+      foreach (var feature in features)
+      {
+         switch (feature)
+         {
+            case Feature.Bold:
+               charFormat.FontStyle += FontStyleFlag.Bold;
+               break;
+            case Feature.Italic:
+               charFormat.FontStyle += FontStyleFlag.Italic;
+               break;
+            case Feature.Underline:
+               charFormat.FontStyle += FontStyleFlag.Underline;
+               break;
+         }
+      }
+
+      if (_foregroundColor)
+      {
+         charFormat.ForegroundColor = _foregroundColor.CastAs<ColorDescriptor>();
+      }
+
+      if (_backgroundColor)
+      {
+         charFormat.BackgroundColor = _backgroundColor.CastAs<ColorDescriptor>();
+      }
+
+      if (_localHyperlink)
+      {
+         charFormat.LocalHyperlink = _localHyperlink.Map(l => l.Link);
+         charFormat.LocalHyperlinkTip = _localHyperlink.Map(l => l.LinkTip);
+      }
+
+      if (_font)
+      {
+         charFormat.Font = _font;
+      }
+
+      if (_fontSize)
+      {
+         charFormat.FontSize = _fontSize;
+      }
+   }
+
+   public virtual Style Copy(Style otherStyle)
+   {
+      features.Clear();
+      features.AddRange(otherStyle.features);
+      _alignment = otherStyle._alignment;
+      _foregroundColor = otherStyle._foregroundColor;
+      _backgroundColor = otherStyle._backgroundColor;
+      _localHyperlink = otherStyle._localHyperlink;
+      _font = otherStyle._font;
+      _fontSize = otherStyle._fontSize;
+      _firstLineIndent = otherStyle._firstLineIndent;
+      margins = otherStyle.margins;
+
+      return this;
    }
 
    public virtual Style Italic(bool on = true)
@@ -123,12 +216,6 @@ public class Style
       return this;
    }
 
-   public Style FontData(FontData fontData)
-   {
-      _fontData = fontData;
-      return this;
-   }
-
    public Style Alignment(Alignment alignment)
    {
       _alignment = alignment;
@@ -188,11 +275,6 @@ public class Style
          _ = formatter | feature;
       }
 
-      if (_fontData)
-      {
-         formatter.FontData(_fontData);
-      }
-
       if (_alignment)
       {
          formatter.Alignment(_alignment);
@@ -238,11 +320,6 @@ public class Style
       foreach (var feature in features)
       {
          _ = formatter | feature;
-      }
-
-      if (_fontData)
-      {
-         formatter.FontData(_fontData);
       }
 
       if (_alignment)

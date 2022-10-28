@@ -14,8 +14,6 @@ public class NullFormatter : Formatter
 
    public override Formatter Bullet() => this;
 
-   public override Formatter FontData(FontData fontData) => this;
-
    public override Formatter FontSize(float fontSize) => this;
 
    public override Formatter Alignment(Alignment alignment) => this;

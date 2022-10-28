@@ -193,28 +193,9 @@ public class CharFormat
       set => twoInOneStyle = value;
    }
 
-   public FontData FontData
+   public Style Style
    {
       set => value.SetCharFormat(this);
-   }
-
-   public Feature Feature
-   {
-      set
-      {
-         switch (value)
-         {
-            case Feature.Bold:
-               fontStyle += FontStyleFlag.Bold;
-               break;
-            case Feature.Italic:
-               fontStyle += FontStyleFlag.Italic;
-               break;
-            case Feature.Underline:
-               fontStyle += FontStyleFlag.Underline;
-               break;
-         }
-      }
    }
 
    public string RenderHead()
@@ -300,11 +281,6 @@ public class CharFormat
          }
       }
 
-      /*if (result.ToString().Contains(@"\"))
-      {
-         result.Append(" ");
-      }*/
-
       if (_bookmark)
       {
          result.Append($@"{{\*\bkmkstart {_bookmark}}}");
@@ -321,11 +297,6 @@ public class CharFormat
       {
          result.Append($@"{{\*\bkmkend {_bookmark}}}");
       }
-
-      /*if (_localHyperlink)
-      {
-         result.Append(@"}}}");
-      }*/
 
       result.Append("}");
 

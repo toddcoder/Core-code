@@ -21,11 +21,6 @@ public class Paragraph : Block
 
    public static MaybeQueue<Formatter> operator |(Paragraph paragraph, Func<Paragraph, MaybeQueue<Formatter>> func) => func(paragraph);
 
-   public static Formatter operator |(Paragraph paragraph, FontData fontData)
-   {
-      return new Formatter(paragraph, paragraph.DefaultCharFormat).FontData(fontData);
-   }
-
    public static Formatter operator |(Paragraph paragraph, Alignment alignment)
    {
       return new Formatter(paragraph, paragraph.DefaultCharFormat).Alignment(alignment);
@@ -129,6 +124,11 @@ public class Paragraph : Block
       firstLineIndent = 0;
       defaultCharFormat = new CharFormat();
       pendingCharFormats = new List<(int, int, FontStyleFlag)>();
+   }
+
+   public Style Style
+   {
+      set => value.SetParagraph(this);
    }
 
    protected void setText(string newText)

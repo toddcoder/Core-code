@@ -15,8 +15,6 @@ public class RowBuilder
       _ => rowBuilder
    };
 
-   public static RowBuilder operator |(RowBuilder rowBuilder, FontData fontData) => rowBuilder.FontData(fontData);
-
    public static RowBuilder operator |(RowBuilder rowBuilder, Alignment alignment) => rowBuilder.Alignment(alignment);
 
    public static RowBuilder operator |(RowBuilder rowBuilder, ForegroundColorDescriptor foregroundColor)
@@ -102,12 +100,6 @@ public class RowBuilder
    public virtual RowBuilder NewPageAfter()
    {
       formatter.NewPageAfter();
-      return this;
-   }
-
-   public RowBuilder FontData(FontData fontData)
-   {
-      formatter.FontData(fontData);
       return this;
    }
 
