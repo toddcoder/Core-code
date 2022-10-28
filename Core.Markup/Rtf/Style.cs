@@ -6,6 +6,8 @@ namespace Core.Markup.Rtf;
 
 public class Style
 {
+   public static Style operator ~(Style style) => style.Copy();
+
    public static Style operator |(Style style, Feature feature) => feature switch
    {
       Feature.Bold => style.Bold(),
@@ -17,7 +19,7 @@ public class Style
       _ => style
    };
 
-   public static Style operator |(Style style, Style otherStyle) => style.Copy(otherStyle);
+   public static Style operator |(Style style, Style otherStyle) => style.CopyFrom(otherStyle);
 
    public static Style operator |(Style style, Alignment alignment) => style.Alignment(alignment);
 
@@ -140,7 +142,20 @@ public class Style
       }
    }
 
-   public virtual Style Copy(Style otherStyle)
+   public Style Copy() => new()
+   {
+      features = features,
+      _alignment = _alignment,
+      _foregroundColor = _foregroundColor,
+      _backgroundColor = _backgroundColor,
+      _hyperlink = _hyperlink,
+      _font = _font,
+      _fontSize = _fontSize,
+      _firstLineIndent = _firstLineIndent,
+      margins = margins
+   };
+
+   public virtual Style CopyFrom(Style otherStyle)
    {
       features.Clear();
       features.AddRange(otherStyle.features);
