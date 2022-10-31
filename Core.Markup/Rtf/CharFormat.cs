@@ -63,14 +63,17 @@ public class CharFormat
       _hyperlinkTip = nil;
    }
 
-   public CharFormat(int begin, int end, int textLength)
+   public CharFormat(int begin, int end, int textLength, bool checkRange = true)
    {
-      var message = $"Invalid range: ({begin}, {end})";
+      if (checkRange)
+      {
+         var message = $"Invalid range: ({begin}, {end})";
 
-      begin.Must().BeLessThanOrEqual(end).OrThrow(message);
-      begin.Must().BeGreaterThanOrEqual(0).OrThrow(message);
-      end.Must().BeLessThan(textLength).OrThrow(message);
-      end.Must().BeGreaterThanOrEqual(0).OrThrow(message);
+         begin.Must().BeLessThanOrEqual(end).OrThrow(message);
+         begin.Must().BeGreaterThanOrEqual(0).OrThrow(message);
+         end.Must().BeLessThan(textLength).OrThrow(message);
+         end.Must().BeGreaterThanOrEqual(0).OrThrow(message);
+      }
 
       _begin = begin;
       _end = end;

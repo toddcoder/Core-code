@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Core.Assertions;
+using Core.Collections;
 using Core.DataStructures;
 using Core.Matching;
 using Core.Monads;
@@ -36,11 +37,6 @@ public class Paragraph : Block
       return new Formatter(paragraph, paragraph.DefaultCharFormat).BackgroundColor(backgroundColor);
    }
 
-   public static Formatter operator |(Paragraph paragraph, Hyperlink hyperlink)
-   {
-      return new Formatter(paragraph, paragraph.DefaultCharFormat).Hyperlink(hyperlink);
-   }
-
    public static Formatter operator |(Paragraph paragraph, FontDescriptor font)
    {
       return new Formatter(paragraph, paragraph.DefaultCharFormat).Font(font);
@@ -65,6 +61,14 @@ public class Paragraph : Block
 
    public static Formatter operator |(Paragraph paragraph, Style style) => style.Formatter(paragraph);
 
+   public static Paragraph operator |(Paragraph paragraph, Hyperlink hyperlink) => paragraph.AddPendingHyperlink(hyperlink);
+
+   public static Paragraph operator |(Paragraph paragraph, string text)
+   {
+      paragraph.text.Append(text);
+      return paragraph;
+   }
+
    protected StringBuilder text;
    protected Maybe<float> _lineSpacing;
    protected Margins margins;
@@ -82,6 +86,7 @@ public class Paragraph : Block
    protected bool bullet;
    protected CharFormat defaultCharFormat;
    protected List<(int, int, FontStyleFlag)> pendingCharFormats;
+   protected StringHash<(int, int, Hyperlink)> pendingHyperlinks;
 
    protected struct Token
    {
@@ -124,6 +129,7 @@ public class Paragraph : Block
       firstLineIndent = 0;
       defaultCharFormat = new CharFormat();
       pendingCharFormats = new List<(int, int, FontStyleFlag)>();
+      pendingHyperlinks = new StringHash<(int, int, Hyperlink)>(true);
    }
 
    public Style Style
@@ -218,6 +224,18 @@ public class Paragraph : Block
       }
    }
 
+   public Paragraph AddPendingHyperlink(Hyperlink hyperlink)
+   {
+      var key = $"/url{pendingHyperlinks.Count}";
+      var begin = text.Length;
+      var hyperlinkText = hyperlink.LinkTip | hyperlink.Link;
+      var end = begin + hyperlinkText.Length - 1;
+      text.Append("");
+      pendingHyperlinks[key] = (begin, end, hyperlink);
+
+      return this;
+   }
+
    public Maybe<float> LineSpacing
    {
       get => _lineSpacing;
@@ -268,9 +286,9 @@ public class Paragraph : Block
       set => bullet = value;
    }
 
-   public CharFormat CharFormat(int begin, int end)
+   public CharFormat CharFormat(int begin, int end, bool checkRange = true)
    {
-      var format = new CharFormat(begin, end, text.Length);
+      var format = new CharFormat(begin, end, text.Length, checkRange);
       charFormats.Add(format);
 
       return format;
@@ -753,7 +771,7 @@ public class Paragraph : Block
       return tokens;
    }
 
-   protected static string extractTokenList(LinkedList<Token> tokList)
+   protected string extractTokenList(LinkedList<Token> tokList)
    {
       var result = new StringBuilder();
       var node = tokList.First;
@@ -766,17 +784,39 @@ public class Paragraph : Block
          }
          else
          {
-            var text = node.Value.Text;
-            var _result = text.Matches("'//url(' -[')']+ ')'; fi");
-            if (_result)
+            var nodeText = node.Value.Text;
+            var _keyResult = nodeText.Matches("'//url' (/d+); f");
+            if (_keyResult)
             {
-               var matchResult = ~_result;
-               text = text.Keep(matchResult.Index) + text.Drop(matchResult.Index + matchResult.Length);
-            }
+               var keyResult = ~_keyResult;
+               foreach (var match in keyResult)
+               {
+                  match.Text = "";
+                  /*var _hyperlink = pendingHyperlinks.Maybe[match.Text];
+                  var (_, _, hyperlink) = ~_hyperlink;
+                  var hyperlinkText = hyperlink.LinkTip | hyperlink.Link;
+                  match.Text = " ".Repeat(hyperlinkText.Length);*/
+               }
 
-            if (text.IsNotEmpty())
+               nodeText = keyResult.Text;
+               if (nodeText.IsNotEmpty())
+               {
+                  result.Append(nodeText.UnicodeEncode());
+               }
+            }
+            else
             {
-               result.Append(text.UnicodeEncode());
+               var _result = nodeText.Matches("'//url(' -[')']+ ')'; fi");
+               if (_result)
+               {
+                  var matchResult = ~_result;
+                  nodeText = nodeText.Keep(matchResult.Index) + nodeText.Drop(matchResult.Index + matchResult.Length);
+               }
+
+               if (nodeText.IsNotEmpty())
+               {
+                  result.Append(nodeText.UnicodeEncode());
+               }
             }
          }
 
@@ -788,6 +828,13 @@ public class Paragraph : Block
 
    public override string Render()
    {
+      foreach (var (begin, end, hyperlink) in pendingHyperlinks.Values)
+      {
+         var format = CharFormat(begin, end, false);
+         format.Hyperlink = hyperlink.Link;
+         format.HyperlinkTip = hyperlink.LinkTip;
+      }
+
       var tokens = buildTokenList();
       var result = new StringBuilder(blockHead);
 

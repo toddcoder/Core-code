@@ -1,4 +1,5 @@
-﻿using Core.Monads;
+﻿using Core.Collections;
+using Core.Monads;
 
 namespace Core.Markup.Rtf;
 
@@ -46,6 +47,7 @@ public class RowBuilder
 
    protected Table table;
    protected PendingFormatter formatter;
+   //protected StringHash<(int, int, Hyperlink)> pendingHyperlinks;
 
    public RowBuilder(Table table)
    {
