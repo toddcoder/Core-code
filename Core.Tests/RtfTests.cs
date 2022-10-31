@@ -143,18 +143,17 @@ public class RtfTests
       var indent2 = 1f.InchesToPoints().FirstLineIndent();
 
       _ = document |
-         "a.\tRun partition cleanse steps for IntervalMeasurement data older than approx 2 years (2020-10-15) -- Completed" | indent1 |
-         para | formatFind("Completed") | emphasizedStyle;
-      _ = document | "b.\tRun Partition cleanse for log tables -- Completed" | indent1 |
-         para | formatFind("Completed") | emphasizedStyle;
+         "a.\tRun partition cleanse steps for IntervalMeasurement data older than approx 2 years (2020-10-15) -- " | indent1 | "Completed" |
+         emphasizedStyle;
+      _ = document | "b.\tRun Partition cleanse for log tables -- " | indent2 | "Completed" | emphasizedStyle;
       _ = document | "i.\tRun partition cleanse steps for HierarchicalLog older than 60 days (2022-08-20)" | indent2;
       _ = document | "ii.\tRun partition cleanse steps for DistributionLog older than 45 days (2022-09-04)" | indent2;
 
       var url = "http://tfs.eprod.com/LS/_git/Estream/pullrequest/26899";
-      _ = document | "c.\tDeploy the code base from " | url.Link("PR") | "/ -- %In-progress%" | indent1;
-
-      _ = document | "d.\tRun partition reorganization steps for IntervalMeasurement to monthly. Monitor the TLOG fullness" | indent1 |
-         para | formatFind("Monitor the TLOG fullness") | Feature.Bold | 14f;
+      _ = document | "c.\tDeploy the code base from " | indent2 | "" | url.Link("PR") | " -- " | Feature.None | "In-progress" | Feature.Bold |
+         Feature.Italic;
+      _ = document | "d.\tRun partition reorganization steps for IntervalMeasurement to monthly. " | indent1 | "Monitor the TLOG fullness" |
+         Feature.Bold | 14f;
 
       document.Save(@"C:\Temp\Test4.rtf");
    }
@@ -163,7 +162,7 @@ public class RtfTests
    public void HyperlinkTest()
    {
       var document = new Document();
-      _ = document | "This is the url to /url(google) is here!" | formatUrl("google") | "http://google.com".Link("Google");
+      _ = document | "This is the url to " | "http://google.com".Link("Google") | " is here!";
       document.Save(@"C:\Temp\Test5.rtf");
    }
 
@@ -175,15 +174,15 @@ public class RtfTests
       var document = new Document();
       var font = document.Font("Calibri");
       var codeFont = document.Font("Consolas");
-      var standardFont = new Style() | font | 12f;
-      document.DefaultCharFormat.Style = standardFont;
+      var standardStyle = new Style() | font | 12f;
+      document.DefaultCharFormat.Style = standardStyle;
+      var codeStyle = new Style() | codeFont | Feature.Bold;
 
-      var workItemUrl = ~_workItemId;
+      var workItemUrl = $"http://tfs/ls/Estream/_workitems/edit/{_workItemId}";
       var branch = "b-ops-301905-orderdeleted-failed-message";
 
-      _ = document | $"/The backfill request for ^{branch}^ (/url(workItemId)) has been completed." |
-         para | formatUrl("workItemId") | codeFont | Feature.Bold | workItemUrl.Link(_workItemId);
-
+      _ = document | "The backfill request for " | Feature.None | branch | codeStyle | " at " | workItemUrl.Link(_workItemId) |
+         " has been completed.";
       _ = document | "Please merge master into your inflight branches. Thanks.";
 
       document.Save(@"C:\Temp\Test5a.rtf");
@@ -193,10 +192,11 @@ public class RtfTests
    public void FormattingTest()
    {
       var document = new Document();
-      _ = document | "/This is *italic* text";
-      _ = document | "/This is ^bold^ text";
-      _ = document | "/This is %both%!";
-      _ = document | "/This is ^release^ with an ^outage^ for ^r-6.41.0^.";
+      _ = document | "This is " | Feature.None | "italic" | Feature.Italic | " text";
+      _ = document | "This is " | Feature.None | "bold" | Feature.Bold | " text";
+      _ = document | "This is " | Feature.None | "both" | Feature.Italic | Feature.Bold | "!";
+      _ = document | "This is " | Feature.None | "release" | Feature.Bold | " with an " | "outage" | Feature.Bold | " for " | "r-6.41.0" |
+         Feature.Bold | ".";
       document.Save(@"C:\Temp\Test6.rtf");
    }
 

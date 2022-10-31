@@ -63,6 +63,7 @@
     <Compile Include="Rtf\Hyperlink.cs" />
     <Compile Include="Rtf\NullFormatter.cs" />
     <Compile Include="Rtf\ParagraphFunctions.cs" />
+    <Compile Include="Rtf\PartialFormatter.cs" />
     <Compile Include="Rtf\PendingFormatter.cs" />
     <Compile Include="Rtf\RowBuilder.cs" />
     <Compile Include="Rtf\RtfExtensions.cs" />

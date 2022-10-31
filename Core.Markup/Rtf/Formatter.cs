@@ -1,4 +1,5 @@
 ﻿using Core.Monads;
+using Core.Strings;
 
 namespace Core.Markup.Rtf;
 
@@ -37,6 +38,16 @@ public class Formatter
    }
 
    public static Paragraph operator |(Formatter formatter, Paragraph _) => formatter.Paragraph;
+
+   public static Formatter operator |(Formatter formatter, string text)
+   {
+      var paragraph = formatter.Paragraph;
+      var begin = paragraph.Text.Length;
+      var end = begin + text.Length - 1;
+      _ = paragraph | text;
+
+      return new PartialFormatter(paragraph, paragraph.CharFormat(begin, end, false), begin, end);
+   }
 
    protected Paragraph paragraph;
    protected CharFormat format;
