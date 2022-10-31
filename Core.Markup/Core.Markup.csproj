@@ -58,7 +58,7 @@
     <Compile Include="Rtf\FirstLineIndent.cs" />
     <Compile Include="Rtf\ForegroundColorDescriptor.cs" />
     <Compile Include="Rtf\Formatter.cs" />
-    <Compile Include="Rtf\FormatterFunctions.cs" />
+    <Compile Include="Rtf\RtfFunctions.cs" />
     <Compile Include="Rtf\Line.cs" />
     <Compile Include="Rtf\Hyperlink.cs" />
     <Compile Include="Rtf\NullFormatter.cs" />

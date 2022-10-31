@@ -20,9 +20,6 @@ namespace Core.Monads
          return new Some<TParent>(value);
       }
 
-      [Obsolete("Use nil")]
-      public static Maybe<T> none<T>() => new None<T>();
-
       public static Result<T> success<T>(T value) => new Success<T>(value);
 
       public static Result<TParent> successAs<TChild, TParent>(TChild value) where TChild : class, TParent where TParent : class
