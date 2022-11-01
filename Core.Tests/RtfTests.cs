@@ -71,65 +71,11 @@ public class RtfTests
 
       _ = document | "";
 
-      _ = document | "Test 5: ";
+      var paragraph = document | "Test 5: This is a footnote";
+      var footnote = paragraph.Footnote();
+      _ = footnote | "Footnote information" | bold;
 
       document.Save(@"C:\Temp\Test.rtf");
-      /*var document = new Document(PaperSize.A4, PaperOrientation.Landscape);
-
-      var timesFont = document.Font("Times New Roman");
-      var courierFont = document.Font("Courier New");
-
-      var redColor = document.Color(0xff0000);
-      var blueColor = document.Color("Blue");
-
-      var tableHeaderColor = document.Color(0x76923C);
-      var tableRowColor = document.Color(0xD6E3BC);
-      var tableRowAltColor = document.Color(0xFFFFFF);
-
-      _ = document | "Testing" | left | timesFont;
-      _ = document | "";
-
-      _ = document | "" | "Test2:" | blueColor.Foreground | redColor.Background | 18f | "Character Formatting" | bold | underline | courierFont;
-
-      var paragraph = document | "Footnote";
-      _ = paragraph.Footnote(7) | "Footnote details here.";
-
-      _ = document.Footer | "Test : Page: " | page | "/" | numPages | " Date:" | date | " Time:" | time | center | 15f;
-
-      _ = document.Header | "Header";
-
-      var image = document.Image(@"C:\Temp\rabbit-mq.jpg");
-      image.Width = 130;
-      image.StartNewParagraph = true;
-
-      var table = document.Table(415.2f, 12);
-
-      foreach (var row in 5.Times())
-      {
-         table.Row();
-         foreach (var column in 4.Times())
-         {
-            table.Column($"CELL {row}, {column}");
-         }
-      }
-
-      table.Margins[Direction.Bottom] = 20;
-      table.SetInnerBorder(BorderStyle.Dotted, 1);
-      table.SetOuterBorder(BorderStyle.Single, 2);
-
-      table.HeaderBackgroundColor = tableHeaderColor;
-      table.RowBackgroundColor = tableRowColor;
-      table.RowAltBackgroundColor = tableRowAltColor;
-
-      table.Merge(1, 0, 3, 1);
-      table[4, 3].BackgroundColor = redColor;
-      table[4, 3].Text = "Table";
-
-      _ = document | "Test 7.1: Hyperlink to " | none | "" | "target".Link("Link to target") | " (Test9)";
-      _ = document | "New page" | newPage;
-      _ = document | "Test9: Set bookmark" | "target".Bookmark();
-
-      document.Save(@"C:\Temp\Test.rtf");*/
    }
 
    [TestMethod]

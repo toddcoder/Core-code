@@ -503,6 +503,8 @@ public class Paragraph : Block
       return footnote;
    }
 
+   public Footnote Footnote() => Footnote(text.Length - 1);
+
    public void ControlWord(int position, FieldType type)
    {
       allowControlWord.Must().BeTrue().OrThrow("ControlWord is not allowed.");
