@@ -1,5 +1,4 @@
-﻿using Core.Enumerables;
-using Core.Markup.Rtf;
+﻿using Core.Markup.Rtf;
 using Core.Monads;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Core.Markup.Rtf.RtfFunctions;
@@ -14,6 +13,68 @@ public class RtfTests
    public void BasicTest()
    {
       var document = new Document(PaperSize.A4, PaperOrientation.Landscape);
+      var timesFont = document.Font("Times New Roman");
+      var consolasFont = document.Font("Consolas");
+      var goldColor = document.Color("gold");
+      var tableHeaderColor = document.Color(0x76923C);
+      var tableRowColor = document.Color(0xD6E3BC);
+      var tableRowAltColor = document.Color(0xFFFFFF);
+
+      document.DefaultCharFormat.Style = new Style() | timesFont | 12f;
+
+      var header = document.Header;
+      _ = header | "Test Document " | none | "Test.rtf" | italic;
+      _ = header | "";
+
+      var footer = document.Footer;
+      _ = footer | "Page " | page | " of " | numPages | " Date: " | date | " Time: " | time | right;
+
+      _ = document | "This is test line 1";
+      _ = document | "This is test line 2";
+      _ = document | "This is test line 3";
+
+      _ = document | "";
+
+      _ = document | "Item 1" | bullet;
+      _ = document | "Item 2" | bullet;
+      _ = document | "Item 3" | bullet;
+
+      _ = document | "";
+
+      _ = document | "Test 1: " | none | "italics" | italic;
+      _ = document | "Test 2: " | none | "bold" | bold;
+      _ = document | "Test 3: " | none | "underline" | underline;
+
+      _ = document | "";
+
+      var headerStyle = new Style() | center | bold;
+      var rowStyle = new Style() | consolasFont | italic;
+
+      var table = document.Table(12f);
+      _ = table | "Full Name" | headerStyle | "Latin Letter" | headerStyle | "Greek Letter" | headerStyle;
+      _ = table | "alpha" | rowStyle | "a" | "alpha" | rowStyle;
+      _ = table | "bravo" | "b" | "beta";
+      _ = table | "charlie" | "c" | "kappa";
+      _ = table | "delta" | rowStyle | "d" | "delta" | rowStyle;
+      _ = table | "echo" | "e" | "epsilon";
+      _ = table | "foxtrot" | "f" | "phi";
+
+      table.Margins[Direction.Bottom] = 20;
+      table.Margins[Direction.Left] = 20;
+      table.SetInnerBorder(BorderStyle.Dotted, 1);
+      table.SetOuterBorder(BorderStyle.Single, 2);
+      table.HeaderBackgroundColor = tableHeaderColor;
+      table.RowBackgroundColor = tableRowColor;
+      table.RowAltBackgroundColor = tableRowAltColor;
+
+      _ = document | "Test 4: " | newPage | "Character Formatting" | consolasFont | 16f | goldColor.Background;
+
+      _ = document | "";
+
+      _ = document | "Test 5: ";
+
+      document.Save(@"C:\Temp\Test.rtf");
+      /*var document = new Document(PaperSize.A4, PaperOrientation.Landscape);
 
       var timesFont = document.Font("Times New Roman");
       var courierFont = document.Font("Courier New");
@@ -25,22 +86,15 @@ public class RtfTests
       var tableRowColor = document.Color(0xD6E3BC);
       var tableRowAltColor = document.Color(0xFFFFFF);
 
-      _ = document | "Testing\n" | left | timesFont;
+      _ = document | "Testing" | left | timesFont;
+      _ = document | "";
 
-      var queue = document | "Test2: Character Formatting" | timesFont | para | formatTemplate("^^^^^^");
-      var _formatter = queue.Dequeue();
-      if (!_formatter)
-      {
-         throw fail("Couldn't extract text");
-      }
-
-      _ = ~_formatter | blueColor.Foreground | redColor.Background | 18f | para | format("Character Formatting; u") | bold | underline | courierFont;
+      _ = document | "" | "Test2:" | blueColor.Foreground | redColor.Background | 18f | "Character Formatting" | bold | underline | courierFont;
 
       var paragraph = document | "Footnote";
       _ = paragraph.Footnote(7) | "Footnote details here.";
 
-      _ = document.Footer | "/Test : Page: @/# Date:? Time:!" | center | 15f;
-      //paragraph.ControlWorlds("Test : Page: @/# Date:? Time:!");
+      _ = document.Footer | "Test : Page: " | page | "/" | numPages | " Date:" | date | " Time:" | time | center | 15f;
 
       _ = document.Header | "Header";
 
@@ -71,23 +125,11 @@ public class RtfTests
       table[4, 3].BackgroundColor = redColor;
       table[4, 3].Text = "Table";
 
-      queue = document | "Test 7.1: Hyperlink to target (Test9)" | formatTemplate("          ^^^^^^^^^");
-      _formatter = queue.Dequeue();
-      if (_formatter)
-      {
-         _ = ~_formatter | "target".Link("Link to target") | blueColor.Foreground;
-      }
-
+      _ = document | "Test 7.1: Hyperlink to " | none | "" | "target".Link("Link to target") | " (Test9)";
       _ = document | "New page" | newPage;
+      _ = document | "Test9: Set bookmark" | "target".Bookmark();
 
-      queue = document | "Test9: Set bookmark" | formatTemplate("^^^^^^^^^^^^^^^^^^^");
-      _formatter = queue.Dequeue();
-      if (_formatter)
-      {
-         (~_formatter).Bookmark("target");
-      }
-
-      document.Save(@"C:\Temp\Test.rtf");
+      document.Save(@"C:\Temp\Test.rtf");*/
    }
 
    [TestMethod]
@@ -219,5 +261,19 @@ public class RtfTests
       _ = document | "Embedded URL 1: (" | "http://tfs".Link("TFS") | ")";
       _ = document | "Embedded URL 2: (" | "http://google.com".Link() | ")";
       document.Save(@"C:\Temp\Test8.rtf");
+   }
+
+   [TestMethod]
+   public void ControlWordTest()
+   {
+      var document = new Document();
+      _ = document | "Line 1";
+      _ = document | "Line 2";
+      _ = document | "Line 3";
+
+      var header = document.Header;
+      _ = header | "Page " | page | " of " | numPages | right;
+
+      document.Save(@"C:\Temp\Test9.rtf");
    }
 }

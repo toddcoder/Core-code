@@ -27,6 +27,8 @@ public class Formatter
 
    public static Formatter operator |(Formatter formatter, Hyperlink hyperlink) => formatter.Hyperlink(hyperlink);
 
+   public static Formatter operator |(Formatter formatter, Bookmark bookmark) => formatter.Bookmark(bookmark.Name);
+
    public static Formatter operator |(Formatter formatter, FontDescriptor font) => formatter.Font(font);
 
    public static Formatter operator |(Formatter formatter, float fontSize) => formatter.FontSize(fontSize);
@@ -37,6 +39,8 @@ public class Formatter
    {
       return formatter.Margins(margins);
    }
+
+   public static Formatter operator |(Formatter formatter, FieldType fieldType) => formatter.ControlWord(fieldType);
 
    public static Paragraph operator |(Formatter formatter, Paragraph _) => formatter.Paragraph;
 
@@ -207,6 +211,12 @@ public class Formatter
          paragraph.Margins[Direction.Bottom] = margins.bottom;
       }
 
+      return this;
+   }
+
+   public virtual Formatter ControlWord(FieldType fieldType)
+   {
+      paragraph.ControlWord(paragraph.Text.Length - 1, fieldType);
       return this;
    }
 

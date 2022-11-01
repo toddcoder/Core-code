@@ -5,13 +5,13 @@ namespace Core.Markup.Rtf;
 
 public class Hyperlink
 {
-   public Hyperlink(string link, string linkTip)
+   internal Hyperlink(string link, string linkTip)
    {
       Link = link;
       LinkTip = linkTip;
    }
 
-   public Hyperlink(string link)
+   internal Hyperlink(string link)
    {
       Link = link;
       LinkTip = nil;

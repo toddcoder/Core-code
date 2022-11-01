@@ -65,6 +65,13 @@ public class Paragraph : Block
 
    public static Paragraph operator |(Paragraph paragraph, Hyperlink hyperlink) => paragraph.AddPendingHyperlink(hyperlink);
 
+   public static Formatter operator |(Paragraph paragraph, Bookmark bookmark) => paragraph.Bookmark(bookmark);
+
+   public static Formatter operator |(Paragraph paragraph, FieldType fieldType)
+   {
+      return new Formatter(paragraph, paragraph.DefaultCharFormat).ControlWord(fieldType);
+   }
+
    public static Paragraph operator |(Paragraph paragraph, string text)
    {
       paragraph.text.Append(text);
@@ -236,6 +243,12 @@ public class Paragraph : Block
       pendingHyperlinks[key] = (begin, end, hyperlink);
 
       return this;
+   }
+
+   public Formatter Bookmark(Bookmark bookmark)
+   {
+      var formatter = new Formatter(this, DefaultCharFormat);
+      return formatter.Bookmark(bookmark.Name);
    }
 
    public Maybe<float> LineSpacing

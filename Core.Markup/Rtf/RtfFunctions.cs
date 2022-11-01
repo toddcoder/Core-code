@@ -53,4 +53,12 @@ public static class RtfFunctions
    public static readonly Alignment fullyJustify = Alignment.FullyJustify;
 
    public static readonly Alignment distributed = Alignment.Distributed;
+
+   public static readonly FieldType page = FieldType.Page;
+
+   public static readonly FieldType numPages = FieldType.NumPages;
+
+   public static readonly FieldType date = FieldType.Date;
+
+   public static readonly FieldType time = FieldType.Time;
 }

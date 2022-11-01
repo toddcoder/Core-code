@@ -9,4 +9,6 @@ public static class RtfExtensions
    public static FirstLineIndent FirstLineIndent(this float amount) => new(amount);
 
    public static FirstLineIndent FirstLineIndent(this int amount) => new(amount);
+
+   public static Bookmark Bookmark(this string name) => new(name);
 }
