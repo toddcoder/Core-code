@@ -26,7 +26,7 @@ public static class RtfFunctions
 
    public static Func<Paragraph, MaybeQueue<Formatter>> formatTemplate(string formatTemplate) => p => p.FormatTemplate(formatTemplate);
 
-   public static readonly Paragraph para = new();
+   public static readonly Paragraph para = Paragraph.Empty;
 
    public static readonly Feature none = Feature.None;
 

@@ -14,6 +14,8 @@ namespace Core.Markup.Rtf;
 
 public class Paragraph : Block
 {
+   public static Paragraph Empty => new();
+
    public static Formatter operator |(Paragraph paragraph, Func<Paragraph, Formatter> func) => func(paragraph);
 
    public static Paragraph operator |(Paragraph paragraph, Paragraph _) => paragraph;
@@ -108,7 +110,7 @@ public class Paragraph : Block
       public CharFormat Format;
    }
 
-   public Paragraph() : this(false, false)
+   protected Paragraph() : this(false, false)
    {
    }
 

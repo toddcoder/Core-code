@@ -4,6 +4,8 @@ namespace Core.Markup.Rtf;
 
 public class Formatter
 {
+   public static Formatter Empty => new();
+
    public static Formatter operator |(Formatter formatter, Feature feature) => feature switch
    {
       Feature.Bold => formatter.Bold(),
@@ -55,6 +57,12 @@ public class Formatter
    {
       this.paragraph = paragraph;
       this.format = format;
+   }
+
+   protected Formatter()
+   {
+      paragraph = Paragraph.Empty;
+      format = new CharFormat();
    }
 
    public Paragraph Paragraph => paragraph;
