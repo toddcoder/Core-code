@@ -62,8 +62,14 @@ namespace Core.Monads
          right = nil;
       }
 
+      public override Maybe<TLeft> LeftValue => value;
+
+      public override Maybe<TRight> RightValue => nil;
+
+      [Obsolete("Use LeftValue")]
       public override Maybe<TLeft> MaybeFromLeft() => value;
 
+      [Obsolete("Use RightValue")]
       public override Maybe<TRight> MaybeFromRight() => nil;
 
       public override Result<TLeft> ResultFromLeft(string exceptionMessage) => value;

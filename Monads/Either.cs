@@ -28,8 +28,14 @@ namespace Core.Monads
 
       public abstract void Deconstruct(out Maybe<TLeft> left, out Maybe<TRight> right);
 
+      public abstract Maybe<TLeft> LeftValue { get; }
+
+      public abstract Maybe<TRight> RightValue { get; }
+
+      [Obsolete("Use LeftValue")]
       public abstract Maybe<TLeft> MaybeFromLeft();
 
+      [Obsolete("Use RightValue")]
       public abstract Maybe<TRight> MaybeFromRight();
 
       public abstract Result<TLeft> ResultFromLeft(string exceptionMessage);

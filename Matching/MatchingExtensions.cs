@@ -274,5 +274,30 @@ namespace Core.Matching
 
          return nil;
       }
+
+      public static IEnumerable<Either<Slice, Match>> LeadingMatches(this IEnumerable<Match> matches, string input, bool includeRemainder = false)
+      {
+         var index = 0;
+         foreach (var match in matches)
+         {
+            var text = input.Drop(index).Keep(match.Index - index);
+            var length = text.Length;
+            var slice = new Slice(text, index, length);
+            yield return slice;
+
+            yield return match;
+
+            index = match.Index + match.Length;
+         }
+
+         if (includeRemainder)
+         {
+            var remainder = input.Drop(index);
+            if (remainder.IsNotEmpty())
+            {
+               yield return new Slice(remainder, index, remainder.Length);
+            }
+         }
+      }
    }
 }

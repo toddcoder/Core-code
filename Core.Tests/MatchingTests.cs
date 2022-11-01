@@ -19,13 +19,15 @@ namespace Core.Tests
          var _result = "tsqlcop.sql.format.options.xml".Matches("(sql); u");
          if (_result)
          {
-            for (var matchIndex = 0; matchIndex < _result.Value.MatchCount; matchIndex++)
+            var result = ~_result;
+
+            foreach (var match in result)
             {
-               _result.Value[matchIndex, 1] = "style";
+               match.FirstGroup = "style";
             }
 
-            Console.WriteLine(_result.Value);
-            _result.Value.ToString().Must().Equal("tstylecop.style.format.options.xml").OrThrow();
+            Console.WriteLine(result);
+            result.ToString().Must().Equal("tstylecop.style.format.options.xml").OrThrow();
          }
       }
 
@@ -44,7 +46,7 @@ namespace Core.Tests
          var _result = "\"Fee fi fo fum\" said the giant.".Matches(pattern);
          if (_result)
          {
-            Console.WriteLine(_result.Value.FirstGroup.Guillemetify());
+            Console.WriteLine((~_result).FirstGroup.Guillemetify());
          }
       }
 
@@ -78,7 +80,7 @@ namespace Core.Tests
             select popped2;
          if (_scraper)
          {
-            var hash = scraper.AnyHash().ForceValue();
+            var hash = ~scraper.AnyHash();
             var func1 = $"{hash["name1"]}({getVariables(hash, "var0_")})";
             var func2 = $"{hash["name2"]}({getVariables(hash, "var1_")})";
             Console.WriteLine(func1);
@@ -145,6 +147,27 @@ namespace Core.Tests
          foreach (var input in new[] { "foobar", "foobaz", "???" })
          {
             matched.Matches(input);
+         }
+      }
+
+      [TestMethod]
+      public void LeadingMatchesTest()
+      {
+         var input = "111 apples, 123 books, 153 chairs";
+         var _result = input.Matches("['a-z']+");
+         if (_result)
+         {
+            foreach (var item in (~_result).Matches.LeadingMatches(input, true))
+            {
+               if (item.LeftValue)
+               {
+                  Console.WriteLine($"Leading: <{(~item.LeftValue).Text}>");
+               }
+               else if (item.RightValue)
+               {
+                  Console.WriteLine($"Match: <{(~item.RightValue).Text}>");
+               }
+            }
          }
       }
    }
