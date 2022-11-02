@@ -26,6 +26,7 @@ public partial class Chooser : Form
    protected Maybe<string> _nilItem;
    protected bool modifyTitle;
    protected string emptyTitle;
+   protected bool sizeToText;
 
    public event EventHandler<AppearanceOverrideArgs> AppearanceOverride;
 
@@ -40,6 +41,7 @@ public partial class Chooser : Form
       _nilItem = "none";
       modifyTitle = true;
       emptyTitle = "";
+      sizeToText = false;
 
       InitializeComponent();
 
@@ -95,6 +97,12 @@ public partial class Chooser : Form
    {
       get => emptyTitle;
       set => emptyTitle = value;
+   }
+
+   public bool SizeToText
+   {
+      get => sizeToText;
+      set => sizeToText = value;
    }
 
    public Maybe<Chosen> Choice { get; set; }

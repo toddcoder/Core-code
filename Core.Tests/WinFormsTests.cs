@@ -597,7 +597,7 @@ namespace Core.Tests
          uiAction.SetUp(0, 0, 200, 40);
          uiAction.Click += (_, _) =>
          {
-            var _ = uiAction.Choose("A,B,C").Choices("Alpha", "Bravo", "Charlie").Choose();
+            var _ = uiAction.Choose("A,B,C").SizeToText(true).Choices("Alpha", "Bravo", "Charlie").Choose();
          };
          uiAction.ClickText = "Select item";
 

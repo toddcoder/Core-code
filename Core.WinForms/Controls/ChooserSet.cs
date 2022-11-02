@@ -21,6 +21,12 @@ public class ChooserSet
       return this;
    }
 
+   public ChooserSet SizeToText(bool sizeToText)
+   {
+      chooser.SizeToText = sizeToText;
+      return this;
+   }
+
    public ChooserSet Choices(StringHash choices)
    {
       chooser.Choices = choices;
@@ -79,6 +85,10 @@ public class ChooserSet
          if (_chosen)
          {
             chooser.UiAction.Success((~_chosen).Key);
+            if (chooser.SizeToText)
+            {
+               chooser.UiAction.SizeToText();
+            }
          }
          else
          {
