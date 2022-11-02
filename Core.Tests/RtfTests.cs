@@ -75,6 +75,19 @@ public class RtfTests
       var footnote = paragraph.Footnote();
       _ = footnote | "Footnote information" | bold;
 
+      var boldStyle = new Style() | timesFont | 12f | bold;
+      var url = "http://tfs.eprod.com/ls/estreamuat/_releaseProgress?_a=release-environment-logs&releaseId=6024&environmentId=6024";
+
+      _ = document | "Test 6";
+      /* _ = document | "Please approve deployment to " | none | "staging01ua" | boldStyle | " with link " | url.Link() | " for Hotfix (Rolling) " |
+         "r-6.41.10" | boldStyle;*/
+      paragraph = document | "Please approve deployment to ";
+      var formatter = paragraph | none;
+      formatter = formatter | "staging01ua" | boldStyle;
+      formatter = formatter | " with link " | url.Link();
+      formatter = formatter | " for Hotfix (Rolling) ";
+      formatter = formatter | "r-6.41.10" | boldStyle;
+
       document.Save(@"C:\Temp\Test.rtf");
    }
 
@@ -221,5 +234,25 @@ public class RtfTests
       _ = header | "Page " | page | " of " | numPages | right;
 
       document.Save(@"C:\Temp\Test9.rtf");
+   }
+
+   [TestMethod]
+   public void Bug1Test()
+   {
+      var document = new Document();
+      var font = document.Font("Times New Roman");
+      var style = new Style() | font | 12;
+      document.DefaultCharFormat.Style = style;
+      var boldStyle = ~style | bold;
+      var url = "http://tfs.eprod.com/ls/estreamuat/_releaseProgress?_a=release-environment-logs&releaseId=6024&environmentId=6024";
+
+      var paragraph = document | "Please approve deployment to ";
+      var formatter = paragraph | none;
+      formatter = formatter | "staging01ua" | boldStyle;
+      formatter = formatter | " with link " | url.Link();
+      formatter = formatter | " for Hotfix (Rolling) " ;
+      formatter = formatter | "r-6.41.10" | boldStyle;
+
+      document.Save(@"C:\Temp\Bug1.rtf");
    }
 }

@@ -809,10 +809,6 @@ public class Paragraph : Block
                foreach (var match in keyResult)
                {
                   match.Text = "";
-                  /*var _hyperlink = pendingHyperlinks.Maybe[match.Text];
-                  var (_, _, hyperlink) = ~_hyperlink;
-                  var hyperlinkText = hyperlink.LinkTip | hyperlink.Link;
-                  match.Text = " ".Repeat(hyperlinkText.Length);*/
                }
 
                nodeText = keyResult.Text;
