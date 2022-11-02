@@ -522,10 +522,10 @@ public class Paragraph : Block
       controlWords.Add(controlWord);
    }
 
-   protected LinkedList<Token> buildTokenList()
+   protected System.Collections.Generic.LinkedList<Token> buildTokenList()
    {
       int count;
-      var tokens = new LinkedList<Token>();
+      var tokens = new System.Collections.Generic.LinkedList<Token>();
       LinkedListNode<Token> node;
       var disjointRanges = new List<DisjointRange>();
 
@@ -788,7 +788,7 @@ public class Paragraph : Block
       return tokens;
    }
 
-   protected string extractTokenList(LinkedList<Token> tokList)
+   protected string extractTokenList(System.Collections.Generic.LinkedList<Token> tokList)
    {
       var result = new StringBuilder();
       var node = tokList.First;

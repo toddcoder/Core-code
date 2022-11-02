@@ -244,13 +244,15 @@ public class RtfTests
       var style = new Style() | font | 12;
       document.DefaultCharFormat.Style = style;
       var boldStyle = ~style | bold;
-      var url = "http://tfs.eprod.com/ls/estreamuat/_releaseProgress?_a=release-environment-logs&releaseId=6024&environmentId=6024";
+      var
+         url = "http://tfs.eprod.com/ls/estreamuat/_releaseProgress?_a=release-environment-logs&releaseId=6024&environmentId=6024";
 
       var paragraph = document | "Please approve deployment to ";
       var formatter = paragraph | none;
       formatter = formatter | "staging01ua" | boldStyle;
-      formatter = formatter | " with link " | url.Link();
-      formatter = formatter | " for Hotfix (Rolling) " ;
+      formatter = formatter | " with link "; // | url.Link();
+      formatter = formatter | url.Link();
+      formatter = formatter | " for Hotfix (Rolling) ";
       formatter = formatter | "r-6.41.10" | boldStyle;
 
       document.Save(@"C:\Temp\Bug1.rtf");
