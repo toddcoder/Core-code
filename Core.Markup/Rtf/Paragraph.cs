@@ -239,7 +239,8 @@ public class Paragraph : Block
       var begin = text.Length;
       var hyperlinkText = hyperlink.LinkTip | hyperlink.Link;
       var end = begin + hyperlinkText.Length - 1;
-      text.Append("");
+      var url = "^" + "!".Repeat(hyperlinkText.Length - 1); //$"/url({hyperlink}".Exactly(hyperlinkText.Length - 6, false, true, false) + ")";
+      text.Append(url);
       pendingHyperlinks[key] = (begin, end, hyperlink);
 
       return this;
@@ -819,7 +820,8 @@ public class Paragraph : Block
             }
             else
             {
-               var _result = nodeText.Matches("'//url(' -[')']+ ')'; fi");
+               //var _result = nodeText.Matches("'//url(' -[')']+ ')'; fi");
+               var _result = nodeText.Matches("'^' '!'+; fi");
                if (_result)
                {
                   var matchResult = ~_result;

@@ -79,14 +79,8 @@ public class RtfTests
       var url = "http://tfs.eprod.com/ls/estreamuat/_releaseProgress?_a=release-environment-logs&releaseId=6024&environmentId=6024";
 
       _ = document | "Test 6";
-      /* _ = document | "Please approve deployment to " | none | "staging01ua" | boldStyle | " with link " | url.Link() | " for Hotfix (Rolling) " |
-         "r-6.41.10" | boldStyle;*/
-      paragraph = document | "Please approve deployment to ";
-      var formatter = paragraph | none;
-      formatter = formatter | "staging01ua" | boldStyle;
-      formatter = formatter | " with link " | url.Link();
-      formatter = formatter | " for Hotfix (Rolling) ";
-      formatter = formatter | "r-6.41.10" | boldStyle;
+      _ = document | "Please approve deployment to " | none | "staging01ua" | boldStyle | " with link " | url.Link() | " for Hotfix (Rolling) " |
+         "r-6.41.10" | boldStyle;
 
       document.Save(@"C:\Temp\Test.rtf");
    }
@@ -254,6 +248,7 @@ public class RtfTests
       formatter = formatter | url.Link();
       formatter = formatter | " for Hotfix (Rolling) ";
       formatter = formatter | "r-6.41.10" | boldStyle;
+      formatter = formatter | ".";
 
       document.Save(@"C:\Temp\Bug1.rtf");
    }
