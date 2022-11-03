@@ -36,9 +36,9 @@ public class LabelProcessor
 
    protected Rectangle getLabelRectangle(Graphics graphics, Rectangle clientRectangle)
    {
-      if (_labelWidth.Map(out var labelWidth))
+      if (_labelWidth)
       {
-         var rectangle = clientRectangle with { Width = labelWidth + LABEL_MARGIN };
+         var rectangle = clientRectangle with { Width = _labelWidth + LABEL_MARGIN };
          _labelRectangle = rectangle;
          return rectangle;
       }

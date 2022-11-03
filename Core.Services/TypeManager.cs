@@ -86,31 +86,32 @@ public class TypeManager
             if (_typeName)
             {
                var typeName = ~_typeName;
-               if (typeName.Matches("^ -/{<} '<' -/{:} ':' /s* -/{>} '>' $; f").Map(out var result))
+               var _result = typeName.Matches("^ -/{<} '<' -/{:} ':' /s* -/{>} '>' $; f");
+               if (_result)
                {
-                  var (possibleTypeName, subTypeName, subAssemblyName) = result;
+                  var (possibleTypeName, subTypeName, subAssemblyName) = ~_result;
                   typeName = $"{possibleTypeName}`1";
 
-                  var _result =
+                  var _genericType =
                      from typeFromAssembly in getTypeFromAssembly(assembly, typeName)
                      from subType in Type(subAssemblyName, subTypeName)
                      select (~_type).MakeGenericType(subType);
-                  if (_result)
+                  if (_genericType)
                   {
-                     typeCache[name] = _result;
+                     typeCache[name] = _genericType;
                   }
 
-                  return _result;
+                  return _genericType;
                }
                else
                {
-                  var _result = getTypeFromAssembly(assembly, typeName);
-                  if (_result)
+                  var _assemblyType = getTypeFromAssembly(assembly, typeName);
+                  if (_assemblyType)
                   {
-                     typeCache[name] = _result;
+                     typeCache[name] = _assemblyType;
                   }
 
-                  return _result;
+                  return _assemblyType;
                }
             }
             else
@@ -133,21 +134,26 @@ public class TypeManager
    {
       try
       {
-         if (assemblyCache.Map(name, out var assembly))
+         var _assembly = assemblyCache.Maybe[name];
+         if (_assembly)
          {
-            return assembly;
-         }
-         else if (assemblyNames.Map(name, out var path))
-         {
-            FolderName.Current = ((FileName)path).Folder;
-            assembly = LoadFrom(path);
-            assemblyCache[name] = assembly;
-
-            return assembly;
+            return ~_assembly;
          }
          else
          {
-            return fail($"Couldn't find assembly named {name}");
+            var _path = assemblyNames.Maybe[name];
+            if (_path)
+            {
+               FolderName.Current = ((FileName)~_path).Folder;
+               var assembly = LoadFrom(_path);
+               assemblyCache[name] = assembly;
+
+               return assembly;
+            }
+            else
+            {
+               return fail($"Couldn't find assembly named {name}");
+            }
          }
       }
       catch (Exception exception)

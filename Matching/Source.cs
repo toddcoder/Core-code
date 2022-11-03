@@ -31,20 +31,19 @@ public class Source
       if (More)
       {
          var current = Current;
-         if (current.IsMatch(pattern) && current.Matches(REGEX_NEXT_LINE).Map(out var result))
+         if (current.IsMatch(pattern))
          {
-            Advance(result.Length);
-            return result.FirstGroup;
-         }
-         else
-         {
-            return nil;
+            var _result = current.Matches(REGEX_NEXT_LINE);
+            if (_result)
+            {
+               var result = ~_result;
+               Advance(result.Length);
+               return result.FirstGroup;
+            }
          }
       }
-      else
-      {
-         return nil;
-      }
+
+      return nil;
    }
 
    public Maybe<string> PeekNextLine(Pattern pattern)
@@ -53,20 +52,18 @@ public class Source
       if (More)
       {
          var current = Current;
-         if (current.IsMatch(pattern) && current.Matches(REGEX_NEXT_LINE).Map(out var result))
+         if (current.IsMatch(pattern))
          {
-            _peekLength = result.FirstGroup.Length;
-            return result.FirstGroup;
-         }
-         else
-         {
-            return nil;
+            var _firstGroup = current.Matches(REGEX_NEXT_LINE).Map(r => r.FirstGroup);
+            if (_firstGroup)
+            {
+               _peekLength = (~_firstGroup).Length;
+               return _firstGroup;
+            }
          }
       }
-      else
-      {
-         return nil;
-      }
+
+      return nil;
    }
 
    public Maybe<(MatchResult result, string line)> NextLineMatch(Pattern pattern)
@@ -76,10 +73,11 @@ public class Source
          var (line, lineLength) = Current.Matches(REGEX_NEXT_LINE)
             .Map(result => (result.FirstGroup, result.Length)) | (() => (Current, Current.Length));
 
-         if (line.Matches(pattern).Map(out var lineResult))
+         var _result = line.Matches(pattern);
+         if (_result)
          {
             Advance(lineLength);
-            return (lineResult, line);
+            return (_result, line);
          }
       }
 
@@ -93,10 +91,11 @@ public class Source
       {
          var (line, lineLength) = Current.Matches(REGEX_NEXT_LINE)
             .Map(result => (result.FirstGroup, result.Length)) | (() => (Current, Current.Length));
-         if (line.Matches(pattern).Map(out var lineResult))
+         var _result = line.Matches(pattern);
+         if (_result)
          {
             _peekLength = lineLength;
-            return (lineResult, line);
+            return (_result, line);
          }
       }
 
@@ -109,8 +108,10 @@ public class Source
       {
          var current = Current;
          string line;
-         if (current.Matches(REGEX_NEXT_LINE).Map(out var result))
+         var _result = current.Matches(REGEX_NEXT_LINE);
+         if (_result)
          {
+            var result = ~_result;
             line = result.FirstGroup;
             Advance(result.Length);
          }
@@ -134,15 +135,7 @@ public class Source
       if (More)
       {
          var current = Current;
-         string line;
-         if (current.Matches(REGEX_NEXT_LINE).Map(out var result))
-         {
-            line = result.FirstGroup;
-         }
-         else
-         {
-            line = current;
-         }
+         var line = current.Matches(REGEX_NEXT_LINE).Map(r => r.FirstGroup) | current;
 
          _peekLength = line.Length;
          return line;
@@ -155,11 +148,19 @@ public class Source
 
    public Maybe<string> GoTo(Pattern pattern)
    {
-      while (NextLine().Map(out var line))
+      while (true)
       {
-         if (line.IsMatch(pattern))
+         var _line = NextLine();
+         if (_line)
          {
-            return line;
+            if ((~_line).IsMatch(pattern))
+            {
+               return _line;
+            }
+         }
+         else
+         {
+            break;
          }
       }
 

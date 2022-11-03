@@ -3,66 +3,65 @@ using System.Text;
 using Core.Monads;
 using static Core.Monads.MonadFunctions;
 
-namespace Core.Matching.Parsers
+namespace Core.Matching.Parsers;
+
+public class ClassParser : BaseParser
 {
-   public class ClassParser : BaseParser
+   protected List<BaseParser> parsers;
+
+   public ClassParser() => parsers = new List<BaseParser>
    {
-      protected List<BaseParser> parsers;
+      new StringParser(),
+      new SlashClassParser(),
+      new InsideRangeParser(),
+      new UnmodifiedParser(),
+      new NamedClassParser(),
+      new QuoteParser(),
+      new EndOfClassParser()
+   };
 
-      public ClassParser() => parsers = new List<BaseParser>
+   public override string Pattern => @"^\s*(-)?\s*(/)?\[";
+
+   public override Maybe<string> Parse(string source, ref int index)
+   {
+      var negative = tokens[1] == "-";
+      var enclose = tokens[2] == "/";
+
+      var content = new StringBuilder();
+
+      while (index < source.Length)
       {
-         new StringParser(),
-         new SlashClassParser(),
-         new InsideRangeParser(),
-         new UnmodifiedParser(),
-         new NamedClassParser(),
-         new QuoteParser(),
-         new EndOfClassParser()
-      };
-
-      public override string Pattern => @"^\s*(-)?\s*(/)?\[";
-
-      public override Maybe<string> Parse(string source, ref int index)
-      {
-         var negative = tokens[1] == "-";
-         var enclose = tokens[2] == "/";
-
-         var content = new StringBuilder();
-
-         while (index < source.Length)
+         var added = false;
+         foreach (var parser in parsers)
          {
-            var added = false;
-            foreach (var parser in parsers)
+            var _result = parser.Scan(source, ref index);
+            if (_result)
             {
-               var result = parser.Scan(source, ref index);
-               if (result.Map(out var r))
+               if (_result == "]")
                {
-                  if (r == "]")
+                  var value = (negative ? "[^" : "[") + content + "]";
+                  if (enclose)
                   {
-                     var value = (negative ? "[^" : "[") + content + "]";
-                     if (enclose)
-                     {
-                        value = $"({value})";
-                     }
+                     value = $"({value})";
+                  }
 
-                     return value;
-                  }
-                  else
-                  {
-                     content.Append(r);
-                     added = true;
-                     break;
-                  }
+                  return value;
                }
-            }
-
-            if (!added)
-            {
-               return nil;
+               else
+               {
+                  content.Append(~_result);
+                  added = true;
+                  break;
+               }
             }
          }
 
-         return nil;
+         if (!added)
+         {
+            return nil;
+         }
       }
+
+      return nil;
    }
 }

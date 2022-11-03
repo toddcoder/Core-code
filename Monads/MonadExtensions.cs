@@ -202,11 +202,11 @@ public static class MonadExtensions
 
    public static IEnumerable<T> WhereIsSome<T>(this IEnumerable<Maybe<T>> enumerable)
    {
-      foreach (var maybe in enumerable)
+      foreach (var _maybe in enumerable)
       {
-         if (maybe.Map(out var value))
+         if (_maybe)
          {
-            yield return value;
+            yield return ~_maybe;
          }
       }
    }
@@ -215,20 +215,21 @@ public static class MonadExtensions
    {
       foreach (var item in enumerable)
       {
-         if (predicate(item).Map(out var value))
+         var _value = predicate(item);
+         if (_value)
          {
-            yield return (item, value);
+            yield return (item, ~_value);
          }
       }
    }
 
    public static IEnumerable<T> WhereIsSuccessful<T>(this IEnumerable<Result<T>> enumerable)
    {
-      foreach (var result in enumerable)
+      foreach (var _result in enumerable)
       {
-         if (result.Map(out var value))
+         if (_result)
          {
-            yield return value;
+            yield return ~_result;
          }
       }
    }
@@ -238,35 +239,36 @@ public static class MonadExtensions
    {
       foreach (var item in enumerable)
       {
-         if (predicate(item).Map(out var value))
+         var _value = predicate(item);
+         if (_value)
          {
-            yield return (item, value);
+            yield return (item, ~_value);
          }
       }
    }
 
    public static IEnumerable<Either<T, Exception>> Successful<T>(this IEnumerable<Result<T>> enumerable)
    {
-      foreach (var result in enumerable)
+      foreach (var _result in enumerable)
       {
-         if (result.Map(out var value, out var exception))
+         if (_result)
          {
-            yield return value;
+            yield return ~_result;
          }
          else
          {
-            yield return exception;
+            yield return _result.Exception;
          }
       }
    }
 
    public static IEnumerable<T> WhereIsCompleted<T>(this IEnumerable<Completion<T>> enumerable)
    {
-      foreach (var completion in enumerable)
+      foreach (var _completion in enumerable)
       {
-         if (completion.Map(out var value))
+         if (_completion)
          {
-            yield return value;
+            yield return ~_completion;
          }
       }
    }
@@ -276,9 +278,10 @@ public static class MonadExtensions
    {
       foreach (var item in enumerable)
       {
-         if (predicate(item).Map(out var value))
+         var _value = predicate(item);
+         if (_value)
          {
-            yield return (item, value);
+            yield return (item, ~_value);
          }
       }
    }
@@ -286,11 +289,11 @@ public static class MonadExtensions
    public static Maybe<IEnumerable<T>> AllAreSome<T>(this IEnumerable<Maybe<T>> enumerable)
    {
       var result = new List<T>();
-      foreach (var anyValue in enumerable)
+      foreach (var _value in enumerable)
       {
-         if (anyValue.Map(out var value))
+         if (_value)
          {
-            result.Add(value);
+            result.Add(~_value);
          }
          else
          {
@@ -483,8 +486,9 @@ public static class MonadExtensions
 
    public static bool Map<T1, T2>(this Maybe<(T1, T2)> some, out T1 v1, out T2 v2)
    {
-      if (some.Map(out var value))
+      if (some)
       {
+         var value = ~some;
          v1 = value.Item1;
          v2 = value.Item2;
 
@@ -501,8 +505,9 @@ public static class MonadExtensions
 
    public static bool Map<T1, T2, T3>(this Maybe<(T1, T2, T3)> some, out T1 v1, out T2 v2, out T3 v3)
    {
-      if (some.Map(out var value))
+      if (some)
       {
+         var value = ~some;
          v1 = value.Item1;
          v2 = value.Item2;
          v3 = value.Item3;
@@ -522,8 +527,9 @@ public static class MonadExtensions
    public static bool Map<T1, T2, T3, T4>(this Maybe<(T1, T2, T3, T4)> some, out T1 v1, out T2 v2, out T3 v3,
       out T4 v4)
    {
-      if (some.Map(out var value))
+      if (some)
       {
+         var value = ~some;
          v1 = value.Item1;
          v2 = value.Item2;
          v3 = value.Item3;
@@ -544,8 +550,9 @@ public static class MonadExtensions
 
    public static bool Map<T1, T2>(this Result<(T1, T2)> result, out T1 v1, out T2 v2)
    {
-      if (result.Map(out var value))
+      if (result)
       {
+         var value = ~result;
          v1 = value.Item1;
          v2 = value.Item2;
 
@@ -562,8 +569,9 @@ public static class MonadExtensions
 
    public static bool Map<T1, T2>(this Result<(T1, T2)> result, out T1 v1, out T2 v2, out Exception exception)
    {
-      if (result.Map(out var value, out exception))
+      if (result)
       {
+         var value = ~result;
          v1 = value.Item1;
          v2 = value.Item2;
          exception = default;
@@ -574,6 +582,7 @@ public static class MonadExtensions
       {
          v1 = default;
          v2 = default;
+         exception = result.Exception;
 
          return false;
       }
@@ -581,8 +590,9 @@ public static class MonadExtensions
 
    public static bool Map<T1, T2, T3>(this Result<(T1, T2, T3)> result, out T1 v1, out T2 v2, out T3 v3)
    {
-      if (result.Map(out var value))
+      if (result)
       {
+         var value = ~result;
          v1 = value.Item1;
          v2 = value.Item2;
          v3 = value.Item3;
@@ -601,11 +611,13 @@ public static class MonadExtensions
 
    public static bool Map<T1, T2, T3>(this Result<(T1, T2, T3)> result, out T1 v1, out T2 v2, out T3 v3, out Exception exception)
    {
-      if (result.Map(out var value, out exception))
+      if (result)
       {
+         var value = ~result;
          v1 = value.Item1;
          v2 = value.Item2;
          v3 = value.Item3;
+         exception = default;
 
          return true;
       }
@@ -614,6 +626,7 @@ public static class MonadExtensions
          v1 = default;
          v2 = default;
          v3 = default;
+         exception = result.Exception;
 
          return false;
       }
@@ -622,8 +635,9 @@ public static class MonadExtensions
    public static bool Map<T1, T2, T3, T4>(this Result<(T1, T2, T3, T4)> result, out T1 v1, out T2 v2, out T3 v3,
       out T4 v4)
    {
-      if (result.Map(out var value))
+      if (result)
       {
+         var value = ~result;
          v1 = value.Item1;
          v2 = value.Item2;
          v3 = value.Item3;
@@ -645,12 +659,14 @@ public static class MonadExtensions
    public static bool Map<T1, T2, T3, T4>(this Result<(T1, T2, T3, T4)> result, out T1 v1, out T2 v2, out T3 v3,
       out T4 v4, out Exception exception)
    {
-      if (result.Map(out var value, out exception))
+      if (result)
       {
+         var value = ~result;
          v1 = value.Item1;
          v2 = value.Item2;
          v3 = value.Item3;
          v4 = value.Item4;
+         exception = default;
 
          return true;
       }
@@ -660,6 +676,7 @@ public static class MonadExtensions
          v2 = default;
          v3 = default;
          v4 = default;
+         exception = result.Exception;
 
          return false;
       }
@@ -667,8 +684,9 @@ public static class MonadExtensions
 
    public static bool Map<T1, T2>(this Completion<(T1, T2)> completion, out T1 v1, out T2 v2)
    {
-      if (completion.Map(out var value))
+      if (completion)
       {
+         var value = ~completion;
          v1 = value.Item1;
          v2 = value.Item2;
 
@@ -685,10 +703,12 @@ public static class MonadExtensions
 
    public static bool Map<T1, T2>(this Completion<(T1, T2)> completion, out T1 v1, out T2 v2, out Maybe<Exception> _exception)
    {
-      if (completion.Map(out var value, out _exception))
+      if (completion)
       {
+         var value = ~completion;
          v1 = value.Item1;
          v2 = value.Item2;
+         _exception = nil;
 
          return true;
       }
@@ -696,6 +716,7 @@ public static class MonadExtensions
       {
          v1 = default;
          v2 = default;
+         _exception = completion.AnyException;
 
          return false;
       }
@@ -703,8 +724,9 @@ public static class MonadExtensions
 
    public static bool Map<T1, T2, T3>(this Completion<(T1, T2, T3)> completion, out T1 v1, out T2 v2, out T3 v3)
    {
-      if (completion.Map(out var value))
+      if (completion)
       {
+         var value = ~completion;
          v1 = value.Item1;
          v2 = value.Item2;
          v3 = value.Item3;
@@ -724,11 +746,13 @@ public static class MonadExtensions
    public static bool Map<T1, T2, T3>(this Completion<(T1, T2, T3)> completion, out T1 v1, out T2 v2, out T3 v3,
       out Maybe<Exception> _exception)
    {
-      if (completion.Map(out var value, out _exception))
+      if (completion)
       {
+         var value = ~completion;
          v1 = value.Item1;
          v2 = value.Item2;
          v3 = value.Item3;
+         _exception = nil;
 
          return true;
       }
@@ -737,6 +761,7 @@ public static class MonadExtensions
          v1 = default;
          v2 = default;
          v3 = default;
+         _exception = completion.AnyException;
 
          return false;
       }
@@ -744,8 +769,9 @@ public static class MonadExtensions
 
    public static bool Map<T1, T2, T3, T4>(this Completion<(T1, T2, T3, T4)> completion, out T1 v1, out T2 v2, out T3 v3, out T4 v4)
    {
-      if (completion.Map(out var value))
+      if (completion)
       {
+         var value = ~completion;
          v1 = value.Item1;
          v2 = value.Item2;
          v3 = value.Item3;
@@ -767,12 +793,14 @@ public static class MonadExtensions
    public static bool Map<T1, T2, T3, T4>(this Completion<(T1, T2, T3, T4)> completion, out T1 v1, out T2 v2, out T3 v3, out T4 v4,
       out Maybe<Exception> _exception)
    {
-      if (completion.Map(out var value, out _exception))
+      if (completion)
       {
+         var value = ~completion;
          v1 = value.Item1;
          v2 = value.Item2;
          v3 = value.Item3;
          v4 = value.Item4;
+         _exception = nil;
 
          return true;
       }
@@ -782,6 +810,7 @@ public static class MonadExtensions
          v2 = default;
          v3 = default;
          v4 = default;
+         _exception = completion.AnyException;
 
          return false;
       }
@@ -789,8 +818,9 @@ public static class MonadExtensions
 
    public static bool Map<T1, T2>(this Responding<(T1, T2)> responding, out T1 v1, out T2 v2)
    {
-      if (responding.Map(out var value))
+      if (responding)
       {
+         var value = ~responding;
          v1 = value.Item1;
          v2 = value.Item2;
 
@@ -807,10 +837,12 @@ public static class MonadExtensions
 
    public static bool Map<T1, T2>(this Responding<(T1, T2)> responding, out T1 v1, out T2 v2, out Maybe<Exception> _exception)
    {
-      if (responding.Map(out var value, out _exception))
+      if (responding)
       {
+         var value = ~responding;
          v1 = value.Item1;
          v2 = value.Item2;
+         _exception = nil;
 
          return true;
       }
@@ -818,6 +850,7 @@ public static class MonadExtensions
       {
          v1 = default;
          v2 = default;
+         _exception = responding.AnyException;
 
          return false;
       }
@@ -825,8 +858,9 @@ public static class MonadExtensions
 
    public static bool Map<T1, T2, T3>(this Responding<(T1, T2, T3)> responding, out T1 v1, out T2 v2, out T3 v3)
    {
-      if (responding.Map(out var value))
+      if (responding)
       {
+         var value = ~responding;
          v1 = value.Item1;
          v2 = value.Item2;
          v3 = value.Item3;
@@ -845,11 +879,13 @@ public static class MonadExtensions
 
    public static bool Map<T1, T2, T3>(this Responding<(T1, T2, T3)> responding, out T1 v1, out T2 v2, out T3 v3, out Maybe<Exception> _exception)
    {
-      if (responding.Map(out var value, out _exception))
+      if (responding)
       {
+         var value = ~responding;
          v1 = value.Item1;
          v2 = value.Item2;
          v3 = value.Item3;
+         _exception = nil;
 
          return true;
       }
@@ -858,6 +894,7 @@ public static class MonadExtensions
          v1 = default;
          v2 = default;
          v3 = default;
+         _exception = responding.AnyException;
 
          return false;
       }
@@ -865,8 +902,9 @@ public static class MonadExtensions
 
    public static bool Map<T1, T2, T3, T4>(this Responding<(T1, T2, T3, T4)> responding, out T1 v1, out T2 v2, out T3 v3, out T4 v4)
    {
-      if (responding.Map(out var value))
+      if (responding)
       {
+         var value = ~responding;
          v1 = value.Item1;
          v2 = value.Item2;
          v3 = value.Item3;
@@ -888,12 +926,14 @@ public static class MonadExtensions
    public static bool Map<T1, T2, T3, T4>(this Responding<(T1, T2, T3, T4)> responding, out T1 v1, out T2 v2, out T3 v3, out T4 v4,
       out Maybe<Exception> _exception)
    {
-      if (responding.Map(out var value, out _exception))
+      if (responding)
       {
+         var value = ~responding;
          v1 = value.Item1;
          v2 = value.Item2;
          v3 = value.Item3;
          v4 = value.Item4;
+         _exception = nil;
 
          return true;
       }
@@ -903,6 +943,7 @@ public static class MonadExtensions
          v2 = default;
          v3 = default;
          v4 = default;
+         _exception = responding.AnyException;
 
          return false;
       }
@@ -910,22 +951,22 @@ public static class MonadExtensions
 
    public static IEnumerable<T> SomeValue<T>(this IEnumerable<Maybe<T>> enumerable)
    {
-      foreach (var source in enumerable)
+      foreach (var _item in enumerable)
       {
-         if (source.Map(out var value))
+         if (_item)
          {
-            yield return value;
+            yield return ~_item;
          }
       }
    }
 
    public static IEnumerable<T> SuccessfulValue<T>(this IEnumerable<Result<T>> enumerable)
    {
-      foreach (var result in enumerable)
+      foreach (var _result in enumerable)
       {
-         if (result.Map(out var value))
+         if (_result)
          {
-            yield return value;
+            yield return ~_result;
          }
       }
    }
@@ -1002,26 +1043,26 @@ public static class MonadExtensions
    public static async Task<Completion<T3>> SelectMany<T1, T2, T3>(this Task<Completion<T1>> source, Func<T1, Task<Completion<T2>>> func,
       Func<T1, T2, T3> projection)
    {
-      var t = await source;
-      if (t.Map(out var tValue, out var _exception))
+      var _t = await source;
+      if (_t)
       {
-         var u = await func(tValue);
-         if (u.Map(out var uValue, out _exception))
+         var _u = await func(~_t);
+         if (_u)
          {
-            return projection(tValue, uValue).Completed();
+            return projection(~_t, ~_u).Completed();
          }
-         else if (_exception.Map(out var exception))
+         else if (_u.AnyException)
          {
-            return cancelledOrInterrupted<T3>(exception);
+            return cancelledOrInterrupted<T3>(_u.Exception);
          }
          else
          {
             return nil;
          }
       }
-      else if (_exception.Map(out var exception))
+      else if (_t.AnyException)
       {
-         return cancelledOrInterrupted<T3>(exception);
+         return cancelledOrInterrupted<T3>(_t.Exception);
       }
       else
       {
@@ -1031,13 +1072,13 @@ public static class MonadExtensions
 
    public static Result<T> Result<T>(this Completion<T> completion)
    {
-      if (completion.Map(out var value, out var _exception))
+      if (completion)
       {
-         return value;
+         return ~completion;
       }
-      else if (_exception.Map(out var exception))
+      else if (completion.AnyException)
       {
-         return exception;
+         return completion.Exception;
       }
       else
       {

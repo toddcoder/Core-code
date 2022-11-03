@@ -40,9 +40,9 @@ namespace Core.Test
       [Command("git-prompt", "Display a git prompt", "$repo?")]
       public void GitPrompt()
       {
-         if (Repo.Map(out var repo))
+         if (Repo)
          {
-            FolderName.Current = repo;
+            FolderName.Current = ~Repo;
          }
 
          var prompt = new GitPrompt();

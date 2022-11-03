@@ -732,21 +732,21 @@ public class Table : Block
                }
             }
 
-            if (this[i, j].BackgroundColor.Map(out var backgroundColor))
+            if (this[i, j].BackgroundColor)
             {
-               result.Append($@"\clcbpat{backgroundColor.Value}");
+               result.Append($@"\clcbpat{(~this[i, j].BackgroundColor).Value}");
             }
-            else if (i == 0 && HeaderBackgroundColor.Map(out var headerBackgroundColor))
+            else if (i == 0 && HeaderBackgroundColor)
             {
-               result.Append($@"\clcbpat{headerBackgroundColor.Value}");
+               result.Append($@"\clcbpat{(~HeaderBackgroundColor).Value}");
             }
-            else if (RowBackgroundColor.Map(out var rowBackgroundColor) && (!RowAltBackgroundColor || i % 2 == 0))
+            else if (RowBackgroundColor && (!RowAltBackgroundColor || i % 2 == 0))
             {
-               result.Append($@"\clcbpat{rowBackgroundColor.Value}");
+               result.Append($@"\clcbpat{(~RowBackgroundColor).Value}");
             }
-            else if (RowBackgroundColor && RowAltBackgroundColor.Map(out var rowAltBackgroundColor) && i % 2 != 0)
+            else if (RowBackgroundColor && RowAltBackgroundColor && i % 2 != 0)
             {
-               result.Append($@"\clcbpat{rowAltBackgroundColor.Value}");
+               result.Append($@"\clcbpat{(~RowAltBackgroundColor).Value}");
             }
 
             if (cells[i][j].IsMerged && cells[i][j].MergeInfo.RowSpan > 1)

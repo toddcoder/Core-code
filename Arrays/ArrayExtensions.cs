@@ -13,661 +13,661 @@ using static Core.Monads.MonadFunctions;
 using static Core.Objects.ConversionFunctions;
 using static Core.Objects.ObjectFunctions;
 
-namespace Core.Arrays
+namespace Core.Arrays;
+
+public static class ArrayExtensions
 {
-   public static class ArrayExtensions
+   private enum BalanceType
    {
-      private enum BalanceType
+      AwaitingStart,
+      AwaitingStop
+   }
+
+   public static T[] Augment<T>(this T[] source, params T[] items)
+   {
+      source ??= Array.Empty<T>();
+
+      var targetLength = source.Length + items.Length;
+      var target = new T[targetLength];
+      source.CopyTo(target, 0);
+      items.CopyTo(target, source.Length);
+
+      return target;
+   }
+
+   public static T[] Pad<T>(this T[] array, int newLength, T fillValue)
+   {
+      var length = array.Length;
+      if (length == newLength)
       {
-         AwaitingStart,
-         AwaitingStop
+         return array;
       }
-
-      public static T[] Augment<T>(this T[] source, params T[] items)
+      else
       {
-         source ??= Array.Empty<T>();
+         newLength.Must().BeGreaterThan(length).OrThrow("New length must be greater than the source array's length");
 
-         var targetLength = source.Length + items.Length;
-         var target = new T[targetLength];
-         source.CopyTo(target, 0);
-         items.CopyTo(target, source.Length);
-
-         return target;
-      }
-
-      public static T[] Pad<T>(this T[] array, int newLength, T fillValue)
-      {
-         var length = array.Length;
-         if (length == newLength)
+         var newArray = new T[newLength];
+         Array.Copy(array, newArray, length);
+         for (var i = length; i < newLength; i++)
          {
-            return array;
+            newArray[i] = fillValue;
          }
-         else
-         {
-            newLength.Must().BeGreaterThan(length).OrThrow("New length must be greater than the source array's length");
 
-            var newArray = new T[newLength];
-            Array.Copy(array, newArray, length);
-            for (var i = length; i < newLength; i++)
+         return newArray;
+      }
+   }
+
+   public static T[] LimitTo<T>(this T[] array, int limitingSize, T fillValue)
+   {
+      var length = array.Length;
+      if (length == limitingSize)
+      {
+         return array;
+      }
+      else if (limitingSize == 0)
+      {
+         return Array.Empty<T>();
+      }
+      else if (limitingSize > length)
+      {
+         return array.Pad(limitingSize, fillValue);
+      }
+      else
+      {
+         var newArray = new T[limitingSize];
+         Array.Copy(array, newArray, limitingSize);
+
+         return newArray;
+      }
+   }
+
+   public static T[] Shuffle<T>(this T[] array) => shuffle(array, new Random());
+
+   public static T[] Shuffle<T>(this T[] array, int seed) => shuffle(array, new Random(seed));
+
+   private static T[] shuffle<T>(T[] array, Random random)
+   {
+      var list = array.Select(value => new { Index = random.Next(), Value = value });
+      var sortedList = list.OrderBy(i => i.Index).Select(i => i.Value);
+
+      return sortedList.ToArray();
+   }
+
+   public static string Andify<T>(this T[] array)
+   {
+      var length = array.Length;
+      return length switch
+      {
+         0 => "",
+         1 => array[0].ToString(),
+         2 => $"{array[0]} and {array[1]}",
+         _ => $"{array.Take(array.Length - 1).ToString(", ")}, and {array[array.Length - 1]}"
+      };
+   }
+
+   public static bool IsEmpty<T>(this T[] array) => array == null || array.Length == 0;
+
+   public static bool IsNotEmpty<T>(this T[] array) => array is { Length: > 0 };
+
+   public static T[] RangeOf<T>(this T[] array, int start, int stop)
+   {
+      start.Must().BeLessThanOrEqual(stop).OrThrow();
+      start.Must().BeBetween(0).Until(array.Length).OrThrow();
+      stop.Must().BeBetween(0).Until(array.Length).OrThrow();
+
+      var result = new T[stop - start + 1];
+      var index = 0;
+      for (var i = start; i <= stop; i++)
+      {
+         result[index++] = array[i];
+      }
+
+      return result;
+   }
+
+   public static Slice<T> From<T>(this T[] array, int startIndex) => new(array, startIndex);
+
+   public static T[] Pick<T>(this T[] array, string columnIndexes)
+   {
+      return columnIndexes.PickIndexes()
+         .Where(i => i.Between(0).Until(array.Length))
+         .Select(index => array[index])
+         .ToArray();
+   }
+
+   public static T[] Pick<T>(this T[] array, params int[] columnIndexes)
+   {
+      return columnIndexes.Where(i => i.Between(0).Until(array.Length)).Select(index => array[index]).ToArray();
+   }
+
+   public static (T value, int index)[] PickIndexes<T>(this T[] array, string columnIndexes)
+   {
+      return columnIndexes.PickIndexes()
+         .Where(i => i.Between(0).Until(array.Length))
+         .Select(index => (array[index], index))
+         .ToArray();
+   }
+
+   public static int[] PickIndexes(this string columnIndexes)
+   {
+      var indexes = new List<int>();
+
+      foreach (var group in columnIndexes.RemoveWhitespace().Unjoin("','; f"))
+      {
+         var _result = group.Matches("/(/d+) '-' /(/d+); f");
+         if (_result)
+         {
+            var (startIndex, stopIndex) = ~_result;
+            var intStart = Value.Int32(startIndex);
+            var intStop = Value.Int32(stopIndex);
+            if (intStart > intStop)
             {
-               newArray[i] = fillValue;
+               swap(ref intStart, ref intStop);
             }
 
-            return newArray;
-         }
-      }
-
-      public static T[] LimitTo<T>(this T[] array, int limitingSize, T fillValue)
-      {
-         var length = array.Length;
-         if (length == limitingSize)
-         {
-            return array;
-         }
-         else if (limitingSize == 0)
-         {
-            return Array.Empty<T>();
-         }
-         else if (limitingSize > length)
-         {
-            return array.Pad(limitingSize, fillValue);
+            for (var i = intStart; i <= intStop; i++)
+            {
+               indexes.Add(i);
+            }
          }
          else
          {
-            var newArray = new T[limitingSize];
-            Array.Copy(array, newArray, limitingSize);
-
-            return newArray;
+            indexes.Add(Value.Int32(group));
          }
       }
 
-      public static T[] Shuffle<T>(this T[] array) => shuffle(array, new Random());
+      indexes.Sort();
+      return indexes.ToArray();
+   }
 
-      public static T[] Shuffle<T>(this T[] array, int seed) => shuffle(array, new Random(seed));
+   public static bool ContainsValue<T>(this T[] array, T value) => Array.IndexOf(array, value) > -1;
 
-      private static T[] shuffle<T>(T[] array, Random random)
+   public static T Of<T>(this T[] array, int index, T defaultValue)
+   {
+      return index.Between(0).Until(array.Length) ? array[index] : defaultValue;
+   }
+
+   public static Maybe<T> Of<T>(this T[] array, int index) => maybe(index.Between(0).Until(array.Length), () => array[index]);
+
+   public static T First<T>(this T[] array, T defaultValue) => array.IsEmpty() ? defaultValue : array[0];
+
+   public static Maybe<T> First<T>(this T[] array) => maybe(array.IsNotEmpty(), () => array[0]);
+
+   public static T Last<T>(this T[] array, T defaultValue) => array.IsEmpty() ? defaultValue : array[array.Length - 1];
+
+   public static Maybe<T> Last<T>(this T[] array) => maybe(array.IsNotEmpty(), () => array[array.Length - 1]);
+
+   public static T[] Tail<T>(this T[] array) => array.IsEmpty() ? Array.Empty<T>() : array.Skip(1).ToArray();
+
+   public static T[] AllButLast<T>(this T[] array) => array.IsEmpty() ? Array.Empty<T>() : array.Take(array.Length - 1).ToArray();
+
+   public static Maybe<Slice<T>> Balanced<T>(this T[] array, Predicate<T> startCondition, Predicate<T> stopCondition,
+      int startIndex = 0)
+   {
+      if (array.IsEmpty())
       {
-         var list = array.Select(value => new { Index = random.Next(), Value = value });
-         var sortedList = list.OrderBy(i => i.Index).Select(i => i.Value);
-
-         return sortedList.ToArray();
+         return nil;
       }
-
-      public static string Andify<T>(this T[] array)
+      else if (startIndex >= array.Length)
       {
-         var length = array.Length;
-         return length switch
-         {
-            0 => "",
-            1 => array[0].ToString(),
-            2 => $"{array[0]} and {array[1]}",
-            _ => $"{array.Take(array.Length - 1).ToString(", ")}, and {array[array.Length - 1]}"
-         };
+         return nil;
       }
-
-      public static bool IsEmpty<T>(this T[] array) => array == null || array.Length == 0;
-
-      public static bool IsNotEmpty<T>(this T[] array) => array is { Length: > 0 };
-
-      public static T[] RangeOf<T>(this T[] array, int start, int stop)
+      else
       {
-         start.Must().BeLessThanOrEqual(stop).OrThrow();
-         start.Must().BeBetween(0).Until(array.Length).OrThrow();
-         stop.Must().BeBetween(0).Until(array.Length).OrThrow();
+         var count = 0;
+         var type = BalanceType.AwaitingStart;
+         var index = -1;
 
-         var result = new T[stop - start + 1];
-         var index = 0;
-         for (var i = start; i <= stop; i++)
+         for (var i = startIndex; i < array.Length; i++)
          {
-            result[index++] = array[i];
+            var element = array[i];
+            switch (type)
+            {
+               case BalanceType.AwaitingStart:
+                  if (startCondition(element))
+                  {
+                     count++;
+                     type = BalanceType.AwaitingStop;
+                     index = i;
+                  }
+
+                  break;
+               case BalanceType.AwaitingStop:
+                  if (startCondition(element))
+                  {
+                     count++;
+                  }
+                  else if (stopCondition(element))
+                  {
+                     if (--count == 0)
+                     {
+                        return array.From(index).To(i);
+                     }
+                  }
+
+                  break;
+            }
          }
 
+         return nil;
+      }
+   }
+
+   public static Maybe<(T[] array, T element)> Pop<T>(this T[] array)
+   {
+      if (!array.IsEmpty())
+      {
+         var length = array.Length - 1;
+         var bottom = array[length];
+         var newArray = new T[length];
+
+         Array.Copy(array, newArray, length);
+
+         return (newArray, bottom);
+      }
+      else
+      {
+         return nil;
+      }
+   }
+
+   public static Maybe<T[]> Push<T>(this T[] array, T element)
+   {
+      if (!array.IsEmpty())
+      {
+         var length = array.Length + 1;
+         var newArray = new T[length];
+
+         Array.Copy(array, newArray, length - 1);
+         newArray[length - 1] = element;
+
+         return newArray;
+      }
+      else
+      {
+         return nil;
+      }
+   }
+
+   public static Maybe<(T[] array, T element)> Shift<T>(this T[] array)
+   {
+      if (!array.IsEmpty())
+      {
+         var length = array.Length - 1;
+         var top = array[0];
+         var newArray = new T[length];
+
+         Array.Copy(array, 1, newArray, 0, length);
+
+         return (newArray, top);
+      }
+      else
+      {
+         return nil;
+      }
+   }
+
+   public static Maybe<T[]> Unshift<T>(this T[] array, T element)
+   {
+      if (!array.IsEmpty())
+      {
+         var length = array.Length + 1;
+         var newArray = new T[length];
+
+         Array.Copy(array, 0, newArray, 1, length - 1);
+         newArray[0] = element;
+
+         return newArray;
+      }
+      else
+      {
+         return nil;
+      }
+   }
+
+   public static (T1, T2)[] Zip<T1, T2>(this T1[] leftArray, T2[] rightArray)
+   {
+      var list = new List<(T1, T2)>();
+      var length = Min(leftArray.Length, rightArray.Length);
+      for (var i = 0; i < length; i++)
+      {
+         list.Add((leftArray[i], rightArray[i]));
+      }
+
+      return list.ToArray();
+   }
+
+   public static (T1, T2)[] Zip<T1, T2>(this T1[] leftArray, Func<T1, int, T2> generatorFunc)
+   {
+      var list = new List<(T1, T2)>();
+      var length = leftArray.Length;
+      for (var i = 0; i < length; i++)
+      {
+         var left = leftArray[i];
+         list.Add((left, generatorFunc(left, i)));
+      }
+
+      return list.ToArray();
+   }
+
+   public static T3[] Zip<T1, T2, T3>(this T1[] leftArray, T2[] rightArray, Func<T1, T2, T3> mappingFunc)
+   {
+      var list = new List<T3>();
+      var length = Min(leftArray.Length, rightArray.Length);
+      for (var i = 0; i < length; i++)
+      {
+         list.Add(mappingFunc(leftArray[i], rightArray[i]));
+      }
+
+      return list.ToArray();
+   }
+
+   public static T3[] Zip<T1, T2, T3>(this T1[] leftArray, Func<T1, int, T2> generatorFunc,
+      Func<T1, T2, T3> mappingFunc)
+   {
+      var list = new List<T3>();
+      var length = leftArray.Length;
+      for (var i = 0; i < length; i++)
+      {
+         var left = leftArray[i];
+         var right = generatorFunc(left, i);
+         var item = mappingFunc(left, right);
+         list.Add(item);
+      }
+
+      return list.ToArray();
+   }
+
+   public static Maybe<(T1, T2)>[] ZipUnevenly<T1, T2>(this T1[] leftArray, T2[] rightArray)
+   {
+      var list = new List<Maybe<(T1, T2)>>();
+
+      var leftLength = leftArray.Length;
+      var rightLength = rightArray.Length;
+      var length = Max(leftLength, rightLength);
+
+      for (var i = 0; i < length; i++)
+      {
+         if (i.Between(0).Until(leftLength) && i.Between(0).Until(rightLength))
+         {
+            list.Add((leftArray[i], rightArray[i]).Some());
+         }
+      }
+
+      return list.ToArray();
+   }
+
+   public static T[] Repeat<T>(this int count, T value) => Enumerable.Repeat(value, count).ToArray();
+
+   public static T[] Repeat<T>(this int count, Func<T> func) => 0.Until(count).Select(_ => func()).ToArray();
+
+   public static T[] Repeat<T>(this T[] array, int count)
+   {
+      var result = new List<T>();
+      for (var i = 0; i < count; i++)
+      {
+         result.AddRange(array);
+      }
+
+      return result.ToArray();
+   }
+
+   public static Result<int> Assign<T>(this T[] array, out T var0, out T var1)
+   {
+      var0 = var1 = default;
+      if (array.Length >= 2)
+      {
+         var0 = array[0];
+         var1 = array[1];
+
+         return 2;
+      }
+      else
+      {
+         return fail("Array too small");
+      }
+   }
+
+   public static Result<int> Assign<T>(this T[] array, out T var0, out T var1, out T var2)
+   {
+      var2 = default;
+      var result = Assign(array, out var0, out var1);
+      if (result.Map(out var value) && array.Length >= value + 1)
+      {
+         var2 = array[2];
+
+         return 3;
+      }
+      else
+      {
          return result;
       }
+   }
 
-      public static Slice<T> From<T>(this T[] array, int startIndex) => new(array, startIndex);
-
-      public static T[] Pick<T>(this T[] array, string columnIndexes)
+   public static Result<int> Assign<T>(this T[] array, out T var0, out T var1, out T var2, out T var3)
+   {
+      var3 = default;
+      var result = Assign(array, out var0, out var1, out var2);
+      if (result.Map(out var value) && array.Length >= value + 1)
       {
-         return columnIndexes.PickIndexes()
-            .Where(i => i.Between(0).Until(array.Length))
-            .Select(index => array[index])
-            .ToArray();
+         var3 = array[3];
+
+         return 4;
       }
-
-      public static T[] Pick<T>(this T[] array, params int[] columnIndexes)
+      else
       {
-         return columnIndexes.Where(i => i.Between(0).Until(array.Length)).Select(index => array[index]).ToArray();
+         return result;
       }
+   }
 
-      public static (T value, int index)[] PickIndexes<T>(this T[] array, string columnIndexes)
+   public static Result<int> Assign<T>(this T[] array, out T var0, out T var1, out T var2, out T var3,
+      out T var4)
+   {
+      var4 = default;
+      var result = Assign(array, out var0, out var1, out var2, out var3);
+      if (result.Map(out var value) && array.Length >= value + 1)
       {
-         return columnIndexes.PickIndexes()
-            .Where(i => i.Between(0).Until(array.Length))
-            .Select(index => (array[index], index))
-            .ToArray();
+         var4 = array[4];
+
+         return 5;
       }
-
-      public static int[] PickIndexes(this string columnIndexes)
+      else
       {
-         var indexes = new List<int>();
-
-         foreach (var group in columnIndexes.RemoveWhitespace().Unjoin("','; f"))
-         {
-            if (group.Matches("/(/d+) '-' /(/d+); f").Map(out var result))
-            {
-               var (startIndex, stopIndex) = result;
-               var intStart = Value.Int32(startIndex);
-               var intStop = Value.Int32(stopIndex);
-               if (intStart > intStop)
-               {
-                  swap(ref intStart, ref intStop);
-               }
-
-               for (var i = intStart; i <= intStop; i++)
-               {
-                  indexes.Add(i);
-               }
-            }
-            else
-            {
-               indexes.Add(Value.Int32(group));
-            }
-         }
-
-         indexes.Sort();
-         return indexes.ToArray();
+         return result;
       }
+   }
 
-      public static bool ContainsValue<T>(this T[] array, T value) => Array.IndexOf(array, value) > -1;
-
-      public static T Of<T>(this T[] array, int index, T defaultValue)
+   public static Result<int> Assign<T>(this T[] array, out T var0, out T var1, out T var2, out T var3,
+      out T var4, out T var5)
+   {
+      var5 = default;
+      var result = Assign(array, out var0, out var1, out var2, out var3, out var4);
+      if (result.Map(out var value) && array.Length >= value + 1)
       {
-         return index.Between(0).Until(array.Length) ? array[index] : defaultValue;
+         var5 = array[5];
+
+         return 6;
       }
-
-      public static Maybe<T> Of<T>(this T[] array, int index) => maybe(index.Between(0).Until(array.Length), () => array[index]);
-
-      public static T First<T>(this T[] array, T defaultValue) => array.IsEmpty() ? defaultValue : array[0];
-
-      public static Maybe<T> First<T>(this T[] array) => maybe(array.IsNotEmpty(), () => array[0]);
-
-      public static T Last<T>(this T[] array, T defaultValue) => array.IsEmpty() ? defaultValue : array[array.Length - 1];
-
-      public static Maybe<T> Last<T>(this T[] array) => maybe(array.IsNotEmpty(), () => array[array.Length - 1]);
-
-      public static T[] Tail<T>(this T[] array) => array.IsEmpty() ? Array.Empty<T>() : array.Skip(1).ToArray();
-
-      public static T[] AllButLast<T>(this T[] array) => array.IsEmpty() ? Array.Empty<T>() : array.Take(array.Length - 1).ToArray();
-
-      public static Maybe<Slice<T>> Balanced<T>(this T[] array, Predicate<T> startCondition, Predicate<T> stopCondition,
-         int startIndex = 0)
+      else
       {
-         if (array.IsEmpty())
-         {
-            return nil;
-         }
-         else if (startIndex >= array.Length)
-         {
-            return nil;
-         }
-         else
-         {
-            var count = 0;
-            var type = BalanceType.AwaitingStart;
-            var index = -1;
-
-            for (var i = startIndex; i < array.Length; i++)
-            {
-               var element = array[i];
-               switch (type)
-               {
-                  case BalanceType.AwaitingStart:
-                     if (startCondition(element))
-                     {
-                        count++;
-                        type = BalanceType.AwaitingStop;
-                        index = i;
-                     }
-
-                     break;
-                  case BalanceType.AwaitingStop:
-                     if (startCondition(element))
-                     {
-                        count++;
-                     }
-                     else if (stopCondition(element))
-                     {
-                        if (--count == 0)
-                        {
-                           return array.From(index).To(i);
-                        }
-                     }
-
-                     break;
-               }
-            }
-
-            return nil;
-         }
+         return result;
       }
+   }
 
-      public static Maybe<(T[] array, T element)> Pop<T>(this T[] array)
+   public static Result<int> Assign<T>(this T[] array, out T var0, out T var1, out T var2, out T var3,
+      out T var4, out T var5, out T var6)
+   {
+      var6 = default;
+      var result = Assign(array, out var0, out var1, out var2, out var3, out var4, out var5);
+      if (result.Map(out var value) && array.Length >= value + 1)
       {
-         if (!array.IsEmpty())
-         {
-            var length = array.Length - 1;
-            var bottom = array[length];
-            var newArray = new T[length];
+         var6 = array[6];
 
-            Array.Copy(array, newArray, length);
-
-            return (newArray, bottom);
-         }
-         else
-         {
-            return nil;
-         }
+         return 7;
       }
-
-      public static Maybe<T[]> Push<T>(this T[] array, T element)
+      else
       {
-         if (!array.IsEmpty())
-         {
-            var length = array.Length + 1;
-            var newArray = new T[length];
-
-            Array.Copy(array, newArray, length - 1);
-            newArray[length - 1] = element;
-
-            return newArray;
-         }
-         else
-         {
-            return nil;
-         }
+         return result;
       }
+   }
 
-      public static Maybe<(T[] array, T element)> Shift<T>(this T[] array)
+   public static Maybe<int> Index<T>(this T[] array, T item, int startIndex = 0)
+   {
+      var index = Array.IndexOf(array, item, startIndex);
+      return maybe(index > -1, () => index);
+   }
+
+   public static Maybe<int[]> Indexes<T>(this T[] array, T item, int startIndex = 0)
+   {
+      var list = new List<int>();
+      var index = Array.IndexOf(array, item, startIndex);
+      if (index != -1)
       {
-         if (!array.IsEmpty())
+         while (index > -1)
          {
-            var length = array.Length - 1;
-            var top = array[0];
-            var newArray = new T[length];
-
-            Array.Copy(array, 1, newArray, 0, length);
-
-            return (newArray, top);
-         }
-         else
-         {
-            return nil;
-         }
-      }
-
-      public static Maybe<T[]> Unshift<T>(this T[] array, T element)
-      {
-         if (!array.IsEmpty())
-         {
-            var length = array.Length + 1;
-            var newArray = new T[length];
-
-            Array.Copy(array, 0, newArray, 1, length - 1);
-            newArray[0] = element;
-
-            return newArray;
-         }
-         else
-         {
-            return nil;
-         }
-      }
-
-      public static (T1, T2)[] Zip<T1, T2>(this T1[] leftArray, T2[] rightArray)
-      {
-         var list = new List<(T1, T2)>();
-         var length = Min(leftArray.Length, rightArray.Length);
-         for (var i = 0; i < length; i++)
-         {
-            list.Add((leftArray[i], rightArray[i]));
+            list.Add(index);
+            index = Array.IndexOf(array, item, index + 1);
          }
 
          return list.ToArray();
       }
-
-      public static (T1, T2)[] Zip<T1, T2>(this T1[] leftArray, Func<T1, int, T2> generatorFunc)
+      else
       {
-         var list = new List<(T1, T2)>();
-         var length = leftArray.Length;
-         for (var i = 0; i < length; i++)
-         {
-            var left = leftArray[i];
-            list.Add((left, generatorFunc(left, i)));
-         }
+         return nil;
+      }
+   }
 
-         return list.ToArray();
+   public static IEnumerable<(int index, T value)> WithIndexes<T>(this T[] array)
+   {
+      for (var i = 0; i < array.Length; i++)
+      {
+         yield return (i, array[i]);
+      }
+   }
+
+   public static Hash<TKey, TValue> ToHash<TKey, TValue>(this (TKey, TValue)[] array)
+   {
+      var hash = new Hash<TKey, TValue>();
+      foreach (var (key, value) in array)
+      {
+         hash[key] = value;
       }
 
-      public static T3[] Zip<T1, T2, T3>(this T1[] leftArray, T2[] rightArray, Func<T1, T2, T3> mappingFunc)
-      {
-         var list = new List<T3>();
-         var length = Min(leftArray.Length, rightArray.Length);
-         for (var i = 0; i < length; i++)
-         {
-            list.Add(mappingFunc(leftArray[i], rightArray[i]));
-         }
+      return hash;
+   }
 
-         return list.ToArray();
+   public static void Deconstruct<T>(this T[] array, out T e1, out T e2)
+   {
+      e1 = array[0];
+      e2 = array[1];
+   }
+
+   public static void Deconstruct<T>(this T[] array, out T e1, out T e2, out T e3)
+   {
+      e1 = array[0];
+      e2 = array[1];
+      e3 = array[2];
+   }
+
+   public static void Deconstruct<T>(this T[] array, out T e1, out T e2, out T e3, out T e4)
+   {
+      e1 = array[0];
+      e2 = array[1];
+      e3 = array[2];
+      e4 = array[3];
+   }
+
+   public static void Deconstruct<T>(this T[] array, out T e1, out T e2, out T e3, out T e4, out T e5)
+   {
+      e1 = array[0];
+      e2 = array[1];
+      e3 = array[2];
+      e4 = array[3];
+      e5 = array[4];
+   }
+
+   public static void Deconstruct<T>(this T[] array, out T e1, out T e2, out T e3, out T e4, out T e5, out T e6)
+   {
+      e1 = array[0];
+      e2 = array[1];
+      e3 = array[2];
+      e4 = array[3];
+      e5 = array[4];
+      e6 = array[5];
+   }
+
+   public static void Deconstruct<T>(this T[] array, out T e1, out T e2, out T e3, out T e4, out T e5, out T e6, out T e7)
+   {
+      e1 = array[0];
+      e2 = array[1];
+      e3 = array[2];
+      e4 = array[3];
+      e5 = array[4];
+      e6 = array[5];
+      e7 = array[6];
+   }
+
+   public static void Deconstruct<T>(this T[] array, out T e1, out T e2, out T e3, out T e4, out T e5, out T e6, out T e7, out T e8)
+   {
+      e1 = array[0];
+      e2 = array[1];
+      e3 = array[2];
+      e4 = array[3];
+      e5 = array[4];
+      e6 = array[5];
+      e7 = array[6];
+      e8 = array[7];
+   }
+
+   public static void Deconstruct<T>(this T[] array, out T e1, out T e2, out T e3, out T e4, out T e5, out T e6, out T e7, out T e8,
+      out T e9)
+   {
+      e1 = array[0];
+      e2 = array[1];
+      e3 = array[2];
+      e4 = array[3];
+      e5 = array[4];
+      e6 = array[5];
+      e7 = array[6];
+      e8 = array[7];
+      e9 = array[8];
+   }
+
+   public static void Deconstruct<T>(this T[] array, out T e1, out T e2, out T e3, out T e4, out T e5, out T e6, out T e7, out T e8,
+      out T e9, out T e10)
+   {
+      e1 = array[0];
+      e2 = array[1];
+      e3 = array[2];
+      e4 = array[3];
+      e5 = array[4];
+      e6 = array[5];
+      e7 = array[6];
+      e8 = array[7];
+      e9 = array[8];
+      e10 = array[9];
+   }
+
+   public static bool AllEqualTo<T>(this T[] left, T[] right) where T : IEquatable<T>
+   {
+      left.Must().Not.BeNullOrEmpty().OrThrow();
+      right.Must().Not.BeNullOrEmpty().OrThrow();
+
+      if (left.Length != right.Length)
+      {
+         return false;
       }
-
-      public static T3[] Zip<T1, T2, T3>(this T1[] leftArray, Func<T1, int, T2> generatorFunc,
-         Func<T1, T2, T3> mappingFunc)
+      else
       {
-         var list = new List<T3>();
-         var length = leftArray.Length;
-         for (var i = 0; i < length; i++)
+         for (var i = 0; i < left.Length; i++)
          {
-            var left = leftArray[i];
-            var right = generatorFunc(left, i);
-            var item = mappingFunc(left, right);
-            list.Add(item);
-         }
-
-         return list.ToArray();
-      }
-
-      public static Maybe<(T1, T2)>[] ZipUnevenly<T1, T2>(this T1[] leftArray, T2[] rightArray)
-      {
-         var list = new List<Maybe<(T1, T2)>>();
-
-         var leftLength = leftArray.Length;
-         var rightLength = rightArray.Length;
-         var length = Max(leftLength, rightLength);
-
-         for (var i = 0; i < length; i++)
-         {
-            if (i.Between(0).Until(leftLength) && i.Between(0).Until(rightLength))
+            if (!left[i].Equals(right[i]))
             {
-               list.Add((leftArray[i], rightArray[i]).Some());
+               return false;
             }
          }
 
-         return list.ToArray();
-      }
-
-      public static T[] Repeat<T>(this int count, T value) => Enumerable.Repeat(value, count).ToArray();
-
-      public static T[] Repeat<T>(this int count, Func<T> func) => 0.Until(count).Select(_ => func()).ToArray();
-
-      public static T[] Repeat<T>(this T[] array, int count)
-      {
-         var result = new List<T>();
-         for (var i = 0; i < count; i++)
-         {
-            result.AddRange(array);
-         }
-
-         return result.ToArray();
-      }
-
-      public static Result<int> Assign<T>(this T[] array, out T var0, out T var1)
-      {
-         var0 = var1 = default;
-         if (array.Length >= 2)
-         {
-            var0 = array[0];
-            var1 = array[1];
-
-            return 2;
-         }
-         else
-         {
-            return fail("Array too small");
-         }
-      }
-
-      public static Result<int> Assign<T>(this T[] array, out T var0, out T var1, out T var2)
-      {
-         var2 = default;
-         var result = Assign(array, out var0, out var1);
-         if (result.Map(out var value) && array.Length >= value + 1)
-         {
-            var2 = array[2];
-
-            return 3;
-         }
-         else
-         {
-            return result;
-         }
-      }
-
-      public static Result<int> Assign<T>(this T[] array, out T var0, out T var1, out T var2, out T var3)
-      {
-         var3 = default;
-         var result = Assign(array, out var0, out var1, out var2);
-         if (result.Map(out var value) && array.Length >= value + 1)
-         {
-            var3 = array[3];
-
-            return 4;
-         }
-         else
-         {
-            return result;
-         }
-      }
-
-      public static Result<int> Assign<T>(this T[] array, out T var0, out T var1, out T var2, out T var3,
-         out T var4)
-      {
-         var4 = default;
-         var result = Assign(array, out var0, out var1, out var2, out var3);
-         if (result.Map(out var value) && array.Length >= value + 1)
-         {
-            var4 = array[4];
-
-            return 5;
-         }
-         else
-         {
-            return result;
-         }
-      }
-
-      public static Result<int> Assign<T>(this T[] array, out T var0, out T var1, out T var2, out T var3,
-         out T var4, out T var5)
-      {
-         var5 = default;
-         var result = Assign(array, out var0, out var1, out var2, out var3, out var4);
-         if (result.Map(out var value) && array.Length >= value + 1)
-         {
-            var5 = array[5];
-
-            return 6;
-         }
-         else
-         {
-            return result;
-         }
-      }
-
-      public static Result<int> Assign<T>(this T[] array, out T var0, out T var1, out T var2, out T var3,
-         out T var4, out T var5, out T var6)
-      {
-         var6 = default;
-         var result = Assign(array, out var0, out var1, out var2, out var3, out var4, out var5);
-         if (result.Map(out var value) && array.Length >= value + 1)
-         {
-            var6 = array[6];
-
-            return 7;
-         }
-         else
-         {
-            return result;
-         }
-      }
-
-      public static Maybe<int> Index<T>(this T[] array, T item, int startIndex = 0)
-      {
-         var index = Array.IndexOf(array, item, startIndex);
-         return maybe(index > -1, () => index);
-      }
-
-      public static Maybe<int[]> Indexes<T>(this T[] array, T item, int startIndex = 0)
-      {
-         var list = new List<int>();
-         var index = Array.IndexOf(array, item, startIndex);
-         if (index != -1)
-         {
-            while (index > -1)
-            {
-               list.Add(index);
-               index = Array.IndexOf(array, item, index + 1);
-            }
-
-            return list.ToArray();
-         }
-         else
-         {
-            return nil;
-         }
-      }
-
-      public static IEnumerable<(int index, T value)> WithIndexes<T>(this T[] array)
-      {
-         for (var i = 0; i < array.Length; i++)
-         {
-            yield return (i, array[i]);
-         }
-      }
-
-      public static Hash<TKey, TValue> ToHash<TKey, TValue>(this (TKey, TValue)[] array)
-      {
-         var hash = new Hash<TKey, TValue>();
-         foreach (var (key, value) in array)
-         {
-            hash[key] = value;
-         }
-
-         return hash;
-      }
-
-      public static void Deconstruct<T>(this T[] array, out T e1, out T e2)
-      {
-         e1 = array[0];
-         e2 = array[1];
-      }
-
-      public static void Deconstruct<T>(this T[] array, out T e1, out T e2, out T e3)
-      {
-         e1 = array[0];
-         e2 = array[1];
-         e3 = array[2];
-      }
-
-      public static void Deconstruct<T>(this T[] array, out T e1, out T e2, out T e3, out T e4)
-      {
-         e1 = array[0];
-         e2 = array[1];
-         e3 = array[2];
-         e4 = array[3];
-      }
-
-      public static void Deconstruct<T>(this T[] array, out T e1, out T e2, out T e3, out T e4, out T e5)
-      {
-         e1 = array[0];
-         e2 = array[1];
-         e3 = array[2];
-         e4 = array[3];
-         e5 = array[4];
-      }
-
-      public static void Deconstruct<T>(this T[] array, out T e1, out T e2, out T e3, out T e4, out T e5, out T e6)
-      {
-         e1 = array[0];
-         e2 = array[1];
-         e3 = array[2];
-         e4 = array[3];
-         e5 = array[4];
-         e6 = array[5];
-      }
-
-      public static void Deconstruct<T>(this T[] array, out T e1, out T e2, out T e3, out T e4, out T e5, out T e6, out T e7)
-      {
-         e1 = array[0];
-         e2 = array[1];
-         e3 = array[2];
-         e4 = array[3];
-         e5 = array[4];
-         e6 = array[5];
-         e7 = array[6];
-      }
-
-      public static void Deconstruct<T>(this T[] array, out T e1, out T e2, out T e3, out T e4, out T e5, out T e6, out T e7, out T e8)
-      {
-         e1 = array[0];
-         e2 = array[1];
-         e3 = array[2];
-         e4 = array[3];
-         e5 = array[4];
-         e6 = array[5];
-         e7 = array[6];
-         e8 = array[7];
-      }
-
-      public static void Deconstruct<T>(this T[] array, out T e1, out T e2, out T e3, out T e4, out T e5, out T e6, out T e7, out T e8,
-         out T e9)
-      {
-         e1 = array[0];
-         e2 = array[1];
-         e3 = array[2];
-         e4 = array[3];
-         e5 = array[4];
-         e6 = array[5];
-         e7 = array[6];
-         e8 = array[7];
-         e9 = array[8];
-      }
-
-      public static void Deconstruct<T>(this T[] array, out T e1, out T e2, out T e3, out T e4, out T e5, out T e6, out T e7, out T e8,
-         out T e9, out T e10)
-      {
-         e1 = array[0];
-         e2 = array[1];
-         e3 = array[2];
-         e4 = array[3];
-         e5 = array[4];
-         e6 = array[5];
-         e7 = array[6];
-         e8 = array[7];
-         e9 = array[8];
-         e10 = array[9];
-      }
-
-      public static bool AllEqualTo<T>(this T[] left, T[] right) where T : IEquatable<T>
-      {
-         left.Must().Not.BeNullOrEmpty().OrThrow();
-         right.Must().Not.BeNullOrEmpty().OrThrow();
-
-         if (left.Length != right.Length)
-         {
-            return false;
-         }
-         else
-         {
-            for (var i = 0; i < left.Length; i++)
-            {
-               if (!left[i].Equals(right[i]))
-               {
-                  return false;
-               }
-            }
-
-            return true;
-         }
+         return true;
       }
    }
 }

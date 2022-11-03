@@ -163,6 +163,7 @@
     <Compile Include="Collections\IfHash.cs" />
     <Compile Include="Collections\IgnoreCaseEqualityComparer.cs" />
     <Compile Include="Collections\IHash.cs" />
+    <Compile Include="Collections\IHashMaybe.cs" />
     <Compile Include="Collections\Infix\IInfixData.cs" />
     <Compile Include="Collections\Infix\InfixData.cs" />
     <Compile Include="Collections\Infix\InfixList.cs" />

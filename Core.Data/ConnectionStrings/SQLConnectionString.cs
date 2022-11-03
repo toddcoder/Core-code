@@ -36,9 +36,9 @@ namespace Core.Data.ConnectionStrings
       public static string GetConnectionString(string server, string database, string application, Maybe<string> _user, Maybe<string> _password,
          bool readOnly = false)
       {
-         if (_user.Map(out var user) && _password.Map(out var password))
+         if (_user && _password)
          {
-            return GetConnectionString(server, database, application, user, password, readOnly);
+            return GetConnectionString(server, database, application, _user, _password, readOnly);
          }
          else
          {
@@ -48,9 +48,10 @@ namespace Core.Data.ConnectionStrings
 
       public static Result<SqlConnectionString> FromConnection(Connection connection, bool readOnly = false)
       {
-         if (connection.Map("connection", out var connectionString))
+         var _connectionString = connection.Maybe()["connection"];
+         if (_connectionString)
          {
-            return new SqlConnectionString(connectionString, connection.Timeout);
+            return new SqlConnectionString(_connectionString, connection.Timeout);
          }
          else
          {

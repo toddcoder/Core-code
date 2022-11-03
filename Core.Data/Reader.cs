@@ -6,60 +6,60 @@ using System.Linq;
 using Core.Data.DataSources;
 using Core.Monads;
 
-namespace Core.Data
+namespace Core.Data;
+
+public class Reader<T> : IDisposable, IEnumerable<T>
 {
-   public class Reader<T> : IDisposable, IEnumerable<T>
+   protected DataSource dataSource;
+   protected Func<T> entityFunc;
+
+   public Reader(DataSource dataSource, T entity, Func<T> entityFunc, string command, Parameters.Parameters parameters, Fields.Fields fields)
    {
-      protected DataSource dataSource;
-      protected Func<T> entityFunc;
+      this.dataSource = dataSource;
+      dataSource.BeginReading(entity, command, parameters, fields);
+      Entity = entity;
+      this.entityFunc = entityFunc;
 
-      public Reader(DataSource dataSource, T entity, Func<T> entityFunc, string command, Parameters.Parameters parameters, Fields.Fields fields)
+      var outputParameters = new Parameters.Parameters();
+      foreach (var dataParameter in dataSource.Command.Required("Command hasn't be set").Parameters.Cast<IDataParameter>()
+                  .Where(p => p.Direction == ParameterDirection.Output))
       {
-         this.dataSource = dataSource;
-         dataSource.BeginReading(entity, command, parameters, fields);
-         Entity = entity;
-         this.entityFunc = entityFunc;
+         outputParameters[dataParameter.ParameterName] = parameters[dataParameter.ParameterName];
+      }
+   }
 
-         var outputParameters = new Parameters.Parameters();
-         foreach (var dataParameter in dataSource.Command.Required("Command hasn't be set").Parameters.Cast<IDataParameter>()
-            .Where(p => p.Direction == ParameterDirection.Output))
+   public object Entity { get; set; }
+
+   public Maybe<T> Next() => dataSource.NextReading(entityFunc()).Map(obj => (T)obj);
+
+   void IDisposable.Dispose()
+   {
+      dispose();
+      GC.SuppressFinalize(this);
+   }
+
+   protected void dispose()
+   {
+      dataSource.EndReading();
+   }
+
+   ~Reader() => dispose();
+
+   public IEnumerator<T> GetEnumerator()
+   {
+      try
+      {
+         var _entity = Next();
+         while (_entity)
          {
-            outputParameters[dataParameter.ParameterName] = parameters[dataParameter.ParameterName];
+            yield return ~_entity;
          }
       }
-
-      public object Entity { get; set; }
-
-      public Maybe<T> Next() => dataSource.NextReading(entityFunc()).Map(obj => (T)obj);
-
-      void IDisposable.Dispose()
+      finally
       {
          dispose();
-         GC.SuppressFinalize(this);
       }
-
-      protected void dispose()
-      {
-         dataSource.EndReading();
-      }
-
-      ~Reader() => dispose();
-
-      public IEnumerator<T> GetEnumerator()
-      {
-         try
-         {
-            while (Next().Map(out var entity))
-            {
-               yield return entity;
-            }
-         }
-         finally
-         {
-            dispose();
-         }
-      }
-
-      IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
    }
+
+   IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }

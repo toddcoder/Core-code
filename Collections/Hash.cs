@@ -129,9 +129,10 @@ public class Hash<TKey, TValue> : Dictionary<TKey, TValue>, IHash<TKey, TValue>
    {
       foreach (var key in keys)
       {
-         if (Map(key, out var value))
+         var _value = Maybe[key];
+         if (_value)
          {
-            yield return value;
+            yield return ~_value;
          }
       }
    }
@@ -140,9 +141,10 @@ public class Hash<TKey, TValue> : Dictionary<TKey, TValue>, IHash<TKey, TValue>
 
    public TValue Find(TKey key, Func<TKey, TValue> defaultValue, bool addIfNotFound = false)
    {
-      if (Map(key, out var result))
+      var _result = Maybe[key];
+      if (_result)
       {
-         return result;
+         return ~_result;
       }
       else
       {
@@ -170,32 +172,6 @@ public class Hash<TKey, TValue> : Dictionary<TKey, TValue>, IHash<TKey, TValue>
    public TValue Memoize(TKey key, Func<TKey, TValue> defaultValue, bool alwaysUseDefaultValue = false)
    {
       return alwaysUseDefaultValue ? defaultValue(key) : Find(key, defaultValue, true);
-   }
-
-   public bool Map(TKey key, out TValue value, Func<TValue> valueToAdd)
-   {
-      if (Map(key, out value))
-      {
-         return true;
-      }
-      else
-      {
-         value = valueToAdd();
-         try
-         {
-            locker.EnterWriteLock();
-            this[key] = value;
-         }
-         catch
-         {
-         }
-         finally
-         {
-            locker.ExitWriteLock();
-         }
-
-         return false;
-      }
    }
 
    public TKey[] KeyArray()
@@ -242,6 +218,7 @@ public class Hash<TKey, TValue> : Dictionary<TKey, TValue>, IHash<TKey, TValue>
       }
    }
 
+   [Obsolete("Use Maybe[]")]
    public bool Map(TKey key, out TValue value, TValue defaultValue = default)
    {
       if (ContainsKey(key))
@@ -305,10 +282,11 @@ public class Hash<TKey, TValue> : Dictionary<TKey, TValue>, IHash<TKey, TValue>
 
    public void Move(TKey oldKey, TKey newKey)
    {
-      if (Map(oldKey, out var value))
+      var _value = Maybe[oldKey];
+      if (_value)
       {
-         this[newKey] = value;
-         Remove(oldKey);
+         this[newKey] = ~_value;
+         Maybe[oldKey] = nil;
       }
    }
 

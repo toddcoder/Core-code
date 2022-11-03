@@ -7,142 +7,144 @@ using Core.Strings;
 using Newtonsoft.Json;
 using static Core.Monads.MonadFunctions;
 
-namespace Core.Json
-{
-   public class Deserializer
-   {
-      protected string source;
+namespace Core.Json;
 
-      public Deserializer(string source)
+public class Deserializer
+{
+   protected string source;
+
+   public Deserializer(string source)
+   {
+      this.source = source;
+   }
+
+   public Result<Setting> Deserialize()
+   {
+      var rootSetting = new Setting("/");
+      var stack = new MaybeStack<ConfigurationItem>();
+      stack.Push(rootSetting);
+
+      Maybe<Setting> peekSetting()
       {
-         this.source = source;
+         return
+            from parentItem in stack.Peek()
+            from parentGroup in parentItem.IfCast<Setting>()
+            select parentGroup;
       }
 
-      public Result<Setting> Deserialize()
+      int itemCount() => peekSetting().Map(setting => setting.AnyHash().Map(h => h.Values.Count)) | 0;
+
+      Maybe<string> _propertyName = nil;
+
+      void setItem(string value)
       {
-         var rootSetting = new Setting("/");
-         var stack = new MaybeStack<ConfigurationItem>();
-         stack.Push(rootSetting);
-
-         Maybe<Setting> peekSetting()
+         var key = _propertyName | (() => $"${itemCount()}");
+         var _setting = peekSetting();
+         if (_setting)
          {
-            return
-               from parentItem in stack.Peek()
-               from parentGroup in parentItem.IfCast<Setting>()
-               select parentGroup;
+            (~_setting).SetItem(key, new Item(key, value));
          }
 
-         int itemCount() => peekSetting().Map(setting => setting.AnyHash().Map(h => h.Values.Count)) | 0;
+         _propertyName = nil;
+      }
 
-         Maybe<string> _propertyName = nil;
+      try
+      {
+         using var textReader = new StringReader(source);
+         using var reader = new JsonTextReader(textReader);
+         var firstObjectProcessed = false;
 
-         void setItem(string value)
+         string getValue() => reader.Value?.ToString() ?? "";
+
+         while (reader.Read())
          {
-            var key = _propertyName | (() => $"${itemCount()}");
-            if (peekSetting().Map(out var setting))
+            switch (reader.TokenType)
             {
-               setting.SetItem(key, new Item(key, value));
-            }
-
-            _propertyName = nil;
-         }
-
-         try
-         {
-            using var textReader = new StringReader(source);
-            using var reader = new JsonTextReader(textReader);
-            var firstObjectProcessed = false;
-
-            string getValue() => reader.Value?.ToString() ?? "";
-
-            while (reader.Read())
-            {
-               switch (reader.TokenType)
+               case JsonToken.StartObject when firstObjectProcessed:
                {
-                  case JsonToken.StartObject when firstObjectProcessed:
+                  var key = _propertyName | (() => $"${itemCount()}");
+                  _propertyName = nil;
+                  var setting = new Setting(key);
+                  var _parentSetting = peekSetting();
+                  if (_parentSetting)
                   {
-                     var key = _propertyName | (() => $"${itemCount()}");
-                     _propertyName = nil;
-                     var setting = new Setting(key);
-                     if (peekSetting().Map(out var parentSetting))
-                     {
-                        parentSetting.SetItem(key, setting);
-                     }
-                     else
-                     {
-                        return fail("No parent setting found");
-                     }
-
-                     stack.Push(setting);
-                     break;
+                     (~_parentSetting).SetItem(key, setting);
                   }
-                  case JsonToken.StartObject:
-                     firstObjectProcessed = true;
-                     break;
-                  case JsonToken.EndObject:
-                     if (stack.IsEmpty)
-                     {
-                        return fail("No parent group available");
-                     }
-
-                     stack.Pop();
-                     break;
-                  case JsonToken.StartArray:
+                  else
                   {
-                     var key = _propertyName | (() => $"${itemCount()}");
-                     _propertyName = nil;
-                     var setting = new Setting(key);
-                     if (peekSetting().Map(out var parentSetting))
-                     {
-                        parentSetting.SetItem(setting.Key, setting);
-                     }
-                     else
-                     {
-                        return fail("No parent setting found");
-                     }
-
-                     stack.Push(setting);
-
-                     break;
+                     return fail("No parent setting found");
                   }
-                  case JsonToken.EndArray:
-                     if (stack.IsEmpty)
-                     {
-                        return fail("No parent setting available");
-                     }
 
-                     stack.Pop();
-                     break;
-                  case JsonToken.PropertyName:
-                     _propertyName = reader.Value.Some().Map(o => o.ToNonNullString());
-                     break;
-                  case JsonToken.String:
-                     setItem(getValue());
-                     break;
-                  case JsonToken.Integer:
-                     setItem(getValue());
-                     break;
-                  case JsonToken.Float:
-                     setItem(getValue());
-                     break;
-                  case JsonToken.Boolean:
-                     setItem(getValue().ToLower());
-                     break;
-                  case JsonToken.Date:
-                     setItem(getValue());
-                     break;
-                  default:
-                     setItem("");
-                     break;
+                  stack.Push(setting);
+                  break;
                }
-            }
+               case JsonToken.StartObject:
+                  firstObjectProcessed = true;
+                  break;
+               case JsonToken.EndObject:
+                  if (stack.IsEmpty)
+                  {
+                     return fail("No parent group available");
+                  }
 
-            return rootSetting;
+                  stack.Pop();
+                  break;
+               case JsonToken.StartArray:
+               {
+                  var key = _propertyName | (() => $"${itemCount()}");
+                  _propertyName = nil;
+                  var setting = new Setting(key);
+                  var _parentSetting = peekSetting();
+                  if (_parentSetting)
+                  {
+                     (~_parentSetting).SetItem(setting.Key, setting);
+                  }
+                  else
+                  {
+                     return fail("No parent setting found");
+                  }
+
+                  stack.Push(setting);
+
+                  break;
+               }
+               case JsonToken.EndArray:
+                  if (stack.IsEmpty)
+                  {
+                     return fail("No parent setting available");
+                  }
+
+                  stack.Pop();
+                  break;
+               case JsonToken.PropertyName:
+                  _propertyName = reader.Value.Some().Map(o => o.ToNonNullString());
+                  break;
+               case JsonToken.String:
+                  setItem(getValue());
+                  break;
+               case JsonToken.Integer:
+                  setItem(getValue());
+                  break;
+               case JsonToken.Float:
+                  setItem(getValue());
+                  break;
+               case JsonToken.Boolean:
+                  setItem(getValue().ToLower());
+                  break;
+               case JsonToken.Date:
+                  setItem(getValue());
+                  break;
+               default:
+                  setItem("");
+                  break;
+            }
          }
-         catch (Exception exception)
-         {
-            return exception;
-         }
+
+         return rootSetting;
+      }
+      catch (Exception exception)
+      {
+         return exception;
       }
    }
 }

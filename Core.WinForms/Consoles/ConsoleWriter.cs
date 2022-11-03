@@ -4,79 +4,79 @@ using System.Threading.Tasks;
 using Core.Monads;
 using static Core.Monads.MonadFunctions;
 
-namespace Core.WinForms.Consoles
+namespace Core.WinForms.Consoles;
+
+public class TextBoxWriter : TextWriter
 {
-	public class TextBoxWriter : TextWriter
-	{
-		protected TextBoxConsole console;
-		protected Maybe<StringBuilder> _buffer;
+   protected TextBoxConsole console;
+   protected Maybe<StringBuilder> _buffer;
 
-		public TextBoxWriter(TextBoxConsole console)
-		{
-			this.console = console;
-			_buffer = maybe(this.console.Buffer, () => new StringBuilder());
-		}
+   public TextBoxWriter(TextBoxConsole console)
+   {
+      this.console = console;
+      _buffer = maybe(this.console.Buffer, () => new StringBuilder());
+   }
 
-		public bool AutoStop { get; set; }
+   public bool AutoStop { get; set; }
 
-		public override void Write(char value)
-		{
-			if (value != '\r')
+   public override void Write(char value)
+   {
+      if (value != '\r')
+      {
+         if (_buffer)
          {
-            if (_buffer.Map(out var buffer))
-            {
-               buffer.Append(value);
-            }
-            else
-            {
-               if (AutoStop)
-               {
-                  console.StopUpdating();
-               }
-
-               console.Write(value);
-               if (AutoStop)
-               {
-                  console.ResumeUpdating();
-                  console.ScrollToCaret();
-               }
-
-               console.ScrollToCaret();
-            }
+            (~_buffer).Append(value);
          }
-      }
-
-		protected void flush()
-		{
-			if (_buffer.Map(out var buffer))
-			{
-				if (AutoStop)
+         else
+         {
+            if (AutoStop)
             {
                console.StopUpdating();
             }
 
-            foreach (var ch in buffer.ToString())
-            {
-               console.Write(ch);
-            }
-
-            buffer.Clear();
-
-				if (AutoStop)
+            console.Write(value);
+            if (AutoStop)
             {
                console.ResumeUpdating();
+               console.ScrollToCaret();
             }
-         }
-			else
-         {
-            console.Clear();
+
+            console.ScrollToCaret();
          }
       }
+   }
 
-		public override void Flush() => flush();
+   protected void flush()
+   {
+      if (_buffer)
+      {
+         if (AutoStop)
+         {
+            console.StopUpdating();
+         }
 
-		public override Task FlushAsync() => Task.Run(flush);
+         var buffer = ~_buffer;
+         foreach (var ch in buffer.ToString())
+         {
+            console.Write(ch);
+         }
 
-		public override Encoding Encoding => Encoding.UTF8;
-	}
+         buffer.Clear();
+
+         if (AutoStop)
+         {
+            console.ResumeUpdating();
+         }
+      }
+      else
+      {
+         console.Clear();
+      }
+   }
+
+   public override void Flush() => flush();
+
+   public override Task FlushAsync() => Task.Run(flush);
+
+   public override Encoding Encoding => Encoding.UTF8;
 }

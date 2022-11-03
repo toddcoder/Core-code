@@ -10,111 +10,114 @@ using Core.Strings;
 using static System.Convert;
 using static Core.Monads.MonadFunctions;
 
-namespace Core.Data.DataSources
+namespace Core.Data.DataSources;
+
+public class OleDbDataSource : DataSource
 {
-   public class OleDbDataSource : DataSource
+   protected static OleDbType typeToOleDbType(Type type) => Type.GetTypeCode(type) switch
    {
-      protected static OleDbType typeToOleDbType(Type type) => Type.GetTypeCode(type) switch
+      TypeCode.Boolean => OleDbType.Boolean,
+      TypeCode.Byte => OleDbType.UnsignedTinyInt,
+      TypeCode.Char => OleDbType.Char,
+      TypeCode.DateTime => OleDbType.DBTimeStamp,
+      TypeCode.Decimal => OleDbType.Decimal,
+      TypeCode.Double => OleDbType.Double,
+      TypeCode.Int16 => OleDbType.SmallInt,
+      TypeCode.Int32 => OleDbType.Integer,
+      TypeCode.Int64 => OleDbType.BigInt,
+      TypeCode.Object => OleDbType.Variant,
+      TypeCode.String => OleDbType.VarWChar,
+      _ => throw $"Doesn't support {type}".Throws()
+   };
+
+   protected Maybe<FileName> associatedFile;
+
+   public OleDbDataSource(string connectionString, Maybe<FileName> associatedFile) : base(connectionString, 30.Seconds())
+   {
+      ConnectionString = getFileConnectionString(associatedFile);
+      this.associatedFile = associatedFile;
+   }
+
+   public override IDbConnection GetConnection()
+   {
+      var oleDbConnection = new OleDbConnection(ConnectionString);
+      oleDbConnection.Open();
+
+      return oleDbConnection;
+   }
+
+   public override IDbCommand GetCommand() => new OleDbCommand();
+
+   public override void AddParameters(object entity, Parameters.Parameters parameters)
+   {
+      Command.Required("Command has not be set").Parameters.Clear();
+
+      foreach (var parameter in parameters)
       {
-         TypeCode.Boolean => OleDbType.Boolean,
-         TypeCode.Byte => OleDbType.UnsignedTinyInt,
-         TypeCode.Char => OleDbType.Char,
-         TypeCode.DateTime => OleDbType.DBTimeStamp,
-         TypeCode.Decimal => OleDbType.Decimal,
-         TypeCode.Double => OleDbType.Double,
-         TypeCode.Int16 => OleDbType.SmallInt,
-         TypeCode.Int32 => OleDbType.Integer,
-         TypeCode.Int64 => OleDbType.BigInt,
-         TypeCode.Object => OleDbType.Variant,
-         TypeCode.String => OleDbType.VarWChar,
-         _ => throw $"Doesn't support {type}".Throws()
-      };
-
-      protected Maybe<FileName> associatedFile;
-
-      public OleDbDataSource(string connectionString, Maybe<FileName> associatedFile) : base(connectionString, 30.Seconds())
-      {
-         ConnectionString = getFileConnectionString(associatedFile);
-         this.associatedFile = associatedFile;
-      }
-
-      public override IDbConnection GetConnection()
-      {
-         var oleDbConnection = new OleDbConnection(ConnectionString);
-         oleDbConnection.Open();
-
-         return oleDbConnection;
-      }
-
-      public override IDbCommand GetCommand() => new OleDbCommand();
-
-      public override void AddParameters(object entity, Parameters.Parameters parameters)
-      {
-         Command.Required("Command has not be set").Parameters.Clear();
-
-         foreach (var parameter in parameters)
+         Type parameterType;
+         if (parameter.Type)
          {
-            if (parameter.Type.Map(out var parameterType))
+            parameterType = parameter.Type;
+         }
+         else
+         {
+            parameter.DeterminePropertyType(entity);
+            parameterType = parameter.PropertyType;
+            parameter.Type = parameterType;
+         }
+
+         var oledbParameter = parameter.Size
+               .Map(size => new OleDbParameter(parameter.Name, typeToOleDbType(parameterType), size)) |
+            (() => new OleDbParameter(parameter.Name, typeToDBType(parameterType)));
+
+         if (parameter.Output)
+         {
+            oledbParameter.Direction = ParameterDirection.Output;
+         }
+         else if (parameter.Value)
+         {
+            var parameterValue = ~parameter.Value;
+            if (parameterType == typeof(string))
             {
+               oledbParameter.Value = parameterValue;
             }
             else
             {
-               parameter.DeterminePropertyType(entity);
-               parameterType = parameter.PropertyType;
-               parameter.Type = parameterType;
-            }
-
-            var oledbParameter = parameter.Size
-                  .Map(size => new OleDbParameter(parameter.Name, typeToOleDbType(parameterType), size)) |
-               (() => new OleDbParameter(parameter.Name, typeToDBType(parameterType)));
-
-            if (parameter.Output)
-            {
-               oledbParameter.Direction = ParameterDirection.Output;
-            }
-            else if (parameter.Value.Map(out var str))
-            {
-               if (parameterType == typeof(string))
-               {
-                  oledbParameter.Value = str;
-               }
-               else
-               {
-                  var obj = str.ToObject().Required($"Couldn't convert {str}");
-                  oledbParameter.Value = ChangeType(obj, parameterType);
-               }
-            }
-            else
-            {
-               var value = parameter.GetValue(entity).Required($"Parameter {parameter.Name}'s value couldn't be determined");
-               if (value is null && parameter.Default.Map(out var defaultValue))
-               {
-                  value = parameter.Type.Map(t => ChangeType(defaultValue, t)) | (() => defaultValue);
-               }
-
-               var type = value?.GetType();
-               var underlyingType = type?.UnderlyingTypeOf() ?? nil;
-               if (underlyingType)
-               {
-                  value = type.InvokeMember("Value", BindingFlags.GetProperty, null, value, Array.Empty<object>());
-               }
-
-               oledbParameter.Value = value;
-            }
-
-            if (Command.Map(out var command))
-            {
-               command.Parameters.Add(oledbParameter);
-            }
-            else
-            {
-               throw "Command not initialized".Throws();
+               var obj = parameterValue.ToObject().Required($"Couldn't convert {parameterValue}");
+               oledbParameter.Value = ChangeType(obj, parameterType);
             }
          }
+         else
+         {
+            var value = parameter.GetValue(entity).Required($"Parameter {parameter.Name}'s value couldn't be determined");
+            if (value is null && parameter.Default)
+            {
+               var defaultValue = ~parameter.Default;
+               value = parameter.Type.Map(t => ChangeType(defaultValue, t)) | (object)defaultValue;
+            }
+
+            var type = value?.GetType();
+            var underlyingType = type?.UnderlyingTypeOf() ?? nil;
+            if (underlyingType)
+            {
+               value = type.InvokeMember("Value", BindingFlags.GetProperty, null, value, Array.Empty<object>());
+            }
+
+            oledbParameter.Value = value;
+         }
+
+         if (Command)
+         {
+            (~Command).Parameters.Add(oledbParameter);
+         }
+         else
+         {
+            throw "Command not initialized".Throws();
+         }
       }
-
-      public override void ClearAllPools() => OleDbConnection.ReleaseObjectPool();
-
-      public override DataSource WithNewConnectionString(string newConnectionString) => new OleDbDataSource(newConnectionString, associatedFile);
    }
+
+   public override void ClearAllPools() => OleDbConnection.ReleaseObjectPool();
+
+   public override DataSource WithNewConnectionString(string newConnectionString) => new OleDbDataSource(newConnectionString, associatedFile);
 }

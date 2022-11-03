@@ -3,30 +3,30 @@ using Core.Strings;
 using static Core.Monads.MonadFunctions;
 using static Core.Objects.ConversionFunctions;
 
-namespace Core.Objects
+namespace Core.Objects;
+
+public class Signature
 {
-   public class Signature
+   public const string REGEX_FORMAT = "^ /(/w+) ('[' /(/d*) ']')? $; f";
+
+   public Signature(string signature)
    {
-      public const string REGEX_FORMAT = "^ /(/w+) ('[' /(/d*) ']')? $; f";
-
-      public Signature(string signature)
+      var _openIndex = signature.Find("[");
+      if (_openIndex)
       {
-         if (signature.Find("[").Map(out var openIndex))
-         {
-            Name = signature.Keep(openIndex);
-            Index = Maybe.Int32(signature.Drop(openIndex + 1).KeepUntil("]"));
-         }
-         else
-         {
-            Name = signature;
-            Index = nil;
-         }
+         Name = signature.Keep(_openIndex);
+         Index = Maybe.Int32(signature.Drop(_openIndex + 1).KeepUntil("]"));
       }
-
-      public string Name { get; set; }
-
-      public Maybe<int> Index { get; set; }
-
-      public override string ToString() => Index.Map(i => $"{Name}[{i}]") | Name;
+      else
+      {
+         Name = signature;
+         Index = nil;
+      }
    }
+
+   public string Name { get; set; }
+
+   public Maybe<int> Index { get; set; }
+
+   public override string ToString() => Index.Map(i => $"{Name}[{i}]") | Name;
 }

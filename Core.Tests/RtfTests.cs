@@ -27,7 +27,7 @@ public class RtfTests
       _ = header | "";
 
       var footer = document.Footer;
-      _ = footer | "Page " | page | " of " | numPages | " Date: " | date | " Time: " | time | right;
+      _ = footer | "Page " | page | " of " | numPages; // | " Date: " | date | " Time: " | time | right;
 
       _ = document | "This is test line 1";
       _ = document | "This is test line 2";
@@ -82,7 +82,7 @@ public class RtfTests
       _ = document | "Please approve deployment to " | none | "staging01ua" | boldStyle | " with link " | url.Link() | " for Hotfix (Rolling) " |
          "r-6.41.10" | boldStyle;
 
-      document.Save(@"C:\Temp\Test.rtf");
+      document.Save(@"C:\Temp\Basic.rtf");
    }
 
    [TestMethod]
@@ -100,7 +100,7 @@ public class RtfTests
       table.SetOuterBorder(BorderStyle.Double, 1);
       table.SetInnerBorder(BorderStyle.Single, 1);
 
-      document.Save(@"C:\Temp\Test2.rtf");
+      document.Save(@"C:\Temp\TableData.rtf");
    }
 
    [TestMethod]
@@ -115,11 +115,11 @@ public class RtfTests
       document.Line();
       _ = document | "Under the line";
 
-      document.Save(@"C:\Temp\Test3.rtf");
+      document.Save(@"C:\Temp\Bullet.rtf");
    }
 
    [TestMethod]
-   public void FullDocument()
+   public void FullDocumentTest()
    {
       var document = new Document(paperOrientation: PaperOrientation.Landscape);
 
@@ -147,7 +147,7 @@ public class RtfTests
       _ = document | "d.\tRun partition reorganization steps for IntervalMeasurement to monthly. " | indent1 | "Monitor the TLOG fullness" | bold |
          14f;
 
-      document.Save(@"C:\Temp\Test4.rtf");
+      document.Save(@"C:\Temp\FullDocument.rtf");
    }
 
    [TestMethod]
@@ -155,11 +155,11 @@ public class RtfTests
    {
       var document = new Document();
       _ = document | "This is the url to " | "http://google.com".Link("Google") | " is here!";
-      document.Save(@"C:\Temp\Test5.rtf");
+      document.Save(@"C:\Temp\Hyperlink.rtf");
    }
 
    [TestMethod]
-   public void HyperlinkTest2()
+   public void Hyperlink2Test()
    {
       Maybe<string> _workItemId = "301905";
 
@@ -176,7 +176,7 @@ public class RtfTests
       _ = document | "The backfill request for " | none | branch | codeStyle | " at " | workItemUrl.Link(_workItemId) | " has been completed.";
       _ = document | "Please merge master into your inflight branches. Thanks.";
 
-      document.Save(@"C:\Temp\Test5a.rtf");
+      document.Save(@"C:\Temp\Hyperlink2.rtf");
    }
 
    [TestMethod]
@@ -188,7 +188,7 @@ public class RtfTests
       _ = document | "This is " | none | "both" | italic | bold | "!";
       _ = document | "This is " | none | "release" | bold | " with an " | "outage" | bold | " for " | "r-6.41.0" |
          bold | ".";
-      document.Save(@"C:\Temp\Test6.rtf");
+      document.Save(@"C:\Temp\Formatting.rtf");
    }
 
    [TestMethod]
@@ -204,7 +204,7 @@ public class RtfTests
       _ = document | "This is standard.";
       _ = document | "This is italic." | italicStyle;
       _ = document | "This is bold." | boldStyle;
-      document.Save(@"C:\Temp\Test7.rtf");
+      document.Save(@"C:\Temp\CopyStyle.rtf");
    }
 
    [TestMethod]
@@ -213,7 +213,7 @@ public class RtfTests
       var document = new Document();
       _ = document | "Embedded URL 1: (" | "http://tfs".Link("TFS") | ")";
       _ = document | "Embedded URL 2: (" | "http://google.com".Link() | ")";
-      document.Save(@"C:\Temp\Test8.rtf");
+      document.Save(@"C:\Temp\EmbeddedUrls.rtf");
    }
 
    [TestMethod]
@@ -227,7 +227,7 @@ public class RtfTests
       var header = document.Header;
       _ = header | "Page " | page | " of " | numPages | right;
 
-      document.Save(@"C:\Temp\Test9.rtf");
+      document.Save(@"C:\Temp\ControlWord.rtf");
    }
 
    [TestMethod]
@@ -238,14 +238,12 @@ public class RtfTests
       var style = new Style() | font | 12;
       document.DefaultCharFormat.Style = style;
       var boldStyle = ~style | bold;
-      var
-         url = "http://tfs.eprod.com/ls/estreamuat/_releaseProgress?_a=release-environment-logs&releaseId=6024&environmentId=6024";
 
       var paragraph = document | "Please approve deployment to ";
       var formatter = paragraph | none;
       formatter = formatter | "staging01ua" | boldStyle;
-      formatter = formatter | " with link "; // | url.Link();
-      formatter = formatter | url.Link();
+      formatter = formatter | " with link ";
+      formatter = formatter | "http://tfs.eprod.com/ls/estreamuat/_releaseProgress?_a=release-environment-logs&releaseId=6024&environmentId=6024".Link();
       formatter = formatter | " for Hotfix (Rolling) ";
       formatter = formatter | "r-6.41.10" | boldStyle;
       formatter = formatter | ".";

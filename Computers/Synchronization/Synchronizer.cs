@@ -63,13 +63,14 @@ public class Synchronizer
    protected void handleFile(FileName sourceFile, FolderName currentTargetFolder)
    {
       var targetFile = currentTargetFolder + sourceFile;
-      if (copyIfNeeded(sourceFile, targetFile).Map(out var file, out var _exception))
+      var _file = copyIfNeeded(sourceFile, targetFile);
+      if (_file)
       {
-         Success?.Invoke(this, new FileArgs(file, targetFile, $"{sourceFile} {(move ? "moved" : "copied")} to {targetFile}"));
+         Success?.Invoke(this, new FileArgs(_file, targetFile, $"{sourceFile} {(move ? "moved" : "copied")} to {targetFile}"));
       }
-      else if (_exception.Map(out var exception))
+      else if (_file.AnyException)
       {
-         Failure?.Invoke(this, new FailedFileArgs(sourceFile, targetFile, exception));
+         Failure?.Invoke(this, new FailedFileArgs(sourceFile, targetFile, _file.Exception));
       }
       else
       {

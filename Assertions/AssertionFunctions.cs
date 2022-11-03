@@ -14,258 +14,260 @@ using Core.Strings;
 using static Core.Applications.Async.AsyncFunctions;
 using static Core.Monads.MonadFunctions;
 
-namespace Core.Assertions
+namespace Core.Assertions;
+
+public static class AssertionFunctions
 {
-   public static class AssertionFunctions
+   private static readonly AutoHash<string, string> nameCache;
+   private static readonly Hash<string, object> valueCache;
+
+   static AssertionFunctions()
    {
-      private static readonly AutoHash<string, string> nameCache;
-      private static readonly Hash<string, object> valueCache;
-
-      static AssertionFunctions()
+      static string getName(string expressionText)
       {
-         static string getName(string expressionText)
+         var name = expressionText;
+         var _name = name.Matches("'value(' .+ ').' /(.+?) ')'* $; f").Map(r => r.FirstGroup);
+         if (_name)
          {
-            var name = expressionText;
-            if (name.Matches("'value(' .+ ').' /(.+?) ')'* $; f").Map(out var result))
-            {
-               name = result.FirstGroup;
-            }
-
-            return name;
+            name = _name;
          }
 
-         nameCache = new AutoHash<string, string>(getName, true);
-         valueCache = new Hash<string, object>();
+         return name;
       }
 
-      public static TException getException<TException>(params object[] args) where TException : Exception
+      nameCache = new AutoHash<string, string>(getName, true);
+      valueCache = new Hash<string, object>();
+   }
+
+   public static TException getException<TException>(params object[] args) where TException : Exception
+   {
+      return (TException)Activator.CreateInstance(typeof(TException), args);
+   }
+
+   public static string enumerableImage<T>(IEnumerable<T> enumerable, int limit = 10)
+   {
+      var list = enumerable.ToList();
+      if (list.Count > limit)
       {
-         return (TException)Activator.CreateInstance(typeof(TException), args);
+         list = list.Take(limit).ToList();
       }
 
-      public static string enumerableImage<T>(IEnumerable<T> enumerable, int limit = 10)
+      return list.ToString(", ");
+   }
+
+   public static string dictionaryImage<TKey, TValue>(Dictionary<TKey, TValue> dictionary)
+   {
+      var keys = dictionary.Count > 10 ? dictionary.Keys.Take(10) : dictionary.Keys;
+      return keys.Select(k => $"[{k}] = {dictionary[k]}").ToString(", ");
+   }
+
+   public static string hashImage<TKey, TValue>(IHash<TKey, TValue> hash)
+   {
+      return hash.AnyHash().Map(out var h) ? dictionaryImage(h) : hash.ToString();
+   }
+
+   public static string maybeImage<T>(Maybe<T> maybe)
+   {
+      return maybe.Map(v => v.ToNonNullString()) | (() => $"none<{typeof(T).Name}>");
+   }
+
+   public static string resultImage<T>(Result<T> result)
+   {
+      return result.Map(v => v.ToNonNullString()).Recover(e => $"failure<{typeof(T).Name}>({e.Message})");
+   }
+
+   public static string respondingImage<T>(Responding<T> matched)
+   {
+      if (matched)
       {
-         var list = enumerable.ToList();
-         if (list.Count > limit)
-         {
-            list = list.Take(limit).ToList();
-         }
-
-         return list.ToString(", ");
+         return (~matched).ToNonNullString();
       }
-
-      public static string dictionaryImage<TKey, TValue>(Dictionary<TKey, TValue> dictionary)
+      else if (matched.AnyException)
       {
-         var keys = dictionary.Count > 10 ? dictionary.Keys.Take(10) : dictionary.Keys;
-         return keys.Select(k => $"[{k}] = {dictionary[k]}").ToString(", ");
+         return $"failedResponse<{typeof(T).Name}>({matched.Exception.Message})";
       }
-
-      public static string hashImage<TKey, TValue>(IHash<TKey, TValue> hash)
+      else
       {
-         return hash.AnyHash().Map(out var h) ? dictionaryImage(h) : hash.ToString();
+         return $"noResponse<{typeof(T).Name}>";
       }
+   }
 
-      public static string maybeImage<T>(Maybe<T> maybe)
+   public static string completionImage<T>(Completion<T> completion)
+   {
+      if (completion)
       {
-         return maybe.Map(v => v.ToNonNullString()) | (() => $"none<{typeof(T).Name}>");
+         return (~completion).ToNonNullString();
       }
-
-      public static string resultImage<T>(Result<T> result)
+      else if (completion.AnyException)
       {
-         return result.Map(v => v.ToNonNullString()).Recover(e => $"failure<{typeof(T).Name}>({e.Message})");
+         return $"interrupted<{typeof(T).Name}>({completion.Exception.Message})";
       }
-
-      public static string respondingImage<T>(Responding<T> matched)
+      else
       {
-         if (matched)
-         {
-            return (~matched).ToNonNullString();
-         }
-         else if (matched.AnyException)
-         {
-            return $"failedResponse<{typeof(T).Name}>({matched.Exception.Message})";
-         }
-         else
-         {
-            return $"noResponse<{typeof(T).Name}>";
-         }
+         return $"cancelled<{typeof(T).Name}>";
       }
+   }
 
-      public static string completionImage<T>(Completion<T> completion)
+   public static bool and(ICanBeTrue x, ICanBeTrue y) => x.BeEquivalentToTrue() && y.BeEquivalentToTrue();
+
+   public static bool or(ICanBeTrue x, ICanBeTrue y) => x.BeEquivalentToTrue() || y.BeEquivalentToTrue();
+
+   public static bool beEquivalentToTrue<T>(IAssertion<T> assertion) => assertion.Constraints.All(c => c.IsTrue());
+
+   public static void orThrow<T>(IAssertion<T> assertion)
+   {
+      var _constraint = assertion.Constraints.FirstOrNone(c => !c.IsTrue());
+      if (_constraint)
       {
-         if (completion)
-         {
-            return (~completion).ToNonNullString();
-         }
-         else if (completion.AnyException)
-         {
-            return $"interrupted<{typeof(T).Name}>({completion.Exception.Message})";
-         }
-         else
-         {
-            return $"cancelled<{typeof(T).Name}>";
-         }
+         throw (~_constraint).Message.Throws();
       }
+   }
 
-      public static bool and(ICanBeTrue x, ICanBeTrue y) => x.BeEquivalentToTrue() && y.BeEquivalentToTrue();
-
-      public static bool or(ICanBeTrue x, ICanBeTrue y) => x.BeEquivalentToTrue() || y.BeEquivalentToTrue();
-
-      public static bool beEquivalentToTrue<T>(IAssertion<T> assertion) => assertion.Constraints.All(c => c.IsTrue());
-
-      public static void orThrow<T>(IAssertion<T> assertion)
+   public static void orThrow<T>(IAssertion<T> assertion, string message)
+   {
+      if (assertion.Constraints.Any(c => !c.IsTrue()))
       {
-         if (assertion.Constraints.FirstOrNone(c => !c.IsTrue()).Map(out var constraint))
-         {
-            throw constraint.Message.Throws();
-         }
+         throw message.Throws();
       }
+   }
 
-      public static void orThrow<T>(IAssertion<T> assertion, string message)
+   public static void orThrow<T>(IAssertion<T> assertion, Func<string> messageFunc)
+   {
+      if (assertion.Constraints.Any(c => !c.IsTrue()))
       {
-         if (assertion.Constraints.Any(c => !c.IsTrue()))
-         {
-            throw message.Throws();
-         }
+         throw messageFunc().Throws();
       }
+   }
 
-      public static void orThrow<T>(IAssertion<T> assertion, Func<string> messageFunc)
+   public static void orThrow<TException, T>(IAssertion<T> assertion, params object[] args) where TException : Exception
+   {
+      if (assertion.Constraints.Any(c => !c.IsTrue()))
       {
-         if (assertion.Constraints.Any(c => !c.IsTrue()))
-         {
-            throw messageFunc().Throws();
-         }
+         throw getException<TException>(args);
       }
+   }
 
-      public static void orThrow<TException, T>(IAssertion<T> assertion, params object[] args) where TException : Exception
+   public static T force<T>(IAssertion<T> assertion)
+   {
+      orThrow(assertion);
+      return assertion.Value;
+   }
+
+   public static T force<T>(IAssertion<T> assertion, string message)
+   {
+      orThrow(assertion, message);
+      return assertion.Value;
+   }
+
+   public static T force<T>(IAssertion<T> assertion, Func<string> messageFunc)
+   {
+      orThrow(assertion, messageFunc);
+      return assertion.Value;
+   }
+
+   public static T force<TException, T>(IAssertion<T> assertion, params object[] args) where TException : Exception
+   {
+      orThrow<TException, T>(assertion, args);
+      return assertion.Value;
+   }
+
+   private static TResult convert<T, TResult>(IAssertion<T> assertion)
+   {
+      var converter = TypeDescriptor.GetConverter(typeof(T));
+      return (TResult)converter.ConvertTo(assertion.Value, typeof(TResult));
+   }
+
+   public static TResult forceConvert<T, TResult>(IAssertion<T> assertion)
+   {
+      orThrow(assertion);
+      return convert<T, TResult>(assertion);
+   }
+
+   public static TResult forceConvert<T, TResult>(IAssertion<T> assertion, string message)
+   {
+      orThrow(assertion, message);
+      return convert<T, TResult>(assertion);
+   }
+
+   public static TResult forceConvert<T, TResult>(IAssertion<T> assertion, Func<string> messageFunc)
+   {
+      orThrow(assertion, messageFunc);
+      return convert<T, TResult>(assertion);
+   }
+
+   public static TResult forceConvert<T, TException, TResult>(IAssertion<T> assertion, params object[] args) where TException : Exception
+   {
+      orThrow<TException, T>(assertion, args);
+      return convert<T, TResult>(assertion);
+   }
+
+   public static Result<T> orFailure<T>(IAssertion<T> assertion)
+   {
+      return assertion.Constraints.FirstOrNone(c => !c.IsTrue()).Map(c => c.Message.Failure<T>()) | (() => assertion.Value);
+   }
+
+   public static Result<T> orFailure<T>(IAssertion<T> assertion, string message)
+   {
+      return assertion.Constraints.Any(c => !c.IsTrue()) ? message.Failure<T>() : assertion.Value;
+   }
+
+   public static Result<T> orFailure<T>(IAssertion<T> assertion, Func<string> messageFunc)
+   {
+      return assertion.Constraints.Any(c => !c.IsTrue()) ? messageFunc().Failure<T>() : assertion.Value;
+   }
+
+   public static Maybe<T> orNone<T>(IAssertion<T> assertion)
+   {
+      return maybe(assertion.Constraints.All(c => c.IsTrue()), () => assertion.Value);
+   }
+
+   public static async Task<Completion<T>> orFailureAsync<T>(IAssertion<T> assertion, CancellationToken token)
+   {
+      return await runAsync(t =>
+         assertion.Constraints
+            .FirstOrNone(c => !c.IsTrue())
+            .Map(c => c.Message.Interrupted<T>()) | (() => assertion.Value.Completed(t)), token);
+   }
+
+   public static async Task<Completion<T>> orFailureAsync<T>(IAssertion<T> assertion, string message, CancellationToken token)
+   {
+      return await runAsync(t => assertion.Constraints.Any(c => !c.IsTrue()) ? message.Interrupted<T>() : assertion.Value.Completed(t), token);
+   }
+
+   public static async Task<Completion<T>> orFailureAsync<T>(IAssertion<T> assertion, Func<string> messageFunc, CancellationToken token)
+   {
+      return await runAsync(t => assertion.Constraints.Any(c => !c.IsTrue()) ? messageFunc().Interrupted<T>() : assertion.Value.Completed(t),
+         token);
+   }
+
+   public static bool orReturn<T>(IAssertion<T> assertion) => !assertion.BeEquivalentToTrue();
+
+   [Obsolete("Use Named extension")]
+   public static Expression<Func<T>> assert<T>(Expression<Func<T>> func) => func;
+
+   public static Expression<Func<object>> asObject(Expression<Func<object>> func) => func;
+
+   public static (string name, T value) resolve<T>(Expression<Func<T>> expression)
+   {
+      var expressionBody = expression.Body;
+      var key = expressionBody.ToString();
+
+      var name = nameCache[key];
+
+      var _obj = valueCache.Maybe[key];
+      if (_obj)
       {
-         if (assertion.Constraints.Any(c => !c.IsTrue()))
-         {
-            throw getException<TException>(args);
-         }
+         return (name, (T)~_obj);
       }
 
-      public static T force<T>(IAssertion<T> assertion)
+      var value = expression.Compile()();
+      if (name.IsEmpty())
       {
-         orThrow(assertion);
-         return assertion.Value;
+         name = value.ToNonNullString();
       }
 
-      public static T force<T>(IAssertion<T> assertion, string message)
-      {
-         orThrow(assertion, message);
-         return assertion.Value;
-      }
+      valueCache[key] = value;
 
-      public static T force<T>(IAssertion<T> assertion, Func<string> messageFunc)
-      {
-         orThrow(assertion, messageFunc);
-         return assertion.Value;
-      }
-
-      public static T force<TException, T>(IAssertion<T> assertion, params object[] args) where TException : Exception
-      {
-         orThrow<TException, T>(assertion, args);
-         return assertion.Value;
-      }
-
-      private static TResult convert<T, TResult>(IAssertion<T> assertion)
-      {
-         var converter = TypeDescriptor.GetConverter(typeof(T));
-         return (TResult)converter.ConvertTo(assertion.Value, typeof(TResult));
-      }
-
-      public static TResult forceConvert<T, TResult>(IAssertion<T> assertion)
-      {
-         orThrow(assertion);
-         return convert<T, TResult>(assertion);
-      }
-
-      public static TResult forceConvert<T, TResult>(IAssertion<T> assertion, string message)
-      {
-         orThrow(assertion, message);
-         return convert<T, TResult>(assertion);
-      }
-
-      public static TResult forceConvert<T, TResult>(IAssertion<T> assertion, Func<string> messageFunc)
-      {
-         orThrow(assertion, messageFunc);
-         return convert<T, TResult>(assertion);
-      }
-
-      public static TResult forceConvert<T, TException, TResult>(IAssertion<T> assertion, params object[] args) where TException : Exception
-      {
-         orThrow<TException, T>(assertion, args);
-         return convert<T, TResult>(assertion);
-      }
-
-      public static Result<T> orFailure<T>(IAssertion<T> assertion)
-      {
-         return assertion.Constraints.FirstOrNone(c => !c.IsTrue()).Map(c => c.Message.Failure<T>()) | (() => assertion.Value);
-      }
-
-      public static Result<T> orFailure<T>(IAssertion<T> assertion, string message)
-      {
-         return assertion.Constraints.Any(c => !c.IsTrue()) ? message.Failure<T>() : assertion.Value;
-      }
-
-      public static Result<T> orFailure<T>(IAssertion<T> assertion, Func<string> messageFunc)
-      {
-         return assertion.Constraints.Any(c => !c.IsTrue()) ? messageFunc().Failure<T>() : assertion.Value;
-      }
-
-      public static Maybe<T> orNone<T>(IAssertion<T> assertion)
-      {
-         return maybe(assertion.Constraints.All(c => c.IsTrue()), () => assertion.Value);
-      }
-
-      public static async Task<Completion<T>> orFailureAsync<T>(IAssertion<T> assertion, CancellationToken token)
-      {
-         return await runAsync(t =>
-            assertion.Constraints
-               .FirstOrNone(c => !c.IsTrue())
-               .Map(c => c.Message.Interrupted<T>()) | (() => assertion.Value.Completed(t)), token);
-      }
-
-      public static async Task<Completion<T>> orFailureAsync<T>(IAssertion<T> assertion, string message, CancellationToken token)
-      {
-         return await runAsync(t => assertion.Constraints.Any(c => !c.IsTrue()) ? message.Interrupted<T>() : assertion.Value.Completed(t), token);
-      }
-
-      public static async Task<Completion<T>> orFailureAsync<T>(IAssertion<T> assertion, Func<string> messageFunc, CancellationToken token)
-      {
-         return await runAsync(t => assertion.Constraints.Any(c => !c.IsTrue()) ? messageFunc().Interrupted<T>() : assertion.Value.Completed(t),
-            token);
-      }
-
-      public static bool orReturn<T>(IAssertion<T> assertion) => !assertion.BeEquivalentToTrue();
-
-      [Obsolete("Use Named extension")]
-      public static Expression<Func<T>> assert<T>(Expression<Func<T>> func) => func;
-
-      public static Expression<Func<object>> asObject(Expression<Func<object>> func) => func;
-
-      public static (string name, T value) resolve<T>(Expression<Func<T>> expression)
-      {
-         var expressionBody = expression.Body;
-         var key = expressionBody.ToString();
-
-         var name = nameCache[key];
-
-         if (valueCache.Map(key, out var obj))
-         {
-            return (name, (T)obj);
-         }
-
-         var value = expression.Compile()();
-         if (name.IsEmpty())
-         {
-            name = value.ToNonNullString();
-         }
-
-         valueCache[key] = value;
-
-         return (name, value);
-      }
+      return (name, value);
    }
 }

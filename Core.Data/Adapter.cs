@@ -12,215 +12,214 @@ using Core.Objects;
 using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
 
-namespace Core.Data
+namespace Core.Data;
+
+public class Adapter<T> : IEnumerable<T> where T : class
 {
-   public class Adapter<T> : IEnumerable<T> where T : class
+   public static Result<Adapter<T>> FromSetup(ISetup setup, T entity) => tryTo(() => new Adapter<T>(entity, setup));
+
+   public static Result<Adapter<T>> FromSetupObject(T entity)
    {
-      public static Result<Adapter<T>> FromSetup(ISetup setup, T entity) => tryTo(() => new Adapter<T>(entity, setup));
-
-      public static Result<Adapter<T>> FromSetupObject(T entity)
+      if (entity is ISetupObject setupObject)
       {
-         if (entity is ISetupObject setupObject)
-         {
-            return
-               from setup in tryTo(() => setupObject.Setup())
-               from adapter in FromSetup(setup, entity)
-               select adapter;
-         }
-         else
-         {
-            return fail("Entity must support ISetupObject interface");
-         }
+         return
+            from setup in tryTo(() => setupObject.Setup())
+            from adapter in FromSetup(setup, entity)
+            select adapter;
+      }
+      else
+      {
+         return fail("Entity must support ISetupObject interface");
+      }
+   }
+
+   protected T entity;
+   protected Func<T> newFunc;
+
+   public Adapter(T entity, ISetup setup)
+   {
+      DataSource = setup.DataSource;
+      if (setup is ISetupWithInfo setupWithInfo && setupWithInfo.Handler)
+      {
+         DataSource.SetMessageHandler(setupWithInfo.Handler);
       }
 
-      protected T entity;
-      protected Func<T> newFunc;
+      Command = setup.CommandText;
+      Parameters = new Parameters.Parameters(setup.Parameters);
+      Fields = new Fields.Fields(setup.Fields);
 
-      public Adapter(T entity, ISetup setup)
+      this.entity = entity.Must().Not.BeNull().Force<T>();
+      setEntityType();
+      setNewFunc();
+   }
+
+   internal Adapter(Adapter<T> other, string command)
+   {
+      DataSource = other.DataSource;
+      Command = command;
+      Parameters = other.Parameters;
+      Fields = other.Fields;
+      entity = other.entity;
+
+      setEntityType();
+      setNewFunc();
+   }
+
+   protected void setNewFunc()
+   {
+      var entityType = entity.GetType();
+      if (entityType.GetConstructors().Any(c => c.GetParameters().Length == 0))
       {
-         DataSource = setup.DataSource;
-         if (setup is ISetupWithInfo setupWithInfo && setupWithInfo.Handler.Map(out var handler))
-         {
-            DataSource.SetMessageHandler(handler);
-         }
+         newFunc = () => (T)Activator.CreateInstance(entityType);
+      }
+      else
+      {
+         newFunc = () => entity;
+      }
+   }
 
-         Command = setup.CommandText;
-         Parameters = new Parameters.Parameters(setup.Parameters);
-         Fields = new Fields.Fields(setup.Fields);
-
-         this.entity = entity.Must().Not.BeNull().Force<T>();
+   public T Entity
+   {
+      get => entity;
+      set
+      {
+         entity = value.MustOfType().Not.BeNull().Force<T>();
          setEntityType();
-         setNewFunc();
       }
+   }
 
-      internal Adapter(Adapter<T> other, string command)
-      {
-         DataSource = other.DataSource;
-         Command = command;
-         Parameters = other.Parameters;
-         Fields = other.Fields;
-         entity = other.entity;
+   public Func<T> NewFunc
+   {
+      get => newFunc;
+      set => newFunc = value;
+   }
 
-         setEntityType();
-         setNewFunc();
-      }
+   public DataSource DataSource { get; set; }
 
-      protected void setNewFunc()
-      {
-         var entityType = entity.GetType();
-         if (entityType.GetConstructors().Any(c => c.GetParameters().Length == 0))
-         {
-            newFunc = () => (T)Activator.CreateInstance(entityType);
-         }
-         else
-         {
-            newFunc = () => entity;
-         }
-      }
+   public string Command { get; set; }
 
-      public T Entity
-      {
-         get => entity;
-         set
-         {
-            entity = value.MustOfType().Not.BeNull().Force<T>();
-            setEntityType();
-         }
-      }
+   public Parameters.Parameters Parameters { get; set; }
 
-      public Func<T> NewFunc
-      {
-         get => newFunc;
-         set => newFunc = value;
-      }
+   public Fields.Fields Fields { get; set; }
 
-      public DataSource DataSource { get; set; }
+   public int RecordsAffected { get; set; }
 
-      public string Command { get; set; }
+   public string ConnectionString
+   {
+      get => DataSource.ConnectionString;
+      set => DataSource.ConnectionString = value;
+   }
 
-      public Parameters.Parameters Parameters { get; set; }
+   public bool HasRows { get; set; }
 
-      public Fields.Fields Fields { get; set; }
+   protected void setEntityType()
+   {
+      Parameters.DeterminePropertyTypes(entity);
+      Fields.DeterminePropertyTypes(entity);
+   }
 
-      public int RecordsAffected { get; set; }
+   public T Execute()
+   {
+      RecordsAffected = DataSource.Execute(entity, Command, Parameters, Fields);
+      HasRows = DataSource.HasRows;
 
-      public string ConnectionString
-      {
-         get => DataSource.ConnectionString;
-         set => DataSource.ConnectionString = value;
-      }
+      return entity;
+   }
 
-      public bool HasRows { get; set; }
-
-      protected void setEntityType()
-      {
-         Parameters.DeterminePropertyTypes(entity);
-         Fields.DeterminePropertyTypes(entity);
-      }
-
-      public T Execute()
+   public Responding<T> ExecuteResponding()
+   {
+      try
       {
          RecordsAffected = DataSource.Execute(entity, Command, Parameters, Fields);
          HasRows = DataSource.HasRows;
 
-         return entity;
+         return HasRows ? entity : nil;
       }
-
-      public Responding<T> ExecuteResponding()
+      catch (Exception exception)
       {
-         try
-         {
-            RecordsAffected = DataSource.Execute(entity, Command, Parameters, Fields);
-            HasRows = DataSource.HasRows;
-
-            return HasRows ? entity : nil;
-         }
-         catch (Exception exception)
-         {
-            return exception;
-         }
+         return exception;
       }
-
-      public Maybe<T> ExecuteMaybe()
-      {
-         try
-         {
-            RecordsAffected = DataSource.Execute(entity, Command, Parameters, Fields);
-            HasRows = DataSource.HasRows;
-
-            return maybe(HasRows, () => entity);
-         }
-         catch
-         {
-            return nil;
-         }
-      }
-
-      public IDataReader ExecuteReader() => DataSource.ExecuteReader(entity, Command, Parameters);
-
-      public IBulkCopyTarget BulkCopy<TSource>(Adapter<TSource> sourceAdapter) where TSource : class
-      {
-         if (DataSource is IBulkCopyTarget bulkCopy)
-         {
-            bulkCopy.TableName = Command;
-            bulkCopy.Copy(sourceAdapter);
-
-            return bulkCopy;
-         }
-         else
-         {
-            throw "This data source doesn't support a bulk copy".Throws();
-         }
-      }
-
-      public IBulkCopyTarget BulkCopy(IDataReader reader, TimeSpan timeout)
-      {
-         if (DataSource is IBulkCopyTarget bulkCopy)
-         {
-            bulkCopy.TableName = Command;
-            bulkCopy.Copy(reader, timeout);
-
-            return bulkCopy;
-         }
-         else
-         {
-            throw "This data source doesn't support a bulk copy".Throws();
-         }
-      }
-
-      public IDbConnection NativeConnection() => DataSource.GetConnection();
-
-      public Reader<T> Reader() => new(DataSource, Entity, newFunc, Command, Parameters, Fields);
-
-      public DataSet DataSet()
-      {
-         if (DataSource is SqlDataSource ds)
-         {
-            return ds.DataSet(entity, Command, Parameters);
-         }
-         else
-         {
-            throw "You may only use a SQLDataSource for this function.".Throws();
-         }
-      }
-
-      public IEnumerator<T> GetEnumerator() => Reader().GetEnumerator();
-
-      IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
-      public AdapterTrying<T> TryTo => new(this);
-
-      public Adapter<T> WithNewCommand(string newCommand) => new(this, newCommand);
    }
 
-   public class Adapter : Adapter<DataContainer>
+   public Maybe<T> ExecuteMaybe()
    {
-      public Adapter(ISetup setup) : base(new DataContainer(), setup)
+      try
       {
-      }
+         RecordsAffected = DataSource.Execute(entity, Command, Parameters, Fields);
+         HasRows = DataSource.HasRows;
 
-      internal Adapter(Adapter other, string command) : base(other, command)
-      {
+         return maybe(HasRows, () => entity);
       }
+      catch
+      {
+         return nil;
+      }
+   }
+
+   public IDataReader ExecuteReader() => DataSource.ExecuteReader(entity, Command, Parameters);
+
+   public IBulkCopyTarget BulkCopy<TSource>(Adapter<TSource> sourceAdapter) where TSource : class
+   {
+      if (DataSource is IBulkCopyTarget bulkCopy)
+      {
+         bulkCopy.TableName = Command;
+         bulkCopy.Copy(sourceAdapter);
+
+         return bulkCopy;
+      }
+      else
+      {
+         throw "This data source doesn't support a bulk copy".Throws();
+      }
+   }
+
+   public IBulkCopyTarget BulkCopy(IDataReader reader, TimeSpan timeout)
+   {
+      if (DataSource is IBulkCopyTarget bulkCopy)
+      {
+         bulkCopy.TableName = Command;
+         bulkCopy.Copy(reader, timeout);
+
+         return bulkCopy;
+      }
+      else
+      {
+         throw "This data source doesn't support a bulk copy".Throws();
+      }
+   }
+
+   public IDbConnection NativeConnection() => DataSource.GetConnection();
+
+   public Reader<T> Reader() => new(DataSource, Entity, newFunc, Command, Parameters, Fields);
+
+   public DataSet DataSet()
+   {
+      if (DataSource is SqlDataSource ds)
+      {
+         return ds.DataSet(entity, Command, Parameters);
+      }
+      else
+      {
+         throw "You may only use a SQLDataSource for this function.".Throws();
+      }
+   }
+
+   public IEnumerator<T> GetEnumerator() => Reader().GetEnumerator();
+
+   IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+   public AdapterTrying<T> TryTo => new(this);
+
+   public Adapter<T> WithNewCommand(string newCommand) => new(this, newCommand);
+}
+
+public class Adapter : Adapter<DataContainer>
+{
+   public Adapter(ISetup setup) : base(new DataContainer(), setup)
+   {
+   }
+
+   internal Adapter(Adapter other, string command) : base(other, command)
+   {
    }
 }

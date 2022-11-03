@@ -194,11 +194,12 @@ public class ExTextBox : TextBox
 
    public IEnumerable<(Rectangle rectangle, string word)> RectangleWords(Graphics graphics)
    {
-      if (Text.Matches("/w+; f").Map(out var result))
+      var _result = Text.Matches("/w+; f");
+      if (_result)
       {
-         for (var i = 0; i < result.MatchCount; i++)
+         foreach (var match in ~_result)
          {
-            var (text, index, length) = result.GetMatch(i);
+            var (text, index, length) = match;
             var rectangle = RectangleFrom(graphics, index, length, false);
             yield return (rectangle, text);
          }
@@ -207,11 +208,12 @@ public class ExTextBox : TextBox
 
    public IEnumerable<(int start, int length)> Words()
    {
-      if (Text.Matches("/w+; f").Map(out var result))
+      var _result = Text.Matches("/w+; f");
+      if (_result)
       {
-         for (var i = 0; i < result.MatchCount; i++)
+         foreach (var match in ~_result)
          {
-            var (_, index, length) = result.GetMatch(i);
+            var (_, index, length) = match;
             yield return (index, length);
          }
       }
@@ -219,11 +221,12 @@ public class ExTextBox : TextBox
 
    public IEnumerable<(char, Rectangle)> RectangleWhitespace(Graphics graphics)
    {
-      if (Text.Matches("[' /t']; f").Map(out var result))
+      var _result = Text.Matches("[' /t']; f");
+      if (_result)
       {
-         for (var i = 0; i < result.MatchCount; i++)
+         foreach (var match in ~_result)
          {
-            var (text, index, length) = result.GetMatch(i);
+            var (text, index, length) = match;
             var rectangle = RectangleFrom(graphics, index, length, false);
             yield return (text[0], rectangle);
          }
