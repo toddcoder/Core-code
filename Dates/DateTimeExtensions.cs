@@ -48,15 +48,11 @@ public static class DateTimeExtensions
 
       protected Result<DateTime> validate()
       {
-         if (Year.Map(out var year, out var exception) && Month.Map(out var month, out exception) &&
-             Day.Map(out var day, out exception))
-         {
-            return valid(year, month, day);
-         }
-         else
-         {
-            return exception;
-         }
+         return
+            from year in Year
+            from month in Month
+            from day in Day
+            select valid(year, month, day);
       }
 
       public Result<ValidDate> AndYear(int year) => ((bool)Month || (bool)Day).Result(() =>

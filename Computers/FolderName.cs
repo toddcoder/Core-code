@@ -511,10 +511,14 @@ public class FolderName : IComparable, IComparable<FolderName>, IEquatable<Folde
             file.CopyTo(targetFolder, true);
             FileSuccess?.Invoke(this, new FileArgs(file, file, "Copied"));
          }
-         else if (targetFolder.File(file).Next().Map(out var candidateFile))
+         else
          {
-            file.CopyTo(candidateFile, true);
-            FileSuccess?.Invoke(this, new FileArgs(file, candidateFile, "Copied"));
+            var _candidateFile = targetFolder.File(file).Next();
+            if (_candidateFile)
+            {
+               file.CopyTo(_candidateFile, true);
+               FileSuccess?.Invoke(this, new FileArgs(file, _candidateFile, "Copied"));
+            }
          }
       }
    }

@@ -4,106 +4,105 @@ using Core.Monads;
 using Core.Objects;
 using static Core.Monads.MonadFunctions;
 
-namespace Core.Strings.Text
+namespace Core.Strings.Text;
+
+public class DifferenceItem : EquatableBase
 {
-   public class DifferenceItem : EquatableBase
+   protected List<DifferenceItem> subItems;
+
+   public DifferenceItem(string text, DifferenceType type, Maybe<int> _position)
    {
-      protected List<DifferenceItem> subItems;
+      Text = text;
+      Type = type;
+      Position = _position;
+      subItems = new List<DifferenceItem>();
+   }
 
-      public DifferenceItem(string text, DifferenceType type, Maybe<int> _position)
+   public DifferenceItem(string text, DifferenceType type, int position) : this(text, type, position.Some())
+   {
+   }
+
+   public DifferenceItem(string text, DifferenceType type) : this(text, type, nil)
+   {
+   }
+
+   public DifferenceItem() : this("", DifferenceType.Imaginary)
+   {
+   }
+
+   protected override bool equals(object other)
+   {
+      return other is DifferenceItem otherDiffItem && (bool)Position == (bool)otherDiffItem.Position && subItemsEqual(otherDiffItem);
+   }
+
+   [Equatable]
+   public DifferenceType Type { get; set; }
+
+   public Maybe<int> Position { get; }
+
+   [Equatable]
+   public string Text { get; }
+
+   public List<DifferenceItem> SubItems => subItems;
+
+   protected bool subItemsEqual(DifferenceItem otherItem)
+   {
+      if (subItems.Count == 0)
       {
-         Text = text;
-         Type = type;
-         Position = _position;
-         subItems = new List<DifferenceItem>();
+         return otherItem.SubItems.Count == 0;
+      }
+      else if (otherItem.SubItems.Count == 0)
+      {
+         return false;
       }
 
-      public DifferenceItem(string text, DifferenceType type, int position) : this(text, type, position.Some())
+      if (subItems.Count != otherItem.SubItems.Count)
       {
+         return false;
       }
 
-      public DifferenceItem(string text, DifferenceType type) : this(text, type, nil)
+      for (var i = 0; i < subItems.Count; i++)
       {
-      }
-
-      public DifferenceItem() : this("", DifferenceType.Imaginary)
-      {
-      }
-
-      protected override bool equals(object other)
-      {
-         return other is DifferenceItem otherDiffItem && (bool)Position == (bool)otherDiffItem.Position && subItemsEqual(otherDiffItem);
-      }
-
-      [Equatable]
-      public DifferenceType Type { get; set; }
-
-      public Maybe<int> Position { get; }
-
-      [Equatable]
-      public string Text { get; }
-
-      public List<DifferenceItem> SubItems => subItems;
-
-      protected bool subItemsEqual(DifferenceItem otherItem)
-      {
-         if (subItems.Count == 0)
-         {
-            return otherItem.SubItems.Count == 0;
-         }
-         else if (otherItem.SubItems.Count == 0)
+         if (!subItems[i].Equals(otherItem.SubItems[i]))
          {
             return false;
          }
-
-         if (subItems.Count != otherItem.SubItems.Count)
-         {
-            return false;
-         }
-
-         for (var i = 0; i < subItems.Count; i++)
-         {
-            if (!subItems[i].Equals(otherItem.SubItems[i]))
-            {
-               return false;
-            }
-         }
-
-         return true;
       }
 
-      public override string ToString()
+      return true;
+   }
+
+   public override string ToString()
+   {
+      using var writer = new StringWriter();
+
+      if (Position)
       {
-         using var writer = new StringWriter();
-
-         if (Position.Map(out var position))
-         {
-            writer.Write(position.RightJustify(10));
-            writer.Write(" ");
-         }
-         else
-         {
-            writer.Write(" ".Repeat(11));
-         }
-
-         writer.Write(Type.LeftJustify(10));
-
-         writer.Write(" | ");
-         writer.Write(Text.Elliptical(60, ' '));
-
-         if (subItems.Count > 0)
-         {
-            writer.WriteLine();
-            writer.WriteLine("          {");
-            foreach (var subItem in subItems)
-            {
-               writer.WriteLine($"  {subItem}");
-            }
-
-            writer.Write("          }");
-         }
-
-         return writer.ToString();
+         writer.Write((~Position).RightJustify(10));
+         writer.Write(" ");
       }
+      else
+      {
+         writer.Write(" ".Repeat(11));
+      }
+
+      writer.Write(Type.LeftJustify(10));
+
+      writer.Write(" | ");
+      writer.Write(Text.Elliptical(60, ' '));
+
+      if (subItems.Count > 0)
+      {
+         writer.WriteLine();
+         writer.WriteLine("          {");
+         foreach (var subItem in subItems)
+         {
+            writer.WriteLine($"  {subItem}");
+         }
+
+         writer.Write("          }");
+      }
+
+      return writer.ToString();
    }
 }

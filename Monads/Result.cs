@@ -117,6 +117,7 @@ namespace Core.Monads
 
       public static T operator ~(Result<T> result) => result.Value;
 
+      [Obsolete("Use ~")]
       public abstract bool Map(out T value, out Exception exception);
 
       public abstract Result<TResult> Map<TResult>(Func<T, Result<TResult>> ifSuccessful);
@@ -139,10 +140,13 @@ namespace Core.Monads
 
       public abstract Result<T> Always(Action action);
 
+      [Obsolete("Use ~")]
       public abstract bool Map(out T value);
 
+      [Obsolete("Use !")]
       public abstract bool UnMap(out Exception exception);
 
+      [Obsolete("Use !")]
       public abstract bool UnMap(out T value, out Exception exception);
 
       public abstract void Force();

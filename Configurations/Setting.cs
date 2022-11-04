@@ -107,7 +107,7 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
 
    public override IEnumerable<(string key, string text)> Items()
    {
-      foreach (var item in items.Where(i => i.Value is Item).Select(i=>(Item)i.Value))
+      foreach (var item in items.Where(i => i.Value is Item).Select(i => (Item)i.Value))
       {
          yield return (item.Key, item.Text);
       }
@@ -193,16 +193,17 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
       return newArray;
    }
 
-   protected static Maybe<object> makeArray(Type elementType, Setting[] groups)
+   protected static Maybe<object> makeArray(Type elementType, Setting[] settings)
    {
-      var length = groups.Length;
+      var length = settings.Length;
       var newArray = Array.CreateInstance(elementType, length);
       for (var i = 0; i < length; i++)
       {
-         var group = groups[i];
-         if (group.Deserialize(elementType).Map(out var element))
+         var setting = settings[i];
+         var _element = setting.Deserialize(elementType);
+         if (_element)
          {
-            newArray.SetValue(element, i);
+            newArray.SetValue(_element, i);
          }
          else
          {
@@ -281,10 +282,11 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
          }
          else
          {
-            if (FromString(source).Map(out var arraySetting))
+            var _arraySetting = FromString(source);
+            if (_arraySetting)
             {
-               var groups = arraySetting.Settings().Select(t => t.setting).ToArray();
-               return makeArray(elementType, groups);
+               var settings = (~_arraySetting).Settings().Select(t => t.setting).ToArray();
+               return makeArray(elementType, settings);
             }
             else
             {
@@ -292,13 +294,9 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
             }
          }
       }
-      else if (FromString(source).Map(out var configuration))
-      {
-         return configuration.Deserialize(type).Maybe();
-      }
       else
       {
-         return nil;
+         return FromString(source).Map(setting => setting.Deserialize(type).Maybe());
       }
    }
 
@@ -406,13 +404,14 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
                         for (var i = 0; i < array.Length; i++)
                         {
                            var generatedKey = Parser.GenerateKey();
-                           if (Serialize(elementType, array.GetValue(i), generatedKey).Map(out var elementGroup, out var exception))
+                           var _elementSetting = Serialize(elementType, array.GetValue(i), generatedKey);
+                           if (_elementSetting)
                            {
-                              arraySetting.SetItem(generatedKey, elementGroup);
+                              arraySetting.SetItem(generatedKey, _elementSetting);
                            }
                            else
                            {
-                              return exception;
+                              return _elementSetting.Exception;
                            }
                         }
 
@@ -421,13 +420,14 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
                   }
                   else
                   {
-                     if (Serialize(propertyType, value, key).Map(out var propertySetting, out var exception))
+                     var _propertySetting = Serialize(propertyType, value, key);
+                     if (_propertySetting)
                      {
-                        setting.SetItem(key, propertySetting);
+                        setting.SetItem(key, _propertySetting);
                      }
                      else
                      {
-                        return exception;
+                        return _propertySetting.Exception;
                      }
                   }
                }

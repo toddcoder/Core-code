@@ -107,13 +107,13 @@ public static class MonadExtensions
    [DebuggerStepThrough]
    public static Result<TResult> Select<T, TResult>(this Result<T> result, Func<T, TResult> func)
    {
-      if (result.Map(out var value, out var exception))
+      if (result)
       {
-         return func(value);
+         return func(~result);
       }
       else
       {
-         return exception;
+         return result.Exception;
       }
    }
 
@@ -342,16 +342,16 @@ public static class MonadExtensions
          Maybe<TResult> _firstItem = nil;
          foreach (var result in enumerable.Select(item => tryTo(() => func(item))))
          {
-            if (result.Map(out var value, out var exception))
+            if (result)
             {
                if (!_firstItem)
                {
-                  _firstItem = value;
+                  _firstItem = ~result;
                }
             }
             else
             {
-               return exception;
+               return result.Exception;
             }
          }
 
@@ -420,26 +420,26 @@ public static class MonadExtensions
 
    public static T ThrowIfFailed<T>(this Result<T> result)
    {
-      if (result.Map(out var value, out var exception))
+      if (result)
       {
-         return value;
+         return ~result;
       }
       else
       {
-         throw exception;
+         throw result.Exception;
       }
    }
 
    public static void ForEach<T>(this Result<IEnumerable<T>> enumerable, Action<T> ifSuccess,
       Action<Exception> ifFailure)
    {
-      if (enumerable.Map(out var e, out var exception))
+      if (enumerable)
       {
-         e.ForEach(ifSuccess, ifFailure);
+         (~enumerable).ForEach(ifSuccess, ifFailure);
       }
       else
       {
-         ifFailure(exception);
+         ifFailure(enumerable.Exception);
       }
    }
 

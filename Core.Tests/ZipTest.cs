@@ -6,57 +6,47 @@ using Core.Monads;
 using Core.Zip;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Core.Tests
+namespace Core.Tests;
+
+[TestClass]
+public class ZipTest
 {
-   [TestClass]
-   public class ZipTest
+   protected const string SOURCE_FOLDER = @"C:\Enterprise\Working\Zips\Source";
+   protected const string ZIPS_FOLDER = @"C:\Enterprise\Working\Zips";
+
+   [TestInitialize]
+   public void Initialize()
    {
-      protected const string SOURCE_FOLDER = @"C:\Enterprise\Working\Zips\Source";
-      protected const string ZIPS_FOLDER = @"C:\Enterprise\Working\Zips";
-
-      [TestInitialize]
-      public void Initialize()
+      FolderName zipFolder = SOURCE_FOLDER;
+      var _zipFile = zipFolder.TryToZip("tsqlcop");
+      if (_zipFile)
       {
-         FolderName zipFolder = SOURCE_FOLDER;
-         if (zipFolder.TryToZip("tsqlcop").Map(out var zipFile, out var exception))
-         {
-            Console.WriteLine($"Zipped to {zipFile}");
-         }
-         else
-         {
-            Console.WriteLine($"exception: {exception.Message}");
-         }
+         Console.WriteLine($"Zipped to {_zipFile}");
       }
-
-      [TestMethod]
-      public void ZipFolderTest()
+      else
       {
-         FolderName zipFolder = ZIPS_FOLDER;
-         var anyFiles = zipFolder.TryTo.Files;
-         if (anyFiles.Map(out var files, out var exception))
-         {
-            var lastFile = files.Where(f => f.Extension == ".zip").MaxOrFail(f => f.CreationTime, () => "No file found");
-            if (lastFile.Map(out var zipFile, out exception))
-            {
-               if (zipFile.TryToUnzip().Map(out var folder, out exception))
-               {
-                  folder.Must().Exist().OrThrow();
-                  Console.WriteLine(folder.FullPath);
-               }
-               else
-               {
-                  Console.WriteLine($"exception: {exception.Message}");
-               }
-            }
-            else
-            {
-               Console.WriteLine($"exception: {exception.Message}");
-            }
-         }
-         else
-         {
-            Console.WriteLine($"exception: {exception.Message}");
-         }
+         Console.WriteLine($"exception: {_zipFile.Exception.Message}");
+      }
+   }
+
+   [TestMethod]
+   public void ZipFolderTest()
+   {
+      FolderName zipFolder = ZIPS_FOLDER;
+      var _folder =
+         from files in zipFolder.TryTo.Files
+         from zipFile in files.Where(f => f.Extension == ".zip").MaxOrFail(f => f.CreationTime, () => "No file found")
+         from folder in zipFile.TryToUnzip()
+         select folder;
+      if (_folder)
+      {
+         var folder = ~_folder;
+         folder.Must().Exist().OrThrow();
+         Console.WriteLine(folder.FullPath);
+      }
+      else
+      {
+         Console.WriteLine(_folder.Exception.Message);
       }
    }
 }

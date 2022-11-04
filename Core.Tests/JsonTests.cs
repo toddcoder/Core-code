@@ -3,65 +3,67 @@ using Core.Computers;
 using Core.Json;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Core.Tests
+namespace Core.Tests;
+
+[TestClass]
+public class JsonTests
 {
-   [TestClass]
-   public class JsonTests
+   [TestMethod]
+   public void DeserializationTest()
    {
-      [TestMethod]
-      public void DeserializationTest()
+      FileName jsonFile = @"..\..\TestData\work-item.json";
+      var source = jsonFile.Text;
+      var deserializer = new Deserializer(source);
+      var _setting = deserializer.Deserialize();
+      if (_setting)
       {
-         FileName jsonFile = @"..\..\TestData\work-item.json";
-         var source = jsonFile.Text;
-         var deserializer = new Deserializer(source);
-         if (deserializer.Deserialize().Map(out var setting, out var exception))
-         {
-            Console.WriteLine(setting);
-         }
-         else
-         {
-            Console.WriteLine($"Exception: {exception.Message}");
-         }
+         Console.WriteLine(~_setting);
       }
-
-      [TestMethod]
-      public void Deserialization2Test()
+      else
       {
-         FileName jsonFile = @"..\..\TestData\builds.json";
-         var source = jsonFile.Text;
-         var deserializer = new Deserializer(source);
-         if (deserializer.Deserialize().Map(out var setting, out var exception))
-         {
-            Console.WriteLine(setting.Count);
-            Console.WriteLine(setting);
-         }
-         else
-         {
-            Console.WriteLine($"Exception: {exception.Message}");
-         }
+         Console.WriteLine($"Exception: {_setting.Exception.Message}");
       }
+   }
 
-      [TestMethod]
-      public void WriterTest()
+   [TestMethod]
+   public void Deserialization2Test()
+   {
+      FileName jsonFile = @"..\..\TestData\builds.json";
+      var source = jsonFile.Text;
+      var deserializer = new Deserializer(source);
+      var _setting = deserializer.Deserialize();
+      if (_setting)
       {
-         using var writer = new JsonWriter();
-
-         writer.BeginObject();
-         writer.BeginObject("metadata");
-         writer.Write("id", "Core");
-         writer.Write("version", "1.4.4.6");
-         writer.Write("title", "Core");
-         writer.Write("authors", "Todd Bennett");
-         writer.Write("copyright", 2021);
-         writer.BeginArray("tags");
-         writer.Write("Core");
-         writer.Write("Async");
-         writer.Write("Types");
-         writer.EndArray();
-         writer.EndObject();
-         writer.EndObject();
-
-         Console.WriteLine(writer);
+         var setting = ~_setting;
+         Console.WriteLine(setting.Count);
+         Console.WriteLine(setting);
       }
+      else
+      {
+         Console.WriteLine($"Exception: {_setting.Exception.Message}");
+      }
+   }
+
+   [TestMethod]
+   public void WriterTest()
+   {
+      using var writer = new JsonWriter();
+
+      writer.BeginObject();
+      writer.BeginObject("metadata");
+      writer.Write("id", "Core");
+      writer.Write("version", "1.4.4.6");
+      writer.Write("title", "Core");
+      writer.Write("authors", "Todd Bennett");
+      writer.Write("copyright", 2021);
+      writer.BeginArray("tags");
+      writer.Write("Core");
+      writer.Write("Async");
+      writer.Write("Types");
+      writer.EndArray();
+      writer.EndObject();
+      writer.EndObject();
+
+      Console.WriteLine(writer);
    }
 }

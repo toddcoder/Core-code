@@ -2,92 +2,91 @@
 using System;
 using Core.Monads;
 
-namespace Core.Tests
+namespace Core.Tests;
+
+[TestClass]
+public class EitherTests
 {
-   [TestClass]
-   public class EitherTests
+   [TestMethod]
+   public void CreatingTest()
    {
-      [TestMethod]
-      public void CreatingTest()
+      Either<char, string> _left = 'a';
+      Either<char, string> _right = "a";
+      if (_left.IfLeft(out var left))
       {
-         Either<char, string> _left = 'a';
-         Either<char, string> _right = "a";
-         if (_left.IfLeft(out var left))
-         {
-            Console.WriteLine($"char {left}");
-         }
-
-         if (_right.IfRight(out var right))
-         {
-            Console.WriteLine($"string {right}");
-         }
+         Console.WriteLine($"char {left}");
       }
 
-      [TestMethod]
-      public void MappingTest()
+      if (_right.IfRight(out var right))
       {
-         Either<int, double> _left = 10;
-         var dLeft = _left.Map(i => (double)i, d => (int)d);
-         if (dLeft.IfLeft(out var @double, out var @int))
-         {
-            Console.WriteLine($"double {@double} is good");
-         }
-         else
-         {
-            Console.WriteLine($"Unexpected int {@int}");
-         }
+         Console.WriteLine($"string {right}");
+      }
+   }
 
-         Either<int, double> _right = 7.0;
-         var iRight = _right.Map(i => i / 2.0, d => (int)d / 2);
-         if (iRight.IfLeft(out @double, out @int))
-         {
-            Console.WriteLine($"Unexpected double {@double}");
-         }
-         else
-         {
-            Console.WriteLine($"int {@int} is good");
-         }
+   [TestMethod]
+   public void MappingTest()
+   {
+      Either<int, double> _left = 10;
+      var dLeft = _left.Map(i => (double)i, d => (int)d);
+      if (dLeft.IfLeft(out var @double, out var @int))
+      {
+         Console.WriteLine($"double {@double} is good");
+      }
+      else
+      {
+         Console.WriteLine($"Unexpected int {@int}");
       }
 
-      [TestMethod]
-      public void ResultTest()
+      Either<int, double> _right = 7.0;
+      var iRight = _right.Map(i => i / 2.0, d => (int)d / 2);
+      if (iRight.IfLeft(out @double, out @int))
       {
-         var charResult = ((Either<char, int>)'a').ResultFromLeft(i => $"Expected char; found {i}");
-         if (charResult.Map(out var @char, out var exception))
-         {
-            Console.WriteLine($"char {@char} is good");
-         }
-         else
-         {
-            Console.WriteLine($"Exception: {exception.Message}");
-         }
+         Console.WriteLine($"Unexpected double {@double}");
+      }
+      else
+      {
+         Console.WriteLine($"int {@int} is good");
+      }
+   }
 
-         var intResult = ((Either<char, int>)153).ResultFromLeft(i => $"Expected char; found {i}");
-         if (intResult.Map(out @char, out exception))
-         {
-            Console.WriteLine($"char {@char} is good");
-         }
-         else
-         {
-            Console.WriteLine($"Exception: {exception.Message}");
-         }
+   [TestMethod]
+   public void ResultTest()
+   {
+      var _char = ((Either<char, int>)'a').ResultFromLeft(i => $"Expected char; found {i}");
+      if (_char)
+      {
+         Console.WriteLine($"char {_char} is good");
+      }
+      else
+      {
+         Console.WriteLine($"Exception: {_char.Exception.Message}");
       }
 
-      [TestMethod]
-      public void DefaultTest()
+      _char = ((Either<char, int>)153).ResultFromLeft(i => $"Expected char; found {i}");
+      if (_char)
       {
-         var left = 'a'.Either<int, char>().DefaultToLeft(() => 'a');
-         Console.WriteLine($"{left}: {left.GetType().Name}");
+         Console.WriteLine($"char {_char} is good");
       }
-
-      [TestMethod]
-      public void ImplicitTest()
+      else
       {
-         Either<int, char> either = 'a';
-         Console.WriteLine(either);
-
-         either = 10;
-         Console.WriteLine(either);
+         Console.WriteLine($"Exception: {_char.Exception.Message}");
       }
+   }
+
+   [TestMethod]
+   public void DefaultTest()
+   {
+      var left = 'a'.Either<int, char>().DefaultToLeft(() => 'a');
+      Console.WriteLine($"{left}: {left.GetType().Name}");
+   }
+
+   [TestMethod]
+   public void ImplicitTest()
+   {
+      Either<int, char> either = 'a';
+      Console.WriteLine(either);
+
+      either = 10;
+      Console.WriteLine(either);
    }
 }

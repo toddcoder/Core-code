@@ -31,9 +31,13 @@ public class Menus : IHash<string, ToolStripMenuItem>
    public void Menu(string text, string shortcut = "")
    {
       var item = new ToolStripMenuItem(text) { Name = MenuName(text) };
-      if (shortcut.IsNotEmpty() && shortcutKeys(shortcut).Map(out var keys))
+      if (shortcut.IsNotEmpty())
       {
-         item.ShortcutKeys = keys;
+         var _keys = shortcutKeys(shortcut);
+         if (_keys)
+         {
+            item.ShortcutKeys = _keys;
+         }
       }
 
       menuItems[item.Name] = item;
@@ -45,9 +49,13 @@ public class Menus : IHash<string, ToolStripMenuItem>
    {
       var item = new ToolStripMenuItem(text) { Name = MenuName(text), Checked = isChecked };
       item.Click += handler;
-      if (shortcut.IsNotEmpty() && shortcutKeys(shortcut).Map(out var keys))
+      if (shortcut.IsNotEmpty())
       {
-         item.ShortcutKeys = keys;
+         var _keys = shortcutKeys(shortcut);
+         if (_keys)
+         {
+            item.ShortcutKeys = _keys;
+         }
       }
 
       menuItems[item.Name] = item;
@@ -70,9 +78,13 @@ public class Menus : IHash<string, ToolStripMenuItem>
 
    protected static void setShortcut(ToolStripMenuItem item, string shortcut)
    {
-      if (shortcut.IsNotEmpty() && shortcutKeys(shortcut).Map(out var keys))
+      if (shortcut.IsNotEmpty())
       {
-         item.ShortcutKeys = keys;
+         var _keys = shortcutKeys(shortcut);
+         if (_keys)
+         {
+            item.ShortcutKeys = _keys;
+         }
       }
    }
 

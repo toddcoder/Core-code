@@ -14,42 +14,164 @@ using Core.Dates.DateIncrements;
 using Core.Objects;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Core.Tests
+namespace Core.Tests;
+
+internal class ColumnData : ISetupObject
 {
-   internal class ColumnData : ISetupObject
+   public ColumnData()
    {
-      public ColumnData()
+      TypeName = string.Empty;
+      Name = string.Empty;
+   }
+
+   public string Name { get; set; }
+
+   public string TypeName { get; set; }
+
+   public int ObjectId { get; set; }
+
+   public override string ToString() => $"{ObjectId} = {Name} {TypeName}";
+
+   public string ConnectionString => SqlConnectionString.GetConnectionString(".", "local_tebennett", "TSqlCop");
+
+   public CommandSourceType CommandSourceType => CommandSourceType.File;
+
+   public string Command => @"C:\Enterprise\Projects\TSqlCop\source\SqlConformance.Library\MetaData\Queries\Columns.sql";
+
+   public TimeSpan CommandTimeout => 30.Seconds();
+
+   public IEnumerable<Parameter> Parameters()
+   {
+      yield return new Parameter("@lObjectId", nameof(ObjectId), typeof(int));
+   }
+
+   public IEnumerable<Field> Fields()
+   {
+      yield return new Field(nameof(ObjectId), typeof(int));
+      yield return new Field(nameof(Name), typeof(string));
+      yield return new Field(nameof(TypeName), typeof(string));
+   }
+
+   public IHash<string, string> Attributes => new Hash<string, string>();
+
+   public ISetup Setup() => new SqlSetup(this);
+}
+
+[TestClass]
+public class DataTests
+{
+   protected const string TRUE_CONNECTION_STRING = "Data Source=.;Initial Catalog=local_tebennett;Integrated Security=SSPI;" +
+      "Application Name=TSqlCop;";
+
+   [TestMethod]
+   public void FromConfigurationTest()
+   {
+      var entity = new ColumnData { ObjectId = 95 };
+      var resources = new Resources<DataTests>();
+      var source = resources.String("TestData.data.configuration");
+      var _adapter =
+         from @group in Setting.FromString(source)
+         from setup in SqlSetup.FromGroup(@group, "all")
+         from adapter in Adapter<ColumnData>.FromSetup(setup, entity)
+         select adapter;
+      if (_adapter)
       {
-         TypeName = string.Empty;
-         Name = string.Empty;
+         var data = (~_adapter).ToArray();
+         foreach (var columnData in data)
+         {
+            Console.WriteLine(columnData);
+         }
+      }
+      else
+      {
+         Console.WriteLine($"Exception: {_adapter.Exception.Message}");
+      }
+   }
+
+   [TestMethod]
+   public void FromConnectionStringTest()
+   {
+      var resources = new Resources<DataTests>();
+      var source = resources.String("TestData.data.configuration");
+      var _adapter =
+         from configuration in Setting.FromString(source)
+         from setup in SqlSetup.FromGroup(configuration, "all2")
+         from adapter in Adapter<ColumnData>.FromSetup(setup, new ColumnData { ObjectId = 5664280 })
+         select adapter;
+      if (_adapter)
+      {
+         var adapter = ~_adapter;
+         adapter.ConnectionString = TRUE_CONNECTION_STRING;
+         foreach (var columnData in adapter)
+         {
+            Console.WriteLine(columnData);
+         }
+      }
+      else
+      {
+         Console.WriteLine($"Exception: {_adapter.Exception.Message}");
+      }
+   }
+
+   [TestMethod]
+   public void FromSetupObject()
+   {
+      var entity = new ColumnData { ObjectId = 89 };
+      var _adapter = Adapter<ColumnData>.FromSetupObject(entity);
+      if (_adapter)
+      {
+         var adapter = ~_adapter;
+         adapter.ConnectionString = TRUE_CONNECTION_STRING;
+         var data = adapter.ToArray();
+         foreach (var columnData in data)
+         {
+            Console.WriteLine(columnData);
+         }
+      }
+      else
+      {
+         Console.WriteLine($"Exception: {_adapter.Exception.Message}");
+      }
+   }
+
+   [TestMethod]
+   public void SignatureTest()
+   {
+      var signature = new Signature("Foobar");
+      Console.WriteLine(signature);
+
+      signature = new Signature("Foobar[153]");
+      Console.WriteLine(signature);
+   }
+
+   protected class Object : ISetupObject
+   {
+      public Object()
+      {
+         ObjectName = string.Empty;
       }
 
-      public string Name { get; set; }
-
-      public string TypeName { get; set; }
+      public string ObjectName { get; set; }
 
       public int ObjectId { get; set; }
 
-      public override string ToString() => $"{ObjectId} = {Name} {TypeName}";
-
       public string ConnectionString => SqlConnectionString.GetConnectionString(".", "local_tebennett", "TSqlCop");
 
-      public CommandSourceType CommandSourceType => CommandSourceType.File;
+      public CommandSourceType CommandSourceType => CommandSourceType.SQL;
 
-      public string Command => @"C:\Enterprise\Projects\TSqlCop\source\SqlConformance.Library\MetaData\Queries\Columns.sql";
+      public string Command => "SELECT name as ObjectName, object_id as ObjectId FROM sys.objects WHERE name = @lObjectName";
 
       public TimeSpan CommandTimeout => 30.Seconds();
 
       public IEnumerable<Parameter> Parameters()
       {
-         yield return new Parameter("@lObjectId", nameof(ObjectId), typeof(int));
+         yield return new Parameter("@lObjectName", nameof(ObjectName), typeof(string));
       }
 
       public IEnumerable<Field> Fields()
       {
+         yield return new Field(nameof(ObjectName), typeof(string));
          yield return new Field(nameof(ObjectId), typeof(int));
-         yield return new Field(nameof(Name), typeof(string));
-         yield return new Field(nameof(TypeName), typeof(string));
       }
 
       public IHash<string, string> Attributes => new Hash<string, string>();
@@ -57,167 +179,46 @@ namespace Core.Tests
       public ISetup Setup() => new SqlSetup(this);
    }
 
-   [TestClass]
-   public class DataTests
+   [TestMethod]
+   public void HasRowsTest()
    {
-      protected const string TRUE_CONNECTION_STRING = "Data Source=.;Initial Catalog=local_tebennett;Integrated Security=SSPI;" +
-         "Application Name=TSqlCop;";
+      var obj = new Object { ObjectName = "Foobar" };
+      Console.WriteLine(obj.SqlAdapter().ExecuteMaybe() ? "Foobar exists" : "Foobar doesn't exist");
 
-      [TestMethod]
-      public void FromConfigurationTest()
+      obj.ObjectName = "PaperTicketStorageAssignment";
+      Console.WriteLine(obj.SqlAdapter().ExecuteMaybe() ? $"{obj.ObjectName} exists" : $"{obj.ObjectName} doesn't exist");
+   }
+
+   [TestMethod]
+   public void FluentTest()
+   {
+      var setupBuilder = new SqlSetupBuilder();
+      var setup = setupBuilder
+         .ConnectionString(TRUE_CONNECTION_STRING)
+         .CommandText((FileName)@"~\source\repos\Eprod.TSqlCop\source\SqlConformance.Library\MetaData\Queries\Columns.sql")
+         .Parameter("@lObjectId")
+         .Signature("ObjectId")
+         .Type(typeof(int))
+         .EndParameter()
+         .Field("ObjectId")
+         .Type(typeof(int))
+         .EndField()
+         .Field("Name")
+         .Type(typeof(string))
+         .EndField()
+         .Field("TypeName")
+         .Type(typeof(string))
+         .EndField()
+         .Setup();
+      var entity = new ColumnData
       {
-         var entity = new ColumnData { ObjectId = 95 };
-         var resources = new Resources<DataTests>();
-         var source = resources.String("TestData.data.configuration");
-         var _adapter =
-            from @group in Setting.FromString(source)
-            from setup in SqlSetup.FromGroup(@group, "all")
-            from adapter in Adapter<ColumnData>.FromSetup(setup, entity)
-            select adapter;
-         if (_adapter.Map(out var allColumnData, out var exception))
-         {
-            var data = allColumnData.ToArray();
-            foreach (var columnData in data)
-            {
-               Console.WriteLine(columnData);
-            }
-         }
-         else
-         {
-            Console.WriteLine($"Exception: {exception.Message}");
-         }
+         ObjectId = 89
+      };
+      var adapter = new Adapter<ColumnData>(entity, setup);
+      if (adapter.TryTo.Execute())
+      {
+         Console.WriteLine(entity.Name);
       }
 
-      [TestMethod]
-      public void FromConnectionStringTest()
-      {
-         var resources = new Resources<DataTests>();
-         var source = resources.String("TestData.data.configuration");
-         var _adapter =
-            from configuration in Setting.FromString(source)
-            from setup in SqlSetup.FromGroup(configuration, "all2")
-            from adapter in Adapter<ColumnData>.FromSetup(setup, new ColumnData { ObjectId = 5664280 })
-            select adapter;
-         if (_adapter.Map(out var allColumnData, out var exception))
-         {
-            allColumnData.ConnectionString = TRUE_CONNECTION_STRING;
-            foreach (var columnData in allColumnData)
-            {
-               Console.WriteLine(columnData);
-            }
-         }
-         else
-         {
-            Console.WriteLine($"Exception: {exception.Message}");
-         }
-      }
-
-      [TestMethod]
-      public void FromSetupObject()
-      {
-         var entity = new ColumnData { ObjectId = 89 };
-         var _adapter = Adapter<ColumnData>.FromSetupObject(entity);
-         if (_adapter.Map(out var allColumnData, out var exception))
-         {
-            allColumnData.ConnectionString = TRUE_CONNECTION_STRING;
-            var data = allColumnData.ToArray();
-            foreach (var columnData in data)
-            {
-               Console.WriteLine(columnData);
-            }
-         }
-         else
-         {
-            Console.WriteLine($"Exception: {exception.Message}");
-         }
-      }
-
-      [TestMethod]
-      public void SignatureTest()
-      {
-         var signature = new Signature("Foobar");
-         Console.WriteLine(signature);
-
-         signature = new Signature("Foobar[153]");
-         Console.WriteLine(signature);
-      }
-
-      protected class Object : ISetupObject
-      {
-         public Object()
-         {
-            ObjectName = string.Empty;
-         }
-
-         public string ObjectName { get; set; }
-
-         public int ObjectId { get; set; }
-
-         public string ConnectionString => SqlConnectionString.GetConnectionString(".", "local_tebennett", "TSqlCop");
-
-         public CommandSourceType CommandSourceType => CommandSourceType.SQL;
-
-         public string Command => "SELECT name as ObjectName, object_id as ObjectId FROM sys.objects WHERE name = @lObjectName";
-
-         public TimeSpan CommandTimeout => 30.Seconds();
-
-         public IEnumerable<Parameter> Parameters()
-         {
-            yield return new Parameter("@lObjectName", nameof(ObjectName), typeof(string));
-         }
-
-         public IEnumerable<Field> Fields()
-         {
-            yield return new Field(nameof(ObjectName), typeof(string));
-            yield return new Field(nameof(ObjectId), typeof(int));
-         }
-
-         public IHash<string, string> Attributes => new Hash<string, string>();
-
-         public ISetup Setup() => new SqlSetup(this);
-      }
-
-      [TestMethod]
-      public void HasRowsTest()
-      {
-         var obj = new Object { ObjectName = "Foobar" };
-         Console.WriteLine(obj.SqlAdapter().ExecuteMaybe() ? "Foobar exists" : "Foobar doesn't exist");
-
-         obj.ObjectName = "PaperTicketStorageAssignment";
-         Console.WriteLine(obj.SqlAdapter().ExecuteMaybe() ? $"{obj.ObjectName} exists" : $"{obj.ObjectName} doesn't exist");
-      }
-
-      [TestMethod]
-      public void FluentTest()
-      {
-         var setupBuilder = new SqlSetupBuilder();
-         var setup = setupBuilder
-            .ConnectionString(TRUE_CONNECTION_STRING)
-            .CommandText((FileName)@"~\source\repos\Eprod.TSqlCop\source\SqlConformance.Library\MetaData\Queries\Columns.sql")
-            .Parameter("@lObjectId")
-            .Signature("ObjectId")
-            .Type(typeof(int))
-            .EndParameter()
-            .Field("ObjectId")
-            .Type(typeof(int))
-            .EndField()
-            .Field("Name")
-            .Type(typeof(string))
-            .EndField()
-            .Field("TypeName")
-            .Type(typeof(string))
-            .EndField()
-            .Setup();
-         var entity = new ColumnData
-         {
-            ObjectId = 89
-         };
-         var adapter = new Adapter<ColumnData>(entity, setup);
-         if (adapter.TryTo.Execute())
-         {
-            Console.WriteLine(entity.Name);
-         }
-
-      }
    }
 }

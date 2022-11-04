@@ -460,9 +460,10 @@ public abstract class CommandLineInterface : IDisposable
 
       commandLine = fixCommand(commandLine, prefix, suffix);
 
-      if (getEntryPoint().Map(out var tuple, out var entryPointException))
+      var _entryPoint = getEntryPoint();
+      if (_entryPoint)
       {
-         var (methodInfo, type) = tuple;
+         var (methodInfo, type) = ~_entryPoint;
          switch (type)
          {
             case EntryPointType.Parameters:
@@ -478,7 +479,7 @@ public abstract class CommandLineInterface : IDisposable
       }
       else
       {
-         HandleException(entryPointException);
+         HandleException(_entryPoint.Exception);
       }
    }
 

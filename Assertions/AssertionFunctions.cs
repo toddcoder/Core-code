@@ -63,7 +63,7 @@ public static class AssertionFunctions
 
    public static string hashImage<TKey, TValue>(IHash<TKey, TValue> hash)
    {
-      return hash.AnyHash().Map(out var h) ? dictionaryImage(h) : hash.ToString();
+      return hash.AnyHash().Map(dictionaryImage) | hash.ToString;
    }
 
    public static string maybeImage<T>(Maybe<T> maybe)

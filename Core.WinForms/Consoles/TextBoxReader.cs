@@ -90,9 +90,9 @@ namespace Core.WinForms.Consoles
          console.GoToEnd();
          console.ReadOnly = true;
 
-         if (_previouslyFocused.Map(out var previouslyFocused))
+         if (_previouslyFocused)
          {
-            form.ActiveControl = previouslyFocused;
+            form.ActiveControl = _previouslyFocused;
          }
       }
 

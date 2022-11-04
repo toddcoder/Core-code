@@ -22,18 +22,19 @@ public class HashTrying<TKey, TValue>
       }
       else
       {
-         if (defaultValue(key).Map(out var value, out var exception))
+         var _value = defaultValue(key);
+         if (_value)
          {
             if (addIfNotFound)
             {
-               hash.Add(key, value);
+               hash.Add(key, ~_value);
             }
 
-            return value;
+            return ~_value;
          }
          else
          {
-            return exception;
+            return _value.Exception;
          }
       }
    }

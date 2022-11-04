@@ -380,13 +380,14 @@ public static class HashExtensions
       var result = new Hash<TKey, TValue>();
       foreach (var item in enumerable)
       {
-         if (valueSelector(item).Map(out var selector, out var exception))
+         var _selector = valueSelector(item);
+         if (_selector)
          {
-            result[keySelector(item)] = selector;
+            result[keySelector(item)] = _selector;
          }
          else
          {
-            return exception;
+            return _selector.Exception;
          }
       }
 
@@ -399,13 +400,14 @@ public static class HashExtensions
       var result = new StringHash<TValue>(ignoreCase);
       foreach (var item in enumerable)
       {
-         if (valueSelector(item).Map(out var selector, out var exception))
+         var _selector = valueSelector(item);
+         if (_selector)
          {
-            result[keySelector(item)] = selector;
+            result[keySelector(item)] = _selector;
          }
          else
          {
-            return exception;
+            return _selector.Exception;
          }
       }
 
@@ -418,13 +420,14 @@ public static class HashExtensions
       var result = new Hash<TKey, TValue>(comparer);
       foreach (var item in enumerable)
       {
-         if (valueSelector(item).Map(out var selector, out var exception))
+         var _selector = valueSelector(item);
+         if (_selector)
          {
-            result[keySelector(item)] = selector;
+            result[keySelector(item)] = _selector;
          }
          else
          {
-            return exception;
+            return _selector.Exception;
          }
       }
 
@@ -437,17 +440,18 @@ public static class HashExtensions
       var result = new Hash<TKey, TValue>();
       foreach (var item in enumerable)
       {
-         var pair =
+         var _keyValue =
             from selector in valueSelector(item)
             from key in keySelector(item)
             select (value: selector, key);
-         if (pair.Map(out var keyValue, out var exception))
+         if (_keyValue)
          {
+            var keyValue = ~_keyValue;
             result[keyValue.key] = keyValue.value;
          }
          else
          {
-            return exception;
+            return _keyValue.Exception;
          }
       }
 
@@ -460,17 +464,18 @@ public static class HashExtensions
       var result = new StringHash<TValue>(ignoreCase);
       foreach (var item in enumerable)
       {
-         var pair =
+         var _keyValue =
             from selector in valueSelector(item)
             from key in keySelector(item)
             select (value: selector, key);
-         if (pair.Map(out var keyValue, out var exception))
+         if (_keyValue)
          {
+            var keyValue = ~_keyValue;
             result[keyValue.key] = keyValue.value;
          }
          else
          {
-            return exception;
+            return _keyValue.Exception;
          }
       }
 
@@ -483,17 +488,18 @@ public static class HashExtensions
       var result = new Hash<TKey, TValue>(comparer);
       foreach (var item in enumerable)
       {
-         var pair =
+         var _keyValue =
             from selector in valueSelector(item)
             from key in keySelector(item)
             select (value: selector, key);
-         if (pair.Map(out var keyValue, out var exception))
+         if (_keyValue)
          {
+            var keyValue = ~_keyValue;
             result[keyValue.key] = keyValue.value;
          }
          else
          {
-            return exception;
+            return _keyValue.Exception;
          }
       }
 
@@ -506,13 +512,14 @@ public static class HashExtensions
       var result = new Hash<TKey, TValue>();
       foreach (var item in enumerable)
       {
-         if (tryTo(() => valueSelector(item)).Map(out var selector, out var exception))
+         var _selector = tryTo(() => valueSelector(item));
+         if (_selector)
          {
-            result[keySelector(item)] = selector;
+            result[keySelector(item)] = _selector;
          }
          else
          {
-            return exception;
+            return _selector.Exception;
          }
       }
 
@@ -525,13 +532,14 @@ public static class HashExtensions
       var result = new StringHash<TValue>(ignoreCase);
       foreach (var item in enumerable)
       {
-         if (tryTo(() => valueSelector(item)).Map(out var selector, out var exception))
+         var _selector = tryTo(() => valueSelector(item));
+         if (_selector)
          {
-            result[keySelector(item)] = selector;
+            result[keySelector(item)] = _selector;
          }
          else
          {
-            return exception;
+            return _selector.Exception;
          }
       }
 
@@ -544,13 +552,14 @@ public static class HashExtensions
       var result = new Hash<TKey, TValue>(comparer);
       foreach (var item in enumerable)
       {
-         if (tryTo(() => valueSelector(item)).Map(out var selector, out var exception))
+         var _selector = tryTo(() => valueSelector(item));
+         if (_selector)
          {
-            result[keySelector(item)] = selector;
+            result[keySelector(item)] = _selector;
          }
          else
          {
-            return exception;
+            return _selector.Exception;
          }
       }
 
@@ -563,10 +572,11 @@ public static class HashExtensions
    {
       try
       {
-         if (hash.AnyHash().Map(out var internalHash, out var exception))
+         var _internalHash = hash.AnyHash();
+         if (_internalHash)
          {
             var toSetting = new Setting();
-            foreach (var (key, value) in internalHash)
+            foreach (var (key, value) in ~_internalHash)
             {
                var keyAsString = key.ToString();
                toSetting.SetItem(keyAsString, new Item(keyAsString, value.ToString()));
@@ -576,7 +586,7 @@ public static class HashExtensions
          }
          else
          {
-            return exception;
+            return _internalHash.Exception;
          }
       }
       catch (Exception exception)
@@ -588,8 +598,10 @@ public static class HashExtensions
    public static Result<Configuration> ToConfiguration<TKey, TValue>(this IHash<TKey, TValue> hash, FileName file, string name = Setting.ROOT_NAME,
       bool save = false)
    {
-      if (hash.ToSetting().Map(g => new Configuration(file, g.items, name)).Map(out var configuration, out var exception))
+      var _configuration = hash.ToSetting().Map(setting => new Configuration(file, setting.items, name));
+      if (_configuration)
       {
+         var configuration = ~_configuration;
          if (save)
          {
             return configuration.Save().Map(_ => configuration);
@@ -601,7 +613,7 @@ public static class HashExtensions
       }
       else
       {
-         return exception;
+         return _configuration.Exception;
       }
    }
 

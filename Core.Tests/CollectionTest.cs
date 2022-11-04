@@ -164,22 +164,24 @@ public class CollectionTest
       stack.Push("bravo");
       stack.Push("charlie");
 
-      if (stack.Item(0).Map(out var item, out var exception))
+      var _item = stack.Item(0);
+      if (_item)
       {
-         Console.WriteLine(item);
+         Console.WriteLine(~_item);
       }
       else
       {
-         Console.WriteLine(exception.Message);
+         Console.WriteLine(_item.Exception.Message);
       }
 
-      if (stack.Item(-1).Map(out item, out exception))
+      _item = stack.Item(-1);
+      if (_item)
       {
-         Console.WriteLine(item);
+         Console.WriteLine(~_item);
       }
       else
       {
-         Console.WriteLine(exception.Message);
+         Console.WriteLine(_item.Exception.Message);
       }
    }
 

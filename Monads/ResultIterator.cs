@@ -46,12 +46,12 @@ internal class ResultIterator<T>
    {
       var list = new List<T>();
 
-      foreach (var result in enumerable)
+      foreach (var _result in enumerable)
       {
-         handle(result);
-         if (result.Map(out var t))
+         handle(_result);
+         if (_result)
          {
-            list.Add(t);
+            list.Add(~_result);
          }
       }
 
@@ -62,12 +62,12 @@ internal class ResultIterator<T>
    {
       var list = new List<Exception>();
 
-      foreach (var result in enumerable)
+      foreach (var _result in enumerable)
       {
-         handle(result);
-         if (result.UnMap(out var e))
+         handle(_result);
+         if (!_result)
          {
-            list.Add(e);
+            list.Add(_result.Exception);
          }
       }
 
@@ -78,16 +78,16 @@ internal class ResultIterator<T>
    {
       var list = new List<T>();
 
-      foreach (var result in enumerable)
+      foreach (var _result in enumerable)
       {
-         handle(result);
-         if (result.Map(out var value, out var exception))
+         handle(_result);
+         if (_result)
          {
-            list.Add(value);
+            list.Add(~_result);
          }
          else
          {
-            return (list, exception);
+            return (list, _result.Exception);
          }
       }
 
@@ -98,16 +98,16 @@ internal class ResultIterator<T>
    {
       var list = new List<T>();
 
-      foreach (var result in enumerable)
+      foreach (var _result in enumerable)
       {
-         handle(result);
-         if (result.Map(out var value, out var exception))
+         handle(_result);
+         if (_result)
          {
-            list.Add(value);
+            list.Add(_result);
          }
          else
          {
-            return exception;
+            return _result.Exception;
          }
       }
 

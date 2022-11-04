@@ -431,32 +431,30 @@ public static class ArrayExtensions
    public static Result<int> Assign<T>(this T[] array, out T var0, out T var1, out T var2)
    {
       var2 = default;
-      var result = Assign(array, out var0, out var1);
-      if (result.Map(out var value) && array.Length >= value + 1)
+      var _index = Assign(array, out var0, out var1);
+      if (_index && array.Length >= _index + 1)
       {
          var2 = array[2];
-
          return 3;
       }
       else
       {
-         return result;
+         return _index;
       }
    }
 
    public static Result<int> Assign<T>(this T[] array, out T var0, out T var1, out T var2, out T var3)
    {
       var3 = default;
-      var result = Assign(array, out var0, out var1, out var2);
-      if (result.Map(out var value) && array.Length >= value + 1)
+      var _index = Assign(array, out var0, out var1, out var2);
+      if (_index && array.Length >= _index + 1)
       {
          var3 = array[3];
-
          return 4;
       }
       else
       {
-         return result;
+         return _index;
       }
    }
 
@@ -464,16 +462,15 @@ public static class ArrayExtensions
       out T var4)
    {
       var4 = default;
-      var result = Assign(array, out var0, out var1, out var2, out var3);
-      if (result.Map(out var value) && array.Length >= value + 1)
+      var _index = Assign(array, out var0, out var1, out var2, out var3);
+      if (_index && array.Length >= _index + 1)
       {
          var4 = array[4];
-
          return 5;
       }
       else
       {
-         return result;
+         return _index;
       }
    }
 
@@ -481,16 +478,15 @@ public static class ArrayExtensions
       out T var4, out T var5)
    {
       var5 = default;
-      var result = Assign(array, out var0, out var1, out var2, out var3, out var4);
-      if (result.Map(out var value) && array.Length >= value + 1)
+      var _index = Assign(array, out var0, out var1, out var2, out var3, out var4);
+      if (_index && array.Length >= _index + 1)
       {
          var5 = array[5];
-
          return 6;
       }
       else
       {
-         return result;
+         return _index;
       }
    }
 
@@ -498,16 +494,15 @@ public static class ArrayExtensions
       out T var4, out T var5, out T var6)
    {
       var6 = default;
-      var result = Assign(array, out var0, out var1, out var2, out var3, out var4, out var5);
-      if (result.Map(out var value) && array.Length >= value + 1)
+      var _index = Assign(array, out var0, out var1, out var2, out var3, out var4, out var5);
+      if (_index && array.Length >= _index + 1)
       {
          var6 = array[6];
-
          return 7;
       }
       else
       {
-         return result;
+         return _index;
       }
    }
 

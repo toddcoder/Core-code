@@ -156,14 +156,18 @@ public abstract class CommandProcessor : IDisposable
    {
       try
       {
-         if (InitializeConfiguration().UnMap(out configuration, out var exception))
+         var _configuration = InitializeConfiguration();
+         if (_configuration)
          {
-            HandleException(exception);
+            configuration = _configuration;
+            commandLine = removeExecutableFromCommandLine(commandLine);
+            Arguments = commandLine;
+            run(commandLine, true);
          }
-
-         commandLine = removeExecutableFromCommandLine(commandLine);
-         Arguments = commandLine;
-         run(commandLine, true);
+         else
+         {
+            HandleException(_configuration.Exception);
+         }
       }
       catch (Exception exception)
       {
@@ -194,20 +198,20 @@ public abstract class CommandProcessor : IDisposable
                      Initialize();
                   }
 
-                  var result = executeMethod(methodInfo, rest);
-                  if (result.Map(out _, out var exception))
+                  var _result = executeMethod(methodInfo, rest);
+                  if (_result)
                   {
                      CleanUp();
                   }
                   else
                   {
-                     HandleException(exception);
+                     HandleException(_result.Exception);
                   }
                }
                else if (seekCommandFile)
                {
                   FileName file = @$"~\AppData\Local\{Application}\{command}.cli";
-                  if (file.Exists())
+                  if (file)
                   {
                      var text = file.Text;
                      run(text, false);
@@ -252,9 +256,18 @@ public abstract class CommandProcessor : IDisposable
       {
          help = generator.Help();
       }
-      else if (generator.Help(rest).UnMap(out help, out var exception))
+      else
       {
-         ExceptionWriter.WriteExceptionLine(exception);
+         var _help = generator.Help(rest);
+         if (_help)
+         {
+            help = ~_help;
+         }
+         else
+         {
+            ExceptionWriter.WriteExceptionLine(_help.Exception);
+            return;
+         }
       }
 
       StandardWriter.WriteLine(help);

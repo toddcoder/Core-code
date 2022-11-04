@@ -8,159 +8,158 @@ using Core.Matching;
 using Core.Monads;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Core.Tests
+namespace Core.Tests;
+
+[TestClass]
+public class FolderNameTests
 {
-   [TestClass]
-   public class FolderNameTests
+   protected const string FOLDER_ESTREAM = @"~\src\Estream\Source\Estream.MigrationTests";
+   protected const string FOLDER_APP_DATA = @"~\AppData\Local\TSqlCop";
+   protected const string FOLDER_PROGRAM_FILES = @"C:\Program Files (x86)\";
+   protected const string FOLDER_VISUAL_STUDIO = FOLDER_PROGRAM_FILES +
+      @"Microsoft Visual Studio\2017\Professional\Common7\IDE\Extensions\Enterprise\TSqlCop";
+   protected const string FOLDER_SSMS130 = FOLDER_PROGRAM_FILES + @"Microsoft SQL Server\130\Tools\Binn\ManagementStudio\Extensions\TSqlCop";
+   protected const string FOLDER_SSMS140 = FOLDER_PROGRAM_FILES + @"Microsoft SQL Server\140\Tools\Binn\ManagementStudio\Extensions\TSqlCop";
+
+   protected static IEnumerable<FolderName> defaultFolderNames()
    {
-      protected const string FOLDER_ESTREAM = @"~\src\Estream\Source\Estream.MigrationTests";
-      protected const string FOLDER_APP_DATA = @"~\AppData\Local\TSqlCop";
-      protected const string FOLDER_PROGRAM_FILES = @"C:\Program Files (x86)\";
-      protected const string FOLDER_VISUAL_STUDIO = FOLDER_PROGRAM_FILES +
-         @"Microsoft Visual Studio\2017\Professional\Common7\IDE\Extensions\Enterprise\TSqlCop";
-      protected const string FOLDER_SSMS130 = FOLDER_PROGRAM_FILES + @"Microsoft SQL Server\130\Tools\Binn\ManagementStudio\Extensions\TSqlCop";
-      protected const string FOLDER_SSMS140 = FOLDER_PROGRAM_FILES + @"Microsoft SQL Server\140\Tools\Binn\ManagementStudio\Extensions\TSqlCop";
+      yield return FOLDER_ESTREAM;
+      yield return FOLDER_APP_DATA;
+      yield return FOLDER_VISUAL_STUDIO;
+      yield return FOLDER_SSMS130;
+      yield return FOLDER_SSMS140;
+   }
 
-      protected static IEnumerable<FolderName> defaultFolderNames()
+   [TestMethod]
+   public void RelativeToTest()
+   {
+      FolderName baseFolder = @"~\src\Estream\Source\Estream.MigrationTests\bin";
+      var result = baseFolder.RelativeTo((FileName)@"~\src\Estream\Source\Estream.MigrationTests\Configurations\configuration.json");
+      Console.WriteLine(result);
+      var absolute = baseFolder.AbsoluteFolder(result);
+      Console.WriteLine(absolute);
+   }
+
+   [TestMethod]
+   public void RelativeFolderConversionToAbsolute()
+   {
+      var folderName = @"..\..\Estream.Migrations\_DDL";
+      FolderName baseFolder = @"~\src\Estream\Source\Estream.MigrationTests\Configurations";
+      var folder = baseFolder.AbsoluteFolder(folderName);
+      Console.WriteLine(folder);
+   }
+
+   [TestMethod]
+   public void LocalAndParentFilesTest1()
+   {
+      FolderName folder = @"~\src\Estream\Source\Estream.Measurements\WellSearchDomain\ValueObjects\MasterData";
+      FolderName baseFolder = @"~\src\Estream\Source";
+      foreach (var file in folder.LocalAndParentFiles.Where(f => f.Extension == ".cs"))
       {
-         yield return FOLDER_ESTREAM;
-         yield return FOLDER_APP_DATA;
-         yield return FOLDER_VISUAL_STUDIO;
-         yield return FOLDER_SSMS130;
-         yield return FOLDER_SSMS140;
+         var relative = baseFolder.RelativeTo(file);
+         Console.WriteLine(relative);
       }
+   }
 
-      [TestMethod]
-      public void RelativeToTest()
+   [TestMethod]
+   public void LocalAndParentFilesTest2()
+   {
+      FolderName folder = @"C:\Enterprise\Projects\TSqlCop\SqlConformance.Library\SqlContainment";
+      FolderName baseFolder = @"C:\Enterprise\Projects\TSqlCop";
+      foreach (var file in folder.LocalAndParentFiles.Where(f => f.Extension == ".cs" && f.Name.IsMatch("'sql'; f")))
       {
-         FolderName baseFolder = @"~\src\Estream\Source\Estream.MigrationTests\bin";
-         var result = baseFolder.RelativeTo((FileName)@"~\src\Estream\Source\Estream.MigrationTests\Configurations\configuration.json");
-         Console.WriteLine(result);
-         var absolute = baseFolder.AbsoluteFolder(result);
-         Console.WriteLine(absolute);
+         var relative = baseFolder.RelativeTo(file);
+         Console.WriteLine(relative);
       }
+   }
 
-      [TestMethod]
-      public void RelativeFolderConversionToAbsolute()
+   [TestMethod]
+   public void LocalAndParentFilesTest3()
+   {
+      FolderName folder = @"C:\Enterprise\Temp";
+      foreach (var file in folder.LocalAndParentFiles)
       {
-         var folderName = @"..\..\Estream.Migrations\_DDL";
-         FolderName baseFolder = @"~\src\Estream\Source\Estream.MigrationTests\Configurations";
-         var folder = baseFolder.AbsoluteFolder(folderName);
-         Console.WriteLine(folder);
+         Console.WriteLine(file);
       }
+   }
 
-      [TestMethod]
-      public void LocalAndParentFilesTest1()
+   [TestMethod]
+   public void LocalAndParentFilesTest4()
+   {
+      FolderName folder = @"C:\Enterprise\Projects\TSqlCop\TSqlCop.Ssms\bin\Debug";
+      FolderName baseFolder = @"C:\Enterprise\Projects";
+      foreach (var file in folder.LocalAndParentFiles)
       {
-         FolderName folder = @"~\src\Estream\Source\Estream.Measurements\WellSearchDomain\ValueObjects\MasterData";
-         FolderName baseFolder = @"~\src\Estream\Source";
-         foreach (var file in folder.LocalAndParentFiles.Where(f => f.Extension == ".cs"))
+         var relative = baseFolder.RelativeTo(file);
+         Console.WriteLine(relative);
+      }
+   }
+
+   [TestMethod]
+   public void LocalAndParentFoldersTest1()
+   {
+      FolderName folder = @"~\src\Estream\Source\Estream.Measurements\WellSearchDomain\ValueObjects\MasterData";
+      foreach (var subFolder in folder.LocalAndParentFolders)
+      {
+         Console.WriteLine(subFolder);
+      }
+   }
+
+   [TestMethod]
+   public void LocalAndParentFoldersTest2()
+   {
+      FolderName folder = @"C:\Enterprise\Temp";
+      foreach (var subFolder in folder.LocalAndParentFolders)
+      {
+         Console.WriteLine(subFolder);
+      }
+   }
+
+   [TestMethod]
+   public void MultipleLocalAndParentFilesTest()
+   {
+      var result = defaultFolderNames().LocalAndParentFiles().Where(f => f.NameExtension == "tsqlcop.sql.format.options.xml")
+         .FirstOrFail("failed");
+      Console.WriteLine(result.Map(f => f.FullPath).Recover(e => e.Message));
+   }
+
+   [TestMethod]
+   public void ContainsFolderTest()
+   {
+      FolderName parentFolder = @"C:\Enterprise\Projects";
+      FolderName subFolder = @"C:\Enterprise\Projects\Core";
+      FolderName alienFolder = @"C:\Enterprise\Working";
+
+      parentFolder.ContainsFolder(subFolder).Must().BeTrue().OrThrow();
+      parentFolder.ContainsFolder(alienFolder).Must().Not.BeTrue().OrThrow();
+   }
+
+   [TestMethod]
+   public void ImmediateSubFolderTest()
+   {
+      FolderName folder = @"C:\Program Files (x86)\Microsoft Visual Studio\2019";
+      folder.ContainsImmediateFolderName("Professional").Must().BeTrue().OrThrow();
+      folder.ContainsImmediateFolderName("Enterprise").Must().Not.BeTrue().OrThrow();
+   }
+
+   [TestMethod]
+   public void FolderExistsTest()
+   {
+      FolderName tempFolder = @"C:\Temp";
+      var subFolder = tempFolder["foobar"];
+      var _folder =
+         from existing in subFolder.TryTo.Existing()
+         select existing;
+      if (_folder)
+      {
+         foreach (var file in (~_folder).Files)
          {
-            var relative = baseFolder.RelativeTo(file);
-            Console.WriteLine(relative);
+            Console.WriteLine(file.NameExtension);
          }
       }
-
-      [TestMethod]
-      public void LocalAndParentFilesTest2()
+      else
       {
-         FolderName folder = @"C:\Enterprise\Projects\TSqlCop\SqlConformance.Library\SqlContainment";
-         FolderName baseFolder = @"C:\Enterprise\Projects\TSqlCop";
-         foreach (var file in folder.LocalAndParentFiles.Where(f => f.Extension == ".cs" && f.Name.IsMatch("'sql'; f")))
-         {
-            var relative = baseFolder.RelativeTo(file);
-            Console.WriteLine(relative);
-         }
-      }
-
-      [TestMethod]
-      public void LocalAndParentFilesTest3()
-      {
-         FolderName folder = @"C:\Enterprise\Temp";
-         foreach (var file in folder.LocalAndParentFiles)
-         {
-            Console.WriteLine(file);
-         }
-      }
-
-      [TestMethod]
-      public void LocalAndParentFilesTest4()
-      {
-         FolderName folder = @"C:\Enterprise\Projects\TSqlCop\TSqlCop.Ssms\bin\Debug";
-         FolderName baseFolder = @"C:\Enterprise\Projects";
-         foreach (var file in folder.LocalAndParentFiles)
-         {
-            var relative = baseFolder.RelativeTo(file);
-            Console.WriteLine(relative);
-         }
-      }
-
-      [TestMethod]
-      public void LocalAndParentFoldersTest1()
-      {
-         FolderName folder = @"~\src\Estream\Source\Estream.Measurements\WellSearchDomain\ValueObjects\MasterData";
-         foreach (var subFolder in folder.LocalAndParentFolders)
-         {
-            Console.WriteLine(subFolder);
-         }
-      }
-
-      [TestMethod]
-      public void LocalAndParentFoldersTest2()
-      {
-         FolderName folder = @"C:\Enterprise\Temp";
-         foreach (var subFolder in folder.LocalAndParentFolders)
-         {
-            Console.WriteLine(subFolder);
-         }
-      }
-
-      [TestMethod]
-      public void MultipleLocalAndParentFilesTest()
-      {
-         var result = defaultFolderNames().LocalAndParentFiles().Where(f => f.NameExtension == "tsqlcop.sql.format.options.xml")
-            .FirstOrFail("failed");
-         Console.WriteLine(result.Map(f => f.FullPath).Recover(e => e.Message));
-      }
-
-      [TestMethod]
-      public void ContainsFolderTest()
-      {
-         FolderName parentFolder = @"C:\Enterprise\Projects";
-         FolderName subFolder = @"C:\Enterprise\Projects\Core";
-         FolderName alienFolder = @"C:\Enterprise\Working";
-
-         parentFolder.ContainsFolder(subFolder).Must().BeTrue().OrThrow();
-         parentFolder.ContainsFolder(alienFolder).Must().Not.BeTrue().OrThrow();
-      }
-
-      [TestMethod]
-      public void ImmediateSubFolderTest()
-      {
-         FolderName folder = @"C:\Program Files (x86)\Microsoft Visual Studio\2019";
-         folder.ContainsImmediateFolderName("Professional").Must().BeTrue().OrThrow();
-         folder.ContainsImmediateFolderName("Enterprise").Must().Not.BeTrue().OrThrow();
-      }
-
-      [TestMethod]
-      public void FolderExistsTest()
-      {
-         FolderName tempFolder = @"C:\Temp";
-         var subFolder = tempFolder["foobar"];
-         var _result =
-            from existing in subFolder.TryTo.Existing()
-            select existing;
-         if (_result.Map(out var folder, out var exception))
-         {
-            foreach (var file in folder.Files)
-            {
-               Console.WriteLine(file.NameExtension);
-            }
-         }
-         else
-         {
-            Console.WriteLine($"Exception: {exception.Message}");
-         }
+         Console.WriteLine($"Exception: {_folder.Exception.Message}");
       }
    }
 }
