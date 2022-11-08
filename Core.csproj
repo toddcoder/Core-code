@@ -275,7 +275,6 @@
     <Compile Include="Lambdas\LambdaExtensions.cs" />
     <Compile Include="Lambdas\LambdaFunctions.cs" />
     <Compile Include="Lists\ListExtensions.cs" />
-    <Compile Include="Matching\MultiMatching\Case.cs" />
     <Compile Include="Matching\MultiMatching\MultiMatcher.cs" />
     <Compile Include="Matching\MultiMatching\MultiMatchingFunctions.cs" />
     <Compile Include="Matching\SourceLines.cs" />
@@ -295,6 +294,8 @@
     <Compile Include="Monads\Matched.cs" />
     <Compile Include="Monads\Maybe.cs" />
     <Compile Include="Monads\Interrupted.cs" />
+    <Compile Include="Monads\MultiMatching\MaybeMatcher.cs" />
+    <Compile Include="Monads\MultiMatching\MonadMatcherFunctions.cs" />
     <Compile Include="Monads\Nil.cs" />
     <Compile Include="Monads\NilWithMessage.cs" />
     <Compile Include="Monads\NoResponse.cs" />

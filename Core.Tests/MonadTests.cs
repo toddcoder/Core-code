@@ -10,6 +10,7 @@ using static Core.Applications.Async.AsyncFunctions;
 using static Core.Lambdas.LambdaFunctions;
 using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
+using static Core.Monads.MultiMatching.MonadMatcherFunctions;
 
 namespace Core.Tests;
 
@@ -404,6 +405,30 @@ public class MonadTests
       if (_number)
       {
          Console.WriteLine(~_number);
+      }
+   }
+
+   [TestMethod]
+   public void MonadMatcherTest()
+   {
+      Maybe<int> _one = nil;
+      Maybe<int> _two = 2;
+      Maybe<int> _three = nil;
+
+      var matcher = maybeMatcher<int, string>()
+         & _one & (_ => "one")
+         & _two & (_ => "two")
+         & _three & (_ => "three")
+         & (() => "other");
+
+      var _result = matcher.Matches();
+      if (_result)
+      {
+         Console.WriteLine(~_result);
+      }
+      else
+      {
+         Console.WriteLine("nil");
       }
    }
 }

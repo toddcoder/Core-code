@@ -1,9 +1,8 @@
-﻿namespace Core.Matching.MultiMatching
-{
-   public static class MultiMatchingFunctions
-   {
-      public static MultiMatcher<T> match<T>() => new();
+﻿namespace Core.Matching.MultiMatching;
 
-      public static MultiMatcher match() => new();
-   }
+public static class MultiMatchingFunctions
+{
+   public static MultiMatcher<T> match<T>() => new();
+
+   public static MultiMatcher match() => new();
 }
