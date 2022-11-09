@@ -53,6 +53,8 @@ public class Reader<T> : IDisposable, IEnumerable<T>
          while (_entity)
          {
             yield return ~_entity;
+
+            _entity = Next();
          }
       }
       finally
