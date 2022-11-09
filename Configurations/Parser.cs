@@ -419,13 +419,13 @@ internal class Parser
 
       while (true)
       {
-         var _setting = peekSetting();
+         var _setting = popSetting();
          if (!_setting)
          {
             break;
          }
 
-         var _parentSetting = peekSetting();
+         var _parentSetting = popSetting();
          if (_parentSetting)
          {
             (~_parentSetting).SetItem((~_setting).Key, _setting);
