@@ -320,7 +320,7 @@ public class MonadTests
       var _result = maybe<string>() & date.Second < 30 & "seconds < 30";
       if (_result)
       {
-         Console.WriteLine(_result.Value);
+         Console.WriteLine(~_result);
       }
       else
       {
@@ -343,7 +343,7 @@ public class MonadTests
       var _result = result<string>() & date.Second < 30 & "seconds < 30" & fail($"Only {"second(s)".Plural(date.Second)}");
       if (_result)
       {
-         Console.WriteLine(_result.Value);
+         Console.WriteLine(~_result);
       }
       else
       {
@@ -357,7 +357,7 @@ public class MonadTests
       Maybe<string> _maybe = "foobar";
       if (_maybe)
       {
-         Console.WriteLine(_maybe.Value);
+         Console.WriteLine(~_maybe);
       }
 
       var x = 1;
@@ -365,7 +365,7 @@ public class MonadTests
       y -= 10;
       var _result = tryTo(() => x / y);
 
-      var message = _result ? _result.Value.ToString() : _result.Exception.Message;
+      var message = _result ? (~_result).ToString() : _result.Exception.Message;
       Console.WriteLine(message);
    }
 
@@ -430,5 +430,13 @@ public class MonadTests
       {
          Console.WriteLine("nil");
       }
+
+      var matcher2 = maybeMatcher<int>()
+         & _one & (o => Console.WriteLine($"one is {o}"))
+         & _two & (o => Console.WriteLine($"two is {o}"))
+         & _three & (o => Console.WriteLine($"three is {o}"))
+         & (() => Console.WriteLine("None"));
+
+      matcher2.Matches();
    }
 }

@@ -133,17 +133,54 @@ public class MaybeMatcher<T>
 
       public MaybeMatcher<T> Then(Action<T> action)
       {
-         //todo:addmaybe
+         maybeMatcher.AddMaybe(Maybe, action);
          return maybeMatcher;
       }
    }
+
+   public static Case operator &(MaybeMatcher<T> maybeMatcher, Maybe<T> maybe) => maybeMatcher.When(maybe);
+
+   public static MaybeMatcher<T> operator &(MaybeMatcher<T> maybeMatcher, Action action) => maybeMatcher.Else(action);
 
    protected List<MaybeAction> maybeActions;
    protected Maybe<Action> _defaultAction;
 
    internal MaybeMatcher()
    {
-      maybeActions=new List<MaybeAction>();
+      maybeActions = new List<MaybeAction>();
       _defaultAction = nil;
+   }
+
+   public Case When(Maybe<T> maybe) => new(this, maybe);
+
+   internal void AddMaybe(Maybe<T> maybe, Action<T> action) => maybeActions.Add(new MaybeAction(maybe, action));
+
+   public MaybeMatcher<T> Else(Action action)
+   {
+      if (!_defaultAction)
+      {
+         _defaultAction = action;
+      }
+
+      return this;
+   }
+
+   public Maybe<T> Matches()
+   {
+      foreach (var (_maybe, action) in maybeActions)
+      {
+         if (_maybe)
+         {
+            action(_maybe);
+            return _maybe;
+         }
+      }
+
+      if (_defaultAction)
+      {
+         (~_defaultAction)();
+      }
+
+      return nil;
    }
 }
