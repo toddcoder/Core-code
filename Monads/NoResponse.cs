@@ -81,7 +81,7 @@ public class NoResponse<T> : Responding<T>, IEquatable<NoResponse<T>>
 
    public override T DefaultTo(Func<Maybe<Exception>, T> func) => func(nil);
 
-   public override void Deconstruction(out T value, out Maybe<Exception> _exception)
+   public override void Deconstruct(out T value, out Maybe<Exception> _exception)
    {
       value = default;
       _exception = nil;

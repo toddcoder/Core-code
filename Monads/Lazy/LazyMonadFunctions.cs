@@ -27,4 +27,8 @@ public class LazyMonadFunctions
    public Maybe<T> maybe<T>(Func<Monads.Maybe<T>> func) => new(func);
 
    public Result<T> result<T>(Func<Monads.Result<T>> func) => new(func);
+
+   public Responding<T> responding<T>(Func<Monads.Responding<T>> func) => new(func);
+
+   public Completion<T> completion<T>(Func<Monads.Completion<T>> func) => new(func);
 }

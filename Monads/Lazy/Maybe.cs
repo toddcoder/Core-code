@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads.Lazy;
@@ -30,19 +29,22 @@ public class Maybe<T> : Monads.Maybe<T>, IEquatable<Maybe<T>>
 
    protected Func<Monads.Maybe<T>> func;
    protected Monads.Maybe<T> _value;
+   protected bool ensured;
 
    internal Maybe(Func<Monads.Maybe<T>> func)
    {
       this.func = func;
 
       _value = nil;
+      ensured = false;
    }
 
    protected void ensureValue()
    {
-      if (!_value)
+      if (!ensured)
       {
          _value = func();
+         ensured = true;
       }
    }
 
@@ -79,7 +81,7 @@ public class Maybe<T> : Monads.Maybe<T>, IEquatable<Maybe<T>>
       return _value.Result(message);
    }
 
-   public override Responding<T> Responding()
+   public override Monads.Responding<T> Responding()
    {
       ensureValue();
       return _value.Responding();

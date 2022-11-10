@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads.Lazy;
@@ -34,19 +33,22 @@ public class Result<T> : Monads.Result<T>, IEquatable<Result<T>>
 
    protected Func<Monads.Result<T>> func;
    protected Monads.Result<T> _value;
+   protected bool ensured;
 
    internal Result(Func<Monads.Result<T>> func)
    {
       this.func = func;
 
       _value = fail("Uninitialized");
+      ensured = false;
    }
 
    protected void ensureValue()
    {
-      if (!_value)
+      if (!ensured)
       {
          _value = func();
+         ensured = true;
       }
    }
 
@@ -182,7 +184,7 @@ public class Result<T> : Monads.Result<T>, IEquatable<Result<T>>
       return _value.Maybe();
    }
 
-   public override Responding<T> Responding()
+   public override Monads.Responding<T> Responding()
    {
       ensureValue();
       return _value.Responding();

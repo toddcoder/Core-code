@@ -290,8 +290,10 @@
     <Compile Include="Monads\FullStackException.cs" />
     <Compile Include="Monads\Completion.cs" />
     <Compile Include="Monads\IHasValue.cs" />
+    <Compile Include="Monads\Lazy\Completion.cs" />
     <Compile Include="Monads\Lazy\LazyMonadFunctions.cs" />
     <Compile Include="Monads\Lazy\Maybe.cs" />
+    <Compile Include="Monads\Lazy\Responding.cs" />
     <Compile Include="Monads\Lazy\Result.cs" />
     <Compile Include="Monads\LeftHand.cs" />
     <Compile Include="Monads\Matched.cs" />

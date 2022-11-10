@@ -98,7 +98,7 @@ public class Response<T> : Responding<T>, IEquatable<Response<T>>
 
    public override T DefaultTo(Func<Maybe<Exception>, T> func) => value;
 
-   public override void Deconstruction(out T value, out Maybe<Exception> _exception)
+   public override void Deconstruct(out T value, out Maybe<Exception> _exception)
    {
       value = this.value;
       _exception = nil;
