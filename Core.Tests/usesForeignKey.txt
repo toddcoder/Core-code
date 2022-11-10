@@ -1,0 +1,12 @@
+﻿nonConformanceInfos [
+   $0 [
+      index: 2199
+      length: 44
+      line: 57
+      column: 19
+      endLine: 57
+      endColumn: 63
+      message: "Foreign key FK_OrderDetail_Facility exists for (OrderDetail.FacilityId) -> (Facility.FacilityId) (rule analysisInformation)"
+      rule: "analysisInformation"
+   ]
+]

@@ -10,6 +10,7 @@ using Core.Configurations;
 using Core.Enumerables;
 using Core.Monads;
 using Core.Strings;
+using static Core.Monads.Lazy.LazyMonadFunctions;
 using static Core.Strings.StringFunctions;
 
 namespace Core.Tests;
@@ -492,6 +493,65 @@ public class ConfigurationTests
       else
       {
          Console.WriteLine(_releaseTarget.Exception.Message);
+      }
+   }
+
+   protected class NonConformanceInfo
+   {
+      public NonConformanceInfo()
+      {
+         Message = "";
+         Rule = "";
+      }
+
+      public int Index { get; set; }
+
+      public int Length { get; set; }
+
+      public int Line { get; set; }
+
+      public int Column { get; set; }
+
+      public int EndLine { get; set; }
+
+      public int EndColumn { get; set; }
+
+      public string Message { get; set; }
+
+      public string Rule { get; set; }
+
+      public override string ToString() => $"{Message}: {Rule} ({Index}, {Length})";
+   }
+
+   protected class NonConformanceInfoContainer
+   {
+      public NonConformanceInfoContainer()
+      {
+         NonConformanceInfos = Array.Empty<NonConformanceInfo>();
+      }
+
+      public NonConformanceInfo[] NonConformanceInfos { get; set; }
+   }
+
+   [TestMethod]
+   public void Bug1Test()
+   {
+      var resources = new Resources<ConfigurationTests>();
+      var source = resources.String("usesForeignKey.txt");
+      var _setting = lazy.result(() => Setting.FromString(source));
+      var _container = lazy.result(() => (~_setting).Deserialize<NonConformanceInfoContainer>());
+      if (_setting)
+      {
+         var setting = ~_setting;
+         Console.WriteLine(setting);
+         if (_container)
+         {
+            var container = ~_container;
+            foreach (var info in container.NonConformanceInfos)
+            {
+               Console.WriteLine(info);
+            }
+         }
       }
    }
 }

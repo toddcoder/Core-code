@@ -203,7 +203,7 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
          var _element = setting.Deserialize(elementType);
          if (_element)
          {
-            newArray.SetValue(_element, i);
+            newArray.SetValue(~_element, i);
          }
          else
          {

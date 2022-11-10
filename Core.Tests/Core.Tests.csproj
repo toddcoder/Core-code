@@ -154,6 +154,7 @@
     <None Include="TestData\work-item.json" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="usesForeignKey.txt" />
     <EmbeddedResource Include="TestData\Arrays.txt" />
     <EmbeddedResource Include="rtf-template.txt" />
     <Content Include="TestData\big file.bad.sql" />
