@@ -145,21 +145,6 @@ public class MonadTests
    }
 
    [TestMethod]
-   public void ExtensionsTest()
-   {
-      var result = (1, "foo").Success();
-      if (result.Map(out var i, out var s, out var exception))
-      {
-         Console.WriteLine(i);
-         Console.WriteLine(s);
-      }
-      else
-      {
-         Console.WriteLine(exception.Message);
-      }
-   }
-
-   [TestMethod]
    public void MappingExtensionsTest()
    {
       Maybe<(int, string)> _result = (1, "foobar");

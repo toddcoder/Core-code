@@ -336,9 +336,14 @@ public class Table : Block
 
    public void ActivatePendingMerges()
    {
-      while (pendingMerges.Dequeue().Map(out var topRow, out var leftColumn, out var rowSpan, out var colSpan))
+      while (pendingMerges.IsNotEmpty)
       {
-         Merge(topRow, leftColumn, rowSpan, colSpan);
+         var _item = pendingMerges.Dequeue();
+         if (_item)
+         {
+            var (topRow, leftColumn, rowSpan, colSpan) = ~_item;
+            Merge(topRow, leftColumn, rowSpan, colSpan);
+         }
       }
    }
 

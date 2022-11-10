@@ -4,7 +4,6 @@ using Core.Collections;
 using Core.Matching;
 using Core.Strings;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using static Core.Monads.MonadExtensions;
 
 namespace Core.Tests;
 
@@ -216,17 +215,7 @@ public class StringClassTests
    public void SourceLine3Test()
    {
       var text = "[a -> alpha]This is line 1\n[b -> bravo]This is line 2\n[c -> charlie]This is line 3";
-      var source = new Source(text);
       Pattern pattern = "^ '[' /(/w) /s* '->' /s* /(/w+) ']'; f";
-      while (source.NextLineMatch(pattern).Map(out var result, out var line))
-      {
-         var (tag, value) = result;
-         var remainder = line.Drop(result.Length);
-         Console.WriteLine($"[ {tag} -> {value} ] {remainder}");
-      }
-
-      Console.WriteLine("---");
-
       var sourceLines = new SourceLines(text);
       foreach (var (result, line) in sourceLines.WhileMatches(pattern))
       {

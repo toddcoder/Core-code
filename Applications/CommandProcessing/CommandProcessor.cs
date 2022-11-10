@@ -177,8 +177,10 @@ public abstract class CommandProcessor : IDisposable
 
    protected void run(string commandLine, bool seekCommandFile)
    {
-      if (splitCommandFromRest(commandLine).Map(out var command, out var rest))
+      var _commandParts = splitCommandFromRest(commandLine);
+      if (_commandParts)
       {
+         var (command, rest) = ~_commandParts;
          Command = command;
 
          switch (command)
@@ -191,8 +193,10 @@ public abstract class CommandProcessor : IDisposable
                break;
             default:
             {
-               if (getMethod(command).Map(out var methodInfo, out var commandAttribute))
+               var _method = getMethod(command);
+               if (_method)
                {
+                  var (methodInfo, commandAttribute) = ~_method;
                   if (commandAttribute.Initialize)
                   {
                      Initialize();

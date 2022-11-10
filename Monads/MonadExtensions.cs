@@ -484,6 +484,7 @@ public static class MonadExtensions
 
    public static Maybe<T> IfCast<T>(this object obj) => obj is T t ? t : nil;
 
+   [Obsolete("Use ~ and deconstruction")]
    public static bool Map<T1, T2>(this Maybe<(T1, T2)> some, out T1 v1, out T2 v2)
    {
       if (some)
@@ -503,6 +504,7 @@ public static class MonadExtensions
       }
    }
 
+   [Obsolete("Use ~ and deconstruction")]
    public static bool Map<T1, T2, T3>(this Maybe<(T1, T2, T3)> some, out T1 v1, out T2 v2, out T3 v3)
    {
       if (some)
@@ -524,6 +526,7 @@ public static class MonadExtensions
       }
    }
 
+   [Obsolete("Use ~ and deconstruction")]
    public static bool Map<T1, T2, T3, T4>(this Maybe<(T1, T2, T3, T4)> some, out T1 v1, out T2 v2, out T3 v3,
       out T4 v4)
    {
@@ -548,6 +551,7 @@ public static class MonadExtensions
       }
    }
 
+   [Obsolete("Use ~ and deconstruction")]
    public static bool Map<T1, T2>(this Result<(T1, T2)> result, out T1 v1, out T2 v2)
    {
       if (result)
@@ -567,6 +571,7 @@ public static class MonadExtensions
       }
    }
 
+   [Obsolete("Use ~ and deconstruction")]
    public static bool Map<T1, T2>(this Result<(T1, T2)> result, out T1 v1, out T2 v2, out Exception exception)
    {
       if (result)
@@ -588,6 +593,7 @@ public static class MonadExtensions
       }
    }
 
+   [Obsolete("Use ~ and deconstruction")]
    public static bool Map<T1, T2, T3>(this Result<(T1, T2, T3)> result, out T1 v1, out T2 v2, out T3 v3)
    {
       if (result)
@@ -609,6 +615,7 @@ public static class MonadExtensions
       }
    }
 
+   [Obsolete("Use ~ and deconstruction")]
    public static bool Map<T1, T2, T3>(this Result<(T1, T2, T3)> result, out T1 v1, out T2 v2, out T3 v3, out Exception exception)
    {
       if (result)
@@ -632,6 +639,7 @@ public static class MonadExtensions
       }
    }
 
+   [Obsolete("Use ~ and deconstruction")]
    public static bool Map<T1, T2, T3, T4>(this Result<(T1, T2, T3, T4)> result, out T1 v1, out T2 v2, out T3 v3,
       out T4 v4)
    {
@@ -656,6 +664,7 @@ public static class MonadExtensions
       }
    }
 
+   [Obsolete("Use ~ and deconstruction")]
    public static bool Map<T1, T2, T3, T4>(this Result<(T1, T2, T3, T4)> result, out T1 v1, out T2 v2, out T3 v3,
       out T4 v4, out Exception exception)
    {
@@ -682,6 +691,7 @@ public static class MonadExtensions
       }
    }
 
+   [Obsolete("Use ~ and deconstruction")]
    public static bool Map<T1, T2>(this Completion<(T1, T2)> completion, out T1 v1, out T2 v2)
    {
       if (completion)
@@ -701,6 +711,7 @@ public static class MonadExtensions
       }
    }
 
+   [Obsolete("Use ~ and deconstruction")]
    public static bool Map<T1, T2>(this Completion<(T1, T2)> completion, out T1 v1, out T2 v2, out Maybe<Exception> _exception)
    {
       if (completion)
@@ -722,6 +733,7 @@ public static class MonadExtensions
       }
    }
 
+   [Obsolete("Use ~ and deconstruction")]
    public static bool Map<T1, T2, T3>(this Completion<(T1, T2, T3)> completion, out T1 v1, out T2 v2, out T3 v3)
    {
       if (completion)
@@ -743,6 +755,7 @@ public static class MonadExtensions
       }
    }
 
+   [Obsolete("Use ~ and deconstruction")]
    public static bool Map<T1, T2, T3>(this Completion<(T1, T2, T3)> completion, out T1 v1, out T2 v2, out T3 v3,
       out Maybe<Exception> _exception)
    {
@@ -767,6 +780,7 @@ public static class MonadExtensions
       }
    }
 
+   [Obsolete("Use ~ and deconstruction")]
    public static bool Map<T1, T2, T3, T4>(this Completion<(T1, T2, T3, T4)> completion, out T1 v1, out T2 v2, out T3 v3, out T4 v4)
    {
       if (completion)
@@ -790,6 +804,7 @@ public static class MonadExtensions
       }
    }
 
+   [Obsolete("Use ~ and deconstruction")]
    public static bool Map<T1, T2, T3, T4>(this Completion<(T1, T2, T3, T4)> completion, out T1 v1, out T2 v2, out T3 v3, out T4 v4,
       out Maybe<Exception> _exception)
    {
@@ -816,6 +831,7 @@ public static class MonadExtensions
       }
    }
 
+   [Obsolete("Use ~ and deconstruction")]
    public static bool Map<T1, T2>(this Responding<(T1, T2)> responding, out T1 v1, out T2 v2)
    {
       if (responding)
@@ -835,6 +851,7 @@ public static class MonadExtensions
       }
    }
 
+   [Obsolete("Use ~ and deconstruction")]
    public static bool Map<T1, T2>(this Responding<(T1, T2)> responding, out T1 v1, out T2 v2, out Maybe<Exception> _exception)
    {
       if (responding)
@@ -856,6 +873,7 @@ public static class MonadExtensions
       }
    }
 
+   [Obsolete("Use ~ and deconstruction")]
    public static bool Map<T1, T2, T3>(this Responding<(T1, T2, T3)> responding, out T1 v1, out T2 v2, out T3 v3)
    {
       if (responding)
@@ -877,6 +895,7 @@ public static class MonadExtensions
       }
    }
 
+   [Obsolete("Use ~ and deconstruction")]
    public static bool Map<T1, T2, T3>(this Responding<(T1, T2, T3)> responding, out T1 v1, out T2 v2, out T3 v3, out Maybe<Exception> _exception)
    {
       if (responding)
@@ -900,6 +919,7 @@ public static class MonadExtensions
       }
    }
 
+   [Obsolete("Use ~ and deconstruction")]
    public static bool Map<T1, T2, T3, T4>(this Responding<(T1, T2, T3, T4)> responding, out T1 v1, out T2 v2, out T3 v3, out T4 v4)
    {
       if (responding)
@@ -923,6 +943,7 @@ public static class MonadExtensions
       }
    }
 
+   [Obsolete("Use ~ and deconstruction")]
    public static bool Map<T1, T2, T3, T4>(this Responding<(T1, T2, T3, T4)> responding, out T1 v1, out T2 v2, out T3 v3, out T4 v4,
       out Maybe<Exception> _exception)
    {
