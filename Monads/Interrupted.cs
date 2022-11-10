@@ -89,6 +89,7 @@ public class Interrupted<T> : Completion<T>, IEquatable<Interrupted<T>>
       return true;
    }
 
+   [Obsolete("Use ~")]
    public override bool Map(out T value, out Maybe<Exception> _exception)
    {
       value = default;

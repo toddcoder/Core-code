@@ -87,6 +87,7 @@ public class Cancelled<T> : Completion<T>, IEquatable<Cancelled<T>>
       return false;
    }
 
+   [Obsolete("Use ~")]
    public override bool Map(out T value, out Maybe<Exception> _exception)
    {
       value = default;

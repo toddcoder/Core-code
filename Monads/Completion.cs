@@ -96,6 +96,7 @@ public abstract class Completion<T>
    [Obsolete("Use !")]
    public abstract bool IfInterrupted(out Exception exception);
 
+   [Obsolete("Use ~")]
    public abstract bool Map(out T value, out Maybe<Exception> _exception);
 
    [Obsolete("Use !")]

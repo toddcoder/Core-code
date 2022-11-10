@@ -9,6 +9,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Core.Applications.Async.AsyncFunctions;
 using static Core.Lambdas.LambdaFunctions;
 using static Core.Monads.AttemptFunctions;
+using static Core.Monads.Lazy.LazyMonadFunctions;
 using static Core.Monads.MonadFunctions;
 using static Core.Monads.MultiMatching.MonadMatcherFunctions;
 
@@ -438,5 +439,42 @@ public class MonadTests
          & (() => Console.WriteLine("None"));
 
       matcher2.Matches();
+   }
+
+   [TestMethod]
+   public void LazySomeTest()
+   {
+      var _one = lazy.maybe<string>(() =>
+      {
+         Console.WriteLine("Ensured _one");
+         return "one";
+      });
+
+      var _two = lazy.maybe<string>(() =>
+      {
+         Console.WriteLine("Ensured _two");
+         return nil;
+      });
+
+      var _three = lazy.maybe<string>(() =>
+      {
+         Console.WriteLine("Ensured _three");
+         return "three";
+      });
+
+      if (_one)
+      {
+         Console.WriteLine(~_one);
+      }
+
+      if (_two)
+      {
+         Console.WriteLine(~_two);
+      }
+
+      if (_three)
+      {
+         Console.WriteLine(~_three);
+      }
    }
 }

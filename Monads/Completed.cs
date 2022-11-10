@@ -91,6 +91,7 @@ public class Completed<T> : Completion<T>, IEquatable<Completed<T>>
       return false;
    }
 
+   [Obsolete("Use ~")]
    public override bool Map(out T value, out Maybe<Exception> _exception)
    {
       value = this.value;
