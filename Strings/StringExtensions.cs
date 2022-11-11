@@ -1789,7 +1789,7 @@ public static class StringExtensions
       }
    }
 
-   public static string Drop(this string source, Pattern pattern)
+   public static string Drop(this string source, Pattern pattern, int group = 0)
    {
       if (source.IsEmpty())
       {
@@ -1799,7 +1799,7 @@ public static class StringExtensions
       var _result = source.Matches(pattern);
       if (_result)
       {
-         var (_, index, length) = ~_result;
+         var (_, index, length) = (~_result).GetGroup(0, group);
          var count = index + length;
          return source.Drop(count);
       }
@@ -1925,7 +1925,7 @@ public static class StringExtensions
       }
    }
 
-   public static string Keep(this string source, Pattern pattern)
+   public static string Keep(this string source, Pattern pattern, int group = 0)
    {
       if (source.IsEmpty())
       {
@@ -1935,7 +1935,7 @@ public static class StringExtensions
       var _result = source.Matches(pattern);
       if (_result)
       {
-         var (_, index, length) = ~_result;
+         var (_, index, length) = (~_result).GetGroup(0, group);
          var count = index + length;
          return source.Keep(count);
       }
