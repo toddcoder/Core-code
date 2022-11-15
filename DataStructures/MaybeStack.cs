@@ -12,8 +12,13 @@ namespace Core.DataStructures;
 public class MaybeStack<T> : IEnumerable<T>
 {
    protected Stack<T> stack;
+   protected Maybe<T> _last;
 
-   public MaybeStack() => stack = new Stack<T>();
+   public MaybeStack()
+   {
+      stack = new Stack<T>();
+      _last = nil;
+   }
 
    public MaybeStack(IEnumerable<T> collection) => stack = new Stack<T>(collection);
 
@@ -68,4 +73,24 @@ public class MaybeStack<T> : IEnumerable<T>
    public bool IsNotEmpty => stack.Count > 0;
 
    public ResultStack<T> TryTo => new(this);
+
+   public IEnumerable<T> Popping()
+   {
+      while (IsNotEmpty)
+      {
+         var _item = Pop();
+         if (_item)
+         {
+            yield return ~_item;
+         }
+      }
+   }
+
+   public bool More()
+   {
+      _last = Pop();
+      return _last;
+   }
+
+   public Maybe<T> Last => _last;
 }

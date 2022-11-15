@@ -11,8 +11,13 @@ namespace Core.DataStructures;
 public class MaybeQueue<T> : IQueue<T>, IEnumerable<T>
 {
    protected Queue<T> queue;
+   protected Maybe<T> _last;
 
-   public MaybeQueue() => queue = new Queue<T>();
+   public MaybeQueue()
+   {
+      queue = new Queue<T>();
+      _last = nil;
+   }
 
    public MaybeQueue(IEnumerable<T> collection) => queue = new Queue<T>(collection);
 
@@ -69,4 +74,24 @@ public class MaybeQueue<T> : IQueue<T>, IEnumerable<T>
    public bool IsNotEmpty => queue.Count > 0;
 
    public ResultQueue<T> TryTo => new(this);
+
+   public IEnumerable<T> Dequeuing()
+   {
+      while (IsNotEmpty)
+      {
+         var _item = Dequeue();
+         if (_item)
+         {
+            yield return ~_item;
+         }
+      }
+   }
+
+   public bool More()
+   {
+      _last = Dequeue();
+      return _last;
+   }
+
+   public Maybe<T> Last => _last;
 }
