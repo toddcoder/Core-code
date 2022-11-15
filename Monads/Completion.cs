@@ -32,6 +32,7 @@ public abstract class Completion<T>
    {
       Completed<T> completed => completed.Value,
       Interrupted<T> interrupted => throw interrupted.Exception,
+      Lazy.Completion<T> completion => completion.Value,
       _ => throw new InvalidCastException("Must be a Completed to return a value")
    };
 

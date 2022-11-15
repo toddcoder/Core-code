@@ -60,6 +60,7 @@ public abstract class Maybe<T>
    public static implicit operator T(Maybe<T> value) => value switch
    {
       Some<T> some => some.Value,
+      Lazy.Maybe<T> lazyMaybe => lazyMaybe.Value,
       _ => throw new InvalidCastException("Must be a Some to return a value")
    };
 

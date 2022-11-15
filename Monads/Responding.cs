@@ -62,6 +62,7 @@ public abstract class Responding<T>
    {
       Response<T> response => response.Value,
       FailedResponse<T> failedResponse => throw failedResponse.Exception,
+      Lazy.Responding<T> responding => responding.Value,
       _ => throw new InvalidCastException("Must be a Response to return a value")
    };
 

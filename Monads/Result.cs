@@ -105,6 +105,7 @@ namespace Core.Monads
       {
          Success<T> success => success.Value,
          Failure<T> failure => throw failure.Exception,
+         Lazy.Result<T> lazyResult => lazyResult.Value,
          _ => throw new InvalidCastException("Must be a Success to return a value")
       };
 
