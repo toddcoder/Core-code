@@ -41,6 +41,22 @@ public abstract class Maybe<T>
       }
    }
 
+   public static Maybe<T> operator |(Maybe<T> left, Lazy.Maybe<T> right)
+   {
+      if (left)
+      {
+         return left;
+      }
+      else if (right)
+      {
+         return right;
+      }
+      else
+      {
+         return nil;
+      }
+   }
+
    public static T operator |(Maybe<T> maybe, T defaultValue) => maybe ? maybe : defaultValue;
 
    public static T operator |(Maybe<T> maybe, Func<T> defaultFunc) => maybe ? maybe : defaultFunc();
@@ -49,13 +65,13 @@ public abstract class Maybe<T>
 
    public static implicit operator Maybe<T>(Nil _) => new None<T>();
 
-   public static bool operator true(Maybe<T> value) => value is Some<T>;
+   public static bool operator true(Maybe<T> value) => value is Some<T> || value is Lazy.Maybe<T> lazyMaybe && lazyMaybe;
 
-   public static bool operator false(Maybe<T> value) => value is None<T>;
+   public static bool operator false(Maybe<T> value) => value is None<T> || value is Lazy.Maybe<T> lazyMaybe && !lazyMaybe;
 
-   public static bool operator !(Maybe<T> value) => value is None<T>;
+   public static bool operator !(Maybe<T> value) => value is None<T> || value is Lazy.Maybe<T> lazyMaybe && !lazyMaybe;
 
-   public static implicit operator bool(Maybe<T> value) => value is Some<T>;
+   public static implicit operator bool(Maybe<T> value) => value is Some<T> || value is Lazy.Maybe<T> lazyMaybe && lazyMaybe;
 
    public static implicit operator T(Maybe<T> value) => value switch
    {

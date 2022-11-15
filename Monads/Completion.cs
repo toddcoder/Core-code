@@ -20,13 +20,13 @@ public abstract class Completion<T>
       return _exception.Map(e => (Completion<T>)new Interrupted<T>(e)) | (() => new Cancelled<T>());
    }
 
-   public static bool operator true(Completion<T> value) => value is Completed<T>;
+   public static bool operator true(Completion<T> value) => value is Completed<T> || value is Lazy.Completion<T> lazyCompletion && lazyCompletion;
 
-   public static bool operator false(Completion<T> value) => value is not Completed<T>;
+   public static bool operator false(Completion<T> value) => value is not Completed<T> || value is Lazy.Completion<T> lazyCompletion && !lazyCompletion;
 
-   public static bool operator !(Completion<T> value) => value is not Completed<T>;
+   public static bool operator !(Completion<T> value) => value is not Completed<T> || value is Lazy.Completion<T> lazyCompletion && !lazyCompletion;
 
-   public static implicit operator bool(Completion<T> value) => value is Completed<T>;
+   public static implicit operator bool(Completion<T> value) => value is Completed<T> || value is Lazy.Completion<T> lazyCompletion && lazyCompletion;
 
    public static implicit operator T(Completion<T> value) => value switch
    {

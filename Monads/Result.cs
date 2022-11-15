@@ -61,6 +61,22 @@ namespace Core.Monads
          }
       }
 
+      public static Result<T> operator |(Result<T> left, Lazy.Result<T> right)
+      {
+         if (left)
+         {
+            return left;
+         }
+         else if (right)
+         {
+            return right;
+         }
+         else
+         {
+            return left;
+         }
+      }
+
       public static Result<T> operator |(Result<T> left, Func<Result<T>> rightFunc)
       {
          if (left)
@@ -91,13 +107,13 @@ namespace Core.Monads
 
       public static implicit operator Result<T>(Exception exception) => new Failure<T>(exception);
 
-      public static bool operator true(Result<T> value) => value is Success<T>;
+      public static bool operator true(Result<T> value) => value is Success<T> || value is Lazy.Result<T> lazyResult && lazyResult;
 
-      public static bool operator false(Result<T> value) => value is Failure<T>;
+      public static bool operator false(Result<T> value) => value is Failure<T> || value is Lazy.Result<T> lazyResult && !lazyResult;
 
-      public static bool operator !(Result<T> value) => value is Failure<T>;
+      public static bool operator !(Result<T> value) => value is Failure<T> || value is Lazy.Result<T> lazyResult && !lazyResult;
 
-      public static implicit operator bool(Result<T> value) => value is Success<T>;
+      public static implicit operator bool(Result<T> value) => value is Success<T> || value is Lazy.Result<T> lazyResult && lazyResult;
 
       public static Result<T> Nil(string message) => new Failure<T>(new Exception(message));
 
