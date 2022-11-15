@@ -12,6 +12,7 @@ using Core.Matching;
 using Core.Monads;
 using Core.Objects;
 using Core.Strings;
+using static Core.Monads.Lazy.LazyMonadFunctions;
 using static Core.Monads.MonadFunctions;
 using static Core.Objects.ConversionFunctions;
 
@@ -122,33 +123,27 @@ public abstract class CommandProcessor : IDisposable
 
    protected static Maybe<(string command, string rest)> splitCommandFromRest(string commandLine)
    {
+      var _help = lazy.maybe(() => commandLine.Matches("^ 'help' (/s+ /(.+))? $; f").Map(r => r.FirstGroup));
+      var _length = lazy.maybe(() => commandLine.Matches("^ /('config') /s+ ('get' | 'set') /b; f").Map(r => r.FirstGroup.Length));
       if (commandLine.IsEmpty())
       {
          return ("help", "");
       }
+      else if (_help)
+      {
+         return ("help", _help);
+      }
+      else if (commandLine.IsMatch("^ /s* [/w '-']+ /s* $; f"))
+      {
+         return (commandLine, "");
+      }
+      else if (_length)
+      {
+         return ("config", commandLine.Drop(_length).TrimLeft());
+      }
       else
       {
-         var _help = commandLine.Matches("^ 'help' (/s+ /(.+))? $; f").Map(r => r.FirstGroup);
-         if (_help)
-         {
-            return ("help", _help);
-         }
-         else if (commandLine.IsMatch("^ /s* [/w '-']+ /s* $; f"))
-         {
-            return (commandLine, "");
-         }
-         else
-         {
-            var _length = commandLine.Matches("^ /('config') /s+ ('get' | 'set') /b; f").Map(r => r.FirstGroup.Length);
-            if (_length)
-            {
-               return ("config", commandLine.Drop(_length).TrimLeft());
-            }
-            else
-            {
-               return commandLine.Matches("^ /([/w '-']+) /s+ /(.+) $; f").Map(r => (r.FirstGroup, r.SecondGroup));
-            }
-         }
+         return commandLine.Matches("^ /([/w '-']+) /s+ /(.+) $; f").Map(r => (r.FirstGroup, r.SecondGroup));
       }
    }
 
@@ -255,23 +250,20 @@ public abstract class CommandProcessor : IDisposable
    protected void generateHelp(string rest)
    {
       var generator = new HelpGenerator(this);
+      var _help = lazy.result(() => generator.Help(rest));
       string help;
       if (rest.IsEmpty())
       {
          help = generator.Help();
       }
+      else if (_help)
+      {
+         help = _help;
+      }
       else
       {
-         var _help = generator.Help(rest);
-         if (_help)
-         {
-            help = ~_help;
-         }
-         else
-         {
-            ExceptionWriter.WriteExceptionLine(_help.Exception);
-            return;
-         }
+         ExceptionWriter.WriteExceptionLine(_help.Exception);
+         return;
       }
 
       StandardWriter.WriteLine(help);
@@ -318,17 +310,14 @@ public abstract class CommandProcessor : IDisposable
          {
             var (command, name, value) = ~_result;
             var _command = command.Matches($"^ '{Prefix}' /('set' | 'get'); f").Map(r => r.FirstGroup);
+            var _command2 = lazy.maybe(() => command.Matches($"^ '{ShortCut}' /('s' | 'g'); f").Map(r => r.FirstGroup));
             if (_command)
             {
                command = _command;
             }
-            else
+            else if (_command2)
             {
-               _command = command.Matches($"^ '{ShortCut}' /('s' | 'g'); f").Map(r => r.FirstGroup);
-               if (_command)
-               {
-                  command = _command;
-               }
+               command = _command2;
             }
 
             switch (command)
@@ -419,6 +408,7 @@ public abstract class CommandProcessor : IDisposable
          else
          {
             var _secondGroup = noStrings.Matches("^ /s* /([quote]) /(-[quote]*) /1; f").Map(r => r.SecondGroup);
+            var _stringLength = lazy.maybe(() => noStrings.Matches("^ /s* /(-/s+); f").Map(r => (r.FirstGroup, r.Length)));
             if (_secondGroup)
             {
                var value = delimitedText.Restringify(_secondGroup, RestringifyQuotes.None);
@@ -427,16 +417,12 @@ public abstract class CommandProcessor : IDisposable
 
                noStrings = noStrings.Drop(result.Length);
             }
-            else
+            else if (_stringLength)
             {
-               _result = noStrings.Matches("^ /s* /(-/s+); f");
-               if (_result)
-               {
-                  result = ~_result;
-                  yield return (prefix, name, result.FirstGroup);
+               var (firstGroup, length) = ~_stringLength;
+               yield return (prefix, name, firstGroup);
 
-                  noStrings = noStrings.Drop(result.Length);
-               }
+               noStrings = noStrings.Drop(length);
             }
          }
       }
@@ -451,7 +437,14 @@ public abstract class CommandProcessor : IDisposable
       }
       catch (Exception exception)
       {
-         return exception;
+         if (exception.InnerException != null)
+         {
+            return exception.InnerException;
+         }
+         else
+         {
+            return exception;
+         }
       }
    }
 
@@ -491,7 +484,8 @@ public abstract class CommandProcessor : IDisposable
       return executeMethod(methodInfo);
    }
 
-   protected Maybe<Unit> fillSwitch((PropertyInfo propertyInfo, SwitchAttribute attribute)[] switchAttributes, string name, Maybe<string> _value)
+   protected Maybe<Unit> fillSwitch((PropertyInfo propertyInfo, SwitchAttribute attribute)[] switchAttributes, string name,
+      Maybe<string> _value)
    {
       return
          from propertyInfo in switchAttributes.FirstOrNone((_, a) => a.Name == name).Select(t => t.Item1)
@@ -499,7 +493,8 @@ public abstract class CommandProcessor : IDisposable
          select filled;
    }
 
-   protected Maybe<Unit> fillShortCut((PropertyInfo propertyInfo, SwitchAttribute attribute)[] switchAttributes, string name, Maybe<string> _value)
+   protected Maybe<Unit> fillShortCut((PropertyInfo propertyInfo, SwitchAttribute attribute)[] switchAttributes, string name,
+      Maybe<string> _value)
    {
       return
          from propertyInfo in switchAttributes.FirstOrNone((_, a) => (a.ShortCut | "") == name).Select(t => t.Item1)

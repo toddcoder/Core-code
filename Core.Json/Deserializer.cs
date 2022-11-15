@@ -117,7 +117,7 @@ public class Deserializer
                   stack.Pop();
                   break;
                case JsonToken.PropertyName:
-                  _propertyName = reader.Value.Some().Map(o => o.ToNonNullString());
+                  _propertyName = reader.Value.NotNull().Map(o => o.ToNonNullString());
                   break;
                case JsonToken.String:
                   setItem(getValue());
