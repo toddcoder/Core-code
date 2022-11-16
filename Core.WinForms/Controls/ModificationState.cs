@@ -1,9 +1,8 @@
-﻿namespace Core.WinForms.Controls
+﻿namespace Core.WinForms.Controls;
+
+public enum ModificationState
 {
-   public enum ModificationState
-   {
-      Unmodified,
-      Modified,
-      Saved
-   }
+   Unmodified,
+   Modified,
+   Saved
 }

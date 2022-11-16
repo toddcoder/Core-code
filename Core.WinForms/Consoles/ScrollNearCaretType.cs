@@ -1,9 +1,8 @@
-﻿namespace Core.WinForms.Consoles
+﻿namespace Core.WinForms.Consoles;
+
+public enum ScrollNearCaretType
 {
-   public enum ScrollNearCaretType
-   {
-      NoScroll,
-      ScrollAlways,
-      ScrollNotAtLastLine
-   }
+   NoScroll,
+   ScrollAlways,
+   ScrollNotAtLastLine
 }

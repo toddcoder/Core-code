@@ -1,12 +1,11 @@
-﻿namespace Core.WinForms
+﻿namespace Core.WinForms;
+
+public enum ColorType
 {
-   public enum ColorType
-   {
-      Windows,
-      Teletype,
-      Cathode,
-      Turbo,
-      Quick,
-      Default
-   }
+   Windows,
+   Teletype,
+   Cathode,
+   Turbo,
+   Quick,
+   Default
 }

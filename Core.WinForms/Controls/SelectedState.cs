@@ -1,9 +1,8 @@
-﻿namespace Core.WinForms.Controls
+﻿namespace Core.WinForms.Controls;
+
+public enum SelectedState
 {
-   public enum SelectedState
-   {
-      Uninitialized,
-      Selected,
-      Unselected
-   }
+   Uninitialized,
+   Selected,
+   Unselected
 }

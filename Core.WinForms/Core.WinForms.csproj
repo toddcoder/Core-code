@@ -81,9 +81,6 @@
     <Compile Include="Controls\HttpWriter.cs" />
     <Compile Include="Controls\LabelProcessor.cs" />
     <Compile Include="Controls\LineChangedEventArgs.cs" />
-    <Compile Include="Controls\MessageProgress.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
     <Compile Include="Controls\SubTextSet.cs" />
     <Compile Include="Controls\UiActionWriter.cs" />
     <Compile Include="Controls\UiActionType.cs" />
@@ -97,12 +94,6 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Controls\ResponderButtonArgs.cs" />
-    <Compile Include="Controls\RichLabel.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\RichLabel.Designer.cs">
-      <DependentUpon>RichLabel.cs</DependentUpon>
-    </Compile>
     <Compile Include="Controls\RoundedUiAction.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -123,7 +114,6 @@
     <Compile Include="Documents\Menus.cs" />
     <Compile Include="Documents\Submenus.cs" />
     <Compile Include="GraphicsExtensions.cs" />
-    <Compile Include="LabelExtensions.cs" />
     <Compile Include="ListBoxExtensions.cs" />
     <Compile Include="ListViewExtensions.cs" />
     <Compile Include="Notification\ImagePanel.cs">

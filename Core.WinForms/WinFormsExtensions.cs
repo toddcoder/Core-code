@@ -1,42 +1,41 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace Core.WinForms
-{
-   public static class WinFormsExtensions
-   {
-      public static void Do(this Control control, Action action)
-      {
-         if (!(control?.IsDisposed ?? false))
-         {
-            if (control.InvokeRequired)
-            {
-               control.Invoke(action);
-            }
-            else
-            {
-               action();
-            }
-         }
-      }
+namespace Core.WinForms;
 
-      public static T Get<T>(this Control control, Func<T> func)
+public static class WinFormsExtensions
+{
+   public static void Do(this Control control, Action action)
+   {
+      if (!(control?.IsDisposed ?? false))
       {
-         if (!(control?.IsDisposed ?? false))
+         if (control.InvokeRequired)
          {
-            if (control.InvokeRequired)
-            {
-               return (T)control.Invoke(func);
-            }
-            else
-            {
-               return func();
-            }
+            control.Invoke(action);
          }
          else
          {
-            throw new ObjectDisposedException("Control already disposed");
+            action();
          }
+      }
+   }
+
+   public static T Get<T>(this Control control, Func<T> func)
+   {
+      if (!(control?.IsDisposed ?? false))
+      {
+         if (control.InvokeRequired)
+         {
+            return (T)control.Invoke(func);
+         }
+         else
+         {
+            return func();
+         }
+      }
+      else
+      {
+         throw new ObjectDisposedException("Control already disposed");
       }
    }
 }

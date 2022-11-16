@@ -1,10 +1,9 @@
-﻿namespace Core.WinForms.Consoles
+﻿namespace Core.WinForms.Consoles;
+
+public enum IOStatusType
 {
-	public enum IOStatusType
-	{
-		Writing,
-		Reading,
-		Completed,
-		Cancelled
-	}
+   Writing,
+   Reading,
+   Completed,
+   Cancelled
 }

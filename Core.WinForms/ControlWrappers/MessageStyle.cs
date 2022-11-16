@@ -1,10 +1,9 @@
-﻿namespace Core.WinForms.ControlWrappers
+﻿namespace Core.WinForms.ControlWrappers;
+
+public enum MessageStyle
 {
-   public enum MessageStyle
-   {
-      None,
-      Italic,
-      Bold,
-      ItalicBold
-   }
+   None,
+   Italic,
+   Bold,
+   ItalicBold
 }

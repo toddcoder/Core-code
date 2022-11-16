@@ -1,14 +1,13 @@
 ﻿using System;
 
-namespace Core.WinForms.Controls
-{
-   public class ResponderButtonArgs : EventArgs
-   {
-      public ResponderButtonArgs(string key)
-      {
-         Key = key;
-      }
+namespace Core.WinForms.Controls;
 
-      public string Key { get; }
+public class ResponderButtonArgs : EventArgs
+{
+   public ResponderButtonArgs(string key)
+   {
+      Key = key;
    }
+
+   public string Key { get; }
 }
