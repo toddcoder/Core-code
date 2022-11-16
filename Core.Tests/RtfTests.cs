@@ -243,11 +243,33 @@ public class RtfTests
       var formatter = paragraph | none;
       formatter = formatter | "staging01ua" | boldStyle;
       formatter = formatter | " with link ";
-      formatter = formatter | "http://tfs.eprod.com/ls/estreamuat/_releaseProgress?_a=release-environment-logs&releaseId=6024&environmentId=6024".Link();
+      formatter = formatter |
+         "http://tfs.eprod.com/ls/estreamuat/_releaseProgress?_a=release-environment-logs&releaseId=6024&environmentId=6024".Link();
       formatter = formatter | " for Hotfix (Rolling) ";
       formatter = formatter | "r-6.41.10" | boldStyle;
       formatter = formatter | ".";
 
       document.Save(@"C:\Temp\Bug1.rtf");
+   }
+
+   [TestMethod]
+   public void Bug2Test()
+   {
+      var document = new Document();
+      var font = document.Font("Times New Roman");
+      var style = new Style() | font | 12;
+      document.DefaultCharFormat.Style = style;
+      var margins = (8f, nil, 8f, nil);
+
+      var table = document.Table(12f);
+      _ = table | "Column 1" | "Column 2" | "Column 3";
+      _ = table | "111" | "222" | "333";
+      _ = table | "222" | "333" | "444";
+      _ = table | "333" | "444" | "555";
+      table.DefaultCharFormat.Style = ~style | margins;
+      table.SetOuterBorder(BorderStyle.Double, 1f);
+      table.SetInnerBorder(BorderStyle.Single, 1f);
+
+      document.Save(@"C:\Temp\Bug2.rtf");
    }
 }

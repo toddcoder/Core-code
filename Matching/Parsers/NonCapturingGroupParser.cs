@@ -1,11 +1,10 @@
 ﻿using Core.Monads;
 
-namespace Core.Matching.Parsers
-{
-   public class NonCapturingGroupParser : BaseParser
-   {
-      public override string Pattern => @"^\s*\(";
+namespace Core.Matching.Parsers;
 
-      public override Maybe<string> Parse(string source, ref int index) => "(?:".Some();
-   }
+public class NonCapturingGroupParser : BaseParser
+{
+   public override string Pattern => @"^\s*\(";
+
+   public override Maybe<string> Parse(string source, ref int index) => "(?:";
 }

@@ -2,18 +2,17 @@
 using Core.Strings;
 using static Core.Monads.MonadFunctions;
 
-namespace Core.Matching.Parsers
+namespace Core.Matching.Parsers;
+
+public class InsideRangeParser : BaseParser
 {
-   public class InsideRangeParser : BaseParser
+   public override string Pattern => $@"^\s*/({REGEX_IDENTIFIER})\b";
+
+   public override Maybe<string> Parse(string source, ref int index)
    {
-      public override string Pattern => $@"^\s*/({REGEX_IDENTIFIER})\b";
+      var word = tokens[1];
+      var result = OutsideRangeParser.GetRange(word);
 
-      public override Maybe<string> Parse(string source, ref int index)
-      {
-         var word = tokens[1];
-         var result = OutsideRangeParser.GetRange(word);
-
-         return maybe(result.IsNotEmpty(), () => result);
-      }
+      return maybe(result.IsNotEmpty(), () => result);
    }
 }

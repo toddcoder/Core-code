@@ -1,7 +1,6 @@
-﻿namespace Core.Matching.Parsers
+﻿namespace Core.Matching.Parsers;
+
+public static class ParserExtensions
 {
-   public static class ParserExtensions
-   {
-      public static string Enclose(this string source, bool enclose) => enclose ? $"({source})" : source;
-   }
+   public static string Enclose(this string source, bool enclose) => enclose ? $"({source})" : source;
 }

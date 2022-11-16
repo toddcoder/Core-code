@@ -25,7 +25,8 @@ public class MatchResult : IEnumerable<Match>
    protected string input;
    protected Pattern pattern;
 
-   internal MatchResult(Match[] matches, Hash<int, string> indexesToNames, StringHash<int> namesToIndexes, Slicer slicer, string input, Pattern pattern)
+   internal MatchResult(Match[] matches, Hash<int, string> indexesToNames, StringHash<int> namesToIndexes, Slicer slicer, string input,
+      Pattern pattern)
    {
       this.matches = matches;
       this.indexesToNames = indexesToNames;
@@ -445,4 +446,24 @@ public class MatchResult : IEnumerable<Match>
 
       return evaluated.ToString();
    }
+
+   public (string firstGroup, int length) FirstGroupAndLength => (FirstGroup, Length);
+
+   public (string secondGroup, int length) SecondGroupAndLength => (SecondGroup, Length);
+
+   public (string thirdGroup, int length) ThirdGroupAndLength => (ThirdGroup, Length);
+
+   public (string fourthGroup, int length) FourthGroupAndLength => (FourthGroup, Length);
+
+   public (string fifthGroup, int length) FifthGroupAndLength => (FifthGroup, Length);
+
+   public (string sixthGroup, int length) SixthGroupAndLength => (SixthGroup, Length);
+
+   public (string seventhGroup, int length) SeventhGroupAndLength => (SeventhGroup, Length);
+
+   public (string eighthGroup, int length) EighthGroupAndLength => (EighthGroup, Length);
+
+   public (string ninthGroup, int length) NinthGroupAndLength => (NinthGroup, Length);
+
+   public (string tenthGroup, int length) TenthGroupAndLength => (TenthGroup, Length);
 }

@@ -1,11 +1,10 @@
 ﻿using Core.Monads;
 
-namespace Core.Matching.Parsers
-{
-   public class NamedBackReferenceParser : BaseParser
-   {
-      public override string Pattern => $@"^\s*/<({REGEX_IDENTIFIER})>";
+namespace Core.Matching.Parsers;
 
-      public override Maybe<string> Parse(string source, ref int index) => $@"\k<{tokens[1]}>".Some();
-   }
+public class NamedBackReferenceParser : BaseParser
+{
+   public override string Pattern => $@"^\s*/<({REGEX_IDENTIFIER})>";
+
+   public override Maybe<string> Parse(string source, ref int index) => $@"\k<{tokens[1]}>";
 }

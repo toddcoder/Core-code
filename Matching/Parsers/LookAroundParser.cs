@@ -1,23 +1,22 @@
 ﻿using Core.Monads;
 using static Core.Monads.MonadFunctions;
 
-namespace Core.Matching.Parsers
+namespace Core.Matching.Parsers;
+
+public class LookAroundParser : BaseParser
 {
-   public class LookAroundParser : BaseParser
+   public override string Pattern => @"^\s*(-)?\(([<>])";
+
+   public override Maybe<string> Parse(string source, ref int index)
    {
-      public override string Pattern => @"^\s*(-)?\(([<>])";
+      var negative = tokens[1] == "-";
+      var type = tokens[2];
 
-      public override Maybe<string> Parse(string source, ref int index)
+      return type switch
       {
-         var negative = tokens[1] == "-";
-         var type = tokens[2];
-
-         return type switch
-         {
-            ">" => negative ? "(?!" : "(?=",
-            "<" => negative ? "(?<!" : "(?<=",
-            _ => nil
-         };
-      }
+         ">" => negative ? "(?!" : "(?=",
+         "<" => negative ? "(?<!" : "(?<=",
+         _ => nil
+      };
    }
 }

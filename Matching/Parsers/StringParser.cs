@@ -1,121 +1,120 @@
 ﻿using System.Text;
-using Core.Exceptions;
 using Core.Monads;
+using static Core.Monads.MonadFunctions;
 
-namespace Core.Matching.Parsers
+namespace Core.Matching.Parsers;
+
+public class StringParser : BaseParser
 {
-   public class StringParser : BaseParser
+   public override string Pattern => @"^\s*(/)?(['""])";
+
+   public override Maybe<string> Parse(string source, ref int index)
    {
-      public override string Pattern => @"^\s*(/)?(['""])";
+      var enclose = tokens[1] == "/";
+      var quote = tokens[2][0];
+      var escaped = false;
+      var contents = new StringBuilder();
 
-      public override Maybe<string> Parse(string source, ref int index)
+      for (var i = index; i < source.Length; i++)
       {
-         var enclose = tokens[1] == "/";
-         var quote = tokens[2][0];
-         var escaped = false;
-         var contents = new StringBuilder();
-
-         for (var i = index; i < source.Length; i++)
+         var ch = source[i];
+         switch (ch)
          {
-            var ch = source[i];
-            switch (ch)
-            {
-               case '/':
-                  if (escaped)
-                  {
-                     contents.Append("/");
-                     escaped = false;
-                  }
-                  else
-                  {
-                     escaped = true;
-                  }
+            case '/':
+               if (escaped)
+               {
+                  contents.Append("/");
+                  escaped = false;
+               }
+               else
+               {
+                  escaped = true;
+               }
 
-                  break;
-               case '\'':
-                  if (quote == '\'')
-                  {
-                     if (escaped)
-                     {
-                        contents.Append("'");
-                        escaped = false;
-                     }
-                     else
-                     {
-                        index = i + 1;
-                        return escape(contents.ToString()).Enclose(enclose).Some();
-                     }
-                  }
-                  else
+               break;
+            case '\'':
+               if (quote == '\'')
+               {
+                  if (escaped)
                   {
                      contents.Append("'");
-                  }
-
-                  break;
-               case '"':
-                  if (quote == '"')
-                  {
-                     if (escaped)
-                     {
-                        contents.Append('"');
-                        escaped = false;
-                     }
-                     else
-                     {
-                        index = i + 1;
-                        return escape(contents.ToString()).Enclose(enclose).Some();
-                     }
+                     escaped = false;
                   }
                   else
+                  {
+                     index = i + 1;
+                     return escape(contents.ToString()).Enclose(enclose);
+                  }
+               }
+               else
+               {
+                  contents.Append("'");
+               }
+
+               break;
+            case '"':
+               if (quote == '"')
+               {
+                  if (escaped)
                   {
                      contents.Append('"');
-                  }
-
-                  break;
-               case 't':
-                  if (escaped)
-                  {
-                     contents.Append("\t");
                      escaped = false;
                   }
                   else
                   {
-                     contents.Append(ch);
+                     index = i + 1;
+                     return escape(contents.ToString()).Enclose(enclose);
                   }
+               }
+               else
+               {
+                  contents.Append('"');
+               }
 
-                  break;
-               case 'r':
-                  if (escaped)
-                  {
-                     contents.Append("\r");
-                     escaped = false;
-                  }
-                  else
-                  {
-                     contents.Append(ch);
-                  }
-
-                  break;
-               case 'n':
-                  if (escaped)
-                  {
-                     contents.Append("\n");
-                     escaped = false;
-                  }
-                  else
-                  {
-                     contents.Append(ch);
-                  }
-
-                  break;
-               default:
-                  contents.Append(ch);
+               break;
+            case 't':
+               if (escaped)
+               {
+                  contents.Append("\t");
                   escaped = false;
-                  break;
-            }
-         }
+               }
+               else
+               {
+                  contents.Append(ch);
+               }
 
-         throw "Open string".Throws();
+               break;
+            case 'r':
+               if (escaped)
+               {
+                  contents.Append("\r");
+                  escaped = false;
+               }
+               else
+               {
+                  contents.Append(ch);
+               }
+
+               break;
+            case 'n':
+               if (escaped)
+               {
+                  contents.Append("\n");
+                  escaped = false;
+               }
+               else
+               {
+                  contents.Append(ch);
+               }
+
+               break;
+            default:
+               contents.Append(ch);
+               escaped = false;
+               break;
+         }
       }
+
+      throw fail("Open string");
    }
 }

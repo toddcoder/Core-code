@@ -1,38 +1,37 @@
 ﻿using System.Collections.Generic;
 using Core.Monads;
 
-namespace Core.Configurations
+namespace Core.Configurations;
+
+public interface IConfigurationItem
 {
-   public interface IConfigurationItem
-   {
-      string Key { get; }
+   string Key { get; }
 
-      string this[string key] { get; set; }
+   string this[string key] { get; set; }
 
-      IConfigurationItem GetItem(string key);
+   IConfigurationItem GetItem(string key);
 
-      Maybe<IConfigurationItem> GetSomeItem(string key);
+   Maybe<IConfigurationItem> GetSomeItem(string key);
 
-      void SetItem(string key, IConfigurationItem item);
+   void SetItem(string key, IConfigurationItem item);
 
-      Maybe<string> GetValue(string key);
+   Maybe<string> GetValue(string key);
 
-      Result<string> RequireValue(string key);
+   Result<string> RequireValue(string key);
 
-      string ValueAt(string key);
+   string ValueAt(string key);
 
-      public IEnumerable<(string key, string value)> Values();
+   public IEnumerable<(string key, string value)> Values();
 
-      string At(string key);
+   string At(string key);
 
-      Maybe<Setting> GetSetting(string key);
+   Maybe<Setting> GetSetting(string key);
 
-      Result<Setting> RequireSetting(string key);
+   Result<Setting> RequireSetting(string key);
 
-      Setting SettingAt(string key);
+   Setting SettingAt(string key);
 
-      public IEnumerable<(string key, Setting setting)> Settings();
+   public IEnumerable<(string key, Setting setting)> Settings();
 
-      public int Count { get; }
-   }
+   public int Count { get; }
 }

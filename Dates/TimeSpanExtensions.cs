@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Core.Arrays;
-using Core.Dates.DateIncrements;
 using Core.Matching;
 using Core.Monads;
 using Core.Strings;
@@ -64,34 +63,6 @@ public static class TimeSpanExtensions
    public static string ToShortString(this TimeSpan span, bool includeMilliseconds)
    {
       return Time.ToShortString(span, includeMilliseconds);
-   }
-
-   [Obsolete("Use ConversionFunctions")]
-   public static TimeSpan ToTimeSpan(this string source) => source.TimeSpan().Recover(_ => 1.Second());
-
-   [Obsolete("Use ConversionFunctions")]
-   public static TimeSpan ToTimeSpan(this string source, TimeSpan defaultValue) => source.TimeSpan().Recover(_ => defaultValue);
-
-   [Obsolete("Use ConversionFunctions")]
-   public static Maybe<TimeSpan> AsTimeSpan(this string source)
-   {
-      var intervals = source.Split("/s* (',' | 'and') /s*; f");
-      var spans = intervals.Where(i => i.IsNotEmpty()).Select(getSpan);
-      var newSpan = new TimeSpan(0, 0, 0, 0);
-
-      foreach (var span in spans)
-      {
-         if (span.Map(out var timeSpan))
-         {
-            newSpan = newSpan.Add(timeSpan);
-         }
-         else
-         {
-            return nil;
-         }
-      }
-
-      return newSpan;
    }
 
    public static Result<TimeSpan> TimeSpan(this string source)

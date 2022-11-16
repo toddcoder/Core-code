@@ -5,6 +5,7 @@ using Core.Enumerables;
 using Core.Matching;
 using Core.Monads;
 using Core.Strings;
+using static Core.Monads.Lazy.LazyMonadFunctions;
 using static Core.Monads.MonadFunctions;
 using static Core.Strings.StringFunctions;
 
@@ -49,27 +50,25 @@ internal class Parser
          while (source.Length > 0)
          {
             var _length = source.Matches("^ /s* '}' ([/r /n]+ | $); f").Map(r => r.Length);
+            var _result = lazy.maybe(() => source.Matches("^ /s* /(-[/r /n]*) ('/r/n')?; f"));
+
             if (_length)
             {
                return (source.Drop(_length), lines.ToString(","), true);
             }
-            else
+            else if (_result)
             {
-               var _result = source.Matches("^ /s* /(-[/r /n]*) ('/r/n')?; f");
-               if (_result)
+               var result = ~_result;
+               var _stringInfo = getString(result.FirstGroup);
+               if (_stringInfo)
                {
-                  var result = ~_result;
-                  var _stringInfo = getString(result.FirstGroup);
-                  if (_stringInfo)
-                  {
-                     var (_, @string, _) = ~_stringInfo;
-                     source = source.Drop(result.Length);
-                     lines.Add(@string);
-                  }
-                  else
-                  {
-                     return _stringInfo.Exception;
-                  }
+                  var (_, @string, _) = ~_stringInfo;
+                  source = source.Drop(result.Length);
+                  lines.Add(@string);
+               }
+               else
+               {
+                  return _stringInfo.Exception;
                }
             }
          }
@@ -79,62 +78,59 @@ internal class Parser
 
       Result<(string newSource, string str, bool isArray)> getString(string source)
       {
-         var _result = source.Matches("^ /s* /[quote]; f");
-         if (_result)
+         var _result1 = source.Matches("^ /s* /[quote]; f");
+         var _result2 = lazy.maybe(() => source.Matches("^ /s* '{' [/r /n]+; f"));
+         var _result3 = lazy.maybe(() => source.Matches("^ /s* /(-[/r /n]*) ('/r/n')?; f"));
+
+         if (_result1)
          {
-            var result = ~_result;
+            var result = ~_result1;
             var quote = result.FirstGroup[0];
+
             return getQuotedString(source.Drop(result.Length), quote);
+         }
+         else if (_result2)
+         {
+            var result = ~_result2;
+            var newSource = source.Drop(result.Length);
+
+            return getLinesAsArray(newSource);
+         }
+         else if (_result3)
+         {
+            var foundReturn = false;
+            var builder = new StringBuilder();
+            for (var i = 0; i < source.Length; i++)
+            {
+               var current = source[i];
+               switch (current)
+               {
+                  case ';':
+                     return (source.Drop(i + 1), builder.ToString(), false);
+                  case ']' or '#':
+                     return (source.Drop(i), builder.ToString(), false);
+                  case '\r' or '\n':
+                     foundReturn = true;
+                     break;
+                  default:
+                     if (foundReturn)
+                     {
+                        return (source.Drop(i - 1), builder.ToString(), false);
+                     }
+                     else
+                     {
+                        builder.Append(current);
+                     }
+
+                     break;
+               }
+            }
+
+            return (string.Empty, builder.ToString(), false);
          }
          else
          {
-            _result = source.Matches("^ /s* '{' [/r /n]+; f");
-            if (_result)
-            {
-               var result = ~_result;
-               var newSource = source.Drop(result.Length);
-               return getLinesAsArray(newSource);
-            }
-            else
-            {
-               _result = source.Matches("^ /s* /(-[/r /n]*) ('/r/n')?; f");
-               if (_result)
-               {
-                  var foundReturn = false;
-                  var builder = new StringBuilder();
-                  for (var i = 0; i < source.Length; i++)
-                  {
-                     var current = source[i];
-                     switch (current)
-                     {
-                        case ';':
-                           return (source.Drop(i + 1), builder.ToString(), false);
-                        case ']' or '#':
-                           return (source.Drop(i), builder.ToString(), false);
-                        case '\r' or '\n':
-                           foundReturn = true;
-                           break;
-                        default:
-                           if (foundReturn)
-                           {
-                              return (source.Drop(i - 1), builder.ToString(), false);
-                           }
-                           else
-                           {
-                              builder.Append(current);
-                           }
-
-                           break;
-                     }
-                  }
-
-                  return (string.Empty, builder.ToString(), false);
-               }
-               else
-               {
-                  return fail("Couldn't determine string");
-               }
-            }
+            return fail("Couldn't determine string");
          }
       }
 
@@ -226,8 +222,14 @@ internal class Parser
 
       while (source.Length > 0)
       {
-         var _length = source.Matches("^ /s* '['; f").Map(r => r.Length);
-         if (_length)
+         var _openSetting = source.Matches("^ /s* '['; f").Map(r => r.Length);
+         var _settingKey = lazy.maybe(() => source.Matches($"^ /s* {REGEX_KEY} /s* '['; f").Map(r => (r.FirstGroup, r.Length)));
+         var _closeSetting = lazy.maybe(() => source.Matches("^ /s* ']'; f").Map(r => r.Length));
+         var _oneLineKey = lazy.maybe(() => source.Matches($"^ /s* {REGEX_KEY} '.'; f").Map(r => (r.FirstGroup, r.Length)));
+         var _comment = lazy.maybe(() => source.Matches("^ /s* '#' -[/r /n]*; f").Map(r => r.Length));
+         var _key = lazy.maybe(() => source.Matches($"^ /s* {REGEX_KEY} ':' /s*; f").Map(r => (r.FirstGroup, r.Length)));
+         var _string = lazy.result(() => getString(source.TrimLeft()));
+         if (_openSetting)
          {
             var key = GetKey("?");
             var setting = new Setting(key);
@@ -243,177 +245,145 @@ internal class Parser
 
             stack.Push(setting);
 
-            source = source.Drop(_length);
+            source = source.Drop(_openSetting);
          }
-         else
+         else if (_settingKey)
          {
-            var _result = source.Matches($"^ /s* {REGEX_KEY} /s* '['; f");
-            if (_result)
+            var (settingKey, length) = ~_settingKey;
+            var key = GetKey(settingKey);
+            var setting = new Setting(key);
+            var _parentSetting = peekSetting();
+            if (_parentSetting)
             {
-               var result = ~_result;
-               var key = GetKey(result.FirstGroup);
-               var setting = new Setting(key);
+               (~_parentSetting).SetItem(key, setting);
+            }
+            else
+            {
+               return fail("No parent setting found");
+            }
+
+            stack.Push(setting);
+
+            source = source.Drop(length);
+         }
+         else if (_closeSetting)
+         {
+            var _setting = popSetting();
+            if (_setting)
+            {
                var _parentSetting = peekSetting();
                if (_parentSetting)
                {
-                  (~_parentSetting).SetItem(key, setting);
+                  (~_parentSetting).SetItem((~_setting).Key, _setting);
                }
                else
                {
                   return fail("No parent setting found");
                }
-
-               stack.Push(setting);
-
-               source = source.Drop(result.Length);
             }
             else
             {
-               _length = source.Matches("^ /s* ']'; f").Map(r => r.Length);
-               if (_length)
-               {
-                  var _setting = popSetting();
-                  if (_setting)
-                  {
-                     var _parentSetting = peekSetting();
-                     if (_parentSetting)
-                     {
-                        (~_parentSetting).SetItem((~_setting).Key, _setting);
-                     }
-                     else
-                     {
-                        return fail("No parent setting found");
-                     }
-                  }
-                  else
-                  {
-                     return fail("Not closing on setting");
-                  }
+               return fail("Not closing on setting");
+            }
 
-                  source = source.Drop(_length);
-               }
-               else
-               {
-                  _result = source.Matches($"^ /s* {REGEX_KEY} '.'; f");
-                  if (_result)
-                  {
-                     var result = ~_result;
-                     var key = GetKey(result.FirstGroup);
-                     var setting = new Setting(key);
-                     var _parentSetting = peekSetting();
-                     if (_parentSetting)
-                     {
-                        (~_parentSetting).SetItem(key, setting);
-                     }
-                     else
-                     {
-                        return fail("No parent setting found");
-                     }
+            source = source.Drop(_closeSetting);
+         }
+         else if (_oneLineKey)
+         {
+            var (oneLineKey, length) = ~_oneLineKey;
+            var key = GetKey(oneLineKey);
+            var setting = new Setting(key);
+            var _parentSetting = peekSetting();
+            if (_parentSetting)
+            {
+               (~_parentSetting).SetItem(key, setting);
+            }
+            else
+            {
+               return fail("No parent setting found");
+            }
 
-                     source = source.Drop(result.Length);
-                  }
-                  else
-                  {
-                     _length = source.Matches("^ /s* '#' -[/r /n]*; f").Map(r => r.Length);
-                     if (_length)
-                     {
-                        source = source.Drop(_length);
-                     }
-                     else
-                     {
-                        _length = source.Matches("^ /s* ':' /s*; f").Map(r => r.Length);
-                        if (_length)
-                        {
-                           var key = GenerateKey();
-                           var remainder = source.Drop(_length);
-                           var _tuple = getString(remainder);
-                           if (_tuple)
-                           {
-                              var (aSource, value, isArray) = ~_tuple;
-                              source = aSource;
-                              var item = new Item(key, value)
-                              {
-                                 IsArray = isArray
-                              };
-                              var _setting = peekSetting();
-                              if (_setting)
-                              {
-                                 (~_setting).SetItem(item.Key, item);
-                              }
-                           }
-                           else if (source.IsMatch("^ /s+ $; f"))
-                           {
-                              break;
-                           }
-                           else
-                           {
-                              return fail($"Didn't understand value {remainder}");
-                           }
-                        }
-                        else
-                        {
-                           _result = source.Matches($"^ /s* {REGEX_KEY} ':' /s*; f");
-                           if (_result)
-                           {
-                              var result = ~_result;
-                              var key = GetKey(result.FirstGroup);
-                              var remainder = source.Drop(result.Length);
-                              var _tuple = getString(remainder);
-                              if (_tuple)
-                              {
-                                 var (aSource, value, isArray) = ~_tuple;
-                                 source = aSource;
-                                 var item = new Item(key, value)
-                                 {
-                                    IsArray = isArray
-                                 };
-                                 var _setting = peekSetting();
-                                 if (_setting)
-                                 {
-                                    (~_setting).SetItem(item.Key, item);
-                                 }
-                              }
-                              else if (source.IsMatch("^ /s+ $; f"))
-                              {
-                                 break;
-                              }
-                              else
-                              {
-                                 return fail($"Didn't understand value {remainder}");
-                              }
-                           }
-                           else if (source.IsMatch("^ /s+ $; f"))
-                           {
-                              break;
-                           }
-                           else
-                           {
-                              var _tuple = getString(source.TrimLeft());
-                              if (_tuple)
-                              {
-                                 var (aSource, value, isArray) = ~_tuple;
-                                 source = aSource;
-                                 var key = GenerateKey();
-                                 var item = new Item(key, value)
-                                 {
-                                    IsArray = isArray
-                                 };
-                                 var _setting = peekSetting();
-                                 if (_setting)
-                                 {
-                                    (~_setting).SetItem(item.Key, item);
-                                 }
-                              }
-                              else
-                              {
-                                 return fail($"Didn't understand {source.KeepUntil("\r\n")}");
-                              }
-                           }
-                        }
-                     }
-                  }
+            source = source.Drop(length);
+         }
+         else if (_comment)
+         {
+            var key = GenerateKey();
+            var remainder = source.Drop(_openSetting);
+            var _stringTuple = getString(remainder);
+            if (_stringTuple)
+            {
+               var (aSource, value, isArray) = ~_stringTuple;
+               source = aSource;
+               var item = new Item(key, value)
+               {
+                  IsArray = isArray
+               };
+               var _setting = peekSetting();
+               if (_setting)
+               {
+                  (~_setting).SetItem(item.Key, item);
                }
             }
+            else if (source.IsMatch("^ /s+ $; f"))
+            {
+               break;
+            }
+            else
+            {
+               return fail($"Didn't understand value {remainder}");
+            }
+         }
+         else if (_key)
+         {
+            var (key, length) = ~_key;
+            key = GetKey(key);
+            var remainder = source.Drop(length);
+            var _tupleString = getString(remainder);
+            if (_tupleString)
+            {
+               var (aSource, value, isArray) = ~_tupleString;
+               source = aSource;
+               var item = new Item(key, value)
+               {
+                  IsArray = isArray
+               };
+               var _setting = peekSetting();
+               if (_setting)
+               {
+                  (~_setting).SetItem(item.Key, item);
+               }
+            }
+            else if (source.IsMatch("^ /s+ $; f"))
+            {
+               break;
+            }
+            else
+            {
+               return fail($"Didn't understand value {remainder}");
+            }
+         }
+         else if (source.IsMatch("^ /s+ $; f"))
+         {
+            break;
+         }
+         else if (_string)
+         {
+            var (aSource, value, isArray) = ~_string;
+            source = aSource;
+            var key = GenerateKey();
+            var item = new Item(key, value)
+            {
+               IsArray = isArray
+            };
+            var _setting = peekSetting();
+            if (_setting)
+            {
+               (~_setting).SetItem(item.Key, item);
+            }
+         }
+         else
+         {
+            return fail($"Didn't understand {source.KeepUntil("\r\n")}");
          }
       }
 
