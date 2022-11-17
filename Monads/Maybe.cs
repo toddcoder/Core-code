@@ -41,7 +41,7 @@ public abstract class Maybe<T>
       }
    }
 
-   public static Maybe<T> operator |(Maybe<T> left, Lazy.Maybe<T> right)
+   public static Maybe<T> operator |(Maybe<T> left, Lazy.LazyMaybe<T> right)
    {
       if (left)
       {
@@ -65,18 +65,18 @@ public abstract class Maybe<T>
 
    public static implicit operator Maybe<T>(Nil _) => new None<T>();
 
-   public static bool operator true(Maybe<T> value) => value is Some<T> || value is Lazy.Maybe<T> lazyMaybe && lazyMaybe;
+   public static bool operator true(Maybe<T> value) => value is Some<T> || value is Lazy.LazyMaybe<T> lazyMaybe && lazyMaybe;
 
-   public static bool operator false(Maybe<T> value) => value is None<T> || value is Lazy.Maybe<T> lazyMaybe && !lazyMaybe;
+   public static bool operator false(Maybe<T> value) => value is None<T> || value is Lazy.LazyMaybe<T> lazyMaybe && !lazyMaybe;
 
-   public static bool operator !(Maybe<T> value) => value is None<T> || value is Lazy.Maybe<T> lazyMaybe && !lazyMaybe;
+   public static bool operator !(Maybe<T> value) => value is None<T> || value is Lazy.LazyMaybe<T> lazyMaybe && !lazyMaybe;
 
-   public static implicit operator bool(Maybe<T> value) => value is Some<T> || value is Lazy.Maybe<T> lazyMaybe && lazyMaybe;
+   public static implicit operator bool(Maybe<T> value) => value is Some<T> || value is Lazy.LazyMaybe<T> lazyMaybe && lazyMaybe;
 
    public static implicit operator T(Maybe<T> value) => value switch
    {
       Some<T> some => some.Value,
-      Lazy.Maybe<T> lazyMaybe => lazyMaybe.Value,
+      Lazy.LazyMaybe<T> lazyMaybe => lazyMaybe.Value,
       _ => throw new InvalidCastException("Must be a Some to return a value")
    };
 

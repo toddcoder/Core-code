@@ -61,7 +61,7 @@ namespace Core.Monads
          }
       }
 
-      public static Result<T> operator |(Result<T> left, Lazy.Result<T> right)
+      public static Result<T> operator |(Result<T> left, Lazy.LazyResult<T> right)
       {
          if (left)
          {
@@ -107,13 +107,13 @@ namespace Core.Monads
 
       public static implicit operator Result<T>(Exception exception) => new Failure<T>(exception);
 
-      public static bool operator true(Result<T> value) => value is Success<T> || value is Lazy.Result<T> lazyResult && lazyResult;
+      public static bool operator true(Result<T> value) => value is Success<T> || value is Lazy.LazyResult<T> lazyResult && lazyResult;
 
-      public static bool operator false(Result<T> value) => value is Failure<T> || value is Lazy.Result<T> lazyResult && !lazyResult;
+      public static bool operator false(Result<T> value) => value is Failure<T> || value is Lazy.LazyResult<T> lazyResult && !lazyResult;
 
-      public static bool operator !(Result<T> value) => value is Failure<T> || value is Lazy.Result<T> lazyResult && !lazyResult;
+      public static bool operator !(Result<T> value) => value is Failure<T> || value is Lazy.LazyResult<T> lazyResult && !lazyResult;
 
-      public static implicit operator bool(Result<T> value) => value is Success<T> || value is Lazy.Result<T> lazyResult && lazyResult;
+      public static implicit operator bool(Result<T> value) => value is Success<T> || value is Lazy.LazyResult<T> lazyResult && lazyResult;
 
       public static Result<T> Nil(string message) => new Failure<T>(new Exception(message));
 
@@ -121,7 +121,7 @@ namespace Core.Monads
       {
          Success<T> success => success.Value,
          Failure<T> failure => throw failure.Exception,
-         Lazy.Result<T> lazyResult => lazyResult.Value,
+         Lazy.LazyResult<T> lazyResult => lazyResult.Value,
          _ => throw new InvalidCastException("Must be a Success to return a value")
       };
 

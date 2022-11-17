@@ -3,40 +3,61 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads.Lazy;
 
-public class Maybe<T> : Monads.Maybe<T>, IEquatable<Maybe<T>>
+public class LazyMaybe<T> : Maybe<T>, IEquatable<LazyMaybe<T>>
 {
-   public static implicit operator bool(Maybe<T> maybe)
+   public static implicit operator bool(LazyMaybe<T> maybe)
    {
       maybe.ensureValue();
       return maybe._value;
    }
 
-   public static implicit operator Maybe<T>(Func<Monads.Maybe<T>> func) => new(func);
+   public static implicit operator LazyMaybe<T>(Func<Maybe<T>> func) => new(func);
 
-   public static bool operator true(Maybe<T> maybe)
+   public static bool operator true(LazyMaybe<T> maybe)
    {
       maybe.ensureValue();
       return maybe._value;
    }
 
-   public static bool operator false(Maybe<T> maybe)
+   public static bool operator false(LazyMaybe<T> maybe)
    {
       maybe.ensureValue();
       return !maybe._value;
    }
 
-   public static bool operator !(Maybe<T> value) => value is None<T>;
+   public static bool operator !(LazyMaybe<T> value) => value is None<T>;
 
-   protected Func<Monads.Maybe<T>> func;
-   protected Monads.Maybe<T> _value;
+   protected Func<Maybe<T>> func;
+   protected Maybe<T> _value;
    protected bool ensured;
 
-   internal Maybe(Func<Monads.Maybe<T>> func)
+   internal LazyMaybe(Func<Maybe<T>> func)
    {
       this.func = func;
 
       _value = nil;
       ensured = false;
+   }
+
+   internal LazyMaybe() : this(() => nil)
+   {
+   }
+
+   public LazyMaybe<T> ValueOf(Func<Maybe<T>> func)
+   {
+      this.func = func;
+      return this;
+   }
+
+   public LazyMaybe<T> ValueOf(Maybe<T> value)
+   {
+      if (!ensured)
+      {
+         _value = value;
+         ensured = true;
+      }
+
+      return this;
    }
 
    protected void ensureValue()
@@ -57,13 +78,13 @@ public class Maybe<T> : Monads.Maybe<T>, IEquatable<Maybe<T>>
       }
    }
 
-   public override Monads.Maybe<TResult> Map<TResult>(Func<T, TResult> ifSome)
+   public override Maybe<TResult> Map<TResult>(Func<T, TResult> ifSome)
    {
       ensureValue();
       return _value.Map(ifSome);
    }
 
-   public override Monads.Maybe<TResult> Map<TResult>(Func<T, Monads.Maybe<TResult>> ifSome)
+   public override Maybe<TResult> Map<TResult>(Func<T, Maybe<TResult>> ifSome)
    {
       ensureValue();
       return _value.Map(ifSome);
@@ -113,13 +134,13 @@ public class Maybe<T> : Monads.Maybe<T>, IEquatable<Maybe<T>>
       _value.Deconstruct(out isSome, out value);
    }
 
-   public override Monads.Maybe<T> IfThen(Action<T> action)
+   public override Maybe<T> IfThen(Action<T> action)
    {
       ensureValue();
       return _value.IfThen(action);
    }
 
-   public override bool EqualToValueOf(Monads.Maybe<T> otherMaybe)
+   public override bool EqualToValueOf(Maybe<T> otherMaybe)
    {
       ensureValue();
       return _value.EqualToValueOf(otherMaybe);
@@ -131,25 +152,25 @@ public class Maybe<T> : Monads.Maybe<T>, IEquatable<Maybe<T>>
       return _value.ValueEqualTo(otherValue);
    }
 
-   public override Monads.Maybe<TResult> CastAs<TResult>()
+   public override Maybe<TResult> CastAs<TResult>()
    {
       ensureValue();
       return _value.CastAs<TResult>();
    }
 
-   public override Monads.Maybe<T> Where(Predicate<T> predicate)
+   public override Maybe<T> Where(Predicate<T> predicate)
    {
       ensureValue();
       return _value.Where(predicate);
    }
 
-   public override Monads.Maybe<T> Initialize(Func<T> initializer)
+   public override Maybe<T> Initialize(Func<T> initializer)
    {
       ensureValue();
       return _value.Initialize(initializer);
    }
 
-   public bool Equals(Maybe<T> other)
+   public bool Equals(LazyMaybe<T> other)
    {
       ensureValue();
       return _value == other._value;
@@ -158,7 +179,7 @@ public class Maybe<T> : Monads.Maybe<T>, IEquatable<Maybe<T>>
    public override bool Equals(object obj)
    {
       ensureValue();
-      return obj is Maybe<T> other && Equals(other);
+      return obj is LazyMaybe<T> other && Equals(other);
    }
 
    public override int GetHashCode()
@@ -167,7 +188,7 @@ public class Maybe<T> : Monads.Maybe<T>, IEquatable<Maybe<T>>
       return _value.GetHashCode();
    }
 
-   public static bool operator ==(Maybe<T> left, Maybe<T> right) => Equals(left, right);
+   public static bool operator ==(LazyMaybe<T> left, LazyMaybe<T> right) => Equals(left, right);
 
-   public static bool operator !=(Maybe<T> left, Maybe<T> right) => !Equals(left, right);
+   public static bool operator !=(LazyMaybe<T> left, LazyMaybe<T> right) => !Equals(left, right);
 }

@@ -427,7 +427,7 @@ public class MonadTests
    }
 
    [TestMethod]
-   public void LazySomeTest()
+   public void LazyMaybeTest()
    {
       var _one = lazy.maybe<string>(() =>
       {
@@ -458,6 +458,27 @@ public class MonadTests
       }
 
       if (_three)
+      {
+         Console.WriteLine(~_three);
+      }
+   }
+
+   [TestMethod]
+   public void LazyMaybe2Test()
+   {
+      var _one = lazy.maybe<string>();
+      var _two = lazy.maybe<string>();
+      var _three = lazy.maybe<string>();
+
+      if (_one.ValueOf(() => "one"))
+      {
+         Console.WriteLine(~_one);
+      }
+      else if (_two.ValueOf(() => "two"))
+      {
+         Console.WriteLine(~_two);
+      }
+      else if (_three.ValueOf(() => "three"))
       {
          Console.WriteLine(~_three);
       }

@@ -4,7 +4,7 @@ namespace Core.Monads.Lazy;
 
 public class LazyMonadFunctions
 {
-   protected static Monads.Maybe<LazyMonadFunctions> _function;
+   protected static Maybe<LazyMonadFunctions> _function;
 
    static LazyMonadFunctions()
    {
@@ -24,11 +24,19 @@ public class LazyMonadFunctions
       }
    }
 
-   public Maybe<T> maybe<T>(Func<Monads.Maybe<T>> func) => new(func);
+   public LazyMaybe<T> maybe<T>(Func<Maybe<T>> func) => new(func);
 
-   public Result<T> result<T>(Func<Monads.Result<T>> func) => new(func);
+   public LazyMaybe<T> maybe<T>() => new();
 
-   public Responding<T> responding<T>(Func<Monads.Responding<T>> func) => new(func);
+   public LazyResult<T> result<T>(Func<Result<T>> func) => new(func);
 
-   public Completion<T> completion<T>(Func<Monads.Completion<T>> func) => new(func);
+   public LazyResult<T> result<T>() => new();
+
+   public LazyResponding<T> responding<T>(Func<Responding<T>> func) => new(func);
+
+   public LazyResponding<T> responding<T>() => new();
+
+   public LazyCompletion<T> completion<T>(Func<Completion<T>> func) => new(func);
+
+   public LazyCompletion<T> completion<T>() => new();
 }

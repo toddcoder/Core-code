@@ -21,7 +21,7 @@ public abstract class Responding<T>
       }
    }
 
-   public static Responding<T> operator |(Responding<T> left, Lazy.Responding<T> right)
+   public static Responding<T> operator |(Responding<T> left, Lazy.LazyResponding<T> right)
    {
       if (left)
       {
@@ -66,19 +66,19 @@ public abstract class Responding<T>
       return _exception.Map(e => (Responding<T>)new FailedResponse<T>(e)) | (() => new NoResponse<T>());
    }
 
-   public static bool operator true(Responding<T> value) => value is Response<T> || value is Lazy.Responding<T> lazyResponding && lazyResponding;
+   public static bool operator true(Responding<T> value) => value is Response<T> || value is Lazy.LazyResponding<T> lazyResponding && lazyResponding;
 
-   public static bool operator false(Responding<T> value) => value is not Response<T> || value is Lazy.Responding<T> lazyResponding && !lazyResponding;
+   public static bool operator false(Responding<T> value) => value is not Response<T> || value is Lazy.LazyResponding<T> lazyResponding && !lazyResponding;
 
-   public static bool operator !(Responding<T> value) => value is not Response<T> || value is Lazy.Responding<T> lazyResponding && !lazyResponding;
+   public static bool operator !(Responding<T> value) => value is not Response<T> || value is Lazy.LazyResponding<T> lazyResponding && !lazyResponding;
 
-   public static implicit operator bool(Responding<T> value) => value is Response<T> || value is Lazy.Responding<T> lazyResponding && lazyResponding;
+   public static implicit operator bool(Responding<T> value) => value is Response<T> || value is Lazy.LazyResponding<T> lazyResponding && lazyResponding;
 
    public static implicit operator T(Responding<T> value) => value switch
    {
       Response<T> response => response.Value,
       FailedResponse<T> failedResponse => throw failedResponse.Exception,
-      Lazy.Responding<T> responding => responding.Value,
+      Lazy.LazyResponding<T> responding => responding.Value,
       _ => throw new InvalidCastException("Must be a Response to return a value")
    };
 
