@@ -49,14 +49,14 @@ internal class Parser
          var lines = new List<string>();
          while (source.Length > 0)
          {
-            var _length = source.Matches("^ /s* '}' ([/r /n]+ | $); f").Map(r => r.Length);
-            var _result = lazy.maybe(() => source.Matches("^ /s* /(-[/r /n]*) ('/r/n')?; f"));
+            var _length = lazy.maybe<int>();
+            var _result = lazy.maybe<MatchResult>();
 
-            if (_length)
+            if (_length.ValueOf(source.Matches("^ /s* '}' ([/r /n]+ | $); f").Map(r => r.Length)))
             {
                return (source.Drop(_length), lines.ToString(","), true);
             }
-            else if (_result)
+            else if (_result.ValueOf(source.Matches("^ /s* /(-[/r /n]*) ('/r/n')?; f")))
             {
                var result = ~_result;
                var _stringInfo = getString(result.FirstGroup);
@@ -78,25 +78,25 @@ internal class Parser
 
       Result<(string newSource, string str, bool isArray)> getString(string source)
       {
-         var _result1 = source.Matches("^ /s* /[quote]; f");
-         var _result2 = lazy.maybe(() => source.Matches("^ /s* '{' [/r /n]+; f"));
-         var _result3 = lazy.maybe(() => source.Matches("^ /s* /(-[/r /n]*) ('/r/n')?; f"));
+         var _quote = lazy.maybe<MatchResult>();
+         var _openBrace = lazy.maybe<MatchResult>();
+         var _endOfLine = lazy.maybe<MatchResult>();
 
-         if (_result1)
+         if (_quote.ValueOf(source.Matches("^ /s* /[quote]; f")))
          {
-            var result = ~_result1;
+            var result = ~_quote;
             var quote = result.FirstGroup[0];
 
             return getQuotedString(source.Drop(result.Length), quote);
          }
-         else if (_result2)
+         else if (_openBrace.ValueOf(source.Matches("^ /s* '{' [/r /n]+; f")))
          {
-            var result = ~_result2;
+            var result = ~_openBrace;
             var newSource = source.Drop(result.Length);
 
             return getLinesAsArray(newSource);
          }
-         else if (_result3)
+         else if (_endOfLine.ValueOf(source.Matches("^ /s* /(-[/r /n]*) ('/r/n')?; f")))
          {
             var foundReturn = false;
             var builder = new StringBuilder();
@@ -222,14 +222,14 @@ internal class Parser
 
       while (source.Length > 0)
       {
-         var _openSetting = source.Matches("^ /s* '['; f").Map(r => r.Length);
-         var _settingKey = lazy.maybe(() => source.Matches($"^ /s* {REGEX_KEY} /s* '['; f").Map(r => (r.FirstGroup, r.Length)));
-         var _closeSetting = lazy.maybe(() => source.Matches("^ /s* ']'; f").Map(r => r.Length));
-         var _oneLineKey = lazy.maybe(() => source.Matches($"^ /s* {REGEX_KEY} '.'; f").Map(r => (r.FirstGroup, r.Length)));
-         var _comment = lazy.maybe(() => source.Matches("^ /s* '#' -[/r /n]*; f").Map(r => r.Length));
-         var _key = lazy.maybe(() => source.Matches($"^ /s* {REGEX_KEY} ':' /s*; f").Map(r => (r.FirstGroup, r.Length)));
-         var _string = lazy.result(() => getString(source.TrimLeft()));
-         if (_openSetting)
+         var _openSetting = lazy.maybe<int>();
+         var _settingKey = lazy.maybe<(string, int)>();
+         var _closeSetting = lazy.maybe<int>();
+         var _oneLineKey = lazy.maybe<(string, int)>();
+         var _comment = lazy.maybe<int>();
+         var _key = lazy.maybe<(string, int)>();
+         var _string = lazy.result<(string, string, bool)>();
+         if (_openSetting.ValueOf(source.Matches("^ /s* '['; f").Map(r => r.Length)))
          {
             var key = GetKey("?");
             var setting = new Setting(key);
@@ -247,7 +247,7 @@ internal class Parser
 
             source = source.Drop(_openSetting);
          }
-         else if (_settingKey)
+         else if (_settingKey.ValueOf(source.Matches($"^ /s* {REGEX_KEY} /s* '['; f").Map(r => r.FirstGroupAndLength)))
          {
             var (settingKey, length) = ~_settingKey;
             var key = GetKey(settingKey);
@@ -266,7 +266,7 @@ internal class Parser
 
             source = source.Drop(length);
          }
-         else if (_closeSetting)
+         else if (_closeSetting.ValueOf(source.Matches("^ /s* ']'; f").Map(r => r.Length)))
          {
             var _setting = popSetting();
             if (_setting)
@@ -288,7 +288,7 @@ internal class Parser
 
             source = source.Drop(_closeSetting);
          }
-         else if (_oneLineKey)
+         else if (_oneLineKey.ValueOf(source.Matches($"^ /s* {REGEX_KEY} '.'; f").Map(r => r.FirstGroupAndLength)))
          {
             var (oneLineKey, length) = ~_oneLineKey;
             var key = GetKey(oneLineKey);
@@ -305,7 +305,7 @@ internal class Parser
 
             source = source.Drop(length);
          }
-         else if (_comment)
+         else if (_comment.ValueOf(source.Matches("^ /s* '#' -[/r /n]*; f").Map(r => r.Length)))
          {
             var key = GenerateKey();
             var remainder = source.Drop(_openSetting);
@@ -333,7 +333,7 @@ internal class Parser
                return fail($"Didn't understand value {remainder}");
             }
          }
-         else if (_key)
+         else if (_key.ValueOf(source.Matches($"^ /s* {REGEX_KEY} ':' /s*; f").Map(r => r.FirstGroupAndLength)))
          {
             var (key, length) = ~_key;
             key = GetKey(key);
@@ -366,7 +366,7 @@ internal class Parser
          {
             break;
          }
-         else if (_string)
+         else if (_string.ValueOf(getString(source.TrimLeft())))
          {
             var (aSource, value, isArray) = ~_string;
             source = aSource;

@@ -538,13 +538,13 @@ public class ConfigurationTests
    {
       var resources = new Resources<ConfigurationTests>();
       var source = resources.String("usesForeignKey.txt");
-      var _setting = lazy.result(() => Setting.FromString(source));
-      var _container = lazy.result(() => (~_setting).Deserialize<NonConformanceInfoContainer>());
-      if (_setting)
+      var _setting = lazy.result<Setting>();
+      var _container = lazy.result<NonConformanceInfoContainer>();
+      if (_setting.ValueOf(Setting.FromString(source)))
       {
          var setting = ~_setting;
          Console.WriteLine(setting);
-         if (_container)
+         if (_container.ValueOf(setting.Deserialize<NonConformanceInfoContainer>()))
          {
             var container = ~_container;
             foreach (var info in container.NonConformanceInfos)

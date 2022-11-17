@@ -123,13 +123,13 @@ public abstract class CommandProcessor : IDisposable
 
    protected static Maybe<(string command, string rest)> splitCommandFromRest(string commandLine)
    {
-      var _help = lazy.maybe(() => commandLine.Matches("^ 'help' (/s+ /(.+))? $; f").Map(r => r.FirstGroup));
-      var _length = lazy.maybe(() => commandLine.Matches("^ /('config') /s+ ('get' | 'set') /b; f").Map(r => r.FirstGroup.Length));
+      var _help = lazy.maybe<string>();
+      var _length = lazy.maybe<int>();
       if (commandLine.IsEmpty())
       {
          return ("help", "");
       }
-      else if (_help)
+      else if (_help.ValueOf(commandLine.Matches("^ 'help' (/s+ /(.+))? $; f").Map(r => r.FirstGroup)))
       {
          return ("help", _help);
       }
@@ -137,7 +137,7 @@ public abstract class CommandProcessor : IDisposable
       {
          return (commandLine, "");
       }
-      else if (_length)
+      else if (_length.ValueOf(commandLine.Matches("^ /('config') /s+ ('get' | 'set') /b; f").Map(r => r.FirstGroup.Length)))
       {
          return ("config", commandLine.Drop(_length).TrimLeft());
       }
@@ -250,13 +250,13 @@ public abstract class CommandProcessor : IDisposable
    protected void generateHelp(string rest)
    {
       var generator = new HelpGenerator(this);
-      var _help = lazy.result(() => generator.Help(rest));
+      var _help = lazy.result<string>();
       string help;
       if (rest.IsEmpty())
       {
          help = generator.Help();
       }
-      else if (_help)
+      else if (_help.ValueOf(generator.Help(rest)))
       {
          help = _help;
       }
@@ -309,13 +309,13 @@ public abstract class CommandProcessor : IDisposable
          if (_result)
          {
             var (command, name, value) = ~_result;
-            var _command = command.Matches($"^ '{Prefix}' /('set' | 'get'); f").Map(r => r.FirstGroup);
-            var _command2 = lazy.maybe(() => command.Matches($"^ '{ShortCut}' /('s' | 'g'); f").Map(r => r.FirstGroup));
-            if (_command)
+            var _command = lazy.maybe<string>();
+            var _command2 = lazy.maybe<string>();
+            if (_command.ValueOf(command.Matches($"^ '{Prefix}' /('set' | 'get'); f").Map(r => r.FirstGroup)))
             {
                command = _command;
             }
-            else if (_command2)
+            else if (_command2.ValueOf(command.Matches($"^ '{ShortCut}' /('s' | 'g'); f").Map(r => r.FirstGroup)))
             {
                command = _command2;
             }
@@ -407,9 +407,9 @@ public abstract class CommandProcessor : IDisposable
          }
          else
          {
-            var _secondGroup = noStrings.Matches("^ /s* /([quote]) /(-[quote]*) /1; f").Map(r => r.SecondGroup);
-            var _stringLength = lazy.maybe(() => noStrings.Matches("^ /s* /(-/s+); f").Map(r => (r.FirstGroup, r.Length)));
-            if (_secondGroup)
+            var _secondGroup = lazy.maybe<string>();
+            var _stringLength = lazy.maybe<(string, int)>();
+            if (_secondGroup.ValueOf(noStrings.Matches("^ /s* /([quote]) /(-[quote]*) /1; f").Map(r => r.SecondGroup)))
             {
                var value = delimitedText.Restringify(_secondGroup, RestringifyQuotes.None);
 
@@ -417,7 +417,7 @@ public abstract class CommandProcessor : IDisposable
 
                noStrings = noStrings.Drop(result.Length);
             }
-            else if (_stringLength)
+            else if (_stringLength.ValueOf(noStrings.Matches("^ /s* /(-/s+); f").Map(r => (r.FirstGroup, r.Length))))
             {
                var (firstGroup, length) = ~_stringLength;
                yield return (prefix, name, firstGroup);

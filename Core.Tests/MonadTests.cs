@@ -470,15 +470,15 @@ public class MonadTests
       var _two = lazy.maybe<string>();
       var _three = lazy.maybe<string>();
 
-      if (_one.ValueOf(() => "one"))
+      if (_one.ValueOf("one"))
       {
          Console.WriteLine(~_one);
       }
-      else if (_two.ValueOf(() => "two"))
+      else if (_two.ValueOf("two"))
       {
          Console.WriteLine(~_two);
       }
-      else if (_three.ValueOf(() => "three"))
+      else if (_three.ValueOf("three"))
       {
          Console.WriteLine(~_three);
       }
