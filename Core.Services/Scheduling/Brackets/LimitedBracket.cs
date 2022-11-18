@@ -16,6 +16,7 @@ public class LimitedBracket : Bracket
    {
       this.begin = begin;
       this.end = end;
+
       normal = this.begin < this.end;
    }
 

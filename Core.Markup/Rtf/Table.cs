@@ -14,7 +14,7 @@ namespace Core.Markup.Rtf;
 
 public class Table : Block
 {
-   protected class CellData
+   public class CellData
    {
       public CellData()
       {
@@ -23,6 +23,7 @@ public class Table : Block
          PendingFormatter = nil;
          ImageFile = nil;
          ImageFileType = nil;
+         BackgroundColor = nil;
       }
 
       public string Text { get; set; }
@@ -34,6 +35,8 @@ public class Table : Block
       public Maybe<FileName> ImageFile { get; set; }
 
       public Maybe<ImageFileType> ImageFileType { get; set; }
+
+      public Maybe<ColorDescriptor> BackgroundColor { get; set; }
    }
 
    public static RowBuilder operator |(Table table, string columnText)
@@ -62,6 +65,7 @@ public class Table : Block
    protected bool arrayCreated;
    protected MaybeQueue<(int topRow, int leftColumn, int rowSpan, int colSpan)> pendingMerges;
    protected Maybe<Action<Paragraph, int, int>> _formatAction;
+   protected Maybe<CellData> _currentCell;
 
    public Table(float horizontalWidth, float fontSize)
    {
@@ -86,7 +90,10 @@ public class Table : Block
       pendingMerges = new MaybeQueue<(int, int, int, int)>();
 
       _formatAction = nil;
+      _currentCell = nil;
    }
+
+   public Maybe<CellData> CurrentCell => _currentCell;
 
    public Action<Paragraph, int, int> FormatAction
    {
@@ -118,6 +125,7 @@ public class Table : Block
    {
       var pendingFormatter = new PendingFormatter(this);
       var cellData = new CellData { Text = text, PendingFormatter = pendingFormatter };
+      _currentCell = cellData;
       var row = rows[rowIndex];
       row.Add(cellData);
       if (row.Count > maxColumnCount)
@@ -178,6 +186,11 @@ public class Table : Block
                }
                else
                {
+                  if (cellData.BackgroundColor)
+                  {
+                     tableCell.BackgroundColor = cellData.BackgroundColor;
+                  }
+
                   var paragraph = tableCell.Paragraph();
                   if (_formatAction)
                   {

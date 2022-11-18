@@ -9,6 +9,7 @@ using Core.Matching;
 using Core.Monads;
 using static System.Reflection.Assembly;
 using static Core.Monads.AttemptFunctions;
+using static Core.Monads.Lazy.LazyMonadFunctions;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Services;
@@ -75,49 +76,44 @@ public class TypeManager
    {
       try
       {
-         var _type = typeCache.Of(name);
-         if (_type)
+         var _type = lazy.maybe<Type>();
+         var _typeName = lazy.result<string>();
+         if (_type.ValueOf(typeCache.Maybe[name]))
          {
             return ~_type;
          }
+         else if (_typeName.ValueOf(getTypeName(name)))
+         {
+            var typeName = ~_typeName;
+            var _result = lazy.maybe<MatchResult>();
+            var _assemblyType = lazy.result<Type>();
+
+            if (_result.ValueOf(typeName.Matches("^ -/{<} '<' -/{:} ':' /s* -/{>} '>' $; f")))
+            {
+               var (possibleTypeName, subTypeName, subAssemblyName) = ~_result;
+               typeName = $"{possibleTypeName}`1";
+
+               var _genericType =
+                  from typeFromAssembly in getTypeFromAssembly(assembly, typeName)
+                  from subType in Type(subAssemblyName, subTypeName)
+                  select (~_type).MakeGenericType(subType);
+               if (_genericType)
+               {
+                  typeCache[name] = _genericType;
+               }
+
+               return _genericType;
+            }
+            else if (_assemblyType.ValueOf(getTypeFromAssembly(assembly, typeName)))
+            {
+               typeCache[name] = _assemblyType;
+            }
+
+            return _assemblyType;
+         }
          else
          {
-            var _typeName = getTypeName(name);
-            if (_typeName)
-            {
-               var typeName = ~_typeName;
-               var _result = typeName.Matches("^ -/{<} '<' -/{:} ':' /s* -/{>} '>' $; f");
-               if (_result)
-               {
-                  var (possibleTypeName, subTypeName, subAssemblyName) = ~_result;
-                  typeName = $"{possibleTypeName}`1";
-
-                  var _genericType =
-                     from typeFromAssembly in getTypeFromAssembly(assembly, typeName)
-                     from subType in Type(subAssemblyName, subTypeName)
-                     select (~_type).MakeGenericType(subType);
-                  if (_genericType)
-                  {
-                     typeCache[name] = _genericType;
-                  }
-
-                  return _genericType;
-               }
-               else
-               {
-                  var _assemblyType = getTypeFromAssembly(assembly, typeName);
-                  if (_assemblyType)
-                  {
-                     typeCache[name] = _assemblyType;
-                  }
-
-                  return _assemblyType;
-               }
-            }
-            else
-            {
-               return _typeName.Exception;
-            }
+            return _typeName.Exception;
          }
       }
       catch (Exception exception)
@@ -134,26 +130,23 @@ public class TypeManager
    {
       try
       {
-         var _assembly = assemblyCache.Maybe[name];
-         if (_assembly)
+         var _assembly = lazy.maybe<Assembly>();
+         var _path = lazy.maybe<string>();
+         if (_assembly.ValueOf(assemblyCache.Maybe[name]))
          {
             return ~_assembly;
          }
+         else if (_path.ValueOf(assemblyNames.Maybe[name]))
+         {
+            FolderName.Current = ((FileName)~_path).Folder;
+            var assembly = LoadFrom(_path);
+            assemblyCache[name] = assembly;
+
+            return assembly;
+         }
          else
          {
-            var _path = assemblyNames.Maybe[name];
-            if (_path)
-            {
-               FolderName.Current = ((FileName)~_path).Folder;
-               var assembly = LoadFrom(_path);
-               assemblyCache[name] = assembly;
-
-               return assembly;
-            }
-            else
-            {
-               return fail($"Couldn't find assembly named {name}");
-            }
+            return fail($"Couldn't find assembly named {name}");
          }
       }
       catch (Exception exception)

@@ -8,6 +8,7 @@ using Core.Objects;
 using Core.Services.Loggers;
 using Core.Services.Plugins;
 using Core.Services.Scheduling;
+using static Core.Monads.Lazy.LazyMonadFunctions;
 using static Core.Monads.MonadFunctions;
 using static Core.Objects.ConversionFunctions;
 
@@ -58,22 +59,19 @@ public class Job : IDisposable, IEquatable<Job>, IAddServiceMessages
    {
       Result<string> getValue(string objectName, Func<Maybe<string>> defaultValue, string message)
       {
-         var _name = setting.Maybe.String(objectName);
-         if (_name)
+         var _nameFromObjectName = lazy.maybe<string>();
+         var _nameFromDefaultValue = lazy.maybe<string>();
+         if (_nameFromObjectName.ValueOf(setting.Maybe.String(objectName)))
          {
-            return ~_name;
+            return ~_nameFromObjectName;
+         }
+         else if (_nameFromDefaultValue.ValueOf(defaultValue()))
+         {
+            return ~_nameFromDefaultValue;
          }
          else
          {
-            _name = defaultValue();
-            if (_name)
-            {
-               return ~_name;
-            }
-            else
-            {
-               return fail(message);
-            }
+            return fail(message);
          }
       }
 

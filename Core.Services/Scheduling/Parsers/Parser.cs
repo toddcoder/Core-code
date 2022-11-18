@@ -32,18 +32,17 @@ public abstract class Parser
 
    public Maybe<ScheduleIncrement> Parse(string source)
    {
-      var _result = source.Matches(Pattern + PATTERN_BRACKET);
-      if (_result)
+      var _tokens = source.Matches(Pattern + PATTERN_BRACKET).Map(r => r.Groups(0));
+      if (_tokens)
       {
-         var result = ~_result;
-         tokens = result.Groups(0);
+         tokens = ~_tokens;
          var lastIndex = tokens.Length - 1;
          var values = tokens.Where((_, i) => i.Between(1).Until(lastIndex)).Select(t => Value.Int32(t, -1)).ToArray();
-         var bracketSource = result[0, lastIndex];
-         _result = bracketSource.Matches(PATTERN_UNADORNED_BRACKET);
-         if (_result)
+         var bracketSource = tokens[lastIndex];
+         var _times = bracketSource.Matches(PATTERN_UNADORNED_BRACKET);
+         if (_times)
          {
-            var (begin, end) = ~_result;
+            var (begin, end) = ~_times;
             Bracket = new LimitedBracket(begin, end);
          }
          else

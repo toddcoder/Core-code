@@ -117,7 +117,15 @@ public class RowBuilder
 
    public RowBuilder BackgroundColor(BackgroundColorDescriptor backgroundColor)
    {
-      formatter.BackgroundColor(backgroundColor);
+      if (table.CurrentCell)
+      {
+         (~table.CurrentCell).BackgroundColor = backgroundColor;
+      }
+      else
+      {
+         formatter.BackgroundColor(backgroundColor);
+      }
+
       return this;
    }
 

@@ -27,7 +27,7 @@ public class RtfTests
       _ = header | "";
 
       var footer = document.Footer;
-      _ = footer | "Page " | page | " of " | numPages; // | " Date: " | date | " Time: " | time | right;
+      _ = footer | "Page " | page | " of " | numPages;
 
       _ = document | "This is test line 1";
       _ = document | "This is test line 2";
@@ -44,6 +44,7 @@ public class RtfTests
       _ = document | "Test 1: " | none | "italics" | italic;
       _ = document | "Test 2: " | none | "bold" | bold;
       _ = document | "Test 3: " | none | "underline" | underline;
+      _ = document | "Test 4: " | none | "gold" | goldColor.Background;
 
       _ = document | "";
 
@@ -52,7 +53,7 @@ public class RtfTests
 
       var table = document.Table(12f);
       _ = table | "Full Name" | headerStyle | "Latin Letter" | headerStyle | "Greek Letter" | headerStyle;
-      _ = table | "alpha" | rowStyle | "a" | "alpha" | rowStyle;
+      _ = table | "alpha" | rowStyle | goldColor.Background | "a" | "alpha" | rowStyle;
       _ = table | "bravo" | "b" | "beta";
       _ = table | "charlie" | "c" | "kappa";
       _ = table | "delta" | rowStyle | "d" | "delta" | rowStyle;
@@ -261,11 +262,15 @@ public class RtfTests
       document.DefaultCharFormat.Style = style;
       var margins = (8f, nil, 8f, nil);
 
+      var foreColor = document.Color("white");
+      var backColor = document.Color("blue");
+      var style333 = new Style() | foreColor.Foreground | backColor.Background;
+
       var table = document.Table(12f);
       _ = table | "Column 1" | "Column 2" | "Column 3";
-      _ = table | "111" | "222" | "333";
-      _ = table | "222" | "333" | "444";
-      _ = table | "333" | "444" | "555";
+      _ = table | "111" | "222" | "333" | style333 | backColor.Background;
+      _ = table | "222" | "333" | style333 | "444";
+      _ = table | "333" | style333 | "444" | "555";
       table.DefaultCharFormat.Style = ~style | margins;
       table.SetOuterBorder(BorderStyle.Double, 1f);
       table.SetInnerBorder(BorderStyle.Single, 1f);
