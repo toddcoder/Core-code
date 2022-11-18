@@ -1,8 +1,7 @@
-﻿namespace Core.Data.Setups
+﻿namespace Core.Data.Setups;
+
+public enum CommandSourceType
 {
-   public enum CommandSourceType
-   {
-      SQL,
-      File
-   }
+   SQL,
+   File
 }

@@ -8,6 +8,7 @@ using Core.DataStructures;
 using Core.Exceptions;
 using Core.Monads;
 using static Core.Markup.Rtf.ParagraphFunctions;
+using static Core.Monads.Lazy.LazyRepeatingMonads;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Markup.Rtf;
@@ -349,14 +350,11 @@ public class Table : Block
 
    public void ActivatePendingMerges()
    {
-      while (pendingMerges.IsNotEmpty)
+      var _item = lazyRepeating.maybe<(int, int, int, int)>();
+      while (_item.ValueOf(pendingMerges.Dequeue()))
       {
-         var _item = pendingMerges.Dequeue();
-         if (_item)
-         {
-            var (topRow, leftColumn, rowSpan, colSpan) = ~_item;
-            Merge(topRow, leftColumn, rowSpan, colSpan);
-         }
+         var (topRow, leftColumn, rowSpan, colSpan) = ~_item;
+         Merge(topRow, leftColumn, rowSpan, colSpan);
       }
    }
 

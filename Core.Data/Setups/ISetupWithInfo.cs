@@ -1,10 +1,9 @@
 ﻿using System.Data.SqlClient;
 using Core.Monads;
 
-namespace Core.Data.Setups
+namespace Core.Data.Setups;
+
+public interface ISetupWithInfo
 {
-   public interface ISetupWithInfo
-   {
-      Maybe<SqlInfoMessageEventHandler> Handler { get; }
-   }
+   Maybe<SqlInfoMessageEventHandler> Handler { get; }
 }

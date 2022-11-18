@@ -1,11 +1,10 @@
 ﻿using System;
 
-namespace Core.Data.DataSources
-{
-   public class CancelEventArgs : EventArgs
-   {
-      public CancelEventArgs() => Cancel = false;
+namespace Core.Data.DataSources;
 
-      public bool Cancel { get; set; }
-   }
+public class CancelEventArgs : EventArgs
+{
+   public CancelEventArgs() => Cancel = false;
+
+   public bool Cancel { get; set; }
 }

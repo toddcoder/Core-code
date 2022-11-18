@@ -291,8 +291,9 @@
     <Compile Include="Monads\Completion.cs" />
     <Compile Include="Monads\IHasValue.cs" />
     <Compile Include="Monads\Lazy\LazyCompletion.cs" />
-    <Compile Include="Monads\Lazy\LazyMonadFunctions.cs" />
+    <Compile Include="Monads\Lazy\LazyMonads.cs" />
     <Compile Include="Monads\Lazy\LazyMaybe.cs" />
+    <Compile Include="Monads\Lazy\LazyRepeatingMonads.cs" />
     <Compile Include="Monads\Lazy\LazyResponding.cs" />
     <Compile Include="Monads\Lazy\LazyResult.cs" />
     <Compile Include="Monads\LeftHand.cs" />

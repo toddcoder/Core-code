@@ -4,24 +4,23 @@ using Core.Collections;
 using Core.Data.Fields;
 using Core.Data.Parameters;
 
-namespace Core.Data.Setups
+namespace Core.Data.Setups;
+
+public interface ISetupObject
 {
-   public interface ISetupObject
-   {
-      string ConnectionString { get; }
+   string ConnectionString { get; }
 
-      CommandSourceType CommandSourceType { get; }
+   CommandSourceType CommandSourceType { get; }
 
-      string Command { get; }
+   string Command { get; }
 
-      TimeSpan CommandTimeout { get; }
+   TimeSpan CommandTimeout { get; }
 
-      IEnumerable<Parameter> Parameters();
+   IEnumerable<Parameter> Parameters();
 
-      IEnumerable<Field> Fields();
+   IEnumerable<Field> Fields();
 
-      IHash<string, string> Attributes { get; }
+   IHash<string, string> Attributes { get; }
 
-      ISetup Setup();
-   }
+   ISetup Setup();
 }

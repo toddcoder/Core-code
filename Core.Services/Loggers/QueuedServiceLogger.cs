@@ -4,6 +4,7 @@ using Core.Configurations;
 using Core.DataStructures;
 using Core.Exceptions;
 using Core.Monads;
+using static Core.Monads.Lazy.LazyRepeatingMonads;
 
 namespace Core.Services.Loggers;
 
@@ -51,11 +52,10 @@ public class QueuedServiceLogger : ServiceLogger
    {
       lock (queue)
       {
-         var _item = queue.Dequeue();
-         while (_item)
+         var _item = lazyRepeating.maybe<QueueItem>();
+         while (_item.ValueOf(queue.Dequeue()))
          {
             baseWrite(_item);
-            _item = queue.Dequeue();
          }
       }
    }

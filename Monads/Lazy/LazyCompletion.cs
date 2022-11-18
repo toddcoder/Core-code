@@ -55,7 +55,7 @@ public class LazyCompletion<T> : Completion<T>
 
    public LazyCompletion<T> ValueOf(Completion<T> value)
    {
-      if (!ensured)
+      if (Repeating || !ensured)
       {
          _value = value;
          ensured = false;
@@ -63,6 +63,8 @@ public class LazyCompletion<T> : Completion<T>
 
       return this;
    }
+
+   public bool Repeating { get; set; }
 
    protected void ensureValue()
    {
@@ -336,13 +338,13 @@ public class LazyCompletion<T> : Completion<T>
       return _value.Maybe();
    }
 
-   public override Monads.Result<T> Result()
+   public override Result<T> Result()
    {
       ensureValue();
       return _value.Result();
    }
 
-   public override Monads.Responding<T> Responding()
+   public override Responding<T> Responding()
    {
       ensureValue();
       return _value.Responding();

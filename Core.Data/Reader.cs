@@ -5,6 +5,7 @@ using System.Data;
 using System.Linq;
 using Core.Data.DataSources;
 using Core.Monads;
+using static Core.Monads.Lazy.LazyRepeatingMonads;
 
 namespace Core.Data;
 
@@ -49,12 +50,10 @@ public class Reader<T> : IDisposable, IEnumerable<T>
    {
       try
       {
-         var _entity = Next();
-         while (_entity)
+         var _entity = lazyRepeating.maybe<T>();
+         while (_entity.ValueOf(Next()))
          {
             yield return ~_entity;
-
-            _entity = Next();
          }
       }
       finally

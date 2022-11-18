@@ -58,7 +58,7 @@ public class LazyResult<T> : Result<T>, IEquatable<LazyResult<T>>
 
    public LazyResult<T> ValueOf(Result<T> value)
    {
-      if (!ensured)
+      if (Repeating || !ensured)
       {
          _value = value;
          ensured = true;
@@ -66,6 +66,8 @@ public class LazyResult<T> : Result<T>, IEquatable<LazyResult<T>>
 
       return this;
    }
+
+   public bool Repeating { get; set; }
 
    protected void ensureValue()
    {

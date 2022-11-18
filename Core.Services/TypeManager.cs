@@ -9,7 +9,7 @@ using Core.Matching;
 using Core.Monads;
 using static System.Reflection.Assembly;
 using static Core.Monads.AttemptFunctions;
-using static Core.Monads.Lazy.LazyMonadFunctions;
+using static Core.Monads.Lazy.LazyMonads;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Services;

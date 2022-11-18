@@ -55,7 +55,7 @@ public class LazyResponding<T> : Responding<T>, IEquatable<LazyResponding<T>>
 
    public LazyResponding<T> ValueOf(Responding<T> value)
    {
-      if (!ensured)
+      if (Repeating || !ensured)
       {
          _value = value;
          ensured = true;
@@ -63,6 +63,8 @@ public class LazyResponding<T> : Responding<T>, IEquatable<LazyResponding<T>>
 
       return this;
    }
+
+   public bool Repeating { get; set; }
 
    protected void ensureValue()
    {
@@ -211,7 +213,7 @@ public class LazyResponding<T> : Responding<T>, IEquatable<LazyResponding<T>>
       return _value.Maybe();
    }
 
-   public override Monads.Result<T> Result()
+   public override Result<T> Result()
    {
       ensureValue();
       return _value.Result();

@@ -1,15 +1,18 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Core.DataStructures;
 using Core.Dates.DateIncrements;
 using Core.Exceptions;
 using Core.Monads;
 using Core.Strings;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Core.Applications.Async.AsyncFunctions;
+using static Core.Arrays.ArrayFunctions;
 using static Core.Lambdas.LambdaFunctions;
 using static Core.Monads.AttemptFunctions;
-using static Core.Monads.Lazy.LazyMonadFunctions;
+using static Core.Monads.Lazy.LazyMonads;
+using static Core.Monads.Lazy.LazyRepeatingMonads;
 using static Core.Monads.MonadFunctions;
 using static Core.Monads.MultiMatching.MonadMatcherFunctions;
 
@@ -481,6 +484,22 @@ public class MonadTests
       else if (_three.ValueOf("three"))
       {
          Console.WriteLine(~_three);
+      }
+   }
+
+   [TestMethod]
+   public void LazyRepeatingMonadsTest()
+   {
+      var stack = new MaybeStack<string>();
+      foreach (var item in array("a", "b", "c", "d", "e", "f"))
+      {
+         stack.Push(item);
+      }
+
+      var _item = lazyRepeating.maybe<string>();
+      while (_item.ValueOf(stack.Pop()))
+      {
+         Console.WriteLine(~_item);
       }
    }
 }

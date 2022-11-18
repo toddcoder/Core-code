@@ -1,23 +1,24 @@
 ﻿using System;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads.Lazy;
 
-public class LazyMonadFunctions
+public class LazyMonads
 {
-   protected static Maybe<LazyMonadFunctions> _function;
+   protected static Maybe<LazyMonads> _function;
 
-   static LazyMonadFunctions()
+   static LazyMonads()
    {
-      _function = MonadFunctions.nil;
+      _function = nil;
    }
 
-   public static LazyMonadFunctions lazy
+   public static LazyMonads lazy
    {
       get
       {
          if (!_function)
          {
-            _function = new LazyMonadFunctions();
+            _function = new LazyMonads();
          }
 
          return ~_function;

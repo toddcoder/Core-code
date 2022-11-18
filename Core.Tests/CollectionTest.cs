@@ -9,6 +9,7 @@ using Core.DataStructures;
 using Core.Dates;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Core.Arrays.ArrayFunctions;
+using static Core.Monads.Lazy.LazyRepeatingMonads;
 
 namespace Core.Tests;
 
@@ -64,9 +65,9 @@ public class CollectionTest
          queue.Enqueue(item);
       }
 
-      while (queue.IsNotEmpty)
+      var _item = lazyRepeating.maybe<int>();
+      while (_item.ValueOf(queue.Dequeue()))
       {
-         var _item = queue.Dequeue();
          Console.WriteLine(~_item);
       }
    }

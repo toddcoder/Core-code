@@ -1,11 +1,10 @@
 ﻿using System;
 
-namespace Core.Data.ConnectionStrings
-{
-   public interface IConnectionString
-   {
-      string ConnectionString { get; }
+namespace Core.Data.ConnectionStrings;
 
-      TimeSpan ConnectionTimeout { get; }
-   }
+public interface IConnectionString
+{
+   string ConnectionString { get; }
+
+   TimeSpan ConnectionTimeout { get; }
 }

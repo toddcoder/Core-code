@@ -2,20 +2,19 @@
 using Core.Data.ConnectionStrings;
 using Core.Data.DataSources;
 
-namespace Core.Data.Setups
+namespace Core.Data.Setups;
+
+public interface ISetup
 {
-   public interface ISetup
-   {
-      DataSource DataSource { get; }
+   DataSource DataSource { get; }
 
-      IConnectionString ConnectionString { get; }
+   IConnectionString ConnectionString { get; }
 
-      string CommandText { get; set; }
+   string CommandText { get; set; }
 
-      Fields.Fields Fields { get; set; }
+   Fields.Fields Fields { get; set; }
 
-      Parameters.Parameters Parameters { get; set; }
+   Parameters.Parameters Parameters { get; set; }
 
-      TimeSpan CommandTimeout { get; set; }
-   }
+   TimeSpan CommandTimeout { get; set; }
 }

@@ -5,7 +5,7 @@ using Core.Enumerables;
 using Core.Matching;
 using Core.Monads;
 using Core.Strings;
-using static Core.Monads.Lazy.LazyMonadFunctions;
+using static Core.Monads.Lazy.LazyMonads;
 using static Core.Monads.MonadFunctions;
 using static Core.Strings.StringFunctions;
 

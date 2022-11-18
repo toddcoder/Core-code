@@ -1,8 +1,7 @@
-﻿namespace Core.Data
+﻿namespace Core.Data;
+
+public interface IActive
 {
-   public interface IActive
-   {
-      void BeforeExecute();
-      void AfterExecute();
-   }
+   void BeforeExecute();
+   void AfterExecute();
 }

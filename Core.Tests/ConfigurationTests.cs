@@ -10,7 +10,7 @@ using Core.Configurations;
 using Core.Enumerables;
 using Core.Monads;
 using Core.Strings;
-using static Core.Monads.Lazy.LazyMonadFunctions;
+using static Core.Monads.Lazy.LazyMonads;
 using static Core.Strings.StringFunctions;
 
 namespace Core.Tests;

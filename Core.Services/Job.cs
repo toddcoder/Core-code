@@ -8,7 +8,7 @@ using Core.Objects;
 using Core.Services.Loggers;
 using Core.Services.Plugins;
 using Core.Services.Scheduling;
-using static Core.Monads.Lazy.LazyMonadFunctions;
+using static Core.Monads.Lazy.LazyMonads;
 using static Core.Monads.MonadFunctions;
 using static Core.Objects.ConversionFunctions;
 

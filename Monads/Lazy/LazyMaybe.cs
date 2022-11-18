@@ -51,7 +51,7 @@ public class LazyMaybe<T> : Maybe<T>, IEquatable<LazyMaybe<T>>
 
    public LazyMaybe<T> ValueOf(Maybe<T> value)
    {
-      if (!ensured)
+      if (Repeating || !ensured)
       {
          _value = value;
          ensured = true;
@@ -59,6 +59,8 @@ public class LazyMaybe<T> : Maybe<T>, IEquatable<LazyMaybe<T>>
 
       return this;
    }
+
+   public bool Repeating { get; set; }
 
    protected void ensureValue()
    {
@@ -96,13 +98,13 @@ public class LazyMaybe<T> : Maybe<T>, IEquatable<LazyMaybe<T>>
       return _value.Required(message);
    }
 
-   public override Monads.Result<T> Result(string message)
+   public override Result<T> Result(string message)
    {
       ensureValue();
       return _value.Result(message);
    }
 
-   public override Monads.Responding<T> Responding()
+   public override Responding<T> Responding()
    {
       ensureValue();
       return _value.Responding();

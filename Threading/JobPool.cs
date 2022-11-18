@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using Core.DataStructures;
 using Core.Enumerables;
+using static Core.Monads.Lazy.LazyRepeatingMonads;
 
 namespace Core.Threading;
 
@@ -89,9 +90,9 @@ public class JobPool
       }
 
       queue.ResetCurrentAffinity();
-      while (newQueue.IsNotEmpty)
+      var _item = lazyRepeating.maybe<Action<int>>();
+      while (_item.ValueOf(newQueue.Dequeue))
       {
-         var _item = newQueue.Dequeue();
          queue.Enqueue(_item);
       }
 

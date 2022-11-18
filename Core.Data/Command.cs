@@ -4,6 +4,7 @@ using Core.Configurations;
 using Core.Dates.DateIncrements;
 using Core.Exceptions;
 using Core.Monads;
+using static Core.Monads.Lazy.LazyMonads;
 using static Core.Monads.MonadFunctions;
 using static Core.Objects.ConversionFunctions;
 
@@ -24,23 +25,20 @@ public class Command
       try
       {
          string command;
-         var _text = commandSetting.Maybe.String("text");
-         if (_text)
+         var _text = lazy.maybe<string>();
+         var _fileName = lazy.maybe<string>();
+         if (_text.ValueOf(commandSetting.Maybe.String("text")))
          {
             command = _text;
          }
+         else if (_fileName.ValueOf(commandSetting.Maybe.String("file")))
+         {
+            FileName file = ~_fileName;
+            command = file.Text;
+         }
          else
          {
-            var _fileName = commandSetting.Maybe.String("file");
-            if (_fileName)
-            {
-               FileName file = ~_fileName;
-               command = file.Text;
-            }
-            else
-            {
-               return fail("Require 'text' or 'file' values");
-            }
+            return fail("Require 'text' or 'file' values");
          }
 
          var timeout = commandSetting.Maybe.String("timeout").Map(Maybe.TimeSpan) | (() => 30.Seconds());
@@ -56,23 +54,20 @@ public class Command
    public Command(Setting commandSetting)
    {
       Name = commandSetting.Key;
-      var _text = commandSetting.Maybe.String("text");
-      if (_text)
+      var _text = lazy.maybe<string>();
+      var _fileName = lazy.maybe<string>();
+      if (_text.ValueOf(commandSetting.Maybe.String("text")))
       {
          Text = _text;
       }
+      else if (_fileName.ValueOf(commandSetting.Maybe.String("file")))
+      {
+         FileName file = ~_fileName;
+         Text = file.Text;
+      }
       else
       {
-         var _fileName = commandSetting.Maybe.String("file");
-         if (_fileName)
-         {
-            FileName file = ~_fileName;
-            Text = file.Text;
-         }
-         else
-         {
-            throw "Require 'text' or 'file' values".Throws();
-         }
+         throw fail("Require 'text' or 'file' values");
       }
 
       CommandTimeout = commandSetting.Maybe.String("timeout").Map(Maybe.TimeSpan) | (() => 30.Seconds());

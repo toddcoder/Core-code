@@ -1,9 +1,8 @@
-﻿namespace Core.Data.Setups
-{
-   public interface ISetupObjectWithSetters
-   {
-      string ConnectionString { set; }
+﻿namespace Core.Data.Setups;
 
-      string Command { set; }
-   }
+public interface ISetupObjectWithSetters
+{
+   string ConnectionString { set; }
+
+   string Command { set; }
 }
