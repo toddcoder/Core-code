@@ -1,9 +1,8 @@
-﻿namespace Core.Collections
+﻿namespace Core.Collections;
+
+public enum DefaultType
 {
-   public enum DefaultType
-   {
-      None,
-      Value,
-      Lambda
-   }
+   None,
+   Value,
+   Lambda
 }

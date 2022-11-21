@@ -5,7 +5,6 @@ using Core.Applications.Writers;
 using Core.Collections;
 using Core.Computers;
 using Core.Enumerables;
-using Core.Exceptions;
 using Core.Matching;
 using Core.Monads;
 using Core.Objects;
@@ -241,7 +240,7 @@ public abstract class CommandLineInterface : IDisposable
       }
       else
       {
-         throw "String arrays must be delimited by []".Throws();
+         throw fail("String arrays must be delimited by []");
       }
    }
 

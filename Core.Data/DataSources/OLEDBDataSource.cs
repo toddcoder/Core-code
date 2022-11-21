@@ -4,7 +4,6 @@ using System.Data.OleDb;
 using System.Reflection;
 using Core.Computers;
 using Core.Dates.DateIncrements;
-using Core.Exceptions;
 using Core.Monads;
 using Core.Strings;
 using static System.Convert;
@@ -27,7 +26,7 @@ public class OleDbDataSource : DataSource
       TypeCode.Int64 => OleDbType.BigInt,
       TypeCode.Object => OleDbType.Variant,
       TypeCode.String => OleDbType.VarWChar,
-      _ => throw $"Doesn't support {type}".Throws()
+      _ => throw fail($"Doesn't support {type}")
    };
 
    protected Maybe<FileName> associatedFile;
@@ -112,7 +111,7 @@ public class OleDbDataSource : DataSource
          }
          else
          {
-            throw "Command not initialized".Throws();
+            throw fail("Command not initialized");
          }
       }
    }

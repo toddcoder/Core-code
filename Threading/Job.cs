@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Threading;
-using Core.Exceptions;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Threading;
 
@@ -29,7 +29,7 @@ public class Job
          handle = OpenThread(0x60, false, threadId);
          if (SetThreadAffinityMask(handle, new HandleRef(tempHandle, (IntPtr)coreMask)) == IntPtr.Zero)
          {
-            throw "Failed to set processor affinity for thread".Throws();
+            throw fail("Failed to set processor affinity for thread");
          }
       }
       finally

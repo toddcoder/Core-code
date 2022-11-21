@@ -10,7 +10,6 @@ using Core.Arrays;
 using Core.Assertions;
 using Core.Dates.Now;
 using Core.Enumerables;
-using Core.Exceptions;
 using Core.Matching;
 using Core.Monads;
 using Core.Numbers;
@@ -874,7 +873,7 @@ public class FolderName : IComparable, IComparable<FolderName>, IEquatable<Folde
       }
       else
       {
-         throw "Couldn't determine relative path".Throws();
+         throw fail("Couldn't determine relative path");
       }
    }
 

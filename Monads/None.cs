@@ -1,5 +1,4 @@
 ﻿using System;
-using Core.Exceptions;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads;
@@ -38,7 +37,7 @@ public class None<T> : Maybe<T>, IEquatable<None<T>>
       return true;
    }
 
-   public override void Force(string message) => throw message.Throws();
+   public override void Force(string message) => throw fail(message);
 
    public override void Deconstruct(out bool isSome, out T value)
    {

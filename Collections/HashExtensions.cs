@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using Core.Computers;
 using Core.Configurations;
-using Core.Exceptions;
 using Core.Matching;
 using Core.Monads;
 using Core.Objects;
@@ -38,7 +37,7 @@ public static class HashExtensions
       }
       else
       {
-         throw message.Throws();
+         throw fail(message);
       }
    }
 

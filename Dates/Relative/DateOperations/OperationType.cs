@@ -1,9 +1,8 @@
-﻿namespace Core.Dates.Relative.DateOperations
+﻿namespace Core.Dates.Relative.DateOperations;
+
+public enum OperationType
 {
-	public enum OperationType
-	{
-		Year,
-		Month,
-		Day
-	}
+   Year,
+   Month,
+   Day
 }

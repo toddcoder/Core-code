@@ -4,80 +4,79 @@ using System.Linq;
 using Core.Matching;
 using Core.Strings;
 
-namespace Core.Computers
+namespace Core.Computers;
+
+public class FolderIterator : IEnumerable<FolderName>
 {
-   public class FolderIterator : IEnumerable<FolderName>
+   protected string predecessor;
+   protected string[] folderParts;
+   protected bool endOnly;
+
+   public FolderIterator(string pattern, bool endOnly)
    {
-      protected string predecessor;
-      protected string[] folderParts;
-      protected bool endOnly;
-
-      public FolderIterator(string pattern, bool endOnly)
+      predecessor = "";
+      var prefix = "";
+      if (pattern.StartsWith(@"\\"))
       {
-         predecessor = "";
-         var prefix = "";
-         if (pattern.StartsWith(@"\\"))
-         {
-            prefix = pattern.Keep(2);
-            pattern = pattern.Drop(2);
-         }
-         else if (pattern.IsMatch(@"^ ['A-Za-z'] ':\'; f"))
-         {
-            prefix = pattern.Keep(3);
-            pattern = pattern.Drop(3);
-         }
-
-         folderParts = pattern.Split('\\');
-         if (folderParts.Length > 0 && prefix.IsNotEmpty())
-         {
-            folderParts[0] = $"{prefix}{folderParts[0]}";
-         }
-
-         this.endOnly = endOnly;
+         prefix = pattern.Keep(2);
+         pattern = pattern.Drop(2);
+      }
+      else if (pattern.IsMatch(@"^ ['A-Za-z'] ':\'; f"))
+      {
+         prefix = pattern.Keep(3);
+         pattern = pattern.Drop(3);
       }
 
-      public FolderIterator(string predecessor, string[] folderParts, bool endOnly)
+      folderParts = pattern.Split('\\');
+      if (folderParts.Length > 0 && prefix.IsNotEmpty())
       {
-         this.predecessor = predecessor;
-         this.folderParts = folderParts;
-         this.endOnly = endOnly;
+         folderParts[0] = $"{prefix}{folderParts[0]}";
       }
 
-      public IEnumerator<FolderName> GetEnumerator()
-      {
-         var current = predecessor;
+      this.endOnly = endOnly;
+   }
 
-         for (var index = 0; index < folderParts.Length; index++)
+   public FolderIterator(string predecessor, string[] folderParts, bool endOnly)
+   {
+      this.predecessor = predecessor;
+      this.folderParts = folderParts;
+      this.endOnly = endOnly;
+   }
+
+   public IEnumerator<FolderName> GetEnumerator()
+   {
+      var current = predecessor;
+
+      for (var index = 0; index < folderParts.Length; index++)
+      {
+         var part = folderParts[index];
+         if (part.StartsWith("~"))
          {
-            var part = folderParts[index];
-            if (part.StartsWith("~"))
+            part = part.Drop(1);
+            foreach (var folder in ((FolderName)current).Folders.Where(f => f.Name.IsMatch($"{part}; f")))
             {
-               part = part.Drop(1);
-               foreach (var folder in ((FolderName)current).Folders.Where(f => f.Name.IsMatch($"{part}; f")))
+               if (!endOnly || index == folderParts.Length - 1)
                {
-                  if (!endOnly || index == folderParts.Length - 1)
-                  {
-                     yield return folder;
-                  }
+                  yield return folder;
+               }
 
-                  var iterator = new FolderIterator(folder.FullPath, folderParts.Skip(index + 1).ToArray(), endOnly);
-                  foreach (var subfolder in iterator)
-                  {
-                     yield return subfolder;
-                  }
+               var iterator = new FolderIterator(folder.FullPath, folderParts.Skip(index + 1).ToArray(), endOnly);
+               foreach (var subfolder in iterator)
+               {
+                  yield return subfolder;
                }
             }
-            else if (current.IsEmpty())
-            {
-               current = part;
-            }
-            else
-            {
-               current = $"{current}\\{part}";
-            }
+         }
+         else if (current.IsEmpty())
+         {
+            current = part;
+         }
+         else
+         {
+            current = $"{current}\\{part}";
          }
       }
-
-      IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
    }
+
+   IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }

@@ -5,7 +5,6 @@ using Core.Assertions;
 using Core.Collections;
 using Core.Computers;
 using Core.DataStructures;
-using Core.Exceptions;
 using Core.Monads;
 using static Core.Markup.Rtf.ParagraphFunctions;
 using static Core.Monads.Lazy.LazyRepeatingMonads;
@@ -266,12 +265,12 @@ public class Table : Block
 
    public override string BlockHead
    {
-      set => throw "BlockHead is not supported for tables.".Throws();
+      set => throw fail("BlockHead is not supported for tables.");
    }
 
    public override string BlockTail
    {
-      set => throw "BlockTail is not supported for tables.".Throws();
+      set => throw fail("BlockTail is not supported for tables.");
    }
 
    public TableCell this[int row, int col]
@@ -327,7 +326,7 @@ public class Table : Block
          var cell = cells[row][i];
          if (cell.IsMerged && cell.MergeInfo.Representative.MergeInfo.RowSpan > 1)
          {
-            throw "Row height cannot be set because some cell in this row has been merged.".Throws();
+            throw fail("Row height cannot be set because some cell in this row has been merged.");
          }
       }
 
@@ -741,7 +740,7 @@ public class Table : Block
                         result.Append("db");
                         break;
                      default:
-                        throw "Unknown border style".Throws();
+                        throw fail("Unknown border style");
                   }
 
                   result.Append($@"\brdrcf{border.Color.Value}");

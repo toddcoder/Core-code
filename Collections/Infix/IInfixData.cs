@@ -1,13 +1,12 @@
 ﻿using Core.Monads;
 
-namespace Core.Collections.Infix
+namespace Core.Collections.Infix;
+
+public interface IInfixData<TValue, TInfix>
 {
-   public interface IInfixData<TValue, TInfix>
-   {
-      TValue Value { get; }
+   TValue Value { get; }
 
-      Maybe<TInfix> Infix { get; }
+   Maybe<TInfix> Infix { get; }
 
-      void Deconstruct(out TValue value, out Maybe<TInfix> _infix);
-   }
+   void Deconstruct(out TValue value, out Maybe<TInfix> _infix);
 }

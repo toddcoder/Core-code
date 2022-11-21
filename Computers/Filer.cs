@@ -1,25 +1,24 @@
 ﻿using System;
 
-namespace Core.Computers
+namespace Core.Computers;
+
+public class Filer
 {
-   public class Filer
+   public static FolderName CurrentFolder
    {
-      public static FolderName CurrentFolder
+      get => FolderName.Current;
+      set => FolderName.Current = value;
+   }
+
+   public void ForEach(Action<FileName> action, bool recursive) => forEach(action, CurrentFolder, recursive);
+
+   protected static void forEach(Action<FileName> action, FolderName folder, bool recursive)
+   {
+      foreach (var file in folder.Files)
       {
-         get => FolderName.Current;
-         set => FolderName.Current = value;
+         action(file);
       }
 
-      public void ForEach(Action<FileName> action, bool recursive) => forEach(action, CurrentFolder, recursive);
-
-      protected static void forEach(Action<FileName> action, FolderName folder, bool recursive)
-      {
-         foreach (var file in folder.Files)
-         {
-            action(file);
-         }
-
-         if (recursive) { }
-      }
+      if (recursive) { }
    }
 }

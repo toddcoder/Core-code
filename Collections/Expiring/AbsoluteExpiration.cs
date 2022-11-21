@@ -1,16 +1,15 @@
 ﻿using System;
 using Core.Dates;
 
-namespace Core.Collections.Expiring
+namespace Core.Collections.Expiring;
+
+public class AbsoluteExpiration<T> : ExpirationPolicy<T>
 {
-   public class AbsoluteExpiration<T> : ExpirationPolicy<T>
-   {
-      protected Trigger trigger;
+   protected Trigger trigger;
 
-      public AbsoluteExpiration(TimeSpan duration) => trigger = new Trigger(duration);
+   public AbsoluteExpiration(TimeSpan duration) => trigger = new Trigger(duration);
 
-      public override bool ItemEvictable(T value) => trigger.Triggered;
+   public override bool ItemEvictable(T value) => trigger.Triggered;
 
-      public override void Reset() { }
-   }
+   public override void Reset() { }
 }

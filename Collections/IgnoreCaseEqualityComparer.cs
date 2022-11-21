@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
 using Core.Strings;
 
-namespace Core.Collections
-{
-   public class IgnoreCaseEqualityComparer : IEqualityComparer<string>
-   {
-      public bool Equals(string x, string y) => x.ToNonNullString().Same(y.ToNonNullString());
+namespace Core.Collections;
 
-      public int GetHashCode(string obj) => obj.ToUpper().GetHashCode();
-   }
+public class IgnoreCaseEqualityComparer : IEqualityComparer<string>
+{
+   public bool Equals(string x, string y) => x.ToNonNullString().Same(y.ToNonNullString());
+
+   public int GetHashCode(string obj) => obj.ToUpper().GetHashCode();
 }

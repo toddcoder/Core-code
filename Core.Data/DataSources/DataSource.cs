@@ -4,7 +4,6 @@ using System.Data.SqlClient;
 using Core.Assertions;
 using Core.Collections;
 using Core.Computers;
-using Core.Exceptions;
 using Core.Matching;
 using Core.Monads;
 using Core.Objects;
@@ -111,7 +110,7 @@ public abstract class DataSource
          }
          else
          {
-            throw "Command and connection not properly initialized".Throws();
+            throw fail("Command and connection not properly initialized");
          }
 
          var dbCommand = ~Command;
@@ -199,7 +198,7 @@ public abstract class DataSource
          }
          else
          {
-            throw "Command and connection not properly initialized".Throws();
+            throw fail("Command and connection not properly initialized");
          }
 
          var dbCommand = ~Command;
@@ -237,7 +236,7 @@ public abstract class DataSource
       }
       else
       {
-         throw "Command hasn't been created".Throws();
+         throw fail("Command hasn't been created");
       }
    }
 
@@ -436,7 +435,7 @@ public abstract class DataSource
       }
       else
       {
-         throw "Command not initialized".Throws();
+         throw fail("Command not initialized");
       }
    }
 

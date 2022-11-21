@@ -1,27 +1,26 @@
 ﻿using System;
 
-namespace Core.Lambdas
-{
-   public static class LambdaExtensions
-   {
-      public static void If(this Action action, Func<bool> ifTrue)
-      {
-         if (ifTrue())
-         {
-            action();
-         }
-      }
+namespace Core.Lambdas;
 
-      public static void If(this Action action, Func<bool> ifTrue, Action ifFalse)
+public static class LambdaExtensions
+{
+   public static void If(this Action action, Func<bool> ifTrue)
+   {
+      if (ifTrue())
       {
-         if (ifTrue())
-         {
-            action();
-         }
-         else
-         {
-            ifFalse();
-         }
+         action();
+      }
+   }
+
+   public static void If(this Action action, Func<bool> ifTrue, Action ifFalse)
+   {
+      if (ifTrue())
+      {
+         action();
+      }
+      else
+      {
+         ifFalse();
       }
    }
 }

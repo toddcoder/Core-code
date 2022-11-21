@@ -1,6 +1,5 @@
 ﻿using System;
 using Core.Assertions;
-using Core.Exceptions;
 using Core.Monads;
 using static Core.Monads.MonadFunctions;
 
@@ -57,7 +56,7 @@ public class LateLazy<T>
          }
          else
          {
-            throw errorMessage.Throws();
+            throw fail(errorMessage);
          }
       }
    }

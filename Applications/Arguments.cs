@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Core.Collections;
-using Core.Exceptions;
 using Core.Matching;
 using Core.Monads;
 using Core.Numbers;
@@ -64,7 +63,7 @@ namespace Core.Applications
       {
          if (length != exactCount)
          {
-            throw $"Expected exact count of {exactCount}".Throws();
+            throw fail($"Expected exact count of {exactCount}");
          }
       }
 
@@ -72,7 +71,7 @@ namespace Core.Applications
       {
          if (!length.Between(minimumCount).And(maximumCount))
          {
-            $"Count must between {minimumCount} and {maximumCount}--found {length}".Throws();
+            throw fail($"Count must between {minimumCount} and {maximumCount}--found {length}");
          }
       }
 
@@ -80,7 +79,7 @@ namespace Core.Applications
       {
          if (length < minimumCount)
          {
-            throw $"Count must be at least {minimumCount}--found {length}".Throws();
+            throw fail($"Count must be at least {minimumCount}--found {length}");
          }
       }
 
@@ -88,7 +87,7 @@ namespace Core.Applications
       {
          if (length > maximumCount)
          {
-            throw $"Count must be at most {maximumCount}--found {length}".Throws();
+            throw fail($"Count must be at most {maximumCount}--found {length}");
          }
       }
 

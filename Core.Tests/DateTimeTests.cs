@@ -13,11 +13,13 @@ namespace Core.Tests
       [TestMethod]
       public void DescriptionFromNowTest()
       {
-         var beginningDate = Value.DateTime("06/01/2021");
+         var beginningDate = Value.DateTime("06/01/2021 6:30:01 AM");
          DateIncrementer incrementer = beginningDate;
          NowServer.SetToTest(incrementer);
 
-         checkToday();
+         checkJustNow();
+         checkMinuteAgo();
+         checkHourAgo();
          checkYesterday();
          checkDayBeforeYesterday();
          checkThreeDaysAgo();
@@ -33,7 +35,11 @@ namespace Core.Tests
          Console.WriteLine($"{message}: [{dateTime}, {dateTime.DayOfWeek}] = {dateTime.DescriptionFromNow()}");
       }
 
-      protected static void checkToday() => checkDate("Today", NowServer.Today);
+      protected static void checkJustNow() => checkDate("Just now", NowServer.Now - 1.Millisecond());
+
+      protected static void checkMinuteAgo() => checkDate("1 Minute", NowServer.Now - 1.Minute());
+
+      protected static void checkHourAgo() => checkDate("1 Hour", NowServer.Now - 1.Hour());
 
       protected static void checkYesterday() => checkDate("Yesterday", NowServer.Today - 1.Day());
 

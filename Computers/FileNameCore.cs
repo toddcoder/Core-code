@@ -1,24 +1,24 @@
 ﻿using System.IO;
 
-namespace Core.Computers
+namespace Core.Computers;
+
+public class FileNameCore
 {
-   public class FileNameCore
+   protected FileName file;
+
+   public FileNameCore(FileName file)
    {
-      protected FileName file;
+      this.file = file;
+   }
 
-      public FileNameCore(FileName file)
+   public string Text
+   {
+      get
       {
-         this.file = file;
-      }
+         using var stream = new FileStream(file.ToString(), FileMode.Open, FileAccess.Read);
+         using var reader = new StreamReader(stream);
 
-      public string Text
-      {
-         get
-         {
-            using var stream = new FileStream(file.ToString(), FileMode.Open, FileAccess.Read);
-            using var reader = new StreamReader(stream);
-            return reader.ReadToEnd();
-         }
+         return reader.ReadToEnd();
       }
    }
 }

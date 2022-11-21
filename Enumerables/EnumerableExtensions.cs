@@ -4,7 +4,6 @@ using System.Linq;
 using Core.Arrays;
 using Core.Assertions;
 using Core.Collections;
-using Core.Exceptions;
 using Core.Monads;
 using Core.Numbers;
 using Core.Objects;
@@ -226,8 +225,7 @@ public static class EnumerableExtensions
    }
 
    public static Result<(T1, T2, T3)> FirstOrFail<T1, T2, T3>(this IEnumerable<(T1, T2, T3)> enumerable,
-      Func<T1, T2, T3, bool> predicate,
-      string failureMessage = "Default value")
+      Func<T1, T2, T3, bool> predicate, string failureMessage = "Default value")
    {
       try
       {
@@ -685,7 +683,7 @@ public static class EnumerableExtensions
       var list = enumerable.ToList();
       if (list.Count == 0)
       {
-         throw "Enumerable can't be empty".Throws();
+         throw fail("Enumerable can't be empty");
       }
 
       var accumulator = list[list.Count - 1];

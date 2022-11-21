@@ -13,561 +13,560 @@ using Core.Matching;
 using Core.Monads;
 using static Core.Assertions.AssertionFunctions;
 
-namespace Core.Assertions
+namespace Core.Assertions;
+
+public static class AssertionExtensions
 {
-   public static class AssertionExtensions
+   public static ComparableAssertion<int> Must(this int value) => new(value);
+
+   [Obsolete("Use value version")]
+   public static ComparableAssertion<int> Must(this Expression<Func<int>> expression)
    {
-      public static ComparableAssertion<int> Must(this int value) => new(value);
+      var (name, value) = resolve(expression);
+      var assertion = value.Must();
 
-      [Obsolete("Use value version")]
-      public static ComparableAssertion<int> Must(this Expression<Func<int>> expression)
-      {
-         var (name, value) = resolve(expression);
-         var assertion = value.Must();
+      return (ComparableAssertion<int>)assertion.Named($"Integer {name}");
+   }
 
-         return (ComparableAssertion<int>)assertion.Named($"Integer {name}");
-      }
+   public static ComparableAssertion<int> Must(this (int, string) tuple)
+   {
+      var (value, name) = tuple;
+      var assertion = value.Must();
 
-      public static ComparableAssertion<int> Must(this (int, string) tuple)
-      {
-         var (value, name) = tuple;
-         var assertion = value.Must();
+      return (ComparableAssertion<int>)assertion.Named($"Integer {name}");
+   }
 
-         return (ComparableAssertion<int>)assertion.Named($"Integer {name}");
-      }
+   public static ComparableAssertion<int> BeEven(this ComparableAssertion<int> assertion)
+   {
+      return assertion.IfTrue(i => i % 2 == 0, "$name must $not be even");
+   }
 
-      public static ComparableAssertion<int> BeEven(this ComparableAssertion<int> assertion)
-      {
-         return assertion.IfTrue(i => i % 2 == 0, "$name must $not be even");
-      }
+   public static ComparableAssertion<int> BeOdd(this ComparableAssertion<int> assertion)
+   {
+      return assertion.IfTrue(i => i % 2 != 0, "$name must $not be odd");
+   }
 
-      public static ComparableAssertion<int> BeOdd(this ComparableAssertion<int> assertion)
-      {
-         return assertion.IfTrue(i => i % 2 != 0, "$name must $not be odd");
-      }
+   public static ComparableAssertion<long> Must(this long value) => new(value);
 
-      public static ComparableAssertion<long> Must(this long value) => new(value);
+   [Obsolete("Use value version")]
+   public static ComparableAssertion<long> Must(this Expression<Func<long>> expression)
+   {
+      var (name, value) = resolve(expression);
+      var assertion = value.Must();
 
-      [Obsolete("Use value version")]
-      public static ComparableAssertion<long> Must(this Expression<Func<long>> expression)
-      {
-         var (name, value) = resolve(expression);
-         var assertion = value.Must();
+      return (ComparableAssertion<long>)assertion.Named($"Long {name}");
+   }
 
-         return (ComparableAssertion<long>)assertion.Named($"Long {name}");
-      }
+   public static ComparableAssertion<long> Must(this (long, string) tuple)
+   {
+      var (value, name) = tuple;
+      var assertion = value.Must();
 
-      public static ComparableAssertion<long> Must(this (long, string) tuple)
-      {
-         var (value, name) = tuple;
-         var assertion = value.Must();
+      return (ComparableAssertion<long>)assertion.Named($"Long {name}");
+   }
 
-         return (ComparableAssertion<long>)assertion.Named($"Long {name}");
-      }
 
+   public static ComparableAssertion<long> BeEven(this ComparableAssertion<long> assertion)
+   {
+      return assertion.IfTrue(i => i % 2 == 0, "$name must $not be even");
+   }
 
-      public static ComparableAssertion<long> BeEven(this ComparableAssertion<long> assertion)
-      {
-         return assertion.IfTrue(i => i % 2 == 0, "$name must $not be even");
-      }
+   public static ComparableAssertion<long> BeOdd(this ComparableAssertion<long> assertion)
+   {
+      return assertion.IfTrue(i => i % 2 != 0, "$name must $not be odd");
+   }
 
-      public static ComparableAssertion<long> BeOdd(this ComparableAssertion<long> assertion)
-      {
-         return assertion.IfTrue(i => i % 2 != 0, "$name must $not be odd");
-      }
+   public static ComparableAssertion<byte> Must(this byte value) => new(value);
 
-      public static ComparableAssertion<byte> Must(this byte value) => new(value);
+   [Obsolete("Use value version")]
+   public static ComparableAssertion<byte> Must(this Expression<Func<byte>> expression)
+   {
+      var (name, value) = resolve(expression);
+      var assertion = value.Must();
 
-      [Obsolete("Use value version")]
-      public static ComparableAssertion<byte> Must(this Expression<Func<byte>> expression)
-      {
-         var (name, value) = resolve(expression);
-         var assertion = value.Must();
+      return (ComparableAssertion<byte>)assertion.Named($"Byte {name}");
+   }
 
-         return (ComparableAssertion<byte>)assertion.Named($"Byte {name}");
-      }
+   public static ComparableAssertion<byte> Must(this (byte, string) tuple)
+   {
+      var (value, name) = tuple;
+      var assertion = value.Must();
 
-      public static ComparableAssertion<byte> Must(this (byte, string) tuple)
-      {
-         var (value, name) = tuple;
-         var assertion = value.Must();
+      return (ComparableAssertion<byte>)assertion.Named($"Byte {name}");
+   }
 
-         return (ComparableAssertion<byte>)assertion.Named($"Byte {name}");
-      }
+   public static ComparableAssertion<byte> BeEven(this ComparableAssertion<byte> assertion)
+   {
+      return assertion.IfTrue(i => i % 2 == 0, "$name must $not be even");
+   }
 
-      public static ComparableAssertion<byte> BeEven(this ComparableAssertion<byte> assertion)
-      {
-         return assertion.IfTrue(i => i % 2 == 0, "$name must $not be even");
-      }
+   public static ComparableAssertion<byte> BeOdd(this ComparableAssertion<byte> assertion)
+   {
+      return assertion.IfTrue(i => i % 2 != 0, "$name must $not be odd");
+   }
 
-      public static ComparableAssertion<byte> BeOdd(this ComparableAssertion<byte> assertion)
-      {
-         return assertion.IfTrue(i => i % 2 != 0, "$name must $not be odd");
-      }
+   public static FloatAssertion Must(this float value) => new(value);
 
-      public static FloatAssertion Must(this float value) => new(value);
+   [Obsolete("Use value version")]
+   public static FloatAssertion Must(this Expression<Func<float>> expression)
+   {
+      var (name, value) = resolve(expression);
+      var assertion = value.Must();
 
-      [Obsolete("Use value version")]
-      public static FloatAssertion Must(this Expression<Func<float>> expression)
-      {
-         var (name, value) = resolve(expression);
-         var assertion = value.Must();
+      return (FloatAssertion)assertion.Named($"Float {name}");
+   }
 
-         return (FloatAssertion)assertion.Named($"Float {name}");
-      }
+   public static ComparableAssertion<float> Must(this (float, string) tuple)
+   {
+      var (value, name) = tuple;
+      var assertion = value.Must();
 
-      public static ComparableAssertion<float> Must(this (float, string) tuple)
-      {
-         var (value, name) = tuple;
-         var assertion = value.Must();
+      return (ComparableAssertion<float>)assertion.Named($"Float {name}");
+   }
 
-         return (ComparableAssertion<float>)assertion.Named($"Float {name}");
-      }
+   public static DoubleAssertion Must(this double value) => new(value);
 
-      public static DoubleAssertion Must(this double value) => new(value);
+   [Obsolete("Use value version")]
+   public static DoubleAssertion Must(this Expression<Func<double>> expression)
+   {
+      var (name, value) = resolve(expression);
+      var assertion = value.Must();
 
-      [Obsolete("Use value version")]
-      public static DoubleAssertion Must(this Expression<Func<double>> expression)
-      {
-         var (name, value) = resolve(expression);
-         var assertion = value.Must();
+      return (DoubleAssertion)assertion.Named($"Double {name}");
+   }
 
-         return (DoubleAssertion)assertion.Named($"Double {name}");
-      }
+   public static ComparableAssertion<double> Must(this (double, string) tuple)
+   {
+      var (value, name) = tuple;
+      var assertion = value.Must();
 
-      public static ComparableAssertion<double> Must(this (double, string) tuple)
-      {
-         var (value, name) = tuple;
-         var assertion = value.Must();
+      return (ComparableAssertion<double>)assertion.Named($"Double {name}");
+   }
 
-         return (ComparableAssertion<double>)assertion.Named($"Double {name}");
-      }
+   public static ComparableAssertion<DateTime> Must(this DateTime value) => new(value);
 
-      public static ComparableAssertion<DateTime> Must(this DateTime value) => new(value);
+   [Obsolete("Use value version")]
+   public static ComparableAssertion<DateTime> Must(this Expression<Func<DateTime>> expression)
+   {
+      var (name, value) = resolve(expression);
+      var assertion = value.Must();
 
-      [Obsolete("Use value version")]
-      public static ComparableAssertion<DateTime> Must(this Expression<Func<DateTime>> expression)
-      {
-         var (name, value) = resolve(expression);
-         var assertion = value.Must();
+      return (ComparableAssertion<DateTime>)assertion.Named($"Date/time {name}");
+   }
 
-         return (ComparableAssertion<DateTime>)assertion.Named($"Date/time {name}");
-      }
+   public static ComparableAssertion<DateTime> Must(this (DateTime, string) tuple)
+   {
+      var (value, name) = tuple;
+      var assertion = value.Must();
 
-      public static ComparableAssertion<DateTime> Must(this (DateTime, string) tuple)
-      {
-         var (value, name) = tuple;
-         var assertion = value.Must();
+      return (ComparableAssertion<DateTime>)assertion.Named($"Date/time {name}");
+   }
 
-         return (ComparableAssertion<DateTime>)assertion.Named($"Date/time {name}");
-      }
+   public static BooleanAssertion Must(this bool value) => new(value);
 
-      public static BooleanAssertion Must(this bool value) => new(value);
+   [Obsolete("Use value version")]
+   public static BooleanAssertion Must(this Expression<Func<bool>> expression)
+   {
+      var (name, value) = resolve(expression);
+      var assertion = value.Must();
 
-      [Obsolete("Use value version")]
-      public static BooleanAssertion Must(this Expression<Func<bool>> expression)
-      {
-         var (name, value) = resolve(expression);
-         var assertion = value.Must();
+      return (BooleanAssertion)assertion.Named($"Boolean {name}");
+   }
 
-         return (BooleanAssertion)assertion.Named($"Boolean {name}");
-      }
+   public static BooleanAssertion Must(this (bool, string) tuple)
+   {
+      var (value, name) = tuple;
+      var assertion = value.Must();
 
-      public static BooleanAssertion Must(this (bool, string) tuple)
-      {
-         var (value, name) = tuple;
-         var assertion = value.Must();
+      return (BooleanAssertion)assertion.Named($"Boolean {name}");
+   }
 
-         return (BooleanAssertion)assertion.Named($"Boolean {name}");
-      }
+   public static StringAssertion Must(this string value) => new(value);
 
-      public static StringAssertion Must(this string value) => new(value);
+   [Obsolete("Use value version")]
+   public static StringAssertion Must(this Expression<Func<string>> expression)
+   {
+      var (name, value) = resolve(expression);
+      var assertion = value.Must();
 
-      [Obsolete("Use value version")]
-      public static StringAssertion Must(this Expression<Func<string>> expression)
-      {
-         var (name, value) = resolve(expression);
-         var assertion = value.Must();
+      return (StringAssertion)assertion.Named($"String {name}");
+   }
 
-         return (StringAssertion)assertion.Named($"String {name}");
-      }
+   public static StringAssertion Must(this (string, string) tuple)
+   {
+      var (value, name) = tuple;
+      var assertion = value.Must();
 
-      public static StringAssertion Must(this (string, string) tuple)
-      {
-         var (value, name) = tuple;
-         var assertion = value.Must();
+      return (StringAssertion)assertion.Named($"String {name}");
+   }
 
-         return (StringAssertion)assertion.Named($"String {name}");
-      }
+   public static ArrayAssertion<T> Must<T>(this T[] value) => new(value);
 
-      public static ArrayAssertion<T> Must<T>(this T[] value) => new(value);
+   [Obsolete("Use value version")]
+   public static ArrayAssertion<T> Must<T>(this Expression<Func<T[]>> expression)
+   {
+      var (name, value) = resolve(expression);
+      var assertion = value.Must();
 
-      [Obsolete("Use value version")]
-      public static ArrayAssertion<T> Must<T>(this Expression<Func<T[]>> expression)
-      {
-         var (name, value) = resolve(expression);
-         var assertion = value.Must();
+      return (ArrayAssertion<T>)assertion.Named($"Array {name}");
+   }
 
-         return (ArrayAssertion<T>)assertion.Named($"Array {name}");
-      }
+   public static ArrayAssertion<T> Must<T>(this (T[], string) tuple)
+   {
+      var (value, name) = tuple;
+      var assertion = value.Must();
 
-      public static ArrayAssertion<T> Must<T>(this (T[], string) tuple)
-      {
-         var (value, name) = tuple;
-         var assertion = value.Must();
+      return (ArrayAssertion<T>)assertion.Named($"Array {name}");
+   }
 
-         return (ArrayAssertion<T>)assertion.Named($"Array {name}");
-      }
+   public static ListAssertion<T> Must<T>(this List<T> value) => new(value);
 
-      public static ListAssertion<T> Must<T>(this List<T> value) => new(value);
+   [Obsolete("Use value version")]
+   public static ListAssertion<T> Must<T>(this Expression<Func<List<T>>> expression)
+   {
+      var (name, value) = resolve(expression);
+      var assertion = value.Must();
 
-      [Obsolete("Use value version")]
-      public static ListAssertion<T> Must<T>(this Expression<Func<List<T>>> expression)
-      {
-         var (name, value) = resolve(expression);
-         var assertion = value.Must();
+      return (ListAssertion<T>)assertion.Named($"List {name}");
+   }
 
-         return (ListAssertion<T>)assertion.Named($"List {name}");
-      }
+   public static ListAssertion<T> Must<T>(this (List<T>, string) tuple)
+   {
+      var (value, name) = tuple;
+      var assertion = value.Must();
 
-      public static ListAssertion<T> Must<T>(this (List<T>, string) tuple)
-      {
-         var (value, name) = tuple;
-         var assertion = value.Must();
+      return (ListAssertion<T>)assertion.Named($"List {name}");
+   }
 
-         return (ListAssertion<T>)assertion.Named($"List {name}");
-      }
+   public static SetAssertion<T> Must<T>(this Set<T> value) => new(value);
 
-      public static SetAssertion<T> Must<T>(this Set<T> value) => new(value);
+   [Obsolete("Use value version")]
+   public static SetAssertion<T> Must<T>(this Expression<Func<Set<T>>> expression)
+   {
+      var (name, value) = resolve(expression);
+      var assertion = value.Must();
 
-      [Obsolete("Use value version")]
-      public static SetAssertion<T> Must<T>(this Expression<Func<Set<T>>> expression)
-      {
-         var (name, value) = resolve(expression);
-         var assertion = value.Must();
+      return (SetAssertion<T>)assertion.Named($"List {name}");
+   }
 
-         return (SetAssertion<T>)assertion.Named($"List {name}");
-      }
+   public static SetAssertion<T> Must<T>(this (Set<T>, string) tuple)
+   {
+      var (value, name) = tuple;
+      var assertion = value.Must();
 
-      public static SetAssertion<T> Must<T>(this (Set<T>, string) tuple)
-      {
-         var (value, name) = tuple;
-         var assertion = value.Must();
+      return (SetAssertion<T>)assertion.Named($"Set {name}");
+   }
 
-         return (SetAssertion<T>)assertion.Named($"Set {name}");
+   public static ObjectAssertion Must(this object value)
+   {
+      if (value is Expression<Func<object>> expression)
+      {
+         return expression.Must();
       }
-
-      public static ObjectAssertion Must(this object value)
+      else
       {
-         if (value is Expression<Func<object>> expression)
-         {
-            return expression.Must();
-         }
-         else
-         {
-            return new ObjectAssertion(value);
-         }
+         return new ObjectAssertion(value);
       }
+   }
 
-      public static ObjectAssertion Must(this Expression<Func<object>> expression)
-      {
-         var (name, value) = resolve(expression);
-         var assertion = value.Must();
+   public static ObjectAssertion Must(this Expression<Func<object>> expression)
+   {
+      var (name, value) = resolve(expression);
+      var assertion = value.Must();
 
-         return (ObjectAssertion)assertion.Named($"{(value == null ? "Object" : value.GetType().Name)} {name}");
-      }
+      return (ObjectAssertion)assertion.Named($"{(value == null ? "Object" : value.GetType().Name)} {name}");
+   }
 
-      public static ObjectAssertion Must(this (object, string) tuple)
-      {
-         var (value, name) = tuple;
-         var assertion = value.Must();
+   public static ObjectAssertion Must(this (object, string) tuple)
+   {
+      var (value, name) = tuple;
+      var assertion = value.Must();
 
-         return (ObjectAssertion)assertion.Named($"{(value == null ? "Object" : value.GetType().Name)} {name}");
-      }
+      return (ObjectAssertion)assertion.Named($"{(value == null ? "Object" : value.GetType().Name)} {name}");
+   }
 
-      public static MaybeAssertion<T> Must<T>(this Maybe<T> value) => new(value);
+   public static MaybeAssertion<T> Must<T>(this Maybe<T> value) => new(value);
 
-      [Obsolete("Use value version")]
-      public static MaybeAssertion<T> Must<T>(this Expression<Func<Maybe<T>>> expression)
-      {
-         var (name, value) = resolve(expression);
-         var assertion = value.Must();
+   [Obsolete("Use value version")]
+   public static MaybeAssertion<T> Must<T>(this Expression<Func<Maybe<T>>> expression)
+   {
+      var (name, value) = resolve(expression);
+      var assertion = value.Must();
 
-         return (MaybeAssertion<T>)assertion.Named($"Optional of {typeof(T).Name} {name}");
-      }
+      return (MaybeAssertion<T>)assertion.Named($"Optional of {typeof(T).Name} {name}");
+   }
 
-      public static MaybeAssertion<T> Must<T>(this (Maybe<T>, string) tuple)
-      {
-         var (value, name) = tuple;
-         var assertion = value.Must();
+   public static MaybeAssertion<T> Must<T>(this (Maybe<T>, string) tuple)
+   {
+      var (value, name) = tuple;
+      var assertion = value.Must();
 
-         return (MaybeAssertion<T>)assertion.Named($"Optional of {typeof(T).Name} {name}");
-      }
+      return (MaybeAssertion<T>)assertion.Named($"Optional of {typeof(T).Name} {name}");
+   }
 
-      public static ResultAssertion<T> Must<T>(this Result<T> value) => new(value);
+   public static ResultAssertion<T> Must<T>(this Result<T> value) => new(value);
 
-      [Obsolete("Use value version")]
-      public static ResultAssertion<T> Must<T>(this Expression<Func<Result<T>>> expression)
-      {
-         var (name, value) = resolve(expression);
-         var assertion = value.Must();
+   [Obsolete("Use value version")]
+   public static ResultAssertion<T> Must<T>(this Expression<Func<Result<T>>> expression)
+   {
+      var (name, value) = resolve(expression);
+      var assertion = value.Must();
 
-         return (ResultAssertion<T>)assertion.Named($"Result of {typeof(T).Name} {name}");
-      }
+      return (ResultAssertion<T>)assertion.Named($"Result of {typeof(T).Name} {name}");
+   }
 
-      public static ResultAssertion<T> Must<T>(this (Result<T>, string) tuple)
-      {
-         var (value, name) = tuple;
-         var assertion = value.Must();
+   public static ResultAssertion<T> Must<T>(this (Result<T>, string) tuple)
+   {
+      var (value, name) = tuple;
+      var assertion = value.Must();
 
-         return (ResultAssertion<T>)assertion.Named($"Result of {typeof(T).Name} {name}");
-      }
+      return (ResultAssertion<T>)assertion.Named($"Result of {typeof(T).Name} {name}");
+   }
 
-      public static CompletionAssertion<T> Must<T>(this Completion<T> value) => new(value);
+   public static CompletionAssertion<T> Must<T>(this Completion<T> value) => new(value);
 
-      [Obsolete("Use value version")]
-      public static CompletionAssertion<T> Must<T>(this Expression<Func<Completion<T>>> expression)
-      {
-         var (name, value) = resolve(expression);
-         var assertion = value.Must();
+   [Obsolete("Use value version")]
+   public static CompletionAssertion<T> Must<T>(this Expression<Func<Completion<T>>> expression)
+   {
+      var (name, value) = resolve(expression);
+      var assertion = value.Must();
 
-         return (CompletionAssertion<T>)assertion.Named($"Async Result of {typeof(T).Name} {name}");
-      }
+      return (CompletionAssertion<T>)assertion.Named($"Async Result of {typeof(T).Name} {name}");
+   }
 
-      public static CompletionAssertion<T> Must<T>(this (Completion<T>, string) tuple)
-      {
-         var (value, name) = tuple;
-         var assertion = value.Must();
+   public static CompletionAssertion<T> Must<T>(this (Completion<T>, string) tuple)
+   {
+      var (value, name) = tuple;
+      var assertion = value.Must();
 
-         return (CompletionAssertion<T>)assertion.Named($"Async result of {typeof(T).Name} {name}");
-      }
+      return (CompletionAssertion<T>)assertion.Named($"Async result of {typeof(T).Name} {name}");
+   }
 
-      public static FileNameAssertion Must(this FileName value) => new(value);
+   public static FileNameAssertion Must(this FileName value) => new(value);
 
-      [Obsolete("Use value version")]
-      public static FileNameAssertion Must(this Expression<Func<FileName>> expression)
-      {
-         var (_, value) = resolve(expression);
-         var assertion = value.Must();
+   [Obsolete("Use value version")]
+   public static FileNameAssertion Must(this Expression<Func<FileName>> expression)
+   {
+      var (_, value) = resolve(expression);
+      var assertion = value.Must();
 
-         return (FileNameAssertion)assertion.Named($"File {value}");
-      }
+      return (FileNameAssertion)assertion.Named($"File {value}");
+   }
 
-      public static FileNameAssertion Must(this (FileName, string) tuple)
-      {
-         var (value, _) = tuple;
-         var assertion = value.Must();
+   public static FileNameAssertion Must(this (FileName, string) tuple)
+   {
+      var (value, _) = tuple;
+      var assertion = value.Must();
 
-         return (FileNameAssertion)assertion.Named($"File {value}");
-      }
+      return (FileNameAssertion)assertion.Named($"File {value}");
+   }
 
-      public static FolderNameAssertion Must(this FolderName value) => new(value);
+   public static FolderNameAssertion Must(this FolderName value) => new(value);
 
-      [Obsolete("Use value version")]
-      public static FolderNameAssertion Must(this Expression<Func<FolderName>> expression)
-      {
-         var (_, value) = resolve(expression);
-         var assertion = value.Must();
+   [Obsolete("Use value version")]
+   public static FolderNameAssertion Must(this Expression<Func<FolderName>> expression)
+   {
+      var (_, value) = resolve(expression);
+      var assertion = value.Must();
 
-         return (FolderNameAssertion)assertion.Named($"Folder {value}");
-      }
+      return (FolderNameAssertion)assertion.Named($"Folder {value}");
+   }
 
-      public static FolderNameAssertion Must(this (FolderName, string) tuple)
-      {
-         var (value, _) = tuple;
-         var assertion = value.Must();
+   public static FolderNameAssertion Must(this (FolderName, string) tuple)
+   {
+      var (value, _) = tuple;
+      var assertion = value.Must();
 
-         return (FolderNameAssertion)assertion.Named($"Folder {value}");
-      }
+      return (FolderNameAssertion)assertion.Named($"Folder {value}");
+   }
 
-      public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this Dictionary<TKey, TValue> value)
-      {
-         return new(value);
-      }
+   public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this Dictionary<TKey, TValue> value)
+   {
+      return new(value);
+   }
 
-      [Obsolete("Use value version")]
-      public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this Expression<Func<Dictionary<TKey, TValue>>> expression)
-      {
-         var (name, value) = resolve(expression);
-         var assertion = value.Must();
+   [Obsolete("Use value version")]
+   public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this Expression<Func<Dictionary<TKey, TValue>>> expression)
+   {
+      var (name, value) = resolve(expression);
+      var assertion = value.Must();
 
-         return (DictionaryAssertion<TKey, TValue>)assertion.Named($"Dictionary {name}");
-      }
+      return (DictionaryAssertion<TKey, TValue>)assertion.Named($"Dictionary {name}");
+   }
 
-      public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this (Dictionary<TKey, TValue>, string) tuple)
-      {
-         var (value, name) = tuple;
-         var assertion = value.Must();
+   public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this (Dictionary<TKey, TValue>, string) tuple)
+   {
+      var (value, name) = tuple;
+      var assertion = value.Must();
 
-         return (DictionaryAssertion<TKey, TValue>)assertion.Named($"Dictionary {name}");
-      }
+      return (DictionaryAssertion<TKey, TValue>)assertion.Named($"Dictionary {name}");
+   }
 
-      public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this Hash<TKey, TValue> value)
-      {
-         return new(value);
-      }
+   public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this Hash<TKey, TValue> value)
+   {
+      return new(value);
+   }
 
-      [Obsolete("Use value version")]
-      public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this Expression<Func<Hash<TKey, TValue>>> expression)
-      {
-         var (name, value) = resolve(expression);
-         var assertion = value.Must();
+   [Obsolete("Use value version")]
+   public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this Expression<Func<Hash<TKey, TValue>>> expression)
+   {
+      var (name, value) = resolve(expression);
+      var assertion = value.Must();
 
-         return (DictionaryAssertion<TKey, TValue>)assertion.Named($"Dictionary {name}");
-      }
+      return (DictionaryAssertion<TKey, TValue>)assertion.Named($"Dictionary {name}");
+   }
 
-      public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this (Hash<TKey, TValue>, string) tuple)
-      {
-         var (value, name) = tuple;
-         var assertion = value.Must();
+   public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this (Hash<TKey, TValue>, string) tuple)
+   {
+      var (value, name) = tuple;
+      var assertion = value.Must();
 
-         return (DictionaryAssertion<TKey, TValue>)assertion.Named($"Dictionary {name}");
-      }
+      return (DictionaryAssertion<TKey, TValue>)assertion.Named($"Dictionary {name}");
+   }
 
-      public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this IHash<TKey, TValue> value)
-      {
-         Dictionary<TKey, TValue> hash = value.AnyHash().ForceValue();
-         return hash.Must();
-      }
+   public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this IHash<TKey, TValue> value)
+   {
+      Dictionary<TKey, TValue> hash = value.AnyHash().ForceValue();
+      return hash.Must();
+   }
 
-      [Obsolete("Use value version")]
-      public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this Expression<Func<IHash<TKey, TValue>>> expression)
-      {
-         var (name, value) = resolve(expression);
-         var assertion = value.Must();
+   [Obsolete("Use value version")]
+   public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this Expression<Func<IHash<TKey, TValue>>> expression)
+   {
+      var (name, value) = resolve(expression);
+      var assertion = value.Must();
 
-         return (DictionaryAssertion<TKey, TValue>)assertion.Named($"Dictionary {name}");
-      }
+      return (DictionaryAssertion<TKey, TValue>)assertion.Named($"Dictionary {name}");
+   }
 
-      public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this (IHash<TKey, TValue>, string) tuple)
-      {
-         var (value, name) = tuple;
-         var assertion = value.Must();
+   public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this (IHash<TKey, TValue>, string) tuple)
+   {
+      var (value, name) = tuple;
+      var assertion = value.Must();
 
-         return (DictionaryAssertion<TKey, TValue>)assertion.Named($"Dictionary {name}");
-      }
+      return (DictionaryAssertion<TKey, TValue>)assertion.Named($"Dictionary {name}");
+   }
 
-      public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this AutoHash<TKey, TValue> value)
-      {
-         Dictionary<TKey, TValue> hash = value.AnyHash().ForceValue();
-         return hash.Must();
-      }
+   public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this AutoHash<TKey, TValue> value)
+   {
+      Dictionary<TKey, TValue> hash = value.AnyHash().ForceValue();
+      return hash.Must();
+   }
 
-      [Obsolete("Use value version")]
-      public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this Expression<Func<AutoHash<TKey, TValue>>> expression)
-      {
-         var (name, value) = resolve(expression);
-         var assertion = value.Must();
+   [Obsolete("Use value version")]
+   public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this Expression<Func<AutoHash<TKey, TValue>>> expression)
+   {
+      var (name, value) = resolve(expression);
+      var assertion = value.Must();
 
-         return (DictionaryAssertion<TKey, TValue>)assertion.Named($"Dictionary {name}");
-      }
+      return (DictionaryAssertion<TKey, TValue>)assertion.Named($"Dictionary {name}");
+   }
 
-      public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this (AutoHash<TKey, TValue>, string) tuple)
-      {
-         var (value, name) = tuple;
-         var assertion = value.Must();
+   public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this (AutoHash<TKey, TValue>, string) tuple)
+   {
+      var (value, name) = tuple;
+      var assertion = value.Must();
 
-         return (DictionaryAssertion<TKey, TValue>)assertion.Named($"Dictionary {name}");
-      }
+      return (DictionaryAssertion<TKey, TValue>)assertion.Named($"Dictionary {name}");
+   }
 
-      public static DictionaryAssertion<string, TValue> Must<TValue>(this StringHash<TValue> value)
-      {
-         Dictionary<string, TValue> hash = value.AnyHash().ForceValue();
-         return hash.Must();
-      }
+   public static DictionaryAssertion<string, TValue> Must<TValue>(this StringHash<TValue> value)
+   {
+      Dictionary<string, TValue> hash = value.AnyHash().ForceValue();
+      return hash.Must();
+   }
 
-      [Obsolete("Use value version")]
-      public static DictionaryAssertion<string, TValue> Must<TValue>(this Expression<Func<StringHash<TValue>>> expression)
-      {
-         var (name, value) = resolve(expression);
-         var assertion = value.Must();
+   [Obsolete("Use value version")]
+   public static DictionaryAssertion<string, TValue> Must<TValue>(this Expression<Func<StringHash<TValue>>> expression)
+   {
+      var (name, value) = resolve(expression);
+      var assertion = value.Must();
 
-         return (DictionaryAssertion<string, TValue>)assertion.Named($"Dictionary {name}");
-      }
+      return (DictionaryAssertion<string, TValue>)assertion.Named($"Dictionary {name}");
+   }
 
-      public static DictionaryAssertion<string, TValue> Must<TValue>(this (StringHash<TValue>, string) tuple)
-      {
-         var (value, name) = tuple;
-         var assertion = value.Must();
+   public static DictionaryAssertion<string, TValue> Must<TValue>(this (StringHash<TValue>, string) tuple)
+   {
+      var (value, name) = tuple;
+      var assertion = value.Must();
 
-         return (DictionaryAssertion<string, TValue>)assertion.Named($"Dictionary {name}");
-      }
+      return (DictionaryAssertion<string, TValue>)assertion.Named($"Dictionary {name}");
+   }
 
-      public static TypeAssertion Must(this Type value) => new(value);
+   public static TypeAssertion Must(this Type value) => new(value);
 
-      [Obsolete("Use value version")]
-      public static TypeAssertion Must(this Expression<Func<Type>> expression)
-      {
-         var (name, value) = resolve(expression);
-         var assertion = value.Must();
+   [Obsolete("Use value version")]
+   public static TypeAssertion Must(this Expression<Func<Type>> expression)
+   {
+      var (name, value) = resolve(expression);
+      var assertion = value.Must();
 
-         return (TypeAssertion)assertion.Named($"Type {value.Name} {name}");
-      }
+      return (TypeAssertion)assertion.Named($"Type {value.Name} {name}");
+   }
 
-      public static TypeAssertion Must(this (Type, string) tuple)
-      {
-         var (value, name) = tuple;
-         var assertion = value.Must();
+   public static TypeAssertion Must(this (Type, string) tuple)
+   {
+      var (value, name) = tuple;
+      var assertion = value.Must();
 
-         return (TypeAssertion)assertion.Named($"Type {value.Name} {name}");
-      }
+      return (TypeAssertion)assertion.Named($"Type {value.Name} {name}");
+   }
 
-      public static PatternAssertion Must(this Pattern value) => new(value);
+   public static PatternAssertion Must(this Pattern value) => new(value);
 
-      public static MatchResultAssertion Must(this MatchResult value) => new(value);
+   public static MatchResultAssertion Must(this MatchResult value) => new(value);
 
-      public static PatternAssertion Must(this (Pattern, string) tuple)
-      {
-         var (value, name) = tuple;
-         var assertion = value.Must();
+   public static PatternAssertion Must(this (Pattern, string) tuple)
+   {
+      var (value, name) = tuple;
+      var assertion = value.Must();
 
-         return (PatternAssertion)assertion.Named($"Pattern {name}");
-      }
+      return (PatternAssertion)assertion.Named($"Pattern {name}");
+   }
 
-      public static MatchResultAssertion Must(this (MatchResult, string) tuple)
-      {
-         var (value, name) = tuple;
-         var assertion = value.Must();
+   public static MatchResultAssertion Must(this (MatchResult, string) tuple)
+   {
+      var (value, name) = tuple;
+      var assertion = value.Must();
 
-         return (MatchResultAssertion)assertion.Named($"Result {name}");
-      }
+      return (MatchResultAssertion)assertion.Named($"Result {name}");
+   }
 
-      public static TypedAssertion<T> MustOfType<T>(this T value) => new(value);
+   public static TypedAssertion<T> MustOfType<T>(this T value) => new(value);
 
-      [Obsolete("Use value version")]
-      public static TypedAssertion<T> MustOfType<T>(this Expression<Func<T>> expression)
-      {
-         var (name, value) = resolve(expression);
-         var assertion = value.Must();
+   [Obsolete("Use value version")]
+   public static TypedAssertion<T> MustOfType<T>(this Expression<Func<T>> expression)
+   {
+      var (name, value) = resolve(expression);
+      var assertion = value.Must();
 
-         return (TypedAssertion<T>)assertion.Named($"Object typed {typeof(T).Name} {name}");
-      }
+      return (TypedAssertion<T>)assertion.Named($"Object typed {typeof(T).Name} {name}");
+   }
 
-      public static TypedAssertion<T> MustOfType<T>(this (T, string) tuple)
-      {
-         var (value, name) = tuple;
-         var assertion = value.Must();
+   public static TypedAssertion<T> MustOfType<T>(this (T, string) tuple)
+   {
+      var (value, name) = tuple;
+      var assertion = value.Must();
 
-         return (TypedAssertion<T>)assertion.Named($"Object typed {typeof(T).Name} {name}");
-      }
+      return (TypedAssertion<T>)assertion.Named($"Object typed {typeof(T).Name} {name}");
+   }
 
-      public static EnumAssertion<TEnum> Must<TEnum>(this TEnum value) where TEnum : struct, Enum => new(value);
+   public static EnumAssertion<TEnum> Must<TEnum>(this TEnum value) where TEnum : struct, Enum => new(value);
 
-      [Obsolete("Use value version")]
-      public static EnumAssertion<TEnum> Must<TEnum>(this Expression<Func<TEnum>> expression) where TEnum : struct, Enum
-      {
-         var (name, value) = resolve(expression);
-         var assertion = value.Must();
+   [Obsolete("Use value version")]
+   public static EnumAssertion<TEnum> Must<TEnum>(this Expression<Func<TEnum>> expression) where TEnum : struct, Enum
+   {
+      var (name, value) = resolve(expression);
+      var assertion = value.Must();
 
-         return (EnumAssertion<TEnum>)assertion.Named($"{value.GetType().Name} {name}");
-      }
+      return (EnumAssertion<TEnum>)assertion.Named($"{value.GetType().Name} {name}");
+   }
 
-      public static EnumAssertion<TEnum> Must<TEnum>(this (TEnum, string) tuple) where TEnum : struct, Enum
-      {
-         var (value, name) = tuple;
-         var assertion = value.Must();
+   public static EnumAssertion<TEnum> Must<TEnum>(this (TEnum, string) tuple) where TEnum : struct, Enum
+   {
+      var (value, name) = tuple;
+      var assertion = value.Must();
 
-         return (EnumAssertion<TEnum>)assertion.Named($"{value.GetType().Name} {name}");
-      }
+      return (EnumAssertion<TEnum>)assertion.Named($"{value.GetType().Name} {name}");
    }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using Core.Applications;
-using Core.Exceptions;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads;
@@ -129,7 +128,7 @@ public class Cancelled<T> : Completion<T>, IEquatable<Cancelled<T>>
    {
    }
 
-   public override T ForceValue() => throw "There is no value".Throws();
+   public override T ForceValue() => throw fail("There is no value");
 
    public override Completion<T> CancelledOnly() => this;
 

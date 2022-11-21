@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Core.DataStructures;
 using Core.Dates.DateIncrements;
-using Core.Exceptions;
 using Core.Monads;
 using Core.Strings;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -40,7 +39,7 @@ internal class Counter
             result = i;
             if (interrupt && i > 0 && i % 1000 == 0)
             {
-               throw $"Interrupting at {result}".Throws();
+               throw fail($"Interrupting at {result}");
             }
          }
 

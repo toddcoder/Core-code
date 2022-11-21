@@ -4,54 +4,53 @@ using System.Threading;
 using System.Threading.Tasks;
 using Core.Monads;
 
-namespace Core.Assertions
+namespace Core.Assertions;
+
+public interface IAssertion<T> : ICanBeTrue
 {
-   public interface IAssertion<T> : ICanBeTrue
-   {
-      T Value { get; }
+   T Value { get; }
 
-      IEnumerable<Constraint> Constraints { get; }
+   IEnumerable<Constraint> Constraints { get; }
 
-      IAssertion<T> Named(string name);
+   IAssertion<T> Named(string name);
 
-      void OrThrow();
+   void OrThrow();
 
-      void OrThrow(string message);
+   void OrThrow(string message);
 
-      void OrThrow(Func<string> messageFunc);
+   void OrThrow(Func<string> messageFunc);
 
-      void OrThrow<TException>(params object[] args) where TException : Exception;
+   void OrThrow<TException>(params object[] args) where TException : Exception;
 
-      T Force();
+   T Force();
 
-      T Force(string message);
+   T Force(string message);
 
-      T Force(Func<string> messageFunc);
+   T Force(Func<string> messageFunc);
 
-      T Force<TException>(params object[] args) where TException : Exception;
+   T Force<TException>(params object[] args) where TException : Exception;
 
-      TResult Force<TResult>();
+   TResult Force<TResult>();
 
-      TResult Force<TResult>(string message);
+   TResult Force<TResult>(string message);
 
-      TResult Force<TResult>(Func<string> messageFunc);
+   TResult Force<TResult>(Func<string> messageFunc);
 
-      TResult Force<TException, TResult>(params object[] args) where TException : Exception;
+   TResult Force<TException, TResult>(params object[] args) where TException : Exception;
 
-      Result<T> OrFailure();
+   Result<T> OrFailure();
 
-      Result<T> OrFailure(string message);
+   Result<T> OrFailure(string message);
 
-      Result<T> OrFailure(Func<string> messageFunc);
+   Result<T> OrFailure(Func<string> messageFunc);
 
-      Maybe<T> OrNone();
+   Maybe<T> OrNone();
 
-      Task<Completion<T>> OrFailureAsync(CancellationToken token);
+   Task<Completion<T>> OrFailureAsync(CancellationToken token);
 
-      Task<Completion<T>> OrFailureAsync(string message, CancellationToken token);
+   Task<Completion<T>> OrFailureAsync(string message, CancellationToken token);
 
-      Task<Completion<T>> OrFailureAsync(Func<string> messageFunc, CancellationToken token);
+   Task<Completion<T>> OrFailureAsync(Func<string> messageFunc, CancellationToken token);
 
-      bool OrReturn();
-   }
+   bool OrReturn();
 }

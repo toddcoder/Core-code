@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Threading;
-using Core.Arrays;
 using Core.Dates.Now;
 using Core.Matching;
 using Core.Monads;
 using Core.Numbers;
+using Core.Strings;
+using static Core.Monads.Lazy.LazyMonads;
 using static Core.Monads.MonadFunctions;
 using static Core.Objects.ConversionFunctions;
 
@@ -202,90 +203,69 @@ public static class DateTimeExtensions
 
    public static Result<DateTime> RelativeTo(this DateTime date, string pattern)
    {
+      var _result = lazy.maybe<MatchResult>();
       if (pattern.IsMatch("^ ['//|'] /s* ['//|'] /s* ['//|'] $; f"))
       {
          return date;
       }
+      else if (_result.ValueOf(pattern.Matches("/(['+-']? /d*) ['//|'] /(['+-']? /d*) ['//|'] /(['+-']? /d*); f")))
+      {
+         var (year, month, day) = ~_result;
+         DateIncrementer builder = date;
+         var _yearResult = lazy.result<DateTime>();
+         var _monthResult = lazy.result<DateTime>();
+         var _dayResult = lazy.result<DateTime>();
+         if (year.IsNotEmpty())
+         {
+            var yearAmount = Value.Int32(year);
+            if (year.IsMatch(REGEX_SIGN))
+            {
+               builder.Year += yearAmount;
+            }
+            else if (!_yearResult.ValueOf(builder.SetYear(yearAmount)))
+            {
+               return _yearResult;
+            }
+         }
+
+         if (month.Length > 0)
+         {
+            var monthAmount = Value.Int32(month);
+            if (month.IsMatch(REGEX_SIGN))
+            {
+               builder.Month += monthAmount;
+            }
+            else if (!_monthResult.ValueOf(builder.SetMonth(monthAmount)))
+            {
+               return _monthResult;
+            }
+         }
+
+         if (day.Length > 0)
+         {
+            var dayAmount = Value.Int32(day);
+            if (day.IsMatch(REGEX_SIGN))
+            {
+               builder.Day += dayAmount;
+            }
+            else if (dayAmount == 0)
+            {
+               if (!_dayResult.ValueOf(builder.SetToLastDay))
+               {
+                  return _dayResult;
+               }
+            }
+            else if (!_dayResult.ValueOf(builder.SetDay(dayAmount)))
+            {
+               return _dayResult;
+            }
+         }
+
+         return builder.Date;
+      }
       else
       {
-         var _result = pattern.Matches("/(['+-']? /d*) ['//|'] /(['+-']? /d*) ['//|'] /(['+-']? /d*); f");
-         if (_result)
-         {
-            var match = (~_result).GetMatch(0);
-            if (match.Groups.Assign(out _, out var year, out var month, out var day))
-            {
-               DateIncrementer builder = date;
-               if (year.Length > 0)
-               {
-                  var yearText = year.Text;
-                  var yearAmount = Value.Int32(yearText);
-                  if (yearText.IsMatch(REGEX_SIGN))
-                  {
-                     builder.Year += yearAmount;
-                  }
-                  else
-                  {
-                     var setYearResult = builder.SetYear(yearAmount);
-                     if (!setYearResult)
-                     {
-                        return setYearResult;
-                     }
-                  }
-               }
-
-               if (month.Length > 0)
-               {
-                  var monthText = month.Text;
-                  var monthAmount = Value.Int32(monthText);
-                  if (monthText.IsMatch(REGEX_SIGN))
-                  {
-                     builder.Month += monthAmount;
-                  }
-                  else
-                  {
-                     var setMonthResult = builder.SetMonth(monthAmount);
-                     if (!setMonthResult)
-                     {
-                        return setMonthResult;
-                     }
-                  }
-               }
-
-               if (day.Length > 0)
-               {
-                  var dayText = day.Text;
-                  var dayAmount = Value.Int32(dayText);
-                  if (dayText.IsMatch(REGEX_SIGN))
-                  {
-                     builder.Day += dayAmount;
-                  }
-                  else if (dayAmount == 0)
-                  {
-                     var setDayResult = builder.SetToLastDay();
-                     if (!setDayResult)
-                     {
-                        return setDayResult;
-                     }
-                  }
-                  else
-                  {
-                     var setDayResult = builder.SetDay(dayAmount);
-                     if (!setDayResult)
-                     {
-                        return setDayResult;
-                     }
-                  }
-               }
-
-               return builder.Date;
-            }
-
-            return fail($"Couldn't extract date elements from {pattern}");
-         }
-         else
-         {
-            return fail($"Didn't understand {pattern}");
-         }
+         return fail($"Couldn't extract date elements from {pattern}");
       }
    }
 
@@ -293,22 +273,51 @@ public static class DateTimeExtensions
 
    public static bool OldEnough(this DateTime date, TimeSpan age) => NowServer.Now - date >= age;
 
+   private static Maybe<string> differenceInMinutes(int minutes) => minutes switch
+   {
+      0 => "Just now",
+      < 60 => "minute(s) ago".Plural(minutes),
+      _ => nil
+   };
+
+   private static Maybe<string> differenceInHours(int hours) => hours switch
+   {
+      < 24 => "hour(s) ago".Plural(hours),
+      _ => nil
+   };
+
+   private static int dayOfWeek(DateTime dateTime) => (int)dateTime.DayOfWeek;
+
+   private static string differenceInDays(int days, DateTime today, DateTime dateOnly) => days switch
+   {
+      1 => "Yesterday",
+      <= 7 when dayOfWeek(today) > dayOfWeek(dateOnly) => dateOnly.DayOfWeek.ToString(),
+      <= 7 => $"Last {dateOnly.DayOfWeek}",
+      _ when dateOnly.Year == today.Year => dateOnly.ToString("MMMM d"),
+      _ => dateOnly.ToString("MMMM d, yyyy")
+   };
+
    public static string DescriptionFromNow(this DateTime date)
    {
-      var today = NowServer.Today;
+      var now = NowServer.Now;
       var dateOnly = date.Truncate();
-      var difference = (int)today.Subtract(dateOnly).TotalDays;
+      var minuteDifference = new Lazy<int>(() => (int)now.Subtract(date).TotalMinutes);
+      var _minutes = lazy.maybe<string>();
+      var hourDifference = new Lazy<int>(() => (int)now.Subtract(date).TotalHours);
+      var _hours = lazy.maybe<string>();
+      var dayDifference = new Lazy<int>(() => (int)now.Subtract(dateOnly).TotalDays);
 
-      static int dayOfWeek(DateTime dateTime) => (int)dateTime.DayOfWeek;
-
-      return difference switch
+      if (_minutes.ValueOf(differenceInMinutes(minuteDifference.Value)))
       {
-         0 => "Today",
-         1 => "Yesterday",
-         <= 7 when dayOfWeek(today) > dayOfWeek(dateOnly) => dateOnly.DayOfWeek.ToString(),
-         <= 7 => $"Last {dateOnly.DayOfWeek}",
-         _ when dateOnly.Year == today.Year => dateOnly.ToString("MMMM d"),
-         _ => dateOnly.ToString("MMMM d, yyyy")
-      };
+         return _minutes;
+      }
+      else if (_hours.ValueOf(differenceInHours(hourDifference.Value)))
+      {
+         return _hours;
+      }
+      else
+      {
+         return differenceInDays(dayDifference.Value, now, dateOnly);
+      }
    }
 }

@@ -1,5 +1,5 @@
 using System.Text;
-using Core.Exceptions;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Markup.Rtf;
 
@@ -54,7 +54,7 @@ public class Section : Block
          }
 
          result.Append($@"\pgwsxn{PageWidth}\pghsxn{PageHeight} ");
-         if (!((object)ParentDocument.Margins).Equals(Margins))
+         if (!ParentDocument.Margins.Equals(Margins))
          {
             result.Append($@"\marglsxn{Margins[Direction.Left]}\margrsxn{Margins[Direction.Right]}");
             result.Append($@"\margtsxn{Margins[Direction.Top]}\margbsxn{Margins[Direction.Bottom]} ");
@@ -72,15 +72,15 @@ public class Section : Block
 
    public override Margins Margins => margins;
 
-   public override CharFormat DefaultCharFormat => throw "DefaultCharFormat not supported for sections.".Throws();
+   public override CharFormat DefaultCharFormat => throw fail("DefaultCharFormat not supported for sections.");
 
    public override string BlockHead
    {
-      set => throw "BlockHead is not supported for sections.".Throws();
+      set => throw fail("BlockHead is not supported for sections.");
    }
 
    public override string BlockTail
    {
-      set => throw "BlockTail is not supported for sections.".Throws();
+      set => throw fail("BlockTail is not supported for sections.");
    }
 }

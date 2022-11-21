@@ -1,7 +1,6 @@
-﻿namespace Core.Assertions
+﻿namespace Core.Assertions;
+
+public interface ICanBeTrue
 {
-   public interface ICanBeTrue
-   {
-      bool BeEquivalentToTrue();
-   }
+   bool BeEquivalentToTrue();
 }

@@ -7,7 +7,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Core.Collections;
 using Core.Enumerables;
-using Core.Exceptions;
 using Core.Matching;
 using Core.Monads;
 using Core.Strings;
@@ -119,7 +118,7 @@ public static class AssertionFunctions
       var _constraint = assertion.Constraints.FirstOrNone(c => !c.IsTrue());
       if (_constraint)
       {
-         throw (~_constraint).Message.Throws();
+         throw fail((~_constraint).Message);
       }
    }
 
@@ -127,7 +126,7 @@ public static class AssertionFunctions
    {
       if (assertion.Constraints.Any(c => !c.IsTrue()))
       {
-         throw message.Throws();
+         throw fail(message);
       }
    }
 
@@ -135,7 +134,7 @@ public static class AssertionFunctions
    {
       if (assertion.Constraints.Any(c => !c.IsTrue()))
       {
-         throw messageFunc().Throws();
+         throw fail(messageFunc());
       }
    }
 

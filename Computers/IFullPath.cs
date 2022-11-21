@@ -1,7 +1,6 @@
-﻿namespace Core.Computers
+﻿namespace Core.Computers;
+
+public interface IFullPath
 {
-   public interface IFullPath
-   {
-      string FullPath { get; }
-   }
+   string FullPath { get; }
 }

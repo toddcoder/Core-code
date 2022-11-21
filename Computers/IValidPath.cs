@@ -1,11 +1,10 @@
 ﻿using Core.Monads;
 
-namespace Core.Computers
-{
-   public interface IValidPath<T> where T : IFullPath
-   {
-      Result<T> Validate(bool allowRelativePaths = false);
+namespace Core.Computers;
 
-      bool IsValid { get; }
-   }
+public interface IValidPath<T> where T : IFullPath
+{
+   Result<T> Validate(bool allowRelativePaths = false);
+
+   bool IsValid { get; }
 }

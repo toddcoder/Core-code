@@ -1,14 +1,13 @@
-﻿namespace Core.Dates
+﻿namespace Core.Dates;
+
+public enum IntervalUnit
 {
-	public enum IntervalUnit
-	{
-		Hours,
-		Minutes,
-		Seconds,
-		Milliseconds,
-		Hour,
-		Minute,
-		Second,
-		Millisecond
-	}
+   Hours,
+   Minutes,
+   Seconds,
+   Milliseconds,
+   Hour,
+   Minute,
+   Second,
+   Millisecond
 }

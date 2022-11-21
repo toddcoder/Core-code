@@ -5,7 +5,6 @@ using System.Reflection;
 using Core.Assertions;
 using Core.Collections;
 using Core.Enumerables;
-using Core.Exceptions;
 using Core.Matching;
 using Core.Monads;
 using static Core.Monads.MonadFunctions;
@@ -73,13 +72,13 @@ public class PropertyEvaluator : IEvaluator, IHash<string, object>, IHash<Signat
             {
                if (current == null)
                {
-                  $"{signature} is null; can't continue the chain".Throws();
+                  throw fail($"{signature} is null; can't continue the chain");
                }
 
                var infoValue = info.Value.Required($"Signature {signature} doesn't exist");
                if (!info.PropertyType)
                {
-                  throw $"Couldn't determine object at {signature}".Throws();
+                  throw fail($"Couldn't determine object at {signature}");
                }
 
                current = infoValue;

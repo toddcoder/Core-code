@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Core.Monads;
 using Core.Strings;
 using static Core.Monads.MonadFunctions;
+using static Core.Objects.GetHashCodeGenerator;
 
 namespace Core.Collections;
 
@@ -24,13 +25,7 @@ public class StringVariants : IHash<string, string>
 
       public override bool Equals(object obj) => obj is KeyValue other && Equals(other);
 
-      public override int GetHashCode()
-      {
-         unchecked
-         {
-            return (Key != null ? Key.GetHashCode() : 0) * 397 ^ (Value != null ? Value.GetHashCode() : 0);
-         }
-      }
+      public override int GetHashCode() => hashCode() + Key + Value;
    }
 
    protected StringHash templates;

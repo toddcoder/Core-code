@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Core.Enumerables;
-using Core.Exceptions;
 using Core.Matching;
 using Core.Strings;
+using static Core.Monads.MonadFunctions;
 using static Core.Objects.GetHashCodeGenerator;
 
 namespace Core.Markup.Html
@@ -28,7 +28,7 @@ namespace Core.Markup.Html
          }
          else
          {
-            throw $"Didn't understand selector {source}".Throws();
+            throw fail($"Didn't understand selector {source}");
          }
       }
 

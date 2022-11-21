@@ -1,11 +1,10 @@
 ﻿using System;
 
-namespace Core.Collections.Expiring
-{
-   public class SlidingExpiration<T> : AbsoluteExpiration<T>
-   {
-      public SlidingExpiration(TimeSpan duration) : base(duration) { }
+namespace Core.Collections.Expiring;
 
-      public override void Reset() => trigger.Reset();
-   }
+public class SlidingExpiration<T> : AbsoluteExpiration<T>
+{
+   public SlidingExpiration(TimeSpan duration) : base(duration) { }
+
+   public override void Reset() => trigger.Reset();
 }

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
 using Core.Collections;
-using Core.Exceptions;
 using Core.Monads;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Objects;
 
@@ -47,7 +47,7 @@ public class DataContainerEvaluator : IEvaluator, IHash<string, object>, IHash<S
       }
       else
       {
-         throw "Value isn't set".Throws();
+         throw fail("Value isn't set");
       }
    }
 

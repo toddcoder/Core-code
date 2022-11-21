@@ -1,30 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Core.Enumerables
+namespace Core.Enumerables;
+
+public class AllButFirst<T>
 {
-	public class AllButFirst<T>
-	{
-		IEnumerable<T> enumerable;
+   protected IEnumerable<T> enumerable;
 
-		public AllButFirst(IEnumerable<T> enumerable) => this.enumerable = enumerable;
+   public AllButFirst(IEnumerable<T> enumerable) => this.enumerable = enumerable;
 
-	   public void For(Action<T> firstAction, Action<T> restAction)
-		{
-			var first = true;
+   public void For(Action<T> firstAction, Action<T> restAction)
+   {
+      var first = true;
 
-			foreach (var item in enumerable)
+      foreach (var item in enumerable)
+      {
+         if (first)
          {
-            if (first)
-            {
-               firstAction(item);
-               first = false;
-            }
-            else
-            {
-               restAction(item);
-            }
+            firstAction(item);
+            first = false;
+         }
+         else
+         {
+            restAction(item);
          }
       }
-	}
+   }
 }

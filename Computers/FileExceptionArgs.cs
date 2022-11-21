@@ -1,17 +1,16 @@
 ﻿using System;
 
-namespace Core.Computers
+namespace Core.Computers;
+
+public class FileExceptionArgs : EventArgs
 {
-   public class FileExceptionArgs : EventArgs
+   public FileExceptionArgs(FileName file, Exception exception)
    {
-      public FileExceptionArgs(FileName file, Exception exception)
-      {
-         File = file;
-         Exception = exception;
-      }
-
-      public FileName File { get; }
-
-      public Exception Exception { get; }
+      File = file;
+      Exception = exception;
    }
+
+   public FileName File { get; }
+
+   public Exception Exception { get; }
 }

@@ -4,6 +4,7 @@ using Core.Assertions;
 using Core.DataStructures;
 using Core.Monads;
 using Core.Strings;
+using static Core.Monads.Lazy.LazyRepeatingMonads;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Matching;
@@ -184,37 +185,35 @@ public class SourceLines
 
    public IEnumerable<(MatchResult result, string line)> WhileMatches(Pattern pattern)
    {
+      var _nextLine = lazyRepeating.maybe<MatchResult>();
+      var _result = lazyRepeating.maybe<MatchResult>();
+
       while (More)
       {
          var current = Current;
-         var _lineResult = current.Matches(REGEX_NEXT_LINE);
-         if (_lineResult)
+         if (_nextLine.ValueOf(current.Matches(REGEX_NEXT_LINE)))
          {
-            var lineResult = ~_lineResult;
+            var lineResult = ~_nextLine;
             var line = lineResult.FirstGroup;
-            var _result = line.Matches(pattern);
-            if (_result)
+            var _line = line.Matches(pattern);
+            if (_line)
             {
                Advance(lineResult.Length);
-               yield return (_result, line);
+               yield return (_line, line);
             }
             else
             {
                break;
             }
          }
+         else if (_result.ValueOf(current.Matches(pattern)))
+         {
+            Advance(current.Length);
+            yield return (_result, current);
+         }
          else
          {
-            var _result = current.Matches(pattern);
-            if (_result)
-            {
-               Advance(current.Length);
-               yield return (_result, current);
-            }
-            else
-            {
-               break;
-            }
+            break;
          }
       }
    }
