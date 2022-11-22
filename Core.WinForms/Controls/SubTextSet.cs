@@ -1,14 +1,17 @@
 ﻿using System.Drawing;
+using System.Windows.Forms;
 
 namespace Core.WinForms.Controls;
 
 public class SubTextSet
 {
    protected SubText subText;
+   protected Size size;
 
-   internal SubTextSet(SubText subText)
+   internal SubTextSet(SubText subText, Size size)
    {
       this.subText = subText;
+      this.size = size;
    }
 
    public SubTextSet Text(string text)
@@ -84,6 +87,40 @@ public class SubTextSet
    {
       subText.UseControlBackColor = useControlBackColor;
       return this;
+   }
+
+   protected Size getTextSize()
+   {
+      var text = subText.Text;
+      using var font = new Font(subText.FontName, subText.FontSize, subText.FontStyle);
+      return TextRenderer.MeasureText(text, font);
+   }
+
+   public SubTextSet GoToUpperLeft(int margin) => X(margin).Y(margin);
+
+   public SubTextSet GoToUpperRight(int margin)
+   {
+      var textSize = getTextSize();
+      var x = size.Width - textSize.Width - margin;
+
+      return X(x).Y(margin);
+   }
+
+   public SubTextSet GoToLowerLeft(int margin)
+   {
+      var textSize = getTextSize();
+      var y = size.Height - textSize.Height - margin;
+
+      return Y(y).X(margin);
+   }
+
+   public SubTextSet GoToLowerRight(int margin)
+   {
+      var textSize = getTextSize();
+      var x = size.Width - textSize.Width - margin;
+      var y = size.Height - textSize.Height - margin;
+
+      return X(x).Y(y);
    }
 
    public SubText End => subText;

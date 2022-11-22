@@ -388,7 +388,7 @@ public class UiAction : UserControl
       var size = TextRenderer.MeasureText("working", font);
       var y = ClientSize.Height - size.Height - 4;
 
-      return new SubText("working", 4, y, getForeColor(), getBackColor()).Set.FontSize(8).UseControlForeColor(true).Outline(true).End;
+      return new SubText("working", 4, y, getForeColor(), getBackColor(), ClientSize).Set.FontSize(8).UseControlForeColor(true).Outline(true).End;
    }
 
    public UiActionType Type
@@ -1217,11 +1217,13 @@ public class UiAction : UserControl
 
    public SubText SubText(string text, int x, int y)
    {
-      var subText = new SubText(text, x, y, getForeColor(), getBackColor());
+      var subText = new SubText(text, x, y, getForeColor(), getBackColor(), ClientSize);
       subTexts.Add(subText);
 
       return subText;
    }
+
+   public SubText SubText(string text) => SubText(text, 0, 0);
 
    public void RemoveSubTextAt(int index) => subTexts.RemoveAt(index);
 
@@ -1304,7 +1306,7 @@ public class UiAction : UserControl
    public SubText Legend(string text, bool useControlForeColor = true)
    {
       var (x, y) = legendLocation();
-      var legend = new SubText(text, x, y, getForeColor(), getBackColor())
+      var legend = new SubText(text, x, y, getForeColor(), getBackColor(), ClientSize)
          .Set
          .FontSize(8)
          .Outline(true)
@@ -1317,7 +1319,7 @@ public class UiAction : UserControl
 
    public SubText Legend(string text, int x, int y, bool useControlForeColor = true)
    {
-      var legend = new SubText(text, x, y, getForeColor(), getBackColor())
+      var legend = new SubText(text, x, y, getForeColor(), getBackColor(), ClientSize)
          .Set
          .FontSize(8)
          .Outline(true)

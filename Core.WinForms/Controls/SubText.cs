@@ -10,10 +10,12 @@ public class SubText
    protected Color defaultBackColor;
    protected bool useControlForeColor;
    protected bool useControlBackColor;
+   protected Size size;
 
-   public SubText(string text, int x, int y, Color defaultForeColor, Color defaultBackColor)
+   public SubText(string text, int x, int y, Color defaultForeColor, Color defaultBackColor, Size size)
    {
       this.defaultBackColor = defaultBackColor;
+      this.size=size;
 
       useControlForeColor = false;
       useControlBackColor = false;
@@ -35,7 +37,7 @@ public class SubText
 
    public int Y { get; set; }
 
-   public SubTextSet Set => new(this);
+   public SubTextSet Set => new(this, size);
 
    public string FontName { get; set; }
 
@@ -135,9 +137,9 @@ public class SubText
       using var font = new Font(FontName, FontSize);
       var location = new Point(X, Y);
       var flags = TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix | TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter;
-      var size = TextRenderer.MeasureText(graphics, Text, font, new Size(int.MaxValue, int.MaxValue), flags);
+      var measuredSize = TextRenderer.MeasureText(graphics, Text, font, new Size(int.MaxValue, int.MaxValue), flags);
 
-      var rectangle = new Rectangle(location, size);
+      var rectangle = new Rectangle(location, measuredSize);
 
       graphics.HighQuality();
       graphics.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
