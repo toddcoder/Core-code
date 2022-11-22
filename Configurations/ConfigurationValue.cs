@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Core.Computers;
 using Core.Matching;
 using Core.Strings;
@@ -44,4 +45,8 @@ public class ConfigurationValue
    public TimeSpan TimeSpan(string key) => Value.TimeSpan(String(key));
 
    public string[] Strings(string key) => String(key).Unjoin("/s* ',' /s*");
+
+   public string[] SettingTexts(string key) => Setting(key).Items().Select(i => i.text).ToArray();
+
+   public string[] SettingKeys(string key) => Setting(key).Items().Select(i => i.key).ToArray();
 }

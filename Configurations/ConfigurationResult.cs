@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Core.Computers;
 using Core.Matching;
 using Core.Monads;
@@ -77,4 +78,8 @@ public class ConfigurationResult
    public Result<TimeSpan> TimeSpan(string key) => String(key).Map(Result.TimeSpan);
 
    public Result<string[]> Strings(string key) => String(key).Map(s => s.Unjoin("/s* ',' /s*"));
+
+   public Result<string[]> SettingTexts(string key) => Setting(key).Map(s => s.Items().Select(i => i.text).ToArray());
+
+   public Result<string[]> SettingKeys(string key) => Setting(key).Map(s => s.Items().Select(i => i.key).ToArray());
 }

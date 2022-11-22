@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using Core.Computers;
+using Core.Enumerables;
 using Core.Matching;
 using Core.Monads;
 using Core.Strings;
@@ -78,4 +80,8 @@ public class ConfigurationMaybe
    public Maybe<TimeSpan> TimeSpan(string key) => String(key).Map(Maybe.TimeSpan);
 
    public Maybe<string[]> Strings(string key) => String(key).Map(s => s.Unjoin("/s* ',' /s*"));
+
+   public Maybe<string[]> SettingTexts(string key) => Setting(key).Map(s => s.Items().Select(i => i.text).ToArray());
+
+   public Maybe<string[]> SettingKeys(string key) => Setting(key).Map(s => s.Items().Select(i => i.key).ToArray());
 }
