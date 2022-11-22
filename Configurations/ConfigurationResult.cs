@@ -17,11 +17,11 @@ public class ConfigurationResult
       this.getter = getter;
    }
 
-   public Result<Setting> Setting(string key) => getter.GetSetting(key).Required($"Setting {key} required");
+   public Result<Setting> Setting(string key) => getter.GetSetting(key).Result($"Setting {key} required");
 
-   public Result<Item> Item(string key) => getter.GetItem(key).Required($"Item {key} required");
+   public Result<Item> Item(string key) => getter.GetItem(key).Result($"Item {key} required");
 
-   public Result<string> String(string key) => getter.GetItem(key).Map(i => i.Text).Required($"Item {key} required");
+   public Result<string> String(string key) => getter.GetItem(key).Map(i => i.Text).Result($"Item {key} required");
 
    public Result<int> Int32(string key) => String(key).Map(Result.Int32);
 
