@@ -78,6 +78,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reader.cs" />
     <Compile Include="Setups\CommandSourceType.cs" />
+    <Compile Include="Setups\ConnectionStringBuilder.cs" />
     <Compile Include="Setups\FieldBuilder.cs" />
     <Compile Include="Setups\ISetup.cs" />
     <Compile Include="Setups\ISetupObject.cs" />
@@ -89,6 +90,7 @@
     <Compile Include="Setups\SqlSetupBuilder.cs" />
     <Compile Include="Setups\SetupInfo.cs" />
     <Compile Include="Setups\SqlSetup.cs" />
+    <Compile Include="Setups\SqlSetupBuilderParameters.cs" />
     <Compile Include="Setups\TextSetup.cs" />
   </ItemGroup>
   <ItemGroup>
