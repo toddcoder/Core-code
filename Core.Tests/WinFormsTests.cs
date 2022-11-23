@@ -716,14 +716,16 @@ namespace Core.Tests
       [TestMethod]
       public void UiActionCornersTest()
       {
-         var form=new Form();
+         var form = new Form();
          var uiAction = new UiAction(form, true);
-         uiAction.SetUp(0, 0, 200, 60);
+         uiAction.SetUp(0, 0, 400, 80);
          uiAction.Message("Test");
          uiAction.SubText("UL").Set.GoToUpperLeft(8).Outline(true);
          uiAction.SubText("UR").Set.GoToUpperRight(8).Outline(true);
          uiAction.SubText("LL").Set.GoToLowerLeft(8).Outline(true);
          uiAction.SubText("LR").Set.GoToLowerRight(8).Outline(true);
+         uiAction.SubText("ML").Set.GoToMiddleLeft(8).Outline(true);
+         uiAction.SubText("MR").Set.GoToMiddleRight(8).Outline(true);
          form.ShowDialog();
       }
    }

@@ -123,5 +123,22 @@ public class SubTextSet
       return X(x).Y(y);
    }
 
+   public SubTextSet GoToMiddleLeft(int margin)
+   {
+      var textSize = getTextSize();
+      var y = (size.Height - textSize.Height) / 2;
+
+      return X(margin).Y(y);
+   }
+
+   public SubTextSet GoToMiddleRight(int margin)
+   {
+      var textSize = getTextSize();
+      var x = size.Width - textSize.Width - margin;
+      var y = (size.Height - textSize.Height) / 2;
+
+      return X(x).Y(y);
+   }
+
    public SubText End => subText;
 }
