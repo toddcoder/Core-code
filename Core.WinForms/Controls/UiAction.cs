@@ -865,7 +865,7 @@ public class UiAction : UserControl
          }
       }
 
-      if (IsDirty)
+      /*if (IsDirty)
       {
          var bullet = "•";
          var foreColor = getForeColor();
@@ -874,7 +874,7 @@ public class UiAction : UserControl
          var size = TextRenderer.MeasureText(e.Graphics, bullet, font);
          var location = new Point(clientRectangle.Width - size.Width - 4, 4);
          TextRenderer.DrawText(e.Graphics, bullet, font, location, foreColor, backColor);
-      }
+      }*/
 
       Painting?.Invoke(this, e);
    }
@@ -991,6 +991,14 @@ public class UiAction : UserControl
             fillRectangle(pevent.Graphics, brush, clientRectangle);
             break;
          }
+      }
+
+      if (isDirty)
+      {
+         var backColor = getBackColor();
+         var foreColor = ControlPaint.Light(backColor);
+         using var brush = new HatchBrush(HatchStyle.WideDownwardDiagonal, foreColor, backColor);
+         fillRectangle(pevent.Graphics, brush, clientRectangle);
       }
 
       if (Is3D)

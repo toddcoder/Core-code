@@ -441,7 +441,11 @@ namespace Core.Tests
 
          var uiAction = new UiAction(form, true);
          uiAction.AttachTo("Name", textBox);
-         uiAction.Click += (_, _) => textBox.Text = "";
+         uiAction.Click += (_, _) =>
+         {
+            textBox.Text = "";
+            uiAction.IsDirty = true;
+         };
          uiAction.ClickText = "Clear text";
 
          form.ShowDialog();
