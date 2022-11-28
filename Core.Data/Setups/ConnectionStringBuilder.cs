@@ -107,10 +107,7 @@ public class ConnectionStringBuilder
       }
       else if (_server && _database)
       {
-         var user = _user | "";
-         var password = _password | "";
-
-         return new SqlConnectionString(_server, _database, applicationName, connectionTimeout, user, password, readOnly);
+         return new SqlConnectionString(_server, _database, applicationName, connectionTimeout, _user, _password, readOnly);
       }
       else
       {

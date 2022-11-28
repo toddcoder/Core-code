@@ -106,6 +106,13 @@ public class SqlConnectionString : IConnectionString
       connectionTimeout = timeout;
    }
 
+   public SqlConnectionString(string server, string database, string application, TimeSpan timeout, Maybe<string> _user, Maybe<string> _password,
+      bool readOnly = false)
+   {
+      connectionString = GetConnectionString(server, database, application, _user, _password, readOnly);
+      connectionTimeout = timeout;
+   }
+
    public string ConnectionString => connectionString;
 
    public TimeSpan ConnectionTimeout => connectionTimeout;
