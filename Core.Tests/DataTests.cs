@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Core.Applications;
 using Core.Collections;
-using Core.Computers;
 using Core.Configurations;
 using Core.Data;
 using Core.Data.ConnectionStrings;
@@ -13,6 +12,8 @@ using Core.Data.Setups;
 using Core.Dates.DateIncrements;
 using Core.Objects;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static Core.Data.Setups.SqlSetupBuilder;
+using static Core.Data.Setups.SqlSetupBuilderParameters.Functions;
 
 namespace Core.Tests;
 
@@ -192,33 +193,34 @@ public class DataTests
    [TestMethod]
    public void FluentTest()
    {
-      var setupBuilder = new SqlSetupBuilder();
-      var setup = setupBuilder
-         .ConnectionString(TRUE_CONNECTION_STRING)
-         .CommandText((FileName)@"~\source\repos\Eprod.TSqlCop\source\SqlConformance.Library\MetaData\Queries\Columns.sql")
-         .Parameter("@lObjectId")
-         .Signature("ObjectId")
-         .Type(typeof(int))
-         .EndParameter()
-         .Field("ObjectId")
-         .Type(typeof(int))
-         .EndField()
-         .Field("Name")
-         .Type(typeof(string))
-         .EndField()
-         .Field("TypeName")
-         .Type(typeof(string))
-         .EndField()
-         .Setup();
-      var entity = new ColumnData
+      var setupBuilder = sqlSetup();
+      _ = setupBuilder + connectionString(TRUE_CONNECTION_STRING);
+      _ = setupBuilder + commandTextFile(@"~\source\repos\Eprod.TSqlCop\source\SqlConformance.Library\MetaData\Queries\Columns.sql");
+      _ = setupBuilder + parameter("@lObjectId") + signature("ObjectId") + type(typeof(int));
+      _ = setupBuilder + field("ObjectId") + type(typeof(int));
+      _ = setupBuilder + field("Name") + type(typeof(string));
+      _ = setupBuilder + field("TypeName") + type(typeof(string));
+      var _sqlSetup = setupBuilder.Build();
+      if (_sqlSetup)
       {
-         ObjectId = 89
-      };
-      var adapter = new Adapter<ColumnData>(entity, setup);
-      if (adapter.TryTo.Execute())
-      {
-         Console.WriteLine(entity.Name);
+         var entity = new ColumnData
+         {
+            ObjectId = 89
+         };
+         var adapter = new Adapter<ColumnData>(entity, ~_sqlSetup);
+         var _columnData = adapter.TryTo.Execute();
+         if (_columnData)
+         {
+            Console.WriteLine(entity.Name);
+         }
+         else
+         {
+            Console.WriteLine(_columnData.Exception);
+         }
       }
-
+      else
+      {
+         Console.WriteLine(_sqlSetup.Exception.Message);
+      }
    }
 }

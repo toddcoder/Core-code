@@ -7,44 +7,60 @@ public class SqlSetupBuilderParameters
 {
    public static class Functions
    {
-      public static StringParameter connectionString(string value) => new ConnectionString(value);
+      public static ConnectionString connectionString(string value) => new(value);
 
-      public static StringParameter server(string value) => new Server(value);
+      public static Server server(string value) => new(value);
 
-      public static StringParameter database(string value) => new Database(value);
+      public static Database database(string value) => new(value);
 
-      public static StringParameter applicationName(string value) => new ApplicationName(value);
+      public static ApplicationName applicationName(string value) => new(value);
 
-      public static StringParameter commandText(string value) => new CommandText(value);
+      public static CommandText commandText(string value) => new(value);
 
-      public static StringParameter parameter(string value) => new Parameter(value);
+      public static ParameterName parameter(string value) => new(value);
 
-      public static StringParameter field(string value) => new Field(value);
+      public static FieldName field(string value) => new(value);
 
-      public static StringParameter signature(string value) => new Signature(value);
+      public static Signature signature(string value) => new(value);
 
-      public static StringParameter value(string value) => new ValueParameter(value);
+      public static ValueParameter value(string value) => new(value);
 
-      public static StringParameter defaultValue(string value) => new DefaultValue(value);
+      public static DefaultValue defaultValue(string value) => new(value);
 
-      public static TimeSpanParameter connectionTimeout(TimeSpan value) => new ConnectionTimeout(value);
+      public static ConnectionTimeout connectionTimeout(TimeSpan value) => new(value);
 
-      public static TimeSpanParameter commandTimeout(TimeSpan value) => new CommandTimeout(value);
+      public static CommandTimeout commandTimeout(TimeSpan value) => new(value);
 
-      public static BooleanParameter readOnly(bool value) => new ReadOnly(value);
+      public static ReadOnly readOnly(bool value) => new(value);
 
-      public static BooleanParameter optional(bool value) => new ReadOnly(value);
+      public static Optional optional(bool value) => new(value);
 
-      public static BooleanParameter output(bool value) => new Output(value);
+      public static Output output(bool value) => new(value);
 
-      public static FileNameParameter commandTextFile(FileName value) => new CommandTextFile(value);
+      public static CommandTextFile commandTextFile(FileName value) => new(value);
 
-      public static TypeParameter type(System.Type value) => new Type(value);
+      public static Type type(System.Type value) => new(value);
 
-      public static IntParameter size(int value) => new Size(value);
+      public static Size size(int value) => new(value);
    }
 
    public abstract class BaseParameter
+   {
+   }
+
+   public interface IConnectionStringParameter
+   {
+   }
+
+   public interface ICommandTextParameter
+   {
+   }
+
+   public interface IFieldParameter
+   {
+   }
+
+   public interface IParameterParameter
    {
    }
 
@@ -60,70 +76,70 @@ public class SqlSetupBuilderParameters
       public string Value { get; }
    }
 
-   public sealed class ConnectionString : StringParameter
+   public sealed class ConnectionString : StringParameter, IConnectionStringParameter
    {
       public ConnectionString(string value) : base(value)
       {
       }
    }
 
-   public sealed class Server : StringParameter
+   public sealed class Server : StringParameter, IConnectionStringParameter
    {
       public Server(string value) : base(value)
       {
       }
    }
 
-   public sealed class Database : StringParameter
+   public sealed class Database : StringParameter, IConnectionStringParameter
    {
       public Database(string value) : base(value)
       {
       }
    }
 
-   public sealed class ApplicationName : StringParameter
+   public sealed class ApplicationName : StringParameter, IConnectionStringParameter
    {
       public ApplicationName(string value) : base(value)
       {
       }
    }
 
-   public sealed class CommandText : StringParameter
+   public sealed class CommandText : StringParameter, ICommandTextParameter
    {
       public CommandText(string value) : base(value)
       {
       }
    }
 
-   public sealed class Parameter : StringParameter
+   public sealed class ParameterName : StringParameter, IParameterParameter
    {
-      public Parameter(string value) : base(value)
+      public ParameterName(string value) : base(value)
       {
       }
    }
 
-   public sealed class Field : StringParameter
+   public sealed class FieldName : StringParameter, IFieldParameter
    {
-      public Field(string value) : base(value)
+      public FieldName(string value) : base(value)
       {
       }
    }
 
-   public sealed class Signature : StringParameter
+   public sealed class Signature : StringParameter, IFieldParameter, IParameterParameter
    {
       public Signature(string value) : base(value)
       {
       }
    }
 
-   public sealed class ValueParameter : StringParameter
+   public sealed class ValueParameter : StringParameter, IParameterParameter
    {
       public ValueParameter(string value) : base(value)
       {
       }
    }
 
-   public sealed class DefaultValue : StringParameter
+   public sealed class DefaultValue : StringParameter, IParameterParameter
    {
       public DefaultValue(string value) : base(value)
       {
@@ -142,14 +158,14 @@ public class SqlSetupBuilderParameters
       public TimeSpan Value { get; }
    }
 
-   public sealed class ConnectionTimeout : TimeSpanParameter
+   public sealed class ConnectionTimeout : TimeSpanParameter, IConnectionStringParameter
    {
       public ConnectionTimeout(TimeSpan value) : base(value)
       {
       }
    }
 
-   public sealed class CommandTimeout : TimeSpanParameter
+   public sealed class CommandTimeout : TimeSpanParameter, ICommandTextParameter
    {
       public CommandTimeout(TimeSpan value) : base(value)
       {
@@ -168,21 +184,21 @@ public class SqlSetupBuilderParameters
       public bool Value { get; }
    }
 
-   public sealed class ReadOnly : BooleanParameter
+   public sealed class ReadOnly : BooleanParameter, IConnectionStringParameter
    {
       public ReadOnly(bool value) : base(value)
       {
       }
    }
 
-   public sealed class Optional : BooleanParameter
+   public sealed class Optional : BooleanParameter, IFieldParameter
    {
       public Optional(bool value) : base(value)
       {
       }
    }
 
-   public sealed class Output : BooleanParameter
+   public sealed class Output : BooleanParameter, IParameterParameter
    {
       public Output(bool value) : base(value)
       {
@@ -201,7 +217,7 @@ public class SqlSetupBuilderParameters
       public FileName Value { get; }
    }
 
-   public sealed class CommandTextFile : FileNameParameter
+   public sealed class CommandTextFile : FileNameParameter, ICommandTextParameter
    {
       public CommandTextFile(FileName value) : base(value)
       {
@@ -210,6 +226,8 @@ public class SqlSetupBuilderParameters
 
    public abstract class TypeParameter : BaseParameter
    {
+      public static implicit operator System.Type(TypeParameter type) => type.Value;
+
       protected TypeParameter(System.Type value)
       {
          Value = value;
@@ -218,7 +236,7 @@ public class SqlSetupBuilderParameters
       public System.Type Value { get; }
    }
 
-   public sealed class Type : TypeParameter
+   public sealed class Type : TypeParameter, IParameterParameter, IFieldParameter
    {
       public Type(System.Type value) : base(value)
       {
@@ -227,6 +245,8 @@ public class SqlSetupBuilderParameters
 
    public abstract class IntParameter : BaseParameter
    {
+      public static implicit operator int(IntParameter parameter) => parameter.Value;
+
       protected IntParameter(int value)
       {
          Value = value;
@@ -235,7 +255,7 @@ public class SqlSetupBuilderParameters
       public int Value { get; }
    }
 
-   public sealed class Size : IntParameter
+   public sealed class Size : IntParameter, IParameterParameter
    {
       public Size(int value) : base(value)
       {

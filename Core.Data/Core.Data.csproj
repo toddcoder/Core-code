@@ -78,6 +78,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reader.cs" />
     <Compile Include="Setups\CommandSourceType.cs" />
+    <Compile Include="Setups\CommandTextBuilder.cs" />
     <Compile Include="Setups\ConnectionStringBuilder.cs" />
     <Compile Include="Setups\FieldBuilder.cs" />
     <Compile Include="Setups\ISetup.cs" />

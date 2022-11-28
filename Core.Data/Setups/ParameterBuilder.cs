@@ -9,8 +9,20 @@ namespace Core.Data.Setups;
 
 public class ParameterBuilder
 {
-   protected string name;
+   public static ParameterBuilder operator +(ParameterBuilder builder, SqlSetupBuilderParameters.IParameterParameter parameter) => parameter switch
+   {
+      SqlSetupBuilderParameters.DefaultValue defaultValue => builder.Default(defaultValue),
+      SqlSetupBuilderParameters.ParameterName name => builder.Name(name),
+      SqlSetupBuilderParameters.Output output => builder.Output(output),
+      SqlSetupBuilderParameters.Signature signature => builder.Signature(signature),
+      SqlSetupBuilderParameters.Size size => builder.Size(size),
+      SqlSetupBuilderParameters.Type type => builder.Type(type),
+      SqlSetupBuilderParameters.ValueParameter valueParameter => builder.Value(valueParameter),
+      _ => throw new ArgumentOutOfRangeException(nameof(parameter))
+   };
+
    protected SqlSetupBuilder setupBuilder;
+   protected Maybe<string> _name;
    protected Maybe<string> _signature;
    protected Maybe<Type> _type;
    protected Maybe<int> _size;
@@ -18,17 +30,24 @@ public class ParameterBuilder
    protected Maybe<string> _value;
    protected Maybe<string> _default;
 
-   public ParameterBuilder(string name, SqlSetupBuilder setupBuilder)
+   public ParameterBuilder(SqlSetupBuilder setupBuilder)
    {
-      this.name = name;
       this.setupBuilder = setupBuilder;
+      this.setupBuilder.ParameterBuild(this);
 
+      _name = nil;
       _signature = nil;
       _type = nil;
       _size = nil;
       output = false;
       _value = nil;
       _default = nil;
+   }
+
+   public ParameterBuilder Name(string name)
+   {
+      _name = name;
+      return this;
    }
 
    public ParameterBuilder Signature(string signature)
@@ -67,19 +86,24 @@ public class ParameterBuilder
       return this;
    }
 
-   public SqlSetupBuilder EndParameter()
+   public Result<Parameter> Build()
    {
-      var signature = _signature | (() => name.Substitute("^ '@'; f", "").ToUpper1());
-      var parameter = new Parameter(name, signature)
+      if (_name)
       {
-         Type = _type,
-         Size = _size,
-         Output = output,
-         Value = _value,
-         Default = _default
-      };
-      setupBuilder.AddParameter(parameter);
-
-      return setupBuilder;
+         var name = ~_name;
+         var signature = _signature | (() => name.Substitute("^ '@'; f", "").ToUpper1());
+         return new Parameter(name, signature)
+         {
+            Type = _type,
+            Size = _size,
+            Output = output,
+            Value = _value,
+            Default = _default
+         };
+      }
+      else
+      {
+         return fail("Parameter name not provided");
+      }
    }
 }

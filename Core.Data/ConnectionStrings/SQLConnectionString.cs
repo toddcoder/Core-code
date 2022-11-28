@@ -99,6 +99,13 @@ public class SqlConnectionString : IConnectionString
       connectionTimeout = timeout.IsEmpty() ? 30.Seconds() : Value.TimeSpan(timeout);
    }
 
+   public SqlConnectionString(string server, string database, string application, TimeSpan timeout, string user = "", string password = "",
+      bool readOnly = false) : this(server, database, application, user, password, "", readOnly)
+   {
+      connectionString = GetConnectionString(server, database, application, user, password, readOnly);
+      connectionTimeout = timeout;
+   }
+
    public string ConnectionString => connectionString;
 
    public TimeSpan ConnectionTimeout => connectionTimeout;

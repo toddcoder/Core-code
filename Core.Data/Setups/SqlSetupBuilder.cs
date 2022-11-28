@@ -1,109 +1,173 @@
 ﻿using System;
 using System.Collections.Generic;
-using Core.Computers;
 using Core.Data.ConnectionStrings;
 using Core.Data.Fields;
 using Core.Data.Parameters;
-using Core.Dates.DateIncrements;
 using Core.Monads;
-using static Core.Monads.AttemptFunctions;
+using static Core.Monads.Lazy.LazyMonads;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Data.Setups;
 
 public class SqlSetupBuilder
 {
-   protected Maybe<SqlConnectionString> _connectionString;
-   protected Maybe<string> _commandText;
-   protected List<Field> fields;
-   protected List<Parameter> parameters;
-   protected Maybe<TimeSpan> _commandTimeout;
+   public static SqlSetupBuilder sqlSetup() => new();
+
+   public static ConnectionStringBuilder operator +(SqlSetupBuilder builder, SqlSetupBuilderParameters.IConnectionStringParameter parameter)
+   {
+      var connectionStringBuilder = new ConnectionStringBuilder(builder);
+      return parameter switch
+      {
+         SqlSetupBuilderParameters.ApplicationName applicationName => connectionStringBuilder.ApplicationName(applicationName),
+         SqlSetupBuilderParameters.ConnectionString connectionString => connectionStringBuilder.ConnectionString(connectionString),
+         SqlSetupBuilderParameters.ConnectionTimeout connectionTimeout => connectionStringBuilder.ConnectionTimeout(connectionTimeout),
+         SqlSetupBuilderParameters.Database database => connectionStringBuilder.Database(database),
+         SqlSetupBuilderParameters.ReadOnly readOnly => connectionStringBuilder.ReadOnly(readOnly),
+         SqlSetupBuilderParameters.Server server => connectionStringBuilder.Server(server),
+         _ => throw new ArgumentOutOfRangeException(nameof(parameter))
+      };
+   }
+
+   public static CommandTextBuilder operator +(SqlSetupBuilder builder, SqlSetupBuilderParameters.ICommandTextParameter parameter)
+   {
+      var commandTextBuilder = new CommandTextBuilder(builder);
+      return parameter switch
+      {
+         SqlSetupBuilderParameters.CommandText commandText => commandTextBuilder.CommandText(commandText),
+         SqlSetupBuilderParameters.CommandTextFile commandTextFile => commandTextBuilder.CommandTextFile(commandTextFile),
+         SqlSetupBuilderParameters.CommandTimeout commandTimeout => commandTextBuilder.CommandTimeout(commandTimeout),
+         _ => throw new ArgumentOutOfRangeException(nameof(parameter))
+      };
+   }
+
+   public static FieldBuilder operator +(SqlSetupBuilder builder, SqlSetupBuilderParameters.IFieldParameter parameter)
+   {
+      var fieldBuilder = new FieldBuilder(builder);
+      return parameter switch
+      {
+         SqlSetupBuilderParameters.FieldName name => fieldBuilder.Name(name),
+         SqlSetupBuilderParameters.Optional optional => fieldBuilder.Optional(optional),
+         SqlSetupBuilderParameters.Signature signature => fieldBuilder.Signature(signature),
+         SqlSetupBuilderParameters.Type type => fieldBuilder.Type(type),
+         _ => throw new ArgumentOutOfRangeException(nameof(parameter))
+      };
+   }
+
+   public static ParameterBuilder operator +(SqlSetupBuilder builder, SqlSetupBuilderParameters.IParameterParameter parameter)
+   {
+      var parameterBuilder = new ParameterBuilder(builder);
+      return parameter switch
+      {
+         SqlSetupBuilderParameters.DefaultValue defaultValue => parameterBuilder.Default(defaultValue),
+         SqlSetupBuilderParameters.ParameterName name => parameterBuilder.Name(name),
+         SqlSetupBuilderParameters.Output output => parameterBuilder.Output(output),
+         SqlSetupBuilderParameters.Signature signature => parameterBuilder.Signature(signature),
+         SqlSetupBuilderParameters.Size size => parameterBuilder.Size(size),
+         SqlSetupBuilderParameters.Type type => parameterBuilder.Type(type),
+         SqlSetupBuilderParameters.ValueParameter valueParameter => parameterBuilder.Value(valueParameter),
+         _ => throw new ArgumentOutOfRangeException(nameof(parameter))
+      };
+   }
+
+   protected Maybe<ConnectionStringBuilder> _connectionStringBuilder;
+   protected Maybe<CommandTextBuilder> _commandTextBuilder;
+   protected List<ParameterBuilder> parameterBuilders;
+   protected List<FieldBuilder> fieldBuilders;
 
    public SqlSetupBuilder()
    {
-      _connectionString = nil;
-      _commandText = nil;
-      fields = new List<Field>();
-      parameters = new List<Parameter>();
-      _commandTimeout = nil;
+      _connectionStringBuilder = nil;
+      _commandTextBuilder = nil;
+      parameterBuilders = new List<ParameterBuilder>();
+      fieldBuilders = new List<FieldBuilder>();
    }
 
-   public SqlSetupBuilder ConnectionString(string connectionString)
+   internal void ConnectionStringBuilder(ConnectionStringBuilder builder) => _connectionStringBuilder = builder;
+
+   internal void CommandTextBuilder(CommandTextBuilder builder) => _commandTextBuilder = builder;
+
+   internal void FieldBuilder(FieldBuilder builder) => fieldBuilders.Add(builder);
+
+   internal void ParameterBuild(ParameterBuilder builder) => parameterBuilders.Add(builder);
+
+   public Result<SqlSetup> Build()
    {
-      _connectionString = new SqlConnectionString(connectionString, 30.Seconds());
-      return this;
+      var sqlSetup = new SqlSetup();
+      var _connectionString = lazy.result<SqlConnectionString>();
+      var _commandText = lazy.result<(string, TimeSpan)>();
+
+      if (_connectionStringBuilder)
+      {
+         var connectionStringBuilder = ~_connectionStringBuilder;
+         _connectionString.ValueOf(connectionStringBuilder.Build);
+      }
+      else
+      {
+         return fail("Connection string not provided");
+      }
+
+      if (_commandTextBuilder)
+      {
+         var commandTextBuilder = ~_commandTextBuilder;
+         _commandText.ValueOf(commandTextBuilder.Build);
+      }
+      else
+      {
+         return fail("Command text not provided");
+      }
+
+      if (_connectionString)
+      {
+         sqlSetup.ConnectionString = ~_connectionString;
+      }
+      else
+      {
+         return _connectionString.Exception;
+      }
+
+      if (_commandText)
+      {
+         var (commandText, commandTimeout) = ~_commandText;
+         sqlSetup.CommandText = commandText;
+         sqlSetup.CommandTimeout = commandTimeout;
+      }
+      else
+      {
+         return _commandText.Exception;
+      }
+
+      var fields = new List<Field>();
+      foreach (var fieldBuilder in fieldBuilders)
+      {
+         var _field = fieldBuilder.Build();
+         if (_field)
+         {
+            fields.Add(_field);
+         }
+         else
+         {
+            return _field.Exception;
+         }
+      }
+
+      sqlSetup.Fields = new Fields.Fields(fields);
+
+      var parameters = new List<Parameter>();
+      foreach (var parameterBuilder in parameterBuilders)
+      {
+         var _parameter = parameterBuilder.Build();
+         if (_parameter)
+         {
+            parameters.Add(_parameter);
+         }
+         else
+         {
+            return _parameter.Exception;
+         }
+      }
+
+      sqlSetup.Parameters = new Parameters.Parameters(parameters);
+
+      return sqlSetup;
    }
-
-   public SqlSetupBuilder ConnectionString(string connectionString, TimeSpan connectionTimeout)
-   {
-      _connectionString = new SqlConnectionString(connectionString, connectionTimeout);
-      return this;
-   }
-
-   public SqlSetupBuilder ConnectionString(string server, string database, string application, bool integratedSecurity = true, bool readOnly = false)
-   {
-      return ConnectionString(SqlConnectionString.GetConnectionString(server, database, application, integratedSecurity, readOnly));
-   }
-
-   public SqlSetupBuilder ConnectionString(string server, string database, string application, string user, string password, bool readOnly = false)
-   {
-      return ConnectionString(SqlConnectionString.GetConnectionString(server, database, application, user, password, readOnly));
-   }
-
-   public SqlSetupBuilder ConnectionString(string server, string database, string application, Maybe<string> _user, Maybe<string> _password,
-      bool readOnly = false)
-   {
-      return ConnectionString(SqlConnectionString.GetConnectionString(server, database, application, _user, _password, readOnly));
-   }
-
-   public SqlSetupBuilder ConnectionString(Connection connection)
-   {
-      _connectionString = SqlConnectionString.FromConnection(connection).Maybe();
-      return this;
-   }
-
-   public SqlSetupBuilder CommandText(string commandText)
-   {
-      _commandText = commandText;
-      return this;
-   }
-
-   public SqlSetupBuilder CommandText(FileName sqlFile)
-   {
-      _commandText = sqlFile.TryTo.Text.Maybe();
-      return this;
-   }
-
-   public SqlSetupBuilder CommandTimeout(TimeSpan commandTimeout)
-   {
-      _commandTimeout = commandTimeout;
-      return this;
-   }
-
-   public FieldBuilder Field(string name)
-   {
-      var fieldBuilder = new FieldBuilder(name, this);
-      return fieldBuilder;
-   }
-
-   internal void AddField(Field field) => fields.Add(field);
-
-   public ParameterBuilder Parameter(string name)
-   {
-      var parameterBuilder = new ParameterBuilder(name, this);
-      return parameterBuilder;
-   }
-
-   internal void AddParameter(Parameter parameter) => parameters.Add(parameter);
-
-   public SqlSetup Setup() => new()
-   {
-      ConnectionString = _connectionString.Required("ConnectionString must be called"),
-      CommandText = _commandText.Required("CommandText must be called"),
-      Fields = new Fields.Fields(fields),
-      Parameters = new Parameters.Parameters(parameters),
-      CommandTimeout = _commandTimeout | (() => 30.Seconds())
-   };
-
-   public Result<SqlSetup> TrySetup() => tryTo(Setup);
 }

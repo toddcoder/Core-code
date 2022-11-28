@@ -8,20 +8,36 @@ namespace Core.Data.Setups;
 
 public class FieldBuilder
 {
-   protected string name;
+   public static FieldBuilder operator +(FieldBuilder builder, SqlSetupBuilderParameters.IFieldParameter parameter) => parameter switch
+   {
+      SqlSetupBuilderParameters.FieldName name => builder.Name(name),
+      SqlSetupBuilderParameters.Optional optional => builder.Optional(optional),
+      SqlSetupBuilderParameters.Signature signature => builder.Signature(signature),
+      SqlSetupBuilderParameters.Type type => builder.Type(type),
+      _ => throw new ArgumentOutOfRangeException(nameof(parameter))
+   };
+
    protected SqlSetupBuilder setupBuilder;
+   protected Maybe<string> _name;
    protected Maybe<string> _signature;
    protected bool optional;
    protected Maybe<Type> _type;
 
-   public FieldBuilder(string name, SqlSetupBuilder setupBuilder)
+   public FieldBuilder(SqlSetupBuilder setupBuilder)
    {
-      this.name = name;
       this.setupBuilder = setupBuilder;
+      this.setupBuilder.FieldBuilder(this);
 
+      _name = nil;
       _signature = nil;
       optional = false;
       _type = nil;
+   }
+
+   public FieldBuilder Name(string name)
+   {
+      _name = name;
+      return this;
    }
 
    public FieldBuilder Signature(string signature)
@@ -42,12 +58,17 @@ public class FieldBuilder
       return this;
    }
 
-   public SqlSetupBuilder EndField()
+   public Result<Field> Build()
    {
-      var signature = _signature | (() => name.ToUpper1());
-      var field = new Field(name, signature, optional) { Type = _type };
-      setupBuilder.AddField(field);
-
-      return setupBuilder;
+      if (_name)
+      {
+         var name = ~_name;
+         var signature = _signature | (() => name.ToUpper1());
+         return new Field(name, signature, optional) { Type = _type };
+      }
+      else
+      {
+         return fail("Field name not provided");
+      }
    }
 }

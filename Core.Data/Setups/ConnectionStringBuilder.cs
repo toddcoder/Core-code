@@ -1,4 +1,5 @@
 ﻿using System;
+using Core.Data.ConnectionStrings;
 using Core.Dates.DateIncrements;
 using Core.Monads;
 using static Core.Monads.MonadFunctions;
@@ -7,6 +8,20 @@ namespace Core.Data.Setups;
 
 public class ConnectionStringBuilder
 {
+   public static ConnectionStringBuilder operator +(ConnectionStringBuilder builder, SqlSetupBuilderParameters.IConnectionStringParameter parameter)
+   {
+      return parameter switch
+      {
+         SqlSetupBuilderParameters.ApplicationName applicationName => builder.ApplicationName(applicationName),
+         SqlSetupBuilderParameters.ConnectionString connectionString => builder.ConnectionString(connectionString),
+         SqlSetupBuilderParameters.ConnectionTimeout connectionTimeout => builder.ConnectionTimeout(connectionTimeout),
+         SqlSetupBuilderParameters.Database database => builder.Database(database),
+         SqlSetupBuilderParameters.ReadOnly readOnly => builder.ReadOnly(readOnly),
+         SqlSetupBuilderParameters.Server server => builder.Server(server),
+         _ => throw new ArgumentOutOfRangeException(nameof(parameter))
+      };
+   }
+
    protected SqlSetupBuilder setupBuilder;
    protected Maybe<string> _connectionString;
    protected Maybe<TimeSpan> _connectionTimeout;
@@ -20,6 +35,7 @@ public class ConnectionStringBuilder
    public ConnectionStringBuilder(SqlSetupBuilder setupBuilder)
    {
       this.setupBuilder = setupBuilder;
+      this.setupBuilder.ConnectionStringBuilder(this);
 
       _connectionString = nil;
       _connectionTimeout = nil;
@@ -79,7 +95,7 @@ public class ConnectionStringBuilder
       return this;
    }
 
-   public SqlSetupBuilder EndConnectionString()
+   public Result<SqlConnectionString> Build()
    {
       var connectionTimeout = _connectionTimeout | (() => 30.Seconds());
       var applicationName = _applicationName | "";
@@ -87,22 +103,18 @@ public class ConnectionStringBuilder
 
       if (_connectionString)
       {
-         return setupBuilder.ConnectionString(_connectionString, connectionTimeout);
+         return new SqlConnectionString(_connectionString, connectionTimeout);
       }
       else if (_server && _database)
       {
-         if (_user && _password)
-         {
-            return setupBuilder.ConnectionString(_server, _database, applicationName, _user, _password, readOnly);
-         }
-         else
-         {
-            return setupBuilder.ConnectionString(_server, _database, applicationName, readOnly);
-         }
+         var user = _user | "";
+         var password = _password | "";
+
+         return new SqlConnectionString(_server, _database, applicationName, connectionTimeout, user, password, readOnly);
       }
       else
       {
-         return setupBuilder;
+         return fail("Connection string | server | database not provided");
       }
    }
 }
