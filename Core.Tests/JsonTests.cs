@@ -66,4 +66,30 @@ public class JsonTests
 
       Console.WriteLine(writer);
    }
+
+   [TestMethod]
+   public void PatchTest()
+   {
+      var branchFilters = new[] { "+refs/heads/master", "+refs/heads/r-6.43.0*" };
+      using var writer = new JsonWriter();
+      writer.BeginArray();
+
+      writer.BeginObject();
+      writer.Write("op", "replace");
+      writer.Write("path", "/triggers/branchFilters");
+
+      writer.BeginArray("value");
+
+      foreach (var branchFilter in branchFilters)
+      {
+         writer.Write(branchFilter);
+      }
+
+      writer.EndArray();
+      writer.EndObject();
+
+      writer.EndArray();
+      var json = writer.ToString();
+      Console.WriteLine(json);
+   }
 }
