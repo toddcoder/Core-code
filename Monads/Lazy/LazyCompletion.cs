@@ -376,4 +376,10 @@ public class LazyCompletion<T> : Completion<T>
          return _value.AnyException;
       }
    }
+
+   public override string ToString()
+   {
+      ensureValue();
+      return _value.ToString();
+   }
 }

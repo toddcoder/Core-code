@@ -234,4 +234,10 @@ public class LazyResponding<T> : Responding<T>, IEquatable<LazyResponding<T>>
    public static bool operator ==(LazyResponding<T> left, LazyResponding<T> right) => Equals(left, right);
 
    public static bool operator !=(LazyResponding<T> left, LazyResponding<T> right) => !Equals(left, right);
+
+   public override string ToString()
+   {
+      ensureValue();
+      return _value.ToString();
+   }
 }

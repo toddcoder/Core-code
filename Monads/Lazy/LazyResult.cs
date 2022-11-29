@@ -291,4 +291,10 @@ public class LazyResult<T> : Result<T>, IEquatable<LazyResult<T>>
    public static bool operator ==(LazyResult<T> left, LazyResult<T> right) => Equals(left, right);
 
    public static bool operator !=(LazyResult<T> left, LazyResult<T> right) => !Equals(left, right);
+
+   public override string ToString()
+   {
+      ensureValue();
+      return _value.ToString();
+   }
 }

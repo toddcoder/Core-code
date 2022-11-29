@@ -193,4 +193,10 @@ public class LazyMaybe<T> : Maybe<T>, IEquatable<LazyMaybe<T>>
    public static bool operator ==(LazyMaybe<T> left, LazyMaybe<T> right) => Equals(left, right);
 
    public static bool operator !=(LazyMaybe<T> left, LazyMaybe<T> right) => !Equals(left, right);
+
+   public override string ToString()
+   {
+      ensureValue();
+      return _value.ToString();
+   }
 }
