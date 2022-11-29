@@ -501,4 +501,28 @@ public class MonadTests
          Console.WriteLine(~_item);
       }
    }
+
+   [TestMethod]
+   public void UsingIsTest()
+   {
+      Maybe<string> _text = "Test";
+      if (_text.Value is { } text)
+      {
+         Console.WriteLine(text);
+      }
+      else
+      {
+         Console.WriteLine("none");
+      }
+
+      _text = nil;
+      if (_text.Value is { } text1)
+      {
+         Console.WriteLine(text1);
+      }
+      else
+      {
+         Console.WriteLine("none");
+      }
+   }
 }
