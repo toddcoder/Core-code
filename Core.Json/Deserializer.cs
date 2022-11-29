@@ -2,10 +2,12 @@
 using System.IO;
 using Core.Configurations;
 using Core.DataStructures;
+using Core.Dates;
 using Core.Monads;
 using Core.Strings;
 using Newtonsoft.Json;
 using static Core.Monads.MonadFunctions;
+using static Core.Objects.ConversionFunctions;
 
 namespace Core.Json;
 
@@ -52,9 +54,18 @@ public class Deserializer
       {
          using var textReader = new StringReader(source);
          using var reader = new JsonTextReader(textReader);
+         reader.DateFormatString = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fff'Z'";
          var firstObjectProcessed = false;
 
          string getValue() => reader.Value?.ToString() ?? "";
+
+         string getDateTime()
+         {
+            var value = getValue();
+            return Value.DateTime(value).Zulu();
+            /*var dateTime = (reader.ReadAsDateTime() ?? DateTime.MinValue);
+            return dateTime.Zulu();*/
+         }
 
          while (reader.Read())
          {
@@ -93,7 +104,7 @@ public class Deserializer
                {
                   var key = _propertyName | (() => $"${itemCount()}");
                   _propertyName = nil;
-                  var setting = new Setting(key);
+                  var setting = new Setting(key) { IsArray = true };
                   var _parentSetting = peekSetting();
                   if (_parentSetting)
                   {
@@ -132,7 +143,7 @@ public class Deserializer
                   setItem(getValue().ToLower());
                   break;
                case JsonToken.Date:
-                  setItem(getValue());
+                  setItem(getDateTime());
                   break;
                default:
                   setItem("");

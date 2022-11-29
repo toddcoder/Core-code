@@ -8,6 +8,7 @@ using Core.Collections;
 using Core.Computers;
 using Core.Configurations;
 using Core.Enumerables;
+using Core.Json;
 using Core.Monads;
 using Core.Strings;
 using static Core.Monads.Lazy.LazyMonads;
@@ -552,6 +553,32 @@ public class ConfigurationTests
                Console.WriteLine(info);
             }
          }
+      }
+   }
+
+   [TestMethod]
+   public void SerializationToJsonTest()
+   {
+      var resources = new Resources<ConfigurationTests>();
+      var json = resources.String("testSetting.json");
+      var deserializer = new Deserializer(json);
+      var _setting = deserializer.Deserialize();
+      if (_setting)
+      {
+         var serializer = new Serializer(_setting);
+         var _json = serializer.Serialize();
+         if (_json)
+         {
+            Console.Write(~_json);
+         }
+         else
+         {
+            throw _json.Exception;
+         }
+      }
+      else
+      {
+         throw _setting.Exception;
       }
    }
 }

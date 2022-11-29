@@ -70,5 +70,25 @@ namespace Core.Tests
             Console.WriteLine($"{date:d} [{date.DayOfWeek}] -> {date.DescriptionFromNow()}");
          }
       }
+
+      [TestMethod]
+      public void ZuluDateTimeTest()
+      {
+         var now = DateTime.Now;
+         var zulu = now.Zulu();
+         Console.WriteLine(zulu);
+      }
+
+      [TestMethod]
+      public void ZuluToDateTimeTest()
+      {
+         var source = "2022-11-18T15:00:18.253Z";
+         var _date = Maybe.DateTime(source);
+         if (_date)
+         {
+            var zulu = (~_date).Zulu();
+            Console.WriteLine(zulu);
+         }
+      }
    }
 }

@@ -56,6 +56,8 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
 
    public override string Key { get; }
 
+   public bool IsArray { get; set; }
+
    Maybe<Setting> IConfigurationItemGetter.GetSetting(string key)
    {
       var _configurationItem = items.Maybe[key];

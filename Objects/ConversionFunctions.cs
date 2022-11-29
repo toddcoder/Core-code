@@ -113,7 +113,7 @@ public static class ConversionFunctions
          }
       }
 
-      public static DateTime DateTime(string source) => DateTime(source, System.DateTime.MaxValue);
+      public static DateTime DateTime(string source) => DateTime(source, System.DateTime.MinValue);
 
       public static Guid Guid(string source)
       {

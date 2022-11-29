@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using Core.Dates;
+using Core.Monads;
 using Newtonsoft.Json;
 
 namespace Core.Json
@@ -53,9 +55,27 @@ namespace Core.Json
 
       public void Write(bool value) => writer.WriteValue(value);
 
-      public void Write(DateTime value) => writer.WriteValue(value);
+      public void Write(DateTime value, bool zulu = false)
+      {
+         if (zulu)
+         {
+            writer.WriteValue(value.Zulu());
+         }
+         else
+         {
+            writer.WriteValue(value);
+         }
+      }
 
       public void Write(Guid value) => writer.WriteValue(value);
+
+      public void WritePropertyNameIf(Maybe<string> _propertyName)
+      {
+         if (_propertyName)
+         {
+            writer.WritePropertyName(_propertyName);
+         }
+      }
 
       public void Write(string propertyName, string value)
       {

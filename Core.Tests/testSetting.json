@@ -1,0 +1,186 @@
+﻿{
+  "options": [
+    {
+      "enabled": false,
+      "definition": {
+        "id": "5d58cc01-7c75-450c-be18-a388ddb129ec"
+      },
+      "inputs": {
+        "branchFilters": "[\"+refs/heads/*\"]",
+        "additionalFields": "{}"
+      }
+    },
+    {
+      "enabled": false,
+      "definition": {
+        "id": "a9db38f9-9fdc-478c-b0f9-464221e58316"
+      },
+      "inputs": {
+        "workItemType": "Task",
+        "assignToRequestor": "true",
+        "additionalFields": "{}"
+      }
+    },
+    {
+      "enabled": false,
+      "definition": {
+        "id": "57578776-4c22-4526-aeb0-86b6da17ee9c"
+      },
+      "inputs": {}
+    }
+  ],
+  "triggers": [
+    {
+      "branchFilters": [
+        "+refs/heads/master",
+        "+refs/heads/r-6.43.0*"
+      ],
+      "pathFilters": [],
+      "batchChanges": false,
+      "maxConcurrentBuildsPerBranch": 1,
+      "triggerType": "continuousIntegration"
+    }
+  ],
+  "variables": {
+    "Build.BAT.Name": {
+      "value": ""
+    },
+    "Build.Configuration": {
+      "value": "Prod"
+    },
+    "Build.DropLocation": {
+      "value": "$(Build.DropLocation.Production)"
+    },
+    "Build.Net5": {
+      "value": "False"
+    },
+    "Build.ProjectDropFolder": {
+      "value": "EstreamPRD"
+    },
+    "Build.SkipCompileAndPublish": {
+      "value": "False"
+    },
+    "Build.Sonarq": {
+      "value": "False"
+    },
+    "Build.TargetVersion": {
+      "value": "$(Build.TargetVersion.Production)"
+    },
+    "Build.TestOptions.ExecuteIntegrationTests": {
+      "value": "False"
+    },
+    "Build.TestOptions.ExecuteMigrationTests": {
+      "value": "False"
+    },
+    "Build.TestOptions.ExecuteUnitTests": {
+      "value": "False"
+    },
+    "Build.TestOptions.ExecuteWebIntegrationTests": {
+      "value": "False"
+    },
+    "Build.TestOptions.SkipTests": {
+      "value": "True"
+    },
+    "Build.TestOptions.TestPlanId": {
+      "value": "108311"
+    },
+    "Build.TestOptions.TestSuiteId": {
+      "value": "109844"
+    }
+  },
+  "properties": {},
+  "tags": [],
+  "_links": {
+    "self": {
+      "href": "http://tfs/LS/143888d6-fecd-4866-a971-984f90caf733/_apis/build/Definitions/848?revision=19"
+    },
+    "web": {
+      "href": "http://tfs.eprod.com/LS/143888d6-fecd-4866-a971-984f90caf733/_build/definition?definitionId=848"
+    },
+    "editor": {
+      "href": "http://tfs.eprod.com/LS/143888d6-fecd-4866-a971-984f90caf733/_build/designer?id=848&_a=edit-build-definition"
+    },
+    "badge": {
+      "href": "http://tfs/LS/143888d6-fecd-4866-a971-984f90caf733/_apis/build/status/848"
+    }
+  },
+  "comment": "r-6.43.0*",
+  "jobAuthorizationScope": "projectCollection",
+  "jobTimeoutInMinutes": 60,
+  "jobCancelTimeoutInMinutes": 5,
+  "process": {
+    "yamlFilename": "BuildProcessTemplates/Templates/Orchestrator.yml",
+    "type": 2
+  },
+  "repository": {
+    "properties": {
+      "cloneUrl": "http://tfs.eprod.com/LS/Estream/_git/Estream",
+      "fullName": "Estream",
+      "defaultBranch": "refs/heads/master",
+      "isFork": "False",
+      "safeRepository": "641c5f6c-9363-4d42-bd97-67d75072e09c",
+      "reportBuildStatus": "true",
+      "cleanOptions": "0",
+      "fetchDepth": "0",
+      "gitLfsSupport": "false",
+      "skipSyncSource": "false",
+      "checkoutNestedSubmodules": "false",
+      "labelSources": "0",
+      "labelSourcesFormat": "$(build.buildNumber)"
+    },
+    "id": "641c5f6c-9363-4d42-bd97-67d75072e09c",
+    "type": "TfsGit",
+    "name": "Estream",
+    "url": "http://tfs/LS/Estream/_git/Estream",
+    "defaultBranch": "refs/heads/master",
+    "clean": null,
+    "checkoutSubmodules": false
+  },
+  "quality": "definition",
+  "authoredBy": {
+    "displayName": "Samonte, Erik",
+    "url": "http://tfs/LS/_apis/Identities/1feb4627-bd9a-4f5f-b6ea-d14773f2eb1d",
+    "_links": {
+      "avatar": {
+        "href": "http://tfs/LS/_apis/GraphProfile/MemberAvatars/win.Uy0xLTUtMjEtMTMyNzA2MDU4My0xNTYyMTQ0MjQ3LTE1NTU0Mzg2NTItMTUzMTI3"
+      }
+    },
+    "id": "1feb4627-bd9a-4f5f-b6ea-d14773f2eb1d",
+    "uniqueName": "ENTERPRISE\\esamonte",
+    "imageUrl": "http://tfs/LS/_apis/GraphProfile/MemberAvatars/win.Uy0xLTUtMjEtMTMyNzA2MDU4My0xNTYyMTQ0MjQ3LTE1NTU0Mzg2NTItMTUzMTI3",
+    "descriptor": "win.Uy0xLTUtMjEtMTMyNzA2MDU4My0xNTYyMTQ0MjQ3LTE1NTU0Mzg2NTItMTUzMTI3"
+  },
+  "drafts": [],
+  "queue": {
+    "_links": {
+      "self": {
+        "href": "http://tfs/LS/_apis/build/Queues/12"
+      }
+    },
+    "id": 12,
+    "name": "ReleaseManagement",
+    "url": "http://tfs/LS/_apis/build/Queues/12",
+    "pool": {
+      "id": 25,
+      "name": "ReleaseManagement"
+    }
+  },
+  "id": 848,
+  "name": "Estream_CI_Prod",
+  "url": "http://tfs/LS/143888d6-fecd-4866-a971-984f90caf733/_apis/build/Definitions/848?revision=19",
+  "uri": "vstfs:///Build/Definition/848",
+  "path": "\\Compile Orchestrators",
+  "type": "build",
+  "queueStatus": "enabled",
+  "revision": 19,
+  "createdDate": "2022-11-18T13:17:10.34Z",
+  "project": {
+    "id": "143888d6-fecd-4866-a971-984f90caf733",
+    "name": "Estream",
+    "url": "http://tfs/LS/_apis/projects/143888d6-fecd-4866-a971-984f90caf733",
+    "state": "wellFormed",
+    "revision": 350418221,
+    "visibility": "private",
+    "lastUpdateTime": "2022-11-18T15:00:18.253Z"
+  }
+}

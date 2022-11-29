@@ -153,6 +153,7 @@
     <EmbeddedResource Include="TestData\data.configuration" />
     <EmbeddedResource Include="TestData\guids.pdf" />
     <None Include="TestData\work-item.json" />
+    <EmbeddedResource Include="testSetting.json" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="usesForeignKey.txt" />
