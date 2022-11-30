@@ -525,4 +525,15 @@ public class MonadTests
          Console.WriteLine("none");
       }
    }
+
+   [TestMethod]
+   public void ChainedLazyMonads()
+   {
+      var _first = lazy.maybe<string>();
+      var _second = _first.ValueOf("foobar").Then<int>(s => s.Length);
+      if (_second)
+      {
+         Console.WriteLine($"Length: {_second} = 6");
+      }
+   }
 }

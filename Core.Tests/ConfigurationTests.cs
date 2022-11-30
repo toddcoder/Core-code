@@ -94,25 +94,14 @@ public class ConfigurationTests
       var resources = new Resources<ConfigurationTests>();
       var source = resources.String("TestData.connections.txt");
 
-      var _setting = lazy.result<Setting>();
-      var _serverDatabase = lazy.maybe<(string, string)>();
+      var _setting = lazy.result(() => Setting.FromString(source));
+      var _serverDatabase = _setting.Then(setting => getServerDatabase(setting).Result("Failed"));
 
-      if (_setting.ValueOf(Setting.FromString(source)))
+      if (_serverDatabase)
       {
-         if (_serverDatabase.ValueOf(getServerDatabase(_setting)))
-         {
-            var (server, database) = ~_serverDatabase;
-            Console.WriteLine($"server: {server}");
-            Console.WriteLine($"database: {database}");
-         }
-         else
-         {
-            Console.WriteLine("Failed");
-         }
-      }
-      else
-      {
-         Console.WriteLine(_setting.Exception.Message);
+         var (server, database) = ~_serverDatabase;
+         Console.WriteLine($"server: {server}");
+         Console.WriteLine($"database: {database}");
       }
    }
 
@@ -122,25 +111,14 @@ public class ConfigurationTests
       var resources = new Resources<ConfigurationTests>();
       var source = resources.String("TestData.connections2.txt");
 
-      var _setting = lazy.result<Setting>();
-      var _serverDatabase = lazy.maybe<(string, string)>();
+      var _setting = lazy.result(() => Setting.FromString(source));
+      var _serverDatabase = _setting.Then(setting => getServerDatabase(setting).Result("Failed"));
 
-      if (_setting.ValueOf(Setting.FromString(source)))
+      if (_serverDatabase)
       {
-         if (_serverDatabase.ValueOf(getServerDatabase(_setting)))
-         {
-            var (server, database) = ~_serverDatabase;
-            Console.WriteLine($"server: {server}");
-            Console.WriteLine($"database: {database}");
-         }
-         else
-         {
-            Console.WriteLine("Failed");
-         }
-      }
-      else
-      {
-         Console.WriteLine(_setting.Exception.Message);
+         var (server, database) = ~_serverDatabase;
+         Console.WriteLine($"server: {server}");
+         Console.WriteLine($"database: {database}");
       }
    }
 

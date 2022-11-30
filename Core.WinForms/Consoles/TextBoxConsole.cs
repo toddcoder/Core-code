@@ -213,7 +213,7 @@ public class TextBoxConsole
    {
       if (textBox.InvokeRequired && InvokeRequired)
       {
-         textBox.Invoke((Action)(() => action(textBox)));
+         textBox.Invoke(() => action(textBox));
       }
       else
       {

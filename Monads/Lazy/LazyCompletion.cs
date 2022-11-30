@@ -49,8 +49,15 @@ public class LazyCompletion<T> : Completion<T>
 
    public LazyCompletion<T> ValueOf(Func<Completion<T>> func)
    {
-      this.func = func;
-      return this;
+      if (Repeating)
+      {
+         return ValueOf(func());
+      }
+      else
+      {
+         this.func = func;
+         return this;
+      }
    }
 
    public LazyCompletion<T> ValueOf(Completion<T> value)
@@ -62,6 +69,21 @@ public class LazyCompletion<T> : Completion<T>
       }
 
       return this;
+   }
+
+   public LazyCompletion<TNext> Then<TNext>(Func<T, Completion<TNext>> func)
+   {
+      var _next = new LazyCompletion<TNext>();
+      ensureValue();
+
+      if (_value)
+      {
+         return _next.ValueOf(() => func(~_value));
+      }
+      else
+      {
+         return _next;
+      }
    }
 
    public bool Repeating { get; set; }

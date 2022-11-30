@@ -4,6 +4,7 @@ using Core.Collections;
 using Core.Matching;
 using Core.Strings;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static Core.Monads.Lazy.LazyRepeatingMonads;
 
 namespace Core.Tests;
 
@@ -125,17 +126,10 @@ public class StringClassTests
    {
       var text = "alpha\rbravo\rcharlie\n\ndelta\r\necho";
       var source = new Source(text);
-      while (source.More)
+      var _line = lazyRepeating.maybe<string>();
+      while (_line.ValueOf(source.NextLine))
       {
-         var _line = source.NextLine();
-         if (_line)
-         {
-            Console.WriteLine($"'{_line}'");
-         }
-         else
-         {
-            break;
-         }
+         Console.WriteLine($"'{_line}'");
       }
 
       Console.WriteLine("---");
@@ -152,39 +146,23 @@ public class StringClassTests
       var text = ":alpha\n:bravo\n-charlie\n-delta\n-echo\nfoxtrot";
       var source = new Source(text);
 
-      while (source.More)
+      var _line = lazyRepeating.maybe<string>();
+      while (_line.ValueOf(source.NextLine("^ ':'")))
       {
-         var _line = source.NextLine("^ ':'");
-         if (_line)
-         {
-            Console.WriteLine($": -> '{_line}'");
-         }
-         else
-         {
-            break;
-         }
+         Console.WriteLine($": -> '{_line}'");
       }
 
       Console.WriteLine("========");
 
-      while (source.More)
+      while (_line.ValueOf(source.NextLine("^ '-'")))
       {
-         var _line = source.NextLine("^ '-'");
-         if (_line)
-         {
-            Console.WriteLine($"- -> '{_line}'");
-         }
-         else
-         {
-            break;
-         }
+         Console.WriteLine($"- -> '{_line}'");
       }
 
       Console.WriteLine("========");
 
-      while (source.More)
+      while (_line.ValueOf(source.NextLine))
       {
-         var _line = source.NextLine();
          Console.WriteLine($"  -> '{_line}'");
       }
 
@@ -270,20 +248,18 @@ public class StringClassTests
          .Alias("yy1", "yValue", "Y!")
          .Alias("yy2", "extra", "Extra!")
          .Alias("zx", "xValue", "X!");
-      var _result = variants.TemplateName("x").Evaluate("xx");
-      if (_result)
+      var _result = lazyRepeating.maybe<string>();
+      if (_result.ValueOf(variants.TemplateName("x").Evaluate("xx")))
       {
          Console.WriteLine(~_result);
       }
 
-      _result = variants.TemplateName("y").Evaluate("yy1", "yy2");
-      if (_result)
+      if (_result.ValueOf(variants.TemplateName("y").Evaluate("yy1", "yy2")))
       {
          Console.WriteLine(~_result);
       }
 
-      _result = variants.TemplateName("z").Evaluate("zx");
-      if (_result)
+      if (_result.ValueOf(variants.TemplateName("z").Evaluate("zx")))
       {
          Console.WriteLine(~_result);
       }

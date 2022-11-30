@@ -49,8 +49,15 @@ public class LazyResponding<T> : Responding<T>, IEquatable<LazyResponding<T>>
 
    public LazyResponding<T> ValueOf(Func<Responding<T>> func)
    {
-      this.func = func;
-      return this;
+      if (Repeating)
+      {
+         return ValueOf(func());
+      }
+      else
+      {
+         this.func = func;
+         return this;
+      }
    }
 
    public LazyResponding<T> ValueOf(Responding<T> value)
@@ -62,6 +69,21 @@ public class LazyResponding<T> : Responding<T>, IEquatable<LazyResponding<T>>
       }
 
       return this;
+   }
+
+   public LazyResponding<TNext> Next<TNext>(Func<T, Responding<TNext>> func)
+   {
+      var _next = new LazyResponding<TNext>();
+      ensureValue();
+
+      if (_value)
+      {
+         return _next.ValueOf(()=>func(~_value));
+      }
+      else
+      {
+         return _next;
+      }
    }
 
    public bool Repeating { get; set; }

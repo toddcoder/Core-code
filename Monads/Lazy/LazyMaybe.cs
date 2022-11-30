@@ -45,8 +45,15 @@ public class LazyMaybe<T> : Maybe<T>, IEquatable<LazyMaybe<T>>
 
    public LazyMaybe<T> ValueOf(Func<Maybe<T>> func)
    {
-      this.func = func;
-      return this;
+      if (Repeating)
+      {
+         return ValueOf(func());
+      }
+      else
+      {
+         this.func = func;
+         return this;
+      }
    }
 
    public LazyMaybe<T> ValueOf(Maybe<T> value)
@@ -58,6 +65,21 @@ public class LazyMaybe<T> : Maybe<T>, IEquatable<LazyMaybe<T>>
       }
 
       return this;
+   }
+
+   public LazyMaybe<TNext> Then<TNext>(Func<T, Maybe<TNext>> func)
+   {
+      var _next = new LazyMaybe<TNext>();
+      ensureValue();
+
+      if (_value)
+      {
+         return _next.ValueOf(() => func(~_value));
+      }
+      else
+      {
+         return _next;
+      }
    }
 
    public bool Repeating { get; set; }

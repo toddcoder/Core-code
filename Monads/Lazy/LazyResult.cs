@@ -52,8 +52,15 @@ public class LazyResult<T> : Result<T>, IEquatable<LazyResult<T>>
 
    public LazyResult<T> ValueOf(Func<Result<T>> func)
    {
-      this.func = func;
-      return this;
+      if (Repeating)
+      {
+         return ValueOf(func());
+      }
+      else
+      {
+         this.func = func;
+         return this;
+      }
    }
 
    public LazyResult<T> ValueOf(Result<T> value)
@@ -65,6 +72,21 @@ public class LazyResult<T> : Result<T>, IEquatable<LazyResult<T>>
       }
 
       return this;
+   }
+
+   public LazyResult<TNext> Then<TNext>(Func<T, Result<TNext>> func)
+   {
+      var _next = new LazyResult<TNext>();
+      ensureValue();
+
+      if (_value)
+      {
+         return _next.ValueOf(() => func(~_value));
+      }
+      else
+      {
+         return _next;
+      }
    }
 
    public bool Repeating { get; set; }
