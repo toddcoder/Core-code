@@ -535,4 +535,6 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
          return fill(ref obj, type);
       }
    }
+
+   public void Clear() => items.Clear();
 }
