@@ -1,20 +1,22 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Core.Monads;
 using Core.Objects;
 using static Core.Monads.MonadFunctions;
+using static Core.Objects.GetHashCodeGenerator;
 
 namespace Core.Strings.Text;
 
-public class DifferenceItem : EquatableBase
+public class DifferenceItem : IEquatable<DifferenceItem>
 {
    protected List<DifferenceItem> subItems;
 
-   public DifferenceItem(string text, DifferenceType type, Maybe<int> _position)
+   public DifferenceItem(string text, DifferenceType type, Maybe<int> position)
    {
       Text = text;
       Type = type;
-      Position = _position;
+      Position = position;
       subItems = new List<DifferenceItem>();
    }
 
@@ -30,10 +32,10 @@ public class DifferenceItem : EquatableBase
    {
    }
 
-   protected override bool equals(object other)
+   /*protected override bool equals(object other)
    {
       return other is DifferenceItem otherDiffItem && (bool)Position == (bool)otherDiffItem.Position && subItemsEqual(otherDiffItem);
-   }
+   }*/
 
    [Equatable]
    public DifferenceType Type { get; set; }
@@ -105,4 +107,14 @@ public class DifferenceItem : EquatableBase
 
       return writer.ToString();
    }
+
+   public bool Equals(DifferenceItem other) => (bool)Position == (bool)other.Position && subItemsEqual(other);
+
+   public override bool Equals(object obj) => obj is DifferenceItem other && Equals(other);
+
+   public override int GetHashCode() => hashCode() + subItems + Type + Position + Text;
+
+   public static bool operator ==(DifferenceItem left, DifferenceItem right) => Equals(left, right);
+
+   public static bool operator !=(DifferenceItem left, DifferenceItem right) => !Equals(left, right);
 }

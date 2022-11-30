@@ -20,6 +20,8 @@ public class Item : ConfigurationItem, IConfigurationItemGetter
 
    public string Text { get; }
 
+   public bool IsNull { get; set; }
+
    Maybe<Setting> IConfigurationItemGetter.GetSetting(string key) => nil;
 
    Maybe<Item> IConfigurationItemGetter.GetItem(string key) => nil;

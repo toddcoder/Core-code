@@ -77,10 +77,8 @@ public class Differentiator
          var i = 0;
          while (i < Math.Min(diffBlock.OldDeleteCount, diffBlock.NewInsertCount))
          {
-            var oldItem = new DifferenceItem(result.OldItems[i + diffBlock.OldDeleteStart], DifferenceType.Deleted,
-               oldPosition + 1);
-            var newItem = new DifferenceItem(result.NewItems[i + diffBlock.NewInsertStart], DifferenceType.Inserted,
-               newPosition + 1);
+            var oldItem = new DifferenceItem(result.OldItems[i + diffBlock.OldDeleteStart], DifferenceType.Deleted, oldPosition + 1);
+            var newItem = new DifferenceItem(result.NewItems[i + diffBlock.NewInsertStart], DifferenceType.Inserted, newPosition + 1);
             if (_subItemBuilder)
             {
                var oldWords = result.OldItems[oldPosition].Unjoin("/s+; f");
@@ -107,8 +105,7 @@ public class Differentiator
          {
             while (i < diffBlock.OldDeleteCount)
             {
-               oldItems.Add(new DifferenceItem(result.OldItems[i + diffBlock.OldDeleteStart], DifferenceType.Deleted,
-                  oldPosition + 1));
+               oldItems.Add(new DifferenceItem(result.OldItems[i + diffBlock.OldDeleteStart], DifferenceType.Deleted, oldPosition + 1));
                newItems.Add(new DifferenceItem());
 
                oldPosition++;
@@ -119,8 +116,7 @@ public class Differentiator
          {
             while (i < diffBlock.NewInsertCount)
             {
-               newItems.Add(new DifferenceItem(result.NewItems[i + diffBlock.NewInsertStart], DifferenceType.Inserted,
-                  newPosition + 1));
+               newItems.Add(new DifferenceItem(result.NewItems[i + diffBlock.NewInsertStart], DifferenceType.Inserted, newPosition + 1));
                oldItems.Add(new DifferenceItem());
 
                newPosition++;

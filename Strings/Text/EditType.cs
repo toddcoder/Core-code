@@ -1,11 +1,10 @@
-﻿namespace Core.Strings.Text
+﻿namespace Core.Strings.Text;
+
+internal enum EditType
 {
-   internal enum EditType
-   {
-      None,
-      DeleteRight,
-      DeleteLeft,
-      InsertDown,
-      InsertUp
-   }
+   None,
+   DeleteRight,
+   DeleteLeft,
+   InsertDown,
+   InsertUp
 }

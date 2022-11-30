@@ -43,6 +43,9 @@ public class Serializer
    {
       switch (configurationItem)
       {
+         case Item { IsNull: true } nullItem:
+            writeNull(writer, nullItem);
+            break;
          case Item item:
             write(writer, item);
             break;
@@ -96,6 +99,8 @@ public class Serializer
       var _name = getName(item);
       writeText(writer, _name, item.Text);
    }
+
+   protected static void writeNull(JsonWriter writer, Item item) => writer.WriteNull(item.Key);
 
    protected static void writeArray(JsonWriter writer, Setting setting)
    {

@@ -16,7 +16,7 @@ public class DelimitedTextTests
    public void BasicDelimitedTextTest()
    {
       var delimitedText = DelimitedText.AsSql();
-      delimitedText.ExceptReplacement = "'".Some();
+      delimitedText.ExceptReplacement = "'";
       var source = "SELECT foobar as 'can''t';";
       Console.WriteLine(source);
 

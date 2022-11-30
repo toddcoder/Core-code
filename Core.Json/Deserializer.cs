@@ -6,6 +6,7 @@ using Core.Dates;
 using Core.Monads;
 using Core.Strings;
 using Newtonsoft.Json;
+using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
 using static Core.Objects.ConversionFunctions;
 
@@ -50,6 +51,18 @@ public class Deserializer
          _propertyName = nil;
       }
 
+      void setItemNull()
+      {
+         var key = _propertyName | (() => $"${itemCount()}");
+         var _setting = peekSetting();
+         if (_setting)
+         {
+            (~_setting).SetItem(key, new Item(key, "") { IsNull = true });
+         }
+
+         _propertyName = nil;
+      }
+
       try
       {
          using var textReader = new StringReader(source);
@@ -61,10 +74,8 @@ public class Deserializer
 
          string getDateTime()
          {
-            var value = getValue();
-            return Value.DateTime(value).Zulu();
-            /*var dateTime = (reader.ReadAsDateTime() ?? DateTime.MinValue);
-            return dateTime.Zulu();*/
+            var dateTime = (DateTime)reader.Value;
+            return dateTime.Zulu();
          }
 
          while (reader.Read())
@@ -144,6 +155,9 @@ public class Deserializer
                   break;
                case JsonToken.Date:
                   setItem(getDateTime());
+                  break;
+               case JsonToken.Null:
+                  setItemNull();
                   break;
                default:
                   setItem("");

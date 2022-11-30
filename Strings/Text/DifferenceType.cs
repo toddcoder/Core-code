@@ -1,11 +1,10 @@
-﻿namespace Core.Strings.Text
+﻿namespace Core.Strings.Text;
+
+public enum DifferenceType
 {
-   public enum DifferenceType
-   {
-      Unchanged,
-      Deleted,
-      Inserted,
-      Imaginary,
-      Modified
-   }
+   Unchanged,
+   Deleted,
+   Inserted,
+   Imaginary,
+   Modified
 }

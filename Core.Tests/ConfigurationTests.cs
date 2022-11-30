@@ -11,6 +11,7 @@ using Core.Enumerables;
 using Core.Json;
 using Core.Monads;
 using Core.Strings;
+using Core.Strings.Text;
 using static Core.Monads.Lazy.LazyMonads;
 using static Core.Strings.StringFunctions;
 
@@ -77,24 +78,30 @@ public class ConfigurationTests
       public override int GetHashCode() => Payload?.GetHashCode() ?? 0;
    }
 
+   protected Maybe<(string server, string database)> getServerDatabase(Setting setting)
+   {
+      return
+         from connections in setting.Maybe.Setting("connections")
+         from connection1 in connections.Maybe.Setting("connection1")
+         from server in connection1.Maybe.String("server")
+         from database in connection1.Maybe.String("database")
+         select (server, database);
+   }
+
    [TestMethod]
    public void BasicTest()
    {
       var resources = new Resources<ConfigurationTests>();
       var source = resources.String("TestData.connections.txt");
 
-      var _setting = Setting.FromString(source);
-      if (_setting)
+      var _setting = lazy.result<Setting>();
+      var _serverDatabase = lazy.maybe<(string, string)>();
+
+      if (_setting.ValueOf(Setting.FromString(source)))
       {
-         var _result =
-            from connections in (~_setting).Maybe.Setting("connections")
-            from connection1 in connections.Maybe.Setting("connection1")
-            from server in connection1.Maybe.String("server")
-            from database in connection1.Maybe.String("database")
-            select (server, database);
-         if (_result)
+         if (_serverDatabase.ValueOf(getServerDatabase(_setting)))
          {
-            var (server, database) = ~_result;
+            var (server, database) = ~_serverDatabase;
             Console.WriteLine($"server: {server}");
             Console.WriteLine($"database: {database}");
          }
@@ -115,18 +122,14 @@ public class ConfigurationTests
       var resources = new Resources<ConfigurationTests>();
       var source = resources.String("TestData.connections2.txt");
 
-      var _setting = Setting.FromString(source);
-      if (_setting)
+      var _setting = lazy.result<Setting>();
+      var _serverDatabase = lazy.maybe<(string, string)>();
+
+      if (_setting.ValueOf(Setting.FromString(source)))
       {
-         var _result =
-            from connections in (~_setting).Maybe.Setting("connections")
-            from connection1 in connections.Maybe.Setting("connection1")
-            from server in connection1.Maybe.String("server")
-            from database in connection1.Maybe.String("database")
-            select (server, database);
-         if (_result)
+         if (_serverDatabase.ValueOf(getServerDatabase(_setting)))
          {
-            var (server, database) = ~_result;
+            var (server, database) = ~_serverDatabase;
             Console.WriteLine($"server: {server}");
             Console.WriteLine($"database: {database}");
          }
@@ -476,24 +479,25 @@ public class ConfigurationTests
       else
       {
          Console.WriteLine(_setting.Exception.Message);
+         return;
       }
 
-      var _releaseTarget = (~_setting).Deserialize<ReleaseTarget>();
-      if (_releaseTarget)
+      var _releaseTarget = lazy.result<ReleaseTarget>();
+      var _serialized = lazy.result<Setting>();
+      if (_releaseTarget.ValueOf((~_setting).Deserialize<ReleaseTarget>()))
       {
-         _setting = Setting.Serialize(typeof(ReleaseTarget), ~_releaseTarget);
-         if (_setting)
+         if (_serialized.ValueOf(Setting.Serialize(typeof(ReleaseTarget), ~_releaseTarget)))
          {
-            Console.WriteLine(~_setting);
+            Console.WriteLine(~_serialized);
          }
          else
          {
-            Console.WriteLine(_setting.Exception.Message);
+            Console.WriteLine(_serialized.Exception.Message);
          }
       }
       else
       {
-         Console.WriteLine(_releaseTarget.Exception.Message);
+         Console.WriteLine(_releaseTarget.Exception);
       }
    }
 
@@ -569,7 +573,43 @@ public class ConfigurationTests
          var _json = serializer.Serialize();
          if (_json)
          {
-            Console.Write(~_json);
+            Console.WriteLine();
+            FileName tempFile = @"C:\Temp\testSetting.json";
+            tempFile.Text = _json;
+
+            var oldLines = json.Lines();
+            var newLines = (~_json).Lines();
+            var diff = new Differentiator(oldLines, newLines, true, false);
+            var _model = diff.BuildModel();
+            if (_model)
+            {
+               var model = ~_model;
+               var oldDifferences = model.OldDifferences();
+               var newDifferences = model.NewDifferences();
+               var mergedDifferences = model.MergedDifferences();
+
+               Console.WriteLine("old differences:");
+               foreach (var difference in oldDifferences)
+               {
+                  Console.WriteLine(difference);
+               }
+
+               Console.WriteLine();
+
+               Console.WriteLine("new differences:");
+               foreach (var difference in newDifferences)
+               {
+                  Console.WriteLine(difference);
+               }
+
+               Console.WriteLine();
+
+               Console.WriteLine("merged differences:");
+               foreach (var difference in mergedDifferences)
+               {
+                  Console.WriteLine(difference);
+               }
+            }
          }
          else
          {

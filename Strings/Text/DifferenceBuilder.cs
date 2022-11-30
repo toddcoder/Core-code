@@ -7,7 +7,7 @@ namespace Core.Strings.Text;
 
 internal class DifferenceBuilder
 {
-   protected static void buildItemHashes(Hash<string, int> itemHash, Modification modification, bool ignoreWhiteSpace, bool ignoreCase)
+   protected static void buildItemHashes(StringHash<int> itemHash, Modification modification, bool ignoreWhiteSpace, bool ignoreCase)
    {
       var items = modification.RawData;
       modification.Items = items;
@@ -20,11 +20,6 @@ internal class DifferenceBuilder
          if (ignoreWhiteSpace)
          {
             item = item.Trim();
-         }
-
-         if (ignoreCase)
-         {
-            item = item.ToUpperInvariant();
          }
 
          var _value = itemHash.Maybe[item];
@@ -272,7 +267,7 @@ internal class DifferenceBuilder
 
    public Result<DifferenceResult> Build()
    {
-      var itemHash = new Hash<string, int>();
+      var itemHash = new StringHash<int>(ignoreCase);
       var lineDiffs = new List<DifferenceBlock>();
 
       buildItemHashes(itemHash, oldModification, ignoreWhiteSpace, ignoreCase);

@@ -165,8 +165,8 @@ public class CollectionTest
       stack.Push("bravo");
       stack.Push("charlie");
 
-      var _item = stack.Item(0);
-      if (_item)
+      var _item = lazyRepeating.result<string>();
+      if (_item.ValueOf(stack.Item(0)))
       {
          Console.WriteLine(~_item);
       }
@@ -175,8 +175,7 @@ public class CollectionTest
          Console.WriteLine(_item.Exception.Message);
       }
 
-      _item = stack.Item(-1);
-      if (_item)
+      if (_item.ValueOf(stack.Item(-1)))
       {
          Console.WriteLine(~_item);
       }
