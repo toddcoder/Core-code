@@ -527,13 +527,33 @@ public class MonadTests
    }
 
    [TestMethod]
-   public void ChainedLazyMonads()
+   public void ChainedLazyMonadsTest()
    {
-      var _first = lazy.maybe<string>();
-      var _second = _first.ValueOf("foobar").Then<int>(s => s.Length);
+      var _first = lazy.maybe<string>(() => "foobar");
+      var _second = _first.Then<int>(s => s.Length);
       if (_second)
       {
          Console.WriteLine($"Length: {_second} = 6");
+      }
+   }
+
+   [TestMethod]
+   public void ChainedResultsTest()
+   {
+      static Result<string> getResult(string text, bool success, int index) => success ? text : fail($"Failure {index}");
+
+      var _first = lazy.result(() => getResult("alpha", true, 1));
+      var _second = _first.Then(_ => getResult("bravo", false, 2));
+      var _third = _second.Then(_ => getResult("charlie", true, 3));
+      if (_third)
+      {
+         Console.WriteLine(~_first);
+         Console.WriteLine(~_second);
+         Console.WriteLine(~_third);
+      }
+      else
+      {
+         Console.WriteLine(_third.Exception);
       }
    }
 }

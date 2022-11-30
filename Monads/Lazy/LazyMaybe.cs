@@ -78,7 +78,7 @@ public class LazyMaybe<T> : Maybe<T>, IEquatable<LazyMaybe<T>>
       }
       else
       {
-         return _next;
+         return _next.ValueOf(() => nil);
       }
    }
 

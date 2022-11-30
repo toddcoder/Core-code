@@ -78,11 +78,15 @@ public class LazyResponding<T> : Responding<T>, IEquatable<LazyResponding<T>>
 
       if (_value)
       {
-         return _next.ValueOf(()=>func(~_value));
+         return _next.ValueOf(() => func(~_value));
+      }
+      else if (_value.AnyException)
+      {
+         return _next.ValueOf(() => _value.Exception);
       }
       else
       {
-         return _next;
+         return _next.ValueOf(() => nil);
       }
    }
 

@@ -85,7 +85,7 @@ public class LazyResult<T> : Result<T>, IEquatable<LazyResult<T>>
       }
       else
       {
-         return _next;
+         return _next.ValueOf(() => _value.Exception);
       }
    }
 
