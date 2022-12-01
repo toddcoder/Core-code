@@ -8,6 +8,7 @@ using Core.Monads;
 using Core.Objects;
 using Core.Strings;
 using static Core.Monads.AttemptFunctions;
+using static Core.Monads.Lazy.LazyMonads;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Collections;
@@ -439,18 +440,15 @@ public static class HashExtensions
       var result = new Hash<TKey, TValue>();
       foreach (var item in enumerable)
       {
-         var _keyValue =
-            from selector in valueSelector(item)
-            from key in keySelector(item)
-            select (value: selector, key);
-         if (_keyValue)
+         var _value = lazy.result(() => valueSelector(item));
+         var _key = _value.Then(_ => keySelector(item));
+         if (_key)
          {
-            var keyValue = ~_keyValue;
-            result[keyValue.key] = keyValue.value;
+            result[_key] = _value;
          }
          else
          {
-            return _keyValue.Exception;
+            return _key.Exception;
          }
       }
 
@@ -463,18 +461,15 @@ public static class HashExtensions
       var result = new StringHash<TValue>(ignoreCase);
       foreach (var item in enumerable)
       {
-         var _keyValue =
-            from selector in valueSelector(item)
-            from key in keySelector(item)
-            select (value: selector, key);
-         if (_keyValue)
+         var _value = lazy.result(() => valueSelector(item));
+         var _key = _value.Then(_ => keySelector(item));
+         if (_key)
          {
-            var keyValue = ~_keyValue;
-            result[keyValue.key] = keyValue.value;
+            result[_key] = _value;
          }
          else
          {
-            return _keyValue.Exception;
+            return _key.Exception;
          }
       }
 
@@ -487,18 +482,15 @@ public static class HashExtensions
       var result = new Hash<TKey, TValue>(comparer);
       foreach (var item in enumerable)
       {
-         var _keyValue =
-            from selector in valueSelector(item)
-            from key in keySelector(item)
-            select (value: selector, key);
-         if (_keyValue)
+         var _value = lazy.result(() => valueSelector(item));
+         var _key = _value.Then(_ => keySelector(item));
+         if (_key)
          {
-            var keyValue = ~_keyValue;
-            result[keyValue.key] = keyValue.value;
+            result[_key] = _value;
          }
          else
          {
-            return _keyValue.Exception;
+            return _key.Exception;
          }
       }
 

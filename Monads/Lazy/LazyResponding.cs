@@ -43,6 +43,10 @@ public class LazyResponding<T> : Responding<T>, IEquatable<LazyResponding<T>>
       ensured = false;
    }
 
+   internal LazyResponding(Responding<T> responding) : this(() => responding)
+   {
+   }
+
    internal LazyResponding() : this(() => nil)
    {
    }
@@ -71,7 +75,28 @@ public class LazyResponding<T> : Responding<T>, IEquatable<LazyResponding<T>>
       return this;
    }
 
-   public LazyResponding<TNext> Next<TNext>(Func<T, Responding<TNext>> func)
+   public LazyResponding<TNext> Then<TNext>(Func<T, Responding<TNext>> func)
+   {
+      var _next = new LazyResponding<TNext>();
+      ensureValue();
+
+      if (_value)
+      {
+         return _next.ValueOf(() => func(~_value));
+      }
+      else if (_value.AnyException)
+      {
+         return _next.ValueOf(() => _value.Exception);
+      }
+      else
+      {
+         return _next.ValueOf(() => nil);
+      }
+   }
+
+   public LazyResponding<TNext> Then<TNext>(Responding<TNext> next) => Then(_ => next);
+
+   public LazyResponding<TNext> Then<TNext>(Func<T, TNext> func)
    {
       var _next = new LazyResponding<TNext>();
       ensureValue();

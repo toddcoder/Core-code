@@ -27,17 +27,25 @@ public class LazyMonads
 
    public LazyMaybe<T> maybe<T>(Func<Maybe<T>> func) => new(func);
 
+   public LazyMaybe<T> maybe<T>(Maybe<T> maybe) => new(maybe);
+
    public LazyMaybe<T> maybe<T>() => new();
 
    public LazyResult<T> result<T>(Func<Result<T>> func) => new(func);
+
+   public LazyResult<T> result<T>(Result<T> result) => new(result);
 
    public LazyResult<T> result<T>() => new();
 
    public LazyResponding<T> responding<T>(Func<Responding<T>> func) => new(func);
 
+   public LazyResponding<T> responding<T>(Responding<T> responding) => new(responding);
+
    public LazyResponding<T> responding<T>() => new();
 
    public LazyCompletion<T> completion<T>(Func<Completion<T>> func) => new(func);
+
+   public LazyCompletion<T> completion<T>(Completion<T> completion) => new(completion);
 
    public LazyCompletion<T> completion<T>() => new();
 }

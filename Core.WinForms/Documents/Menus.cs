@@ -5,6 +5,7 @@ using Core.Applications;
 using Core.Collections;
 using Core.Matching;
 using Core.Monads;
+using Core.Monads.Lazy;
 using Core.Strings;
 using static Core.Monads.MonadFunctions;
 using static Core.Objects.ConversionFunctions;
@@ -147,14 +148,14 @@ public class Menus : IHash<string, ToolStripMenuItem>
 
    public Maybe<Delegate> ReplaceHandler(string parentText, string text, EventHandler handler)
    {
-      var _item =
-         from submenus in Submenus(parentText)
-         from item in submenus.Map(text)
-         from d in item.ClearEvent("Click")
-         select (item, d);
-      if (_item)
+      var _submenus = LazyMonads.lazy.maybe(() => Submenus(parentText));
+      var _item = _submenus.Then(submenus => submenus.Map(text));
+      var _delegate = _item.Then(item => item.ClearEvent("Click"));
+      if (_delegate)
       {
-         var (item, @delegate) = ~_item;
+         ToolStripMenuItem item = _item;
+         Delegate @delegate = _delegate;
+
          item.Click += handler;
 
          return @delegate;

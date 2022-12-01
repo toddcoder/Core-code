@@ -39,6 +39,10 @@ public class LazyMaybe<T> : Maybe<T>, IEquatable<LazyMaybe<T>>
       ensured = false;
    }
 
+   internal LazyMaybe(Maybe<T> maybe) : this(() => maybe)
+   {
+   }
+
    internal LazyMaybe() : this(() => nil)
    {
    }
@@ -68,6 +72,23 @@ public class LazyMaybe<T> : Maybe<T>, IEquatable<LazyMaybe<T>>
    }
 
    public LazyMaybe<TNext> Then<TNext>(Func<T, Maybe<TNext>> func)
+   {
+      var _next = new LazyMaybe<TNext>();
+      ensureValue();
+
+      if (_value)
+      {
+         return _next.ValueOf(() => func(~_value));
+      }
+      else
+      {
+         return _next.ValueOf(() => nil);
+      }
+   }
+
+   public LazyMaybe<TNext> Then<TNext>(Maybe<TNext> next) => Then(_ => next);
+
+   public LazyMaybe<TNext> Then<TNext>(Func<T, TNext> func)
    {
       var _next = new LazyMaybe<TNext>();
       ensureValue();

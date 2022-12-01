@@ -43,6 +43,10 @@ public class LazyCompletion<T> : Completion<T>
       ensured = false;
    }
 
+   internal LazyCompletion(Completion<T> completion) : this(() => completion)
+   {
+   }
+
    internal LazyCompletion() : this(() => nil)
    {
    }
@@ -72,6 +76,27 @@ public class LazyCompletion<T> : Completion<T>
    }
 
    public LazyCompletion<TNext> Then<TNext>(Func<T, Completion<TNext>> func)
+   {
+      var _next = new LazyCompletion<TNext>();
+      ensureValue();
+
+      if (_value)
+      {
+         return _next.ValueOf(() => func(~_value));
+      }
+      else if (_value.AnyException)
+      {
+         return _next.ValueOf(() => _value.Exception);
+      }
+      else
+      {
+         return _next.ValueOf(() => nil);
+      }
+   }
+
+   public LazyCompletion<TNext> Then<TNext>(Completion<TNext> next) => Then(_ => next);
+
+   public LazyCompletion<TNext> Then<TNext>(Func<T, TNext> func)
    {
       var _next = new LazyCompletion<TNext>();
       ensureValue();

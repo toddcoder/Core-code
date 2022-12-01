@@ -43,6 +43,10 @@ public class LazyResult<T> : Result<T>, IEquatable<LazyResult<T>>
       ensured = false;
    }
 
+   internal LazyResult(Result<T> result) : this(() => result)
+   {
+   }
+
    internal LazyResult()
    {
       func = () => fail("Uninitialized");
@@ -75,6 +79,23 @@ public class LazyResult<T> : Result<T>, IEquatable<LazyResult<T>>
    }
 
    public LazyResult<TNext> Then<TNext>(Func<T, Result<TNext>> func)
+   {
+      var _next = new LazyResult<TNext>();
+      ensureValue();
+
+      if (_value)
+      {
+         return _next.ValueOf(() => func(~_value));
+      }
+      else
+      {
+         return _next.ValueOf(() => _value.Exception);
+      }
+   }
+
+   public LazyResult<TNext> Then<TNext>(Result<TNext> next) => Then(_ => next);
+
+   public LazyResult<TNext> Then<TNext>(Func<T, TNext> func)
    {
       var _next = new LazyResult<TNext>();
       ensureValue();

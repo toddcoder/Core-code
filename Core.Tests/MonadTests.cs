@@ -503,30 +503,6 @@ public class MonadTests
    }
 
    [TestMethod]
-   public void UsingIsTest()
-   {
-      Maybe<string> _text = "Test";
-      if (_text.Value is { } text)
-      {
-         Console.WriteLine(text);
-      }
-      else
-      {
-         Console.WriteLine("none");
-      }
-
-      _text = nil;
-      if (_text.Value is { } text1)
-      {
-         Console.WriteLine(text1);
-      }
-      else
-      {
-         Console.WriteLine("none");
-      }
-   }
-
-   [TestMethod]
    public void ChainedLazyMonadsTest()
    {
       var _first = lazy.maybe<string>(() => "foobar");
@@ -537,14 +513,50 @@ public class MonadTests
       }
    }
 
+   protected static Result<string> getResult(string text, bool success, int index) => success ? text : fail($"Failure {index}");
+
    [TestMethod]
    public void ChainedResultsTest()
    {
-      static Result<string> getResult(string text, bool success, int index) => success ? text : fail($"Failure {index}");
-
       var _first = lazy.result(() => getResult("alpha", true, 1));
       var _second = _first.Then(_ => getResult("bravo", false, 2));
       var _third = _second.Then(_ => getResult("charlie", true, 3));
+      if (_third)
+      {
+         Console.WriteLine(~_first);
+         Console.WriteLine(~_second);
+         Console.WriteLine(~_third);
+      }
+      else
+      {
+         Console.WriteLine(_third.Exception);
+      }
+   }
+
+   [TestMethod]
+   public void ChainedResults2Test()
+   {
+      var _first = lazy.result(() => getResult("alpha", true, 1));
+      var _second = _first.Then(_ => getResult("bravo", true, 2));
+      var _third = _second.Then(_ => getResult("charlie", true, 3));
+      if (_third)
+      {
+         Console.WriteLine(~_first);
+         Console.WriteLine(~_second);
+         Console.WriteLine(~_third);
+      }
+      else
+      {
+         Console.WriteLine(_third.Exception);
+      }
+   }
+
+   [TestMethod]
+   public void ChainedResults3Test()
+   {
+      var _first = lazy.result(() => getResult("alpha", false, 1));
+      var _second = _first.Then(_ => getResult("bravo", false, 2));
+      var _third = _second.Then(_ => getResult("charlie", false, 3));
       if (_third)
       {
          Console.WriteLine(~_first);

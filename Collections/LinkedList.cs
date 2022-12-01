@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 using Core.Assertions;
 using Core.Monads;
+using static Core.Monads.Lazy.LazyMonads;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Collections;
@@ -43,14 +44,14 @@ public class LinkedList<T> : ICollection<T>, ICollection, IReadOnlyCollection<T>
 
       public Maybe<Node> GetNext()
       {
-         var _nodes =
-            from next in _next
-            from list in _list
-            from head in list._head
-            select (next, head);
-         if (_nodes)
+         var _nextItem = lazy.maybe(() => _next);
+         var _listItem = _nextItem.Then(_ => _list);
+         var _head = _listItem.Then(l => l._head);
+         if (_head)
          {
-            var (next, head) = ~_nodes;
+            Node next = _nextItem;
+            Node head = _head;
+
             return next != head ? next : nil;
          }
          else
@@ -67,14 +68,14 @@ public class LinkedList<T> : ICollection<T>, ICollection, IReadOnlyCollection<T>
 
       public Maybe<Node> GetPrevious()
       {
-         var _nodes =
-            from previous in _previous
-            from list in _list
-            from head in list._head
-            select (previous, head);
-         if (_nodes)
+         var _previousItem = lazy.maybe(() => _previous);
+         var _listItem = _previousItem.Then(_ => _list);
+         var _head = _listItem.Then(l => l._head);
+         if (_head)
          {
-            var (previous, head) = ~_nodes;
+            Node previous = _previousItem;
+            Node head = _head;
+
             return this != head ? previous : nil;
          }
          else
@@ -130,13 +131,12 @@ public class LinkedList<T> : ICollection<T>, ICollection, IReadOnlyCollection<T>
 
          _current = _node.Map(n => n.Value);
          _node = _node.Map(n => n.Next);
-         var _nodes =
-            from node in _node
-            from head in list._head
-            select (node, head);
-         if (_nodes)
+         var _nodeItem = lazy.maybe(() => _node);
+         var _head = _nodeItem.Then(_ => list._head);
+         if (_head)
          {
-            var (node, head) = ~_nodes;
+            Node node = _nodeItem;
+            Node head = _head;
             if (node == head)
             {
                _node = nil;

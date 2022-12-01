@@ -4,6 +4,7 @@ using System.Drawing.Text;
 using System.Windows.Forms;
 using Core.Monads;
 using Core.Strings;
+using static Core.Monads.Lazy.LazyMonads;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Controls;
@@ -65,14 +66,15 @@ public class UiActionWriter
 
    public Result<Unit> Write(string text, Graphics graphics)
    {
-      var _arguments =
-         from existingRectangle in _rectangle
-         from existingFont in _font
-         from existingColor in _color
-         select (existingRectangle, existingFont, existingColor);
-      if (_arguments)
+      var _existingRectangle = lazy.result(_rectangle);
+      var _existingFont = _existingRectangle.Then(_font);
+      var _existingColor = _existingFont.Then(_color);
+      if (_existingColor)
       {
-         var (rectangle, font, color) = ~_arguments;
+         Rectangle rectangle = _existingRectangle;
+         Font font = _existingFont;
+         Color color = _existingColor;
+
          try
          {
             graphics.HighQuality();
@@ -83,6 +85,7 @@ public class UiActionWriter
                text = _emptyTextTitle;
                font = new Font(font, FontStyle.Italic);
             }
+
             TextRenderer.DrawText(graphics, text, font, rectangle, color, Flags);
 
             if (checkStyle != CheckStyle.None)
@@ -111,7 +114,7 @@ public class UiActionWriter
       }
       else
       {
-         return _arguments.Exception;
+         return _existingColor.Exception;
       }
    }
 }
