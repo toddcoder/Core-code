@@ -20,5 +20,6 @@ public enum UiActionType
    Labeled,
    ControlLabel,
    Button,
-   Http
+   Http,
+   Console
 }

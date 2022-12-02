@@ -732,4 +732,25 @@ public class WinFormsTests
       uiAction.SubText("MR").Set.GoToMiddleRight(8).Outline(true);
       form.ShowDialog();
    }
+
+   [TestMethod]
+   public void UiActionConsoleTest()
+   {
+      var pause = 3.Seconds();
+
+      var form = new Form();
+      var uiAction = new UiAction(form, true);
+      uiAction.SetUp(0, 0, 600, 500);
+      uiAction.Click += (_, _) => uiAction.RunWorkerAsync();
+      uiAction.ClickText = "Start test";
+      uiAction.DoWork += (_, _) =>
+      {
+         for (var i = 0; i < 100; i++)
+         {
+            uiAction.Do(() => uiAction.WriteLine($"Line {i}"));
+            Thread.Sleep(pause);
+         }
+      };
+      form.ShowDialog();
+   }
 }

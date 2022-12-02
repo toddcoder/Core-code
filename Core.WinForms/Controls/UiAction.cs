@@ -139,7 +139,8 @@ public class UiAction : UserControl
          [UiActionType.Disabled] = Color.LightGray,
          [UiActionType.Caution] = Color.White,
          [UiActionType.ControlLabel] = Color.White,
-         [UiActionType.Button] = Color.Black
+         [UiActionType.Button] = Color.Black,
+         [UiActionType.Console] = Color.White
       };
       globalBackColors = new Hash<UiActionType, Color>
       {
@@ -154,7 +155,8 @@ public class UiAction : UserControl
          [UiActionType.Disabled] = Color.DarkGray,
          [UiActionType.Caution] = Color.CadetBlue,
          [UiActionType.ControlLabel] = Color.CadetBlue,
-         [UiActionType.Button] = Color.LightGray
+         [UiActionType.Button] = Color.LightGray,
+         [UiActionType.Console] = Color.Blue
       };
       globalStyles = new Hash<UiActionType, MessageStyle>
       {
@@ -223,6 +225,8 @@ public class UiAction : UserControl
    protected Guid id;
    protected bool httpHandlerAdded;
    protected bool isUrlGood;
+   protected Lazy<Font> marqueeFont;
+   protected Lazy<UiActionScroller> scroller;
 
    public event EventHandler<AutomaticMessageArgs> AutomaticMessage;
    public event EventHandler<PaintEventArgs> Painting;
@@ -378,6 +382,8 @@ public class UiAction : UserControl
       id = Guid.NewGuid();
       httpHandlerAdded = false;
       isUrlGood = false;
+      marqueeFont = new Lazy<Font>(() => new Font("Consolas", 8));
+      scroller = new Lazy<UiActionScroller>(() => new UiActionScroller(marqueeFont.Value, getClientRectangle(nil), getForeColor(), getBackColor()));
    }
 
    public Guid Id => id;
@@ -801,6 +807,9 @@ public class UiAction : UserControl
             httpWriter.Value.OnPaint(e.Graphics, isUrlGood);
             break;
          }
+         case UiActionType.Console:
+            scroller.Value.OnPaint(e.Graphics);
+            break;
          default:
          {
             if (type != UiActionType.Tape)
@@ -984,6 +993,9 @@ public class UiAction : UserControl
             httpWriter.OnPaintBackground(pevent.Graphics, isUrlGood, mouseInside);
             break;
          }
+         case UiActionType.Console:
+            scroller.Value.OnPaintBackground(pevent.Graphics);
+            break;
          default:
          {
             var backColor = getBackColor();
@@ -1791,5 +1803,19 @@ public class UiAction : UserControl
    {
       var size = TextRenderer.MeasureText(text, Font);
       Width = size.Width + 40;
+   }
+
+   public void Write(object obj)
+   {
+      Type = UiActionType.Console;
+      scroller.Value.Write(obj);
+      refresh();
+   }
+
+   public void WriteLine(object obj)
+   {
+      Type = UiActionType.Console;
+      scroller.Value.WriteLine(obj);
+      refresh();
    }
 }
