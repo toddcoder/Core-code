@@ -736,7 +736,7 @@ public class WinFormsTests
    [TestMethod]
    public void UiActionConsoleTest()
    {
-      var pause = 3.Seconds();
+      var pause = 500.Milliseconds();
 
       var form = new Form();
       var uiAction = new UiAction(form, true);
@@ -745,12 +745,30 @@ public class WinFormsTests
       uiAction.ClickText = "Start test";
       uiAction.DoWork += (_, _) =>
       {
-         for (var i = 0; i < 100; i++)
+         for (var i = 0; i < 50; i++)
          {
             uiAction.Do(() => uiAction.WriteLine($"Line {i}"));
             Thread.Sleep(pause);
          }
       };
       form.ShowDialog();
+   }
+
+   [TestMethod]
+   public void UiActionConsole2Test()
+   {
+      var pause = 1.Second();
+
+      var form = new Form();
+      var uiAction = new UiAction(form, true);
+      uiAction.SetUp(0, 0, 600, 500);
+
+      form.Show();
+      for (var i = 0; i < 1000; i++)
+      {
+         uiAction.Do(() => uiAction.WriteLine($"Line {i}"));
+         //Thread.Sleep(pause);
+         Application.DoEvents();
+      }
    }
 }

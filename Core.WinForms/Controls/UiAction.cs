@@ -1805,13 +1805,6 @@ public class UiAction : UserControl
       Width = size.Width + 40;
    }
 
-   public void Write(object obj)
-   {
-      Type = UiActionType.Console;
-      scroller.Value.Write(obj);
-      refresh();
-   }
-
    public void WriteLine(object obj)
    {
       Type = UiActionType.Console;

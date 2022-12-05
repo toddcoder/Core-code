@@ -15,6 +15,7 @@ public class UiActionScroller
    protected int height;
    protected int lineCount;
    protected int currentLine;
+   protected int lastLine;
    protected string[] lines;
    protected StringHash<Size> sizes;
 
@@ -28,6 +29,7 @@ public class UiActionScroller
       var size = TextRenderer.MeasureText("Wy", font);
       height = size.Height;
       lineCount = clientRectangle.Height / height;
+      lastLine = lineCount - 1;
       currentLine = 0;
       lines = Enumerable.Range(0, lineCount).Select(_ => "").ToArray();
       sizes = new StringHash<Size>(false);
@@ -35,33 +37,33 @@ public class UiActionScroller
 
    protected Size lineSize(string text) => sizes.Memoize(text, t => TextRenderer.MeasureText(t, font));
 
-   public void Write(object obj)
+   protected void advance()
    {
-      lines[currentLine] += obj.ToNonNullString();
-   }
-
-   public void WriteLine(object obj)
-   {
-      Write(obj);
-
-      if (currentLine < lineCount - 1)
+      if (currentLine <= lastLine)
       {
          currentLine++;
       }
       else
       {
-         if (currentLine >= lineCount)
-         {
-            currentLine = lineCount - 1;
-         }
-
-         for (var i = 0; i < lineCount - 1; i++)
-         {
-            lines[i] = lines[i + 1];
-         }
-
-         lines[lineCount - 1] = "";
+         pushUp();
       }
+   }
+
+   protected void pushUp()
+   {
+      for (var i = 0; i < lastLine; i++)
+      {
+         lines[i] = lines[i + 1];
+      }
+
+      lines[lastLine] = "";
+      currentLine = lastLine;
+   }
+
+   public void WriteLine(object obj)
+   {
+      lines[currentLine > lastLine ? lastLine : currentLine] = obj.ToNonNullString();
+      advance();
    }
 
    public virtual void OnPaintBackground(Graphics graphics)
