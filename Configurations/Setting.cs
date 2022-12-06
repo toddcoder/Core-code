@@ -14,6 +14,7 @@ using Core.Monads;
 using Core.Objects;
 using Core.Strings;
 using static Core.Monads.AttemptFunctions;
+using static Core.Monads.Lazy.LazyMonads;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Configurations;
@@ -276,24 +277,21 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
       }
       else if (type.IsArray)
       {
+         var _arraySetting = lazy.result<Setting>();
          var elementType = type.GetElementType();
          if (isBaseType(elementType))
          {
             var strings = source.Unjoin("/s* ',' /s*; f");
             return makeArray(elementType, strings);
          }
+         else if (_arraySetting.ValueOf(FromString(source)))
+         {
+            var settings = (~_arraySetting).Settings().Select(t => t.setting).ToArray();
+            return makeArray(elementType, settings);
+         }
          else
          {
-            var _arraySetting = FromString(source);
-            if (_arraySetting)
-            {
-               var settings = (~_arraySetting).Settings().Select(t => t.setting).ToArray();
-               return makeArray(elementType, settings);
-            }
-            else
-            {
-               return nil;
-            }
+            return nil;
          }
       }
       else
@@ -537,4 +535,21 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
    }
 
    public void Clear() => items.Clear();
+
+   public void Fill(StringHash stringHash)
+   {
+      foreach (var (key, value) in stringHash)
+      {
+         this[key] = value;
+      }
+   }
+
+   public void Fill(IEnumerable<string> enumerable)
+   {
+      var index = 0;
+      foreach (var item in enumerable)
+      {
+         this[$"${index++}"] = item;
+      }
+   }
 }
