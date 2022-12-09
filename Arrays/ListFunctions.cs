@@ -1,26 +1,25 @@
 ﻿using System.Collections.Generic;
 
-namespace Core.Arrays
+namespace Core.Arrays;
+
+public static class ListFunctions
 {
-   public static class ListFunctions
+   public static List<T> list<T>() => new();
+
+   public static List<T> list<T>(params T[] items)
    {
-      public static List<T> list<T>() => new();
+      var list = new List<T>();
+      list.AddRange(items);
 
-      public static List<T> list<T>(params T[] items)
-      {
-         var list = new List<T>();
-         list.AddRange(items);
+      return list;
+   }
 
-         return list;
-      }
+   public static List<T> list<T>(List<T> items, params T[] newItems)
+   {
+      var list = new List<T>();
+      list.AddRange(items);
+      list.AddRange(newItems);
 
-      public static List<T> list<T>(List<T> items, params T[] newItems)
-      {
-         var list = new List<T>();
-         list.AddRange(items);
-         list.AddRange(newItems);
-
-         return list;
-      }
+      return list;
    }
 }

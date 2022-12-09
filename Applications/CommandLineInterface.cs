@@ -213,10 +213,7 @@ public abstract class CommandLineInterface : IDisposable
       }
    }
 
-   protected static object getInt32(string rest)
-   {
-      return Value.Int32(rest.Keep("^ /s* -/s+; f").TrimStart());
-   }
+   protected static object getInt32(string rest) => Value.Int32(rest.Keep("^ /s* -/s+; f").TrimStart());
 
    protected static object getFloatingPoint(string rest, Type type)
    {
@@ -313,14 +310,11 @@ public abstract class CommandLineInterface : IDisposable
          .Map(result => result.FirstGroup) | commandLine;
    }
 
-   protected static Hash<char, string> getShortcuts(string source)
+   protected static Hash<char, string> getShortcuts(string source) => source.Unjoin("/s* ';' /s*; f").Select(s =>
    {
-      return source.Unjoin("/s* ';' /s*; f").Select(s =>
-      {
-         var pair = s.Unjoin("/s* '=' /s*; f");
-         return (key: pair[0][0], value: pair[1]);
-      }).ToHash(i => i.key, i => i.value);
-   }
+      var pair = s.Unjoin("/s* '=' /s*; f");
+      return (key: pair[0][0], value: pair[1]);
+   }).ToHash(i => i.key, i => i.value);
 
    protected string fixCommand(string commandLine, string prefix, string suffix)
    {

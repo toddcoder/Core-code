@@ -1,9 +1,8 @@
-﻿namespace Core.Applications
+﻿namespace Core.Applications;
+
+public enum EntryPointType
 {
-   public enum EntryPointType
-   {
-      Parameters,
-      Object,
-      This
-   }
+   Parameters,
+   Object,
+   This
 }

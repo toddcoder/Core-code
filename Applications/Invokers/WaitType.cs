@@ -1,14 +1,13 @@
-﻿namespace Core.Applications.Invokers
+﻿namespace Core.Applications.Invokers;
+
+public enum WaitType
 {
-   public enum WaitType
-   {
-      North,
-      NorthEast,
-      East,
-      SouthEast,
-      South,
-      SouthWest,
-      West,
-      NorthWest
-   }
+   North,
+   NorthEast,
+   East,
+   SouthEast,
+   South,
+   SouthWest,
+   West,
+   NorthWest
 }

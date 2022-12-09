@@ -1,9 +1,8 @@
 ﻿using Core.Computers;
 
-namespace Core.Applications
+namespace Core.Applications;
+
+public interface ICommandFile
 {
-   public interface ICommandFile
-   {
-      FileName CommandFile(string name);
-   }
+   FileName CommandFile(string name);
 }

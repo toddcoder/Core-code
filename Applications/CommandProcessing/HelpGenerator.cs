@@ -41,7 +41,7 @@ public class HelpGenerator
       return table.ToString();
    }
 
-   protected Result<string> displayConfigurationHelp()
+   protected static Result<string> displayConfigurationHelp()
    {
       try
       {

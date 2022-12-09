@@ -1,13 +1,12 @@
 ﻿using System;
 
-namespace Core.Applications
+namespace Core.Applications;
+
+public class CancelAction<TState> : CancelTask<TState>
 {
-	public class CancelAction<TState> : CancelTask<TState>
-	{
-		protected Action<TState> action;
+   protected Action<TState> action;
 
-		public CancelAction(TState state, Action<TState> action) : base(state) => this.action = action;
+   public CancelAction(TState state, Action<TState> action) : base(state) => this.action = action;
 
-		public override void Dispatch(TState state) => action(state);
-	}
+   public override void Dispatch(TState state) => action(state);
 }

@@ -201,8 +201,7 @@ public static class ArrayExtensions
 
    public static T[] AllButLast<T>(this T[] array) => array.IsEmpty() ? Array.Empty<T>() : array.Take(array.Length - 1).ToArray();
 
-   public static Maybe<Slice<T>> Balanced<T>(this T[] array, Predicate<T> startCondition, Predicate<T> stopCondition,
-      int startIndex = 0)
+   public static Maybe<Slice<T>> Balanced<T>(this T[] array, Predicate<T> startCondition, Predicate<T> stopCondition, int startIndex = 0)
    {
       if (array.IsEmpty())
       {

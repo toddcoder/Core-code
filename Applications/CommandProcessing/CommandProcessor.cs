@@ -464,7 +464,7 @@ public abstract class CommandProcessor : IDisposable
             var result = fillSwitch(switchAttributes, name, _value);
             if (!result)
             {
-               return fail($"Switch {name} not successful");
+               return fail($"Switch {name} not understood");
             }
          }
          else if (prefix == ShortCut)
@@ -472,7 +472,7 @@ public abstract class CommandProcessor : IDisposable
             var result = fillShortCut(switchAttributes, name, _value);
             if (!result)
             {
-               return fail($"Shortcut {name} not successful");
+               return fail($"Shortcut {name} not understood");
             }
          }
          else

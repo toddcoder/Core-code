@@ -1,14 +1,13 @@
 ﻿using System;
 
-namespace Core.Applications
-{
-   public class EntryPointAttribute : Attribute
-   {
-      public EntryPointAttribute(EntryPointType type)
-      {
-         Type = type;
-      }
+namespace Core.Applications;
 
-      public EntryPointType Type { get; }
+public class EntryPointAttribute : Attribute
+{
+   public EntryPointAttribute(EntryPointType type)
+   {
+      Type = type;
    }
+
+   public EntryPointType Type { get; }
 }

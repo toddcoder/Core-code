@@ -62,16 +62,9 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
    Maybe<Setting> IConfigurationItemGetter.GetSetting(string key)
    {
       var _configurationItem = items.Maybe[key];
-      if (_configurationItem)
+      if (_configurationItem && ~_configurationItem is Setting setting)
       {
-         if (~_configurationItem is Setting setting)
-         {
-            return setting;
-         }
-         else
-         {
-            return nil;
-         }
+         return setting;
       }
       else
       {

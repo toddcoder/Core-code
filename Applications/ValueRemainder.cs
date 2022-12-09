@@ -1,21 +1,20 @@
-﻿namespace Core.Applications
+﻿namespace Core.Applications;
+
+public class ValueRemainder
 {
-   public class ValueRemainder
+   public ValueRemainder(object value, string remainder)
    {
-      public ValueRemainder(object value, string remainder)
-      {
-         Value = value;
-         Remainder = remainder;
-      }
+      Value = value;
+      Remainder = remainder;
+   }
 
-      public object Value { get; }
+   public object Value { get; }
 
-      public string Remainder { get; }
+   public string Remainder { get; }
 
-      public void Deconstruct(out object value, out string remainder)
-      {
-         value = Value;
-         remainder = Remainder;
-      }
+   public void Deconstruct(out object value, out string remainder)
+   {
+      value = Value;
+      remainder = Remainder;
    }
 }
