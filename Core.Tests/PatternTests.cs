@@ -155,4 +155,12 @@ public class PatternTests
          }
       }
    }
+
+   [TestMethod]
+   public void UnfriendlyPatternExtractionTest()
+   {
+      Pattern pattern = "('foo' | 'calc'); f";
+      var regex = pattern.Regex;
+      Console.WriteLine(regex);
+   }
 }

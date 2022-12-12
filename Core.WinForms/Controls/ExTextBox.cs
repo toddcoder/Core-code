@@ -169,8 +169,13 @@ public class ExTextBox : TextBox
       }
    }
 
-   public Rectangle RectangleFrom(Graphics graphics, int start, int length, bool expand)
+   public Rectangle RectangleFrom(Graphics graphics, int start, int length = -1, bool expand = false)
    {
+      if (length == -1)
+      {
+         length = Text.Length;
+      }
+
       var text = Text.Drop(start).Keep(length);
       var size = MeasureString(graphics, text, Font);
       if (expand)
@@ -187,7 +192,7 @@ public class ExTextBox : TextBox
       return new Rectangle(location, size);
    }
 
-   public Rectangle RectangleFromCurrentSelection(Graphics graphics, bool expand)
+  public Rectangle RectangleFromCurrentSelection(Graphics graphics, bool expand = false)
    {
       return RectangleFrom(graphics, SelectionStart, SelectionLength, expand);
    }
@@ -200,7 +205,7 @@ public class ExTextBox : TextBox
          foreach (var match in ~_result)
          {
             var (text, index, length) = match;
-            var rectangle = RectangleFrom(graphics, index, length, false);
+            var rectangle = RectangleFrom(graphics, index, length);
             yield return (rectangle, text);
          }
       }
@@ -227,7 +232,7 @@ public class ExTextBox : TextBox
          foreach (var match in ~_result)
          {
             var (text, index, length) = match;
-            var rectangle = RectangleFrom(graphics, index, length, false);
+            var rectangle = RectangleFrom(graphics, index, length);
             yield return (text[0], rectangle);
          }
       }
@@ -246,7 +251,7 @@ public class ExTextBox : TextBox
       else
       {
          var segment = Text.Drop(start).Keep(length);
-         return segment.Matches("/w+; f").Map(result => RectangleFrom(graphics, result.Index + start, result.Length, false));
+         return segment.Matches("/w+; f").Map(result => RectangleFrom(graphics, result.Index + start, result.Length));
       }
    }
 
@@ -265,7 +270,7 @@ public class ExTextBox : TextBox
          }
 
          i++;
-         return text.Drop(i).Matches("/w+; f").Map(result => RectangleFrom(graphics, result.Index + i, result.Length, false));
+         return text.Drop(i).Matches("/w+; f").Map(result => RectangleFrom(graphics, result.Index + i, result.Length));
       }
       else
       {
@@ -325,16 +330,16 @@ public class ExTextBox : TextBox
             foreach (var i in text.FindAll("\n"))
             {
                var strLength = i - offset - 2;
-               yield return RectangleFrom(graphics, start + offset, strLength, false);
+               yield return RectangleFrom(graphics, start + offset, strLength);
 
                offset = i + 1;
             }
 
-            yield return RectangleFrom(graphics, start + offset, text.Length - offset - 2, false);
+            yield return RectangleFrom(graphics, start + offset, text.Length - offset - 2);
          }
          else
          {
-            yield return RectangleFrom(graphics, start, length, false);
+            yield return RectangleFrom(graphics, start, length);
          }
       }
    }
