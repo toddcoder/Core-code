@@ -1270,7 +1270,15 @@ public class UiAction : UserControl
       Initialize?.Invoke(this, args);
       if (!args.Cancel && !backgroundWorker.Value.IsBusy)
       {
-         backgroundWorker.Value.RunWorkerAsync();
+         var _argument = args.Argument;
+         if (_argument)
+         {
+            backgroundWorker.Value.RunWorkerAsync(~_argument);
+         }
+         else
+         {
+            backgroundWorker.Value.RunWorkerAsync();
+         }
       }
    }
 
