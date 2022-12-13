@@ -231,7 +231,7 @@ public class UiAction : UserControl
    public event EventHandler<AutomaticMessageArgs> AutomaticMessage;
    public event EventHandler<PaintEventArgs> Painting;
    public event EventHandler<PaintEventArgs> PaintingBackground;
-   public event EventHandler Initialize;
+   public event EventHandler<InitializeArgs> Initialize;
    public event EventHandler<ArgumentsArgs> Arguments;
    public event DoWorkEventHandler DoWork;
    public event ProgressChangedEventHandler ProgressChanged;
@@ -1266,8 +1266,9 @@ public class UiAction : UserControl
 
    public void RunWorkerAsync()
    {
-      Initialize?.Invoke(this, EventArgs.Empty);
-      if (!backgroundWorker.Value.IsBusy)
+      var args = new InitializeArgs();
+      Initialize?.Invoke(this, args);
+      if (!args.Cancel && !backgroundWorker.Value.IsBusy)
       {
          backgroundWorker.Value.RunWorkerAsync();
       }
@@ -1275,8 +1276,9 @@ public class UiAction : UserControl
 
    public void RunWorkerAsync(object argument)
    {
-      Initialize?.Invoke(this, EventArgs.Empty);
-      if (!backgroundWorker.Value.IsBusy)
+      var args = new InitializeArgs { Argument = argument };
+      Initialize?.Invoke(this, args);
+      if (!args.Cancel && !backgroundWorker.Value.IsBusy)
       {
          backgroundWorker.Value.RunWorkerAsync(argument);
       }
