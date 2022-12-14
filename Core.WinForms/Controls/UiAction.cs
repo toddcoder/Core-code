@@ -673,32 +673,14 @@ public class UiAction : UserControl
       refresh();
    }
 
-   public void StartStopwatch()
-   {
-      Stopwatch = true;
-      startStopwatch(true);
-      this.Do(() => timerPaint.Enabled = true);
-   }
+   public void StartStopwatch() => stopwatch.Value.Start();
 
-   public void StopStopwatch()
-   {
-      Stopwatch = false;
-      startStopwatch(false);
-      this.Do(() => timerPaint.Enabled = false);
-   }
+   public void StopStopwatch() => stopwatch.Value.Stop();
 
-   public void ResetStopwatch()
-   {
-      Stopwatch = false;
-      startStopwatch(false);
-      stopwatch.Value.Reset();
-      this.Do(() => timerPaint.Enabled = false);
-   }
+   public void ResetStopwatch() => stopwatch.Value.Reset();
 
    public void Busy(string text)
    {
-      startStopwatch(true);
-
       Text = text;
       type = UiActionType.BusyText;
 
@@ -1102,7 +1084,7 @@ public class UiAction : UserControl
 
    public int Index(bool increment) => increment ? index++ : index;
 
-   protected void startStopwatch(bool enabled)
+   /*protected void startStopwatch(bool enabled)
    {
       if (Stopwatch)
       {
@@ -1122,7 +1104,7 @@ public class UiAction : UserControl
             stopwatch.Value.Stop();
          }
       }
-   }
+   }*/
 
    public void Busy(bool enabled)
    {
