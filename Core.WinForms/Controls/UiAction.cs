@@ -687,6 +687,14 @@ public class UiAction : UserControl
       this.Do(() => timerPaint.Enabled = false);
    }
 
+   public void ResetStopwatch()
+   {
+      Stopwatch = false;
+      startStopwatch(false);
+      stopwatch.Value.Reset();
+      this.Do(() => timerPaint.Enabled = false);
+   }
+
    public void Busy(string text)
    {
       startStopwatch(true);
