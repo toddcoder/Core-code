@@ -241,6 +241,7 @@ public class UiAction : UserControl
    public event EventHandler<CheckStyleChangedArgs> CheckStyleChanged;
    public event EventHandler<AppearanceOverrideArgs> AppearanceOverride;
    public new event EventHandler TextChanged;
+   public event EventHandler<MessageShownArgs> MessageShown;
 
    public UiAction(Control control, bool center = false, bool is3D = true)
    {
@@ -522,6 +523,8 @@ public class UiAction : UserControl
       Text = message;
       this.type = type;
 
+      MessageShown?.Invoke(this, new MessageShownArgs(text, this.type));
+
       if (type == UiActionType.Http)
       {
          if (!httpHandlerAdded)
@@ -599,6 +602,8 @@ public class UiAction : UserControl
       this.text = text;
       type = UiActionType.ControlLabel;
 
+      MessageShown?.Invoke(this, new MessageShownArgs(this.text, type));
+
       control.Move += (_, _) =>
       {
          Location = new Point(control.Left, control.Top - Height + 1);
@@ -660,6 +665,8 @@ public class UiAction : UserControl
       Text = text;
       type = UiActionType.ProgressDefinite;
 
+      MessageShown?.Invoke(this, new MessageShownArgs(Text, type));
+
       refresh();
    }
 
@@ -669,6 +676,8 @@ public class UiAction : UserControl
 
       Text = text;
       type = UiActionType.ProgressDefinite;
+
+      MessageShown?.Invoke(this, new MessageShownArgs(Text, type));
 
       refresh();
    }
@@ -683,6 +692,8 @@ public class UiAction : UserControl
    {
       Text = text;
       type = UiActionType.BusyText;
+
+      MessageShown?.Invoke(this, new MessageShownArgs(Text, type));
 
       this.Do(() => timerPaint.Enabled = true);
       refresh();
@@ -1809,6 +1820,9 @@ public class UiAction : UserControl
    {
       Type = UiActionType.Console;
       scroller.Value.WriteLine(obj);
+
+      MessageShown?.Invoke(this, new MessageShownArgs(Text, type));
+
       refresh();
    }
 }
