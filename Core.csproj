@@ -90,6 +90,9 @@
     <Compile Include="Applications\Invokers\Wait.cs" />
     <Compile Include="Applications\Invokers\WaitType.cs" />
     <Compile Include="Applications\Kernel32.cs" />
+    <Compile Include="Applications\Loggers\Logger.cs" />
+    <Compile Include="Applications\Loggers\LogItemType.cs" />
+    <Compile Include="Applications\Loggers\MultiLogger.cs" />
     <Compile Include="Applications\ParallelProcessor.cs" />
     <Compile Include="Applications\Resources.cs" />
     <Compile Include="Applications\Retrier.cs" />
