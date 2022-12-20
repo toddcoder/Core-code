@@ -734,6 +734,25 @@ public class UiAction : UserControl
    {
       base.OnPaint(e);
 
+      if (!Enabled)
+      {
+         var disabledWriter = new UiActionWriter(Center, CheckStyle.None, EmptyTextTitle)
+         {
+            Rectangle = ClientRectangle,
+            Font = italicFont,
+            Color = Color.White
+         };
+         disabledWriter.Write(text, e.Graphics);
+
+         using var disabledPen = new Pen(Color.White);
+         disabledPen.DashStyle = DashStyle.Dash;
+         var disabledRectangle = ClientRectangle;
+         disabledRectangle.Inflate(-8, -8);
+         drawRectangle(e.Graphics, disabledPen, disabledRectangle);
+
+         return;
+      }
+
       var _labelProcessor = _label.Map(label => new LabelProcessor(label, _labelWidth, getFont(), EmptyTextTitle));
       var clientRectangle = getClientRectangle(_labelProcessor.Map(lp => lp.LabelRectangle(e.Graphics, ClientRectangle)));
 
@@ -747,7 +766,7 @@ public class UiAction : UserControl
          if (Stopwatch)
          {
             var elapsed = stopwatch.Value.Elapsed.ToString(@"mm\:ss");
-            using var font = new Font("Consolas", 8);
+            using var font = new Font("Consolas", 12);
             var size = TextRenderer.MeasureText(e.Graphics, elapsed, font);
             var location = new Point(clientRectangle.Width - size.Width - 20, 4);
             var rectangle = new Rectangle(location, size);
@@ -777,7 +796,6 @@ public class UiAction : UserControl
             break;
          case UiActionType.Busy:
             busyProcessor.Value.OnPaint(e.Graphics);
-            //paintStopwatch();
             break;
          case UiActionType.ProgressDefinite:
          {
@@ -797,7 +815,6 @@ public class UiAction : UserControl
             writer.Value.Rectangle = busyTextProcessor.Value.TextRectangle;
             writer.Value.Center(true);
             writer.Value.Write(text, e.Graphics);
-            //paintStopwatch();
             break;
          }
          case UiActionType.ControlLabel:
@@ -875,17 +892,6 @@ public class UiAction : UserControl
          }
       }
 
-      /*if (IsDirty)
-      {
-         var bullet = "•";
-         var foreColor = getForeColor();
-         var backColor = getBackColor();
-         using var font = getFont();
-         var size = TextRenderer.MeasureText(e.Graphics, bullet, font);
-         var location = new Point(clientRectangle.Width - size.Width - 4, 4);
-         TextRenderer.DrawText(e.Graphics, bullet, font, location, foreColor, backColor);
-      }*/
-
       Painting?.Invoke(this, e);
    }
 
@@ -914,6 +920,19 @@ public class UiAction : UserControl
 
    protected override void OnPaintBackground(PaintEventArgs pevent)
    {
+      if (!Enabled)
+      {
+         using var disabledBrush = new HatchBrush(HatchStyle.DiagonalCross, Color.White, Color.Gray);
+         fillRectangle(pevent.Graphics, disabledBrush, ClientRectangle);
+
+         var disabledRectangle = ClientRectangle;
+         disabledRectangle.Inflate(-8, -8);
+         using var disabledBrush2 = new SolidBrush(Color.Gray);
+         fillRectangle(pevent.Graphics, disabledBrush2, disabledRectangle);
+
+         return;
+      }
+
       var _labelProcessor = _label.Map(label => new LabelProcessor(label, _labelWidth, getFont(), EmptyTextTitle));
       var clientRectangle = getClientRectangle(_labelProcessor.Map(lp => lp.LabelRectangle(pevent.Graphics, ClientRectangle)));
 
@@ -1094,28 +1113,6 @@ public class UiAction : UserControl
    protected int getPercentage(int width) => (int)((float)value / maximum * width);
 
    public int Index(bool increment) => increment ? index++ : index;
-
-   /*protected void startStopwatch(bool enabled)
-   {
-      if (Stopwatch)
-      {
-         if (enabled)
-         {
-            if (type is UiActionType.Busy or UiActionType.BusyText)
-            {
-               stopwatch.Value.Restart();
-            }
-            else
-            {
-               stopwatch.Value.Start();
-            }
-         }
-         else
-         {
-            stopwatch.Value.Stop();
-         }
-      }
-   }*/
 
    public void Busy(bool enabled)
    {

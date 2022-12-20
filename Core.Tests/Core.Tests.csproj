@@ -92,7 +92,7 @@
     <Compile Include="DateTimeTests.cs" />
     <Compile Include="DataTests.cs" />
     <Compile Include="EitherTests.cs" />
-    <Compile Include="EnumerableExtensionTests.cs" />
+    <Compile Include="EnumerableTests.cs" />
     <Compile Include="EnumTests.cs" />
     <Compile Include="EquatableTest.cs" />
     <Compile Include="FileNameTests.cs" />

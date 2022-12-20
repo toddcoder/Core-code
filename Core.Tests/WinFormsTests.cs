@@ -249,16 +249,6 @@ public class WinFormsTests
       var uiAction = new UiAction(form) { Stopwatch = true };
       uiAction.SetUp(0, 0, 300, 27, AnchorStyles.Left | AnchorStyles.Right);
       uiAction.Busy("Timing");
-      form.ShowDialog();
-   }
-
-   [TestMethod]
-   public void Stopwatch2Test()
-   {
-      var form = new Form();
-      var uiAction = new UiAction(form);
-      uiAction.SetUp(0, 0, 300, 27, AnchorStyles.Left | AnchorStyles.Right);
-      uiAction.Message("Stopwatch");
       uiAction.StartStopwatch();
       form.ShowDialog();
    }
@@ -770,5 +760,16 @@ public class WinFormsTests
          //Thread.Sleep(pause);
          Application.DoEvents();
       }
+   }
+
+   [TestMethod]
+   public void DisabledUiActionTest()
+   {
+      var form = new Form();
+      var uiAction = new UiAction(form, true);
+      uiAction.SetUp(0, 0, 400, 40);
+      uiAction.Button("Test");
+      uiAction.Enabled = false;
+      form.ShowDialog();
    }
 }

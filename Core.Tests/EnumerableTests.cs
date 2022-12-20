@@ -10,7 +10,7 @@ using static Core.Arrays.ArrayFunctions;
 namespace Core.Tests;
 
 [TestClass]
-public class EnumerableExtensionTests
+public class EnumerableTests
 {
    protected class ItemToSort
    {
@@ -203,6 +203,22 @@ public class EnumerableExtensionTests
       foreach (var sortableItem in sorted)
       {
          Console.WriteLine($"{sortableItem.Branch}: {sortableItem.Order}");
+      }
+   }
+
+   [TestMethod]
+   public void LazyListTest()
+   {
+      var list = new LazyList<int>
+      {
+         new[] { 1, 2, 3, 4, 5 },
+         111,
+         153,
+         new[] { 555, 111, 222 }
+      };
+      foreach (var item in list)
+      {
+         Console.WriteLine(item);
       }
    }
 }
