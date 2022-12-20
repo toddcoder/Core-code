@@ -770,8 +770,9 @@ public class UiAction : UserControl
             var size = TextRenderer.MeasureText(e.Graphics, elapsed, font);
             var location = new Point(clientRectangle.Width - size.Width - 20, 4);
             var rectangle = new Rectangle(location, size);
-            TextRenderer.DrawText(e.Graphics, elapsed, font, rectangle, Color.White);
-            using var pen = new Pen(Color.White);
+            var foreColor = getForeColor();
+            TextRenderer.DrawText(e.Graphics, elapsed, font, rectangle, foreColor);
+            using var pen = new Pen(foreColor);
             e.Graphics.DrawRectangle(pen, rectangle);
          }
       }
