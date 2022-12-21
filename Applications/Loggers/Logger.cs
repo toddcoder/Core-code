@@ -88,7 +88,7 @@ public class Logger : IDisposable
 
    public virtual void WriteRaw(char prefix, string message)
    {
-      var now = DateTime.Now;
+      now = DateTime.Now;
       setMinDateTime(now);
       setMaxDateTime(now);
 
