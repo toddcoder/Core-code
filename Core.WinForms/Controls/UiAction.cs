@@ -140,7 +140,8 @@ public class UiAction : UserControl
          [UiActionType.Caution] = Color.White,
          [UiActionType.ControlLabel] = Color.White,
          [UiActionType.Button] = Color.Black,
-         [UiActionType.Console] = Color.White
+         [UiActionType.Console] = Color.White,
+         [UiActionType.Busy] = Color.White
       };
       globalBackColors = new Hash<UiActionType, Color>
       {
