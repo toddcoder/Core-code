@@ -8,22 +8,37 @@ using Core.Exceptions;
 using Core.Monads;
 using Core.Strings;
 using static Core.Monads.AttemptFunctions;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Applications.Loggers;
 
 public class Logger : IDisposable
 {
+   protected const string RULE = "--------------------------------------------------------------------------------";
+
    protected StringWriter writer;
    protected string indentation;
    protected MaybeStack<string> indentations;
+   protected DateTime now;
 
    public Logger(int indentation = 0)
    {
       this.indentation = " ".Repeat(indentation);
 
+      Key = nil;
+      MinDateTime = nil;
+      MaxDateTime = nil;
+
       writer = new StringWriter();
       indentations = new MaybeStack<string>();
+      now = DateTime.MinValue;
    }
+
+   public Maybe<string> Key { get; set; }
+
+   public Maybe<DateTime> MinDateTime { get; set; }
+
+   public Maybe<DateTime> MaxDateTime { get; set; }
 
    public void PushIndentation(int amount = 2)
    {
@@ -41,7 +56,44 @@ public class Logger : IDisposable
       }
    }
 
-   protected void writeRaw(char prefix, string message) => writer.Write($"{DateTime.Now:O} |{prefix}| {indentation}{message}");
+   protected void setMinDateTime(DateTime now)
+   {
+      if (MinDateTime)
+      {
+         if (now < MinDateTime)
+         {
+            MinDateTime = now;
+         }
+      }
+      else
+      {
+         MinDateTime = now;
+      }
+   }
+
+   protected void setMaxDateTime(DateTime now)
+   {
+      if (MaxDateTime)
+      {
+         if (now > MaxDateTime)
+         {
+            MaxDateTime = now;
+         }
+      }
+      else
+      {
+         MaxDateTime = now;
+      }
+   }
+
+   public virtual void WriteRaw(char prefix, string message)
+   {
+      var now = DateTime.Now;
+      setMinDateTime(now);
+      setMaxDateTime(now);
+
+      writer.Write($"{now:O} |{prefix}| {indentation}{message}");
+   }
 
    public void Write(LogItemType type, string message)
    {
@@ -53,7 +105,7 @@ public class Logger : IDisposable
          LogItemType.Exception => '*',
          _ => '~'
       };
-      writeRaw(prefix, message);
+      WriteRaw(prefix, message);
    }
 
    public void WriteMessage(string message) => Write(LogItemType.Message, message);
@@ -78,6 +130,8 @@ public class Logger : IDisposable
          PopIndentation();
       }
    }
+
+   public void WriteRule() => writer.WriteLine(RULE);
 
    public void Flush(FileName logFile)
    {

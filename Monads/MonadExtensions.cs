@@ -1479,4 +1479,48 @@ public static class MonadExtensions
    public static bool IsResponse(this Responding<bool> responding) => responding is Response<bool>;
 
    public static bool IsCompletion(this Completion<bool> completion) => completion is Completed<bool>;
+
+   public static IEnumerable<T> OnlyTrue<T>(this IEnumerable<Maybe<T>> enumerable)
+   {
+      foreach (var maybe in enumerable)
+      {
+         if (maybe)
+         {
+            yield return ~maybe;
+         }
+      }
+   }
+
+   public static IEnumerable<T> OnlyTrue<T>(this IEnumerable<Result<T>> enumerable)
+   {
+      foreach (var result in enumerable)
+      {
+         if (result)
+         {
+            yield return ~result;
+         }
+      }
+   }
+
+   public static IEnumerable<T> OnlyTrue<T>(this IEnumerable<Responding<T>> enumerable)
+   {
+      foreach (var responding in enumerable)
+      {
+         if (responding)
+         {
+            yield return ~responding;
+         }
+      }
+   }
+
+   public static IEnumerable<T> OnlyTrue<T>(this IEnumerable<Completion<T>> enumerable)
+   {
+      foreach (var completion in enumerable)
+      {
+         if (completion)
+         {
+            yield return ~completion;
+         }
+      }
+   }
 }
