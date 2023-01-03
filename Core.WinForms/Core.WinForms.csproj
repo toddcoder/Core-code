@@ -72,6 +72,7 @@
     <Compile Include="Controls\ChooserSet.cs" />
     <Compile Include="Controls\Chosen.cs" />
     <Compile Include="Controls\ControlSetupExtensions.cs" />
+    <Compile Include="Controls\EventHandlerStore.cs" />
     <Compile Include="Controls\ExRichTextBox.cs">
       <SubType>Component</SubType>
     </Compile>

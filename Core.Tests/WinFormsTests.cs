@@ -11,6 +11,7 @@ using Core.WinForms;
 using Core.WinForms.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Core.Monads.MonadFunctions;
+using static Core.Strings.StringFunctions;
 using Timer = System.Windows.Forms.Timer;
 
 namespace Core.Tests;
@@ -770,6 +771,34 @@ public class WinFormsTests
       uiAction.SetUp(0, 0, 400, 40);
       uiAction.Button("Test");
       uiAction.Enabled = false;
+      form.ShowDialog();
+   }
+
+   protected class UiActionClickStore : EventHandlerStore<EventArgs>
+   {
+      public UiActionClickStore(Control control) : base(control, "Click")
+      {
+      }
+
+      public override void Handler(object sender, EventArgs e)
+      {
+         var uiAction = (UiAction)sender;
+         uiAction.Success(uniqueID());
+         Unsubscribe();
+      }
+   }
+
+   [TestMethod]
+   public void EventHandlerStoreTest()
+   {
+      var form = new Form();
+      var uiAction = new UiAction(form, true);
+      uiAction.SetUp(0, 0, 400, 40);
+      uiAction.Button("Test");
+      uiAction.ClickText = "Test";
+
+      var store = new UiActionClickStore(uiAction);
+      store.Subscribe();
       form.ShowDialog();
    }
 }
