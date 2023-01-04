@@ -134,7 +134,7 @@ public class SubText
 
    public SubText Draw(Graphics graphics, Color controlForeColor, Color controlBackColor)
    {
-      using var font = new Font(FontName, FontSize);
+      using var font = new Font(FontName, FontSize, FontStyle);
       var location = new Point(X, Y);
       var flags = TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix | TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter;
       var measuredSize = TextRenderer.MeasureText(graphics, Text, font, new Size(int.MaxValue, int.MaxValue), flags);
