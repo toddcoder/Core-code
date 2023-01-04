@@ -652,6 +652,8 @@ public class UiAction : UserControl
 
    public bool Stopwatch { get; set; }
 
+   public Maybe<TimeSpan> Elapsed => maybe<TimeSpan>() & Stopwatch & (() => stopwatch.Value.Elapsed);
+
    public void Progress(int value, string text = "", bool asPercentage = false)
    {
       if (asPercentage)
