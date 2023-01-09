@@ -16,6 +16,8 @@ public class SqlSetupBuilder
    public static ConnectionStringBuilder operator +(SqlSetupBuilder builder, SqlSetupBuilderParameters.IConnectionStringParameter parameter)
    {
       var connectionStringBuilder = new ConnectionStringBuilder(builder);
+      builder.ConnectionStringBuilder(connectionStringBuilder);
+
       return parameter switch
       {
          SqlSetupBuilderParameters.ApplicationName applicationName => connectionStringBuilder.ApplicationName(applicationName),
@@ -31,6 +33,8 @@ public class SqlSetupBuilder
    public static CommandTextBuilder operator +(SqlSetupBuilder builder, SqlSetupBuilderParameters.ICommandTextParameter parameter)
    {
       var commandTextBuilder = new CommandTextBuilder(builder);
+      builder.CommandTextBuilder(commandTextBuilder);
+
       return parameter switch
       {
          SqlSetupBuilderParameters.CommandText commandText => commandTextBuilder.CommandText(commandText),
@@ -43,6 +47,8 @@ public class SqlSetupBuilder
    public static FieldBuilder operator +(SqlSetupBuilder builder, SqlSetupBuilderParameters.IFieldParameter parameter)
    {
       var fieldBuilder = new FieldBuilder(builder);
+      builder.FieldBuilder(fieldBuilder);
+
       return parameter switch
       {
          SqlSetupBuilderParameters.FieldName name => fieldBuilder.Name(name),
@@ -56,6 +62,8 @@ public class SqlSetupBuilder
    public static ParameterBuilder operator +(SqlSetupBuilder builder, SqlSetupBuilderParameters.IParameterParameter parameter)
    {
       var parameterBuilder = new ParameterBuilder(builder);
+      builder.ParameterBuilder(parameterBuilder);
+
       return parameter switch
       {
          SqlSetupBuilderParameters.DefaultValue defaultValue => parameterBuilder.Default(defaultValue),
@@ -88,7 +96,7 @@ public class SqlSetupBuilder
 
    internal void FieldBuilder(FieldBuilder builder) => fieldBuilders.Add(builder);
 
-   internal void ParameterBuild(ParameterBuilder builder) => parameterBuilders.Add(builder);
+   internal void ParameterBuilder(ParameterBuilder builder) => parameterBuilders.Add(builder);
 
    public Result<SqlSetup> Build()
    {

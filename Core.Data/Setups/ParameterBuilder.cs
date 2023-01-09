@@ -1,4 +1,4 @@
-﻿using System;
+﻿ using System;
 using Core.Data.Parameters;
 using Core.Matching;
 using Core.Monads;
@@ -33,7 +33,7 @@ public class ParameterBuilder
    public ParameterBuilder(SqlSetupBuilder setupBuilder)
    {
       this.setupBuilder = setupBuilder;
-      this.setupBuilder.ParameterBuild(this);
+      this.setupBuilder.ParameterBuilder(this);
 
       _name = nil;
       _signature = nil;
