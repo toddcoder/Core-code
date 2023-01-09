@@ -1329,11 +1329,26 @@ public class UiAction : UserControl
 
    public bool TimerEnabled => timer.Enabled;
 
-   protected (int, int) legendLocation() => CheckStyle switch
+   protected (int, int) legendLocation()
    {
-      CheckStyle.None => (2, 2),
-      _ => (20, 2)
-   };
+      if (_labelWidth)
+      {
+         return (_labelWidth + 2, 2);
+      }
+      else if (_label)
+      {
+         var _width = LabelProcessor.LabelWidth(_label, getFont());
+         return (_width + 2 | 2, 2);
+      }
+      else if (CheckStyle != CheckStyle.None)
+      {
+         return (20, 2);
+      }
+      else
+      {
+         return (2, 2);
+      }
+   }
 
    public SubText Legend(string text, bool useControlForeColor = true)
    {

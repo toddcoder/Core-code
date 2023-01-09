@@ -34,6 +34,11 @@ public class LabelProcessor
       return _labelRectangle;
    }
 
+   public static Maybe<int> LabelWidth(Maybe<string> _label, Font font)
+   {
+      return _label.Map(label => TextRenderer.MeasureText(label, font).Width + LABEL_MARGIN);
+   }
+
    protected Rectangle getLabelRectangle(Graphics graphics, Rectangle clientRectangle)
    {
       if (_labelWidth)

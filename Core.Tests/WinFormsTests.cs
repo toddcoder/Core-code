@@ -396,6 +396,7 @@ public class WinFormsTests
       var uiAction = new UiAction(form, true);
       uiAction.SetUp(0, 0, 400, 40);
       uiAction.Label("Name").End.Failure("July Maintenance Window");
+      uiAction.Legend("center");
       form.ShowDialog();
    }
 
