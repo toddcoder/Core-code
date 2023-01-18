@@ -598,6 +598,34 @@ public class UiAction : UserControl
       }
    }
 
+   public void Result(Result<(string label, string text)> _result, int labelWidth)
+   {
+      if (_result)
+      {
+         var (label, message) = ~_result;
+         Label(label).LabelWidth(labelWidth).End.Success(message);
+      }
+      else
+      {
+         _label = nil;
+         Exception(_result.Exception);
+      }
+   }
+
+   public void Result(Result<(string label, string text)> _result)
+   {
+      if (_result)
+      {
+         var (label, message) = ~_result;
+         Label(label).End.Success(message);
+      }
+      else
+      {
+         _label = nil;
+         Exception(_result.Exception);
+      }
+   }
+
    public void AttachTo(string text, Control control, string fontName = "Segoe UI", float fontSize = 9, int left = -1, bool stretch = false)
    {
       this.text = text;
