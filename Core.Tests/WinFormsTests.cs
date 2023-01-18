@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using Core.Dates.DateIncrements;
+using Core.Monads;
 using Core.Strings;
 using Core.WinForms;
 using Core.WinForms.Controls;
@@ -749,8 +750,6 @@ public class WinFormsTests
    [TestMethod]
    public void UiActionConsole2Test()
    {
-      var pause = 1.Second();
-
       var form = new Form();
       var uiAction = new UiAction(form, true);
       uiAction.SetUp(0, 0, 600, 500);
@@ -759,7 +758,6 @@ public class WinFormsTests
       for (var i = 0; i < 1000; i++)
       {
          uiAction.Do(() => uiAction.WriteLine($"Line {i}"));
-         //Thread.Sleep(pause);
          Application.DoEvents();
       }
    }
@@ -800,6 +798,25 @@ public class WinFormsTests
 
       var store = new UiActionClickStore(uiAction);
       store.Subscribe();
+      form.ShowDialog();
+   }
+
+   [TestMethod]
+   public void LabelResultTest()
+   {
+      var form = new Form();
+      var uiAction = new UiAction(form, true);
+      uiAction.SetUp(0, 0, 400, 40);
+
+      Result<(string, string)> _result = fail("failed");
+
+      form.Click += (_, _) =>
+      {
+         _result = ("Test", "Test");
+         uiAction.Result(_result);
+      };
+
+      uiAction.Busy(true);
       form.ShowDialog();
    }
 }
