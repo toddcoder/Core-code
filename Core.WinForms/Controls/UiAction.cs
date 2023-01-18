@@ -396,7 +396,7 @@ public class UiAction : UserControl
       var size = TextRenderer.MeasureText("working", font);
       var y = ClientSize.Height - size.Height - 4;
 
-      return new SubText("working", 4, y, getForeColor(), getBackColor(), ClientSize).Set.FontSize(8).UseControlForeColor(true).Outline(true).End;
+      return new SubText("working", 4, y, ClientSize).Set.FontSize(8).Invert(true).Outline(true).End;
    }
 
    public UiActionType Type
@@ -886,22 +886,6 @@ public class UiAction : UserControl
          }
       }
 
-      if (type is not UiActionType.Busy && type is not UiActionType.BusyText)
-      {
-         var foreColor = getForeColor();
-         var backColor = getBackColor();
-         foreach (var subText in subTexts)
-         {
-            subText.Draw(e.Graphics, foreColor, backColor);
-         }
-
-         var _legend = legends.Peek();
-         if (_legend)
-         {
-            (~_legend).Draw(e.Graphics, foreColor, backColor);
-         }
-      }
-
       paintStopwatch();
 
       if (Clickable)
@@ -929,14 +913,36 @@ public class UiAction : UserControl
          drawRectangle(e.Graphics, dashedPen, rectangle);
       }
 
-      if (Working && _working)
-      {
-         var foreColor = getForeColor();
-         var backColor = getBackColor();
-         (~_working).Draw(e.Graphics, foreColor, backColor);
-      }
+      drawAllSubTexts(e.Graphics, type);
 
       Painting?.Invoke(this, e);
+   }
+
+   protected void drawAllSubTexts(Graphics graphics, UiActionType type)
+   {
+      if (type is UiActionType.Busy or UiActionType.BusyText)
+      {
+         return;
+      }
+
+      var foreColor = new Lazy<Color>(getForeColor);
+      var backColor = new Lazy<Color>(getBackColor);
+
+      var _legend = legends.Peek();
+      if (_legend)
+      {
+         (~_legend).Draw(graphics, foreColor.Value, backColor.Value);
+      }
+
+      if (Working && _working)
+      {
+         (~_working).Draw(graphics, foreColor.Value, backColor.Value);
+      }
+
+      foreach (var subText in subTexts)
+      {
+         subText.Draw(graphics, foreColor.Value, backColor.Value);
+      }
    }
 
    private void drawClickGlyph(PaintEventArgs e, Rectangle clientRectangle, Color color)
@@ -1160,8 +1166,11 @@ public class UiAction : UserControl
 
    public void Busy(bool enabled)
    {
-      Text = "";
-      type = UiActionType.Busy;
+      if (enabled)
+      {
+         Text = "";
+         type = UiActionType.Busy;
+      }
 
       this.Do(() => timerPaint.Enabled = enabled);
    }
@@ -1279,7 +1288,7 @@ public class UiAction : UserControl
 
    public SubText SubText(string text, int x, int y)
    {
-      var subText = new SubText(text, x, y, getForeColor(), getBackColor(), ClientSize);
+      var subText = new SubText(text, x, y, ClientSize);
       subTexts.Add(subText);
 
       return subText;
@@ -1390,69 +1399,69 @@ public class UiAction : UserControl
       }
    }
 
-   public SubText Legend(string text, bool useControlForeColor = true)
+   public SubText Legend(string text, bool invert = true)
    {
       var (x, y) = legendLocation();
-      var legend = new SubText(text, x, y, getForeColor(), getBackColor(), ClientSize, true)
+      var legend = new SubText(text, x, y, ClientSize, true)
          .Set
          .FontSize(8)
          .Outline(true)
-         .UseControlForeColor(useControlForeColor)
+         .Invert(true)
          .End;
       legends.Push(legend);
 
       return legend;
    }
 
-   public SubText Legend(string text, int x, int y, bool useControlForeColor = true)
+   public SubText Legend(string text, int x, int y, bool invert = true)
    {
-      var legend = new SubText(text, x, y, getForeColor(), getBackColor(), ClientSize, true)
+      var legend = new SubText(text, x, y, ClientSize, true)
          .Set
          .FontSize(8)
          .Outline(true)
-         .UseControlForeColor(useControlForeColor)
+         .Invert(invert)
          .End;
       legends.Push(legend);
 
       return legend;
    }
 
-   public async Task LegendAsync(string text, TimeSpan delay, bool useControlForeColor = true)
+   public async Task LegendAsync(string text, TimeSpan delay, bool invert = true)
    {
-      Legend(text, useControlForeColor);
+      Legend(text, invert);
       refresh();
 
       await Task.Delay(delay).ContinueWith(_ => Legend());
    }
 
-   public async Task LegendAsync(string text, bool useControlForeColor = true) => await LegendAsync(text, 2.Seconds(), useControlForeColor);
+   public async Task LegendAsync(string text, bool invert = true) => await LegendAsync(text, 2.Seconds(), invert);
 
-   public async Task LegendAsync(string text, int x, int y, TimeSpan delay, bool useControlForeColor = true)
+   public async Task LegendAsync(string text, int x, int y, TimeSpan delay, bool invert = true)
    {
-      Legend(text, x, y, useControlForeColor);
+      Legend(text, x, y, invert);
       refresh();
 
       await Task.Delay(delay).ContinueWith(_ => Legend());
    }
 
-   public async Task LegendAsync(string text, int x, int y, bool useControlForeColor = true)
+   public async Task LegendAsync(string text, int x, int y, bool invert = true)
    {
-      await LegendAsync(text, x, y, 2.Seconds(), useControlForeColor);
+      await LegendAsync(text, x, y, 2.Seconds(), invert);
    }
 
-   public void LegendTemp(string text, TimeSpan delay, bool useControlForeColor = true)
+   public void LegendTemp(string text, TimeSpan delay, bool invert = true)
    {
-      this.Do(() => Task.Run(() => LegendAsync(text, delay, useControlForeColor)));
+      this.Do(() => Task.Run(() => LegendAsync(text, delay, invert)));
    }
 
-   public void LegendTemp(string text, bool useControlForeColor = true) => LegendTemp(text, 2.Seconds(), useControlForeColor);
+   public void LegendTemp(string text, bool invert = true) => LegendTemp(text, 2.Seconds(), invert);
 
-   public void LegendTemp(string text, int x, int y, TimeSpan delay, bool useControlForeColor = true)
+   public void LegendTemp(string text, int x, int y, TimeSpan delay, bool invert = true)
    {
-      this.Do(() => Task.Run(() => LegendAsync(text, x, y, delay, useControlForeColor)));
+      this.Do(() => Task.Run(() => LegendAsync(text, x, y, delay, invert)));
    }
 
-   public void LegendTemp(string text, int x, int y, bool useControlForeColor = true) => LegendTemp(text, x, y, 2.Seconds(), useControlForeColor);
+   public void LegendTemp(string text, int x, int y, bool invert = true) => LegendTemp(text, x, y, 2.Seconds(), invert);
 
    public SubText SuccessLegend(string text)
    {

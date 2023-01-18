@@ -77,18 +77,6 @@ public class SubTextSet
       return this;
    }
 
-   public SubTextSet UseControlForeColor(bool useControlForeColor)
-   {
-      subText.UseControlForeColor = useControlForeColor;
-      return this;
-   }
-
-   public SubTextSet UseControlBackColor(bool useControlBackColor)
-   {
-      subText.UseControlBackColor = useControlBackColor;
-      return this;
-   }
-
    public SubTextSet Invert(bool invert)
    {
       subText.Invert = invert;

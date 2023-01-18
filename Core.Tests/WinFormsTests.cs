@@ -819,4 +819,18 @@ public class WinFormsTests
       uiAction.Busy(true);
       form.ShowDialog();
    }
+
+   [TestMethod]
+   public void LegendChangingTest()
+   {
+      var form = new Form();
+      var uiAction = new UiAction(form, true);
+      uiAction.SetUp(0, 0, 400, 40);
+      uiAction.Uninitialized("uninitialized");
+      uiAction.Legend("pushable");
+      uiAction.Click += (_, _) => uiAction.Failure("Failed");
+      uiAction.ClickText = "test";
+
+      form.ShowDialog();
+   }
 }

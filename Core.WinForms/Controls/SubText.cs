@@ -1,35 +1,32 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Drawing.Text;
 using System.Windows.Forms;
+using Core.Monads;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Controls;
 
 public class SubText
 {
-   protected Color defaultBackColor;
-   protected bool useControlForeColor;
-   protected bool useControlBackColor;
    protected Size size;
    protected bool invert;
+   protected Maybe<Color> _foreColor;
+   protected Maybe<Color> _backColor;
 
-   public SubText(string text, int x, int y, Color defaultForeColor, Color defaultBackColor, Size size, bool invert = false)
+   public SubText(string text, int x, int y, Size size, bool invert = false)
    {
-      this.defaultBackColor = defaultBackColor;
-      this.size = size;
-      this.invert = invert;
-
-      useControlForeColor = false;
-      useControlBackColor = false;
-
       Text = text;
       X = x;
       Y = y;
+      this.size = size;
+      this.invert = invert;
+
+      _foreColor = nil;
+      _backColor = nil;
+
       FontName = "Consolas";
       FontSize = 12;
       FontStyle = FontStyle.Regular;
-      ForeColor = defaultForeColor;
-      BackColor = defaultBackColor;
       Outline = false;
    }
 
@@ -47,28 +44,22 @@ public class SubText
 
    public FontStyle FontStyle { get; set; }
 
-   public Color ForeColor { get; set; }
-
-   public Color BackColor { get; set; }
-
    public bool Outline { get; set; }
-
-   public bool UseControlForeColor
-   {
-      get => useControlForeColor;
-      set => useControlForeColor = value;
-   }
-
-   public bool UseControlBackColor
-   {
-      get => useControlBackColor;
-      set => useControlBackColor = value;
-   }
 
    public bool Invert
    {
       get => invert;
       set => invert = value;
+   }
+
+   public Maybe<Color> ForeColor
+   {
+      set => _foreColor = value;
+   }
+
+   public Maybe<Color> BackColor
+   {
+      set => _backColor = value;
    }
 
    public SubText SetFont(string fontName, float fontSize, FontStyle fontStyle)
@@ -80,68 +71,11 @@ public class SubText
       return this;
    }
 
-   [Obsolete("Use .Set.FontName")]
-   public SubText SetFontName(string fontName)
+   public SubText Draw(Graphics graphics, Color foreColor, Color backColor)
    {
-      FontName = fontName;
-      return this;
-   }
+      foreColor = _foreColor | foreColor;
+      backColor = _backColor | backColor;
 
-   [Obsolete("Use .Set.FontSize")]
-   public SubText SetFontSize(float fontSize)
-   {
-      FontSize = fontSize;
-      return this;
-   }
-
-   [Obsolete("Use .Set.FontStyle")]
-   public SubText SetFontStyle(FontStyle fontStyle)
-   {
-      FontStyle = fontStyle;
-      return this;
-   }
-
-   [Obsolete("Use Set.ForeColor")]
-   public SubText SetForeColor(Color foreColor)
-   {
-      ForeColor = foreColor;
-      useControlForeColor = false;
-
-      return this;
-   }
-
-   [Obsolete("Use Set.BackColor")]
-   public SubText SetBackColor(Color backColor)
-   {
-      BackColor = backColor;
-      useControlBackColor = false;
-
-      return this;
-   }
-
-   [Obsolete("Use Set.Outline")]
-   public SubText SetOutline(bool outline)
-   {
-      Outline = outline;
-      return this;
-   }
-
-   [Obsolete("Use Set.UseControlForeColor")]
-   public SubText SetUseControlForeColor()
-   {
-      useControlForeColor = true;
-      return this;
-   }
-
-   [Obsolete("Use Set.UserControlBackColor")]
-   public SubText SetUseControlBackColor()
-   {
-      useControlBackColor = true;
-      return this;
-   }
-
-   public SubText Draw(Graphics graphics, Color controlForeColor, Color controlBackColor)
-   {
       using var font = new Font(FontName, FontSize, FontStyle);
       var location = new Point(X, Y);
       var flags = TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix | TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter;
@@ -152,9 +86,6 @@ public class SubText
       graphics.HighQuality();
       graphics.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
 
-      var backColor = useControlBackColor ? controlBackColor : BackColor;
-      var foreColor = useControlForeColor ? controlForeColor : ForeColor;
-
       if (Invert)
       {
          using var brush = new SolidBrush(foreColor);
@@ -162,12 +93,6 @@ public class SubText
          TextRenderer.DrawText(graphics, Text, font, rectangle, backColor, flags);
 
          return this;
-      }
-
-      if (backColor != defaultBackColor)
-      {
-         using var brush = new SolidBrush(BackColor);
-         graphics.FillRectangle(brush, rectangle);
       }
 
       if (Outline)
