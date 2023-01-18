@@ -89,6 +89,12 @@ public class SubTextSet
       return this;
    }
 
+   public SubTextSet Invert(bool invert)
+   {
+      subText.Invert = invert;
+      return this;
+   }
+
    protected Size getTextSize()
    {
       var text = subText.Text;

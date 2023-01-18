@@ -11,11 +11,13 @@ public class SubText
    protected bool useControlForeColor;
    protected bool useControlBackColor;
    protected Size size;
+   protected bool invert;
 
-   public SubText(string text, int x, int y, Color defaultForeColor, Color defaultBackColor, Size size)
+   public SubText(string text, int x, int y, Color defaultForeColor, Color defaultBackColor, Size size, bool invert = false)
    {
       this.defaultBackColor = defaultBackColor;
-      this.size=size;
+      this.size = size;
+      this.invert = invert;
 
       useControlForeColor = false;
       useControlBackColor = false;
@@ -61,6 +63,12 @@ public class SubText
    {
       get => useControlBackColor;
       set => useControlBackColor = value;
+   }
+
+   public bool Invert
+   {
+      get => invert;
+      set => invert = value;
    }
 
    public SubText SetFont(string fontName, float fontSize, FontStyle fontStyle)
@@ -146,6 +154,15 @@ public class SubText
 
       var backColor = useControlBackColor ? controlBackColor : BackColor;
       var foreColor = useControlForeColor ? controlForeColor : ForeColor;
+
+      if (Invert)
+      {
+         using var brush = new SolidBrush(foreColor);
+         graphics.FillRectangle(brush, rectangle);
+         TextRenderer.DrawText(graphics, Text, font, rectangle, backColor, flags);
+
+         return this;
+      }
 
       if (backColor != defaultBackColor)
       {

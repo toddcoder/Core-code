@@ -803,19 +803,19 @@ public class UiAction : UserControl
             var size = TextRenderer.MeasureText(e.Graphics, elapsed, font);
             var location = new Point(clientRectangle.Width - size.Width - 20, 4);
             var rectangle = new Rectangle(location, size);
-            if (!StopwatchInverted)
+            if (StopwatchInverted)
             {
-               var foreColor = getForeColor();
+               var foreColor = getBackColor();
+               var backColor = getForeColor();
+               using var brush = new SolidBrush(backColor);
+               e.Graphics.FillRectangle(brush, rectangle);
                TextRenderer.DrawText(e.Graphics, elapsed, font, rectangle, foreColor);
                using var pen = new Pen(foreColor);
                e.Graphics.DrawRectangle(pen, rectangle);
             }
             else
             {
-               var foreColor = getBackColor();
-               var backColor = getForeColor();
-               using var brush = new SolidBrush(backColor);
-               e.Graphics.FillRectangle(brush, rectangle);
+               var foreColor = getForeColor();
                TextRenderer.DrawText(e.Graphics, elapsed, font, rectangle, foreColor);
                using var pen = new Pen(foreColor);
                e.Graphics.DrawRectangle(pen, rectangle);
@@ -929,14 +929,11 @@ public class UiAction : UserControl
          drawRectangle(e.Graphics, dashedPen, rectangle);
       }
 
-      if (Working)
+      if (Working && _working)
       {
-         if (_working)
-         {
-            var foreColor = getForeColor();
-            var backColor = getBackColor();
-            (~_working).Draw(e.Graphics, foreColor, backColor);
-         }
+         var foreColor = getForeColor();
+         var backColor = getBackColor();
+         (~_working).Draw(e.Graphics, foreColor, backColor);
       }
 
       Painting?.Invoke(this, e);
@@ -1396,7 +1393,7 @@ public class UiAction : UserControl
    public SubText Legend(string text, bool useControlForeColor = true)
    {
       var (x, y) = legendLocation();
-      var legend = new SubText(text, x, y, getForeColor(), getBackColor(), ClientSize)
+      var legend = new SubText(text, x, y, getForeColor(), getBackColor(), ClientSize, true)
          .Set
          .FontSize(8)
          .Outline(true)
@@ -1409,7 +1406,7 @@ public class UiAction : UserControl
 
    public SubText Legend(string text, int x, int y, bool useControlForeColor = true)
    {
-      var legend = new SubText(text, x, y, getForeColor(), getBackColor(), ClientSize)
+      var legend = new SubText(text, x, y, getForeColor(), getBackColor(), ClientSize, true)
          .Set
          .FontSize(8)
          .Outline(true)
