@@ -680,6 +680,8 @@ public class UiAction : UserControl
 
    public bool Stopwatch { get; set; }
 
+   public bool StopwatchInverted { get; set; }
+
    public Maybe<TimeSpan> Elapsed => maybe<TimeSpan>() & Stopwatch & (() => stopwatch.Value.Elapsed);
 
    public void Progress(int value, string text = "", bool asPercentage = false)
@@ -801,10 +803,23 @@ public class UiAction : UserControl
             var size = TextRenderer.MeasureText(e.Graphics, elapsed, font);
             var location = new Point(clientRectangle.Width - size.Width - 20, 4);
             var rectangle = new Rectangle(location, size);
-            var foreColor = getForeColor();
-            TextRenderer.DrawText(e.Graphics, elapsed, font, rectangle, foreColor);
-            using var pen = new Pen(foreColor);
-            e.Graphics.DrawRectangle(pen, rectangle);
+            if (!StopwatchInverted)
+            {
+               var foreColor = getForeColor();
+               TextRenderer.DrawText(e.Graphics, elapsed, font, rectangle, foreColor);
+               using var pen = new Pen(foreColor);
+               e.Graphics.DrawRectangle(pen, rectangle);
+            }
+            else
+            {
+               var foreColor = getBackColor();
+               var backColor = getForeColor();
+               using var brush = new SolidBrush(backColor);
+               e.Graphics.FillRectangle(brush, rectangle);
+               TextRenderer.DrawText(e.Graphics, elapsed, font, rectangle, foreColor);
+               using var pen = new Pen(foreColor);
+               e.Graphics.DrawRectangle(pen, rectangle);
+            }
          }
       }
 
