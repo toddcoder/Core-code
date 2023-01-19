@@ -223,4 +223,26 @@ public class DataTests
          Console.WriteLine(_sqlSetup.Exception.Message);
       }
    }
+
+   [TestMethod]
+   public void ConnectionStringArgumentsTest()
+   {
+      var connectionString = SqlConnectionString.GetConnectionString(".", "local_tebennett", "TSqlCop");
+      var (server, database, application, _, _) = SqlConnectionString.GetArguments(connectionString);
+      Console.WriteLine(server);
+      Console.WriteLine(database);
+      Console.WriteLine(application);
+   }
+
+   [TestMethod]
+   public void FullConnectionStringArgumentsTest()
+   {
+      var connectionString = SqlConnectionString.GetConnectionString(".", "local_tebennett", "TSqlCop", "tebennett", "~!@#$%^&*");
+      var (server, database, application, user, password) = SqlConnectionString.GetArguments(connectionString);
+      Console.WriteLine(server);
+      Console.WriteLine(database);
+      Console.WriteLine(application);
+      Console.WriteLine(user);
+      Console.WriteLine(password);
+   }
 }
