@@ -235,11 +235,12 @@ public class WinFormsTests
       {
          Dock = DockStyle.Fill
       };
-      uiAction.SubText("now", 10, 10).Set
+      uiAction.SubText("now").Set
+         .GoToUpperLeft(8)
+         .Outline(true)
          .ForeColor(Color.White)
          .BackColor(Color.Green)
-         .Font("Verdana", 8)
-         .Outline(true);
+         .Font("Verdana", 8);
       uiAction.Message("Message");
       form.ShowDialog();
    }

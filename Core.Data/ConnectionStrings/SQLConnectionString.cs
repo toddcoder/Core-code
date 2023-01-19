@@ -1,6 +1,7 @@
 ﻿using System;
 using Core.Collections;
 using Core.Dates.DateIncrements;
+using Core.Matching;
 using Core.Monads;
 using Core.Strings;
 using static Core.Objects.ConversionFunctions;
@@ -44,6 +45,22 @@ public class SqlConnectionString : IConnectionString
       {
          return GetConnectionString(server, database, application, readOnly);
       }
+   }
+
+   public static (string server, string database, string application, string user, string password) GetArguments(string connectionString)
+   {
+      Pattern getPattern(string firstWord, string secondWord) => $"/b '{firstWord}' /s+ '{secondWord}' /s* '=' /s* /(-[';']+); fi";
+      Pattern getPattern1(string word) => $"/b '{word}' /s* '=' /s* /(-[';']+); fi";
+      string getValue(string firstWord, string secondWord) => connectionString.Matches(getPattern(firstWord, secondWord)).Map(r => r.FirstGroup) | "";
+      string getValue1(string word) => connectionString.Matches(getPattern1(word)).Map(r => r.FirstGroup) | "";
+
+      var server = getValue("data", "source");
+      var database = getValue("initial", "catalog");
+      var application = getValue("application", "name");
+      var user = getValue("user", "id");
+      var password = getValue1("password");
+
+      return (server, database, application, user, password);
    }
 
    public static Result<SqlConnectionString> FromConnection(Connection connection, bool readOnly = false)

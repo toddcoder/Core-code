@@ -86,22 +86,18 @@ public class SubText
       graphics.HighQuality();
       graphics.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
 
-      if (Invert)
-      {
-         using var brush = new SolidBrush(foreColor);
-         graphics.FillRectangle(brush, rectangle);
-         TextRenderer.DrawText(graphics, Text, font, rectangle, backColor, flags);
+      var foreColorToUse = Invert ? backColor : foreColor;
+      var backColorToUse = Invert ? foreColor : backColor;
 
-         return this;
-      }
-
-      if (Outline)
+      using var brush = new SolidBrush(backColorToUse);
+      graphics.FillRectangle(brush, rectangle);
+      if (!invert && Outline)
       {
-         using var pen = new Pen(foreColor);
+         using var pen = new Pen(foreColorToUse);
          graphics.DrawRectangle(pen, rectangle);
       }
 
-      TextRenderer.DrawText(graphics, Text, font, rectangle, foreColor, flags);
+      TextRenderer.DrawText(graphics, Text, font, rectangle, foreColorToUse, flags);
 
       return this;
    }
