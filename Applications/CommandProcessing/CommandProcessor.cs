@@ -85,11 +85,19 @@ public abstract class CommandProcessor : IDisposable
 
    public abstract StringHash GetConfigurationHelp();
 
-   public virtual void Initialize()
+   public virtual void SetUp()
    {
    }
 
-   public virtual void CleanUp()
+   public virtual void CommandInitialize(CommandAttribute commandAttribute)
+   {
+   }
+
+   public virtual void CommandCleanUp(CommandAttribute commandAttribute)
+   {
+   }
+
+   public virtual void BreakDown()
    {
    }
 
@@ -157,6 +165,9 @@ public abstract class CommandProcessor : IDisposable
             configuration = _configuration;
             commandLine = removeExecutableFromCommandLine(commandLine);
             Arguments = commandLine;
+
+            SetUp();
+
             run(commandLine, true);
          }
          else
@@ -167,6 +178,10 @@ public abstract class CommandProcessor : IDisposable
       catch (Exception exception)
       {
          HandleException(exception);
+      }
+      finally
+      {
+         BreakDown();
       }
    }
 
@@ -194,13 +209,13 @@ public abstract class CommandProcessor : IDisposable
                   var (methodInfo, commandAttribute) = ~_method;
                   if (commandAttribute.Initialize)
                   {
-                     Initialize();
+                     CommandInitialize(commandAttribute);
                   }
 
                   var _result = executeMethod(methodInfo, rest);
                   if (_result)
                   {
-                     CleanUp();
+                     CommandCleanUp(commandAttribute);
                   }
                   else
                   {
@@ -375,9 +390,10 @@ public abstract class CommandProcessor : IDisposable
 
    public virtual void GetConfiguration(string key)
    {
-      if (configuration.ContainsKey(key))
+      var _value = configuration.Maybe.String(key);
+      if (_value)
       {
-         StandardWriter.WriteLine($"{key} -> {configuration[key]}");
+         StandardWriter.WriteLine($"{key} -> {_value}");
       }
       else
       {
@@ -407,23 +423,23 @@ public abstract class CommandProcessor : IDisposable
          }
          else
          {
-            var _secondGroup = lazy.maybe<(string, int)>();
-            var _stringLength = lazy.maybe<(string, int)>();
-            if (_secondGroup.ValueOf(noStrings.Matches("^ /s* /([quote]) /(-[quote]*) /1; f").Map(r => r.SecondGroupAndLength)))
+            var _bareString = lazy.maybe<(string, int)>();
+            var _nonSpace = lazy.maybe<(string, int)>();
+            if (_bareString.ValueOf(noStrings.Matches("^ /s* /([quote]) /(-[quote]*) /1; f").Map(r => r.SecondGroupAndLength)))
             {
-               var (bareString, bareStringLength) = ~_secondGroup;
+               var (bareString, bareStringLength) = ~_bareString;
                var value = delimitedText.Restringify(bareString, RestringifyQuotes.None);
 
                yield return (prefix, name, value);
 
                noStrings = noStrings.Drop(bareStringLength);
             }
-            else if (_stringLength.ValueOf(noStrings.Matches("^ /s* /(-/s+); f").Map(r => r.FirstGroupAndLength)))
+            else if (_nonSpace.ValueOf(noStrings.Matches("^ /s* /(-/s+); f").Map(r => r.FirstGroupAndLength)))
             {
-               var (firstGroup, length) = ~_stringLength;
-               yield return (prefix, name, firstGroup);
+               var (nonSpace, nonSpaceLength) = ~_nonSpace;
+               yield return (prefix, name, nonSpace);
 
-               noStrings = noStrings.Drop(length);
+               noStrings = noStrings.Drop(nonSpaceLength);
             }
          }
       }
@@ -607,7 +623,7 @@ public abstract class CommandProcessor : IDisposable
       {
          if (value.IsNotEmpty())
          {
-            var _someString = value.Some();
+            Maybe<string> _someString = value;
             return ((object)_someString).Some();
          }
          else
@@ -628,7 +644,7 @@ public abstract class CommandProcessor : IDisposable
          if (value.IsNotEmpty())
          {
             FolderName folder = value;
-            var _folder = folder.Some();
+            Maybe<FolderName> _folder = folder;
             return ((object)_folder).Some();
          }
          else
@@ -641,7 +657,7 @@ public abstract class CommandProcessor : IDisposable
          if (value.IsNotEmpty())
          {
             FileName file = value;
-            var _file = file.Some();
+            Maybe<FileName> _file = file;
             return ((object)_file).Some();
          }
          else

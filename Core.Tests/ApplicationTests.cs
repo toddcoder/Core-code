@@ -231,7 +231,7 @@ internal class TestProgram : CommandProcessor
 
    public override StringHash GetConfigurationHelp() => new(true);
 
-   public override void Initialize()
+   public override void SetUp()
    {
       Text = string.Empty;
       Pattern = string.Empty;
