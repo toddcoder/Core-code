@@ -85,7 +85,7 @@ public abstract class CommandProcessor : IDisposable
 
    public abstract StringHash GetConfigurationHelp();
 
-   public virtual void SetUp()
+   public virtual void Initialize()
    {
    }
 
@@ -97,7 +97,7 @@ public abstract class CommandProcessor : IDisposable
    {
    }
 
-   public virtual void BreakDown()
+   public virtual void CleanUp()
    {
    }
 
@@ -166,7 +166,7 @@ public abstract class CommandProcessor : IDisposable
             commandLine = removeExecutableFromCommandLine(commandLine);
             Arguments = commandLine;
 
-            SetUp();
+            Initialize();
 
             run(commandLine, true);
          }
@@ -181,7 +181,7 @@ public abstract class CommandProcessor : IDisposable
       }
       finally
       {
-         BreakDown();
+         CleanUp();
       }
    }
 
