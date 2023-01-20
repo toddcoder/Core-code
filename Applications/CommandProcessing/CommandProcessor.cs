@@ -407,18 +407,18 @@ public abstract class CommandProcessor : IDisposable
          }
          else
          {
-            var _secondGroup = lazy.maybe<string>();
+            var _secondGroup = lazy.maybe<(string, int)>();
             var _stringLength = lazy.maybe<(string, int)>();
-            if (_secondGroup.ValueOf(noStrings.Matches("^ /s* /([quote]) /(-[quote]*) /1; f").Map(r => r.SecondGroup)))
+            if (_secondGroup.ValueOf(noStrings.Matches("^ /s* /([quote]) /(-[quote]*) /1; f").Map(r => r.SecondGroupAndLength)))
             {
-               var bareString = ~_secondGroup;
+               var (bareString, bareStringLength) = ~_secondGroup;
                var value = delimitedText.Restringify(bareString, RestringifyQuotes.None);
 
                yield return (prefix, name, value);
 
-               noStrings = noStrings.Drop(bareString.Length);
+               noStrings = noStrings.Drop(bareStringLength);
             }
-            else if (_stringLength.ValueOf(noStrings.Matches("^ /s* /(-/s+); f").Map(r => (r.FirstGroup, r.Length))))
+            else if (_stringLength.ValueOf(noStrings.Matches("^ /s* /(-/s+); f").Map(r => r.FirstGroupAndLength)))
             {
                var (firstGroup, length) = ~_stringLength;
                yield return (prefix, name, firstGroup);
