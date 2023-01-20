@@ -244,13 +244,12 @@ public static class StringExtensions
          var _matches = source.Matches($"-/b /(['A-Z']{quantitative}); f");
          if (_matches)
          {
-            var matches = ~_matches;
-            foreach (var match in matches)
+            foreach (var match in _matches.Value)
             {
                match.FirstGroup = separator + match.FirstGroup;
             }
 
-            return matches.ToString().ToLower();
+            return _matches.Value.ToString().ToLower();
          }
          else
          {
@@ -281,13 +280,12 @@ public static class StringExtensions
          var _matches = source.Matches(pattern);
          if (_matches)
          {
-            var matches = ~_matches;
-            foreach (var match in matches)
+            foreach (var match in _matches.Value)
             {
                match.Text = match.FirstGroup.ToUpper();
             }
 
-            return upperCase ? matches.ToString().ToUpper1() : matches.ToString().ToLower1();
+            return upperCase ? _matches.Value.ToString().ToUpper1() : _matches.Value.ToString().ToLower1();
          }
          else
          {
@@ -322,22 +320,22 @@ public static class StringExtensions
          }
 
          var builder = new StringBuilder();
-         foreach (var match in ~_matches)
+         foreach (var match in _matches.Value)
          {
             var _subMatches = match.ZerothGroup.Matches("^ /uc? /lc* [/lv 'y' /uv 'Y']+ /(/lc?) /1? ['h']? ('e' $)?; f");
             if (_subMatches)
             {
-               foreach (var subMatch in ~_subMatches)
+               foreach (var subMatch in _subMatches.Value)
                {
                   builder.Append(fixMatch(match.ZerothGroup, subMatch.ZerothGroup));
                }
             }
             else
             {
-               builder.Append((~_matches)[0, 0]);
+               builder.Append(_matches.Value[0, 0]);
             }
 
-            if ((~_matches)[0, 0].EndsWith("s"))
+            if (_matches.Value[0, 0].EndsWith("s"))
             {
                builder.Append("s");
             }
@@ -493,7 +491,7 @@ public static class StringExtensions
       if (_matches)
       {
          var builder = new StringBuilder();
-         foreach (var match in ~_matches)
+         foreach (var match in _matches.Value)
          {
             builder.Append(match.ZerothGroup);
          }
@@ -709,7 +707,7 @@ public static class StringExtensions
       {
          if (number == 1)
          {
-            foreach (var match in ~_matches)
+            foreach (var match in _matches.Value)
             {
                if (match.SecondGroup.IsNotEmpty())
                {
@@ -723,7 +721,7 @@ public static class StringExtensions
          }
          else
          {
-            foreach (var match in ~_matches)
+            foreach (var match in _matches.Value)
             {
                if (match.SecondGroup.IsNotEmpty())
                {
@@ -736,31 +734,31 @@ public static class StringExtensions
             }
          }
 
-         var matcherText = (~_matches).ToString();
+         var matcherText = _matches.Value.ToString();
          var numberAccountedFor = false;
          pattern = @"-(< '\') /'#'; f";
          _matches = matcherText.Matches(pattern);
          if (_matches)
          {
             numberAccountedFor = true;
-            foreach (var match in ~_matches)
+            foreach (var match in _matches.Value)
             {
                match.FirstGroup = number.ToString();
             }
 
-            matcherText = (~_matches).ToString();
+            matcherText = _matches.Value.ToString();
          }
 
          pattern = @"/('\#'); f";
          _matches = matcherText.Matches(pattern);
          if (_matches)
          {
-            foreach (var match in ~_matches)
+            foreach (var match in _matches.Value)
             {
                match.FirstGroup = "#";
             }
 
-            matcherText = (~_matches).ToString();
+            matcherText = _matches.Value.ToString();
          }
 
          if (omitNumber || numberAccountedFor)
@@ -1799,7 +1797,7 @@ public static class StringExtensions
       var _result = source.Matches(pattern);
       if (_result)
       {
-         var (_, index, length) = (~_result).GetGroup(0, group);
+         var (_, index, length) = _result.Value.GetGroup(0, group);
          var count = index + length;
          return source.Drop(count);
       }
@@ -1935,7 +1933,7 @@ public static class StringExtensions
       var _result = source.Matches(pattern);
       if (_result)
       {
-         var (_, index, length) = (~_result).GetGroup(0, group);
+         var (_, index, length) = _result.Value.GetGroup(0, group);
          var count = index + length;
          return source.Keep(count);
       }
@@ -2211,12 +2209,12 @@ public static class StringExtensions
          var _suffixed = source.Matches("^ /(/d+) /['kmg']? $; f");
          if (_suffixed)
          {
-            var (valueSource, suffix) = ~_suffixed;
+            var (valueSource, suffix) = _suffixed.Value;
 
             var _value = Maybe.Int64(valueSource);
             if (_value)
             {
-               var value = ~_value;
+               var value = _value.Value;
                if (suffix.IsEmpty())
                {
                   return value;
@@ -2303,7 +2301,7 @@ public static class StringExtensions
       var _result = source.Matches(pattern);
       if (_result)
       {
-         var (text, index, length) = (~_result).GetMatch(0);
+         var (text, index, length) = _result.Value.GetMatch(0);
          return new Slice(text, index, length);
       }
       else
@@ -2335,7 +2333,7 @@ public static class StringExtensions
       var _matches = source.Matches(pattern);
       if (_matches)
       {
-         foreach (var match in ~_matches)
+         foreach (var match in _matches.Value)
          {
             var (text, index, length) = match;
             yield return new Slice(text, index, length);

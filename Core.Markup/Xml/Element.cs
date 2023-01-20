@@ -15,7 +15,7 @@ public class Element : IRendering
       var _result = source.Matches("^ /(['a-zA-Z_'] [/w '-']*) /s* '>' /s* [quote]? /(.*) $; f");
       if (_result)
       {
-         var (name, text) = ~_result;
+         var (name, text) = _result.Value;
          return new Element
          {
             Name = name,

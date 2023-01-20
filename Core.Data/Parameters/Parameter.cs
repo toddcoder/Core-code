@@ -16,7 +16,7 @@ public class Parameter : PropertyInterface
       var _result = input.Matches("^ '@'? /(/w+) /s* ('[' /(/w+) ']')? /s* ':' /s* /('$'? [/w '.']+) ('(' /(/d+) ')')? (/s+ /('output'))? $; f");
       if (_result)
       {
-         var result = ~_result;
+         var result = _result.Value;
          var name = result.FirstGroup;
          var signature = result.SecondGroup;
          if (signature.IsEmpty())

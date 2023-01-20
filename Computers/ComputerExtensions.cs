@@ -34,7 +34,7 @@ public static class ComputerExtensions
          var _file = folder.LocalAndParentFiles.Where(f => predicate(f)).FirstOrNone();
          if (_file)
          {
-            return ~_file;
+            return _file.Value;
          }
       }
 
@@ -70,7 +70,7 @@ public static class ComputerExtensions
          var _folder = folder.LocalAndParentFolders.Where(f => predicate(f)).FirstOrNone();
          if (_folder)
          {
-            return ~_folder;
+            return _folder.Value;
          }
       }
 

@@ -182,7 +182,7 @@ public class Table : Block
                var cellData = row[j];
                if (cellData.ImageFile && cellData.ImageFileType)
                {
-                  tableCell.Image((~cellData.ImageFile).FullPath, ~cellData.ImageFileType);
+                  tableCell.Image(cellData.ImageFile.Value.FullPath, cellData.ImageFileType.Value);
                }
                else
                {
@@ -195,12 +195,12 @@ public class Table : Block
                   if (_formatAction)
                   {
                      paragraph.Text = cellData.Text;
-                     (~_formatAction)(paragraph, i, j);
+                     _formatAction.Value(paragraph, i, j);
                   }
                   else if (cellData.PendingFormatter)
                   {
                      paragraph.Text = cellData.Text;
-                     var pendingFormatter = ~cellData.PendingFormatter;
+                     var pendingFormatter = cellData.PendingFormatter.Value;
                      pendingFormatter.Formatter(paragraph, paragraph.DefaultCharFormat);
                   }
                   else
@@ -352,7 +352,7 @@ public class Table : Block
       var _item = lazyRepeating.maybe<(int, int, int, int)>();
       while (_item.ValueOf(pendingMerges.Dequeue()))
       {
-         var (topRow, leftColumn, rowSpan, colSpan) = ~_item;
+         var (topRow, leftColumn, rowSpan, colSpan) = _item.Value;
          Merge(topRow, leftColumn, rowSpan, colSpan);
       }
    }
@@ -749,19 +749,19 @@ public class Table : Block
 
             if (this[i, j].BackgroundColor)
             {
-               result.Append($@"\clcbpat{(~this[i, j].BackgroundColor).Value}");
+               result.Append($@"\clcbpat{this[i, j].BackgroundColor.Value.Value}");
             }
             else if (i == 0 && HeaderBackgroundColor)
             {
-               result.Append($@"\clcbpat{(~HeaderBackgroundColor).Value}");
+               result.Append($@"\clcbpat{HeaderBackgroundColor.Value.Value}");
             }
             else if (RowBackgroundColor && (!RowAltBackgroundColor || i % 2 == 0))
             {
-               result.Append($@"\clcbpat{(~RowBackgroundColor).Value}");
+               result.Append($@"\clcbpat{RowBackgroundColor.Value.Value}");
             }
             else if (RowBackgroundColor && RowAltBackgroundColor && i % 2 != 0)
             {
-               result.Append($@"\clcbpat{(~RowAltBackgroundColor).Value}");
+               result.Append($@"\clcbpat{RowAltBackgroundColor.Value.Value}");
             }
 
             if (cells[i][j].IsMerged && cells[i][j].MergeInfo.RowSpan > 1)

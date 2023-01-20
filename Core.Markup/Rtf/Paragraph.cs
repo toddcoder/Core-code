@@ -151,7 +151,7 @@ public class Paragraph : Block
       var _result = newText.Matches("/(['*^%']) /(-['*^%']+) /(/1); f");
       if (_result)
       {
-         var result = ~_result;
+         var result = _result.Value;
          var begin = result.Index;
          var end = begin + result.GetGroup(0, 2).Length - 1;
          Bits32<FontStyleFlag> flags = FontStyleFlag.None;
@@ -192,7 +192,7 @@ public class Paragraph : Block
       if (_result)
       {
          var offset = 1;
-         foreach (var match in ~_result)
+         foreach (var match in _result.Value)
          {
             Maybe<FieldType> _fieldType = match.Text switch
             {
@@ -209,7 +209,7 @@ public class Paragraph : Block
             }
          }
 
-         return (~_result).Text;
+         return _result.Value.Text;
       }
       else
       {
@@ -315,7 +315,7 @@ public class Paragraph : Block
       var _result = text.ToString().Matches(pattern);
       if (_result)
       {
-         var result = ~_result;
+         var result = _result.Value;
          return CharFormat(result, groupIndex);
       }
       else
@@ -410,7 +410,7 @@ public class Paragraph : Block
       var _result = charFormatTemplate.Matches("'^'+; f");
       if (_result)
       {
-         foreach (var match in ~_result)
+         foreach (var match in _result.Value)
          {
             var begin = match.Index;
             var end = begin + match.Length - 1;
@@ -459,7 +459,7 @@ public class Paragraph : Block
       var _result = formatTemplate.Matches("'^'+; f");
       if (_result)
       {
-         foreach (var match in ~_result)
+         foreach (var match in _result.Value)
          {
             var begin = match.Index;
             var end = begin + match.Length - 1;
@@ -476,7 +476,7 @@ public class Paragraph : Block
       if (_result)
       {
          var offset = 1;
-         foreach (var match in ~_result)
+         foreach (var match in _result.Value)
          {
             Maybe<FieldType> _fieldType = match.Text switch
             {
@@ -536,8 +536,8 @@ public class Paragraph : Block
 
          if (format.Begin && format.End)
          {
-            var begin = ~format.Begin;
-            var end = ~format.End;
+            var begin = format.Begin.Value;
+            var end = format.End.Value;
             if (begin <= end)
             {
                range = new DisjointRange { Head = begin, Tail = end, Format = format };
@@ -630,7 +630,7 @@ public class Paragraph : Block
                      while (true)
                      {
                         var _next = node.Next.NotNull();
-                        if (!_next || !(~_next).Value.IsControl)
+                        if (!_next || !_next.Value.Value.IsControl)
                         {
                            break;
                         }
@@ -806,7 +806,7 @@ public class Paragraph : Block
             var _keyResult = nodeText.Matches("'//url' (/d+); f");
             if (_keyResult)
             {
-               var keyResult = ~_keyResult;
+               var keyResult = _keyResult.Value;
                foreach (var match in keyResult)
                {
                   match.Text = "";
@@ -820,11 +820,10 @@ public class Paragraph : Block
             }
             else
             {
-               //var _result = nodeText.Matches("'//url(' -[')']+ ')'; fi");
                var _result = nodeText.Matches("'^' '!'+; fi");
                if (_result)
                {
-                  var matchResult = ~_result;
+                  var matchResult = _result.Value;
                   nodeText = nodeText.Keep(matchResult.Index) + nodeText.Drop(matchResult.Index + matchResult.Length);
                }
 
@@ -860,7 +859,7 @@ public class Paragraph : Block
 
       if (_lineSpacing)
       {
-         result.Append($@"\sl-{(~_lineSpacing).PointsToTwips()}\slmult0");
+         result.Append($@"\sl-{_lineSpacing.Value.PointsToTwips()}\slmult0");
       }
 
       if (margins[Direction.Top] > 0)

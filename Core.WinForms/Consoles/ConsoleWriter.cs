@@ -25,7 +25,7 @@ public class TextBoxWriter : TextWriter
       {
          if (_buffer)
          {
-            (~_buffer).Append(value);
+            _buffer.Value.Append(value);
          }
          else
          {
@@ -55,13 +55,12 @@ public class TextBoxWriter : TextWriter
             console.StopUpdating();
          }
 
-         var buffer = ~_buffer;
-         foreach (var ch in buffer.ToString())
+         foreach (var ch in _buffer.Value.ToString())
          {
             console.Write(ch);
          }
 
-         buffer.Clear();
+         _buffer.Value.Clear();
 
          if (AutoStop)
          {

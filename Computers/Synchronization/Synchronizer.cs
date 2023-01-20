@@ -89,7 +89,7 @@ public class Synchronizer
             select !targetExists || sourceLastWriteTime > targetLastWriteTime;
          if (_mustCopy.IsSuccess())
          {
-            if (~_mustCopy)
+            if (_mustCopy.Value)
             {
                return copy(sourceFile, targetFile);
             }
@@ -115,7 +115,7 @@ public class Synchronizer
       var _wasCreated = targetFileFolder.TryTo.WasCreated();
       if (_wasCreated.IsSuccess())
       {
-         if (~_wasCreated)
+         if (_wasCreated.Value)
          {
             NewFolderSuccess?.Invoke(this, new FolderArgs(targetFileFolder, $"Folder {targetFileFolder} created"));
          }

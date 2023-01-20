@@ -72,7 +72,7 @@ public class Style
 
       if (_firstLineIndent)
       {
-         paragraph.FirstLineIndent = (~_firstLineIndent).Amount;
+         paragraph.FirstLineIndent = _firstLineIndent.Value.Amount;
       }
 
       var (_left, _top, _right, _bottom) = margins;
@@ -330,7 +330,7 @@ public class Style
 
       if (_firstLineIndent)
       {
-         formatter.FirstLineIndent((~_firstLineIndent).Amount);
+         formatter.FirstLineIndent(_firstLineIndent.Value.Amount);
       }
 
       formatter.Margins(margins);
@@ -377,7 +377,7 @@ public class Style
 
       if (_firstLineIndent)
       {
-         formatter.FirstLineIndent((~_firstLineIndent).Amount);
+         formatter.FirstLineIndent(_firstLineIndent.Value.Amount);
       }
 
       formatter.Margins(margins);

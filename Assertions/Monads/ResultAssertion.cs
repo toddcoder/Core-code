@@ -47,7 +47,7 @@ public class ResultAssertion<T> : IAssertion<T>
          case Result<T> _value:
             if (_value)
             {
-               constraints.Add(new Constraint(() => constraintFunction(~_value), message, not, name, resultImage(result)));
+               constraints.Add(new Constraint(() => constraintFunction(_value.Value), message, not, name, resultImage(result)));
             }
             else
             {

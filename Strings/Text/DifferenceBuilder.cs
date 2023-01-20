@@ -70,7 +70,7 @@ internal class DifferenceBuilder
                reverseDiagonal);
             if (_result)
             {
-               var result = ~_result;
+               var result = _result.Value;
                if (result.EditLength <= 0)
                {
                   return unit;

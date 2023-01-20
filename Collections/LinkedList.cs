@@ -152,7 +152,7 @@ public class LinkedList<T> : ICollection<T>, ICollection, IReadOnlyCollection<T>
          _node = list._head;
       }
 
-      public T Current => ~_current;
+      public T Current => _current.Value;
 
       object IEnumerator.Current => Current;
    }
@@ -211,7 +211,7 @@ public class LinkedList<T> : ICollection<T>, ICollection, IReadOnlyCollection<T>
       validateNode(node);
       var newNode = new Node(node.List, value);
       insertNodeBefore(node, newNode);
-      if (_head && node == ~_head)
+      if (_head && node == _head.Value)
       {
          _head = newNode;
       }
@@ -226,7 +226,7 @@ public class LinkedList<T> : ICollection<T>, ICollection, IReadOnlyCollection<T>
       insertNodeBefore(node, newNode);
       newNode.List = this;
 
-      if (!_head || node == ~_head)
+      if (!_head || node == _head.Value)
       {
          _head = newNode;
       }
@@ -300,8 +300,8 @@ public class LinkedList<T> : ICollection<T>, ICollection, IReadOnlyCollection<T>
       while (_current)
       {
          var _temp = _current;
-         _current = (~_current).Next;
-         (~_temp).Invalidate();
+         _current = _current.Value.Next;
+         _temp.Value.Invalidate();
       }
 
       _head = nil;
@@ -323,13 +323,13 @@ public class LinkedList<T> : ICollection<T>, ICollection, IReadOnlyCollection<T>
          return;
       }
 
-      var head = ~_head;
+      var head = _head.Value;
       do
       {
-         var node = ~_node;
+         var node = _node.Value;
          array[arrayIndex++] = node.Value;
          _node = node.Next;
-      } while (_node && ~_node != head);
+      } while (_node && _node.Value != head);
    }
 
    public Maybe<Node> Find(T value)
@@ -341,16 +341,16 @@ public class LinkedList<T> : ICollection<T>, ICollection, IReadOnlyCollection<T>
          return nil;
       }
 
-      var head = ~_head;
+      var head = _head.Value;
       var _node = _head;
       var equalityComparer = EqualityComparer<T>.Default;
       if (_node)
       {
-         var node = ~_node;
+         var node = _node.Value;
          while (!equalityComparer.Equals(node.Value, value))
          {
             _node = node.Next;
-            node = ~_node;
+            node = _node.Value;
             if (node == head)
             {
                return nil;
@@ -374,19 +374,19 @@ public class LinkedList<T> : ICollection<T>, ICollection, IReadOnlyCollection<T>
          return nil;
       }
 
-      var head = ~_head;
+      var head = _head.Value;
       var _previous = head.Previous;
       var _last = _previous;
       var equalityComparer = EqualityComparer<T>.Default;
 
       if (_last)
       {
-         var last = ~_last;
-         var previous = ~_previous;
+         var last = _last.Value;
+         var previous = _previous.Value;
          while (!equalityComparer.Equals(last.Value, value))
          {
             _last = last.Previous;
-            if (_last && ~_last == previous)
+            if (_last && _last.Value == previous)
             {
                return nil;
             }
@@ -423,14 +423,14 @@ public class LinkedList<T> : ICollection<T>, ICollection, IReadOnlyCollection<T>
    public void RemoveLast()
    {
       _head.Must().HaveValue().OrThrow();
-      removeNode((~_head).Previous);
+      removeNode(_head.Value.Previous);
    }
 
    protected void insertNodeBefore(Node node, Node newNode)
    {
       newNode.Next = node;
       newNode.Previous = node.Previous;
-      (~node.Previous).Next = newNode;
+      node.Previous.Value.Next = newNode;
       node.Previous = newNode;
 
       version++;
@@ -449,15 +449,15 @@ public class LinkedList<T> : ICollection<T>, ICollection, IReadOnlyCollection<T>
 
    protected void removeNode(Node node)
    {
-      if (node.Next && ~node.Next == node)
+      if (node.Next && node.Next.Value == node)
       {
          _head = nil;
       }
       else
       {
-         (~node.Next).Previous = node.Previous;
-         (~node.Previous).Next = node.Next;
-         if (~_head == node)
+         node.Next.Value.Previous = node.Previous;
+         node.Previous.Value.Next = node.Next;
+         if (_head.Value == node)
          {
             _head = node.Next;
          }
@@ -478,7 +478,7 @@ public class LinkedList<T> : ICollection<T>, ICollection, IReadOnlyCollection<T>
    {
       node.Must().Not.BeNull().OrThrow();
       node.List.Must().HaveValue().OrThrow();
-      (~node.List).Must().Equal(this).OrThrow();
+      node.List.Value.Must().Equal(this).OrThrow();
    }
 
    public void CopyTo(Array array, int index)
@@ -497,7 +497,7 @@ public class LinkedList<T> : ICollection<T>, ICollection, IReadOnlyCollection<T>
       {
          if (_syncRoot)
          {
-            var obj = ~_syncRoot;
+            var obj = _syncRoot.Value;
             Interlocked.CompareExchange<object>(ref obj, new object(), null);
             _syncRoot = obj;
          }

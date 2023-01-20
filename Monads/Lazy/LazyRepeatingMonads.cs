@@ -20,7 +20,7 @@ public class LazyRepeatingMonads
             _function = new LazyRepeatingMonads();
          }
 
-         return ~_function;
+         return _function.Value;
       }
    }
 

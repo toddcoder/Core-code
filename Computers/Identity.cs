@@ -97,9 +97,8 @@ public class Identity : IDisposable
          var _result = value.Matches(@"^ /([/w '-']+) '\' /([/w '-']+) $; f");
          if (_result)
          {
-            var result = ~_result;
-            domain = result.FirstGroup;
-            userName = result.SecondGroup;
+            domain = _result.Value.FirstGroup;
+            userName = _result.Value.SecondGroup;
          }
          else
          {
@@ -160,7 +159,7 @@ public class Identity : IDisposable
    {
       if (_impersonatedUser && impersonating)
       {
-         (~_impersonatedUser).Undo();
+         _impersonatedUser.Value.Undo();
 
          if (tokenHandle != IntPtr.Zero)
          {

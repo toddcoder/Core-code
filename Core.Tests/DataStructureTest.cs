@@ -47,7 +47,7 @@ public class DataStructureTest
       {
          if (stack.Last)
          {
-            Console.WriteLine(~stack.Last);
+            Console.WriteLine(stack.Last.Value);
          }
       }
    }

@@ -81,7 +81,7 @@ public class MaybeQueue<T> : IQueue<T>, IEnumerable<T>
       var _item = lazyRepeating.maybe<T>();
       while (_item.ValueOf(Dequeue()))
       {
-         yield return ~_item;
+         yield return _item.Value;
       }
    }
 

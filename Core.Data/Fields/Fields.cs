@@ -45,7 +45,7 @@ public class Fields : IEnumerable<Field>
    {
       if (_fieldsSetting)
       {
-         foreach (var field in (~_fieldsSetting).Settings().Select(t => Field.Parse(t.setting)))
+         foreach (var field in _fieldsSetting.Value.Settings().Select(t => Field.Parse(t.setting)))
          {
             Add(field);
          }

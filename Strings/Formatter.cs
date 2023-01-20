@@ -69,22 +69,15 @@ public class Formatter : IHash<string, string>
 
    public static string[] NamesInString(string source)
    {
+      var emptyArray = Array.Empty<string>();
       if (source.IsNotEmpty())
       {
          var _result = source.Matches(REGEX_NAME);
-         if (_result)
-         {
-            var result = ~_result;
-            return 0.Until(result.MatchCount).Select(i => result[i, 1]).ToArray();
-         }
-         else
-         {
-            return Array.Empty<string>();
-         }
+         return _result.Map(r => 0.Until(r.MatchCount).Select(i => r[i, 1]).ToArray()) | emptyArray;
       }
       else
       {
-         return Array.Empty<string>();
+         return emptyArray;
       }
    }
 
@@ -125,7 +118,7 @@ public class Formatter : IHash<string, string>
          var _matches = source.Matches(REGEX_NAME);
          if (_matches)
          {
-            foreach (var match in ~_matches)
+            foreach (var match in _matches.Value)
             {
                var slashes = match.FirstGroup;
                var name = match.SecondGroup;
@@ -144,7 +137,7 @@ public class Formatter : IHash<string, string>
                }
             }
 
-            return (~_matches).ToString();
+            return _matches.Value.ToString();
          }
          else
          {
@@ -162,13 +155,13 @@ public class Formatter : IHash<string, string>
       var _text = names.Maybe[name];
       if (_text)
       {
-         var text = ~_text;
+         var text = _text.Value;
          if (format.IsNotEmpty())
          {
             var _object = text.ToObject();
             if (_object)
             {
-               text = string.Format($"{{0{format}}}", ~_object);
+               text = string.Format($"{{0{format}}}", _object.Value);
             }
          }
 

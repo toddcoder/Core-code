@@ -119,7 +119,7 @@ public class RowBuilder
    {
       if (table.CurrentCell)
       {
-         (~table.CurrentCell).BackgroundColor = backgroundColor;
+         table.CurrentCell.Value.BackgroundColor = backgroundColor;
       }
       else
       {

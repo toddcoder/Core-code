@@ -567,7 +567,7 @@ public static class HashExtensions
          if (_internalHash)
          {
             var toSetting = new Setting();
-            foreach (var (key, value) in ~_internalHash)
+            foreach (var (key, value) in _internalHash.Value)
             {
                var keyAsString = key.ToString();
                toSetting.SetItem(keyAsString, new Item(keyAsString, value.ToString()));
@@ -592,14 +592,13 @@ public static class HashExtensions
       var _configuration = hash.ToSetting().Map(setting => new Configuration(file, setting.items, name));
       if (_configuration)
       {
-         var configuration = ~_configuration;
          if (save)
          {
-            return configuration.Save().Map(_ => configuration);
+            return _configuration.Value.Save().Map(_ => _configuration.Value);
          }
          else
          {
-            return configuration;
+            return _configuration.Value;
          }
       }
       else

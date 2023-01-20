@@ -6,32 +6,33 @@ namespace Core.Monads
    public class ResponseIterator<T>
    {
       protected IEnumerable<Responding<T>> enumerable;
-      protected Maybe<Action<T>> response;
-      protected Maybe<Action> noResponse;
-      protected Maybe<Action<Exception>> failure;
+      protected Maybe<Action<T>> _response;
+      protected Maybe<Action> _noResponse;
+      protected Maybe<Action<Exception>> _failure;
 
       public ResponseIterator(IEnumerable<Responding<T>> enumerable, Action<T> response = null, Action noResponse = null,
          Action<Exception> failure = null)
       {
          this.enumerable = enumerable;
-         this.response = response.Some();
-         this.noResponse = noResponse.Some();
-         this.failure = failure.Some();
+         _response = response.Some();
+         _noResponse = noResponse.Some();
+         _failure = failure.Some();
       }
 
       protected void handle(Responding<T> responding)
       {
-         if (responding && response)
+         if (responding && _response)
          {
-            (~response)(~responding);
+            var action = _response.Value;
+            action(responding.Value);
          }
-         else if (responding.AnyException && failure)
+         else if (responding.AnyException && _failure)
          {
-            (~failure)(responding.Exception);
+            _failure.Value(responding.Exception);
          }
-         else if (noResponse)
+         else if (_noResponse)
          {
-            (~noResponse)();
+            _noResponse.Value();
          }
       }
 

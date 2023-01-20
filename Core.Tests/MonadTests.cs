@@ -60,7 +60,7 @@ public class MonadTests
       var _value = completion.Result;
       if (_value)
       {
-         Console.WriteLine($"Value is {~_value}");
+         Console.WriteLine($"Value is {_value.Value}");
       }
       else if (_value.AnyException)
       {
@@ -172,13 +172,13 @@ public class MonadTests
       var _text = (1 > 0).SomeIf(() => "foobar");
       if (_text)
       {
-         Console.WriteLine(~_text);
+         Console.WriteLine(_text.Value);
       }
 
       _text = func(() => 1 > 0).SomeIf(() => "foobar");
       if (_text)
       {
-         Console.WriteLine(~_text);
+         Console.WriteLine(_text.Value);
       }
    }
 
@@ -308,7 +308,7 @@ public class MonadTests
       var _result = maybe<string>() & date.Second < 30 & "seconds < 30";
       if (_result)
       {
-         Console.WriteLine(~_result);
+         Console.WriteLine(_result.Value);
       }
       else
       {
@@ -331,7 +331,7 @@ public class MonadTests
       var _result = result<string>() & date.Second < 30 & "seconds < 30" & fail($"Only {"second(s)".Plural(date.Second)}");
       if (_result)
       {
-         Console.WriteLine(~_result);
+         Console.WriteLine(_result.Value);
       }
       else
       {
@@ -345,7 +345,7 @@ public class MonadTests
       Maybe<string> _maybe = "foobar";
       if (_maybe)
       {
-         Console.WriteLine(~_maybe);
+         Console.WriteLine(_maybe.Value);
       }
 
       var x = 1;
@@ -353,7 +353,7 @@ public class MonadTests
       y -= 10;
       var _result = tryTo(() => x / y);
 
-      var message = _result ? (~_result).ToString() : _result.Exception.Message;
+      var message = _result ? _result.Value.ToString() : _result.Exception.Message;
       Console.WriteLine(message);
    }
 
@@ -392,7 +392,7 @@ public class MonadTests
       Maybe<int> _number = 153;
       if (_number)
       {
-         Console.WriteLine(~_number);
+         Console.WriteLine(_number.Value);
       }
    }
 
@@ -412,7 +412,7 @@ public class MonadTests
       var _result = matcher.Matches();
       if (_result)
       {
-         Console.WriteLine(~_result);
+         Console.WriteLine(_result.Value);
       }
       else
       {
@@ -451,17 +451,17 @@ public class MonadTests
 
       if (_one)
       {
-         Console.WriteLine(~_one);
+         Console.WriteLine(_one.Value);
       }
 
       if (_two)
       {
-         Console.WriteLine(~_two);
+         Console.WriteLine(_two.Value);
       }
 
       if (_three)
       {
-         Console.WriteLine(~_three);
+         Console.WriteLine(_three.Value);
       }
    }
 
@@ -474,15 +474,15 @@ public class MonadTests
 
       if (_one.ValueOf("one"))
       {
-         Console.WriteLine(~_one);
+         Console.WriteLine(_one.Value);
       }
       else if (_two.ValueOf("two"))
       {
-         Console.WriteLine(~_two);
+         Console.WriteLine(_two.Value);
       }
       else if (_three.ValueOf("three"))
       {
-         Console.WriteLine(~_three);
+         Console.WriteLine(_three.Value);
       }
    }
 
@@ -498,7 +498,7 @@ public class MonadTests
       var _item = lazyRepeating.maybe<string>();
       while (_item.ValueOf(stack.Pop()))
       {
-         Console.WriteLine(~_item);
+         Console.WriteLine(_item.Value);
       }
    }
 
@@ -506,7 +506,7 @@ public class MonadTests
    public void ChainedLazyMonadsTest()
    {
       var _first = lazy.maybe<string>(() => "foobar");
-      var _second = _first.Then<int>(s => s.Length);
+      var _second = _first.Then(s => s.Length);
       if (_second)
       {
          Console.WriteLine($"Length: {_second} = 6");
@@ -523,9 +523,9 @@ public class MonadTests
       var _third = _second.Then(_ => getResult("charlie", true, 3));
       if (_third)
       {
-         Console.WriteLine(~_first);
-         Console.WriteLine(~_second);
-         Console.WriteLine(~_third);
+         Console.WriteLine(_first.Value);
+         Console.WriteLine(_second.Value);
+         Console.WriteLine(_third.Value);
       }
       else
       {
@@ -541,9 +541,9 @@ public class MonadTests
       var _third = _second.Then(_ => getResult("charlie", true, 3));
       if (_third)
       {
-         Console.WriteLine(~_first);
-         Console.WriteLine(~_second);
-         Console.WriteLine(~_third);
+         Console.WriteLine(_first.Value);
+         Console.WriteLine(_second.Value);
+         Console.WriteLine(_third.Value);
       }
       else
       {
@@ -559,9 +559,9 @@ public class MonadTests
       var _third = _second.Then(_ => getResult("charlie", false, 3));
       if (_third)
       {
-         Console.WriteLine(~_first);
-         Console.WriteLine(~_second);
-         Console.WriteLine(~_third);
+         Console.WriteLine(_first.Value);
+         Console.WriteLine(_second.Value);
+         Console.WriteLine(_third.Value);
       }
       else
       {

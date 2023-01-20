@@ -20,7 +20,7 @@ public class TextComparisonTest
       var _model = diff.BuildModel();
       if (_model)
       {
-         var model = ~_model;
+         var model = _model.Value;
          Console.WriteLine(model);
 
          var oldDifferences = model.OldDifferences();

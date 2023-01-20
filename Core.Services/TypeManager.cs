@@ -80,17 +80,17 @@ public class TypeManager
          var _typeName = lazy.result<string>();
          if (_type.ValueOf(typeCache.Maybe[name]))
          {
-            return ~_type;
+            return _type.Value;
          }
          else if (_typeName.ValueOf(getTypeName(name)))
          {
-            var typeName = ~_typeName;
+            var typeName = _typeName.Value;
             var _result = lazy.maybe<MatchResult>();
             var _assemblyType = lazy.result<Type>();
 
             if (_result.ValueOf(typeName.Matches("^ -/{<} '<' -/{:} ':' /s* -/{>} '>' $; f")))
             {
-               var (possibleTypeName, subTypeName, subAssemblyName) = ~_result;
+               var (possibleTypeName, subTypeName, subAssemblyName) = _result.Value;
                typeName = $"{possibleTypeName}`1";
 
                var _genericType =
@@ -134,11 +134,11 @@ public class TypeManager
          var _path = lazy.maybe<string>();
          if (_assembly.ValueOf(assemblyCache.Maybe[name]))
          {
-            return ~_assembly;
+            return _assembly.Value;
          }
          else if (_path.ValueOf(assemblyNames.Maybe[name]))
          {
-            FolderName.Current = ((FileName)~_path).Folder;
+            FolderName.Current = ((FileName)_path.Value).Folder;
             var assembly = LoadFrom(_path);
             assemblyCache[name] = assembly;
 

@@ -58,7 +58,7 @@ public class ScheduleIncrement
                   select current;
                if (_target)
                {
-                  var target = ~_target;
+                  var target = _target.Value;
                   if (target <= now)
                   {
                      target.Year += year;
@@ -84,7 +84,7 @@ public class ScheduleIncrement
                   select current;
                if (_target)
                {
-                  var target = ~_target;
+                  var target = _target.Value;
                   if (target <= now)
                   {
                      target.Month += month;
@@ -108,7 +108,7 @@ public class ScheduleIncrement
                   select current;
                if (_target)
                {
-                  var target = ~_target;
+                  var target = _target.Value;
                   if (target <= now)
                   {
                      target.Day += _day;

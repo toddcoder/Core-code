@@ -13,7 +13,7 @@ public class GitBranch : IEquatable<GitBranch>
       var _result = branch.Matches("^ /(-['//']+) '//' /(.+) $; f");
       if (_result)
       {
-         var (origin, branchName) = ~_result;
+         var (origin, branchName) = _result.Value;
          return new GitBranch(branchName) { Origin = origin };
       }
       else
@@ -29,8 +29,7 @@ public class GitBranch : IEquatable<GitBranch>
          var _lines = Git.TryTo.Execute("rev-parse --abbrev-ref HEAD");
          if (_lines)
          {
-            var lines = ~_lines;
-            return lines.Length > 0 ? lines[0].Trim() : throw fail("Branch not found");
+            return _lines.Value.Length > 0 ? _lines.Value[0].Trim() : throw fail("Branch not found");
          }
          else
          {

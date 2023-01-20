@@ -152,7 +152,7 @@ public class FolderNameTests
          select existing;
       if (_folder)
       {
-         foreach (var file in (~_folder).Files)
+         foreach (var file in _folder.Value.Files)
          {
             Console.WriteLine(file.NameExtension);
          }

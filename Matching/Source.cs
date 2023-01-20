@@ -36,9 +36,8 @@ public class Source
             var _result = current.Matches(REGEX_NEXT_LINE);
             if (_result)
             {
-               var result = ~_result;
-               Advance(result.Length);
-               return result.FirstGroup;
+               Advance(_result.Value.Length);
+               return _result.Value.FirstGroup;
             }
          }
       }
@@ -57,7 +56,7 @@ public class Source
             var _firstGroup = current.Matches(REGEX_NEXT_LINE).Map(r => r.FirstGroup);
             if (_firstGroup)
             {
-               _peekLength = (~_firstGroup).Length;
+               _peekLength = _firstGroup.Value.Length;
                return _firstGroup;
             }
          }
@@ -111,9 +110,8 @@ public class Source
          var _result = current.Matches(REGEX_NEXT_LINE);
          if (_result)
          {
-            var result = ~_result;
-            line = result.FirstGroup;
-            Advance(result.Length);
+            line = _result.Value.FirstGroup;
+            Advance(_result.Value.Length);
          }
          else
          {
@@ -153,7 +151,7 @@ public class Source
          var _line = NextLine();
          if (_line)
          {
-            if ((~_line).IsMatch(pattern))
+            if (_line.Value.IsMatch(pattern))
             {
                return _line;
             }

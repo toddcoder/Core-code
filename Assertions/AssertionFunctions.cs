@@ -79,7 +79,7 @@ public static class AssertionFunctions
    {
       if (matched)
       {
-         return (~matched).ToNonNullString();
+         return matched.Value.ToNonNullString();
       }
       else if (matched.AnyException)
       {
@@ -95,7 +95,7 @@ public static class AssertionFunctions
    {
       if (completion)
       {
-         return (~completion).ToNonNullString();
+         return completion.Value.ToNonNullString();
       }
       else if (completion.AnyException)
       {
@@ -118,7 +118,7 @@ public static class AssertionFunctions
       var _constraint = assertion.Constraints.FirstOrNone(c => !c.IsTrue());
       if (_constraint)
       {
-         throw fail((~_constraint).Message);
+         throw fail(_constraint.Value.Message);
       }
    }
 
@@ -256,7 +256,7 @@ public static class AssertionFunctions
       var _obj = valueCache.Maybe[key];
       if (_obj)
       {
-         return (name, (T)~_obj);
+         return (name, (T)_obj.Value);
       }
 
       var value = expression.Compile()();

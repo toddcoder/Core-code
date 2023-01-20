@@ -66,7 +66,7 @@ public class ExpiringCache<TKey, TValue> : IHash<TKey, TValue>
    {
       if (_timer)
       {
-         (~_timer).Enabled = true;
+         _timer.Value.Enabled = true;
       }
    }
 
@@ -74,7 +74,7 @@ public class ExpiringCache<TKey, TValue> : IHash<TKey, TValue>
    {
       if (_timer)
       {
-         (~_timer).Enabled = false;
+         _timer.Value.Enabled = false;
       }
    }
 
@@ -89,7 +89,7 @@ public class ExpiringCache<TKey, TValue> : IHash<TKey, TValue>
             {
                var policy = expirationPolicies.Find(key, _ => newPolicy(), true);
                policy.Reset();
-               if (policy.ItemEvictable(~_value))
+               if (policy.ItemEvictable(_value.Value))
                {
                   cache.Remove(key);
                   expirationPolicies.Remove(key);
@@ -98,7 +98,7 @@ public class ExpiringCache<TKey, TValue> : IHash<TKey, TValue>
                }
                else
                {
-                  return ~_value;
+                  return _value.Value;
                }
             }
             else

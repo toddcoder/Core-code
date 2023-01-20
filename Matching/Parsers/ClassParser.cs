@@ -49,7 +49,7 @@ public class ClassParser : BaseParser
                }
                else
                {
-                  content.Append(~_result);
+                  content.Append(_result.Value);
                   added = true;
                   break;
                }

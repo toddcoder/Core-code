@@ -58,12 +58,11 @@ internal class Parser
             }
             else if (_result.ValueOf(source.Matches("^ /s* /(-[/r /n]*) ('/r/n')?; f")))
             {
-               var result = ~_result;
-               var _stringInfo = getString(result.FirstGroup);
+               var _stringInfo = getString(_result.Value.FirstGroup);
                if (_stringInfo)
                {
-                  var (_, @string, _) = ~_stringInfo;
-                  source = source.Drop(result.Length);
+                  var (_, @string, _) = _stringInfo.Value;
+                  source = source.Drop(_result.Value.Length);
                   lines.Add(@string);
                }
                else
@@ -84,16 +83,12 @@ internal class Parser
 
          if (_quote.ValueOf(source.Matches("^ /s* /[quote]; f")))
          {
-            var result = ~_quote;
-            var quote = result.FirstGroup[0];
-
-            return getQuotedString(source.Drop(result.Length), quote);
+            var quote = _quote.Value.FirstGroup[0];
+            return getQuotedString(source.Drop(_quote.Value.Length), quote);
          }
          else if (_openBrace.ValueOf(source.Matches("^ /s* '{' [/r /n]+; f")))
          {
-            var result = ~_openBrace;
-            var newSource = source.Drop(result.Length);
-
+            var newSource = source.Drop(_openBrace.Value.Length);
             return getLinesAsArray(newSource);
          }
          else if (_endOfLine.ValueOf(source.Matches("^ /s* /(-[/r /n]*) ('/r/n')?; f")))
@@ -236,7 +231,7 @@ internal class Parser
             var _parentSetting = peekSetting();
             if (_parentSetting)
             {
-               (~_parentSetting).SetItem(key, setting);
+               _parentSetting.Value.SetItem(key, setting);
             }
             else
             {
@@ -249,13 +244,13 @@ internal class Parser
          }
          else if (_settingKey.ValueOf(source.Matches($"^ /s* {REGEX_KEY} /s* '['; f").Map(r => r.FirstGroupAndLength)))
          {
-            var (settingKey, length) = ~_settingKey;
+            var (settingKey, length) = _settingKey.Value;
             var key = GetKey(settingKey);
             var setting = new Setting(key);
             var _parentSetting = peekSetting();
             if (_parentSetting)
             {
-               (~_parentSetting).SetItem(key, setting);
+               _parentSetting.Value.SetItem(key, setting);
             }
             else
             {
@@ -274,7 +269,7 @@ internal class Parser
                var _parentSetting = peekSetting();
                if (_parentSetting)
                {
-                  (~_parentSetting).SetItem((~_setting).Key, _setting);
+                  _parentSetting.Value.SetItem(_setting.Value.Key, _setting);
                }
                else
                {
@@ -290,13 +285,13 @@ internal class Parser
          }
          else if (_oneLineKey.ValueOf(source.Matches($"^ /s* {REGEX_KEY} '.'; f").Map(r => r.FirstGroupAndLength)))
          {
-            var (oneLineKey, length) = ~_oneLineKey;
+            var (oneLineKey, length) = _oneLineKey.Value;
             var key = GetKey(oneLineKey);
             var setting = new Setting(key);
             var _parentSetting = peekSetting();
             if (_parentSetting)
             {
-               (~_parentSetting).SetItem(key, setting);
+               _parentSetting.Value.SetItem(key, setting);
             }
             else
             {
@@ -312,7 +307,7 @@ internal class Parser
             var _stringTuple = getString(remainder);
             if (_stringTuple)
             {
-               var (aSource, value, isArray) = ~_stringTuple;
+               var (aSource, value, isArray) = _stringTuple.Value;
                source = aSource;
                var item = new Item(key, value)
                {
@@ -321,7 +316,7 @@ internal class Parser
                var _setting = peekSetting();
                if (_setting)
                {
-                  (~_setting).SetItem(item.Key, item);
+                  _setting.Value.SetItem(item.Key, item);
                }
             }
             else if (source.IsMatch("^ /s+ $; f"))
@@ -335,13 +330,13 @@ internal class Parser
          }
          else if (_key.ValueOf(source.Matches($"^ /s* {REGEX_KEY} ':' /s*; f").Map(r => r.FirstGroupAndLength)))
          {
-            var (key, length) = ~_key;
+            var (key, length) = _key.Value;
             key = GetKey(key);
             var remainder = source.Drop(length);
             var _tupleString = getString(remainder);
             if (_tupleString)
             {
-               var (aSource, value, isArray) = ~_tupleString;
+               var (aSource, value, isArray) = _tupleString.Value;
                source = aSource;
                var item = new Item(key, value)
                {
@@ -350,7 +345,7 @@ internal class Parser
                var _setting = peekSetting();
                if (_setting)
                {
-                  (~_setting).SetItem(item.Key, item);
+                  _setting.Value.SetItem(item.Key, item);
                }
             }
             else if (source.IsMatch("^ /s+ $; f"))
@@ -368,7 +363,7 @@ internal class Parser
          }
          else if (_string.ValueOf(getString(source.TrimLeft())))
          {
-            var (aSource, value, isArray) = ~_string;
+            var (aSource, value, isArray) = _string.Value;
             source = aSource;
             var key = GenerateKey();
             var item = new Item(key, value)
@@ -378,7 +373,7 @@ internal class Parser
             var _setting = peekSetting();
             if (_setting)
             {
-               (~_setting).SetItem(item.Key, item);
+               _setting.Value.SetItem(item.Key, item);
             }
          }
          else
@@ -398,7 +393,7 @@ internal class Parser
          var _parentSetting = popSetting();
          if (_parentSetting)
          {
-            (~_parentSetting).SetItem((~_setting).Key, _setting);
+            _parentSetting.Value.SetItem(_setting.Value.Key, _setting);
          }
          else
          {

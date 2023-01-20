@@ -96,7 +96,7 @@ public class ServiceMessage : IServiceMessage
       {
          if (_eventWriter)
          {
-            (~_eventWriter).EmitException(exception);
+            _eventWriter.Value.EmitException(exception);
          }
       }
    }
@@ -115,9 +115,8 @@ public class ServiceMessage : IServiceMessage
          {
             if (_eventWriter)
             {
-               var eventWriter = ~_eventWriter;
-               eventWriter.EmitException(exception);
-               eventWriter.EmitException(innerException);
+               _eventWriter.Value.EmitException(exception);
+               _eventWriter.Value.EmitException(innerException);
             }
          }
       }
@@ -137,9 +136,8 @@ public class ServiceMessage : IServiceMessage
          {
             if (_eventWriter)
             {
-               var eventWriter = ~_eventWriter;
-               eventWriter.EmitExceptionAttempt(exception, retry);
-               eventWriter.EmitException(innerException);
+               _eventWriter.Value.EmitExceptionAttempt(exception, retry);
+               _eventWriter.Value.EmitException(innerException);
             }
          }
       }
@@ -157,14 +155,14 @@ public class ServiceMessage : IServiceMessage
 
          if (_errorMessage)
          {
-            (~_errorMessage).AppendLine(strMessage.Drop(1));
+            _errorMessage.Value.AppendLine(strMessage.Drop(1));
          }
 
          return false;
       }
       else if (_errorMessage)
       {
-         EmitExceptionMessage((~_errorMessage).ToString());
+         EmitExceptionMessage(_errorMessage.Value);
          return true;
       }
       else
@@ -189,9 +187,8 @@ public class ServiceMessage : IServiceMessage
             {
                if (_eventWriter)
                {
-                  var eventWriter = ~_eventWriter;
-                  eventWriter.EmitMessage(message);
-                  eventWriter.EmitException(exception);
+                  _eventWriter.Value.EmitMessage(message);
+                  _eventWriter.Value.EmitException(exception);
                }
             }
          }
@@ -214,9 +211,8 @@ public class ServiceMessage : IServiceMessage
             {
                if (_eventWriter)
                {
-                  var eventWriter = ~_eventWriter;
-                  eventWriter.EmitMessage(message);
-                  eventWriter.EmitException(exception);
+                  _eventWriter.Value.EmitMessage(message);
+                  _eventWriter.Value.EmitException(exception);
                }
             }
          }
@@ -237,9 +233,8 @@ public class ServiceMessage : IServiceMessage
          {
             if (_eventWriter)
             {
-               var eventWriter = ~_eventWriter;
-               eventWriter.EmitExceptionMessage(message);
-               eventWriter.EmitException(exception);
+               _eventWriter.Value.EmitExceptionMessage(message);
+               _eventWriter.Value.EmitException(exception);
             }
          }
       }
@@ -259,9 +254,8 @@ public class ServiceMessage : IServiceMessage
          {
             if (_eventWriter)
             {
-               var eventWriter = ~_eventWriter;
-               eventWriter.EmitExceptionMessage(message);
-               eventWriter.EmitException(exception);
+               _eventWriter.Value.EmitExceptionMessage(message);
+               _eventWriter.Value.EmitException(exception);
             }
          }
       }
@@ -281,9 +275,8 @@ public class ServiceMessage : IServiceMessage
          {
             if (_eventWriter)
             {
-               var eventWriter = ~_eventWriter;
-               eventWriter.EmitWarning(exception);
-               eventWriter.EmitException(e);
+               _eventWriter.Value.EmitWarning(exception);
+               _eventWriter.Value.EmitException(e);
             }
          }
       }
@@ -303,9 +296,8 @@ public class ServiceMessage : IServiceMessage
          {
             if (_eventWriter)
             {
-               var eventWriter = ~_eventWriter;
-               eventWriter.EmitWarningMessage(message);
-               eventWriter.EmitException(e);
+               _eventWriter.Value.EmitWarningMessage(message);
+               _eventWriter.Value.EmitException(e);
             }
          }
       }
@@ -324,9 +316,8 @@ public class ServiceMessage : IServiceMessage
          {
             if (_eventWriter)
             {
-               var eventWriter = ~_eventWriter;
-               eventWriter.EmitWarningMessage(message);
-               eventWriter.EmitException(e);
+               _eventWriter.Value.EmitWarningMessage(message);
+               _eventWriter.Value.EmitException(e);
             }
          }
       }
@@ -409,7 +400,7 @@ public class ServiceMessage : IServiceMessage
          {
             if (_eventWriter)
             {
-               (~_eventWriter).EmitException(exception);
+               _eventWriter.Value.EmitException(exception);
             }
          }
       }

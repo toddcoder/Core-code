@@ -142,7 +142,7 @@ public class Menus : IHash<string, ToolStripMenuItem>
          select toolStripMenuItem;
       if (_toolStripMenuItem)
       {
-         (~_toolStripMenuItem).Click += handler;
+         _toolStripMenuItem.Value.Click += handler;
       }
    }
 
@@ -220,7 +220,7 @@ public class Menus : IHash<string, ToolStripMenuItem>
       var _result = text.Matches("^ /(['^%|']+)? /(/w+) $; f");
       if (_result)
       {
-         var result = ~_result;
+         var result = _result.Value;
          var keys = (Keys)0;
          var prefix = result[0, 1];
          if (prefix.IsNotEmpty())

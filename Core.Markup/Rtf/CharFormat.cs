@@ -207,16 +207,16 @@ public class CharFormat
 
       if (_hyperlink)
       {
-         var localHyperlinkTip = _hyperlinkTip | ~_hyperlink;
+         var localHyperlinkTip = _hyperlinkTip | _hyperlink.Value;
          result.Append($@"{{\field{{\*\fldinst HYPERLINK ""{_hyperlink}""}}{{\fldrslt{{\ul\cf1 {localHyperlinkTip}}}}}}}");
       }
 
       if (_font)
       {
-         var fontValue = (~_font).Value;
+         var fontValue = _font.Value.Value;
          if (_ansiFont)
          {
-            var ansiFontValue = (~_ansiFont).Value;
+            var ansiFontValue = _ansiFont.Value.Value;
             result.Append($@"\loch\af{ansiFontValue}\hich\af{ansiFontValue}\dbch\af{fontValue}");
          }
          else
@@ -226,22 +226,22 @@ public class CharFormat
       }
       else if (_ansiFont)
       {
-         result.Append(@"\f" + (~_ansiFont).Value);
+         result.Append(@"\f" + _ansiFont.Value.Value);
       }
 
       if (_fontSize)
       {
-         result.Append($@"\fs{(~_fontSize).PointToHalfPoint()}");
+         result.Append($@"\fs{_fontSize.Value.PointToHalfPoint()}");
       }
 
       if (_foregroundColor)
       {
-         result.Append($@"\cf{(~_foregroundColor).Value}");
+         result.Append($@"\cf{_foregroundColor.Value.Value}");
       }
 
       if (_backgroundColor)
       {
-         var backgroundColorValue = (~_backgroundColor).Value;
+         var backgroundColorValue = _backgroundColor.Value.Value;
          result.Append($@"\chshdng0\chcbpat{backgroundColorValue}\cb{backgroundColorValue}");
       }
 

@@ -6,6 +6,7 @@ using static System.Reflection.Assembly;
 using static System.Linq.Expressions.Expression;
 using static Core.Arrays.ArrayFunctions;
 using static Core.Monads.AttemptFunctions;
+using static Core.Monads.Lazy.LazyMonads;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Objects;
@@ -62,24 +63,20 @@ public static class TypeExtensions
    {
       try
       {
-         var _result = source.Matches("^ -/{,} ','? /s* /{a-zA-Z_0-9.} $; f");
-         if (_result)
+         var _ungenericResult = lazy.maybe<MatchResult>();
+         var _genericResult = lazy.maybe<MatchResult>();
+         if (_ungenericResult.ValueOf(source.Matches("^ -/{,} ','? /s* /{a-zA-Z_0-9.} $; f")))
          {
-            var result = ~_result;
-            return getUngenericType(result.FirstGroup, result.SecondGroup);
+            return getUngenericType(_ungenericResult.Value.FirstGroup, _ungenericResult.Value.SecondGroup);
+         }
+         else if (_genericResult.ValueOf(source.Matches("^ -/{,} ','? /s* /{a-zA-Z_0-9.} '<' -/{,} ',' -/{>} '>' $; f")))
+         {
+            return getGenericType(_genericResult.Value.FirstGroup, _genericResult.Value.SecondGroup, _genericResult.Value.ThirdGroup,
+               _genericResult.Value.FourthGroup);
          }
          else
          {
-            _result = source.Matches("^ -/{,} ','? /s* /{a-zA-Z_0-9.} '<' -/{,} ',' -/{>} '>' $; f");
-            if (_result)
-            {
-               var result = ~_result;
-               return getGenericType(result.FirstGroup, result.SecondGroup, result.ThirdGroup, result.FourthGroup);
-            }
-            else
-            {
-               return Type.GetType(source);
-            }
+            return Type.GetType(source);
          }
       }
       catch (Exception exception)

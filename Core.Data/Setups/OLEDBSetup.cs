@@ -33,7 +33,7 @@ public class OleDbSetup : ISetup
          select (_parameters, _fields, _command, _connection);
       if (_result)
       {
-         var (parameters, fields, command, connection) = ~_result;
+         var (parameters, fields, command, connection) = _result.Value;
          var type = connection.Type.ToLower();
          var _connectionString = type switch
          {

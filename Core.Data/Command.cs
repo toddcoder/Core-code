@@ -32,7 +32,7 @@ public class Command
          }
          else if (_fileName.ValueOf(commandSetting.Maybe.String("file")))
          {
-            FileName file = ~_fileName;
+            FileName file = _fileName.Value;
             command = file.Text;
          }
          else
@@ -61,7 +61,7 @@ public class Command
       }
       else if (_fileName.ValueOf(commandSetting.Maybe.String("file")))
       {
-         FileName file = ~_fileName;
+         FileName file = _fileName.Value;
          Text = file.Text;
       }
       else

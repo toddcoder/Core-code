@@ -7,28 +7,28 @@ namespace Core.Monads;
 internal class ResultIterator<T>
 {
    protected IEnumerable<Result<T>> enumerable;
-   protected Maybe<Action<T>> success;
-   protected Maybe<Action<Exception>> failure;
+   protected Maybe<Action<T>> _success;
+   protected Maybe<Action<Exception>> _failure;
 
    public ResultIterator(IEnumerable<Result<T>> enumerable, Action<T> ifSuccess = null, Action<Exception> ifFailure = null)
    {
       this.enumerable = enumerable;
-      success = ifSuccess.Some();
-      failure = ifFailure.Some();
+      _success = ifSuccess.Some();
+      _failure = ifFailure.Some();
    }
 
    protected void handle(Result<T> result)
    {
       if (result)
       {
-         if (success)
+         if (_success)
          {
-            (~success)(~result);
+            _success.Value(result.Value);
          }
       }
-      else if (failure)
+      else if (_failure)
       {
-         (~failure)(result.Exception);
+         _failure.Value(result.Exception);
       }
    }
 
@@ -51,7 +51,7 @@ internal class ResultIterator<T>
          handle(_result);
          if (_result)
          {
-            list.Add(~_result);
+            list.Add(_result.Value);
          }
       }
 
@@ -83,7 +83,7 @@ internal class ResultIterator<T>
          handle(_result);
          if (_result)
          {
-            list.Add(~_result);
+            list.Add(_result.Value);
          }
          else
          {

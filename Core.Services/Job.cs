@@ -63,11 +63,11 @@ public class Job : IDisposable, IEquatable<Job>, IAddServiceMessages
          var _nameFromDefaultValue = lazy.maybe<string>();
          if (_nameFromObjectName.ValueOf(setting.Maybe.String(objectName)))
          {
-            return ~_nameFromObjectName;
+            return _nameFromObjectName.Value;
          }
          else if (_nameFromDefaultValue.ValueOf(defaultValue()))
          {
-            return ~_nameFromDefaultValue;
+            return _nameFromDefaultValue.Value;
          }
          else
          {
@@ -94,7 +94,7 @@ public class Job : IDisposable, IEquatable<Job>, IAddServiceMessages
          select createdPlugin;
       if (_plugin)
       {
-         plugin = ~_plugin;
+         plugin = _plugin.Value;
          if (plugin is IRequiresTypeManager requiresTypeManager)
          {
             requiresTypeManager.TypeManager = typeManager;
@@ -149,7 +149,7 @@ public class Job : IDisposable, IEquatable<Job>, IAddServiceMessages
       if (_timer)
       {
          _stopTime = maybe<DateTime>() & timerEnabled & (() => NowServer.Now);
-         (~_timer).Enabled = timerEnabled;
+         _timer.Value.Enabled = timerEnabled;
       }
    }
 
@@ -181,7 +181,7 @@ public class Job : IDisposable, IEquatable<Job>, IAddServiceMessages
                plugin.ServiceMessage.EmitException(exception);
                if (plugin.After)
                {
-                  (~plugin.After).AfterFailure(exception);
+                  plugin.After.Value.AfterFailure(exception);
                }
             }
             finally
@@ -200,7 +200,7 @@ public class Job : IDisposable, IEquatable<Job>, IAddServiceMessages
    {
       if (_scheduler)
       {
-         var scheduler = ~_scheduler;
+         var scheduler = _scheduler.Value;
          var schedule = scheduler.NextSchedule;
          plugin.BeforeDispatch(schedule);
          scheduler.Next();
@@ -213,12 +213,12 @@ public class Job : IDisposable, IEquatable<Job>, IAddServiceMessages
             {
                if (_afterPlugin)
                {
-                  (~_afterPlugin).AfterSuccess();
+                  _afterPlugin.Value.AfterSuccess();
                }
             }
             else if (_afterPlugin)
             {
-               (~_afterPlugin).AfterFailure(_dispatched.Exception);
+               _afterPlugin.Value.AfterFailure(_dispatched.Exception);
             }
          }
 

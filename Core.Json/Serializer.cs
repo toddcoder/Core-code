@@ -73,19 +73,19 @@ public class Serializer
 
       if (_int.ValueOf(Maybe.Int32(text)))
       {
-         writer.Write(~_int);
+         writer.Write(_int.Value);
       }
       else if (_float.ValueOf(Maybe.Double(text)))
       {
-         writer.Write(~_float);
+         writer.Write(_float.Value);
       }
       else if (_bool.ValueOf(Maybe.Boolean(text)))
       {
-         writer.Write(~_bool);
+         writer.Write(_bool.Value);
       }
       else if (_dateTime.ValueOf(Maybe.DateTime(text)))
       {
-         var zulu = (~_dateTime).Zulu();
+         var zulu = _dateTime.Value.Zulu();
          writer.Write(zulu);
       }
       else

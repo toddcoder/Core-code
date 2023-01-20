@@ -68,7 +68,7 @@ public class CollectionTest
       var _item = lazyRepeating.maybe<int>();
       while (_item.ValueOf(queue.Dequeue()))
       {
-         Console.WriteLine(~_item);
+         Console.WriteLine(_item.Value);
       }
    }
 
@@ -168,7 +168,7 @@ public class CollectionTest
       var _item = lazyRepeating.result<string>();
       if (_item.ValueOf(stack.Item(0)))
       {
-         Console.WriteLine(~_item);
+         Console.WriteLine(_item.Value);
       }
       else
       {
@@ -177,7 +177,7 @@ public class CollectionTest
 
       if (_item.ValueOf(stack.Item(-1)))
       {
-         Console.WriteLine(~_item);
+         Console.WriteLine(_item.Value);
       }
       else
       {

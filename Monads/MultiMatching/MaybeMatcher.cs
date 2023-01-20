@@ -86,7 +86,7 @@ public class MaybeMatcher<T, TResult>
 
       if (_defaultFunction)
       {
-         return (~_defaultFunction)();
+         return _defaultFunction.Value();
       }
       else
       {
@@ -178,7 +178,7 @@ public class MaybeMatcher<T>
 
       if (_defaultAction)
       {
-         (~_defaultAction)();
+         _defaultAction.Value();
       }
 
       return nil;

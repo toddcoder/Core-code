@@ -74,9 +74,8 @@ public abstract class Plugin
    {
       if (_retrier)
       {
-         var retrier = ~_retrier;
-         retrier.Execute();
-         if (retrier.AllRetriesFailed)
+         _retrier.Value.Execute();
+         if (_retrier.Value.AllRetriesFailed)
          {
             serviceMessage.EmitExceptionMessage(finalExceptionMessage);
          }
@@ -133,7 +132,7 @@ public abstract class Plugin
                applicationName = configuration.Value.String("name");
 
                serviceMessage = new ServiceMessage(applicationName);
-               serviceMessage.Add(~_serviceLogger);
+               serviceMessage.Add(_serviceLogger.Value);
                serviceMessage.Add(namedExceptions);
 
                return unit;
@@ -159,9 +158,8 @@ public abstract class Plugin
       _retrier = maybe(retries > 0, () => new Retrier(retries, InnerDispatch, retryException));
       if (_retrier)
       {
-         var retrier = ~_retrier;
-         retrier.Successful += (_, e) => SuccessfulInnerDispatch(e.RetryCount);
-         retrier.Failed += (_, e) => FailedInnerDispatch(e.RetryCount);
+         _retrier.Value.Successful += (_, e) => SuccessfulInnerDispatch(e.RetryCount);
+         _retrier.Value.Failed += (_, e) => FailedInnerDispatch(e.RetryCount);
       }
    }
 

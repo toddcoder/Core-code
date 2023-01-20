@@ -19,8 +19,7 @@ public class SwitchHelpFormatter
       var _matches = source.Matches("'{' /(-['.']+) '...' /(-['}']+) '}'; f");
       if (_matches)
       {
-         var matches = ~_matches;
-         foreach (var match in matches)
+         foreach (var match in _matches.Value)
          {
             var left = match.FirstGroup.Unjoin("/s* ',' /s*; f");
             var right = match.SecondGroup.Unjoin("/s* ',' /s*; f");
@@ -36,7 +35,7 @@ public class SwitchHelpFormatter
             match.Text = list.ToString(";");
          }
 
-         return matches.ToString();
+         return _matches.Value.ToString();
       }
       else
       {
@@ -96,7 +95,7 @@ public class SwitchHelpFormatter
          {
             if (_divider)
             {
-               writer.WriteLine(~_divider);
+               writer.WriteLine(_divider.Value);
             }
             else
             {
@@ -106,7 +105,7 @@ public class SwitchHelpFormatter
             var _matches = line.Matches(@"-(> '\') /('$' /w [/w '-']*) /('?')?; f");
             if (_matches)
             {
-               foreach (var match in ~_matches)
+               foreach (var match in _matches.Value)
                {
                   var name = match.FirstGroup;
                   var optional = match.SecondGroup == "?";

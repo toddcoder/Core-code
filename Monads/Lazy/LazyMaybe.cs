@@ -78,7 +78,7 @@ public class LazyMaybe<T> : Maybe<T>, IEquatable<LazyMaybe<T>>
 
       if (_value)
       {
-         return _next.ValueOf(() => func(~_value));
+         return _next.ValueOf(() => func(_value.Value));
       }
       else
       {
@@ -95,7 +95,7 @@ public class LazyMaybe<T> : Maybe<T>, IEquatable<LazyMaybe<T>>
 
       if (_value)
       {
-         return _next.ValueOf(() => func(~_value));
+         return _next.ValueOf(() => func(_value.Value));
       }
       else
       {
@@ -119,7 +119,7 @@ public class LazyMaybe<T> : Maybe<T>, IEquatable<LazyMaybe<T>>
       get
       {
          ensureValue();
-         return ~_value;
+         return _value.Value;
       }
    }
 

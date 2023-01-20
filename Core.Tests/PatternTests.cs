@@ -14,14 +14,13 @@ public class PatternTests
       var _result = "tsqlcop.sql.format.options.xml".Matches(pattern);
       if (_result)
       {
-         var result = ~_result;
-         foreach (var match in result)
+         foreach (var match in _result.Value)
          {
             match.FirstGroup = "style";
          }
 
-         Console.WriteLine(result);
-         result.ToString().Must().Equal("tstylecop.style.format.options.xml").OrThrow();
+         Console.WriteLine(_result.Value);
+         _result.Value.ToString().Must().Equal("tstylecop.style.format.options.xml").OrThrow();
       }
    }
 
@@ -62,13 +61,13 @@ public class PatternTests
       var _result = "foobar(foo,baz)".Matches(pattern1);
       if (_result)
       {
-         var result = ~_result;
+         var result = _result.Value;
          Console.Write(result.FirstMatch);
          var lastResult = result;
          var _result2 = result.MatchedBy(pattern2);
          while (_result2)
          {
-            result = ~_result2;
+            result = _result2.Value;
             Console.Write(result.FirstMatch);
             lastResult = result;
          }
@@ -81,7 +80,7 @@ public class PatternTests
          var _lastResult = lastResult.MatchedBy(pattern3);
          if (_lastResult)
          {
-            Console.WriteLine((~_lastResult).FirstMatch);
+            Console.WriteLine(_lastResult.Value.FirstMatch);
          }
       }
    }
@@ -105,7 +104,7 @@ public class PatternTests
       var _result = "\"Fee fi fo fum\" said the giant.".Matches(pattern);
       if (_result)
       {
-         Console.WriteLine((~_result).FirstGroup.Guillemetify());
+         Console.WriteLine(_result.Value.FirstGroup.Guillemetify());
       }
    }
 
@@ -149,7 +148,7 @@ public class PatternTests
       var _result = input.Matches("/b 'test' /w*; f");
       if (_result)
       {
-         foreach (var match in ~_result)
+         foreach (var match in _result.Value)
          {
             match.Text = $"<{match.Text}>";
          }

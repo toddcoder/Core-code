@@ -136,12 +136,12 @@ public abstract class CommandLineInterface : IDisposable
       var _matches = name.Matches("['A-Z']; f");
       if (_matches)
       {
-         foreach (var match in ~_matches)
+         foreach (var match in _matches.Value)
          {
             match.ZerothGroup = $"-{match.ZerothGroup.ToLower()}";
          }
 
-         return $"('{name}' | '{~_matches}')";
+         return $"('{name}' | '{_matches}')";
       }
       else
       {
@@ -232,7 +232,7 @@ public abstract class CommandLineInterface : IDisposable
       var _list = rest.Matches("^/s* '[' /s*  /(.*) /s* ']'; f").Map(r => r.FirstGroup);
       if (_list)
       {
-         var array = (~_list).Unjoin("/s* ',' /s*; f");
+         var array = _list.Value.Unjoin("/s* ',' /s*; f");
          return array;
       }
       else
@@ -321,7 +321,7 @@ public abstract class CommandLineInterface : IDisposable
       var _result = commandLine.Matches($"^ /({REGEX_PARAMETER}) /s*; f");
       if (_result)
       {
-         var result = ~_result;
+         var result = _result.Value;
          var command = result.FirstGroup;
          result.FirstGroup = $"{prefix}{command}{suffix}true";
 
@@ -337,7 +337,7 @@ public abstract class CommandLineInterface : IDisposable
       if (_matches)
       {
          var shortcuts = getShortcuts(Shortcuts);
-         foreach (var match in ~_matches)
+         foreach (var match in _matches.Value)
          {
             var key = match.FirstGroup[0];
             var _replacement = shortcuts.Maybe[key];
@@ -351,7 +351,7 @@ public abstract class CommandLineInterface : IDisposable
             }
          }
 
-         commandLine = (~_matches).ToString();
+         commandLine = _matches.Value.ToString();
       }
 
       return commandLine;
@@ -362,7 +362,7 @@ public abstract class CommandLineInterface : IDisposable
       var _result = commandLine.Matches("^ /s+ /([/w '-']+) /s+ /(.*) $; f");
       if (_result)
       {
-         var (aliasName, command) = ~_result;
+         var (aliasName, command) = _result.Value;
          aliases[aliasName] = command;
 
          return true;
@@ -405,7 +405,7 @@ public abstract class CommandLineInterface : IDisposable
          var _commandName = commandLine.Matches($"^ /({REGEX_PARAMETER})'{suffix}'; f").Map(r => r.FirstGroup);
          if (_commandName)
          {
-            var remainder = commandLine.Drop((~_commandName).Length);
+            var remainder = commandLine.Drop(_commandName.Value.Length);
             if (this is ICommandFile commandFile)
             {
                var file = commandFile.CommandFile(_commandName);
@@ -436,7 +436,7 @@ public abstract class CommandLineInterface : IDisposable
       {
          if (_command == "alias")
          {
-            if (setPossibleAlias(commandLine.Drop((~_command).Length)))
+            if (setPossibleAlias(commandLine.Drop(_command.Value.Length)))
             {
                return;
             }
@@ -456,7 +456,7 @@ public abstract class CommandLineInterface : IDisposable
       var _entryPoint = getEntryPoint();
       if (_entryPoint)
       {
-         var (methodInfo, type) = ~_entryPoint;
+         var (methodInfo, type) = _entryPoint.Value;
          switch (type)
          {
             case EntryPointType.Parameters:
@@ -491,7 +491,7 @@ public abstract class CommandLineInterface : IDisposable
       var _failure = _arguments.FirstOrNone(p => !p);
       if (_failure)
       {
-         var failure = ~_failure;
+         var failure = _failure.Value;
          if (!failure)
          {
             HandleException(failure.Exception);
@@ -532,7 +532,7 @@ public abstract class CommandLineInterface : IDisposable
          try
          {
             Running = true;
-            methodInfo.Invoke(this, new[] { ~_argument });
+            methodInfo.Invoke(this, new[] { _argument.Value });
          }
          catch (Exception exception)
          {
@@ -589,7 +589,7 @@ public abstract class CommandLineInterface : IDisposable
       var _matches = name.Matches("'-' /(/w); f");
       if (_matches)
       {
-         var result = ~_matches;
+         var result = _matches.Value;
          for (var matchIndex = 0; matchIndex < result.MatchCount; matchIndex++)
          {
             var letter = result.FirstGroup;
@@ -619,7 +619,7 @@ public abstract class CommandLineInterface : IDisposable
          if (_matches)
          {
             var isFirstMatch = true;
-            foreach (var match in ~_matches)
+            foreach (var match in _matches.Value)
             {
                var name = xmlToPascal(match.FirstGroup);
                var (text, index, length) = match;

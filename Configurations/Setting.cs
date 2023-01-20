@@ -62,7 +62,7 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
    Maybe<Setting> IConfigurationItemGetter.GetSetting(string key)
    {
       var _configurationItem = items.Maybe[key];
-      if (_configurationItem && ~_configurationItem is Setting setting)
+      if (_configurationItem && _configurationItem.Value is Setting setting)
       {
          return setting;
       }
@@ -75,7 +75,7 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
    Maybe<Item> IConfigurationItemGetter.GetItem(string key)
    {
       var _configurationItem = items.Maybe[key];
-      if (_configurationItem && ~_configurationItem is Item item)
+      if (_configurationItem && _configurationItem.Value is Item item)
       {
          return item;
       }
@@ -182,7 +182,7 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
          var _object = getConversion(elementType, item);
          if (_object)
          {
-            newArray.SetValue(~_object, i);
+            newArray.SetValue(_object.Value, i);
          }
       }
 
@@ -199,7 +199,7 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
          var _element = setting.Deserialize(elementType);
          if (_element)
          {
-            newArray.SetValue(~_element, i);
+            newArray.SetValue(_element.Value, i);
          }
          else
          {
@@ -279,7 +279,7 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
          }
          else if (_arraySetting.ValueOf(FromString(source)))
          {
-            var settings = (~_arraySetting).Settings().Select(t => t.setting).ToArray();
+            var settings = _arraySetting.Value.Settings().Select(t => t.setting).ToArray();
             return makeArray(elementType, settings);
          }
          else
@@ -480,12 +480,12 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
             var _propertyInfo = allPropertyInfo.FirstOrNone(p => p.Name.Same(name));
             if (_propertyInfo)
             {
-               var propertyInfo = ~_propertyInfo;
+               var propertyInfo = _propertyInfo.Value;
                var propertyType = propertyInfo.PropertyType;
                var _object = getConversion(propertyType, value);
                if (_object)
                {
-                  propertyInfo.SetValue(obj, ~_object);
+                  propertyInfo.SetValue(obj, _object.Value);
                }
             }
          }
@@ -496,12 +496,11 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
             var _propertyInfo = allPropertyInfo.FirstOrNone(p => p.Name.Same(name));
             if (_propertyInfo)
             {
-               var propertyInfo = ~_propertyInfo;
-               var propertyType = propertyInfo.PropertyType;
+               var propertyType = _propertyInfo.Value.PropertyType;
                var _object = setting.Deserialize(propertyType);
                if (_object)
                {
-                  propertyInfo.SetValue(obj, ~_object);
+                  _propertyInfo.Value.SetValue(obj, _object.Value);
                }
             }
          }

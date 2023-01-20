@@ -51,11 +51,10 @@ internal class ObjectInfo
       {
          if (_info)
          {
-            var info = ~_info;
-            var parameters = info.GetIndexParameters();
+            var parameters = _info.Value.GetIndexParameters();
             if (_index)
             {
-               return parameters.Length == 0 ? getValue(_index) : info.GetValue(obj, getIndex(_index));
+               return parameters.Length == 0 ? getValue(_index) : _info.Value.GetValue(obj, getIndex(_index));
             }
             else if (parameters.Length > 0)
             {
@@ -63,7 +62,7 @@ internal class ObjectInfo
             }
             else
             {
-               return info.GetValue(obj, null);
+               return _info.Value.GetValue(obj, null);
             }
          }
          else
@@ -77,7 +76,6 @@ internal class ObjectInfo
          var parameters = _info.Required("No property exists for signature").GetIndexParameters();
          if (_info)
          {
-            var info = ~_info;
             if (_index)
             {
                if (parameters.Length == 0)
@@ -86,12 +84,12 @@ internal class ObjectInfo
                }
                else
                {
-                  info.SetValue(obj, val, getIndex(_index));
+                  _info.Value.SetValue(obj, val, getIndex(_index));
                }
             }
             else
             {
-               info.SetValue(obj, val, null);
+               _info.Value.SetValue(obj, val, null);
             }
          }
       }
@@ -101,7 +99,7 @@ internal class ObjectInfo
    {
       if (_info)
       {
-         var result = (~_info).GetValue(obj, null);
+         var result = _info.Value.GetValue(obj, null);
          if (result is null)
          {
             return result;
@@ -128,7 +126,7 @@ internal class ObjectInfo
    {
       if (_info)
       {
-         var result = (~_info).GetValue(obj, null);
+         var result = _info.Value.GetValue(obj, null);
          if (result is null)
          {
             return false;

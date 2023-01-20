@@ -203,14 +203,14 @@ public class TableMaker
 
          if (Title)
          {
-            builder.Append((~Title).Center(headerWidth));
+            builder.Append(Title.Value.Center(headerWidth));
             builder.Append(getRowSeparator());
          }
 
          builder.AppendLine(header);
          if (HeaderFoot)
          {
-            builder.AppendLine((~HeaderFoot).ToString().Repeat(headerWidth));
+            builder.AppendLine(HeaderFoot.Value.ToString().Repeat(headerWidth));
          }
          else
          {

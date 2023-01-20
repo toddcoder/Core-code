@@ -157,7 +157,7 @@ public static class ArrayExtensions
          var _result = group.Matches("/(/d+) '-' /(/d+); f");
          if (_result)
          {
-            var (startIndex, stopIndex) = ~_result;
+            var (startIndex, stopIndex) = _result.Value;
             var intStart = Value.Int32(startIndex);
             var intStop = Value.Int32(stopIndex);
             if (intStart > intStop)

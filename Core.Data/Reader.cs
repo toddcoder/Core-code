@@ -53,7 +53,7 @@ public class Reader<T> : IDisposable, IEnumerable<T>
          var _entity = lazyRepeating.maybe<T>();
          while (_entity.ValueOf(Next()))
          {
-            yield return ~_entity;
+            yield return _entity.Value;
          }
       }
       finally

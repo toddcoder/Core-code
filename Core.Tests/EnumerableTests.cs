@@ -47,7 +47,7 @@ public class EnumerableTests
       var _char = testArray.FirstOrNone();
       if (_char)
       {
-         (~_char).ToString().Must().Equal("f").OrThrow();
+         _char.Value.ToString().Must().Equal("f").OrThrow();
          Console.WriteLine($"{_char} == 'f'");
       }
    }
@@ -59,7 +59,7 @@ public class EnumerableTests
       var _first = testArray.FirstOrFail("Not found");
       if (_first)
       {
-         Console.WriteLine(~_first);
+         Console.WriteLine(_first.Value);
       }
       else
       {
@@ -70,7 +70,7 @@ public class EnumerableTests
       _first = testArray.FirstOrFail("Not found");
       if (_first)
       {
-         Console.WriteLine(~_first);
+         Console.WriteLine(_first.Value);
       }
       else
       {

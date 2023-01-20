@@ -58,7 +58,7 @@ public class HashTest
       var _hash = array.GroupToHash(i => i < 5 ? "lower" : "upper");
       if (_hash)
       {
-         foreach (var (key, value) in ~_hash)
+         foreach (var (key, value) in _hash.Value)
          {
             Console.WriteLine($"key {key}: {value.Length}");
          }

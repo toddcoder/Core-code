@@ -62,7 +62,7 @@ public class FieldBuilder
    {
       if (_name)
       {
-         var name = ~_name;
+         var name = _name.Value;
          var signature = _signature | (() => name.ToUpper1());
          return new Field(name, signature, optional) { Type = _type };
       }

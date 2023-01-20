@@ -21,7 +21,7 @@ public class LazyMonads
             _function = new LazyMonads();
          }
 
-         return ~_function;
+         return _function.Value;
       }
    }
 

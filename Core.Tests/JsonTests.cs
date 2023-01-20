@@ -17,7 +17,7 @@ public class JsonTests
       var _setting = deserializer.Deserialize();
       if (_setting)
       {
-         Console.WriteLine(~_setting);
+         Console.WriteLine(_setting.Value);
       }
       else
       {
@@ -34,9 +34,8 @@ public class JsonTests
       var _setting = deserializer.Deserialize();
       if (_setting)
       {
-         var setting = ~_setting;
-         Console.WriteLine(setting.Count);
-         Console.WriteLine(setting);
+         Console.WriteLine(_setting.Value.Count);
+         Console.WriteLine(_setting.Value);
       }
       else
       {

@@ -132,6 +132,7 @@ namespace Core.Monads
          _ => throw new InvalidCastException("Must be a Failure to return a value")
       };
 
+      [Obsolete("Use .Value")]
       public static T operator ~(Result<T> result) => result.Value;
 
       [Obsolete("Use ~")]

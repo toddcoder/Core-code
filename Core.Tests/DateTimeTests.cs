@@ -86,7 +86,7 @@ public class DateTimeTests
       var _date = Maybe.DateTime(source);
       if (_date)
       {
-         var zulu = (~_date).Zulu();
+         var zulu = _date.Value.Zulu();
          Console.WriteLine(zulu);
       }
    }

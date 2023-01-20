@@ -90,7 +90,7 @@ public class ReflectorFormat
       var _replacements = getReplacements(template);
       if (_replacements)
       {
-         foreach (var reflectorReplacement in (~_replacements).ReflectorReplacements)
+         foreach (var reflectorReplacement in _replacements.Value.ReflectorReplacements)
          {
             var memberInfos = type.GetMember(reflectorReplacement.MemberName, memberTypes, bindingFlags);
             if (memberInfos.Length != 0)
@@ -113,7 +113,7 @@ public class ReflectorFormat
 
                if (_chosen)
                {
-                  members[reflectorReplacement.MemberName] = new Pair(reflectorReplacement, ~_chosen);
+                  members[reflectorReplacement.MemberName] = new Pair(reflectorReplacement, _chosen.Value);
                }
                else
                {
@@ -126,7 +126,7 @@ public class ReflectorFormat
             }
          }
 
-         return new MemberData(members, (~_replacements).Source);
+         return new MemberData(members, _replacements.Value.Source);
       }
       else
       {

@@ -6,9 +6,7 @@ using Core.Dates;
 using Core.Monads;
 using Core.Strings;
 using Newtonsoft.Json;
-using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
-using static Core.Objects.ConversionFunctions;
 
 namespace Core.Json;
 
@@ -45,7 +43,7 @@ public class Deserializer
          var _setting = peekSetting();
          if (_setting)
          {
-            (~_setting).SetItem(key, new Item(key, value));
+            _setting.Value.SetItem(key, new Item(key, value));
          }
 
          _propertyName = nil;
@@ -57,7 +55,7 @@ public class Deserializer
          var _setting = peekSetting();
          if (_setting)
          {
-            (~_setting).SetItem(key, new Item(key, "") { IsNull = true });
+            _setting.Value.SetItem(key, new Item(key, "") { IsNull = true });
          }
 
          _propertyName = nil;
@@ -90,7 +88,7 @@ public class Deserializer
                   var _parentSetting = peekSetting();
                   if (_parentSetting)
                   {
-                     (~_parentSetting).SetItem(key, setting);
+                     _parentSetting.Value.SetItem(key, setting);
                   }
                   else
                   {
@@ -119,7 +117,7 @@ public class Deserializer
                   var _parentSetting = peekSetting();
                   if (_parentSetting)
                   {
-                     (~_parentSetting).SetItem(setting.Key, setting);
+                     _parentSetting.Value.SetItem(setting.Key, setting);
                   }
                   else
                   {

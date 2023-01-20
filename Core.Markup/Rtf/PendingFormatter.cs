@@ -235,7 +235,7 @@ public class PendingFormatter
 
       if (_firstLineIndent)
       {
-         formatter.FirstLineIndent((~_firstLineIndent).Amount);
+         formatter.FirstLineIndent(_firstLineIndent.Value.Amount);
       }
 
       formatter.Margins(margins);

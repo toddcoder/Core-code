@@ -19,15 +19,13 @@ public class MatchingTests
       var _result = "tsqlcop.sql.format.options.xml".Matches("(sql); u");
       if (_result)
       {
-         var result = ~_result;
-
-         foreach (var match in result)
+         foreach (var match in _result.Value)
          {
             match.FirstGroup = "style";
          }
 
-         Console.WriteLine(result);
-         result.ToString().Must().Equal("tstylecop.style.format.options.xml").OrThrow();
+         Console.WriteLine(_result.Value);
+         _result.Value.ToString().Must().Equal("tstylecop.style.format.options.xml").OrThrow();
       }
    }
 
@@ -46,7 +44,7 @@ public class MatchingTests
       var _result = "\"Fee fi fo fum\" said the giant.".Matches(pattern);
       if (_result)
       {
-         Console.WriteLine((~_result).FirstGroup.Guillemetify());
+         Console.WriteLine(_result.Value.FirstGroup.Guillemetify());
       }
    }
 
@@ -80,7 +78,7 @@ public class MatchingTests
          select popped2;
       if (_scraper)
       {
-         var hash = ~scraper.AnyHash();
+         var hash = scraper.AnyHash().Value;
          var func1 = $"{hash["name1"]}({getVariables(hash, "var0_")})";
          var func2 = $"{hash["name2"]}({getVariables(hash, "var1_")})";
          Console.WriteLine(func1);
@@ -157,15 +155,15 @@ public class MatchingTests
       var _result = input.Matches("['a-z']+");
       if (_result)
       {
-         foreach (var item in (~_result).Matches.LeadingMatches(input, true))
+         foreach (var item in _result.Value.Matches.LeadingMatches(input, true))
          {
             if (item.LeftValue)
             {
-               Console.WriteLine($"Leading: <{(~item.LeftValue).Text}>");
+               Console.WriteLine($"Leading: <{item.LeftValue.Value.Text}>");
             }
             else if (item.RightValue)
             {
-               Console.WriteLine($"Match: <{(~item.RightValue).Text}>");
+               Console.WriteLine($"Match: <{item.RightValue.Value.Text}>");
             }
          }
       }

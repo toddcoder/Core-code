@@ -40,7 +40,7 @@ public class ZipTest
          select folder;
       if (_folder)
       {
-         var folder = ~_folder;
+         var folder = _folder.Value;
          folder.Must().Exist().OrThrow();
          Console.WriteLine(folder.FullPath);
       }

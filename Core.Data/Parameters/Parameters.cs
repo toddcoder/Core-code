@@ -40,7 +40,7 @@ public class Parameters : IEnumerable<Parameter>, IHash<string, Parameter>
    {
       if (_parametersSetting)
       {
-         foreach (var (key, parameter) in (~_parametersSetting).Settings().Select(t => (t.key, Parameter.Parse(t.setting))))
+         foreach (var (key, parameter) in _parametersSetting.Value.Settings().Select(t => (t.key, Parameter.Parse(t.setting))))
          {
             this[key] = parameter;
          }

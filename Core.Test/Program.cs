@@ -42,7 +42,7 @@ namespace Core.Test
       {
          if (Repo)
          {
-            FolderName.Current = ~Repo;
+            FolderName.Current = Repo.Value;
          }
 
          var prompt = new GitPrompt();

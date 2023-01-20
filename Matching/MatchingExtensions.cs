@@ -33,7 +33,7 @@ public static class MatchingExtensions
       if (_response)
       {
          replacer(_response);
-         return (~_response).ToString();
+         return _response.Value.ToString();
       }
       else
       {
@@ -54,7 +54,7 @@ public static class MatchingExtensions
          var index = 0;
          int length;
          string text;
-         foreach (var (_, matchIndex, matchLength) in ~_matches)
+         foreach (var (_, matchIndex, matchLength) in _matches.Value)
          {
             length = matchIndex - index;
             text = input.Drop(index).Keep(length);
@@ -103,7 +103,7 @@ public static class MatchingExtensions
       var _result = pattern.MatchedBy(input);
       if (_result)
       {
-         var (group1, group2) = ~_result;
+         var (group1, group2) = _result.Value;
          return (group1, group2);
       }
       else
@@ -117,7 +117,7 @@ public static class MatchingExtensions
       var _result = pattern.MatchedBy(input);
       if (_result)
       {
-         var (group1, group2, group3) = ~_result;
+         var (group1, group2, group3) = _result.Value;
          return (group1, group2, group3);
       }
       else
@@ -131,7 +131,7 @@ public static class MatchingExtensions
       var _result = pattern.MatchedBy(input);
       if (_result)
       {
-         var (group1, group2, group3, group4) = ~_result;
+         var (group1, group2, group3, group4) = _result.Value;
          return (group1, group2, group3, group4);
       }
       else
@@ -146,7 +146,7 @@ public static class MatchingExtensions
       if (_matches)
       {
          var builder = new StringBuilder();
-         foreach (var match in ~_matches)
+         foreach (var match in _matches.Value)
          {
             builder.Append(match.Text);
          }
@@ -164,13 +164,12 @@ public static class MatchingExtensions
       var _matches = pattern.MatchedBy(input);
       if (_matches)
       {
-         var matches = ~_matches;
-         foreach (var match in matches)
+         foreach (var match in _matches.Value)
          {
             match.Text = string.Empty;
          }
 
-         return matches.ToString();
+         return _matches.Value.ToString();
       }
       else
       {
@@ -206,7 +205,7 @@ public static class MatchingExtensions
       var _matches = input.Matches(pattern);
       if (_matches)
       {
-         foreach (var match in ~_matches)
+         foreach (var match in _matches.Value)
          {
             yield return match;
          }

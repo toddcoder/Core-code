@@ -84,7 +84,7 @@ public class Document
 
          if (_colorizer)
          {
-            (~_colorizer).Colorize(textBox);
+            _colorizer.Value.Colorize(textBox);
          }
       };
 
@@ -266,7 +266,7 @@ public class Document
       _file = fileName;
       if (_file)
       {
-         textBox.Text = (~_file).Lines.ToString("\r\n");
+         textBox.Text = _file.Value.Lines.ToString("\r\n");
       }
 
       Clean();
@@ -279,7 +279,7 @@ public class Document
          var title = new StringBuilder();
          if (_file)
          {
-            title.Append(~_file);
+            title.Append(_file.Value);
             title.Append(" - ");
             title.Append(formName);
             if (IsDirty)
@@ -319,7 +319,7 @@ public class Document
    {
       if (_file)
       {
-         var file = ~_file;
+         var file = _file.Value;
          if (file.Exists())
          {
             file.Delete();

@@ -109,7 +109,7 @@ public static class MonadExtensions
    {
       if (result)
       {
-         return func(~result);
+         return func(result.Value);
       }
       else
       {
@@ -206,7 +206,7 @@ public static class MonadExtensions
       {
          if (_maybe)
          {
-            yield return ~_maybe;
+            yield return _maybe.Value;
          }
       }
    }
@@ -218,7 +218,7 @@ public static class MonadExtensions
          var _value = predicate(item);
          if (_value)
          {
-            yield return (item, ~_value);
+            yield return (item, _value.Value);
          }
       }
    }
@@ -229,7 +229,7 @@ public static class MonadExtensions
       {
          if (_result)
          {
-            yield return ~_result;
+            yield return _result.Value;
          }
       }
    }
@@ -242,7 +242,7 @@ public static class MonadExtensions
          var _value = predicate(item);
          if (_value)
          {
-            yield return (item, ~_value);
+            yield return (item, _value.Value);
          }
       }
    }
@@ -253,7 +253,7 @@ public static class MonadExtensions
       {
          if (_result)
          {
-            yield return ~_result;
+            yield return _result.Value;
          }
          else
          {
@@ -268,7 +268,7 @@ public static class MonadExtensions
       {
          if (_completion)
          {
-            yield return ~_completion;
+            yield return _completion.Value;
          }
       }
    }
@@ -281,7 +281,7 @@ public static class MonadExtensions
          var _value = predicate(item);
          if (_value)
          {
-            yield return (item, ~_value);
+            yield return (item, _value.Value);
          }
       }
    }
@@ -293,7 +293,7 @@ public static class MonadExtensions
       {
          if (_value)
          {
-            result.Add(~_value);
+            result.Add(_value.Value);
          }
          else
          {
@@ -346,7 +346,7 @@ public static class MonadExtensions
             {
                if (!_firstItem)
                {
-                  _firstItem = ~result;
+                  _firstItem = result.Value;
                }
             }
             else
@@ -422,7 +422,7 @@ public static class MonadExtensions
    {
       if (result)
       {
-         return ~result;
+         return result.Value;
       }
       else
       {
@@ -435,7 +435,7 @@ public static class MonadExtensions
    {
       if (enumerable)
       {
-         (~enumerable).ForEach(ifSuccess, ifFailure);
+         enumerable.Value.ForEach(ifSuccess, ifFailure);
       }
       else
       {
@@ -976,7 +976,7 @@ public static class MonadExtensions
       {
          if (_item)
          {
-            yield return ~_item;
+            yield return _item.Value;
          }
       }
    }
@@ -987,7 +987,7 @@ public static class MonadExtensions
       {
          if (_result)
          {
-            yield return ~_result;
+            yield return _result.Value;
          }
       }
    }
@@ -1067,10 +1067,10 @@ public static class MonadExtensions
       var _t = await source;
       if (_t)
       {
-         var _u = await func(~_t);
+         var _u = await func(_t.Value);
          if (_u)
          {
-            return projection(~_t, ~_u).Completed();
+            return projection(_t.Value, _u.Value).Completed();
          }
          else if (_u.AnyException)
          {
@@ -1095,7 +1095,7 @@ public static class MonadExtensions
    {
       if (completion)
       {
-         return ~completion;
+         return completion.Value;
       }
       else if (completion.AnyException)
       {
@@ -1486,7 +1486,7 @@ public static class MonadExtensions
       {
          if (maybe)
          {
-            yield return ~maybe;
+            yield return maybe.Value;
          }
       }
    }
@@ -1497,7 +1497,7 @@ public static class MonadExtensions
       {
          if (result)
          {
-            yield return ~result;
+            yield return result.Value;
          }
       }
    }
@@ -1508,7 +1508,7 @@ public static class MonadExtensions
       {
          if (responding)
          {
-            yield return ~responding;
+            yield return responding.Value;
          }
       }
    }
@@ -1519,7 +1519,7 @@ public static class MonadExtensions
       {
          if (completion)
          {
-            yield return ~completion;
+            yield return completion.Value;
          }
       }
    }

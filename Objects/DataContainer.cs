@@ -37,7 +37,7 @@ public class DataContainer : StringHash<object>
    {
       if (_beforeExecute)
       {
-         (~_beforeExecute)();
+         _beforeExecute.Value();
       }
    }
 
@@ -45,7 +45,7 @@ public class DataContainer : StringHash<object>
    {
       if (_afterExecute)
       {
-         (~_afterExecute)();
+         _afterExecute.Value();
       }
    }
 

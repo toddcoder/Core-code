@@ -76,7 +76,7 @@ public class HelpGenerator
          var _tuple = commandHelp.Maybe[command];
          if (_tuple)
          {
-            var (_helpText, _switchPattern, replacements) = ~_tuple;
+            var (_helpText, _switchPattern, replacements) = _tuple.Value;
             if (_helpText)
             {
                if (_switchPattern)

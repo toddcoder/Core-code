@@ -20,7 +20,7 @@ public class CommandAttribute : Attribute, IHash<string, string>
          var _result = item.Matches("^ /(-[':']+) ':' /s* /(.+) $");
          if (_result)
          {
-            var (key, value) = ~_result;
+            var (key, value) = _result.Value;
             hash[key.TrimEnd()] = value;
          }
       }

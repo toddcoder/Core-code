@@ -85,7 +85,7 @@ public class LazyResult<T> : Result<T>, IEquatable<LazyResult<T>>
 
       if (_value)
       {
-         return _next.ValueOf(() => func(~_value));
+         return _next.ValueOf(() => func(_value.Value));
       }
       else
       {
@@ -102,7 +102,7 @@ public class LazyResult<T> : Result<T>, IEquatable<LazyResult<T>>
 
       if (_value)
       {
-         return _next.ValueOf(() => func(~_value));
+         return _next.ValueOf(() => func(_value.Value));
       }
       else
       {
@@ -171,7 +171,7 @@ public class LazyResult<T> : Result<T>, IEquatable<LazyResult<T>>
       get
       {
          ensureValue();
-         return ~_value;
+         return _value.Value;
       }
    }
 

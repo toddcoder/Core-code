@@ -61,7 +61,7 @@ public class CommandTextBuilder
       }
       else if (_commandTextFile)
       {
-         return (~_commandTextFile).TryTo.Text.Map(ct => (ct, commandTimeout));
+         return _commandTextFile.Value.TryTo.Text.Map(ct => (ct, commandTimeout));
       }
       else
       {

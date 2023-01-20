@@ -27,10 +27,9 @@ public class Responder : UserControl, IHash<string, Responder.ResponderButton>
          var _result = specifier.Matches(@"^ /(['!?.$']?) /(-['|']+) '|' /s* /(.+) $; f");
          if (_result)
          {
-            var result = ~_result;
-            var personalityShortcut = result.FirstGroup;
-            var label = result.SecondGroup.TrimEnd();
-            var key = result.ThirdGroup.Trim();
+            var personalityShortcut = _result.Value.FirstGroup;
+            var label = _result.Value.SecondGroup.TrimEnd();
+            var key = _result.Value.ThirdGroup.Trim();
             var personality = personalityShortcut switch
             {
                "." => ResponderPersonality.Neutral,

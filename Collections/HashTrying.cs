@@ -27,10 +27,10 @@ public class HashTrying<TKey, TValue>
          {
             if (addIfNotFound)
             {
-               hash.Add(key, ~_value);
+               hash.Add(key, _value.Value);
             }
 
-            return ~_value;
+            return _value.Value;
          }
          else
          {
@@ -44,7 +44,7 @@ public class HashTrying<TKey, TValue>
       var _value = hash.Maybe[key];
       if (_value)
       {
-         return ~_value;
+         return _value.Value;
       }
       else
       {
@@ -57,7 +57,7 @@ public class HashTrying<TKey, TValue>
       var _value = hash.Maybe[key];
       if (_value)
       {
-         return ~_value;
+         return _value.Value;
       }
       else
       {

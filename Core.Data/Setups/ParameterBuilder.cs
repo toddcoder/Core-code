@@ -90,7 +90,7 @@ public class ParameterBuilder
    {
       if (_name)
       {
-         var name = ~_name;
+         var name = _name.Value;
          var signature = _signature | (() => name.Substitute("^ '@'; f", "").ToUpper1());
          return new Parameter(name, signature)
          {

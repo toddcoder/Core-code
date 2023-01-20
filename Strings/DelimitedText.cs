@@ -153,9 +153,8 @@ public class DelimitedText
             var _result = current.Matches(exceptPattern);
             if (_result)
             {
-               var result = ~_result;
-               builder.Append(_exceptReplacement | result[0]);
-               i += result.Length;
+               builder.Append(_exceptReplacement | _result.Value[0]);
+               i += _result.Value.Length;
 
                continue;
             }
@@ -164,15 +163,14 @@ public class DelimitedText
                _result = current.Matches(_endMatcher);
                if (_result)
                {
-                  var result = ~_result;
                   _endMatcher = nil;
 
                   yield return (builder.ToString(), insideStart, DelimitedTextStatus.Inside);
-                  yield return (result[0], i, DelimitedTextStatus.EndDelimiter);
+                  yield return (_result.Value[0], i, DelimitedTextStatus.EndDelimiter);
 
                   builder.Clear();
                   inside = false;
-                  i += result.Length;
+                  i += _result.Value.Length;
                   outsideStart = i;
                   continue;
                }
@@ -191,15 +189,14 @@ public class DelimitedText
             var _result = current.Matches(beginPattern);
             if (_result)
             {
-               var result = ~_result;
                _endMatcher = _endPattern | (() => getEndPattern(ch));
 
                yield return (builder.ToString(), outsideStart, DelimitedTextStatus.Outside);
-               yield return (result[0], i, DelimitedTextStatus.BeginDelimiter);
+               yield return (_result.Value[0], i, DelimitedTextStatus.BeginDelimiter);
 
                builder.Clear();
                inside = true;
-               i += result.Length;
+               i += _result.Value.Length;
                insideStart = i;
                continue;
             }

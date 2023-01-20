@@ -125,7 +125,7 @@ public static class ObjectExtensions
          var _result = format.Matches("/['cdefgnprxs'] /('-'? /d+)? ('.' /(/d+))?; fi");
          if (_result)
          {
-            var (specifier, width, places) = ~_result;
+            var (specifier, width, places) = _result.Value;
 
             var builder = new StringBuilder("{0");
             if (width.IsNotEmpty())

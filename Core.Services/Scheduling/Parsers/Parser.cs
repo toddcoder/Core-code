@@ -35,14 +35,14 @@ public abstract class Parser
       var _tokens = source.Matches(Pattern + PATTERN_BRACKET).Map(r => r.Groups(0));
       if (_tokens)
       {
-         tokens = ~_tokens;
+         tokens = _tokens.Value;
          var lastIndex = tokens.Length - 1;
          var values = tokens.Where((_, i) => i.Between(1).Until(lastIndex)).Select(t => Value.Int32(t, -1)).ToArray();
          var bracketSource = tokens[lastIndex];
          var _times = bracketSource.Matches(PATTERN_UNADORNED_BRACKET);
          if (_times)
          {
-            var (begin, end) = ~_times;
+            var (begin, end) = _times.Value;
             Bracket = new LimitedBracket(begin, end);
          }
          else

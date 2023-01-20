@@ -84,7 +84,7 @@ public class ChooserSet
       {
          if (_chosen)
          {
-            chooser.UiAction.Success((~_chosen).Key);
+            chooser.UiAction.Success(_chosen.Value.Key);
             if (chooser.SizeToText)
             {
                chooser.UiAction.SizeToText();

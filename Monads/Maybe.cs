@@ -80,6 +80,7 @@ public abstract class Maybe<T>
       _ => throw new InvalidCastException("Must be a Some to return a value")
    };
 
+   [Obsolete("Use .Value")]
    public static T operator ~(Maybe<T> maybe) => maybe.Value;
 
    public abstract T Value { get; }

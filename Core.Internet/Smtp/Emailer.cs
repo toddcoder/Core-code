@@ -75,7 +75,7 @@ public class Emailer
 
       if (Attachments)
       {
-         foreach (var attachment in ~Attachments)
+         foreach (var attachment in Attachments.Value)
          {
             message.Attachments.Add(new Attachment(attachment.ToString()));
          }

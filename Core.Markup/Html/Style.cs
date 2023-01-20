@@ -12,7 +12,7 @@ public class Style : IEquatable<Style>
       var _result = source.Matches("^ /(-[':']+) /s* ':' /s* /(.+) $; f");
       if (_result)
       {
-         var (key, value) = ~_result;
+         var (key, value) = _result.Value;
          return new Style(key, value);
       }
       else

@@ -32,7 +32,7 @@ public class Subscription : Plugin, IRequiresTypeManager
             select newJob;
          if (_job)
          {
-            if ((~_job).Enabled)
+            if (_job.Value.Enabled)
             {
                yield return _job;
             }

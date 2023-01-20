@@ -170,7 +170,7 @@ internal class TestProgram : CommandProcessor
       var _result = Text.Matches(Pattern);
       if (_result)
       {
-         Console.WriteLine($"{Count}: {(~_result).FirstMatch}");
+         Console.WriteLine($"{Count}: {_result.Value.FirstMatch}");
       }
       else
       {

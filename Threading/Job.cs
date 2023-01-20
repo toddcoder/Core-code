@@ -70,7 +70,7 @@ public class Job
                {
                   try
                   {
-                     (~_action)(affinity);
+                     _action.Value(affinity);
                   }
                   catch (Exception exception)
                   {
@@ -107,7 +107,10 @@ public class Job
          try
          {
             var _action = queue.Dequeue(affinity);
-            (~_action)(affinity);
+            if (_action)
+            {
+               _action.Value(affinity);
+            }
          }
          catch (Exception exception)
          {

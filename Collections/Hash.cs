@@ -132,7 +132,7 @@ public class Hash<TKey, TValue> : Dictionary<TKey, TValue>, IHash<TKey, TValue>
          var _value = Maybe[key];
          if (_value)
          {
-            yield return ~_value;
+            yield return _value.Value;
          }
       }
    }
@@ -144,7 +144,7 @@ public class Hash<TKey, TValue> : Dictionary<TKey, TValue>, IHash<TKey, TValue>
       var _result = Maybe[key];
       if (_result)
       {
-         return ~_result;
+         return _result.Value;
       }
       else
       {
@@ -285,7 +285,7 @@ public class Hash<TKey, TValue> : Dictionary<TKey, TValue>, IHash<TKey, TValue>
       var _value = Maybe[oldKey];
       if (_value)
       {
-         this[newKey] = ~_value;
+         this[newKey] = _value.Value;
          Maybe[oldKey] = nil;
       }
    }

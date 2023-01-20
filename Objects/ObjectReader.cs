@@ -53,7 +53,7 @@ public class ObjectReader
          var _value = getValue(obj, info);
          if (_value)
          {
-            hash[info.Name] = ~_value;
+            hash[info.Name] = _value.Value;
          }
          else
          {

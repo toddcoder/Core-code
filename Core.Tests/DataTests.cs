@@ -77,7 +77,7 @@ public class DataTests
          select adapter;
       if (_adapter)
       {
-         var data = (~_adapter).ToArray();
+         var data = _adapter.Value.ToArray();
          foreach (var columnData in data)
          {
             Console.WriteLine(columnData);
@@ -101,9 +101,8 @@ public class DataTests
          select adapter;
       if (_adapter)
       {
-         var adapter = ~_adapter;
-         adapter.ConnectionString = TRUE_CONNECTION_STRING;
-         foreach (var columnData in adapter)
+         _adapter.Value.ConnectionString = TRUE_CONNECTION_STRING;
+         foreach (var columnData in _adapter.Value)
          {
             Console.WriteLine(columnData);
          }
@@ -121,9 +120,8 @@ public class DataTests
       var _adapter = Adapter<ColumnData>.FromSetupObject(entity);
       if (_adapter)
       {
-         var adapter = ~_adapter;
-         adapter.ConnectionString = TRUE_CONNECTION_STRING;
-         var data = adapter.ToArray();
+         _adapter.Value.ConnectionString = TRUE_CONNECTION_STRING;
+         var data = _adapter.Value.ToArray();
          foreach (var columnData in data)
          {
             Console.WriteLine(columnData);
@@ -207,7 +205,7 @@ public class DataTests
          {
             ObjectId = 89
          };
-         var adapter = new Adapter<ColumnData>(entity, ~_sqlSetup);
+         var adapter = new Adapter<ColumnData>(entity, _sqlSetup.Value);
          var _columnData = adapter.TryTo.Execute();
          if (_columnData)
          {

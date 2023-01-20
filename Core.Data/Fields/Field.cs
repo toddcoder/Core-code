@@ -15,7 +15,7 @@ public class Field : PropertyInterface
       var _result = input.Matches("^ /(/w+) /('?')? /s* ('[' /(/w+) ']')? (/s* ':' /s* /('$'? [/w '.']+))? $; f");
       if (_result)
       {
-         var result = ~_result;
+         var result = _result.Value;
          var name = result.FirstGroup;
          var optional = result.SecondGroup == "?";
          var signature = result.ThirdGroup;

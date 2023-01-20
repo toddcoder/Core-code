@@ -57,7 +57,7 @@ public class UiAction : UserControl
             var _actionList = getUiActionList(id);
             if (_actionList)
             {
-               foreach (var uiAction in (~_actionList).Where(uiAction => uiAction.Id != id))
+               foreach (var uiAction in _actionList.Value.Where(uiAction => uiAction.Id != id))
                {
                   uiAction.SetCheckStyle(CheckStyle.None);
                }
@@ -577,7 +577,7 @@ public class UiAction : UserControl
    {
       if (_result)
       {
-         var (message, messageProgressType) = ~_result;
+         var (message, messageProgressType) = _result.Value;
          ShowMessage(message, messageProgressType);
       }
       else
@@ -602,7 +602,7 @@ public class UiAction : UserControl
    {
       if (_result)
       {
-         var (label, message) = ~_result;
+         var (label, message) = _result.Value;
          Label(label).LabelWidth(labelWidth).End.Success(message);
       }
       else
@@ -616,7 +616,7 @@ public class UiAction : UserControl
    {
       if (_result)
       {
-         var (label, message) = ~_result;
+         var (label, message) = _result.Value;
          Label(label).End.Success(message);
       }
       else
@@ -754,8 +754,10 @@ public class UiAction : UserControl
       }
       else if (_labelRectangle)
       {
-         var labelRectangle = ~_labelRectangle;
-         return ClientRectangle with { X = ClientRectangle.X + labelRectangle.Width, Width = ClientRectangle.Width - labelRectangle.Width };
+         return ClientRectangle with
+         {
+            X = ClientRectangle.X + _labelRectangle.Value.Width, Width = ClientRectangle.Width - _labelRectangle.Value.Width
+         };
       }
       else
       {
@@ -791,7 +793,7 @@ public class UiAction : UserControl
 
       if (_labelProcessor)
       {
-         (~_labelProcessor).OnPaint(e.Graphics);
+         _labelProcessor.Value.OnPaint(e.Graphics);
       }
 
       void paintStopwatch()
@@ -931,12 +933,12 @@ public class UiAction : UserControl
       var _legend = legends.Peek();
       if (_legend)
       {
-         (~_legend).Draw(graphics, foreColor.Value, backColor.Value);
+         _legend.Value.Draw(graphics, foreColor.Value, backColor.Value);
       }
 
       if (Working && _working)
       {
-         (~_working).Draw(graphics, foreColor.Value, backColor.Value);
+         _working.Value.Draw(graphics, foreColor.Value, backColor.Value);
       }
 
       foreach (var subText in subTexts)
@@ -990,7 +992,7 @@ public class UiAction : UserControl
 
       if (_labelProcessor)
       {
-         (~_labelProcessor).OnPaintBackground(pevent.Graphics);
+         _labelProcessor.Value.OnPaintBackground(pevent.Graphics);
       }
 
       switch (type)
@@ -1216,7 +1218,7 @@ public class UiAction : UserControl
 
          if (_lastEnabled.IsSome())
          {
-            timerPaint.Enabled = ~_lastEnabled;
+            timerPaint.Enabled = _lastEnabled.Value;
             _lastEnabled = nil;
          }
 
@@ -1307,7 +1309,7 @@ public class UiAction : UserControl
       var _arguments = args.Arguments;
       if (_arguments)
       {
-         RunWorkerAsync(~_arguments);
+         RunWorkerAsync(_arguments.Value);
       }
       else
       {
@@ -1324,7 +1326,7 @@ public class UiAction : UserControl
          var _argument = args.Argument;
          if (_argument)
          {
-            backgroundWorker.Value.RunWorkerAsync(~_argument);
+            backgroundWorker.Value.RunWorkerAsync(_argument.Value);
          }
          else
          {
@@ -1406,7 +1408,7 @@ public class UiAction : UserControl
          .Set
          .FontSize(8)
          .Outline(true)
-         .Invert(true)
+         .Invert(invert)
          .End;
       legends.Push(legend);
 

@@ -99,7 +99,7 @@ public class ConfigurationTests
 
       if (_serverDatabase)
       {
-         var (server, database) = ~_serverDatabase;
+         var (server, database) = _serverDatabase.Value;
          Console.WriteLine($"server: {server}");
          Console.WriteLine($"database: {database}");
       }
@@ -116,7 +116,7 @@ public class ConfigurationTests
 
       if (_serverDatabase)
       {
-         var (server, database) = ~_serverDatabase;
+         var (server, database) = _serverDatabase.Value;
          Console.WriteLine($"server: {server}");
          Console.WriteLine($"database: {database}");
       }
@@ -130,7 +130,7 @@ public class ConfigurationTests
       var _setting = Setting.FromString(source);
       if (_setting)
       {
-         Console.WriteLine(~_setting);
+         Console.WriteLine(_setting.Value);
       }
       else
       {
@@ -146,7 +146,7 @@ public class ConfigurationTests
       var _setting = Setting.FromString(source);
       if (_setting)
       {
-         Console.Write(~_setting);
+         Console.Write(_setting.Value);
       }
       else
       {
@@ -190,7 +190,7 @@ public class ConfigurationTests
          select newPackage;
       if (_newPackage)
       {
-         package.Must().Equal(~_newPackage).OrThrow();
+         package.Must().Equal(_newPackage.Value).OrThrow();
       }
       else
       {
@@ -209,7 +209,7 @@ public class ConfigurationTests
          select obj;
       if (_object)
       {
-         Console.WriteLine(~_object);
+         Console.WriteLine(_object.Value);
       }
       else
       {
@@ -245,7 +245,7 @@ public class ConfigurationTests
          select deserializedContainer;
       if (_container)
       {
-         foreach (var test in (~_container).Tests)
+         foreach (var test in _container.Value.Tests)
          {
             Console.WriteLine(test);
          }
@@ -271,7 +271,7 @@ public class ConfigurationTests
       var _setting = hash.ToSetting();
       if (_setting)
       {
-         Console.WriteLine(~_setting);
+         Console.WriteLine(_setting.Value);
       }
       else
       {
@@ -300,7 +300,7 @@ public class ConfigurationTests
          select setting.ToStringHash();
       if (_stringHash)
       {
-         foreach (var (key, value) in ~_stringHash)
+         foreach (var (key, value) in _stringHash.Value)
          {
             Console.WriteLine($"{key}: {value}");
          }
@@ -318,7 +318,7 @@ public class ConfigurationTests
       var _setting = hash.ToSetting();
       if (_setting)
       {
-         var setting = ~_setting;
+         var setting = _setting.Value;
          var source = setting.ToString();
          Console.WriteLine(source);
          Console.WriteLine(setting["release"]);
@@ -327,7 +327,7 @@ public class ConfigurationTests
          _setting = Setting.FromString(source);
          if (_setting)
          {
-            setting = ~_setting;
+            setting = _setting.Value;
             Console.WriteLine(setting["release"]);
             Console.WriteLine(setting["build"]);
          }
@@ -375,7 +375,7 @@ public class ConfigurationTests
       var _setting = Setting.FromString(source);
       if (_setting)
       {
-         foreach (var (key, innerSetting) in (~_setting).Settings())
+         foreach (var (key, innerSetting) in _setting.Value.Settings())
          {
             Console.WriteLine($"{key} [");
             Console.WriteLine($"   value1: {innerSetting.Value.String("value1")}");
@@ -385,7 +385,7 @@ public class ConfigurationTests
 
          Console.WriteLine("=".Repeat(80));
 
-         Console.WriteLine(~_setting);
+         Console.WriteLine(_setting.Value);
       }
       else
       {
@@ -404,8 +404,8 @@ public class ConfigurationTests
       writer.WriteLine("]");
       var source = writer.ToString();
 
-      var setting = ~Setting.FromString(source);
-      var (_, innerSetting) = ~setting.Settings().FirstOrFail("No outer group");
+      var setting = Setting.FromString(source).Value;
+      var (_, innerSetting) = setting.Settings().FirstOrFail("No outer group").Value;
       foreach (var (key, value) in innerSetting.Items())
       {
          Console.WriteLine($"{key}: \"{value}\"");
@@ -421,7 +421,7 @@ public class ConfigurationTests
       writer.WriteLine("charlie");
       var source = writer.ToString();
 
-      var setting = ~Setting.FromString(source);
+      var setting = Setting.FromString(source).Value;
       foreach (var (key, value) in setting.Items())
       {
          Console.WriteLine($"{key}: \"{value}\"");
@@ -436,7 +436,7 @@ public class ConfigurationTests
       writer.WriteLine(@"   bravo: ""^(Enqueuing task `""\[)[^\]]+(\]`"").+$; u""");
       writer.WriteLine("]");
       var source = writer.ToString();
-      _ = ~Setting.FromString(source);
+      _ = Setting.FromString(source).Value;
    }
 
    [TestMethod]
@@ -452,7 +452,7 @@ public class ConfigurationTests
       var _setting = Setting.FromString(source);
       if (_setting)
       {
-         Console.WriteLine(~_setting);
+         Console.WriteLine(_setting.Value);
       }
       else
       {
@@ -462,11 +462,11 @@ public class ConfigurationTests
 
       var _releaseTarget = lazy.result<ReleaseTarget>();
       var _serialized = lazy.result<Setting>();
-      if (_releaseTarget.ValueOf((~_setting).Deserialize<ReleaseTarget>()))
+      if (_releaseTarget.ValueOf(_setting.Value.Deserialize<ReleaseTarget>()))
       {
-         if (_serialized.ValueOf(Setting.Serialize(typeof(ReleaseTarget), ~_releaseTarget)))
+         if (_serialized.ValueOf(Setting.Serialize(typeof(ReleaseTarget), _releaseTarget.Value)))
          {
-            Console.WriteLine(~_serialized);
+            Console.WriteLine(_serialized.Value);
          }
          else
          {
@@ -525,12 +525,10 @@ public class ConfigurationTests
       var _container = lazy.result<NonConformanceInfoContainer>();
       if (_setting.ValueOf(Setting.FromString(source)))
       {
-         var setting = ~_setting;
-         Console.WriteLine(setting);
-         if (_container.ValueOf(setting.Deserialize<NonConformanceInfoContainer>()))
+         Console.WriteLine(_setting.Value);
+         if (_container.ValueOf(_setting.Value.Deserialize<NonConformanceInfoContainer>()))
          {
-            var container = ~_container;
-            foreach (var info in container.NonConformanceInfos)
+            foreach (var info in _container.Value.NonConformanceInfos)
             {
                Console.WriteLine(info);
             }
@@ -556,15 +554,14 @@ public class ConfigurationTests
             tempFile.Text = _json;
 
             var oldLines = json.Lines();
-            var newLines = (~_json).Lines();
+            var newLines = _json.Value.Lines();
             var diff = new Differentiator(oldLines, newLines, true, false);
             var _model = diff.BuildModel();
             if (_model)
             {
-               var model = ~_model;
-               var oldDifferences = model.OldDifferences();
-               var newDifferences = model.NewDifferences();
-               var mergedDifferences = model.MergedDifferences();
+               var oldDifferences = _model.Value.OldDifferences();
+               var newDifferences = _model.Value.NewDifferences();
+               var mergedDifferences = _model.Value.MergedDifferences();
 
                Console.WriteLine("old differences:");
                foreach (var difference in oldDifferences)

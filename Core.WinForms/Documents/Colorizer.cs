@@ -38,7 +38,7 @@ public class Colorizer
          var _matches = textBox.Text.Matches(newPattern);
          if (_matches)
          {
-            foreach (var match in ~_matches)
+            foreach (var match in _matches.Value)
             {
                var groups = match.Groups;
 

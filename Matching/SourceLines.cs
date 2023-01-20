@@ -74,9 +74,8 @@ public class SourceLines
          var _result = current.Matches(REGEX_NEXT_LINE);
          if (_result)
          {
-            var result = ~_result;
-            Advance(result.Length);
-            yield return result.FirstGroup;
+            Advance(_result.Value.Length);
+            yield return _result.Value.FirstGroup;
          }
          else
          {
@@ -94,11 +93,10 @@ public class SourceLines
          var _result = current.Matches(REGEX_NEXT_LINE);
          if (_result)
          {
-            var result = ~_result;
-            var line = result.FirstGroup;
+            var line = _result.Value.FirstGroup;
             if (predicate(line))
             {
-               Advance(result.Length);
+               Advance(_result.Value.Length);
                yield return line;
             }
             else
@@ -128,11 +126,10 @@ public class SourceLines
          var _result = current.Matches(REGEX_NEXT_LINE);
          if (_result)
          {
-            var result = ~_result;
-            var line = result.FirstGroup;
+            var line = _result.Value.FirstGroup;
             if (!predicate(line))
             {
-               Advance(result.Length);
+               Advance(_result.Value.Length);
                yield return line;
             }
             else
@@ -168,7 +165,7 @@ public class SourceLines
          var _line = current.Matches(REGEX_NEXT_LINE).Map(r => r.FirstGroup);
          if (_line)
          {
-            _peekLength = (~_line).Length;
+            _peekLength = _line.Value.Length;
             return _line;
          }
          else
@@ -193,12 +190,11 @@ public class SourceLines
          var current = Current;
          if (_nextLine.ValueOf(current.Matches(REGEX_NEXT_LINE)))
          {
-            var lineResult = ~_nextLine;
-            var line = lineResult.FirstGroup;
+            var line = _nextLine.Value.FirstGroup;
             var _line = line.Matches(pattern);
             if (_line)
             {
-               Advance(lineResult.Length);
+               Advance(_nextLine.Value.Length);
                yield return (_line, line);
             }
             else

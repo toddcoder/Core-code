@@ -56,7 +56,7 @@ public class Parser
          {
             if (_result)
             {
-               content.Append(~_result);
+               content.Append(_result.Value);
             }
 
             added = true;

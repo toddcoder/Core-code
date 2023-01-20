@@ -33,7 +33,7 @@ public class LazyList<T> : IList<T>
    public IEnumerator<T> GetEnumerator()
    {
       Flatten();
-      foreach (var item in ~_flattened)
+      foreach (var item in _flattened.Value)
       {
          yield return item;
       }
@@ -46,7 +46,7 @@ public class LazyList<T> : IList<T>
       if (_flattened)
       {
          enumerables.Clear();
-         enumerables.Add(~_flattened);
+         enumerables.Add(_flattened.Value);
          _flattened = nil;
          Unflattened?.Invoke(this, EventArgs.Empty);
       }
@@ -59,7 +59,7 @@ public class LazyList<T> : IList<T>
       if (_flattened)
       {
          enumerables.Clear();
-         enumerables.Add(~_flattened);
+         enumerables.Add(_flattened.Value);
          _flattened = nil;
          Unflattened?.Invoke(this, EventArgs.Empty);
       }
@@ -77,13 +77,13 @@ public class LazyList<T> : IList<T>
    public bool Contains(T item)
    {
       Flatten();
-      return (~_flattened).Contains(item);
+      return _flattened.Value.Contains(item);
    }
 
    public void CopyTo(T[] array, int arrayIndex)
    {
       Flatten();
-      var flattened = ~_flattened;
+      var flattened = _flattened.Value;
       var length = Math.Min(flattened.Length, array.Length);
       Array.Copy(flattened, arrayIndex, array, 0, length);
    }
@@ -91,7 +91,7 @@ public class LazyList<T> : IList<T>
    public bool Remove(T item)
    {
       Flatten();
-      var newEnumerable = (~_flattened).Where(i => !i.Equals(item));
+      var newEnumerable = _flattened.Value.Where(i => !i.Equals(item));
       Clear();
       Add(newEnumerable);
       return true;
@@ -102,7 +102,7 @@ public class LazyList<T> : IList<T>
       get
       {
          Flatten();
-         return (~_flattened).Length;
+         return _flattened.Value.Length;
       }
    }
 
@@ -117,7 +117,7 @@ public class LazyList<T> : IList<T>
    public void Insert(int index, T item)
    {
       Flatten();
-      var flattenedList = (~_flattened).ToList();
+      var flattenedList = _flattened.Value.ToList();
       flattenedList.Insert(0, item);
       Clear();
       Add(flattenedList);
@@ -126,7 +126,7 @@ public class LazyList<T> : IList<T>
    public void RemoveAt(int index)
    {
       Flatten();
-      var flattenedList = (~_flattened).ToList();
+      var flattenedList = _flattened.Value.ToList();
       flattenedList.RemoveAt(index);
       Clear();
       Add(flattenedList);
@@ -137,12 +137,12 @@ public class LazyList<T> : IList<T>
       get
       {
          Flatten();
-         return (~_flattened)[index];
+         return _flattened.Value[index];
       }
       set
       {
          Flatten();
-         (~_flattened)[index] = value;
+         _flattened.Value[index] = value;
       }
    }
 }

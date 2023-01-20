@@ -15,7 +15,7 @@ namespace Core.Markup.Html
          var _result = source.Matches("^ /(-['{']+) /s* '{' (/s* /(.+))? $; f");
          if (_result)
          {
-            var (name, styleSource) = ~_result;
+            var (name, styleSource) = _result.Value;
             var selector = new Selector(name);
 
             if (styleSource.IsNotEmpty())

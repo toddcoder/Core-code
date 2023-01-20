@@ -102,6 +102,7 @@ public abstract class Responding<T>
 
    public static T operator |(Responding<T> responding, Func<Maybe<Exception>, T> defaultFunc) => responding.DefaultTo(defaultFunc);
 
+   [Obsolete("Use .Value")]
    public static T operator ~(Responding<T> responding) => responding.Value;
 
    public abstract T Value { get; }
@@ -131,14 +132,14 @@ public abstract class Responding<T>
 
    public abstract Responding<TResult> Select<TResult>(Responding<T> result, Func<T, TResult> func);
 
-   [Obsolete("Use ~")]
+   [Obsolete("Use .Value")]
    public abstract bool Map(out T value);
 
    public abstract bool IfNoResponse();
 
    public abstract bool IfFailedResponse(out Exception exception);
 
-   [Obsolete("Use ~")]
+   [Obsolete("Use .Value")]
    public abstract bool Map(out T value, out Maybe<Exception> _exception);
 
    public abstract T Force();

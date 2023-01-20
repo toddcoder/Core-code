@@ -202,7 +202,7 @@ public class ExTextBox : TextBox
       var _result = Text.Matches("/w+; f");
       if (_result)
       {
-         foreach (var match in ~_result)
+         foreach (var match in _result.Value)
          {
             var (text, index, length) = match;
             var rectangle = RectangleFrom(graphics, index, length);
@@ -216,7 +216,7 @@ public class ExTextBox : TextBox
       var _result = Text.Matches("/w+; f");
       if (_result)
       {
-         foreach (var match in ~_result)
+         foreach (var match in _result.Value)
          {
             var (_, index, length) = match;
             yield return (index, length);
@@ -229,7 +229,7 @@ public class ExTextBox : TextBox
       var _result = Text.Matches("[' /t']; f");
       if (_result)
       {
-         foreach (var match in ~_result)
+         foreach (var match in _result.Value)
          {
             var (text, index, length) = match;
             var rectangle = RectangleFrom(graphics, index, length);

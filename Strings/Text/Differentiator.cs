@@ -87,7 +87,7 @@ public class Differentiator
 
                if (differ.Build())
                {
-                  (~_subItemBuilder)(result.OldItems[oldPosition], result.NewItems[newPosition], oldItem.SubItems, newItem.SubItems);
+                  _subItemBuilder.Value(result.OldItems[oldPosition], result.NewItems[newPosition], oldItem.SubItems, newItem.SubItems);
                   newItem.Type = DifferenceType.Modified;
                   oldItem.Type = DifferenceType.Modified;
                }

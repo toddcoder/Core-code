@@ -96,7 +96,7 @@ public class MultiMatcher<T>
       {
          try
          {
-            return (~_defaultResult)(input);
+            return _defaultResult.Value(input);
          }
          catch (Exception exception)
          {
@@ -200,7 +200,7 @@ public class MultiMatcher
       {
          try
          {
-            (~_defaultAction)(input);
+            _defaultAction.Value(input);
             return unit;
          }
          catch (Exception exception)

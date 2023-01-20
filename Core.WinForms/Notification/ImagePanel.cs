@@ -44,8 +44,8 @@ public class ImagePanel : Panel
    {
       if (_image)
       {
-         var imageWidth = (~_image).Width;
-         var imageHeight = (~_image).Height;
+         var imageWidth = _image.Value.Width;
+         var imageHeight = _image.Value.Height;
 
          e.Graphics.CompositingQuality = CompositingQuality.HighQuality;
 

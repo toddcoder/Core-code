@@ -132,7 +132,7 @@ public class SqlSetup : ISetup, ISetupWithInfo
    {
       if (_attributesSetting)
       {
-         foreach (var (key, value) in (~_attributesSetting).Items())
+         foreach (var (key, value) in _attributesSetting.Value.Items())
          {
             attributes[key] = value;
          }
@@ -144,7 +144,7 @@ public class SqlSetup : ISetup, ISetupWithInfo
       var _hash = hash.AnyHash();
       if (_hash)
       {
-         foreach (var (key, value) in ~_hash)
+         foreach (var (key, value) in _hash.Value)
          {
             attributes[key] = value;
          }

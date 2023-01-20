@@ -251,17 +251,17 @@ public class StringClassTests
       var _result = lazyRepeating.maybe<string>();
       if (_result.ValueOf(variants.TemplateName("x").Evaluate("xx")))
       {
-         Console.WriteLine(~_result);
+         Console.WriteLine(_result.Value);
       }
 
       if (_result.ValueOf(variants.TemplateName("y").Evaluate("yy1", "yy2")))
       {
-         Console.WriteLine(~_result);
+         Console.WriteLine(_result.Value);
       }
 
       if (_result.ValueOf(variants.TemplateName("z").Evaluate("zx")))
       {
-         Console.WriteLine(~_result);
+         Console.WriteLine(_result.Value);
       }
    }
 }

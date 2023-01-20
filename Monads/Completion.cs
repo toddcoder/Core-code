@@ -54,6 +54,7 @@ public abstract class Completion<T>
 
    public static T operator |(Completion<T> completion, Func<T> defaultFunc) => completion ? completion : defaultFunc();
 
+   [Obsolete("Use .Value")]
    public static T operator ~(Completion<T> completion) => completion.Value;
 
    public abstract Completion<TResult> Map<TResult>(Func<T, Completion<TResult>> ifCompleted);

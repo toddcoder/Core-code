@@ -106,7 +106,7 @@ public class SqlSetupBuilder
 
       if (_connectionStringBuilder)
       {
-         var connectionStringBuilder = ~_connectionStringBuilder;
+         var connectionStringBuilder = _connectionStringBuilder.Value;
          _connectionString.ValueOf(connectionStringBuilder.Build);
       }
       else
@@ -116,7 +116,7 @@ public class SqlSetupBuilder
 
       if (_commandTextBuilder)
       {
-         var commandTextBuilder = ~_commandTextBuilder;
+         var commandTextBuilder = _commandTextBuilder.Value;
          _commandText.ValueOf(commandTextBuilder.Build);
       }
       else
@@ -126,7 +126,7 @@ public class SqlSetupBuilder
 
       if (_connectionString)
       {
-         sqlSetup.ConnectionString = ~_connectionString;
+         sqlSetup.ConnectionString = _connectionString.Value;
       }
       else
       {
@@ -135,7 +135,7 @@ public class SqlSetupBuilder
 
       if (_commandText)
       {
-         var (commandText, commandTimeout) = ~_commandText;
+         var (commandText, commandTimeout) = _commandText.Value;
          sqlSetup.CommandText = commandText;
          sqlSetup.CommandTimeout = commandTimeout;
       }

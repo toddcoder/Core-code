@@ -49,7 +49,7 @@ public class Service
       serviceMessage.Add(new NamedExceptions(exceptionAddress, name, $"{name} Exceptions", 5));
       if (_serviceMessage)
       {
-         serviceMessage.Add(~_serviceMessage);
+         serviceMessage.Add(_serviceMessage.Value);
       }
 
       jobs = new StringHash<Job>(true);

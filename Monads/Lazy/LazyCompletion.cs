@@ -82,7 +82,7 @@ public class LazyCompletion<T> : Completion<T>
 
       if (_value)
       {
-         return _next.ValueOf(() => func(~_value));
+         return _next.ValueOf(() => func(_value.Value));
       }
       else if (_value.AnyException)
       {
@@ -103,7 +103,7 @@ public class LazyCompletion<T> : Completion<T>
 
       if (_value)
       {
-         return _next.ValueOf(() => func(~_value));
+         return _next.ValueOf(() => func(_value.Value));
       }
       else if (_value.AnyException)
       {
@@ -406,7 +406,7 @@ public class LazyCompletion<T> : Completion<T>
       get
       {
          ensureValue();
-         return ~_value;
+         return _value.Value;
       }
    }
 

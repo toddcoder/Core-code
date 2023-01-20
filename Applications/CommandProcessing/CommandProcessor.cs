@@ -190,7 +190,7 @@ public abstract class CommandProcessor : IDisposable
       var _commandParts = splitCommandFromRest(commandLine);
       if (_commandParts)
       {
-         var (command, rest) = ~_commandParts;
+         var (command, rest) = _commandParts.Value;
          Command = command;
 
          switch (command)
@@ -206,7 +206,7 @@ public abstract class CommandProcessor : IDisposable
                var _method = getMethod(command);
                if (_method)
                {
-                  var (methodInfo, commandAttribute) = ~_method;
+                  var (methodInfo, commandAttribute) = _method.Value;
                   if (commandAttribute.Initialize)
                   {
                      CommandInitialize(commandAttribute);
@@ -323,7 +323,7 @@ public abstract class CommandProcessor : IDisposable
          var _result = rest.Matches($"^ /('{Prefix}set' | '{Prefix}get' | '{ShortCut}s' | '{ShortCut}g') /s+ /(/w [/w '-']*) /b /(.*) $; f");
          if (_result)
          {
-            var (command, name, value) = ~_result;
+            var (command, name, value) = _result.Value;
             var _command = lazy.maybe<string>();
             var _command2 = lazy.maybe<string>();
             if (_command.ValueOf(command.Matches($"^ '{Prefix}' /('set' | 'get'); f").Map(r => r.FirstGroup)))
@@ -414,7 +414,7 @@ public abstract class CommandProcessor : IDisposable
             break;
          }
 
-         var result = ~_result;
+         var result = _result.Value;
          var (prefix, name) = result;
          noStrings = noStrings.Drop(result.Length);
          if (noStrings.IsEmpty() || noStrings.IsMatch($"^ /s* ('{Prefix}' | '{ShortCut}'); f"))
@@ -427,7 +427,7 @@ public abstract class CommandProcessor : IDisposable
             var _nonSpace = lazy.maybe<(string, int)>();
             if (_bareString.ValueOf(noStrings.Matches("^ /s* /([quote]) /(-[quote]*) /1; f").Map(r => r.SecondGroupAndLength)))
             {
-               var (bareString, bareStringLength) = ~_bareString;
+               var (bareString, bareStringLength) = _bareString.Value;
                var value = delimitedText.Restringify(bareString, RestringifyQuotes.None);
 
                yield return (prefix, name, value);
@@ -436,7 +436,7 @@ public abstract class CommandProcessor : IDisposable
             }
             else if (_nonSpace.ValueOf(noStrings.Matches("^ /s* /(-/s+); f").Map(r => r.FirstGroupAndLength)))
             {
-               var (nonSpace, nonSpaceLength) = ~_nonSpace;
+               var (nonSpace, nonSpaceLength) = _nonSpace.Value;
                yield return (prefix, name, nonSpace);
 
                noStrings = noStrings.Drop(nonSpaceLength);
@@ -525,7 +525,7 @@ public abstract class CommandProcessor : IDisposable
       Maybe<object> _object = nil;
       if (_value)
       {
-         var value = ~_value;
+         var value = _value.Value;
          if (type == typeof(bool))
          {
             _object = getBoolean(value);
@@ -558,7 +558,7 @@ public abstract class CommandProcessor : IDisposable
 
          if (_object)
          {
-            propertyInfo.SetValue(this, ~_object);
+            propertyInfo.SetValue(this, _object.Value);
             return unit;
          }
          else
@@ -584,7 +584,7 @@ public abstract class CommandProcessor : IDisposable
          var _firstGroup = value.Matches("^ /s* /('true' | 'false' | '+' | '-') /b; fi").Map(r => r.FirstGroup);
          if (_firstGroup)
          {
-            return (~_firstGroup).AnySame("true", "+").Some<object>();
+            return _firstGroup.Value.AnySame("true", "+").Some<object>();
          }
          else
          {
@@ -678,7 +678,7 @@ public abstract class CommandProcessor : IDisposable
       var _list = value.Matches("^/s* '[' /s*  /(.*) /s* ']'; f").Map(r => r.FirstGroup);
       if (_list)
       {
-         var array = (~_list).Unjoin("/s* ',' /s*; f");
+         var array = _list.Value.Unjoin("/s* ',' /s*; f");
          return array.Some().Map(a => (object)a);
       }
       else

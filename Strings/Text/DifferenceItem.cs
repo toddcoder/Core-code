@@ -80,7 +80,7 @@ public class DifferenceItem : IEquatable<DifferenceItem>
 
       if (Position)
       {
-         writer.Write((~Position).RightJustify(10));
+         writer.Write(Position.Value.RightJustify(10));
          writer.Write(" ");
       }
       else

@@ -22,7 +22,7 @@ public class Configuration : Setting
       var _setting = Serialize(type, obj, name);
       if (_setting)
       {
-         var configuration = new Configuration(file, (~_setting).items, name);
+         var configuration = new Configuration(file, _setting.Value.items, name);
          if (save)
          {
             return configuration.Save();

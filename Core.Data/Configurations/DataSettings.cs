@@ -17,7 +17,7 @@ public class DataSettings
       var _adapterSetting = AdaptersSetting.Maybe.Setting(adapterName);
       if (_adapterSetting)
       {
-         var commandName = (~_adapterSetting).Maybe.String("command") | adapterName;
+         var commandName = _adapterSetting.Value.Maybe.String("command") | adapterName;
          var _commandSetting = CommandsSetting.Maybe.Setting(commandName);
          if (_commandSetting)
          {

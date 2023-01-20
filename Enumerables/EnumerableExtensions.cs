@@ -789,7 +789,7 @@ public static class EnumerableExtensions
       {
          if (_currentValue)
          {
-            if (item.ComparedTo(~_currentValue) > 0)
+            if (item.ComparedTo(_currentValue.Value) > 0)
             {
                _index = currentIndex;
                _currentValue = item;
@@ -818,7 +818,7 @@ public static class EnumerableExtensions
          var mappedItem = mappingFunc(item);
          if (_currentValue)
          {
-            if (mappedItem.ComparedTo(~_currentValue) > 0)
+            if (mappedItem.ComparedTo(_currentValue.Value) > 0)
             {
                _index = currentIndex;
                _currentValue = mappedItem;
@@ -845,7 +845,7 @@ public static class EnumerableExtensions
       {
          if (_currentValue)
          {
-            if (item.ComparedTo(~_currentValue) < 0)
+            if (item.ComparedTo(_currentValue.Value) < 0)
             {
                _index = currentIndex;
                _currentValue = item;
@@ -874,7 +874,7 @@ public static class EnumerableExtensions
          var mappedItem = mappingFunc(item);
          if (_currentValue)
          {
-            if (mappedItem.ComparedTo(~_currentValue) < 0)
+            if (mappedItem.ComparedTo(_currentValue.Value) < 0)
             {
                _index = currentIndex;
                _currentValue = mappedItem;

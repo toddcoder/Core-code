@@ -16,7 +16,7 @@ public class Attribute
       var _result = source.Matches(PATTERN_ATTRIBUTE);
       if (_result)
       {
-         var (name, text) = ~_result;
+         var (name, text) = _result.Value;
          return new Attribute(name, text, QuoteType.Single);
       }
       else
