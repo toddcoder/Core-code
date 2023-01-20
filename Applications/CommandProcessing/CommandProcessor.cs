@@ -411,11 +411,12 @@ public abstract class CommandProcessor : IDisposable
             var _stringLength = lazy.maybe<(string, int)>();
             if (_secondGroup.ValueOf(noStrings.Matches("^ /s* /([quote]) /(-[quote]*) /1; f").Map(r => r.SecondGroup)))
             {
-               var value = delimitedText.Restringify(_secondGroup, RestringifyQuotes.None);
+               var bareString = ~_secondGroup;
+               var value = delimitedText.Restringify(bareString, RestringifyQuotes.None);
 
                yield return (prefix, name, value);
 
-               noStrings = noStrings.Drop(result.Length);
+               noStrings = noStrings.Drop(bareString.Length);
             }
             else if (_stringLength.ValueOf(noStrings.Matches("^ /s* /(-/s+); f").Map(r => (r.FirstGroup, r.Length))))
             {
