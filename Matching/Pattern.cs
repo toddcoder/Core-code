@@ -87,10 +87,12 @@ public class Pattern : IEquatable<Pattern>
    }
 
    protected static StringHash<string> friendlyPatterns;
+   protected static StringHash<RRegex> compiledRegex;
 
    static Pattern()
    {
       friendlyPatterns = new StringHash<string>(true);
+      compiledRegex = new StringHash<RRegex>(false);
       isFriendly = true;
    }
 
@@ -127,7 +129,7 @@ public class Pattern : IEquatable<Pattern>
    {
       try
       {
-         var rRegex = new RRegex(regex, options);
+         var rRegex = compiledRegex.Memoize(regex, r => new RRegex(r, options | RegexOptions.Compiled));
          var newMatches = rRegex.Matches(input)
             .Cast<RMatch>()
             .Select((m, i) => new Match()
