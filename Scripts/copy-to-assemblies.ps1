@@ -11,4 +11,5 @@ robocopy "Core.Json\bin\Debug" $target Core.Json.dll Newtonsoft.Json.dll /xf *.x
 robocopy "Core.Git\bin\Debug" $target Core.Git.dll /xf *.xml *.config *.pdb /NDL /NJH /NJS /nc /ns
 robocopy "Core.Services\bin\Debug" $target Core.Services.dll /xf *.xml *.config *.pdb /NDL /NJH /NJS /nc /ns
 robocopy "Core.Zip\bin\Debug" $target Core.Zip.dll /xf *.xml *.config *.pdb /NDL /NJH /NJS /nc /ns
+robocopy "Core.Io\bin\Debug" $target Core.Io.dll /xf *.xml *.config *.pdb /NDL /NJH /NJS /nc /ns
 Pop-Location
