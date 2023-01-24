@@ -1117,4 +1117,16 @@ public static class EnumerableExtensions
    }
 
    public static IOrderedEnumerable<T> OrderDescending<T>(this IEnumerable<T> enumerable) => enumerable.OrderByDescending(i => i);
+
+   public static IEnumerable<TValue> Distinct<TValue, TKey>(this IEnumerable<TValue> enumerable, Func<TValue, TKey> keySelector)
+   {
+      var knownKeys = new HashSet<TKey>();
+      foreach (var value in enumerable)
+      {
+         if (knownKeys.Add(keySelector(value)))
+         {
+            yield return value;
+         }
+      }
+   }
 }
