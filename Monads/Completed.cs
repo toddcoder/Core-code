@@ -75,66 +75,15 @@ public class Completed<T> : Completion<T>, IEquatable<Completed<T>>
 
    public override Completion<TResult> Select<TResult>(Completion<T> result, Func<T, TResult> func) => func(value).Completed();
 
-   [Obsolete("Use ~")]
-   public override bool Map(out T value)
-   {
-      value = this.value;
-      return true;
-   }
-
    public override bool IfCancelled() => false;
-
-   [Obsolete("Use !")]
-   public override bool IfInterrupted(out Exception exception)
-   {
-      exception = default;
-      return false;
-   }
-
-   [Obsolete("Use ~")]
-   public override bool Map(out T value, out Maybe<Exception> _exception)
-   {
-      value = this.value;
-      _exception = nil;
-
-      return true;
-   }
-
-   [Obsolete("Use !")]
-   public override bool UnMap(out Maybe<Exception> _exception)
-   {
-      _exception = nil;
-      return false;
-   }
-
-   [Obsolete("Use !")]
-   public override bool UnMap<TOther>(out Completion<TOther> result)
-   {
-      result = default;
-      return false;
-   }
 
    public override Completion<TOther> NotCompleted<TOther>() => nil;
 
-   [Obsolete("Use ~")]
-   public override  bool IsCompleted(out Completion<T> completed)
-   {
-      completed = this;
-      return true;
-   }
-
-   [Obsolete("Use !")]
-   public  override bool NotCompleted(out Completion<T> notCompleted)
-   {
-      notCompleted = this;
-      return false;
-   }
-
-   public override  void Force()
+   public override void Force()
    {
    }
 
-   public  override T ForceValue() => value;
+   public override T ForceValue() => value;
 
    public override Completion<T> CancelledOnly() => nil;
 
@@ -178,7 +127,8 @@ public class Completed<T> : Completion<T>, IEquatable<Completed<T>>
 
    public override Completion<T> Where(Predicate<T> predicate) => predicate(value) ? this : nil;
 
-   public override Completion<T> Where(Predicate<T> predicate, string exceptionMessage) => predicate(value) ? this : exceptionMessage.Interrupted<T>();
+   public override Completion<T> Where(Predicate<T> predicate, string exceptionMessage) =>
+      predicate(value) ? this : exceptionMessage.Interrupted<T>();
 
    public override Completion<T> Where(Predicate<T> predicate, Func<string> exceptionMessage)
    {

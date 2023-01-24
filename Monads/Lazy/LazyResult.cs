@@ -121,13 +121,6 @@ public class LazyResult<T> : Result<T>, IEquatable<LazyResult<T>>
       }
    }
 
-   [Obsolete("Use ~")]
-   public override bool Map(out T value, out Exception exception)
-   {
-      ensureValue();
-      return _value.Map(out value, out exception);
-   }
-
    public override Result<TResult> Map<TResult>(Func<T, Result<TResult>> ifSuccessful)
    {
       ensureValue();
@@ -188,27 +181,6 @@ public class LazyResult<T> : Result<T>, IEquatable<LazyResult<T>>
    {
       ensureValue();
       return _value.Always(action);
-   }
-
-   [Obsolete("Use ~")]
-   public override bool Map(out T value)
-   {
-      ensureValue();
-      return _value.Map(out value);
-   }
-
-   [Obsolete("Use !")]
-   public override bool UnMap(out Exception exception)
-   {
-      ensureValue();
-      return _value.UnMap(out exception);
-   }
-
-   [Obsolete("Use !")]
-   public override bool UnMap(out T value, out Exception exception)
-   {
-      ensureValue();
-      return _value.UnMap(out value, out exception);
    }
 
    public override void Force()

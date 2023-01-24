@@ -125,19 +125,6 @@ namespace Core.Monads
          _ => throw new InvalidCastException("Must be a Success to return a value")
       };
 
-      [Obsolete("Use Exception property")]
-      public static implicit operator Exception(Result<T> result) => result switch
-      {
-         Failure<T> failure => failure.Exception,
-         _ => throw new InvalidCastException("Must be a Failure to return a value")
-      };
-
-      [Obsolete("Use .Value")]
-      public static T operator ~(Result<T> result) => result.Value;
-
-      [Obsolete("Use ~")]
-      public abstract bool Map(out T value, out Exception exception);
-
       public abstract Result<TResult> Map<TResult>(Func<T, Result<TResult>> ifSuccessful);
 
       public abstract Result<TResult> Map<TResult>(Func<T, TResult> ifSuccessful);
@@ -157,15 +144,6 @@ namespace Core.Monads
       public abstract Exception Exception { get; }
 
       public abstract Result<T> Always(Action action);
-
-      [Obsolete("Use ~")]
-      public abstract bool Map(out T value);
-
-      [Obsolete("Use !")]
-      public abstract bool UnMap(out Exception exception);
-
-      [Obsolete("Use !")]
-      public abstract bool UnMap(out T value, out Exception exception);
 
       public abstract void Force();
 

@@ -153,20 +153,6 @@ public class LazyMaybe<T> : Maybe<T>, IEquatable<LazyMaybe<T>>
       return _value.Responding();
    }
 
-   [Obsolete("Use ~")]
-   public override bool Map(out T value)
-   {
-      ensureValue();
-      return _value.Map(out value);
-   }
-
-   [Obsolete("Use !")]
-   public override bool UnMap(out T value)
-   {
-      ensureValue();
-      return _value.UnMap(out value);
-   }
-
    public override void Force(string message)
    {
       ensureValue();

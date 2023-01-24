@@ -56,28 +56,12 @@ public class FailedResponse<T> : Responding<T>, IEquatable<FailedResponse<T>>
 
    public override Responding<TResult> Select<TResult>(Responding<T> result, Func<T, TResult> func) => new FailedResponse<TResult>(exception);
 
-   [Obsolete("Use ~")]
-   public override bool Map(out T value)
-   {
-      value = default;
-      return false;
-   }
-
    public override bool IfNoResponse() => false;
 
    public override bool IfFailedResponse(out Exception exception)
    {
       exception = this.exception;
       return true;
-   }
-
-   [Obsolete("Use ~")]
-   public override bool Map(out T value, out Maybe<Exception> _exception)
-   {
-      value = default;
-      _exception = exception;
-
-      return false;
    }
 
    public override T Force() => throw exception;

@@ -80,9 +80,6 @@ public abstract class Maybe<T>
       _ => throw new InvalidCastException("Must be a Some to return a value")
    };
 
-   [Obsolete("Use .Value")]
-   public static T operator ~(Maybe<T> maybe) => maybe.Value;
-
    public abstract T Value { get; }
 
    public abstract Maybe<TResult> Map<TResult>(Func<T, TResult> ifSome);
@@ -94,12 +91,6 @@ public abstract class Maybe<T>
    public abstract Result<T> Result(string message);
 
    public abstract Responding<T> Responding();
-
-   [Obsolete("Use ~")]
-   public abstract bool Map(out T value);
-
-   [Obsolete("Use !")]
-   public abstract bool UnMap(out T value);
 
    public abstract void Force(string message);
 

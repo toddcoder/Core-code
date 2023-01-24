@@ -36,26 +36,9 @@ public abstract class Completion<T>
       _ => throw new InvalidCastException("Must be a Completed to return a value")
    };
 
-   [Obsolete("Use Exception property")]
-   public static implicit operator Exception(Completion<T> value) => value switch
-   {
-      Interrupted<T> interrupted => interrupted.Exception,
-      _ => throw new InvalidCastException("Must be an Interrupted to return a value")
-   };
-
-   [Obsolete("Use AnyException property")]
-   public static implicit operator Maybe<Exception>(Completion<T> value) => value switch
-   {
-      Interrupted<T> interrupted => interrupted.Exception,
-      _ => nil
-   };
-
-   public static T operator |(Completion<T> completion, T defaultValue) => completion ? completion : defaultValue;
+  public static T operator |(Completion<T> completion, T defaultValue) => completion ? completion : defaultValue;
 
    public static T operator |(Completion<T> completion, Func<T> defaultFunc) => completion ? completion : defaultFunc();
-
-   [Obsolete("Use .Value")]
-   public static T operator ~(Completion<T> completion) => completion.Value;
 
    public abstract Completion<TResult> Map<TResult>(Func<T, Completion<TResult>> ifCompleted);
 
@@ -90,30 +73,9 @@ public abstract class Completion<T>
 
    public abstract Completion<TResult> Select<TResult>(Completion<T> result, Func<T, TResult> func);
 
-   [Obsolete("Use ~")]
-   public abstract bool Map(out T value);
-
-   public abstract bool IfCancelled();
-
-   [Obsolete("Use !")]
-   public abstract bool IfInterrupted(out Exception exception);
-
-   [Obsolete("Use ~")]
-   public abstract bool Map(out T value, out Maybe<Exception> _exception);
-
-   [Obsolete("Use !")]
-   public abstract bool UnMap(out Maybe<Exception> _exception);
-
-   [Obsolete("Use !")]
-   public abstract bool UnMap<TOther>(out Completion<TOther> result);
+  public abstract bool IfCancelled();
 
    public abstract Completion<TOther> NotCompleted<TOther>();
-
-   [Obsolete("Use ~")]
-   public abstract bool IsCompleted(out Completion<T> completed);
-
-   [Obsolete("Use !")]
-   public abstract bool NotCompleted(out Completion<T> notCompleted);
 
    public abstract void Force();
 

@@ -24,20 +24,6 @@ public class Some<T> : Maybe<T>, IEquatable<Some<T>>
 
    public override Responding<T> Responding() => value;
 
-   [Obsolete("Use ~")]
-   public override bool Map(out T value)
-   {
-      value = this.value;
-      return true;
-   }
-
-   [Obsolete("Use !")]
-   public override bool UnMap(out T value)
-   {
-      value = this.value;
-      return false;
-   }
-
    public override void Force(string message)
    {
    }

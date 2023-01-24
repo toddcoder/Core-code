@@ -17,15 +17,6 @@ public class Failure<T> : Result<T>, IEquatable<Failure<T>>
       this.exception = exception is FullStackException ? exception : new FullStackException(exception);
    }
 
-   [Obsolete("Use ~")]
-   public override bool Map(out T value, out Exception exception)
-   {
-      value = default;
-      exception = this.exception;
-
-      return false;
-   }
-
    [DebuggerStepThrough]
    public override Result<TResult> Map<TResult>(Func<T, Result<TResult>> ifSuccessful) => exception;
 
@@ -57,29 +48,6 @@ public class Failure<T> : Result<T>, IEquatable<Failure<T>>
    {
       tryTo(action);
       return this;
-   }
-
-   [Obsolete("Use ~")]
-   public override bool Map(out T value)
-   {
-      value = default;
-      return false;
-   }
-
-   [Obsolete("Use !")]
-   public override bool UnMap(out Exception exception)
-   {
-      exception = this.exception;
-      return true;
-   }
-
-   [Obsolete("Use !")]
-   public override bool UnMap(out T value, out Exception exception)
-   {
-      value = default;
-      exception = this.exception;
-
-      return true;
    }
 
    public override void Force() => throw exception;

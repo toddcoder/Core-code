@@ -1,5 +1,4 @@
 ﻿using System;
-using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads;
 
@@ -68,11 +67,14 @@ public abstract class Responding<T>
 
    public static bool operator true(Responding<T> value) => value is Response<T> || value is Lazy.LazyResponding<T> lazyResponding && lazyResponding;
 
-   public static bool operator false(Responding<T> value) => value is not Response<T> || value is Lazy.LazyResponding<T> lazyResponding && !lazyResponding;
+   public static bool operator false(Responding<T> value) =>
+      value is not Response<T> || value is Lazy.LazyResponding<T> lazyResponding && !lazyResponding;
 
-   public static bool operator !(Responding<T> value) => value is not Response<T> || value is Lazy.LazyResponding<T> lazyResponding && !lazyResponding;
+   public static bool operator !(Responding<T> value) =>
+      value is not Response<T> || value is Lazy.LazyResponding<T> lazyResponding && !lazyResponding;
 
-   public static implicit operator bool(Responding<T> value) => value is Response<T> || value is Lazy.LazyResponding<T> lazyResponding && lazyResponding;
+   public static implicit operator bool(Responding<T> value) =>
+      value is Response<T> || value is Lazy.LazyResponding<T> lazyResponding && lazyResponding;
 
    public static implicit operator T(Responding<T> value) => value switch
    {
@@ -82,28 +84,11 @@ public abstract class Responding<T>
       _ => throw new InvalidCastException("Must be a Response to return a value")
    };
 
-   [Obsolete("Use Exception property")]
-   public static implicit operator Exception(Responding<T> value) => value switch
-   {
-      FailedResponse<T> failedResponse => failedResponse.Exception,
-      _ => throw new InvalidCastException("Must be a FailedResponse to return a value")
-   };
-
-   [Obsolete("Use AnyException property")]
-   public static implicit operator Maybe<Exception>(Responding<T> value) => value switch
-   {
-      FailedResponse<T> failedResponse => failedResponse.Exception,
-      _ => nil
-   };
-
    public static T operator |(Responding<T> responding, T defaultValue) => responding ? responding : defaultValue;
 
    public static T operator |(Responding<T> responding, Func<T> defaultFunc) => responding ? responding : defaultFunc();
 
    public static T operator |(Responding<T> responding, Func<Maybe<Exception>, T> defaultFunc) => responding.DefaultTo(defaultFunc);
-
-   [Obsolete("Use .Value")]
-   public static T operator ~(Responding<T> responding) => responding.Value;
 
    public abstract T Value { get; }
 
@@ -132,15 +117,9 @@ public abstract class Responding<T>
 
    public abstract Responding<TResult> Select<TResult>(Responding<T> result, Func<T, TResult> func);
 
-   [Obsolete("Use .Value")]
-   public abstract bool Map(out T value);
-
    public abstract bool IfNoResponse();
 
    public abstract bool IfFailedResponse(out Exception exception);
-
-   [Obsolete("Use .Value")]
-   public abstract bool Map(out T value, out Maybe<Exception> _exception);
 
    public abstract T Force();
 

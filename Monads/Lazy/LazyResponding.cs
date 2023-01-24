@@ -214,13 +214,6 @@ public class LazyResponding<T> : Responding<T>, IEquatable<LazyResponding<T>>
       return _value.Select(result, func);
    }
 
-   [Obsolete("Use ~")]
-   public override bool Map(out T value)
-   {
-      ensureValue();
-      return _value.Map(out value);
-   }
-
    public override bool IfNoResponse()
    {
       ensureValue();
@@ -231,13 +224,6 @@ public class LazyResponding<T> : Responding<T>, IEquatable<LazyResponding<T>>
    {
       ensureValue();
       return _value.IfFailedResponse(out exception);
-   }
-
-   [Obsolete("Use ~")]
-   public override bool Map(out T value, out Maybe<Exception> _exception)
-   {
-      ensureValue();
-      return _value.Map(out value, out _exception);
    }
 
    public override T Force()

@@ -23,20 +23,6 @@ public class None<T> : Maybe<T>, IEquatable<None<T>>
 
    public override Responding<T> Responding() => nil;
 
-   [Obsolete("Use ~")]
-   public override bool Map(out T value)
-   {
-      value = default;
-      return false;
-   }
-
-   [Obsolete("Use !")]
-   public override bool UnMap(out T value)
-   {
-      value = default;
-      return true;
-   }
-
    public override void Force(string message) => throw fail(message);
 
    public override void Deconstruct(out bool isSome, out T value)

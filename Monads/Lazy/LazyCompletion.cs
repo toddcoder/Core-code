@@ -226,65 +226,16 @@ public class LazyCompletion<T> : Completion<T>
       return _value.Select(result, func);
    }
 
-   [Obsolete("Use ~")]
-   public override bool Map(out T value)
-   {
-      ensureValue();
-      return _value.Map(out value);
-   }
-
    public override bool IfCancelled()
    {
       ensureValue();
       return _value.IfCancelled();
    }
 
-   [Obsolete("Use !")]
-   public override bool IfInterrupted(out Exception exception)
-   {
-      ensureValue();
-      return _value.IfInterrupted(out exception);
-   }
-
-   [Obsolete("Use ~")]
-   public override bool Map(out T value, out Maybe<Exception> _exception)
-   {
-      ensureValue();
-      return _value.Map(out value, out _exception);
-   }
-
-   [Obsolete("Use !")]
-   public override bool UnMap(out Maybe<Exception> _exception)
-   {
-      ensureValue();
-      return _value.UnMap(out _exception);
-   }
-
-   [Obsolete("Use !")]
-   public override bool UnMap<TOther>(out Completion<TOther> result)
-   {
-      ensureValue();
-      return _value.UnMap(out result);
-   }
-
    public override Completion<TOther> NotCompleted<TOther>()
    {
       ensureValue();
       return _value.NotCompleted<TOther>();
-   }
-
-   [Obsolete("Use ~")]
-   public override bool IsCompleted(out Completion<T> completed)
-   {
-      ensureValue();
-      return _value.IsCompleted(out completed);
-   }
-
-   [Obsolete("Use !")]
-   public override bool NotCompleted(out Completion<T> notCompleted)
-   {
-      ensureValue();
-      return _value.NotCompleted(out notCompleted);
    }
 
    public override void Force()

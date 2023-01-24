@@ -14,15 +14,6 @@ public class Success<T> : Result<T>, IEquatable<Success<T>>
 
    internal Success(T value) => this.value = value;
 
-   [Obsolete("Use ~")]
-   public override bool Map(out T value, out Exception exception)
-   {
-      value = this.value;
-      exception = null;
-
-      return true;
-   }
-
    [DebuggerStepThrough]
    public override Result<TResult> Map<TResult>(Func<T, Result<TResult>> ifSuccessful)
    {
@@ -94,29 +85,6 @@ public class Success<T> : Result<T>, IEquatable<Success<T>>
    {
       tryTo(action);
       return this;
-   }
-
-   [Obsolete("Use ~")]
-   public override bool Map(out T value)
-   {
-      value = this.value;
-      return true;
-   }
-
-   [Obsolete("Use !")]
-   public override bool UnMap(out Exception exception)
-   {
-      exception = null;
-      return false;
-   }
-
-   [Obsolete("Use !")]
-   public override bool UnMap(out T value, out Exception exception)
-   {
-      value = this.value;
-      exception = null;
-
-      return false;
    }
 
    public override void Force()

@@ -73,60 +73,9 @@ public class Interrupted<T> : Completion<T>, IEquatable<Interrupted<T>>
 
    public override Completion<TResult> Select<TResult>(Completion<T> result, Func<T, TResult> func) => exception;
 
-   [Obsolete("Use ~")]
-   public override bool Map(out T value)
-   {
-      value = default;
-      return false;
-   }
-
    public override bool IfCancelled() => false;
 
-   [Obsolete("Use !")]
-   public override bool IfInterrupted(out Exception exception)
-   {
-      exception = this.exception;
-      return true;
-   }
-
-   [Obsolete("Use ~")]
-   public override bool Map(out T value, out Maybe<Exception> _exception)
-   {
-      value = default;
-      _exception = exception;
-
-      return false;
-   }
-
-   [Obsolete("Use !")]
-   public override bool UnMap(out Maybe<Exception> _exception)
-   {
-      _exception = exception;
-      return true;
-   }
-
-   [Obsolete("Use !")]
-   public override bool UnMap<TOther>(out Completion<TOther> result)
-   {
-      result = exception;
-      return true;
-   }
-
    public override Completion<TOther> NotCompleted<TOther>() => exception;
-
-   [Obsolete("Use ~")]
-   public override bool IsCompleted(out Completion<T> completed)
-   {
-      completed = this;
-      return false;
-   }
-
-   [Obsolete("Use !")]
-   public override bool NotCompleted(out Completion<T> notCompleted)
-   {
-      notCompleted = this;
-      return true;
-   }
 
    public override void Force() => throw exception;
 

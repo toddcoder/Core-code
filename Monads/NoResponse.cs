@@ -53,27 +53,11 @@ public class NoResponse<T> : Responding<T>, IEquatable<NoResponse<T>>
 
    public override Responding<TResult> Select<TResult>(Responding<T> result, Func<T, TResult> func) => nil;
 
-   [Obsolete("Use ~")]
-   public override bool Map(out T value)
-   {
-      value = default;
-      return false;
-   }
-
    public override bool IfNoResponse() => true;
 
    public override bool IfFailedResponse(out Exception exception)
    {
       exception = fail("There is no exception");
-      return false;
-   }
-
-   [Obsolete("Use ~")]
-   public override bool Map(out T value, out Maybe<Exception> _exception)
-   {
-      value = default;
-      _exception = nil;
-
       return false;
    }
 

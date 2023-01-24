@@ -70,28 +70,12 @@ public class Response<T> : Responding<T>, IEquatable<Response<T>>
 
    public override Responding<TResult> Select<TResult>(Responding<T> result, Func<T, TResult> func) => func(value);
 
-   [Obsolete("Use ~")]
-   public override bool Map(out T value)
-   {
-      value = this.value;
-      return true;
-   }
-
    public override bool IfNoResponse() => false;
 
    public override bool IfFailedResponse(out Exception exception)
    {
       exception = fail("There is no exception");
       return false;
-   }
-
-   [Obsolete("Use ~")]
-   public override bool Map(out T value, out Maybe<Exception> _exception)
-   {
-      value = this.value;
-      _exception = nil;
-
-      return true;
    }
 
    public override T Force() => value;
