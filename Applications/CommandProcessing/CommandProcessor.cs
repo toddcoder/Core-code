@@ -64,7 +64,13 @@ public abstract class CommandProcessor : IDisposable
       {
          if (configurationFile.Exists())
          {
-            return Configuration.Open(configurationFile);
+            var _result = Configuration.Open(configurationFile);
+            if (_result)
+            {
+               ConfigurationLoaded();
+            }
+
+            return _result;
          }
          else
          {
@@ -308,6 +314,14 @@ public abstract class CommandProcessor : IDisposable
          .ToStringHash(t => t.Name, t => (t.Type, t.Argument, t.ShortCut), true);
    }
 
+   public virtual void ConfigurationChanged()
+   {
+   }
+
+   public virtual void ConfigurationLoaded()
+   {
+   }
+
    protected void handleConfiguration(string rest)
    {
       if (rest.IsMatch($"^ '{Prefix}all' | '{ShortCut}a' /b; f"))
@@ -377,10 +391,19 @@ public abstract class CommandProcessor : IDisposable
 
    public virtual void SetConfiguration(string key, string value)
    {
-      if (configuration.ContainsKey(key))
+      if (configuration.ContainsKey(key) || configurationDefaults.ContainsKey(key))
       {
          configuration[key] = value;
-         configuration.Save().OnSuccess(_ => StandardWriter.WriteLine($"Saved {key}")).OnFailure(ExceptionWriter.WriteExceptionLine);
+         var _result = configuration.Save();
+         if (_result)
+         {
+            ConfigurationChanged();
+            StandardWriter.WriteLine($"Saved {key}");
+         }
+         else
+         {
+            ExceptionWriter.WriteExceptionLine(_result.Exception);
+         }
       }
       else
       {
