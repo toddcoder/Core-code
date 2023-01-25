@@ -64,13 +64,7 @@ public abstract class CommandProcessor : IDisposable
       {
          if (configurationFile.Exists())
          {
-            var _result = Configuration.Open(configurationFile);
-            if (_result)
-            {
-               ConfigurationLoaded();
-            }
-
-            return _result;
+            return Configuration.Open(configurationFile);
          }
          else
          {
@@ -169,6 +163,7 @@ public abstract class CommandProcessor : IDisposable
          if (_configuration)
          {
             configuration = _configuration;
+            ConfigurationLoaded();
             commandLine = removeExecutableFromCommandLine(commandLine);
             Arguments = commandLine;
 
