@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using Core.Computers;
-using Core.Enumerables;
 using Core.Matching;
 using Core.Monads;
 using Core.Strings;
@@ -43,7 +42,13 @@ public class ConfigurationMaybe
    {
       try
       {
-         var _file = String(key).Map(s => (FileName)s);
+         var _fileName = String(key);
+         if ((_fileName | "").IsEmpty())
+         {
+            return nil;
+         }
+
+         var _file = _fileName.Map(s => (FileName)s);
          return _file.Map(f => f.IsValid) | false ? _file : nil;
       }
       catch
@@ -56,8 +61,14 @@ public class ConfigurationMaybe
    {
       try
       {
-         var _folder = String(key).Map(s => (FolderName)s);
-         return _folder.Map(f=>f.IsValid) | false ? _folder : nil;
+         var _folderName = String(key);
+         if ((_folderName | "").IsEmpty())
+         {
+            return nil;
+         }
+
+         var _folder = _folderName.Map(s => (FolderName)s);
+         return _folder.Map(f => f.IsValid) | false ? _folder : nil;
       }
       catch
       {

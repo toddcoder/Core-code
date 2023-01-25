@@ -4,6 +4,7 @@ using Core.Computers;
 using Core.Matching;
 using Core.Monads;
 using Core.Strings;
+using static Core.Monads.MonadFunctions;
 using static Core.Objects.ConversionFunctions;
 
 namespace Core.Configurations;
@@ -41,7 +42,20 @@ public class ConfigurationResult
    {
       try
       {
-         var _file = String(key).Map(s => (FileName)s);
+         var _fileName = String(key);
+         if (_fileName)
+         {
+            if (_fileName.Value.IsEmpty())
+            {
+               return fail("File name is empty");
+            }
+         }
+         else
+         {
+            return _fileName.Exception;
+         }
+
+         var _file = _fileName.Map(s => (FileName)s);
          return _file.Map(f => f.IsValid) | false ? _file : _file.Exception;
       }
       catch (Exception exception)
@@ -54,7 +68,20 @@ public class ConfigurationResult
    {
       try
       {
-         var _folder = String(key).Map(s => (FolderName)s);
+         var _folderName = String(key);
+         if (_folderName)
+         {
+            if (_folderName.Value.IsEmpty())
+            {
+               return fail("Folder name is empty");
+            }
+         }
+         else
+         {
+            return _folderName.Exception;
+         }
+
+         var _folder = _folderName.Map(s => (FolderName)s);
          return _folder.Map(f => f.IsValid) | false ? _folder : _folder.Exception;
       }
       catch (Exception exception)
