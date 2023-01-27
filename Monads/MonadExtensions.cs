@@ -68,7 +68,7 @@ public static class MonadExtensions
 
    public static Maybe<T> NotNull<T>(this T obj) => obj.Some();
 
-   public static Maybe<string> SomeIfNotEmpty(this string text) => maybe(text.IsNotEmpty(), text.Some);
+   public static Maybe<string> NotEmpty(this string text) => maybe(text.IsNotEmpty(), text.Some);
 
    public static Maybe<Type> UnderlyingType(this object obj)
    {
