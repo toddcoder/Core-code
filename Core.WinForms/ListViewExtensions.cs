@@ -60,6 +60,20 @@ public static class ListViewExtensions
       return nil;
    }
 
+   public static Maybe<(ListViewItem item, int index)> SelectedItemWithIndex(this ListView listView)
+   {
+      if (listView.SelectedIndices.Count > 0)
+      {
+         var index = listView.SelectedIndices[0];
+         if (index > -1)
+         {
+            return (listView.Items[index], index);
+         }
+      }
+
+      return nil;
+   }
+
    public static Maybe<(string text, int index)> SelectedText(this ListView listView)
    {
       if (listView.SelectedIndices.Count > 0)
