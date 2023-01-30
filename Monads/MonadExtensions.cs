@@ -85,7 +85,7 @@ public static class MonadExtensions
 
    public static Maybe<Type> UnderlyingTypeOf(this Type type)
    {
-      if (type.Name.IsMatch("^ ('IMaybe' | 'Some' | 'None') '`1'; f"))
+      if (type.Name.IsMatch("^ ('Maybe' | 'Some' | 'None') '`1'; f"))
       {
          return type.GetGenericArguments().FirstOrNone();
       }
