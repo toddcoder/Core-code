@@ -922,7 +922,7 @@ public class UiAction : UserControl
 
    protected void drawAllSubTexts(Graphics graphics, UiActionType type)
    {
-      if (type is UiActionType.Busy or UiActionType.BusyText)
+      if (type is UiActionType.Busy or UiActionType.BusyText or UiActionType.ProgressDefinite)
       {
          return;
       }
