@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Core.Monads;
 
 namespace Core.Collections;
 
@@ -32,7 +33,7 @@ public class Triggers : StringHash<Triggers.TriggerType>
       }
    }
 
-   public bool IsSet(string key) => Maybe[key] == TriggerType.Set;
+   public bool IsSet(string key) => Maybe[key].Map(tt => tt == TriggerType.Set) | false;
 
    public void Trigger(string key)
    {
@@ -43,7 +44,7 @@ public class Triggers : StringHash<Triggers.TriggerType>
       }
    }
 
-   public bool IsTriggered(string key) => Maybe[key] == TriggerType.Triggered;
+   public bool IsTriggered(string key) => Maybe[key].Map(tt => tt == TriggerType.Triggered) | false;
 
    public void Update(string key)
    {
