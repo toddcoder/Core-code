@@ -827,7 +827,7 @@ public class UiAction : UserControl
 
       var style = type switch
       {
-         UiActionType.Busy or UiActionType.BusyText => CheckStyle.None,
+         UiActionType.Busy or UiActionType.BusyText or UiActionType.ProgressDefinite => CheckStyle.None,
          _ => CheckStyle
       };
       var writer = new Lazy<UiActionWriter>(() => new UiActionWriter(Center, style, EmptyTextTitle)
