@@ -268,10 +268,17 @@ public class LazyCompletion<T> : Completion<T>
       return _value.NotCompletedOnly<TOther>();
    }
 
+   [Obsolete("Use (bool, T)")]
    public override void Deconstruct(out Maybe<T> value, out Maybe<Exception> _exception)
    {
       ensureValue();
       _value.Deconstruct(out value, out _exception);
+   }
+
+   public override void Deconstruct(out bool isCompleted, out T value)
+   {
+      ensureValue();
+      _value.Deconstruct(out isCompleted, out value);
    }
 
    public override Completion<T> OnCompleted(Action<T> action)

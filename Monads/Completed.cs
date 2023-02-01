@@ -91,10 +91,17 @@ public class Completed<T> : Completion<T>, IEquatable<Completed<T>>
 
    public override Completion<TOther> NotCompletedOnly<TOther>() => nil;
 
+   [Obsolete("Use (bool, T)")]
    public override void Deconstruct(out Maybe<T> value, out Maybe<Exception> _exception)
    {
       value = this.value.Some();
       _exception = nil;
+   }
+
+   public override void Deconstruct(out bool isCompleted, out T value)
+   {
+      isCompleted = true;
+      value = this.value;
    }
 
    public override Completion<T> OnCompleted(Action<T> action)

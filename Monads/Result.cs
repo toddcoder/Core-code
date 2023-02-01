@@ -153,7 +153,10 @@ namespace Core.Monads
 
       public abstract Result<T> OnFailure(Action<Exception> action);
 
+      [Obsolete("Use (bool, T)")]
       public abstract void Deconstruct(out Maybe<T> value, out Exception exception);
+
+      public abstract void Deconstruct(out bool isSuccess, out T value);
 
       public abstract Result<T> Assert(Predicate<T> predicate, Func<string> exceptionMessage);
 

@@ -69,10 +69,17 @@ public class Failure<T> : Result<T>, IEquatable<Failure<T>>
       return this;
    }
 
+   [Obsolete("Use (bool, T)")]
    public override void Deconstruct(out Maybe<T> value, out Exception exception)
    {
       value = nil;
       exception = this.exception;
+   }
+
+   public override void Deconstruct(out bool isSuccess, out T value)
+   {
+      isSuccess = false;
+      value = default;
    }
 
    public override Result<T> Assert(Predicate<T> predicate, Func<string> exceptionMessage) => this;

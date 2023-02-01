@@ -86,10 +86,17 @@ public class Cancelled<T> : Completion<T>, IEquatable<Cancelled<T>>
 
    public override Completion<TOther> NotCompletedOnly<TOther>() => nil;
 
+   [Obsolete("Use (bool, T)")]
    public override void Deconstruct(out Maybe<T> value, out Maybe<Exception> _exception)
    {
       value = nil;
       _exception = nil;
+   }
+
+   public override void Deconstruct(out bool isCompleted, out T value)
+   {
+      isCompleted = false;
+      value = default;
    }
 
    public override Completion<T> OnCompleted(Action<T> action) => this;

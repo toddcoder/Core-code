@@ -125,7 +125,10 @@ public abstract class Responding<T>
 
    public abstract T DefaultTo(Func<Maybe<Exception>, T> func);
 
+   [Obsolete("Use (bool, T)")]
    public abstract void Deconstruct(out T value, out Maybe<Exception> _exception);
+
+   public abstract void Deconstruct(out bool isResponding, out T value);
 
    public abstract Maybe<T> Maybe();
 

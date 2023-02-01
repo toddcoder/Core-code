@@ -68,10 +68,17 @@ public class FailedResponse<T> : Responding<T>, IEquatable<FailedResponse<T>>
 
    public override T DefaultTo(Func<Maybe<Exception>, T> func) => func(exception);
 
+   [Obsolete("Use (bool, T)")]
    public override void Deconstruct(out T value, out Maybe<Exception> _exception)
    {
       value = default;
       _exception = exception;
+   }
+
+   public override void Deconstruct(out bool isResponding, out T value)
+   {
+      isResponding = false;
+      value = default;
    }
 
    public override Maybe<T> Maybe() => new None<T>();
