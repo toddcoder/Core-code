@@ -90,4 +90,14 @@ public class DateTimeTests
          Console.WriteLine(zulu);
       }
    }
+
+   [TestMethod]
+   public void WorkingTest()
+   {
+      Working working = 10.Seconds();
+      while (working)
+      {
+         Console.WriteLine(working.Elapsed);
+      }
+   }
 }

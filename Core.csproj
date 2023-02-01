@@ -256,6 +256,7 @@
     <Compile Include="Dates\Timeout.cs" />
     <Compile Include="Dates\TimeSpanExtensions.cs" />
     <Compile Include="Dates\Trigger.cs" />
+    <Compile Include="Dates\Working.cs" />
     <Compile Include="Dates\Year.cs" />
     <Compile Include="Enumerables\AllButFirst.cs" />
     <Compile Include="Enumerables\AllButLast.cs" />

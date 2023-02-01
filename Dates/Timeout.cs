@@ -5,9 +5,16 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Dates;
 
+[Obsolete("Use Working")]
 public class Timeout
 {
    public static implicit operator Timeout(TimeSpan timeoutPeriod) => new(timeoutPeriod);
+
+   public static implicit operator bool(Timeout timeout) => !timeout.Expired;
+
+   public static bool operator true(Timeout timeout) => !timeout.Expired;
+
+   public static bool operator false(Timeout timeout) => timeout.Expired;
 
    protected TimeSpan timeoutPeriod;
    protected Maybe<DateTime> _targetDateTime;
