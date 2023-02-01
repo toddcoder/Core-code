@@ -87,13 +87,6 @@ public class Interrupted<T> : Completion<T>, IEquatable<Interrupted<T>>
 
    public override Completion<TOther> NotCompletedOnly<TOther>() => exception;
 
-   [Obsolete("Use (bool, T)")]
-   public override void Deconstruct(out Maybe<T> value, out Maybe<Exception> _exception)
-   {
-      value = default;
-      _exception = exception;
-   }
-
    public override void Deconstruct(out bool isCompleted, out T value)
    {
       isCompleted = false;

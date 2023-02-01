@@ -238,13 +238,6 @@ public class LazyResponding<T> : Responding<T>, IEquatable<LazyResponding<T>>
       return _value.DefaultTo(func);
    }
 
-   [Obsolete("Use (bool, T)")]
-   public override void Deconstruct(out T value, out Maybe<Exception> _exception)
-   {
-      ensureValue();
-      _value.Deconstruct(out value, out _exception);
-   }
-
    public override void Deconstruct(out bool isResponding, out T value)
    {
       ensureValue();

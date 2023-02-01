@@ -87,9 +87,6 @@ public abstract class Completion<T>
 
    public abstract Completion<TOther> NotCompletedOnly<TOther>();
 
-   [Obsolete("Use (bool, T)")]
-   public abstract void Deconstruct(out Maybe<T> value, out Maybe<Exception> _exception);
-
    public abstract void Deconstruct(out bool isCompleted, out T value);
 
    public abstract Completion<T> OnCompleted(Action<T> action);

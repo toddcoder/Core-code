@@ -108,13 +108,6 @@ public class Success<T> : Result<T>, IEquatable<Success<T>>
 
    public override Result<T> OnFailure(Action<Exception> action) => this;
 
-   [Obsolete("Use (bool, T)")]
-   public override void Deconstruct(out Maybe<T> value, out Exception exception)
-   {
-      value = this.value.Some();
-      exception = default;
-   }
-
    public override void Deconstruct(out bool isSuccess, out T value)
    {
       isSuccess = true;

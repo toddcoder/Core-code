@@ -207,13 +207,6 @@ public class LazyResult<T> : Result<T>, IEquatable<LazyResult<T>>
       return _value.OnFailure(action);
    }
 
-   [Obsolete("Use (bool, T)")]
-   public override void Deconstruct(out Maybe<T> value, out Exception exception)
-   {
-      ensureValue();
-      _value.Deconstruct(out value, out exception);
-   }
-
    public override void Deconstruct(out bool isSuccess, out T value)
    {
       ensureValue();
