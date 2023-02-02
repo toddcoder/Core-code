@@ -97,7 +97,7 @@ public class DateTimeTests
       Working working = 10.Seconds();
       while (working)
       {
-         Console.WriteLine(working.Elapsed);
+         Console.WriteLine(working.Elapsed.ToLongString(true));
       }
    }
 }
