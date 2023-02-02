@@ -124,6 +124,7 @@ public class Cancelled<T> : Completion<T>, IEquatable<Cancelled<T>>
 
    public override Responding<T> Responding() => nil;
 
+   [Obsolete("Use deconstruction")]
    public override T Value => throw fail("Cancelled has no value");
 
    public override Exception Exception => throw fail("Cancelled has no Exception");

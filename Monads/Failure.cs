@@ -40,6 +40,7 @@ public class Failure<T> : Result<T>, IEquatable<Failure<T>>
 
    public override Result<Unit> Unit => exception;
 
+   [Obsolete("Use deconstruction")]
    public override T Value => throw exception;
 
    public override Exception Exception => exception;

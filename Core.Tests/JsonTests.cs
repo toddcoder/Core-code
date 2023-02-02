@@ -15,9 +15,9 @@ public class JsonTests
       var source = jsonFile.Text;
       var deserializer = new Deserializer(source);
       var _setting = deserializer.Deserialize();
-      if (_setting)
+      if (_setting is (true, var setting))
       {
-         Console.WriteLine(_setting.Value);
+         Console.WriteLine(setting);
       }
       else
       {
@@ -32,10 +32,10 @@ public class JsonTests
       var source = jsonFile.Text;
       var deserializer = new Deserializer(source);
       var _setting = deserializer.Deserialize();
-      if (_setting)
+      if (_setting is (true, var setting))
       {
-         Console.WriteLine(_setting.Value.Count);
-         Console.WriteLine(_setting.Value);
+         Console.WriteLine(setting.Count);
+         Console.WriteLine(setting);
       }
       else
       {

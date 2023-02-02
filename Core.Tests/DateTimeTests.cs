@@ -84,9 +84,8 @@ public class DateTimeTests
    {
       var source = "2022-11-18T15:00:18.253Z";
       var _date = Maybe.DateTime(source);
-      if (_date)
+      if (_date.Map(d => d.Zulu()) is (true, var zulu))
       {
-         var zulu = _date.Value.Zulu();
          Console.WriteLine(zulu);
       }
    }

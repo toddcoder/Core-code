@@ -82,9 +82,9 @@ public class Document
             Dirty();
          }
 
-         if (_colorizer)
+         if (_colorizer is (true, var colorizer))
          {
-            _colorizer.Value.Colorize(textBox);
+            colorizer.Colorize(textBox);
          }
       };
 
@@ -264,9 +264,9 @@ public class Document
    public virtual void Open(FileName fileName)
    {
       _file = fileName;
-      if (_file)
+      if (_file is (true, var file))
       {
-         textBox.Text = _file.Value.Lines.ToString("\r\n");
+         textBox.Text = file.Lines.ToString("\r\n");
       }
 
       Clean();
@@ -277,9 +277,9 @@ public class Document
       if (displayFileName)
       {
          var title = new StringBuilder();
-         if (_file)
+         if (_file is (true, var file))
          {
-            title.Append(_file.Value);
+            title.Append(file);
             title.Append(" - ");
             title.Append(formName);
             if (IsDirty)
@@ -317,9 +317,8 @@ public class Document
 
    protected virtual void save()
    {
-      if (_file)
+      if (_file is (true, var file))
       {
-         var file = _file.Value;
          if (file.Exists())
          {
             file.Delete();

@@ -92,11 +92,11 @@ public class MultiMatcher<T>
          }
       }
 
-      if (_defaultResult)
+      if (_defaultResult is (true, var defaultResult))
       {
          try
          {
-            return _defaultResult.Value(input);
+            return defaultResult(input);
          }
          catch (Exception exception)
          {
@@ -196,11 +196,11 @@ public class MultiMatcher
          }
       }
 
-      if (_defaultAction)
+      if (_defaultAction is (true, var defaultAction))
       {
          try
          {
-            _defaultAction.Value(input);
+            defaultAction(input);
             return unit;
          }
          catch (Exception exception)

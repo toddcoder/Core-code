@@ -43,9 +43,9 @@ public class Fields : IEnumerable<Field>
 
    public Fields(Maybe<Setting> _fieldsSetting) : this()
    {
-      if (_fieldsSetting)
+      if (_fieldsSetting is (true, var fieldsSetting))
       {
-         foreach (var field in _fieldsSetting.Value.Settings().Select(t => Field.Parse(t.setting)))
+         foreach (var field in fieldsSetting.Settings().Select(t => Field.Parse(t.setting)))
          {
             Add(field);
          }

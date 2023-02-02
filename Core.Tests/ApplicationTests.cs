@@ -168,9 +168,9 @@ internal class TestProgram : CommandProcessor
    public void Find()
    {
       var _result = Text.Matches(Pattern);
-      if (_result)
+      if (_result is (true, var result))
       {
-         Console.WriteLine($"{Count}: {_result.Value.FirstMatch}");
+         Console.WriteLine($"{Count}: {result.FirstMatch}");
       }
       else
       {

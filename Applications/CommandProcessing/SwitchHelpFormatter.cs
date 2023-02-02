@@ -17,9 +17,9 @@ public class SwitchHelpFormatter
    protected static string expand(string source)
    {
       var _matches = source.Matches("'{' /(-['.']+) '...' /(-['}']+) '}'; f");
-      if (_matches)
+      if (_matches is (true, var matches))
       {
-         foreach (var match in _matches.Value)
+         foreach (var match in matches)
          {
             var left = match.FirstGroup.Unjoin("/s* ',' /s*; f");
             var right = match.SecondGroup.Unjoin("/s* ',' /s*; f");
@@ -35,7 +35,7 @@ public class SwitchHelpFormatter
             match.Text = list.ToString(";");
          }
 
-         return _matches.Value.ToString();
+         return matches.ToString();
       }
       else
       {
@@ -93,9 +93,9 @@ public class SwitchHelpFormatter
 
          foreach (var line in source.Unjoin("/s* ';' /s*; f"))
          {
-            if (_divider)
+            if (_divider is (true, var divider))
             {
-               writer.WriteLine(_divider.Value);
+               writer.WriteLine(divider);
             }
             else
             {
@@ -103,9 +103,9 @@ public class SwitchHelpFormatter
             }
 
             var _matches = line.Matches(@"-(> '\') /('$' /w [/w '-']*) /('?')?; f");
-            if (_matches)
+            if (_matches is (true, var matches))
             {
-               foreach (var match in _matches.Value)
+               foreach (var match in matches)
                {
                   var name = match.FirstGroup;
                   var optional = match.SecondGroup == "?";

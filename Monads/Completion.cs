@@ -22,21 +22,29 @@ public abstract class Completion<T>
 
    public static bool operator true(Completion<T> value) => value is Completed<T> || value is Lazy.LazyCompletion<T> lazyCompletion && lazyCompletion;
 
-   public static bool operator false(Completion<T> value) => value is not Completed<T> || value is Lazy.LazyCompletion<T> lazyCompletion && !lazyCompletion;
+   public static bool operator false(Completion<T> value)
+   {
+      return value is not Completed<T> || value is Lazy.LazyCompletion<T> lazyCompletion && !lazyCompletion;
+   }
 
-   public static bool operator !(Completion<T> value) => value is not Completed<T> || value is Lazy.LazyCompletion<T> lazyCompletion && !lazyCompletion;
+   public static bool operator !(Completion<T> value)
+   {
+      return value is not Completed<T> || value is Lazy.LazyCompletion<T> lazyCompletion && !lazyCompletion;
+   }
 
-   public static implicit operator bool(Completion<T> value) => value is Completed<T> || value is Lazy.LazyCompletion<T> lazyCompletion && lazyCompletion;
+   public static implicit operator bool(Completion<T> value)
+   {
+      return value is Completed<T> || value is Lazy.LazyCompletion<T> lazyCompletion && lazyCompletion;
+   }
 
    public static implicit operator T(Completion<T> value) => value switch
    {
-      Completed<T> completed => completed.Value,
+      (true, var internalValue) => internalValue,
       Interrupted<T> interrupted => throw interrupted.Exception,
-      Lazy.LazyCompletion<T> completion => completion.Value,
       _ => throw new InvalidCastException("Must be a Completed to return a value")
    };
 
-  public static T operator |(Completion<T> completion, T defaultValue) => completion ? completion : defaultValue;
+   public static T operator |(Completion<T> completion, T defaultValue) => completion ? completion : defaultValue;
 
    public static T operator |(Completion<T> completion, Func<T> defaultFunc) => completion ? completion : defaultFunc();
 
@@ -73,7 +81,7 @@ public abstract class Completion<T>
 
    public abstract Completion<TResult> Select<TResult>(Completion<T> result, Func<T, TResult> func);
 
-  public abstract bool IfCancelled();
+   public abstract bool IfCancelled();
 
    public abstract Completion<TOther> NotCompleted<TOther>();
 
@@ -121,6 +129,7 @@ public abstract class Completion<T>
 
    public abstract Responding<T> Responding();
 
+   [Obsolete("Use deconstruction")]
    public abstract T Value { get; }
 
    public abstract Exception Exception { get; }

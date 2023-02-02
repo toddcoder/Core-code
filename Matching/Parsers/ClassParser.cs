@@ -35,7 +35,7 @@ public class ClassParser : BaseParser
          foreach (var parser in parsers)
          {
             var _result = parser.Scan(source, ref index);
-            if (_result)
+            if (_result is (true, var result))
             {
                if (_result == "]")
                {
@@ -49,7 +49,7 @@ public class ClassParser : BaseParser
                }
                else
                {
-                  content.Append(_result.Value);
+                  content.Append(result);
                   added = true;
                   break;
                }

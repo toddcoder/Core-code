@@ -72,9 +72,8 @@ public abstract class DataSource
          var pattern = $"'{{{name}}}'; f";
          var value = evaluator[signature].ToNonNullString().Replace("'", "''");
          var _result = text.Matches(pattern);
-         if (_result)
+         if (_result is (true, var result))
          {
-            var result = _result.Value;
             foreach (var match in result)
             {
                match.Text = value;
@@ -104,16 +103,15 @@ public abstract class DataSource
 
       try
       {
-         if (Command && _connection)
+         if (Command is (true, var dbCommand) && _connection is (true, var connection))
          {
-            Command.Value.Connection = _connection.Value;
+            dbCommand.Connection = connection;
          }
          else
          {
             throw fail("Command and connection not properly initialized");
          }
 
-         var dbCommand = Command.Value;
          int recordsAffected;
          if (inFields.Count > 0)
          {
@@ -130,9 +128,9 @@ public abstract class DataSource
 
             FillOrdinals(reader, inFields);
 
-            if (_activeObject)
+            if (_activeObject is (true, var activeObject))
             {
-               _activeObject.Value.BeforeExecute();
+               activeObject.BeforeExecute();
             }
 
             while (!cancel && reader.Read())
@@ -143,24 +141,24 @@ public abstract class DataSource
                cancel = new CancelEventArgs().Cancel;
             }
 
-            if (_activeObject)
+            if (_activeObject is (true, var activeObject2))
             {
-               _activeObject.Value.AfterExecute();
+               activeObject2.AfterExecute();
             }
          }
          else
          {
-            if (_activeObject)
+            if (_activeObject is (true, var activeObject))
             {
-               _activeObject.Value.BeforeExecute();
+               activeObject.BeforeExecute();
             }
 
             recordsAffected = dbCommand.ExecuteNonQuery();
             FillOutput(entity, dbCommand.Parameters, parameters);
 
-            if (_activeObject)
+            if (_activeObject is (true, var activeObject2))
             {
-               _activeObject.Value.AfterExecute();
+               activeObject2.AfterExecute();
             }
          }
 
@@ -192,16 +190,15 @@ public abstract class DataSource
          AddParameters(entity, parameters);
 
          setCommand(entity, command);
-         if (Command & _connection)
+         if (Command is (true, var dbCommand) && _connection is (true, var connection))
          {
-            Command.Value.Connection = _connection.Value;
+            dbCommand.Connection = connection;
          }
          else
          {
             throw fail("Command and connection not properly initialized");
          }
 
-         var dbCommand = Command.Value;
          reader = dbCommand.ExecuteReader();
          for (var i = 1; i <= ResultIndex; i++)
          {
@@ -211,9 +208,9 @@ public abstract class DataSource
          FillOutput(entity, dbCommand.Parameters, parameters);
          FillOrdinals(reader, inFields);
 
-         if (_activeObject)
+         if (_activeObject is (true, var activeObject))
          {
-            _activeObject.Value.BeforeExecute();
+            activeObject.BeforeExecute();
          }
 
          Reader = reader.Some();
@@ -229,10 +226,10 @@ public abstract class DataSource
    protected void setCommand(object entity, string command)
    {
       var commandText = modifyCommand(entity, command);
-      if (Command)
+      if (Command is (true, var dbCommand))
       {
-         Command.Value.CommandText = commandText;
-         changeCommandType(Command.Value, commandText);
+         dbCommand.CommandText = commandText;
+         changeCommandType(dbCommand, commandText);
       }
       else
       {
@@ -242,10 +239,10 @@ public abstract class DataSource
 
    internal Maybe<object> NextReading(object entity)
    {
-      if (Reader && Reader.Value.Read())
+      if (Reader is (true, var reader) && reader.Read())
       {
          HasRows = true;
-         fill(entity, Reader.Value);
+         fill(entity, reader);
          return entity;
       }
       else
@@ -256,14 +253,13 @@ public abstract class DataSource
 
    internal void EndReading()
    {
-      if (Reader)
+      if (Reader is (true, var reader))
       {
-         if (_activeObject)
+         if (_activeObject is (true, var activeObject))
          {
-            _activeObject.Value.AfterExecute();
+            activeObject.AfterExecute();
          }
 
-         var reader = Reader.Value;
          if (!reader.IsClosed)
          {
             try
@@ -363,9 +359,8 @@ public abstract class DataSource
 
    protected void allocateConnection()
    {
-      if (_connection)
+      if (_connection is (true, var connection))
       {
-         var connection = _connection.Value;
          if (connection.State == ConnectionState.Closed)
          {
             connection.Open();
@@ -387,28 +382,28 @@ public abstract class DataSource
 
    protected void disposeCommand()
    {
-      if (Command)
+      if (Command is (true, var command))
       {
-         Command.Value.Dispose();
+         command.Dispose();
          Command = nil;
       }
    }
 
    protected void disposeConnection()
    {
-      if (_connection)
+      if (_connection is (true, var connection))
       {
-         _connection.Value.Dispose();
+         connection.Dispose();
          _connection = nil;
       }
    }
 
    protected string getFileConnectionString(Maybe<FileName> associatedFile)
    {
-      if (associatedFile)
+      if (associatedFile is (true, var associatedFileValue))
       {
          var formatter = Formatter.WithStandard(true);
-         formatter["file"] = associatedFile.Value.ToNonNullString();
+         formatter["file"] = associatedFileValue.ToNonNullString();
          return formatter.Format(ConnectionString);
       }
       else
@@ -429,9 +424,9 @@ public abstract class DataSource
 
       setCommand(entity, command);
 
-      if (Command)
+      if (Command is (true, var dbCommand))
       {
-         return Command.Value.ExecuteReader(CommandBehavior.CloseConnection);
+         return dbCommand.ExecuteReader(CommandBehavior.CloseConnection);
       }
       else
       {

@@ -23,14 +23,14 @@ public class HashTrying<TKey, TValue>
       else
       {
          var _value = defaultValue(key);
-         if (_value)
+         if (_value is (true, var value))
          {
             if (addIfNotFound)
             {
-               hash.Add(key, _value.Value);
+               hash.Add(key, value);
             }
 
-            return _value.Value;
+            return value;
          }
          else
          {
@@ -42,9 +42,9 @@ public class HashTrying<TKey, TValue>
    public Result<TValue> Map(TKey key, string notFoundMessage)
    {
       var _value = hash.Maybe[key];
-      if (_value)
+      if (_value is (true, var value))
       {
-         return _value.Value;
+         return value;
       }
       else
       {
@@ -55,9 +55,9 @@ public class HashTrying<TKey, TValue>
    public Result<TValue> Map(TKey key, Func<string> notFoundMessage)
    {
       var _value = hash.Maybe[key];
-      if (_value)
+      if (_value is (true, var value))
       {
-         return _value.Value;
+         return value;
       }
       else
       {

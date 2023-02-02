@@ -19,16 +19,16 @@ internal class ResultIterator<T>
 
    protected void handle(Result<T> result)
    {
-      if (result)
+      if (result is (true, var resultValue))
       {
-         if (_success)
+         if (_success is (true, var success))
          {
-            _success.Value(result.Value);
+            success(resultValue);
          }
       }
-      else if (_failure)
+      else if (_failure is (true, var failure))
       {
-         _failure.Value(result.Exception);
+         failure(result.Exception);
       }
    }
 
@@ -49,9 +49,9 @@ internal class ResultIterator<T>
       foreach (var _result in enumerable)
       {
          handle(_result);
-         if (_result)
+         if (_result is (true, var result))
          {
-            list.Add(_result.Value);
+            list.Add(result);
          }
       }
 
@@ -81,9 +81,9 @@ internal class ResultIterator<T>
       foreach (var _result in enumerable)
       {
          handle(_result);
-         if (_result)
+         if (_result is (true, var result))
          {
-            list.Add(_result.Value);
+            list.Add(result);
          }
          else
          {

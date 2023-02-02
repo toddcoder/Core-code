@@ -12,6 +12,7 @@ public class Some<T> : Maybe<T>, IEquatable<Some<T>>
 
    internal Some(T value) => this.value = value;
 
+   [Obsolete("Use deconstruction")]
    public override T Value => value;
 
    public override Maybe<TResult> Map<TResult>(Func<T, TResult> ifSome) => ifSome(value).Some();

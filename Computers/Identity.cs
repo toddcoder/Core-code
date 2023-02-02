@@ -95,10 +95,10 @@ public class Identity : IDisposable
       set
       {
          var _result = value.Matches(@"^ /([/w '-']+) '\' /([/w '-']+) $; f");
-         if (_result)
+         if (_result is (true, var result))
          {
-            domain = _result.Value.FirstGroup;
-            userName = _result.Value.SecondGroup;
+            domain = result.FirstGroup;
+            userName = result.SecondGroup;
          }
          else
          {
@@ -157,9 +157,9 @@ public class Identity : IDisposable
 
    protected void unimpersonate()
    {
-      if (_impersonatedUser && impersonating)
+      if (_impersonatedUser is (true, var impersonatedUser) && impersonating)
       {
-         _impersonatedUser.Value.Undo();
+         impersonatedUser.Undo();
 
          if (tokenHandle != IntPtr.Zero)
          {

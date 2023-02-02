@@ -61,13 +61,13 @@ public class Job : IDisposable, IEquatable<Job>, IAddServiceMessages
       {
          var _nameFromObjectName = lazy.maybe<string>();
          var _nameFromDefaultValue = lazy.maybe<string>();
-         if (_nameFromObjectName.ValueOf(setting.Maybe.String(objectName)))
+         if (_nameFromObjectName.ValueOf(setting.Maybe.String(objectName)) is (true, var nameFromObjectName))
          {
-            return _nameFromObjectName.Value;
+            return nameFromObjectName;
          }
-         else if (_nameFromDefaultValue.ValueOf(defaultValue()))
+         else if (_nameFromDefaultValue.ValueOf(defaultValue()) is (true, var nameFromDefaultValue))
          {
-            return _nameFromDefaultValue.Value;
+            return nameFromDefaultValue;
          }
          else
          {
@@ -94,7 +94,7 @@ public class Job : IDisposable, IEquatable<Job>, IAddServiceMessages
          select createdPlugin;
       if (_plugin)
       {
-         plugin = _plugin.Value;
+         plugin = _plugin;
          if (plugin is IRequiresTypeManager requiresTypeManager)
          {
             requiresTypeManager.TypeManager = typeManager;
@@ -146,10 +146,10 @@ public class Job : IDisposable, IEquatable<Job>, IAddServiceMessages
 
    protected void enableTimer(bool timerEnabled)
    {
-      if (_timer)
+      if (_timer is (true, var timer))
       {
          _stopTime = maybe<DateTime>() & timerEnabled & (() => NowServer.Now);
-         _timer.Value.Enabled = timerEnabled;
+         timer.Enabled = timerEnabled;
       }
    }
 
@@ -179,9 +179,9 @@ public class Job : IDisposable, IEquatable<Job>, IAddServiceMessages
             catch (Exception exception)
             {
                plugin.ServiceMessage.EmitException(exception);
-               if (plugin.After)
+               if (plugin.After is (true, var pluginAfter))
                {
-                  plugin.After.Value.AfterFailure(exception);
+                  pluginAfter.AfterFailure(exception);
                }
             }
             finally
@@ -198,9 +198,8 @@ public class Job : IDisposable, IEquatable<Job>, IAddServiceMessages
 
    public void TriggerDispatch()
    {
-      if (_scheduler)
+      if (_scheduler is (true, var scheduler))
       {
-         var scheduler = _scheduler.Value;
          var schedule = scheduler.NextSchedule;
          plugin.BeforeDispatch(schedule);
          scheduler.Next();
@@ -211,14 +210,14 @@ public class Job : IDisposable, IEquatable<Job>, IAddServiceMessages
             var _dispatched = plugin.Dispatch();
             if (_dispatched)
             {
-               if (_afterPlugin)
+               if (_afterPlugin is (true, var afterPlugin))
                {
-                  _afterPlugin.Value.AfterSuccess();
+                  afterPlugin.AfterSuccess();
                }
             }
-            else if (_afterPlugin)
+            else if (_afterPlugin is (true, var afterPlugin))
             {
-               _afterPlugin.Value.AfterFailure(_dispatched.Exception);
+               afterPlugin.AfterFailure(_dispatched.Exception);
             }
          }
 

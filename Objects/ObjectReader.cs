@@ -51,9 +51,9 @@ public class ObjectReader
       foreach (var info in memberInfos)
       {
          var _value = getValue(obj, info);
-         if (_value)
+         if (_value is (true, var value))
          {
-            hash[info.Name] = _value.Value;
+            hash[info.Name] = value;
          }
          else
          {

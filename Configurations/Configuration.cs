@@ -20,9 +20,9 @@ public class Configuration : Setting
    public static Result<Configuration> Serialize(FileName file, Type type, object obj, bool save = true, string name = ROOT_NAME)
    {
       var _setting = Serialize(type, obj, name);
-      if (_setting)
+      if (_setting is (true, var setting))
       {
-         var configuration = new Configuration(file, _setting.Value.items, name);
+         var configuration = new Configuration(file, setting.items, name);
          if (save)
          {
             return configuration.Save();

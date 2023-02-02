@@ -13,9 +13,8 @@ public class Field : PropertyInterface
    public static Maybe<Field> FromString(string input)
    {
       var _result = input.Matches("^ /(/w+) /('?')? /s* ('[' /(/w+) ']')? (/s* ':' /s* /('$'? [/w '.']+))? $; f");
-      if (_result)
+      if (_result is (true, var result))
       {
-         var result = _result.Value;
          var name = result.FirstGroup;
          var optional = result.SecondGroup == "?";
          var signature = result.ThirdGroup;

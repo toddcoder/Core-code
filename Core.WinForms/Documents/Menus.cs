@@ -138,11 +138,11 @@ public class Menus : IHash<string, ToolStripMenuItem>
    {
       var _toolStripMenuItem =
          from submenus in Submenus(parentText)
-         from toolStripMenuItem in submenus.Maybe()[text]
-         select toolStripMenuItem;
-      if (_toolStripMenuItem)
+         from toolStripMenuItemText in submenus.Maybe()[text]
+         select toolStripMenuItemText;
+      if (_toolStripMenuItem is(true, var toolStripMenuItem))
       {
-         _toolStripMenuItem.Value.Click += handler;
+         toolStripMenuItem.Click += handler;
       }
    }
 
@@ -218,9 +218,8 @@ public class Menus : IHash<string, ToolStripMenuItem>
    protected static Result<Keys> shortcutKeys(string text)
    {
       var _result = text.Matches("^ /(['^%|']+)? /(/w+) $; f");
-      if (_result)
+      if (_result is (true, var result))
       {
-         var result = _result.Value;
          var keys = (Keys)0;
          var prefix = result[0, 1];
          if (prefix.IsNotEmpty())

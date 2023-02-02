@@ -42,13 +42,13 @@ public class LateLazy<T>
    {
       get
       {
-         if (_value)
+         if (_value is (true, var value))
          {
-            return _value.Value;
+            return value;
          }
-         else if (_activator)
+         else if (_activator is (true, var activator))
          {
-            var returnValue = _activator.Value();
+            var returnValue = activator();
             returnValue.Must().Not.BeNull().OrThrow();
             _value = returnValue;
 

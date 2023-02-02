@@ -119,9 +119,8 @@ namespace Core.Monads
 
       public static implicit operator T(Result<T> result) => result switch
       {
-         Success<T> success => success.Value,
+         (true, var internalValue) => internalValue,
          Failure<T> failure => throw failure.Exception,
-         Lazy.LazyResult<T> lazyResult => lazyResult.Value,
          _ => throw new InvalidCastException("Must be a Success to return a value")
       };
 
@@ -139,6 +138,7 @@ namespace Core.Monads
 
       public abstract Result<Unit> Unit { get; }
 
+      [Obsolete("Use deconstruction")]
       public abstract T Value { get; }
 
       public abstract Exception Exception { get; }

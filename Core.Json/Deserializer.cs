@@ -41,9 +41,9 @@ public class Deserializer
       {
          var key = _propertyName | (() => $"${itemCount()}");
          var _setting = peekSetting();
-         if (_setting)
+         if (_setting is (true, var setting))
          {
-            _setting.Value.SetItem(key, new Item(key, value));
+            setting.SetItem(key, new Item(key, value));
          }
 
          _propertyName = nil;
@@ -53,9 +53,9 @@ public class Deserializer
       {
          var key = _propertyName | (() => $"${itemCount()}");
          var _setting = peekSetting();
-         if (_setting)
+         if (_setting is (true, var setting))
          {
-            _setting.Value.SetItem(key, new Item(key, "") { IsNull = true });
+            setting.SetItem(key, new Item(key, "") { IsNull = true });
          }
 
          _propertyName = nil;
@@ -86,9 +86,9 @@ public class Deserializer
                   _propertyName = nil;
                   var setting = new Setting(key);
                   var _parentSetting = peekSetting();
-                  if (_parentSetting)
+                  if (_parentSetting is (true, var parentSetting))
                   {
-                     _parentSetting.Value.SetItem(key, setting);
+                     parentSetting.SetItem(key, setting);
                   }
                   else
                   {
@@ -115,9 +115,9 @@ public class Deserializer
                   _propertyName = nil;
                   var setting = new Setting(key) { IsArray = true };
                   var _parentSetting = peekSetting();
-                  if (_parentSetting)
+                  if (_parentSetting is (true, var parentSetting))
                   {
-                     _parentSetting.Value.SetItem(setting.Key, setting);
+                     parentSetting.SetItem(setting.Key, setting);
                   }
                   else
                   {

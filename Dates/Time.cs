@@ -59,10 +59,8 @@ public class Time : IComparable<DateTime>, IComparable<Time>
       text = text.RemoveWhitespace();
 
       var _result = text.Matches("^ /(/d1%2) ( ':' /(/d1%2))? ( ':' /(/d1%2))? ( '.' /(/d1%3))? $; f");
-      if (_result)
+      if (_result is (true, var (hour, minute, second, millisecond)))
       {
-         _result.Value.Must().HaveMatchCountOf(1).OrThrow("Couldn't determine parts of time to parse");
-         var (hour, minute, second, millisecond) = _result.Value;
          return (Value.Int32(hour), Value.Int32(minute), Value.Int32(second), Value.Int32(millisecond));
       }
       else

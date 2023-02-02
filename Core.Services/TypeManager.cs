@@ -78,19 +78,18 @@ public class TypeManager
       {
          var _type = lazy.maybe<Type>();
          var _typeName = lazy.result<string>();
-         if (_type.ValueOf(typeCache.Maybe[name]))
+         if (_type.ValueOf(typeCache.Maybe[name]) is (true, var type))
          {
-            return _type.Value;
+            return type;
          }
-         else if (_typeName.ValueOf(getTypeName(name)))
+         else if (_typeName.ValueOf(getTypeName(name)) is (true, var typeName))
          {
-            var typeName = _typeName.Value;
             var _result = lazy.maybe<MatchResult>();
             var _assemblyType = lazy.result<Type>();
 
-            if (_result.ValueOf(typeName.Matches("^ -/{<} '<' -/{:} ':' /s* -/{>} '>' $; f")))
+            if (_result.ValueOf(typeName.Matches("^ -/{<} '<' -/{:} ':' /s* -/{>} '>' $; f")) is
+                (true, var (possibleTypeName, subTypeName, subAssemblyName)))
             {
-               var (possibleTypeName, subTypeName, subAssemblyName) = _result.Value;
                typeName = $"{possibleTypeName}`1";
 
                var _genericType =
@@ -132,14 +131,14 @@ public class TypeManager
       {
          var _assembly = lazy.maybe<Assembly>();
          var _path = lazy.maybe<string>();
-         if (_assembly.ValueOf(assemblyCache.Maybe[name]))
+         if (_assembly.ValueOf(assemblyCache.Maybe[name]) is (true, var assembly))
          {
-            return _assembly.Value;
+            return assembly;
          }
-         else if (_path.ValueOf(assemblyNames.Maybe[name]))
+         else if (_path.ValueOf(assemblyNames.Maybe[name]) is (true, var path))
          {
-            FolderName.Current = ((FileName)_path.Value).Folder;
-            var assembly = LoadFrom(_path);
+            FolderName.Current = ((FileName)path).Folder;
+            assembly = LoadFrom(path);
             assemblyCache[name] = assembly;
 
             return assembly;

@@ -189,9 +189,8 @@ public abstract class CommandProcessor : IDisposable
    protected void run(string commandLine, bool seekCommandFile)
    {
       var _commandParts = splitCommandFromRest(commandLine);
-      if (_commandParts)
+      if (_commandParts is (true, var (command, rest)))
       {
-         var (command, rest) = _commandParts.Value;
          Command = command;
 
          switch (command)
@@ -205,9 +204,8 @@ public abstract class CommandProcessor : IDisposable
             default:
             {
                var _method = getMethod(command);
-               if (_method)
+               if (_method is (true, var (methodInfo, commandAttribute)))
                {
-                  var (methodInfo, commandAttribute) = _method.Value;
                   if (commandAttribute.Initialize)
                   {
                      CommandInitialize(commandAttribute);
@@ -330,9 +328,8 @@ public abstract class CommandProcessor : IDisposable
       else
       {
          var _result = rest.Matches($"^ /('{Prefix}set' | '{Prefix}get' | '{ShortCut}s' | '{ShortCut}g') /s+ /(/w [/w '-']*) /b /(.*) $; f");
-         if (_result)
+         if (_result is (true, var (command, name, value)))
          {
-            var (command, name, value) = _result.Value;
             var _command = lazy.maybe<string>();
             var _command2 = lazy.maybe<string>();
             if (_command.ValueOf(command.Matches($"^ '{Prefix}' /('set' | 'get'); f").Map(r => r.FirstGroup)))
@@ -427,12 +424,14 @@ public abstract class CommandProcessor : IDisposable
       while (true)
       {
          var _result = noStrings.Matches($"^ /s* /('{Prefix}' | '{ShortCut}') /(/w [/w '-']*) /b; f");
-         if (!_result)
+         if (_result is (true, var result))
+         {
+         }
+         else
          {
             break;
          }
 
-         var result = _result.Value;
          var (prefix, name) = result;
          noStrings = noStrings.Drop(result.Length);
          if (noStrings.IsEmpty() || noStrings.IsMatch($"^ /s* ('{Prefix}' | '{ShortCut}'); f"))
@@ -443,18 +442,18 @@ public abstract class CommandProcessor : IDisposable
          {
             var _bareString = lazy.maybe<(string, int)>();
             var _nonSpace = lazy.maybe<(string, int)>();
-            if (_bareString.ValueOf(noStrings.Matches("^ /s* /([quote]) /(-[quote]*) /1; f").Map(r => r.SecondGroupAndLength)))
+            if (_bareString.ValueOf(noStrings.Matches("^ /s* /([quote]) /(-[quote]*) /1; f").Map(r => r.SecondGroupAndLength)) is
+                (true, var (bareString, bareStringLength)))
             {
-               var (bareString, bareStringLength) = _bareString.Value;
                var value = delimitedText.Restringify(bareString, RestringifyQuotes.None);
 
                yield return (prefix, name, value);
 
                noStrings = noStrings.Drop(bareStringLength);
             }
-            else if (_nonSpace.ValueOf(noStrings.Matches("^ /s* /(-/s+); f").Map(r => r.FirstGroupAndLength)))
+            else if (_nonSpace.ValueOf(noStrings.Matches("^ /s* /(-/s+); f").Map(r => r.FirstGroupAndLength)) is
+                     (true, var (nonSpace, nonSpaceLength)))
             {
-               var (nonSpace, nonSpaceLength) = _nonSpace.Value;
                yield return (prefix, name, nonSpace);
 
                noStrings = noStrings.Drop(nonSpaceLength);
@@ -541,9 +540,8 @@ public abstract class CommandProcessor : IDisposable
    {
       var type = propertyInfo.PropertyType;
       Maybe<object> _object = nil;
-      if (_value)
+      if (_value is (true, var value))
       {
-         var value = _value.Value;
          if (type == typeof(bool))
          {
             _object = getBoolean(value);
@@ -574,9 +572,9 @@ public abstract class CommandProcessor : IDisposable
             _object = getStringArray(value);
          }
 
-         if (_object)
+         if (_object is (true, var @object))
          {
-            propertyInfo.SetValue(this, _object.Value);
+            propertyInfo.SetValue(this, @object);
             return unit;
          }
          else
@@ -600,9 +598,9 @@ public abstract class CommandProcessor : IDisposable
       else
       {
          var _firstGroup = value.Matches("^ /s* /('true' | 'false' | '+' | '-') /b; fi").Map(r => r.FirstGroup);
-         if (_firstGroup)
+         if (_firstGroup is (true, var firstGroup))
          {
-            return _firstGroup.Value.AnySame("true", "+").Some<object>();
+            return firstGroup.AnySame("true", "+").Some<object>();
          }
          else
          {
@@ -694,9 +692,9 @@ public abstract class CommandProcessor : IDisposable
    protected static Maybe<object> getStringArray(string value)
    {
       var _list = value.Matches("^/s* '[' /s*  /(.*) /s* ']'; f").Map(r => r.FirstGroup);
-      if (_list)
+      if (_list is (true, var list))
       {
-         var array = _list.Value.Unjoin("/s* ',' /s*; f");
+         var array = list.Unjoin("/s* ',' /s*; f");
          return array.Some().Map(a => (object)a);
       }
       else

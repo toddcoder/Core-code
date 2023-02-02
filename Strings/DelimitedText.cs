@@ -151,26 +151,26 @@ public class DelimitedText
          if (inside)
          {
             var _result = current.Matches(exceptPattern);
-            if (_result)
+            if (_result is (true, var result1))
             {
-               builder.Append(_exceptReplacement | _result.Value[0]);
-               i += _result.Value.Length;
+               builder.Append(_exceptReplacement | result1[0]);
+               i += result1.Length;
 
                continue;
             }
             else if (_endMatcher)
             {
                _result = current.Matches(_endMatcher);
-               if (_result)
+               if (_result is (true, var result2))
                {
                   _endMatcher = nil;
 
                   yield return (builder.ToString(), insideStart, DelimitedTextStatus.Inside);
-                  yield return (_result.Value[0], i, DelimitedTextStatus.EndDelimiter);
+                  yield return (result2[0], i, DelimitedTextStatus.EndDelimiter);
 
                   builder.Clear();
                   inside = false;
-                  i += _result.Value.Length;
+                  i += result2.Length;
                   outsideStart = i;
                   continue;
                }
@@ -187,16 +187,16 @@ public class DelimitedText
          else
          {
             var _result = current.Matches(beginPattern);
-            if (_result)
+            if (_result is (true, var result3))
             {
                _endMatcher = _endPattern | (() => getEndPattern(ch));
 
                yield return (builder.ToString(), outsideStart, DelimitedTextStatus.Outside);
-               yield return (_result.Value[0], i, DelimitedTextStatus.BeginDelimiter);
+               yield return (result3[0], i, DelimitedTextStatus.BeginDelimiter);
 
                builder.Clear();
                inside = true;
-               i += _result.Value.Length;
+               i += result3.Length;
                insideStart = i;
                continue;
             }

@@ -68,9 +68,8 @@ internal class DifferenceBuilder
          {
             var _result = calculateEditLength(oldModification.HashedItems, oldStart, oldEnd, newModification.HashedItems, newStart, newEnd, forwardDiagonal,
                reverseDiagonal);
-            if (_result)
+            if (_result is (true, var result))
             {
-               var result = _result.Value;
                if (result.EditLength <= 0)
                {
                   return unit;

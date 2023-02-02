@@ -564,10 +564,10 @@ public static class HashExtensions
       try
       {
          var _internalHash = hash.AnyHash();
-         if (_internalHash)
+         if (_internalHash is (true, var internalHash))
          {
             var toSetting = new Setting();
-            foreach (var (key, value) in _internalHash.Value)
+            foreach (var (key, value) in internalHash)
             {
                var keyAsString = key.ToString();
                toSetting.SetItem(keyAsString, new Item(keyAsString, value.ToString()));
@@ -590,15 +590,15 @@ public static class HashExtensions
       bool save = false)
    {
       var _configuration = hash.ToSetting().Map(setting => new Configuration(file, setting.items, name));
-      if (_configuration)
+      if (_configuration is (true, var configuration))
       {
          if (save)
          {
-            return _configuration.Value.Save().Map(_ => _configuration.Value);
+            return configuration.Save().Map(_ => configuration);
          }
          else
          {
-            return _configuration.Value;
+            return configuration;
          }
       }
       else

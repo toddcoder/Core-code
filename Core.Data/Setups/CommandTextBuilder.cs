@@ -59,9 +59,9 @@ public class CommandTextBuilder
       {
          return (_commandText, commandTimeout);
       }
-      else if (_commandTextFile)
+      else if (_commandTextFile is (true, var commandTextFile))
       {
-         return _commandTextFile.Value.TryTo.Text.Map(ct => (ct, commandTimeout));
+         return commandTextFile.TryTo.Text.Map(ct => (ct, commandTimeout));
       }
       else
       {

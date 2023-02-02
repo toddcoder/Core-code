@@ -611,9 +611,9 @@ public class WinFormsTests
       uiAction.Click += (_, _) =>
       {
          var _chosen = uiAction.Choose("A,B,C").Choices("Alpha", "Bravo", "Charlie").ModifyTitle(false).NilItem(nil).Choose();
-         if (_chosen)
+         if (_chosen is (true, var chosen))
          {
-            MessageBox.Show(_chosen.Value.Value);
+            MessageBox.Show(chosen.Value);
          }
       };
       uiAction.ClickText = "Select item";

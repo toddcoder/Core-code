@@ -56,9 +56,8 @@ public class ScheduleIncrement
                   from setHour in current.SetHour(hour)
                   from setMinute in current.SetMinute(minute)
                   select current;
-               if (_target)
+               if (_target is (true, var target))
                {
-                  var target = _target.Value;
                   if (target <= now)
                   {
                      target.Year += year;
@@ -82,9 +81,8 @@ public class ScheduleIncrement
                   from setHour in current.SetHour(hour)
                   from setMinute in current.SetMinute(minute)
                   select current;
-               if (_target)
+               if (_target is (true, var target))
                {
-                  var target = _target.Value;
                   if (target <= now)
                   {
                      target.Month += month;
@@ -106,9 +104,8 @@ public class ScheduleIncrement
                   from setHour in current.SetHour(hour)
                   from setMinute in current.SetMinute(minute)
                   select current;
-               if (_target)
+               if (_target is (true, var target))
                {
-                  var target = _target.Value;
                   if (target <= now)
                   {
                      target.Day += _day;

@@ -249,19 +249,19 @@ public class StringClassTests
          .Alias("yy2", "extra", "Extra!")
          .Alias("zx", "xValue", "X!");
       var _result = lazyRepeating.maybe<string>();
-      if (_result.ValueOf(variants.TemplateName("x").Evaluate("xx")))
+      if (_result.ValueOf(variants.TemplateName("x").Evaluate("xx")) is (true, var result1))
       {
-         Console.WriteLine(_result.Value);
+         Console.WriteLine(result1);
       }
 
-      if (_result.ValueOf(variants.TemplateName("y").Evaluate("yy1", "yy2")))
+      if (_result.ValueOf(variants.TemplateName("y").Evaluate("yy1", "yy2")) is (true, var result2))
       {
-         Console.WriteLine(_result.Value);
+         Console.WriteLine(result2);
       }
 
-      if (_result.ValueOf(variants.TemplateName("z").Evaluate("zx")))
+      if (_result.ValueOf(variants.TemplateName("z").Evaluate("zx")) is (true, var result3))
       {
-         Console.WriteLine(_result.Value);
+         Console.WriteLine(result3);
       }
    }
 }

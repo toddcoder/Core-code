@@ -205,18 +205,18 @@ public class CharFormat
    {
       var result = new StringBuilder("{");
 
-      if (_hyperlink)
+      if (_hyperlink is (true, var hyperlink))
       {
-         var localHyperlinkTip = _hyperlinkTip | _hyperlink.Value;
-         result.Append($@"{{\field{{\*\fldinst HYPERLINK ""{_hyperlink}""}}{{\fldrslt{{\ul\cf1 {localHyperlinkTip}}}}}}}");
+         var localHyperlinkTip = _hyperlinkTip | hyperlink;
+         result.Append($@"{{\field{{\*\fldinst HYPERLINK ""{hyperlink}""}}{{\fldrslt{{\ul\cf1 {localHyperlinkTip}}}}}}}");
       }
 
-      if (_font)
+      if (_font is (true, var font))
       {
-         var fontValue = _font.Value.Value;
-         if (_ansiFont)
+         var fontValue = font.Value;
+         if (_ansiFont is (true, var ansiFont))
          {
-            var ansiFontValue = _ansiFont.Value.Value;
+            var ansiFontValue = ansiFont.Value;
             result.Append($@"\loch\af{ansiFontValue}\hich\af{ansiFontValue}\dbch\af{fontValue}");
          }
          else
@@ -224,24 +224,24 @@ public class CharFormat
             result.Append($@"\f{fontValue}");
          }
       }
-      else if (_ansiFont)
+      else if (_ansiFont is (true, var ansiFont))
       {
-         result.Append(@"\f" + _ansiFont.Value.Value);
+         result.Append(@"\f" + ansiFont.Value);
       }
 
-      if (_fontSize)
+      if (_fontSize is (true, var fontSize))
       {
-         result.Append($@"\fs{_fontSize.Value.PointToHalfPoint()}");
+         result.Append($@"\fs{fontSize.PointToHalfPoint()}");
       }
 
-      if (_foregroundColor)
+      if (_foregroundColor is (true, var foregroundColor))
       {
-         result.Append($@"\cf{_foregroundColor.Value.Value}");
+         result.Append($@"\cf{foregroundColor.Value}");
       }
 
-      if (_backgroundColor)
+      if (_backgroundColor is (true, var backgroundColor))
       {
-         var backgroundColorValue = _backgroundColor.Value.Value;
+         var backgroundColorValue = backgroundColor.Value;
          result.Append($@"\chshdng0\chcbpat{backgroundColorValue}\cb{backgroundColorValue}");
       }
 

@@ -30,9 +30,9 @@ public class Command
          {
             command = _text;
          }
-         else if (_fileName.ValueOf(commandSetting.Maybe.String("file")))
+         else if (_fileName.ValueOf(commandSetting.Maybe.String("file")) is (true, var fileName))
          {
-            FileName file = _fileName.Value;
+            FileName file = fileName;
             command = file.Text;
          }
          else
@@ -59,9 +59,9 @@ public class Command
       {
          Text = _text;
       }
-      else if (_fileName.ValueOf(commandSetting.Maybe.String("file")))
+      else if (_fileName.ValueOf(commandSetting.Maybe.String("file")) is (true, var fileName))
       {
-         FileName file = _fileName.Value;
+         FileName file = fileName;
          Text = file.Text;
       }
       else

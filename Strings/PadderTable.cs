@@ -59,9 +59,9 @@ public class PadderTable
       var padderItems = new List<PadderItem>();
 
       var _matches = Format.Matches("'{' /(/d+) '}' /('[' /(/d+) /(['lLrRcC']) ']'); fi");
-      if (_matches)
+      if (_matches is (true, var matches))
       {
-         foreach (var match in _matches.Value)
+         foreach (var match in matches)
          {
             maxCount = Math.Max(maxCount, Value.Int32(match.FirstGroup));
             var _length = Maybe.Int32(match.ThirdGroup);
@@ -75,7 +75,7 @@ public class PadderTable
             match.SecondGroup = "";
          }
 
-         Format = _matches.Value.ToString();
+         Format = matches.ToString();
          items = padderItems.ToArray();
          itemCount = maxCount + 1;
       }

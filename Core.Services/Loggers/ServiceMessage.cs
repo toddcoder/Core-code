@@ -94,9 +94,9 @@ public class ServiceMessage : IServiceMessage
       }
       catch (Exception exception)
       {
-         if (_eventWriter)
+         if (_eventWriter is (true, var eventWriter))
          {
-            _eventWriter.Value.EmitException(exception);
+            eventWriter.EmitException(exception);
          }
       }
    }
@@ -113,10 +113,10 @@ public class ServiceMessage : IServiceMessage
          }
          catch (Exception innerException)
          {
-            if (_eventWriter)
+            if (_eventWriter is (true, var eventWriter))
             {
-               _eventWriter.Value.EmitException(exception);
-               _eventWriter.Value.EmitException(innerException);
+               eventWriter.EmitException(exception);
+               eventWriter.EmitException(innerException);
             }
          }
       }
@@ -134,10 +134,10 @@ public class ServiceMessage : IServiceMessage
          }
          catch (Exception innerException)
          {
-            if (_eventWriter)
+            if (_eventWriter is (true, var eventWriter))
             {
-               _eventWriter.Value.EmitExceptionAttempt(exception, retry);
-               _eventWriter.Value.EmitException(innerException);
+               eventWriter.EmitExceptionAttempt(exception, retry);
+               eventWriter.EmitException(innerException);
             }
          }
       }
@@ -153,16 +153,16 @@ public class ServiceMessage : IServiceMessage
             _errorMessage = new StringBuilder();
          }
 
-         if (_errorMessage)
+         if (_errorMessage is (true, var errorMessage))
          {
-            _errorMessage.Value.AppendLine(strMessage.Drop(1));
+            errorMessage.AppendLine(strMessage.Drop(1));
          }
 
          return false;
       }
-      else if (_errorMessage)
+      else if (_errorMessage is (true, var errorMessage))
       {
-         EmitExceptionMessage(_errorMessage.Value);
+         EmitExceptionMessage(errorMessage);
          return true;
       }
       else
@@ -185,10 +185,10 @@ public class ServiceMessage : IServiceMessage
             }
             catch (Exception exception)
             {
-               if (_eventWriter)
+               if (_eventWriter is (true, var eventWriter))
                {
-                  _eventWriter.Value.EmitMessage(message);
-                  _eventWriter.Value.EmitException(exception);
+                  eventWriter.EmitMessage(message);
+                  eventWriter.EmitException(exception);
                }
             }
          }
@@ -209,10 +209,10 @@ public class ServiceMessage : IServiceMessage
             }
             catch (Exception exception)
             {
-               if (_eventWriter)
+               if (_eventWriter is (true, var eventWriter))
                {
-                  _eventWriter.Value.EmitMessage(message);
-                  _eventWriter.Value.EmitException(exception);
+                  eventWriter.EmitMessage(message);
+                  eventWriter.EmitException(exception);
                }
             }
          }
@@ -231,10 +231,10 @@ public class ServiceMessage : IServiceMessage
          }
          catch (Exception exception)
          {
-            if (_eventWriter)
+            if (_eventWriter is (true, var eventWriter))
             {
-               _eventWriter.Value.EmitExceptionMessage(message);
-               _eventWriter.Value.EmitException(exception);
+               eventWriter.EmitExceptionMessage(message);
+               eventWriter.EmitException(exception);
             }
          }
       }
@@ -252,10 +252,10 @@ public class ServiceMessage : IServiceMessage
          }
          catch (Exception exception)
          {
-            if (_eventWriter)
+            if (_eventWriter is (true, var eventWriter))
             {
-               _eventWriter.Value.EmitExceptionMessage(message);
-               _eventWriter.Value.EmitException(exception);
+               eventWriter.EmitExceptionMessage(message);
+               eventWriter.EmitException(exception);
             }
          }
       }
@@ -273,10 +273,10 @@ public class ServiceMessage : IServiceMessage
          }
          catch (Exception e)
          {
-            if (_eventWriter)
+            if (_eventWriter is (true, var eventWriter))
             {
-               _eventWriter.Value.EmitWarning(exception);
-               _eventWriter.Value.EmitException(e);
+               eventWriter.EmitWarning(exception);
+               eventWriter.EmitException(e);
             }
          }
       }
@@ -294,10 +294,10 @@ public class ServiceMessage : IServiceMessage
          }
          catch (Exception e)
          {
-            if (_eventWriter)
+            if (_eventWriter is (true, var eventWriter))
             {
-               _eventWriter.Value.EmitWarningMessage(message);
-               _eventWriter.Value.EmitException(e);
+               eventWriter.EmitWarningMessage(message);
+               eventWriter.EmitException(e);
             }
          }
       }
@@ -314,10 +314,10 @@ public class ServiceMessage : IServiceMessage
          }
          catch (Exception e)
          {
-            if (_eventWriter)
+            if (_eventWriter is (true, var eventWriter))
             {
-               _eventWriter.Value.EmitWarningMessage(message);
-               _eventWriter.Value.EmitException(e);
+               eventWriter.EmitWarningMessage(message);
+               eventWriter.EmitException(e);
             }
          }
       }
@@ -398,9 +398,9 @@ public class ServiceMessage : IServiceMessage
          }
          catch (Exception exception)
          {
-            if (_eventWriter)
+            if (_eventWriter is (true, var eventWriter))
             {
-               _eventWriter.Value.EmitException(exception);
+               eventWriter.EmitException(exception);
             }
          }
       }

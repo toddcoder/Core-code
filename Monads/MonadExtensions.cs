@@ -104,9 +104,9 @@ public static class MonadExtensions
    [DebuggerStepThrough]
    public static Result<TResult> Select<T, TResult>(this Result<T> result, Func<T, TResult> func)
    {
-      if (result)
+      if (result is (true, var resultValue))
       {
-         return func(result.Value);
+         return func(resultValue);
       }
       else
       {
@@ -201,9 +201,9 @@ public static class MonadExtensions
    {
       foreach (var _maybe in enumerable)
       {
-         if (_maybe)
+         if (_maybe is (true, var maybe))
          {
-            yield return _maybe.Value;
+            yield return maybe;
          }
       }
    }
@@ -213,9 +213,9 @@ public static class MonadExtensions
       foreach (var item in enumerable)
       {
          var _value = predicate(item);
-         if (_value)
+         if (_value is (true, var value))
          {
-            yield return (item, _value.Value);
+            yield return (item, value);
          }
       }
    }
@@ -224,9 +224,9 @@ public static class MonadExtensions
    {
       foreach (var _result in enumerable)
       {
-         if (_result)
+         if (_result is (true, var result))
          {
-            yield return _result.Value;
+            yield return result;
          }
       }
    }
@@ -237,9 +237,9 @@ public static class MonadExtensions
       foreach (var item in enumerable)
       {
          var _value = predicate(item);
-         if (_value)
+         if (_value is (true, var value))
          {
-            yield return (item, _value.Value);
+            yield return (item, value);
          }
       }
    }
@@ -248,9 +248,9 @@ public static class MonadExtensions
    {
       foreach (var _result in enumerable)
       {
-         if (_result)
+         if (_result is (true, var result))
          {
-            yield return _result.Value;
+            yield return result;
          }
          else
          {
@@ -263,9 +263,9 @@ public static class MonadExtensions
    {
       foreach (var _completion in enumerable)
       {
-         if (_completion)
+         if (_completion is (true, var completion))
          {
-            yield return _completion.Value;
+            yield return completion;
          }
       }
    }
@@ -276,9 +276,9 @@ public static class MonadExtensions
       foreach (var item in enumerable)
       {
          var _value = predicate(item);
-         if (_value)
+         if (_value is (true, var value))
          {
-            yield return (item, _value.Value);
+            yield return (item, value);
          }
       }
    }
@@ -288,9 +288,9 @@ public static class MonadExtensions
       var result = new List<T>();
       foreach (var _value in enumerable)
       {
-         if (_value)
+         if (_value is (true, var value))
          {
-            result.Add(_value.Value);
+            result.Add(value);
          }
          else
          {
@@ -337,18 +337,18 @@ public static class MonadExtensions
       try
       {
          Maybe<TResult> _firstItem = nil;
-         foreach (var result in enumerable.Select(item => tryTo(() => func(item))))
+         foreach (var _result in enumerable.Select(item => tryTo(() => func(item))))
          {
-            if (result)
+            if (_result is (true, var result))
             {
                if (!_firstItem)
                {
-                  _firstItem = result.Value;
+                  _firstItem = result;
                }
             }
             else
             {
-               return result.Exception;
+               return _result.Exception;
             }
          }
 
@@ -417,9 +417,9 @@ public static class MonadExtensions
 
    public static T ThrowIfFailed<T>(this Result<T> result)
    {
-      if (result)
+      if (result is (true, var resultValue))
       {
-         return result.Value;
+         return resultValue;
       }
       else
       {
@@ -430,9 +430,9 @@ public static class MonadExtensions
    public static void ForEach<T>(this Result<IEnumerable<T>> enumerable, Action<T> ifSuccess,
       Action<Exception> ifFailure)
    {
-      if (enumerable)
+      if (enumerable is (true, var enumerableValue))
       {
-         enumerable.Value.ForEach(ifSuccess, ifFailure);
+         enumerableValue.ForEach(ifSuccess, ifFailure);
       }
       else
       {
@@ -485,9 +485,9 @@ public static class MonadExtensions
    {
       foreach (var _item in enumerable)
       {
-         if (_item)
+         if (_item is (true, var item))
          {
-            yield return _item.Value;
+            yield return item;
          }
       }
    }
@@ -496,9 +496,9 @@ public static class MonadExtensions
    {
       foreach (var _result in enumerable)
       {
-         if (_result)
+         if (_result is (true, var result))
          {
-            yield return _result.Value;
+            yield return result;
          }
       }
    }
@@ -576,12 +576,12 @@ public static class MonadExtensions
       Func<T1, T2, T3> projection)
    {
       var _t = await source;
-      if (_t)
+      if (_t is (true, var t))
       {
-         var _u = await func(_t.Value);
-         if (_u)
+         var _u = await func(t);
+         if (_u is (true, var u))
          {
-            return projection(_t.Value, _u.Value).Completed();
+            return projection(t, u).Completed();
          }
          else if (_u.AnyException)
          {
@@ -604,9 +604,9 @@ public static class MonadExtensions
 
    public static Result<T> Result<T>(this Completion<T> completion)
    {
-      if (completion)
+      if (completion is (true, var completionValue))
       {
-         return completion.Value;
+         return completionValue;
       }
       else if (completion.AnyException)
       {
@@ -995,9 +995,9 @@ public static class MonadExtensions
    {
       foreach (var maybe in enumerable)
       {
-         if (maybe)
+         if (maybe is (true, var maybeValue))
          {
-            yield return maybe.Value;
+            yield return maybeValue;
          }
       }
    }
@@ -1006,9 +1006,9 @@ public static class MonadExtensions
    {
       foreach (var result in enumerable)
       {
-         if (result)
+         if (result is (true, var resultValue))
          {
-            yield return result.Value;
+            yield return resultValue;
          }
       }
    }
@@ -1017,9 +1017,9 @@ public static class MonadExtensions
    {
       foreach (var responding in enumerable)
       {
-         if (responding)
+         if (responding is (true, var respondingValue))
          {
-            yield return responding.Value;
+            yield return respondingValue;
          }
       }
    }
@@ -1028,9 +1028,9 @@ public static class MonadExtensions
    {
       foreach (var completion in enumerable)
       {
-         if (completion)
+         if (completion is (true, var completionValue))
          {
-            yield return completion.Value;
+            yield return completionValue;
          }
       }
    }

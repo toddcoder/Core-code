@@ -33,9 +33,8 @@ public class JsonLogger : Logger
          _ => nil
       };
 
-      if (_type)
+      if (_type is (true, var type))
       {
-         var type = _type.Value;
          var index = counts[type]++;
          var key = $"{type}{index}";
          jsonWriter.BeginObject(key);

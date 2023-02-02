@@ -52,9 +52,8 @@ public class SqlDataSource : DataSource, IBulkCopyTarget, IHash<string, string>
          {
             sqlParameter.Direction = ParameterDirection.Output;
          }
-         else if (parameter.Value)
+         else if (parameter.Value is (true, var parameterValue))
          {
-            var parameterValue = parameter.Value.Value;
             if (parameterType == typeof(string))
             {
                sqlParameter.Value = parameterValue;
@@ -68,9 +67,8 @@ public class SqlDataSource : DataSource, IBulkCopyTarget, IHash<string, string>
          else
          {
             var value = parameter.GetValue(entity).Required($"Parameter {parameter.Name}'s value couldn't be determined");
-            if (value is null && parameter.Default)
+            if (value is null && parameter.Default is (true, var defaultValue))
             {
-               var defaultValue = parameter.Default.Value;
                value = parameter.Type.Map(t => ChangeType(defaultValue, t)) | (object)defaultValue;
             }
 

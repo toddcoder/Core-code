@@ -42,10 +42,10 @@ public class ImagePanel : Panel
 
    protected override void OnPaint(PaintEventArgs e)
    {
-      if (_image)
+      if (_image is (true, var image))
       {
-         var imageWidth = _image.Value.Width;
-         var imageHeight = _image.Value.Height;
+         var imageWidth = image.Width;
+         var imageHeight = image.Height;
 
          e.Graphics.CompositingQuality = CompositingQuality.HighQuality;
 

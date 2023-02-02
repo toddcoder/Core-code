@@ -150,9 +150,9 @@ public class FolderNameTests
       var _folder =
          from existing in subFolder.TryTo.Existing()
          select existing;
-      if (_folder)
+      if (_folder is (true, var folder))
       {
-         foreach (var file in _folder.Value.Files)
+         foreach (var file in folder.Files)
          {
             Console.WriteLine(file.NameExtension);
          }

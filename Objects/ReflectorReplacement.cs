@@ -18,9 +18,8 @@ public class ReflectorReplacement
       this.length = length;
 
       var _result = group.Text.Matches("^ /(/w+) /s* (/['$,:'] /s* /(.*))? $; f");
-      if (_result)
+      if (_result is (true, var (mn, prefix, format)))
       {
-         var (mn, prefix, format) = _result.Value;
          memberName = mn;
          _formatter = prefix switch
          {

@@ -47,9 +47,9 @@ public class PropertyEvaluator : IEvaluator, IHash<string, object>, IHash<Signat
             else
             {
                var _value = new ObjectInfo(current, s).Value;
-               if (_value)
+               if (_value is (true, var value))
                {
-                  current = _value.Value;
+                  current = value;
                }
                else
                {
@@ -158,11 +158,11 @@ public class PropertyEvaluator : IEvaluator, IHash<string, object>, IHash<Signat
                {
                   var _value =
                      from info in ObjectInfo.PropertyInfo(current, singleSignature)
-                     from value in new ObjectInfo(current, singleSignature, info).Value
-                     select value;
-                  if (_value)
+                     from objectInfoValue in new ObjectInfo(current, singleSignature, info).Value
+                     select objectInfoValue;
+                  if (_value is (true, var value))
                   {
-                     current = _value.Value;
+                     current = value;
                   }
                   else
                   {

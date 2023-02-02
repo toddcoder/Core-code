@@ -65,14 +65,13 @@ public static class TypeExtensions
       {
          var _ungenericResult = lazy.maybe<MatchResult>();
          var _genericResult = lazy.maybe<MatchResult>();
-         if (_ungenericResult.ValueOf(source.Matches("^ -/{,} ','? /s* /{a-zA-Z_0-9.} $; f")))
+         if (_ungenericResult.ValueOf(source.Matches("^ -/{,} ','? /s* /{a-zA-Z_0-9.} $; f")) is (true, var ungenericResult))
          {
-            return getUngenericType(_ungenericResult.Value.FirstGroup, _ungenericResult.Value.SecondGroup);
+            return getUngenericType(ungenericResult.FirstGroup, ungenericResult.SecondGroup);
          }
-         else if (_genericResult.ValueOf(source.Matches("^ -/{,} ','? /s* /{a-zA-Z_0-9.} '<' -/{,} ',' -/{>} '>' $; f")))
+         else if (_genericResult.ValueOf(source.Matches("^ -/{,} ','? /s* /{a-zA-Z_0-9.} '<' -/{,} ',' -/{>} '>' $; f")) is (true, var genericResult))
          {
-            return getGenericType(_genericResult.Value.FirstGroup, _genericResult.Value.SecondGroup, _genericResult.Value.ThirdGroup,
-               _genericResult.Value.FourthGroup);
+            return getGenericType(genericResult.FirstGroup, genericResult.SecondGroup, genericResult.ThirdGroup, genericResult.FourthGroup);
          }
          else
          {

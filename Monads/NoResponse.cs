@@ -12,6 +12,7 @@ public class NoResponse<T> : Responding<T>, IEquatable<NoResponse<T>>
       hashCode = new Lazy<int>(() => typeof(T).GetHashCode());
    }
 
+   [Obsolete("Use deconstruction")]
    public override T Value => throw fail("NoResponse has no value");
 
    public override Exception Exception => throw fail("NoResponse has no Exception");

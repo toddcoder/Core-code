@@ -73,9 +73,9 @@ public class Emailer
 
       message.IsBodyHtml = isHtml;
 
-      if (Attachments)
+      if (Attachments is (true, var attachments))
       {
-         foreach (var attachment in Attachments.Value)
+         foreach (var attachment in attachments)
          {
             message.Attachments.Add(new Attachment(attachment.ToString()));
          }

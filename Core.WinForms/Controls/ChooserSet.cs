@@ -82,9 +82,9 @@ public class ChooserSet
       var _chosen = chooser.Get();
       if (chooser.ModifyTitle)
       {
-         if (_chosen)
+         if (_chosen is (true, var chosen))
          {
-            chooser.UiAction.Success(_chosen.Value.Key);
+            chooser.UiAction.Success(chosen.Key);
             if (chooser.SizeToText)
             {
                chooser.UiAction.SizeToText();

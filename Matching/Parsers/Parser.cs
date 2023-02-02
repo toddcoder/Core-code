@@ -54,9 +54,9 @@ public class Parser
                      .Select(parser => parser.Scan(source, ref index))
                      .Where(result => result))
          {
-            if (_result)
+            if (_result is (true, var result))
             {
-               content.Append(_result.Value);
+               content.Append(result);
             }
 
             added = true;

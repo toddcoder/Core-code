@@ -75,11 +75,11 @@ public abstract class Maybe<T>
 
    public static implicit operator T(Maybe<T> value) => value switch
    {
-      Some<T> some => some.Value,
-      Lazy.LazyMaybe<T> lazyMaybe => lazyMaybe.Value,
+      (true, var internalValue)=>internalValue,
       _ => throw new InvalidCastException("Must be a Some to return a value")
    };
 
+   [Obsolete("Use deconstruction")]
    public abstract T Value { get; }
 
    public abstract Maybe<TResult> Map<TResult>(Func<T, TResult> ifSome);

@@ -47,9 +47,9 @@ public class Service
       serviceMessage = new ServiceMessage(name);
       serviceMessage.Add(serviceLogger);
       serviceMessage.Add(new NamedExceptions(exceptionAddress, name, $"{name} Exceptions", 5));
-      if (_serviceMessage)
+      if (_serviceMessage is (true, var serviceMessageValue))
       {
-         serviceMessage.Add(_serviceMessage.Value);
+         serviceMessage.Add(serviceMessageValue);
       }
 
       jobs = new StringHash<Job>(true);

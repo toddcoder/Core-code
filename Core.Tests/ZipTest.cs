@@ -36,11 +36,10 @@ public class ZipTest
       var _folder =
          from files in zipFolder.TryTo.Files
          from zipFile in files.Where(f => f.Extension == ".zip").MaxOrFail(f => f.CreationTime, () => "No file found")
-         from folder in zipFile.TryToUnzip()
-         select folder;
-      if (_folder)
+         from unzippedFolder in zipFile.TryToUnzip()
+         select unzippedFolder;
+      if (_folder is (true, var folder))
       {
-         var folder = _folder.Value;
          folder.Must().Exist().OrThrow();
          Console.WriteLine(folder.FullPath);
       }

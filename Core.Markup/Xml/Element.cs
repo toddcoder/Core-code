@@ -13,9 +13,8 @@ public class Element : IRendering
    public static implicit operator Element(string source)
    {
       var _result = source.Matches("^ /(['a-zA-Z_'] [/w '-']*) /s* '>' /s* [quote]? /(.*) $; f");
-      if (_result)
+      if (_result is (true, var (name, text)))
       {
-         var (name, text) = _result.Value;
          return new Element
          {
             Name = name,

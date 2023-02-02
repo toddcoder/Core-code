@@ -11,9 +11,8 @@ public class GitBranch : IEquatable<GitBranch>
    public static implicit operator GitBranch(string branch)
    {
       var _result = branch.Matches("^ /(-['//']+) '//' /(.+) $; f");
-      if (_result)
+      if (_result is (true, var (origin, branchName)))
       {
-         var (origin, branchName) = _result.Value;
          return new GitBranch(branchName) { Origin = origin };
       }
       else
@@ -27,9 +26,9 @@ public class GitBranch : IEquatable<GitBranch>
       get
       {
          var _lines = Git.TryTo.Execute("rev-parse --abbrev-ref HEAD");
-         if (_lines)
+         if (_lines is (true, var lines))
          {
-            return _lines.Value.Length > 0 ? _lines.Value[0].Trim() : throw fail("Branch not found");
+            return lines.Length > 0 ? lines[0].Trim() : throw fail("Branch not found");
          }
          else
          {

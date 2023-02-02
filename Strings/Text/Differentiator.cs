@@ -79,7 +79,7 @@ public class Differentiator
          {
             var oldItem = new DifferenceItem(result.OldItems[i + diffBlock.OldDeleteStart], DifferenceType.Deleted, oldPosition + 1);
             var newItem = new DifferenceItem(result.NewItems[i + diffBlock.NewInsertStart], DifferenceType.Inserted, newPosition + 1);
-            if (_subItemBuilder)
+            if (_subItemBuilder is (true, var subItemBuilder))
             {
                var oldWords = result.OldItems[oldPosition].Unjoin("/s+; f");
                var newWords = result.NewItems[newPosition].Unjoin("/s+; f");
@@ -87,7 +87,7 @@ public class Differentiator
 
                if (differ.Build())
                {
-                  _subItemBuilder.Value(result.OldItems[oldPosition], result.NewItems[newPosition], oldItem.SubItems, newItem.SubItems);
+                  subItemBuilder(result.OldItems[oldPosition], result.NewItems[newPosition], oldItem.SubItems, newItem.SubItems);
                   newItem.Type = DifferenceType.Modified;
                   oldItem.Type = DifferenceType.Modified;
                }

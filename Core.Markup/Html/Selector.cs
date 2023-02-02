@@ -13,9 +13,8 @@ namespace Core.Markup.Html
       public static implicit operator Selector(string source)
       {
          var _result = source.Matches("^ /(-['{']+) /s* '{' (/s* /(.+))? $; f");
-         if (_result)
+         if (_result is (true, var (name, styleSource)))
          {
-            var (name, styleSource) = _result.Value;
             var selector = new Selector(name);
 
             if (styleSource.IsNotEmpty())

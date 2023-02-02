@@ -97,9 +97,8 @@ public class ConfigurationTests
       var _setting = lazy.result(() => Setting.FromString(source));
       var _serverDatabase = _setting.Then(setting => getServerDatabase(setting).Result("Failed"));
 
-      if (_serverDatabase)
+      if (_serverDatabase is (true, var (server, database)))
       {
-         var (server, database) = _serverDatabase.Value;
          Console.WriteLine($"server: {server}");
          Console.WriteLine($"database: {database}");
       }
@@ -114,9 +113,8 @@ public class ConfigurationTests
       var _setting = lazy.result(() => Setting.FromString(source));
       var _serverDatabase = _setting.Then(setting => getServerDatabase(setting).Result("Failed"));
 
-      if (_serverDatabase)
+      if (_serverDatabase is (true, var (server, database)))
       {
-         var (server, database) = _serverDatabase.Value;
          Console.WriteLine($"server: {server}");
          Console.WriteLine($"database: {database}");
       }
@@ -128,9 +126,9 @@ public class ConfigurationTests
       var resources = new Resources<ConfigurationTests>();
       var source = resources.String("TestData.Arrays.txt");
       var _setting = Setting.FromString(source);
-      if (_setting)
+      if (_setting is (true, var setting))
       {
-         Console.WriteLine(_setting.Value);
+         Console.WriteLine(setting);
       }
       else
       {
@@ -144,9 +142,9 @@ public class ConfigurationTests
       var resources = new Resources<ConfigurationTests>();
       var source = resources.String("TestData.connections.txt");
       var _setting = Setting.FromString(source);
-      if (_setting)
+      if (_setting is (true, var setting))
       {
-         Console.Write(_setting.Value);
+         Console.Write(setting);
       }
       else
       {
@@ -186,11 +184,11 @@ public class ConfigurationTests
       var package = new BinaryPackage { Payload = binary };
       var _newPackage =
          from setting in Setting.Serialize(package, "guids").OnSuccess(Console.WriteLine)
-         from newPackage in setting.Deserialize<BinaryPackage>()
-         select newPackage;
-      if (_newPackage)
+         from binaryPackage in setting.Deserialize<BinaryPackage>()
+         select binaryPackage;
+      if (_newPackage is (true, var newPackage))
       {
-         package.Must().Equal(_newPackage.Value).OrThrow();
+         package.Must().Equal(newPackage).OrThrow();
       }
       else
       {
@@ -207,9 +205,9 @@ public class ConfigurationTests
          from setting in Setting.FromString(source)
          from obj in setting.Deserialize<object>()
          select obj;
-      if (_object)
+      if (_object is (true, var @object))
       {
-         Console.WriteLine(_object.Value);
+         Console.WriteLine(@object);
       }
       else
       {
@@ -243,9 +241,9 @@ public class ConfigurationTests
          from setting in Setting.Serialize(container, "data").OnSuccess(Console.WriteLine)
          from deserializedContainer in setting.Deserialize<Container>()
          select deserializedContainer;
-      if (_container)
+      if (_container is (true, var containerValue))
       {
-         foreach (var test in _container.Value.Tests)
+         foreach (var test in containerValue.Tests)
          {
             Console.WriteLine(test);
          }
@@ -269,9 +267,9 @@ public class ConfigurationTests
          ["foxtrot"] = "Phi"
       };
       var _setting = hash.ToSetting();
-      if (_setting)
+      if (_setting is (true, var setting))
       {
-         Console.WriteLine(_setting.Value);
+         Console.WriteLine(setting);
       }
       else
       {
@@ -298,9 +296,9 @@ public class ConfigurationTests
          from source in file.TryTo.Text
          from setting2 in Setting.FromString(source)
          select setting.ToStringHash();
-      if (_stringHash)
+      if (_stringHash is (true, var stringHash))
       {
-         foreach (var (key, value) in _stringHash.Value)
+         foreach (var (key, value) in stringHash)
          {
             Console.WriteLine($"{key}: {value}");
          }
@@ -316,20 +314,18 @@ public class ConfigurationTests
    {
       var hash = new StringHash(true) { ["release"] = "", ["build"] = "http" };
       var _setting = hash.ToSetting();
-      if (_setting)
+      if (_setting is (true, var setting))
       {
-         var setting = _setting.Value;
          var source = setting.ToString();
          Console.WriteLine(source);
          Console.WriteLine(setting["release"]);
          Console.WriteLine(setting["build"]);
 
          _setting = Setting.FromString(source);
-         if (_setting)
+         if (_setting is (true, var setting2))
          {
-            setting = _setting.Value;
-            Console.WriteLine(setting["release"]);
-            Console.WriteLine(setting["build"]);
+            Console.WriteLine(setting2["release"]);
+            Console.WriteLine(setting2["build"]);
          }
          else
          {
@@ -373,9 +369,9 @@ public class ConfigurationTests
       writer.WriteLine("]");
       var source = writer.ToString();
       var _setting = Setting.FromString(source);
-      if (_setting)
+      if (_setting is (true, var setting))
       {
-         foreach (var (key, innerSetting) in _setting.Value.Settings())
+         foreach (var (key, innerSetting) in setting.Settings())
          {
             Console.WriteLine($"{key} [");
             Console.WriteLine($"   value1: {innerSetting.Value.String("value1")}");
@@ -385,7 +381,7 @@ public class ConfigurationTests
 
          Console.WriteLine("=".Repeat(80));
 
-         Console.WriteLine(_setting.Value);
+         Console.WriteLine(setting);
       }
       else
       {
@@ -404,11 +400,16 @@ public class ConfigurationTests
       writer.WriteLine("]");
       var source = writer.ToString();
 
-      var setting = Setting.FromString(source).Value;
-      var (_, innerSetting) = setting.Settings().FirstOrFail("No outer group").Value;
-      foreach (var (key, value) in innerSetting.Items())
+      if (Setting.FromString(source) is (true, var setting))
       {
-         Console.WriteLine($"{key}: \"{value}\"");
+         var _innerSetting = setting.Settings().FirstOrFail("No outer group");
+         if (_innerSetting is (true, var (_, innerSetting)))
+         {
+            foreach (var (key, value) in innerSetting.Items())
+            {
+               Console.WriteLine($"{key}: \"{value}\"");
+            }
+         }
       }
    }
 
@@ -421,10 +422,12 @@ public class ConfigurationTests
       writer.WriteLine("charlie");
       var source = writer.ToString();
 
-      var setting = Setting.FromString(source).Value;
-      foreach (var (key, value) in setting.Items())
+      if (Setting.FromString(source) is (true, var setting))
       {
-         Console.WriteLine($"{key}: \"{value}\"");
+         foreach (var (key, value) in setting.Items())
+         {
+            Console.WriteLine($"{key}: \"{value}\"");
+         }
       }
    }
 
@@ -436,7 +439,7 @@ public class ConfigurationTests
       writer.WriteLine(@"   bravo: ""^(Enqueuing task `""\[)[^\]]+(\]`"").+$; u""");
       writer.WriteLine("]");
       var source = writer.ToString();
-      _ = Setting.FromString(source).Value;
+      _ = (Setting)Setting.FromString(source);
    }
 
    [TestMethod]
@@ -450,9 +453,9 @@ public class ConfigurationTests
       var source = writer.ToString();
 
       var _setting = Setting.FromString(source);
-      if (_setting)
+      if (_setting is (true, var setting))
       {
-         Console.WriteLine(_setting.Value);
+         Console.WriteLine(setting);
       }
       else
       {
@@ -462,11 +465,11 @@ public class ConfigurationTests
 
       var _releaseTarget = lazy.result<ReleaseTarget>();
       var _serialized = lazy.result<Setting>();
-      if (_releaseTarget.ValueOf(_setting.Value.Deserialize<ReleaseTarget>()))
+      if (_releaseTarget.ValueOf(setting.Deserialize<ReleaseTarget>()) is (true, var releaseTarget))
       {
-         if (_serialized.ValueOf(Setting.Serialize(typeof(ReleaseTarget), _releaseTarget.Value)))
+         if (_serialized.ValueOf(Setting.Serialize(typeof(ReleaseTarget), releaseTarget)) is (true, var serialized))
          {
-            Console.WriteLine(_serialized.Value);
+            Console.WriteLine(serialized);
          }
          else
          {
@@ -523,12 +526,12 @@ public class ConfigurationTests
       var source = resources.String("usesForeignKey.txt");
       var _setting = lazy.result<Setting>();
       var _container = lazy.result<NonConformanceInfoContainer>();
-      if (_setting.ValueOf(Setting.FromString(source)))
+      if (_setting.ValueOf(Setting.FromString(source)) is (true, var setting))
       {
-         Console.WriteLine(_setting.Value);
-         if (_container.ValueOf(_setting.Value.Deserialize<NonConformanceInfoContainer>()))
+         Console.WriteLine(setting);
+         if (_container.ValueOf(setting.Deserialize<NonConformanceInfoContainer>()) is (true, var container))
          {
-            foreach (var info in _container.Value.NonConformanceInfos)
+            foreach (var info in container.NonConformanceInfos)
             {
                Console.WriteLine(info);
             }
@@ -547,21 +550,21 @@ public class ConfigurationTests
       {
          var serializer = new Serializer(_setting);
          var _json = serializer.Serialize();
-         if (_json)
+         if (_json is (true, var jsonValue))
          {
             Console.WriteLine();
             FileName tempFile = @"C:\Temp\testSetting.json";
             tempFile.Text = _json;
 
             var oldLines = json.Lines();
-            var newLines = _json.Value.Lines();
+            var newLines = jsonValue.Lines();
             var diff = new Differentiator(oldLines, newLines, true, false);
             var _model = diff.BuildModel();
-            if (_model)
+            if (_model is (true, var model))
             {
-               var oldDifferences = _model.Value.OldDifferences();
-               var newDifferences = _model.Value.NewDifferences();
-               var mergedDifferences = _model.Value.MergedDifferences();
+               var oldDifferences = model.OldDifferences();
+               var newDifferences = model.NewDifferences();
+               var mergedDifferences = model.MergedDifferences();
 
                Console.WriteLine("old differences:");
                foreach (var difference in oldDifferences)

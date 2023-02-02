@@ -36,9 +36,9 @@ public class Colorizer
          textBox.BackColor = Color.White;
          var newPattern = pattern.WithMultiline(true);
          var _matches = textBox.Text.Matches(newPattern);
-         if (_matches)
+         if (_matches is (true, var matches))
          {
-            foreach (var match in _matches.Value)
+            foreach (var match in matches)
             {
                var groups = match.Groups;
 

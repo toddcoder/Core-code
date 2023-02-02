@@ -104,9 +104,9 @@ public class GitPrompt
       {
          var prompt = new List<string>();
          var _lines = Git.TryTo.ShortStatus();
-         if (_lines)
+         if (_lines is (true, var lines))
          {
-            if (_lines.Value.Length == 0)
+            if (lines.Length == 0)
             {
                PromptColor = PromptColor.Error;
                return fail("Nothing returned");
@@ -114,7 +114,7 @@ public class GitPrompt
 
             PromptColor = PromptColor.Normal;
 
-            var firstLine = _lines.Value[0];
+            var firstLine = lines[0];
             var branch = "";
             var hasRemote = false;
             var aheadBehind = "";
@@ -196,12 +196,11 @@ public class GitPrompt
             var stagedCounter = new FileCounter(true);
             var unstagedCounter = new FileCounter(false);
 
-            foreach (var line in _lines.Value.Skip(1))
+            foreach (var line in lines.Skip(1))
             {
                var _result = line.Matches("^ /(.) /(.); f");
-               if (_result)
+               if (_result is (true, var (staged, unstaged)))
                {
-                  var (staged, unstaged) = _result.Value;
                   stagedCounter.Increment(staged);
                   unstagedCounter.Increment(unstaged);
                }

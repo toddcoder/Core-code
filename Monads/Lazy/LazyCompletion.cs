@@ -80,9 +80,9 @@ public class LazyCompletion<T> : Completion<T>
       var _next = new LazyCompletion<TNext>();
       ensureValue();
 
-      if (_value)
+      if (_value is (true, var value))
       {
-         return _next.ValueOf(() => func(_value.Value));
+         return _next.ValueOf(() => func(value));
       }
       else if (_value.AnyException)
       {
@@ -101,9 +101,9 @@ public class LazyCompletion<T> : Completion<T>
       var _next = new LazyCompletion<TNext>();
       ensureValue();
 
-      if (_value)
+      if (_value is (true, var value))
       {
-         return _next.ValueOf(() => func(_value.Value));
+         return _next.ValueOf(() => func(value));
       }
       else if (_value.AnyException)
       {
@@ -352,6 +352,7 @@ public class LazyCompletion<T> : Completion<T>
       return _value.Responding();
    }
 
+   [Obsolete("Use deconstruction")]
    public override T Value
    {
       get

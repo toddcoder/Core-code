@@ -149,9 +149,8 @@ public class Paragraph : Block
    protected void setText(string newText)
    {
       var _result = newText.Matches("/(['*^%']) /(-['*^%']+) /(/1); f");
-      if (_result)
+      if (_result is (true, var result))
       {
-         var result = _result.Value;
          var begin = result.Index;
          var end = begin + result.GetGroup(0, 2).Length - 1;
          Bits32<FontStyleFlag> flags = FontStyleFlag.None;
@@ -189,10 +188,10 @@ public class Paragraph : Block
    protected string setControlWords(string text)
    {
       var _result = text.Matches(@"['@#?!']");
-      if (_result)
+      if (_result is (true, var result))
       {
          var offset = 1;
-         foreach (var match in _result.Value)
+         foreach (var match in result)
          {
             Maybe<FieldType> _fieldType = match.Text switch
             {
@@ -209,7 +208,7 @@ public class Paragraph : Block
             }
          }
 
-         return _result.Value.Text;
+         return result.Text;
       }
       else
       {
@@ -313,9 +312,8 @@ public class Paragraph : Block
    public Maybe<CharFormat> CharFormat(Pattern pattern, int groupIndex = 0)
    {
       var _result = text.ToString().Matches(pattern);
-      if (_result)
+      if (_result is (true, var result))
       {
-         var result = _result.Value;
          return CharFormat(result, groupIndex);
       }
       else
@@ -408,9 +406,9 @@ public class Paragraph : Block
    {
       var queue = new MaybeQueue<CharFormat>();
       var _result = charFormatTemplate.Matches("'^'+; f");
-      if (_result)
+      if (_result is (true, var result))
       {
-         foreach (var match in _result.Value)
+         foreach (var match in result)
          {
             var begin = match.Index;
             var end = begin + match.Length - 1;
@@ -457,9 +455,9 @@ public class Paragraph : Block
    {
       var queue = new MaybeQueue<Formatter>();
       var _result = formatTemplate.Matches("'^'+; f");
-      if (_result)
+      if (_result is (true, var result))
       {
-         foreach (var match in _result.Value)
+         foreach (var match in result)
          {
             var begin = match.Index;
             var end = begin + match.Length - 1;
@@ -473,10 +471,10 @@ public class Paragraph : Block
    public void ControlWorlds(string controlWorldTemplate)
    {
       var _result = controlWorldTemplate.Matches(@"['@#?!']");
-      if (_result)
+      if (_result is (true, var result))
       {
          var offset = 1;
-         foreach (var match in _result.Value)
+         foreach (var match in result)
          {
             Maybe<FieldType> _fieldType = match.Text switch
             {
@@ -534,10 +532,8 @@ public class Paragraph : Block
       {
          DisjointRange range;
 
-         if (format.Begin && format.End)
+         if (format.Begin is (true, var begin) && format.End is (true, var end))
          {
-            var begin = format.Begin.Value;
-            var end = format.End.Value;
             if (begin <= end)
             {
                range = new DisjointRange { Head = begin, Tail = end, Format = format };
@@ -630,7 +626,7 @@ public class Paragraph : Block
                      while (true)
                      {
                         var _next = node.Next.NotNull();
-                        if (!_next || !_next.Value.Value.IsControl)
+                        if (!(_next is (true, var next) && next.Value.IsControl))
                         {
                            break;
                         }
@@ -804,9 +800,8 @@ public class Paragraph : Block
          {
             var nodeText = node.Value.Text;
             var _keyResult = nodeText.Matches("'//url' (/d+); f");
-            if (_keyResult)
+            if (_keyResult is (true, var keyResult))
             {
-               var keyResult = _keyResult.Value;
                foreach (var match in keyResult)
                {
                   match.Text = "";
@@ -821,9 +816,8 @@ public class Paragraph : Block
             else
             {
                var _result = nodeText.Matches("'^' '!'+; fi");
-               if (_result)
+               if (_result is (true, var matchResult))
                {
-                  var matchResult = _result.Value;
                   nodeText = nodeText.Keep(matchResult.Index) + nodeText.Drop(matchResult.Index + matchResult.Length);
                }
 
@@ -857,9 +851,9 @@ public class Paragraph : Block
          result.Append(@"\pagebb");
       }
 
-      if (_lineSpacing)
+      if (_lineSpacing is (true, var lineSpacing))
       {
-         result.Append($@"\sl-{_lineSpacing.Value.PointsToTwips()}\slmult0");
+         result.Append($@"\sl-{lineSpacing.PointsToTwips()}\slmult0");
       }
 
       if (margins[Direction.Top] > 0)

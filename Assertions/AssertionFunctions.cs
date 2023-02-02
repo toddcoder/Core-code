@@ -77,9 +77,9 @@ public static class AssertionFunctions
 
    public static string respondingImage<T>(Responding<T> matched)
    {
-      if (matched)
+      if (matched is (true, var matchedValue))
       {
-         return matched.Value.ToNonNullString();
+         return matchedValue.ToNonNullString();
       }
       else if (matched.AnyException)
       {
@@ -93,9 +93,9 @@ public static class AssertionFunctions
 
    public static string completionImage<T>(Completion<T> completion)
    {
-      if (completion)
+      if (completion is (true, var completionValue))
       {
-         return completion.Value.ToNonNullString();
+         return completionValue.ToNonNullString();
       }
       else if (completion.AnyException)
       {
@@ -116,9 +116,9 @@ public static class AssertionFunctions
    public static void orThrow<T>(IAssertion<T> assertion)
    {
       var _constraint = assertion.Constraints.FirstOrNone(c => !c.IsTrue());
-      if (_constraint)
+      if (_constraint is (true, var constraint))
       {
-         throw fail(_constraint.Value.Message);
+         throw fail(constraint.Message);
       }
    }
 
@@ -254,9 +254,9 @@ public static class AssertionFunctions
       var name = nameCache[key];
 
       var _obj = valueCache.Maybe[key];
-      if (_obj)
+      if (_obj is (true, var obj))
       {
-         return (name, (T)_obj.Value);
+         return (name, (T)obj);
       }
 
       var value = expression.Compile()();

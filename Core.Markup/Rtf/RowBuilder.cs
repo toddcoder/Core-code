@@ -117,9 +117,9 @@ public class RowBuilder
 
    public RowBuilder BackgroundColor(BackgroundColorDescriptor backgroundColor)
    {
-      if (table.CurrentCell)
+      if (table.CurrentCell is (true, var currentCell))
       {
-         table.CurrentCell.Value.BackgroundColor = backgroundColor;
+         currentCell.BackgroundColor = backgroundColor;
       }
       else
       {

@@ -51,9 +51,9 @@ public class Reader<T> : IDisposable, IEnumerable<T>
       try
       {
          var _entity = lazyRepeating.maybe<T>();
-         while (_entity.ValueOf(Next()))
+         while (_entity.ValueOf(Next()) is (true, var entity))
          {
-            yield return _entity.Value;
+            yield return entity;
          }
       }
       finally

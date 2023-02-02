@@ -658,11 +658,10 @@ public class ExRichTextBox : RichTextBox
    public IEnumerable<(Rectangle rectangle, string word)> RectangleWords(Graphics graphics, bool visibleOnly = true)
    {
       var _result = Text.Matches("/w+; f");
-      if (_result)
+      if (_result is (true, var result))
       {
-         foreach (var match in _result.Value)
+         foreach (var (text, index, length) in result)
          {
-            var (text, index, length) = match;
             var rectangle = RectangleFrom(graphics, index, length, false);
             if (includeVisibleOnly(visibleOnly, rectangle))
             {
@@ -675,11 +674,10 @@ public class ExRichTextBox : RichTextBox
    public IEnumerable<(int start, int length)> Words()
    {
       var _result = Text.Matches("/w+; f");
-      if (_result)
+      if (_result is (true, var result))
       {
-         foreach (var match in _result.Value)
+         foreach (var (_, index, length) in result)
          {
-            var (_, index, length) = match;
             yield return (index, length);
          }
       }
@@ -688,11 +686,10 @@ public class ExRichTextBox : RichTextBox
    public IEnumerable<(char, Rectangle)> RectangleWhitespace(Graphics graphics, bool visibleOnly = true)
    {
       var _result = Text.Matches("[' /t']; f");
-      if (_result)
+      if (_result is (true, var result))
       {
-         foreach (var match in _result.Value)
+         foreach (var (text, index, length) in result)
          {
-            var (text, index, length) = match;
             var rectangle = RectangleFrom(graphics, index, length, false);
             if (includeVisibleOnly(visibleOnly, rectangle))
             {

@@ -208,9 +208,8 @@ public static class DateTimeExtensions
       {
          return date;
       }
-      else if (_result.ValueOf(pattern.Matches("/(['+-']? /d*) ['//|'] /(['+-']? /d*) ['//|'] /(['+-']? /d*); f")))
+      else if (_result.ValueOf(pattern.Matches("/(['+-']? /d*) ['//|'] /(['+-']? /d*) ['//|'] /(['+-']? /d*); f")) is (true, var (year, month, day)))
       {
-         var (year, month, day) = _result.Value;
          DateIncrementer builder = date;
          var _yearResult = lazy.result<DateTime>();
          var _monthResult = lazy.result<DateTime>();

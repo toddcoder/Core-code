@@ -56,13 +56,12 @@ internal class Parser
             {
                return (source.Drop(_length), lines.ToString(","), true);
             }
-            else if (_result.ValueOf(source.Matches("^ /s* /(-[/r /n]*) ('/r/n')?; f")))
+            else if (_result.ValueOf(source.Matches("^ /s* /(-[/r /n]*) ('/r/n')?; f")) is (true, var result))
             {
-               var _stringInfo = getString(_result.Value.FirstGroup);
-               if (_stringInfo)
+               var _stringInfo = getString(result.FirstGroup);
+               if (_stringInfo is (true, var (_, @string, _)))
                {
-                  var (_, @string, _) = _stringInfo.Value;
-                  source = source.Drop(_result.Value.Length);
+                  source = source.Drop(result.Length);
                   lines.Add(@string);
                }
                else
@@ -77,18 +76,18 @@ internal class Parser
 
       Result<(string newSource, string str, bool isArray)> getString(string source)
       {
-         var _quote = lazy.maybe<MatchResult>();
+         var _quote = lazy.maybe<(string, int)>();
          var _openBrace = lazy.maybe<MatchResult>();
          var _endOfLine = lazy.maybe<MatchResult>();
 
-         if (_quote.ValueOf(source.Matches("^ /s* /[quote]; f")))
+         if (_quote.ValueOf(source.Matches("^ /s* /[quote]; f").Map(result => result.FirstGroupAndLength)) is (true, var (group, length)))
          {
-            var quote = _quote.Value.FirstGroup[0];
-            return getQuotedString(source.Drop(_quote.Value.Length), quote);
+            var quote = group[0];
+            return getQuotedString(source.Drop(length), quote);
          }
-         else if (_openBrace.ValueOf(source.Matches("^ /s* '{' [/r /n]+; f")))
+         else if (_openBrace.ValueOf(source.Matches("^ /s* '{' [/r /n]+; f")) is (true, var openBrace))
          {
-            var newSource = source.Drop(_openBrace.Value.Length);
+            var newSource = source.Drop(openBrace.Length);
             return getLinesAsArray(newSource);
          }
          else if (_endOfLine.ValueOf(source.Matches("^ /s* /(-[/r /n]*) ('/r/n')?; f")))
@@ -229,9 +228,9 @@ internal class Parser
             var key = GetKey("?");
             var setting = new Setting(key);
             var _parentSetting = peekSetting();
-            if (_parentSetting)
+            if (_parentSetting is (true, var parentSetting))
             {
-               _parentSetting.Value.SetItem(key, setting);
+               parentSetting.SetItem(key, setting);
             }
             else
             {
@@ -242,15 +241,15 @@ internal class Parser
 
             source = source.Drop(_openSetting);
          }
-         else if (_settingKey.ValueOf(source.Matches($"^ /s* {REGEX_KEY} /s* '['; f").Map(r => r.FirstGroupAndLength)))
+         else if (_settingKey.ValueOf(source.Matches($"^ /s* {REGEX_KEY} /s* '['; f").Map(r => r.FirstGroupAndLength)) is
+                  (true, var (settingKey, settingLength)))
          {
-            var (settingKey, length) = _settingKey.Value;
             var key = GetKey(settingKey);
             var setting = new Setting(key);
             var _parentSetting = peekSetting();
-            if (_parentSetting)
+            if (_parentSetting is (true, var parentSetting))
             {
-               _parentSetting.Value.SetItem(key, setting);
+               parentSetting.SetItem(key, setting);
             }
             else
             {
@@ -259,17 +258,17 @@ internal class Parser
 
             stack.Push(setting);
 
-            source = source.Drop(length);
+            source = source.Drop(settingLength);
          }
          else if (_closeSetting.ValueOf(source.Matches("^ /s* ']'; f").Map(r => r.Length)))
          {
             var _setting = popSetting();
-            if (_setting)
+            if (_setting is (true, var setting))
             {
                var _parentSetting = peekSetting();
-               if (_parentSetting)
+               if (_parentSetting is (true, var parentSetting))
                {
-                  _parentSetting.Value.SetItem(_setting.Value.Key, _setting);
+                  parentSetting.SetItem(setting.Key, setting);
                }
                else
                {
@@ -283,40 +282,39 @@ internal class Parser
 
             source = source.Drop(_closeSetting);
          }
-         else if (_oneLineKey.ValueOf(source.Matches($"^ /s* {REGEX_KEY} '.'; f").Map(r => r.FirstGroupAndLength)))
+         else if (_oneLineKey.ValueOf(source.Matches($"^ /s* {REGEX_KEY} '.'; f").Map(r => r.FirstGroupAndLength)) is
+                  (true, var (oneLineKey, oneLineLength)))
          {
-            var (oneLineKey, length) = _oneLineKey.Value;
             var key = GetKey(oneLineKey);
             var setting = new Setting(key);
             var _parentSetting = peekSetting();
-            if (_parentSetting)
+            if (_parentSetting is (true, var parentSetting))
             {
-               _parentSetting.Value.SetItem(key, setting);
+               parentSetting.SetItem(key, setting);
             }
             else
             {
                return fail("No parent setting found");
             }
 
-            source = source.Drop(length);
+            source = source.Drop(oneLineLength);
          }
          else if (_comment.ValueOf(source.Matches("^ /s* '#' -[/r /n]*; f").Map(r => r.Length)))
          {
             var key = GenerateKey();
             var remainder = source.Drop(_openSetting);
             var _stringTuple = getString(remainder);
-            if (_stringTuple)
+            if (_stringTuple is (true, var (aSource, value, isArray)))
             {
-               var (aSource, value, isArray) = _stringTuple.Value;
                source = aSource;
                var item = new Item(key, value)
                {
                   IsArray = isArray
                };
                var _setting = peekSetting();
-               if (_setting)
+               if (_setting is (true, var setting))
                {
-                  _setting.Value.SetItem(item.Key, item);
+                  setting.SetItem(item.Key, item);
                }
             }
             else if (source.IsMatch("^ /s+ $; f"))
@@ -328,24 +326,22 @@ internal class Parser
                return fail($"Didn't understand value {remainder}");
             }
          }
-         else if (_key.ValueOf(source.Matches($"^ /s* {REGEX_KEY} ':' /s*; f").Map(r => r.FirstGroupAndLength)))
+         else if (_key.ValueOf(source.Matches($"^ /s* {REGEX_KEY} ':' /s*; f").Map(r => r.FirstGroupAndLength)) is (true, var (key, length)))
          {
-            var (key, length) = _key.Value;
             key = GetKey(key);
             var remainder = source.Drop(length);
             var _tupleString = getString(remainder);
-            if (_tupleString)
+            if (_tupleString is (true, var (aSource, value, isArray)))
             {
-               var (aSource, value, isArray) = _tupleString.Value;
                source = aSource;
                var item = new Item(key, value)
                {
                   IsArray = isArray
                };
                var _setting = peekSetting();
-               if (_setting)
+               if (_setting is (true, var setting))
                {
-                  _setting.Value.SetItem(item.Key, item);
+                  setting.SetItem(item.Key, item);
                }
             }
             else if (source.IsMatch("^ /s+ $; f"))
@@ -361,19 +357,18 @@ internal class Parser
          {
             break;
          }
-         else if (_string.ValueOf(getString(source.TrimLeft())))
+         else if (_string.ValueOf(getString(source.TrimLeft())) is (true, var (aSource, value, isArray)))
          {
-            var (aSource, value, isArray) = _string.Value;
             source = aSource;
-            var key = GenerateKey();
-            var item = new Item(key, value)
+            var stringKey = GenerateKey();
+            var item = new Item(stringKey, value)
             {
                IsArray = isArray
             };
             var _setting = peekSetting();
-            if (_setting)
+            if (_setting is (true, var setting))
             {
-               _setting.Value.SetItem(item.Key, item);
+               setting.SetItem(item.Key, item);
             }
          }
          else
@@ -382,18 +377,12 @@ internal class Parser
          }
       }
 
-      while (true)
+      while (popSetting() is (true, var setting))
       {
-         var _setting = popSetting();
-         if (!_setting)
-         {
-            break;
-         }
-
          var _parentSetting = popSetting();
-         if (_parentSetting)
+         if (_parentSetting is (true, var parentSetting))
          {
-            _parentSetting.Value.SetItem(_setting.Value.Key, _setting);
+            parentSetting.SetItem(setting.Key, setting);
          }
          else
          {

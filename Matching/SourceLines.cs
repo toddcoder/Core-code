@@ -72,10 +72,10 @@ public class SourceLines
       {
          var current = Current;
          var _result = current.Matches(REGEX_NEXT_LINE);
-         if (_result)
+         if (_result is (true, var result))
          {
-            Advance(_result.Value.Length);
-            yield return _result.Value.FirstGroup;
+            Advance(result.Length);
+            yield return result.FirstGroup;
          }
          else
          {
@@ -91,12 +91,12 @@ public class SourceLines
       {
          var current = Current;
          var _result = current.Matches(REGEX_NEXT_LINE);
-         if (_result)
+         if (_result is (true, var result))
          {
-            var line = _result.Value.FirstGroup;
+            var line = result.FirstGroup;
             if (predicate(line))
             {
-               Advance(_result.Value.Length);
+               Advance(result.Length);
                yield return line;
             }
             else
@@ -124,12 +124,12 @@ public class SourceLines
       {
          var current = Current;
          var _result = current.Matches(REGEX_NEXT_LINE);
-         if (_result)
+         if (_result is (true, var result))
          {
-            var line = _result.Value.FirstGroup;
+            var line = result.FirstGroup;
             if (!predicate(line))
             {
-               Advance(_result.Value.Length);
+               Advance(result.Length);
                yield return line;
             }
             else
@@ -163,10 +163,10 @@ public class SourceLines
       {
          var current = Current;
          var _line = current.Matches(REGEX_NEXT_LINE).Map(r => r.FirstGroup);
-         if (_line)
+         if (_line is (true, var line))
          {
-            _peekLength = _line.Value.Length;
-            return _line;
+            _peekLength = line.Length;
+            return line;
          }
          else
          {
@@ -188,13 +188,13 @@ public class SourceLines
       while (More)
       {
          var current = Current;
-         if (_nextLine.ValueOf(current.Matches(REGEX_NEXT_LINE)))
+         if (_nextLine.ValueOf(current.Matches(REGEX_NEXT_LINE)) is (true, var nextLine))
          {
-            var line = _nextLine.Value.FirstGroup;
+            var line = nextLine.FirstGroup;
             var _line = line.Matches(pattern);
             if (_line)
             {
-               Advance(_nextLine.Value.Length);
+               Advance(nextLine.Length);
                yield return (_line, line);
             }
             else

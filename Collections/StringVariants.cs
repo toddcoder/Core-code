@@ -85,9 +85,9 @@ public class StringVariants : IHash<string, string>
          foreach (var alias in aliases)
          {
             var _keyValue = keyValues.Maybe[alias];
-            if (_keyValue)
+            if (_keyValue is (true, var keyValue))
             {
-               formatter[_keyValue.Value.Key] = _keyValue.Value.Value;
+               formatter[keyValue.Key] = keyValue.Value;
             }
          }
 

@@ -77,6 +77,7 @@ public class Success<T> : Result<T>, IEquatable<Success<T>>
 
    public override Result<Unit> Unit => unit;
 
+   [Obsolete("Use deconstruction")]
    public override T Value => value;
 
    public override Exception Exception => throw fail("Success has no exception");
@@ -121,7 +122,7 @@ public class Success<T> : Result<T>, IEquatable<Success<T>>
 
    public override Maybe<T> Maybe() => value;
 
-   public override Responding<T> Responding() => Value;
+   public override Responding<T> Responding() => value;
 
    public override bool EqualToValueOf(Result<T> otherResult) => otherResult.Map(ValueEqualTo) | false;
 

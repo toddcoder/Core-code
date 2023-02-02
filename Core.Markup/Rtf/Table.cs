@@ -180,9 +180,9 @@ public class Table : Block
             if (j < count)
             {
                var cellData = row[j];
-               if (cellData.ImageFile && cellData.ImageFileType)
+               if (cellData.ImageFile is (true, var imageFile) && cellData.ImageFileType is (true, var imageFileType))
                {
-                  tableCell.Image(cellData.ImageFile.Value.FullPath, cellData.ImageFileType.Value);
+                  tableCell.Image(imageFile.FullPath, imageFileType);
                }
                else
                {
@@ -192,15 +192,14 @@ public class Table : Block
                   }
 
                   var paragraph = tableCell.Paragraph();
-                  if (_formatAction)
+                  if (_formatAction is (true, var formatAction))
                   {
                      paragraph.Text = cellData.Text;
-                     _formatAction.Value(paragraph, i, j);
+                     formatAction(paragraph, i, j);
                   }
-                  else if (cellData.PendingFormatter)
+                  else if (cellData.PendingFormatter is (true, var pendingFormatter))
                   {
                      paragraph.Text = cellData.Text;
-                     var pendingFormatter = cellData.PendingFormatter.Value;
                      pendingFormatter.Formatter(paragraph, paragraph.DefaultCharFormat);
                   }
                   else
@@ -350,9 +349,8 @@ public class Table : Block
    public void ActivatePendingMerges()
    {
       var _item = lazyRepeating.maybe<(int, int, int, int)>();
-      while (_item.ValueOf(pendingMerges.Dequeue()))
+      while (_item.ValueOf(pendingMerges.Dequeue()) is (true, var (topRow, leftColumn, rowSpan, colSpan)))
       {
-         var (topRow, leftColumn, rowSpan, colSpan) = _item.Value;
          Merge(topRow, leftColumn, rowSpan, colSpan);
       }
    }
@@ -747,21 +745,21 @@ public class Table : Block
                }
             }
 
-            if (this[i, j].BackgroundColor)
+            if (this[i, j].BackgroundColor is (true, var backgroundColor))
             {
-               result.Append($@"\clcbpat{this[i, j].BackgroundColor.Value.Value}");
+               result.Append($@"\clcbpat{backgroundColor.Value}");
             }
-            else if (i == 0 && HeaderBackgroundColor)
+            else if (i == 0 && HeaderBackgroundColor is (true, var headerBackgroundColor))
             {
-               result.Append($@"\clcbpat{HeaderBackgroundColor.Value.Value}");
+               result.Append($@"\clcbpat{headerBackgroundColor.Value}");
             }
-            else if (RowBackgroundColor && (!RowAltBackgroundColor || i % 2 == 0))
+            else if (RowBackgroundColor is (true, var rowBackgroundColor) && (!RowAltBackgroundColor || i % 2 == 0))
             {
-               result.Append($@"\clcbpat{RowBackgroundColor.Value.Value}");
+               result.Append($@"\clcbpat{rowBackgroundColor.Value}");
             }
-            else if (RowBackgroundColor && RowAltBackgroundColor && i % 2 != 0)
+            else if (RowBackgroundColor && RowAltBackgroundColor is (true, var rowAltBackgroundColor) && i % 2 != 0)
             {
-               result.Append($@"\clcbpat{RowAltBackgroundColor.Value.Value}");
+               result.Append($@"\clcbpat{rowAltBackgroundColor.Value}");
             }
 
             if (cells[i][j].IsMerged && cells[i][j].MergeInfo.RowSpan > 1)

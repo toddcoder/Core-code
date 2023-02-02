@@ -23,9 +23,9 @@ public class TextBoxWriter : TextWriter
    {
       if (value != '\r')
       {
-         if (_buffer)
+         if (_buffer is (true, var buffer))
          {
-            _buffer.Value.Append(value);
+            buffer.Append(value);
          }
          else
          {
@@ -48,19 +48,19 @@ public class TextBoxWriter : TextWriter
 
    protected void flush()
    {
-      if (_buffer)
+      if (_buffer is (true, var buffer))
       {
          if (AutoStop)
          {
             console.StopUpdating();
          }
 
-         foreach (var ch in _buffer.Value.ToString())
+         foreach (var ch in buffer.ToString())
          {
             console.Write(ch);
          }
 
-         _buffer.Value.Clear();
+         buffer.Clear();
 
          if (AutoStop)
          {

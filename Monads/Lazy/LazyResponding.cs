@@ -80,9 +80,9 @@ public class LazyResponding<T> : Responding<T>, IEquatable<LazyResponding<T>>
       var _next = new LazyResponding<TNext>();
       ensureValue();
 
-      if (_value)
+      if (_value is (true, var value))
       {
-         return _next.ValueOf(() => func(_value.Value));
+         return _next.ValueOf(() => func(value));
       }
       else if (_value.AnyException)
       {
@@ -101,9 +101,9 @@ public class LazyResponding<T> : Responding<T>, IEquatable<LazyResponding<T>>
       var _next = new LazyResponding<TNext>();
       ensureValue();
 
-      if (_value)
+      if (_value is (true, var value))
       {
-         return _next.ValueOf(() => func(_value.Value));
+         return _next.ValueOf(() => func(value));
       }
       else if (_value.AnyException)
       {
@@ -126,6 +126,7 @@ public class LazyResponding<T> : Responding<T>, IEquatable<LazyResponding<T>>
       }
    }
 
+   [Obsolete("Use deconstruction")]
    public override T Value
    {
       get

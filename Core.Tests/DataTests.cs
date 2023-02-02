@@ -73,11 +73,11 @@ public class DataTests
       var _adapter =
          from @group in Setting.FromString(source)
          from setup in SqlSetup.FromGroup(@group, "all")
-         from adapter in Adapter<ColumnData>.FromSetup(setup, entity)
-         select adapter;
-      if (_adapter)
+         from adapterFromSetup in Adapter<ColumnData>.FromSetup(setup, entity)
+         select adapterFromSetup;
+      if (_adapter is (true, var adapter))
       {
-         var data = _adapter.Value.ToArray();
+         var data = adapter.ToArray();
          foreach (var columnData in data)
          {
             Console.WriteLine(columnData);
@@ -97,12 +97,12 @@ public class DataTests
       var _adapter =
          from configuration in Setting.FromString(source)
          from setup in SqlSetup.FromGroup(configuration, "all2")
-         from adapter in Adapter<ColumnData>.FromSetup(setup, new ColumnData { ObjectId = 5664280 })
-         select adapter;
-      if (_adapter)
+         from adapterFromSetup in Adapter<ColumnData>.FromSetup(setup, new ColumnData { ObjectId = 5664280 })
+         select adapterFromSetup;
+      if (_adapter is (true, var adapter))
       {
-         _adapter.Value.ConnectionString = TRUE_CONNECTION_STRING;
-         foreach (var columnData in _adapter.Value)
+         adapter.ConnectionString = TRUE_CONNECTION_STRING;
+         foreach (var columnData in adapter)
          {
             Console.WriteLine(columnData);
          }
@@ -118,10 +118,10 @@ public class DataTests
    {
       var entity = new ColumnData { ObjectId = 89 };
       var _adapter = Adapter<ColumnData>.FromSetupObject(entity);
-      if (_adapter)
+      if (_adapter is (true, var adapter))
       {
-         _adapter.Value.ConnectionString = TRUE_CONNECTION_STRING;
-         var data = _adapter.Value.ToArray();
+         adapter.ConnectionString = TRUE_CONNECTION_STRING;
+         var data = adapter.ToArray();
          foreach (var columnData in data)
          {
             Console.WriteLine(columnData);
@@ -199,13 +199,13 @@ public class DataTests
       _ = setupBuilder + field("Name") + type(typeof(string));
       _ = setupBuilder + field("TypeName") + type(typeof(string));
       var _sqlSetup = setupBuilder.Build();
-      if (_sqlSetup)
+      if (_sqlSetup is (true, var sqlSetupValue))
       {
          var entity = new ColumnData
          {
             ObjectId = 89
          };
-         var adapter = new Adapter<ColumnData>(entity, _sqlSetup.Value);
+         var adapter = new Adapter<ColumnData>(entity, sqlSetupValue);
          var _columnData = adapter.TryTo.Execute();
          if (_columnData)
          {

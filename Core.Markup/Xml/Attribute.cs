@@ -14,9 +14,8 @@ public class Attribute
    public static implicit operator Attribute(string source)
    {
       var _result = source.Matches(PATTERN_ATTRIBUTE);
-      if (_result)
+      if (_result is (true, var (name, text)))
       {
-         var (name, text) = _result.Value;
          return new Attribute(name, text, QuoteType.Single);
       }
       else

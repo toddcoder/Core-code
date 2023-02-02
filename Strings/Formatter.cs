@@ -116,9 +116,9 @@ public class Formatter : IHash<string, string>
       if (source.IsNotEmpty())
       {
          var _matches = source.Matches(REGEX_NAME);
-         if (_matches)
+         if (_matches is (true, var matches))
          {
-            foreach (var match in _matches.Value)
+            foreach (var match in matches)
             {
                var slashes = match.FirstGroup;
                var name = match.SecondGroup;
@@ -137,7 +137,7 @@ public class Formatter : IHash<string, string>
                }
             }
 
-            return _matches.Value.ToString();
+            return matches.ToString();
          }
          else
          {
@@ -153,15 +153,14 @@ public class Formatter : IHash<string, string>
    protected virtual string getText(string name, string format)
    {
       var _text = names.Maybe[name];
-      if (_text)
+      if (_text is (true, var text))
       {
-         var text = _text.Value;
          if (format.IsNotEmpty())
          {
             var _object = text.ToObject();
-            if (_object)
+            if (_object is (true, var @object))
             {
-               text = string.Format($"{{0{format}}}", _object.Value);
+               text = string.Format($"{{0{format}}}", @object);
             }
          }
 

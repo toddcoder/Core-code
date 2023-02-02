@@ -17,15 +17,15 @@ public class MatchingTests
    public void MatcherTest()
    {
       var _result = "tsqlcop.sql.format.options.xml".Matches("(sql); u");
-      if (_result)
+      if (_result is (true, var result))
       {
-         foreach (var match in _result.Value)
+         foreach (var match in result)
          {
             match.FirstGroup = "style";
          }
 
-         Console.WriteLine(_result.Value);
-         _result.Value.ToString().Must().Equal("tstylecop.style.format.options.xml").OrThrow();
+         Console.WriteLine(result);
+         result.ToString().Must().Equal("tstylecop.style.format.options.xml").OrThrow();
       }
    }
 
@@ -42,9 +42,9 @@ public class MatchingTests
    {
       var pattern = "`quote /(-[`quote]+) `quote; f";
       var _result = "\"Fee fi fo fum\" said the giant.".Matches(pattern);
-      if (_result)
+      if (_result is (true, var result))
       {
-         Console.WriteLine(_result.Value.FirstGroup.Guillemetify());
+         Console.WriteLine(result.FirstGroup.Guillemetify());
       }
    }
 
@@ -76,9 +76,8 @@ public class MatchingTests
          from split2 in pushed2.Split("/s* ',' /s*; f", s => $"var1_{s}:{index2++}")
          from popped2 in split2.Pop()
          select popped2;
-      if (_scraper)
+      if (_scraper && scraper.AnyHash() is (true, var hash))
       {
-         var hash = scraper.AnyHash().Value;
          var func1 = $"{hash["name1"]}({getVariables(hash, "var0_")})";
          var func2 = $"{hash["name2"]}({getVariables(hash, "var1_")})";
          Console.WriteLine(func1);
@@ -153,17 +152,17 @@ public class MatchingTests
    {
       var input = "111 apples, 123 books, 153 chairs";
       var _result = input.Matches("['a-z']+");
-      if (_result)
+      if (_result is (true, var result))
       {
-         foreach (var item in _result.Value.Matches.LeadingMatches(input, true))
+         foreach (var item in result.Matches.LeadingMatches(input, true))
          {
-            if (item.LeftValue)
+            if (item.LeftValue is (true, var left))
             {
-               Console.WriteLine($"Leading: <{item.LeftValue.Value.Text}>");
+               Console.WriteLine($"Leading: <{left.Text}>");
             }
-            else if (item.RightValue)
+            else if (item.RightValue is (true, var right))
             {
-               Console.WriteLine($"Match: <{item.RightValue.Value.Text}>");
+               Console.WriteLine($"Match: <{right.Text}>");
             }
          }
       }

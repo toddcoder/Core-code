@@ -135,14 +135,15 @@ public class Completed<T> : Completion<T>, IEquatable<Completed<T>>
       return predicate(value) ? this : exceptionMessage().Interrupted<T>();
    }
 
-   public override T DefaultTo(Func<Maybe<Exception>, T> defaultFunc) => Value;
+   public override T DefaultTo(Func<Maybe<Exception>, T> defaultFunc) => value;
 
-   public override Maybe<T> Maybe() => Value;
+   public override Maybe<T> Maybe() => value;
 
-   public override Result<T> Result() => Value;
+   public override Result<T> Result() => value;
 
-   public override Responding<T> Responding() => Value;
+   public override Responding<T> Responding() => value;
 
+   [Obsolete("Use deconstruction")]
    public override T Value => value;
 
    public override Exception Exception => throw fail("Completed has no Exception");

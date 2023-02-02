@@ -58,9 +58,9 @@ public class MonadTests
       var source = new CancellationTokenSource(30.Seconds());
       var completion = Task.Run(() => counter.CountAsync(source), source.Token);
       var _value = completion.Result;
-      if (_value)
+      if (_value is (true, var value))
       {
-         Console.WriteLine($"Value is {_value.Value}");
+         Console.WriteLine($"Value is {value}");
       }
       else if (_value.AnyException)
       {
@@ -170,15 +170,15 @@ public class MonadTests
    public void SomeIfTest()
    {
       var _text = (1 > 0).SomeIf(() => "foobar");
-      if (_text)
+      if (_text is (true, var text1))
       {
-         Console.WriteLine(_text.Value);
+         Console.WriteLine(text1);
       }
 
       _text = func(() => 1 > 0).SomeIf(() => "foobar");
-      if (_text)
+      if (_text is (true, var text2))
       {
-         Console.WriteLine(_text.Value);
+         Console.WriteLine(text2);
       }
    }
 
@@ -306,9 +306,9 @@ public class MonadTests
    {
       var date = DateTime.Now;
       var _result = maybe<string>() & date.Second < 30 & "seconds < 30";
-      if (_result)
+      if (_result is (true, var result))
       {
-         Console.WriteLine(_result.Value);
+         Console.WriteLine(result);
       }
       else
       {
@@ -329,9 +329,9 @@ public class MonadTests
    {
       var date = DateTime.Now;
       var _result = result<string>() & date.Second < 30 & "seconds < 30" & fail($"Only {"second(s)".Plural(date.Second)}");
-      if (_result)
+      if (_result is (true, var result))
       {
-         Console.WriteLine(_result.Value);
+         Console.WriteLine(result);
       }
       else
       {
@@ -343,9 +343,9 @@ public class MonadTests
    public void IfTest()
    {
       Maybe<string> _maybe = "foobar";
-      if (_maybe)
+      if (_maybe is (true, var value))
       {
-         Console.WriteLine(_maybe.Value);
+         Console.WriteLine(value);
       }
 
       var x = 1;
@@ -353,7 +353,7 @@ public class MonadTests
       y -= 10;
       var _result = tryTo(() => x / y);
 
-      var message = _result ? _result.Value.ToString() : _result.Exception.Message;
+      var message = _result is (true, var result) ? result.ToString() : _result.Exception.Message;
       Console.WriteLine(message);
    }
 
@@ -390,9 +390,9 @@ public class MonadTests
    public void MaybeValueOperator()
    {
       Maybe<int> _number = 153;
-      if (_number)
+      if (_number is (true, var number))
       {
-         Console.WriteLine(_number.Value);
+         Console.WriteLine(number);
       }
    }
 
@@ -410,9 +410,9 @@ public class MonadTests
          & (() => "other");
 
       var _result = matcher.Matches();
-      if (_result)
+      if (_result is (true, var result))
       {
-         Console.WriteLine(_result.Value);
+         Console.WriteLine(result);
       }
       else
       {
@@ -449,19 +449,19 @@ public class MonadTests
          return "three";
       });
 
-      if (_one)
+      if (_one is (true, var one))
       {
-         Console.WriteLine(_one.Value);
+         Console.WriteLine(one);
       }
 
-      if (_two)
+      if (_two is (true, var two))
       {
-         Console.WriteLine(_two.Value);
+         Console.WriteLine(two);
       }
 
-      if (_three)
+      if (_three is (true, var three))
       {
-         Console.WriteLine(_three.Value);
+         Console.WriteLine(three);
       }
    }
 
@@ -472,17 +472,17 @@ public class MonadTests
       var _two = lazy.maybe<string>();
       var _three = lazy.maybe<string>();
 
-      if (_one.ValueOf("one"))
+      if (_one.ValueOf("one") is (true, var one))
       {
-         Console.WriteLine(_one.Value);
+         Console.WriteLine(one);
       }
-      else if (_two.ValueOf("two"))
+      else if (_two.ValueOf("two") is (true, var two))
       {
-         Console.WriteLine(_two.Value);
+         Console.WriteLine(two);
       }
-      else if (_three.ValueOf("three"))
+      else if (_three.ValueOf("three") is (true, var three))
       {
-         Console.WriteLine(_three.Value);
+         Console.WriteLine(three);
       }
    }
 
@@ -496,9 +496,9 @@ public class MonadTests
       }
 
       var _item = lazyRepeating.maybe<string>();
-      while (_item.ValueOf(stack.Pop()))
+      while (_item.ValueOf(stack.Pop()) is (true, var item))
       {
-         Console.WriteLine(_item.Value);
+         Console.WriteLine(item);
       }
    }
 
@@ -521,11 +521,11 @@ public class MonadTests
       var _first = lazy.result(() => getResult("alpha", true, 1));
       var _second = _first.Then(_ => getResult("bravo", false, 2));
       var _third = _second.Then(_ => getResult("charlie", true, 3));
-      if (_third)
+      if (_third is (true, var third))
       {
-         Console.WriteLine(_first.Value);
-         Console.WriteLine(_second.Value);
-         Console.WriteLine(_third.Value);
+         Console.WriteLine((string)_first);
+         Console.WriteLine((string)_second);
+         Console.WriteLine(third);
       }
       else
       {
@@ -541,9 +541,9 @@ public class MonadTests
       var _third = _second.Then(_ => getResult("charlie", true, 3));
       if (_third)
       {
-         Console.WriteLine(_first.Value);
-         Console.WriteLine(_second.Value);
-         Console.WriteLine(_third.Value);
+         Console.WriteLine((string)_first);
+         Console.WriteLine((string)_second);
+         Console.WriteLine((string)_third);
       }
       else
       {
@@ -559,9 +559,9 @@ public class MonadTests
       var _third = _second.Then(_ => getResult("charlie", false, 3));
       if (_third)
       {
-         Console.WriteLine(_first.Value);
-         Console.WriteLine(_second.Value);
-         Console.WriteLine(_third.Value);
+         Console.WriteLine((string)_first);
+         Console.WriteLine((string)_second);
+         Console.WriteLine((string)_third);
       }
       else
       {

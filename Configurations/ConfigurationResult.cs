@@ -43,9 +43,9 @@ public class ConfigurationResult
       try
       {
          var _fileName = String(key);
-         if (_fileName)
+         if (_fileName is (true, var fileName))
          {
-            if (_fileName.Value.IsEmpty())
+            if (fileName.IsEmpty())
             {
                return fail("File name is empty");
             }
@@ -69,9 +69,9 @@ public class ConfigurationResult
       try
       {
          var _folderName = String(key);
-         if (_folderName)
+         if (_folderName is (true, var folderName))
          {
-            if (_folderName.Value.IsEmpty())
+            if (folderName.IsEmpty())
             {
                return fail("Folder name is empty");
             }

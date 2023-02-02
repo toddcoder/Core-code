@@ -35,17 +35,17 @@ public class DataContainer : StringHash<object>
 
    public void BeforeExecute()
    {
-      if (_beforeExecute)
+      if (_beforeExecute is (true, var beforeExecute))
       {
-         _beforeExecute.Value();
+         beforeExecute();
       }
    }
 
    public void AfterExecute()
    {
-      if (_afterExecute)
+      if (_afterExecute is (true, var afterExecute))
       {
-         _afterExecute.Value();
+         afterExecute();
       }
    }
 

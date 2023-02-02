@@ -66,11 +66,11 @@ public class Job
             while (true)
             {
                var _action = queue.Dequeue(affinity);
-               while (_action)
+               while (_action is (true, var action))
                {
                   try
                   {
-                     _action.Value(affinity);
+                     action(affinity);
                   }
                   catch (Exception exception)
                   {
@@ -107,9 +107,9 @@ public class Job
          try
          {
             var _action = queue.Dequeue(affinity);
-            if (_action)
+            if (_action is (true, var action))
             {
-               _action.Value(affinity);
+               action(affinity);
             }
          }
          catch (Exception exception)

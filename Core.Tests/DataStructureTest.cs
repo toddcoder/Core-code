@@ -45,9 +45,9 @@ public class DataStructureTest
 
       while (stack.More())
       {
-         if (stack.Last)
+         if (stack.Last is (true, var last))
          {
-            Console.WriteLine(stack.Last.Value);
+            Console.WriteLine(last);
          }
       }
    }

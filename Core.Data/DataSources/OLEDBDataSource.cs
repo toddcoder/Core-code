@@ -73,9 +73,8 @@ public class OleDbDataSource : DataSource
          {
             oledbParameter.Direction = ParameterDirection.Output;
          }
-         else if (parameter.Value)
+         else if (parameter.Value is (true, var parameterValue))
          {
-            var parameterValue = parameter.Value.Value;
             if (parameterType == typeof(string))
             {
                oledbParameter.Value = parameterValue;
@@ -89,9 +88,8 @@ public class OleDbDataSource : DataSource
          else
          {
             var value = parameter.GetValue(entity).Required($"Parameter {parameter.Name}'s value couldn't be determined");
-            if (value is null && parameter.Default)
+            if (value is null && parameter.Default is (true, var defaultValue))
             {
-               var defaultValue = parameter.Default.Value;
                value = parameter.Type.Map(t => ChangeType(defaultValue, t)) | (object)defaultValue;
             }
 
@@ -105,9 +103,9 @@ public class OleDbDataSource : DataSource
             oledbParameter.Value = value;
          }
 
-         if (Command)
+         if (Command is (true, var command))
          {
-            Command.Value.Parameters.Add(oledbParameter);
+            command.Parameters.Add(oledbParameter);
          }
          else
          {

@@ -123,10 +123,8 @@ public static class ObjectExtensions
       else
       {
          var _result = format.Matches("/['cdefgnprxs'] /('-'? /d+)? ('.' /(/d+))?; fi");
-         if (_result)
+         if (_result is (true, var (specifier, width, places)))
          {
-            var (specifier, width, places) = _result.Value;
-
             var builder = new StringBuilder("{0");
             if (width.IsNotEmpty())
             {

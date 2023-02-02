@@ -54,9 +54,9 @@ public class MaybeAssertion<T> : IAssertion<T>
             constraints.Add(new Constraint(() => constraintFunction(otherT), message, not, name, maybeImage(maybe)));
             break;
          case Maybe<T> _value:
-            if (_value)
+            if (_value is (true, var value))
             {
-               constraints.Add(new Constraint(() => constraintFunction(_value.Value), message, not, name, maybeImage(maybe)));
+               constraints.Add(new Constraint(() => constraintFunction(value), message, not, name, maybeImage(maybe)));
             }
             else
             {

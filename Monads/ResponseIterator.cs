@@ -21,18 +21,17 @@ namespace Core.Monads
 
       protected void handle(Responding<T> responding)
       {
-         if (responding && _response)
+         if (responding is (true, var respondingValue) && _response is (true, var action))
          {
-            var action = _response.Value;
-            action(responding.Value);
+            action(respondingValue);
          }
-         else if (responding.AnyException && _failure)
+         else if (responding.AnyException && _failure is (true, var failure))
          {
-            _failure.Value(responding.Exception);
+            failure(responding.Exception);
          }
-         else if (_noResponse)
+         else if (_noResponse is (true, var noResponse))
          {
-            _noResponse.Value();
+            noResponse();
          }
       }
 

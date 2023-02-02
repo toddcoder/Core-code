@@ -34,10 +34,10 @@ public class Source
          if (current.IsMatch(pattern))
          {
             var _result = current.Matches(REGEX_NEXT_LINE);
-            if (_result)
+            if (_result is (true, var result))
             {
-               Advance(_result.Value.Length);
-               return _result.Value.FirstGroup;
+               Advance(result.Length);
+               return result.FirstGroup;
             }
          }
       }
@@ -54,10 +54,10 @@ public class Source
          if (current.IsMatch(pattern))
          {
             var _firstGroup = current.Matches(REGEX_NEXT_LINE).Map(r => r.FirstGroup);
-            if (_firstGroup)
+            if (_firstGroup is (true, var firstGroup))
             {
-               _peekLength = _firstGroup.Value.Length;
-               return _firstGroup;
+               _peekLength = firstGroup.Length;
+               return firstGroup;
             }
          }
       }
@@ -108,10 +108,10 @@ public class Source
          var current = Current;
          string line;
          var _result = current.Matches(REGEX_NEXT_LINE);
-         if (_result)
+         if (_result is (true, var result))
          {
-            line = _result.Value.FirstGroup;
-            Advance(_result.Value.Length);
+            line = result.FirstGroup;
+            Advance(result.Length);
          }
          else
          {
@@ -149,11 +149,11 @@ public class Source
       while (true)
       {
          var _line = NextLine();
-         if (_line)
+         if (_line is (true, var line))
          {
-            if (_line.Value.IsMatch(pattern))
+            if (line.IsMatch(pattern))
             {
-               return _line;
+               return line;
             }
          }
          else

@@ -71,21 +71,21 @@ public class Serializer
 
       writer.WritePropertyNameIf(_name);
 
-      if (_int.ValueOf(Maybe.Int32(text)))
+      if (_int.ValueOf(Maybe.Int32(text)) is (true, var @int))
       {
-         writer.Write(_int.Value);
+         writer.Write(@int);
       }
-      else if (_float.ValueOf(Maybe.Double(text)))
+      else if (_float.ValueOf(Maybe.Double(text)) is (true, var @float))
       {
-         writer.Write(_float.Value);
+         writer.Write(@float);
       }
-      else if (_bool.ValueOf(Maybe.Boolean(text)))
+      else if (_bool.ValueOf(Maybe.Boolean(text)) is (true, var @bool))
       {
-         writer.Write(_bool.Value);
+         writer.Write(@bool);
       }
-      else if (_dateTime.ValueOf(Maybe.DateTime(text)))
+      else if (_dateTime.ValueOf(Maybe.DateTime(text)) is (true, var dateTime))
       {
-         var zulu = _dateTime.Value.Zulu();
+         var zulu = dateTime.Zulu();
          writer.Write(zulu);
       }
       else

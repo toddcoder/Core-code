@@ -38,9 +38,9 @@ public class Parameters : IEnumerable<Parameter>, IHash<string, Parameter>
 
    public Parameters(Maybe<Setting> _parametersSetting) : this()
    {
-      if (_parametersSetting)
+      if (_parametersSetting is (true, var parametersSetting))
       {
-         foreach (var (key, parameter) in _parametersSetting.Value.Settings().Select(t => (t.key, Parameter.Parse(t.setting))))
+         foreach (var (key, parameter) in parametersSetting.Settings().Select(t => (t.key, Parameter.Parse(t.setting))))
          {
             this[key] = parameter;
          }

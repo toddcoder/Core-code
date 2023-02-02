@@ -71,41 +71,36 @@ public class HelpGenerator
       {
          return displayConfigurationHelp();
       }
-      else
+      else if (commandHelp.Maybe[command] is (true, var (_helpText, _switchPattern, replacements)))
       {
-         var _tuple = commandHelp.Maybe[command];
-         if (_tuple)
+         if (_helpText)
          {
-            var (_helpText, _switchPattern, replacements) = _tuple.Value;
-            if (_helpText)
+            if (_switchPattern)
             {
-               if (_switchPattern)
+               var formatter = new SwitchHelpFormatter(command, _helpText, _switchPattern, switchHelp, prefix, shortCut, replacements);
+               var _formattedHelp = formatter.Format();
+               if (_formattedHelp)
                {
-                  var formatter = new SwitchHelpFormatter(command, _helpText, _switchPattern, switchHelp, prefix, shortCut, replacements);
-                  var _formattedHelp = formatter.Format();
-                  if (_formattedHelp)
-                  {
-                     return _formattedHelp;
-                  }
-                  else
-                  {
-                     return _formattedHelp.Exception;
-                  }
+                  return _formattedHelp;
                }
                else
                {
-                  return $"{command} - {_helpText}";
+                  return _formattedHelp.Exception;
                }
             }
             else
             {
-               return $"{command} - no help text!";
+               return $"{command} - {_helpText}";
             }
          }
          else
          {
-            return fail($"Don't understand command '{command}'");
+            return $"{command} - no help text!";
          }
+      }
+      else
+      {
+         return fail($"Don't understand command '{command}'");
       }
    }
 }

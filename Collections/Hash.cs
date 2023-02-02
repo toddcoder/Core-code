@@ -129,10 +129,9 @@ public class Hash<TKey, TValue> : Dictionary<TKey, TValue>, IHash<TKey, TValue>
    {
       foreach (var key in keys)
       {
-         var _value = Maybe[key];
-         if (_value)
+         if (Maybe[key] is (true, var value))
          {
-            yield return _value.Value;
+            yield return value;
          }
       }
    }
@@ -142,9 +141,9 @@ public class Hash<TKey, TValue> : Dictionary<TKey, TValue>, IHash<TKey, TValue>
    public TValue Find(TKey key, Func<TKey, TValue> defaultValue, bool addIfNotFound = false)
    {
       var _result = Maybe[key];
-      if (_result)
+      if (_result is (true, var result))
       {
-         return _result.Value;
+         return result;
       }
       else
       {
@@ -283,9 +282,9 @@ public class Hash<TKey, TValue> : Dictionary<TKey, TValue>, IHash<TKey, TValue>
    public void Move(TKey oldKey, TKey newKey)
    {
       var _value = Maybe[oldKey];
-      if (_value)
+      if (_value is (true, var value))
       {
-         this[newKey] = _value.Value;
+         this[newKey] = value;
          Maybe[oldKey] = nil;
       }
    }

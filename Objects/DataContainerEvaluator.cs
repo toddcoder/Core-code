@@ -41,9 +41,9 @@ public class DataContainerEvaluator : IEvaluator, IHash<string, object>, IHash<S
    public Type Type(string signature)
    {
       var _value = data.Maybe[signature];
-      if (_value)
+      if (_value is (true, var value))
       {
-         return _value.Value?.GetType();
+         return value?.GetType();
       }
       else
       {

@@ -33,9 +33,12 @@ public class LazyList<T> : IList<T>
    public IEnumerator<T> GetEnumerator()
    {
       Flatten();
-      foreach (var item in _flattened.Value)
+      if (_flattened is (true, var flattened))
       {
-         yield return item;
+         foreach (var item in flattened)
+         {
+            yield return item;
+         }
       }
    }
 
@@ -43,10 +46,10 @@ public class LazyList<T> : IList<T>
 
    public void Add(T item)
    {
-      if (_flattened)
+      if (_flattened is (true, var flattened))
       {
          enumerables.Clear();
-         enumerables.Add(_flattened.Value);
+         enumerables.Add(flattened);
          _flattened = nil;
          Unflattened?.Invoke(this, EventArgs.Empty);
       }
@@ -56,10 +59,10 @@ public class LazyList<T> : IList<T>
 
    public void Add(IEnumerable<T> enumerable)
    {
-      if (_flattened)
+      if (_flattened is (true, var flattened))
       {
          enumerables.Clear();
-         enumerables.Add(_flattened.Value);
+         enumerables.Add(flattened);
          _flattened = nil;
          Unflattened?.Invoke(this, EventArgs.Empty);
       }
@@ -77,24 +80,34 @@ public class LazyList<T> : IList<T>
    public bool Contains(T item)
    {
       Flatten();
-      return _flattened.Value.Contains(item);
+      return _flattened is (true, var flattened) && flattened.Contains(item);
    }
 
    public void CopyTo(T[] array, int arrayIndex)
    {
       Flatten();
-      var flattened = _flattened.Value;
-      var length = Math.Min(flattened.Length, array.Length);
-      Array.Copy(flattened, arrayIndex, array, 0, length);
+      if (_flattened is (true, var flattened))
+      {
+         var length = Math.Min(flattened.Length, array.Length);
+         Array.Copy(flattened, arrayIndex, array, 0, length);
+      }
    }
 
    public bool Remove(T item)
    {
       Flatten();
-      var newEnumerable = _flattened.Value.Where(i => !i.Equals(item));
-      Clear();
-      Add(newEnumerable);
-      return true;
+      if (_flattened is (true, var flattened))
+      {
+         var newEnumerable = flattened.Where(i => !i.Equals(item));
+         Clear();
+         Add(newEnumerable);
+
+         return true;
+      }
+      else
+      {
+         return false;
+      }
    }
 
    public int Count
@@ -102,7 +115,7 @@ public class LazyList<T> : IList<T>
       get
       {
          Flatten();
-         return _flattened.Value.Length;
+         return _flattened is (true, var flattened) ? flattened.Length : 0;
       }
    }
 
@@ -111,25 +124,31 @@ public class LazyList<T> : IList<T>
    public int IndexOf(T item)
    {
       Flatten();
-      return Array.IndexOf(_flattened, item);
+      return _flattened is (true, var flattened) ? Array.IndexOf(flattened, item) : -1;
    }
 
    public void Insert(int index, T item)
    {
       Flatten();
-      var flattenedList = _flattened.Value.ToList();
-      flattenedList.Insert(0, item);
-      Clear();
-      Add(flattenedList);
+      if (_flattened is (true, var flattened))
+      {
+         var flattenedList = flattened.ToList();
+         flattenedList.Insert(0, item);
+         Clear();
+         Add(flattenedList);
+      }
    }
 
    public void RemoveAt(int index)
    {
       Flatten();
-      var flattenedList = _flattened.Value.ToList();
-      flattenedList.RemoveAt(index);
-      Clear();
-      Add(flattenedList);
+      if (_flattened is (true, var flattened))
+      {
+         var flattenedList = flattened.ToList();
+         flattenedList.RemoveAt(index);
+         Clear();
+         Add(flattenedList);
+      }
    }
 
    public T this[int index]
@@ -137,12 +156,15 @@ public class LazyList<T> : IList<T>
       get
       {
          Flatten();
-         return _flattened.Value[index];
+         return ((T[])_flattened)[index];
       }
       set
       {
          Flatten();
-         _flattened.Value[index] = value;
+         if (_flattened is (true, var flattened))
+         {
+            flattened[index] = value;
+         }
       }
    }
 }

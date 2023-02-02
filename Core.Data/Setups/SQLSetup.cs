@@ -130,9 +130,9 @@ public class SqlSetup : ISetup, ISetupWithInfo
 
    protected void loadAttributes(Maybe<Setting> _attributesSetting)
    {
-      if (_attributesSetting)
+      if (_attributesSetting is (true, var attributesSetting))
       {
-         foreach (var (key, value) in _attributesSetting.Value.Items())
+         foreach (var (key, value) in attributesSetting.Items())
          {
             attributes[key] = value;
          }
@@ -142,9 +142,9 @@ public class SqlSetup : ISetup, ISetupWithInfo
    protected void loadAttributes(IHash<string, string> hash)
    {
       var _hash = hash.AnyHash();
-      if (_hash)
+      if (_hash is (true, var hashValue))
       {
-         foreach (var (key, value) in _hash.Value)
+         foreach (var (key, value) in hashValue)
          {
             attributes[key] = value;
          }

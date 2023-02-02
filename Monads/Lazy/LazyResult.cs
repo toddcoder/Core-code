@@ -83,9 +83,9 @@ public class LazyResult<T> : Result<T>, IEquatable<LazyResult<T>>
       var _next = new LazyResult<TNext>();
       ensureValue();
 
-      if (_value)
+      if (_value is (true, var value))
       {
-         return _next.ValueOf(() => func(_value.Value));
+         return _next.ValueOf(() => func(value));
       }
       else
       {
@@ -100,9 +100,9 @@ public class LazyResult<T> : Result<T>, IEquatable<LazyResult<T>>
       var _next = new LazyResult<TNext>();
       ensureValue();
 
-      if (_value)
+      if (_value is (true, var value))
       {
-         return _next.ValueOf(() => func(_value.Value));
+         return _next.ValueOf(() => func(value));
       }
       else
       {
@@ -159,6 +159,7 @@ public class LazyResult<T> : Result<T>, IEquatable<LazyResult<T>>
 
    public override Result<Unit> Unit => unit;
 
+   [Obsolete("Use deconstruction")]
    public override T Value
    {
       get

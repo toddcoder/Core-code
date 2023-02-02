@@ -37,9 +37,9 @@ public static class MarkupExtensions
       document.Save(writer);
 
       var _text = fromStream(stream, encoding);
-      if (_text)
+      if (_text is (true, var text))
       {
-         return includeHeader ? _text : _text.Value.Substitute(PATTERN_HEADER, string.Empty).Trim();
+         return includeHeader ? text : text.Substitute(PATTERN_HEADER, string.Empty).Trim();
       }
       else
       {

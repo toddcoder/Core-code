@@ -66,9 +66,9 @@ public class CollectionTest
       }
 
       var _item = lazyRepeating.maybe<int>();
-      while (_item.ValueOf(queue.Dequeue()))
+      while (_item.ValueOf(queue.Dequeue()) is (true, var item))
       {
-         Console.WriteLine(_item.Value);
+         Console.WriteLine(item);
       }
    }
 
@@ -166,18 +166,18 @@ public class CollectionTest
       stack.Push("charlie");
 
       var _item = lazyRepeating.result<string>();
-      if (_item.ValueOf(stack.Item(0)))
+      if (_item.ValueOf(stack.Item(0)) is (true, var item))
       {
-         Console.WriteLine(_item.Value);
+         Console.WriteLine(item);
       }
       else
       {
          Console.WriteLine(_item.Exception.Message);
       }
 
-      if (_item.ValueOf(stack.Item(-1)))
+      if (_item.ValueOf(stack.Item(-1)) is (true, var item2))
       {
-         Console.WriteLine(_item.Value);
+         Console.WriteLine(item2);
       }
       else
       {

@@ -70,9 +70,9 @@ public class Style
          paragraph.Alignment = _alignment;
       }
 
-      if (_firstLineIndent)
+      if (_firstLineIndent is (true, var firstLineIndent))
       {
-         paragraph.FirstLineIndent = _firstLineIndent.Value.Amount;
+         paragraph.FirstLineIndent = firstLineIndent.Amount;
       }
 
       var (_left, _top, _right, _bottom) = margins;
@@ -328,9 +328,9 @@ public class Style
          formatter.FontSize(_fontSize);
       }
 
-      if (_firstLineIndent)
+      if (_firstLineIndent is (true, var firstLineIndent))
       {
-         formatter.FirstLineIndent(_firstLineIndent.Value.Amount);
+         formatter.FirstLineIndent(firstLineIndent.Amount);
       }
 
       formatter.Margins(margins);
@@ -375,9 +375,9 @@ public class Style
          formatter.FontSize(_fontSize);
       }
 
-      if (_firstLineIndent)
+      if (_firstLineIndent is (true, var firstLineIndent))
       {
-         formatter.FirstLineIndent(_firstLineIndent.Value.Amount);
+         formatter.FirstLineIndent(firstLineIndent.Amount);
       }
 
       formatter.Margins(margins);

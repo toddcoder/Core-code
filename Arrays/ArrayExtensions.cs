@@ -155,9 +155,8 @@ public static class ArrayExtensions
       foreach (var group in columnIndexes.RemoveWhitespace().Unjoin("','; f"))
       {
          var _result = group.Matches("/(/d+) '-' /(/d+); f");
-         if (_result)
+         if (_result is (true, var (startIndex, stopIndex)))
          {
-            var (startIndex, stopIndex) = _result.Value;
             var intStart = Value.Int32(startIndex);
             var intStop = Value.Int32(stopIndex);
             if (intStart > intStop)

@@ -30,10 +30,10 @@ public static class MatchingExtensions
    public static string Replace(this string input, Pattern pattern, Action<MatchResult> replacer)
    {
       var _response = pattern.MatchedBy(input);
-      if (_response)
+      if (_response is (true, var response))
       {
-         replacer(_response);
-         return _response.Value.ToString();
+         replacer(response);
+         return response.ToString();
       }
       else
       {
@@ -49,12 +49,12 @@ public static class MatchingExtensions
    public static IEnumerable<Slice> UnjoinIntoSlices(this string input, Pattern pattern)
    {
       var _matches = input.Matches(pattern);
-      if (_matches)
+      if (_matches is (true, var matches))
       {
          var index = 0;
          int length;
          string text;
-         foreach (var (_, matchIndex, matchLength) in _matches.Value)
+         foreach (var (_, matchIndex, matchLength) in matches)
          {
             length = matchIndex - index;
             text = input.Drop(index).Keep(length);
@@ -101,9 +101,8 @@ public static class MatchingExtensions
    public static (string group1, string group2) Group2(this string input, Pattern pattern)
    {
       var _result = pattern.MatchedBy(input);
-      if (_result)
+      if (_result is (true, var (group1, group2)))
       {
-         var (group1, group2) = _result.Value;
          return (group1, group2);
       }
       else
@@ -115,9 +114,8 @@ public static class MatchingExtensions
    public static (string group1, string group2, string group3) Group3(this string input, Pattern pattern)
    {
       var _result = pattern.MatchedBy(input);
-      if (_result)
+      if (_result is (true, var (group1, group2, group3)))
       {
-         var (group1, group2, group3) = _result.Value;
          return (group1, group2, group3);
       }
       else
@@ -129,9 +127,8 @@ public static class MatchingExtensions
    public static (string group1, string group2, string group3, string group4) Group4(this string input, Pattern pattern)
    {
       var _result = pattern.MatchedBy(input);
-      if (_result)
+      if (_result is (true, var (group1, group2, group3, group4)))
       {
-         var (group1, group2, group3, group4) = _result.Value;
          return (group1, group2, group3, group4);
       }
       else
@@ -143,10 +140,10 @@ public static class MatchingExtensions
    public static string Retain(this string input, Pattern pattern)
    {
       var _matches = pattern.MatchedBy(input);
-      if (_matches)
+      if (_matches is (true, var matches))
       {
          var builder = new StringBuilder();
-         foreach (var match in _matches.Value)
+         foreach (var match in matches)
          {
             builder.Append(match.Text);
          }
@@ -162,14 +159,14 @@ public static class MatchingExtensions
    public static string Scrub(this string input, Pattern pattern)
    {
       var _matches = pattern.MatchedBy(input);
-      if (_matches)
+      if (_matches is (true, var matches))
       {
-         foreach (var match in _matches.Value)
+         foreach (var match in matches)
          {
             match.Text = string.Empty;
          }
 
-         return _matches.Value.ToString();
+         return matches.ToString();
       }
       else
       {
@@ -203,9 +200,9 @@ public static class MatchingExtensions
    public static IEnumerable<Match> AllMatches(this string input, Pattern pattern)
    {
       var _matches = input.Matches(pattern);
-      if (_matches)
+      if (_matches is (true, var matches))
       {
-         foreach (var match in _matches.Value)
+         foreach (var match in matches)
          {
             yield return match;
          }
@@ -217,9 +214,9 @@ public static class MatchingExtensions
       foreach (var pattern in patterns)
       {
          var _result = pattern.MatchedBy(input);
-         if (_result)
+         if (_result is (true, var result))
          {
-            return _result.Maybe();
+            return result;
          }
       }
 

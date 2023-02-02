@@ -787,9 +787,9 @@ public static class EnumerableExtensions
       Maybe<T> _currentValue = nil;
       foreach (var item in enumerable)
       {
-         if (_currentValue)
+         if (_currentValue is (true, var currentValue))
          {
-            if (item.ComparedTo(_currentValue.Value) > 0)
+            if (item.ComparedTo(currentValue) > 0)
             {
                _index = currentIndex;
                _currentValue = item;
@@ -816,9 +816,9 @@ public static class EnumerableExtensions
       foreach (var item in enumerable)
       {
          var mappedItem = mappingFunc(item);
-         if (_currentValue)
+         if (_currentValue is (true, var currentValue))
          {
-            if (mappedItem.ComparedTo(_currentValue.Value) > 0)
+            if (mappedItem.ComparedTo(currentValue) > 0)
             {
                _index = currentIndex;
                _currentValue = mappedItem;
@@ -843,9 +843,9 @@ public static class EnumerableExtensions
       Maybe<T> _currentValue = nil;
       foreach (var item in enumerable)
       {
-         if (_currentValue)
+         if (_currentValue is (true, var currentValue))
          {
-            if (item.ComparedTo(_currentValue.Value) < 0)
+            if (item.ComparedTo(currentValue) < 0)
             {
                _index = currentIndex;
                _currentValue = item;
@@ -872,9 +872,9 @@ public static class EnumerableExtensions
       foreach (var item in enumerable)
       {
          var mappedItem = mappingFunc(item);
-         if (_currentValue)
+         if (_currentValue is (true, var currentValue))
          {
-            if (mappedItem.ComparedTo(_currentValue.Value) < 0)
+            if (mappedItem.ComparedTo(currentValue) < 0)
             {
                _index = currentIndex;
                _currentValue = mappedItem;

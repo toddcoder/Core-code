@@ -10,9 +10,8 @@ public class Style : IEquatable<Style>
    public static implicit operator Style(string source)
    {
       var _result = source.Matches("^ /(-[':']+) /s* ':' /s* /(.+) $; f");
-      if (_result)
+      if (_result is (true, var (key, value)))
       {
-         var (key, value) = _result.Value;
          return new Style(key, value);
       }
       else

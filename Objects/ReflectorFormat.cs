@@ -88,9 +88,9 @@ public class ReflectorFormat
       const BindingFlags bindingFlags = BindingFlags.Instance | GetField | GetProperty | NonPublic | Public;
 
       var _replacements = getReplacements(template);
-      if (_replacements)
+      if (_replacements is (true, var replacements))
       {
-         foreach (var reflectorReplacement in _replacements.Value.ReflectorReplacements)
+         foreach (var reflectorReplacement in replacements.ReflectorReplacements)
          {
             var memberInfos = type.GetMember(reflectorReplacement.MemberName, memberTypes, bindingFlags);
             if (memberInfos.Length != 0)
@@ -111,9 +111,9 @@ public class ReflectorFormat
                   }
                }
 
-               if (_chosen)
+               if (_chosen is (true, var chosen))
                {
-                  members[reflectorReplacement.MemberName] = new Pair(reflectorReplacement, _chosen.Value);
+                  members[reflectorReplacement.MemberName] = new Pair(reflectorReplacement, chosen);
                }
                else
                {
@@ -126,7 +126,7 @@ public class ReflectorFormat
             }
          }
 
-         return new MemberData(members, _replacements.Value.Source);
+         return new MemberData(members, replacements.Source);
       }
       else
       {

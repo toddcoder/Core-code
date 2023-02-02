@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Core.Monads;
 
 namespace Core.Collections;
 
@@ -49,9 +48,9 @@ public class Triggers : StringHash<Triggers.TriggerType>
    public void Update(string key)
    {
       var _triggerType = Maybe[key];
-      if (_triggerType)
+      if (_triggerType is (true, var triggerType))
       {
-         if (_triggerType.Value == TriggerType.Set)
+         if (triggerType == TriggerType.Set)
          {
             this[key] = TriggerType.Triggered;
          }

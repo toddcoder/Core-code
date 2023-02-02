@@ -88,9 +88,8 @@ public class ParameterBuilder
 
    public Result<Parameter> Build()
    {
-      if (_name)
+      if (_name is (true, var name))
       {
-         var name = _name.Value;
          var signature = _signature | (() => name.Substitute("^ '@'; f", "").ToUpper1());
          return new Parameter(name, signature)
          {

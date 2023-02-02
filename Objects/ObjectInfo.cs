@@ -49,12 +49,12 @@ internal class ObjectInfo
    {
       get
       {
-         if (_info)
+         if (_info is (true, var info))
          {
-            var parameters = _info.Value.GetIndexParameters();
-            if (_index)
+            var parameters = info.GetIndexParameters();
+            if (_index is (true, var index))
             {
-               return parameters.Length == 0 ? getValue(_index) : _info.Value.GetValue(obj, getIndex(_index));
+               return parameters.Length == 0 ? getValue(index) : info.GetValue(obj, getIndex(index));
             }
             else if (parameters.Length > 0)
             {
@@ -62,7 +62,7 @@ internal class ObjectInfo
             }
             else
             {
-               return _info.Value.GetValue(obj, null);
+               return info.GetValue(obj, null);
             }
          }
          else
@@ -74,9 +74,9 @@ internal class ObjectInfo
       {
          var val = value.Required("Value must be set to a Some");
          var parameters = _info.Required("No property exists for signature").GetIndexParameters();
-         if (_info)
+         if (_info is (true, var info))
          {
-            if (_index)
+            if (_index is (true, var index))
             {
                if (parameters.Length == 0)
                {
@@ -84,12 +84,12 @@ internal class ObjectInfo
                }
                else
                {
-                  _info.Value.SetValue(obj, val, getIndex(_index));
+                  info.SetValue(obj, val, getIndex(index));
                }
             }
             else
             {
-               _info.Value.SetValue(obj, val, null);
+               info.SetValue(obj, val, null);
             }
          }
       }
@@ -97,9 +97,9 @@ internal class ObjectInfo
 
    protected Maybe<object> getValue(int defaultIndex)
    {
-      if (_info)
+      if (_info is (true, var info))
       {
-         var result = _info.Value.GetValue(obj, null);
+         var result = info.GetValue(obj, null);
          if (result is null)
          {
             return result;
@@ -124,22 +124,22 @@ internal class ObjectInfo
 
    protected bool setValue(object value)
    {
-      if (_info)
+      if (_info is (true, var info))
       {
-         var result = _info.Value.GetValue(obj, null);
+         var result = info.GetValue(obj, null);
          if (result is null)
          {
             return false;
          }
-         else if (_index)
+         else if (_index is (true, var index))
          {
             switch (result)
             {
                case Array array:
-                  array.SetValue(value, _index);
+                  array.SetValue(value, index);
                   return true;
                case IList list:
-                  list[_index] = value;
+                  list[index] = value;
                   return true;
                default:
                   return false;

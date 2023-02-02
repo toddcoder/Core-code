@@ -30,11 +30,11 @@ public class Subscription : Plugin, IRequiresTypeManager
             from jobSetting in jobsSetting.Result.Setting(jobName)
             from newJob in Job.New(jobSetting, TypeManager, configuration)
             select newJob;
-         if (_job)
+         if (_job is (true, var job))
          {
-            if (_job.Value.Enabled)
+            if (job.Enabled)
             {
-               yield return _job;
+               yield return job;
             }
          }
          else

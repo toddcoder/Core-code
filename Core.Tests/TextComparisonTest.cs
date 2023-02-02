@@ -18,9 +18,8 @@ public class TextComparisonTest
 
       var diff = new Differentiator(oldLines, newLines, true, false);
       var _model = diff.BuildModel();
-      if (_model)
+      if (_model is (true, var model))
       {
-         var model = _model.Value;
          Console.WriteLine(model);
 
          var oldDifferences = model.OldDifferences();

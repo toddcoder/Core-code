@@ -17,10 +17,8 @@ public class CommandAttribute : Attribute, IHash<string, string>
       var items = source.Unjoin(@"/s* -(< '\') ';' /s*").Select(i => i.Replace(@"\;", ";")).ToArray();
       foreach (var item in items)
       {
-         var _result = item.Matches("^ /(-[':']+) ':' /s* /(.+) $");
-         if (_result)
+         if (item.Matches("^ /(-[':']+) ':' /s* /(.+) $") is (true, var (key, value)))
          {
-            var (key, value) = _result.Value;
             hash[key.TrimEnd()] = value;
          }
       }

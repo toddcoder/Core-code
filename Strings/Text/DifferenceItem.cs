@@ -78,9 +78,9 @@ public class DifferenceItem : IEquatable<DifferenceItem>
    {
       using var writer = new StringWriter();
 
-      if (Position)
+      if (Position is (true, var position))
       {
-         writer.Write(Position.Value.RightJustify(10));
+         writer.Write(position.RightJustify(10));
          writer.Write(" ");
       }
       else

@@ -32,9 +32,9 @@ public static class ComputerExtensions
       foreach (var folder in folders)
       {
          var _file = folder.LocalAndParentFiles.Where(f => predicate(f)).FirstOrNone();
-         if (_file)
+         if (_file is (true, var file))
          {
-            return _file.Value;
+            return file;
          }
       }
 
@@ -65,12 +65,12 @@ public static class ComputerExtensions
 
    public static Result<FolderName> LocalAndParentFolders(this IEnumerable<FolderName> folders, Predicate<FolderName> predicate)
    {
-      foreach (var folder in folders)
+      foreach (var subFolder in folders)
       {
-         var _folder = folder.LocalAndParentFolders.Where(f => predicate(f)).FirstOrNone();
-         if (_folder)
+         var _folder = subFolder.LocalAndParentFolders.Where(f => predicate(f)).FirstOrNone();
+         if (_folder is (true, var folder))
          {
-            return _folder.Value;
+            return folder;
          }
       }
 

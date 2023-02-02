@@ -4,7 +4,6 @@ using System.Linq;
 using Core.Assertions;
 using Core.Monads;
 using static Core.Monads.AttemptFunctions;
-using static Core.Monads.Lazy.LazyRepeatingMonads;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.DataStructures;
@@ -78,10 +77,9 @@ public class MaybeQueue<T> : IQueue<T>, IEnumerable<T>
 
    public IEnumerable<T> Dequeuing()
    {
-      var _item = lazyRepeating.maybe<T>();
-      while (_item.ValueOf(Dequeue()))
+      while (Dequeue() is (true, var item))
       {
-         yield return _item.Value;
+         yield return item;
       }
    }
 

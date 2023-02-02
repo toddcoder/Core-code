@@ -104,9 +104,8 @@ public class SqlSetupBuilder
       var _connectionString = lazy.result<SqlConnectionString>();
       var _commandText = lazy.result<(string, TimeSpan)>();
 
-      if (_connectionStringBuilder)
+      if (_connectionStringBuilder is (true, var connectionStringBuilder))
       {
-         var connectionStringBuilder = _connectionStringBuilder.Value;
          _connectionString.ValueOf(connectionStringBuilder.Build);
       }
       else
@@ -114,9 +113,8 @@ public class SqlSetupBuilder
          return fail("Connection string not provided");
       }
 
-      if (_commandTextBuilder)
+      if (_commandTextBuilder is (true, var commandTextBuilder))
       {
-         var commandTextBuilder = _commandTextBuilder.Value;
          _commandText.ValueOf(commandTextBuilder.Build);
       }
       else
@@ -124,18 +122,17 @@ public class SqlSetupBuilder
          return fail("Command text not provided");
       }
 
-      if (_connectionString)
+      if (_connectionString is (true, var connectionString))
       {
-         sqlSetup.ConnectionString = _connectionString.Value;
+         sqlSetup.ConnectionString = connectionString;
       }
       else
       {
          return _connectionString.Exception;
       }
 
-      if (_commandText)
+      if (_commandText is (true, var (commandText, commandTimeout)))
       {
-         var (commandText, commandTimeout) = _commandText.Value;
          sqlSetup.CommandText = commandText;
          sqlSetup.CommandTimeout = commandTimeout;
       }

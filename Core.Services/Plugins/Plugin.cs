@@ -72,10 +72,10 @@ public abstract class Plugin
 
    public void InnerDispatch()
    {
-      if (_retrier)
+      if (_retrier is (true, var retrier))
       {
-         _retrier.Value.Execute();
-         if (_retrier.Value.AllRetriesFailed)
+         retrier.Execute();
+         if (retrier.AllRetriesFailed)
          {
             serviceMessage.EmitExceptionMessage(finalExceptionMessage);
          }
@@ -121,7 +121,7 @@ public abstract class Plugin
          {
             address = _address;
             var _serviceLogger = ServiceLogger.FromConfiguration(configuration);
-            if (_serviceLogger)
+            if (_serviceLogger is (true, var serviceLogger))
             {
                retries = jobSetting.Maybe.Int32("retries") | 0;
                SetRetrier();
@@ -132,7 +132,7 @@ public abstract class Plugin
                applicationName = configuration.Value.String("name");
 
                serviceMessage = new ServiceMessage(applicationName);
-               serviceMessage.Add(_serviceLogger.Value);
+               serviceMessage.Add(serviceLogger);
                serviceMessage.Add(namedExceptions);
 
                return unit;
@@ -156,10 +156,10 @@ public abstract class Plugin
    public void SetRetrier()
    {
       _retrier = maybe(retries > 0, () => new Retrier(retries, InnerDispatch, retryException));
-      if (_retrier)
+      if (_retrier is (true, var retrier))
       {
-         _retrier.Value.Successful += (_, e) => SuccessfulInnerDispatch(e.RetryCount);
-         _retrier.Value.Failed += (_, e) => FailedInnerDispatch(e.RetryCount);
+         retrier.Successful += (_, e) => SuccessfulInnerDispatch(e.RetryCount);
+         retrier.Failed += (_, e) => FailedInnerDispatch(e.RetryCount);
       }
    }
 

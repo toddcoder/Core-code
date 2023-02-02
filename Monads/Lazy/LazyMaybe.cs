@@ -76,9 +76,9 @@ public class LazyMaybe<T> : Maybe<T>, IEquatable<LazyMaybe<T>>
       var _next = new LazyMaybe<TNext>();
       ensureValue();
 
-      if (_value)
+      if (_value is (true, var value))
       {
-         return _next.ValueOf(() => func(_value.Value));
+         return _next.ValueOf(() => func(value));
       }
       else
       {
@@ -93,9 +93,9 @@ public class LazyMaybe<T> : Maybe<T>, IEquatable<LazyMaybe<T>>
       var _next = new LazyMaybe<TNext>();
       ensureValue();
 
-      if (_value)
+      if (_value is (true, var value))
       {
-         return _next.ValueOf(() => func(_value.Value));
+         return _next.ValueOf(() => func(value));
       }
       else
       {
@@ -114,6 +114,7 @@ public class LazyMaybe<T> : Maybe<T>, IEquatable<LazyMaybe<T>>
       }
    }
 
+   [Obsolete("Use deconstruction")]
    public override T Value
    {
       get

@@ -233,9 +233,9 @@ public class PendingFormatter
          formatter.FontSize(_fontSize);
       }
 
-      if (_firstLineIndent)
+      if (_firstLineIndent is (true, var firstLineIndent))
       {
-         formatter.FirstLineIndent(_firstLineIndent.Value.Amount);
+         formatter.FirstLineIndent(firstLineIndent.Amount);
       }
 
       formatter.Margins(margins);

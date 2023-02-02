@@ -31,9 +31,8 @@ public class OleDbSetup : ISetup
          let _connection = new Connection(connectionSetting)
          let type = _connection.Type.ToLower()
          select (_parameters, _fields, _command, _connection);
-      if (_result)
+      if (_result is (true, var (parameters, fields, command, connection)))
       {
-         var (parameters, fields, command, connection) = _result.Value;
          var type = connection.Type.ToLower();
          var _connectionString = type switch
          {

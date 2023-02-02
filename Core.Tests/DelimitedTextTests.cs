@@ -64,9 +64,8 @@ public class DelimitedTextTests
       if (result.Length == 1)
       {
          var _slice = result[0].text.FindByRegex("/s+ ['!=<>'] '=' /s+; f");
-         if (_slice)
+         if (_slice is (true, var (_, index, length)))
          {
-            var (_, index, length) = _slice.Value;
             index += result[0].index;
             Console.Write(source.Drop(index + length));
             Console.Write(source.Drop(index).Keep(length));

@@ -55,9 +55,9 @@ public class UiAction : UserControl
          if (e.CheckStyle == CheckStyle.Checked)
          {
             var _actionList = getUiActionList(id);
-            if (_actionList)
+            if (_actionList is (true, var actionList))
             {
-               foreach (var uiAction in _actionList.Value.Where(uiAction => uiAction.Id != id))
+               foreach (var uiAction in actionList.Where(uiAction => uiAction.Id != id))
                {
                   uiAction.SetCheckStyle(CheckStyle.None);
                }
@@ -575,9 +575,8 @@ public class UiAction : UserControl
 
    public void Result(Result<(string, UiActionType)> _result)
    {
-      if (_result)
+      if (_result is (true, var (message, messageProgressType)))
       {
-         var (message, messageProgressType) = _result.Value;
          ShowMessage(message, messageProgressType);
       }
       else
@@ -600,9 +599,8 @@ public class UiAction : UserControl
 
    public void Result(Result<(string label, string text)> _result, int labelWidth)
    {
-      if (_result)
+      if (_result is (true, var (label, message)))
       {
-         var (label, message) = _result.Value;
          Label(label).LabelWidth(labelWidth).End.Success(message);
       }
       else
@@ -614,9 +612,8 @@ public class UiAction : UserControl
 
    public void Result(Result<(string label, string text)> _result)
    {
-      if (_result)
+      if (_result is (true, var (label, message)))
       {
-         var (label, message) = _result.Value;
          Label(label).End.Success(message);
       }
       else
@@ -752,11 +749,11 @@ public class UiAction : UserControl
          var remainder = ClientRectangle.Width - arrowSection;
          return ClientRectangle with { X = Width - arrowSection, Width = Width - 2 * remainder };
       }
-      else if (_labelRectangle)
+      else if (_labelRectangle is (true, var labelRectangle))
       {
          return ClientRectangle with
          {
-            X = ClientRectangle.X + _labelRectangle.Value.Width, Width = ClientRectangle.Width - _labelRectangle.Value.Width
+            X = ClientRectangle.X + labelRectangle.Width, Width = ClientRectangle.Width - labelRectangle.Width
          };
       }
       else
@@ -791,9 +788,9 @@ public class UiAction : UserControl
       var _labelProcessor = _label.Map(label => new LabelProcessor(label, _labelWidth, getFont(), EmptyTextTitle));
       var clientRectangle = getClientRectangle(_labelProcessor.Map(lp => lp.LabelRectangle(e.Graphics, ClientRectangle)));
 
-      if (_labelProcessor)
+      if (_labelProcessor is (true, var labelProcessor))
       {
-         _labelProcessor.Value.OnPaint(e.Graphics);
+         labelProcessor.OnPaint(e.Graphics);
       }
 
       void paintStopwatch()
@@ -931,14 +928,14 @@ public class UiAction : UserControl
       var backColor = new Lazy<Color>(getBackColor);
 
       var _legend = legends.Peek();
-      if (_legend)
+      if (_legend is (true, var legend))
       {
-         _legend.Value.Draw(graphics, foreColor.Value, backColor.Value);
+         legend.Draw(graphics, foreColor.Value, backColor.Value);
       }
 
-      if (Working && _working)
+      if (Working && _working is (true, var working))
       {
-         _working.Value.Draw(graphics, foreColor.Value, backColor.Value);
+         working.Draw(graphics, foreColor.Value, backColor.Value);
       }
 
       foreach (var subText in subTexts)
@@ -990,9 +987,9 @@ public class UiAction : UserControl
 
       base.OnPaintBackground(pevent);
 
-      if (_labelProcessor)
+      if (_labelProcessor is (true, var labelProcessor))
       {
-         _labelProcessor.Value.OnPaintBackground(pevent.Graphics);
+         labelProcessor.OnPaintBackground(pevent.Graphics);
       }
 
       switch (type)
@@ -1216,9 +1213,9 @@ public class UiAction : UserControl
             ShowMessage(text, UiActionType.Uninitialized);
          }
 
-         if (_lastEnabled.IsSome())
+         if (_lastEnabled is (true, true))
          {
-            timerPaint.Enabled = _lastEnabled.Value;
+            timerPaint.Enabled = true;
             _lastEnabled = nil;
          }
 
@@ -1307,9 +1304,9 @@ public class UiAction : UserControl
       var args = new ArgumentsArgs();
       Arguments?.Invoke(this, args);
       var _arguments = args.Arguments;
-      if (_arguments)
+      if (_arguments is (true, var arguments))
       {
-         RunWorkerAsync(_arguments.Value);
+         RunWorkerAsync(arguments);
       }
       else
       {
@@ -1324,9 +1321,9 @@ public class UiAction : UserControl
       if (!args.Cancel && !backgroundWorker.Value.IsBusy)
       {
          var _argument = args.Argument;
-         if (_argument)
+         if (_argument is (true, var argument))
          {
-            backgroundWorker.Value.RunWorkerAsync(_argument.Value);
+            backgroundWorker.Value.RunWorkerAsync(argument);
          }
          else
          {

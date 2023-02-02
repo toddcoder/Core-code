@@ -201,16 +201,16 @@ public class TableMaker
          var header = columnHeaders.Select(ch => ch.Render()).ToString(ColumnSeparator);
          headerWidth = header.Length;
 
-         if (Title)
+         if (Title is (true, var title))
          {
-            builder.Append(Title.Value.Center(headerWidth));
+            builder.Append(title.Center(headerWidth));
             builder.Append(getRowSeparator());
          }
 
          builder.AppendLine(header);
-         if (HeaderFoot)
+         if (HeaderFoot is (true, var headerFoot))
          {
-            builder.AppendLine(HeaderFoot.Value.ToString().Repeat(headerWidth));
+            builder.AppendLine(headerFoot.ToString().Repeat(headerWidth));
          }
          else
          {

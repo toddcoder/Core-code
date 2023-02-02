@@ -67,20 +67,25 @@ public abstract class Responding<T>
 
    public static bool operator true(Responding<T> value) => value is Response<T> || value is Lazy.LazyResponding<T> lazyResponding && lazyResponding;
 
-   public static bool operator false(Responding<T> value) =>
-      value is not Response<T> || value is Lazy.LazyResponding<T> lazyResponding && !lazyResponding;
+   public static bool operator false(Responding<T> value)
+   {
+      return value is not Response<T> || value is Lazy.LazyResponding<T> lazyResponding && !lazyResponding;
+   }
 
-   public static bool operator !(Responding<T> value) =>
-      value is not Response<T> || value is Lazy.LazyResponding<T> lazyResponding && !lazyResponding;
+   public static bool operator !(Responding<T> value)
+   {
+      return value is not Response<T> || value is Lazy.LazyResponding<T> lazyResponding && !lazyResponding;
+   }
 
-   public static implicit operator bool(Responding<T> value) =>
-      value is Response<T> || value is Lazy.LazyResponding<T> lazyResponding && lazyResponding;
+   public static implicit operator bool(Responding<T> value)
+   {
+      return value is Response<T> || value is Lazy.LazyResponding<T> lazyResponding && lazyResponding;
+   }
 
    public static implicit operator T(Responding<T> value) => value switch
    {
-      Response<T> response => response.Value,
+      (true, var internalValue) => internalValue,
       FailedResponse<T> failedResponse => throw failedResponse.Exception,
-      Lazy.LazyResponding<T> responding => responding.Value,
       _ => throw new InvalidCastException("Must be a Response to return a value")
    };
 
@@ -90,6 +95,7 @@ public abstract class Responding<T>
 
    public static T operator |(Responding<T> responding, Func<Maybe<Exception>, T> defaultFunc) => responding.DefaultTo(defaultFunc);
 
+   [Obsolete("Use deconstruction")]
    public abstract T Value { get; }
 
    public abstract Exception Exception { get; }

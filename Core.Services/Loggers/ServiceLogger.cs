@@ -24,10 +24,9 @@ public class ServiceLogger : BaseWriter, IServiceMessage
       try
       {
          var _baseFolder = configuration.Result.FolderName("baseFolder");
-         if (_baseFolder)
+         if (_baseFolder is (true, var baseFolder))
          {
-            var folder = configuration.Maybe.FolderName("logs").Map(logs => logs.Subfolder(_baseFolder.Value.Name)) |
-               (() => _baseFolder.Value[jobName]);
+            var folder = configuration.Maybe.FolderName("logs").Map(logs => logs.Subfolder(baseFolder.Name)) | (() => baseFolder[jobName]);
             return folder.Subfolder(jobName);
          }
          else
@@ -227,9 +226,8 @@ public class ServiceLogger : BaseWriter, IServiceMessage
       baseFolder = folder;
 
       var _loggingSetting = setting.Maybe.Setting("logging");
-      if (_loggingSetting)
+      if (_loggingSetting is (true, var loggingSetting))
       {
-         var loggingSetting = _loggingSetting.Value;
          SizeLimit = loggingSetting.Maybe.Int32("sizeLimit") | 1000000;
          Expiry = loggingSetting.Maybe.TimeSpan("expiry") | (() => 7.Days());
       }
@@ -321,9 +319,8 @@ public class ServiceLogger : BaseWriter, IServiceMessage
       }
       catch (Exception exception)
       {
-         if (_eventLogger)
+         if (_eventLogger is (true, var eventLogger))
          {
-            var eventLogger = _eventLogger.Value;
             eventLogger.Write(text);
             eventLogger.Write(exception.Message);
          }

@@ -56,9 +56,9 @@ public class HashTest
       var random = new Random(153);
       var array = Enumerable.Range(0, 1000).Select(_ => random.Next(10)).ToArray();
       var _hash = array.GroupToHash(i => i < 5 ? "lower" : "upper");
-      if (_hash)
+      if (_hash is (true, var hash))
       {
-         foreach (var (key, value) in _hash.Value)
+         foreach (var (key, value) in hash)
          {
             Console.WriteLine($"key {key}: {value.Length}");
          }

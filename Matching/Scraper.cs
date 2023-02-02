@@ -36,16 +36,16 @@ public class Scraper : IHash<string, string>
       }
 
       var _result = pattern.MatchedBy(source.Current);
-      if (_result)
+      if (_result is (true, var result))
       {
-         var groups = _result.Value.Groups(0).Skip(1).ToArray();
+         var groups = result.Groups(0).Skip(1).ToArray();
          var minLength = groups.Length.MinOf(names.Length);
          for (var i = 0; i < minLength; i++)
          {
             variables[names[i]] = groups[i];
          }
 
-         source.Advance(_result.Value.Length);
+         source.Advance(result.Length);
          return this;
       }
       else if (_result.AnyException)
@@ -66,15 +66,15 @@ public class Scraper : IHash<string, string>
       }
 
       var _result = pattern.MatchedBy(source.Current);
-      if (_result)
+      if (_result is (true, var result))
       {
-         foreach (var group in _result.Value.Groups(0).Skip(1))
+         foreach (var group in result.Groups(0).Skip(1))
          {
             var name = nameFunc(group);
             variables[name] = group;
          }
 
-         source.Advance(_result.Value.Length);
+         source.Advance(result.Length);
          return this;
       }
       else if (_result.AnyException)
@@ -112,9 +112,9 @@ public class Scraper : IHash<string, string>
       }
 
       var _result = pattern.MatchedBy(source.Current);
-      if (_result)
+      if (_result is (true, var result))
       {
-         source.Advance(_result.Value.Length);
+         source.Advance(result.Length);
          return this;
       }
       else if (_result.AnyException)
@@ -168,18 +168,18 @@ public class Scraper : IHash<string, string>
    public Responding<Scraper> Pop()
    {
       var _scraper = scraperStack.Pop();
-      if (_scraper)
+      if (_scraper is (true, var scraper))
       {
-         var _variables = _scraper.Value.AnyHash();
-         if (_variables)
+         var _variables = scraper.AnyHash();
+         if (_variables is (true, var scraperVariables))
          {
             variables = _variables.Map(h => h.ToStringHash(true));
             foreach (var (variable, value) in variables)
             {
-               _variables.Value[variable] = value;
+               scraperVariables[variable] = value;
             }
 
-            return _scraper.Responding();
+            return scraper;
          }
          else
          {
