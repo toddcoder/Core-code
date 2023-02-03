@@ -95,9 +95,6 @@ public abstract class Responding<T>
 
    public static T operator |(Responding<T> responding, Func<Maybe<Exception>, T> defaultFunc) => responding.DefaultTo(defaultFunc);
 
-   [Obsolete("Use deconstruction")]
-   public abstract T Value { get; }
-
    public abstract Exception Exception { get; }
 
    public abstract Maybe<Exception> AnyException { get; }

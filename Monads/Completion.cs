@@ -129,9 +129,6 @@ public abstract class Completion<T>
 
    public abstract Responding<T> Responding();
 
-   [Obsolete("Use deconstruction")]
-   public abstract T Value { get; }
-
    public abstract Exception Exception { get; }
 
    public abstract Maybe<Exception> AnyException { get; }

@@ -77,9 +77,6 @@ public class Success<T> : Result<T>, IEquatable<Success<T>>
 
    public override Result<Unit> Unit => unit;
 
-   [Obsolete("Use deconstruction")]
-   public override T Value => value;
-
    public override Exception Exception => throw fail("Success has no exception");
 
    public override Result<T> Always(Action action)

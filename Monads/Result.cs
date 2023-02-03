@@ -138,9 +138,6 @@ namespace Core.Monads
 
       public abstract Result<Unit> Unit { get; }
 
-      [Obsolete("Use deconstruction")]
-      public abstract T Value { get; }
-
       public abstract Exception Exception { get; }
 
       public abstract Result<T> Always(Action action);

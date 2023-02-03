@@ -126,16 +126,6 @@ public class LazyResponding<T> : Responding<T>, IEquatable<LazyResponding<T>>
       }
    }
 
-   [Obsolete("Use deconstruction")]
-   public override T Value
-   {
-      get
-      {
-         ensureValue();
-         return _value.Value;
-      }
-   }
-
    public override Exception Exception
    {
       get

@@ -79,9 +79,6 @@ public abstract class Maybe<T>
       _ => throw new InvalidCastException("Must be a Some to return a value")
    };
 
-   [Obsolete("Use deconstruction")]
-   public abstract T Value { get; }
-
    public abstract Maybe<TResult> Map<TResult>(Func<T, TResult> ifSome);
 
    public abstract Maybe<TResult> Map<TResult>(Func<T, Maybe<TResult>> ifSome);

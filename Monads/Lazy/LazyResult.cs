@@ -159,16 +159,6 @@ public class LazyResult<T> : Result<T>, IEquatable<LazyResult<T>>
 
    public override Result<Unit> Unit => unit;
 
-   [Obsolete("Use deconstruction")]
-   public override T Value
-   {
-      get
-      {
-         ensureValue();
-         return _value.Value;
-      }
-   }
-
    public override Exception Exception
    {
       get

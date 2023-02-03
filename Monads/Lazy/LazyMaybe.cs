@@ -114,16 +114,6 @@ public class LazyMaybe<T> : Maybe<T>, IEquatable<LazyMaybe<T>>
       }
    }
 
-   [Obsolete("Use deconstruction")]
-   public override T Value
-   {
-      get
-      {
-         ensureValue();
-         return _value.Value;
-      }
-   }
-
    public override Maybe<TResult> Map<TResult>(Func<T, TResult> ifSome)
    {
       ensureValue();

@@ -13,9 +13,6 @@ public class Response<T> : Responding<T>, IEquatable<Response<T>>
       this.value = value;
    }
 
-   [Obsolete("Use deconstruction")]
-   public override T Value => value;
-
    public override Exception Exception => throw fail("Response has no Exception");
 
    public override Maybe<Exception> AnyException => nil;

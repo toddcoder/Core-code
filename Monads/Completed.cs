@@ -143,9 +143,6 @@ public class Completed<T> : Completion<T>, IEquatable<Completed<T>>
 
    public override Responding<T> Responding() => value;
 
-   [Obsolete("Use deconstruction")]
-   public override T Value => value;
-
    public override Exception Exception => throw fail("Completed has no Exception");
 
    public override Maybe<Exception> AnyException => nil;

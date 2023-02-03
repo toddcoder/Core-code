@@ -12,9 +12,6 @@ public class FailedResponse<T> : Responding<T>, IEquatable<FailedResponse<T>>
       this.exception = exception is FullStackException ? exception : new FullStackException(exception);
    }
 
-   [Obsolete("Use deconstruction")]
-   public override T Value => throw exception;
-
    public override Exception Exception => exception;
 
    public override Maybe<Exception> AnyException => exception;

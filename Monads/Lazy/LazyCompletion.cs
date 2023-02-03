@@ -352,16 +352,6 @@ public class LazyCompletion<T> : Completion<T>
       return _value.Responding();
    }
 
-   [Obsolete("Use deconstruction")]
-   public override T Value
-   {
-      get
-      {
-         ensureValue();
-         return _value.Value;
-      }
-   }
-
    public override Exception Exception
    {
       get

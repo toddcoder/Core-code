@@ -11,9 +11,6 @@ public class None<T> : Maybe<T>, IEquatable<None<T>>
    {
    }
 
-   [Obsolete("Use deconstruction")]
-   public override T Value => throw fail("None has no value");
-
    public override Maybe<TResult> Map<TResult>(Func<T, TResult> ifSome) => nil;
 
    public override Maybe<TResult> Map<TResult>(Func<T, Maybe<TResult>> ifSome) => nil;

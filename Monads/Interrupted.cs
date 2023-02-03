@@ -125,9 +125,6 @@ public class Interrupted<T> : Completion<T>, IEquatable<Interrupted<T>>
 
    public override Responding<T> Responding() => exception;
 
-   [Obsolete("Use deconstruction")]
-   public override T Value => throw exception;
-
    public override Exception Exception => exception;
 
    public override Maybe<Exception> AnyException => exception;
