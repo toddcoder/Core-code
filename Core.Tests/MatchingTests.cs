@@ -156,13 +156,14 @@ public class MatchingTests
       {
          foreach (var item in result.Matches.LeadingMatches(input, true))
          {
-            if (item.LeftValue is (true, var left))
+            switch (item)
             {
-               Console.WriteLine($"Leading: <{left.Text}>");
-            }
-            else if (item.RightValue is (true, var right))
-            {
-               Console.WriteLine($"Match: <{right.Text}>");
+               case ((true, var left), _):
+                  Console.WriteLine($"Leading: <{left.Text}>");
+                  break;
+               case (_,(true, var right)):
+                  Console.WriteLine($"Match: <{right.Text}>");
+                  break;
             }
          }
       }

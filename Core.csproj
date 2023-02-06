@@ -286,6 +286,7 @@
     <Compile Include="Monads\Completed.cs" />
     <Compile Include="Monads\Either.cs" />
     <Compile Include="Monads\EitherExtensions.cs" />
+    <Compile Include="Monads\EitherType.cs" />
     <Compile Include="Monads\FailedMatch.cs" />
     <Compile Include="Monads\FailedResponse.cs" />
     <Compile Include="Monads\Failure.cs" />

@@ -12,12 +12,12 @@ public class EitherTests
    {
       Either<char, string> _left = 'a';
       Either<char, string> _right = "a";
-      if (_left.IfLeft(out var left))
+      if (_left is ((true, var left), _))
       {
          Console.WriteLine($"char {left}");
       }
 
-      if (_right.IfRight(out var right))
+      if (_right is (_, (true, var right)))
       {
          Console.WriteLine($"string {right}");
       }
@@ -28,55 +28,33 @@ public class EitherTests
    {
       Either<int, double> _left = 10;
       var dLeft = _left.Map(i => (double)i, d => (int)d);
-      if (dLeft.IfLeft(out var @double, out var @int))
+      switch (dLeft)
       {
-         Console.WriteLine($"double {@double} is good");
-      }
-      else
-      {
-         Console.WriteLine($"Unexpected int {@int}");
+         case ((true, var @double), _):
+            Console.WriteLine($"double {@double} is good");
+            break;
+         case ((_, (true, var @int))):
+            Console.WriteLine($"int {@int} is good");
+            break;
       }
 
       Either<int, double> _right = 7.0;
       var iRight = _right.Map(i => i / 2.0, d => (int)d / 2);
-      if (iRight.IfLeft(out @double, out @int))
+      switch (iRight)
       {
-         Console.WriteLine($"Unexpected double {@double}");
-      }
-      else
-      {
-         Console.WriteLine($"int {@int} is good");
-      }
-   }
-
-   [TestMethod]
-   public void ResultTest()
-   {
-      var _char = ((Either<char, int>)'a').ResultFromLeft(i => $"Expected char; found {i}");
-      if (_char)
-      {
-         Console.WriteLine($"char {_char} is good");
-      }
-      else
-      {
-         Console.WriteLine($"Exception: {_char.Exception.Message}");
-      }
-
-      _char = ((Either<char, int>)153).ResultFromLeft(i => $"Expected char; found {i}");
-      if (_char)
-      {
-         Console.WriteLine($"char {_char} is good");
-      }
-      else
-      {
-         Console.WriteLine($"Exception: {_char.Exception.Message}");
+         case ((true, var @double), _):
+            Console.WriteLine($"double {@double} is good");
+            break;
+         case ((_, (true, var @int))):
+            Console.WriteLine($"int {@int} is good");
+            break;
       }
    }
 
    [TestMethod]
    public void DefaultTest()
    {
-      var left = 'a'.Either<int, char>().DefaultToLeft(() => 'a');
+      var left = 'a'.Either<int, char>() | 'a';
       Console.WriteLine($"{left}: {left.GetType().Name}");
    }
 
