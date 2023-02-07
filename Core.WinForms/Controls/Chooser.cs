@@ -10,16 +10,18 @@ namespace Core.WinForms.Controls;
 
 public partial class Chooser : Form
 {
-   private const int WM_NCACTIVATE = 0x86;
+   protected const int WM_NCACTIVATE = 0x86;
 
-   public Maybe<Chosen> Get()
+   public Maybe<Chosen> Get(UiAction parent)
    {
+      //ShowDialog(parent);
       ShowDialog();
       return Choice;
    }
 
    protected string title;
    protected UiAction uiAction;
+   protected Point uiLocation;
    protected StringHash choices;
    protected Maybe<Color> _foreColor;
    protected Maybe<Color> _backColor;
@@ -34,6 +36,7 @@ public partial class Chooser : Form
    {
       this.title = title;
       this.uiAction = uiAction;
+      uiLocation = this.uiAction.Location;
 
       choices = new StringHash(true);
       _foreColor = nil;
@@ -46,6 +49,8 @@ public partial class Chooser : Form
       InitializeComponent();
 
       Choice = nil;
+
+      AutoScaleMode = AutoScaleMode.Inherit;
 
       if (_width)
       {
@@ -150,9 +155,33 @@ public partial class Chooser : Form
       }
    }
 
+   protected void locate()
+   {
+      var screen = Screen.GetWorkingArea(this);
+      var size = Size;
+      Console.WriteLine($"size: {size}");
+      var location = Cursor.Position;
+
+      var right = location.X + size.Width;
+      var xDifference = screen.Right - right;
+      if (xDifference < 0)
+      {
+         location.X += xDifference;
+      }
+
+      var bottom = location.Y + size.Height / 3;
+      var yDifference = screen.Bottom - bottom;
+      if (yDifference < 0)
+      {
+         location.Y += yDifference;
+      }
+
+      Location = location;
+   }
+
    protected void Chooser_Load(object sender, EventArgs e)
    {
-      Location = Cursor.Position;
+      locate();
       if (_nilItem)
       {
          addItem(_nilItem, _foreColor | Color.White, _backColor | Color.Blue);

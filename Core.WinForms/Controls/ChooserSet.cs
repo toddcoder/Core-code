@@ -79,7 +79,7 @@ public class ChooserSet
 
    public Maybe<Chosen> Choose()
    {
-      var _chosen = chooser.Get();
+      var _chosen = chooser.Get(chooser.UiAction);
       if (chooser.ModifyTitle)
       {
          if (_chosen is (true, var chosen))

@@ -65,6 +65,7 @@
          this.MaximizeBox = false;
          this.MinimizeBox = false;
          this.Name = "Chooser";
+         this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
          this.Load += new System.EventHandler(this.Chooser_Load);
          this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Chooser_MouseDown);
          this.ResumeLayout(false);
