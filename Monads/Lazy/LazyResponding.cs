@@ -56,7 +56,7 @@ public class LazyResponding<T> : Responding<T>, IEquatable<LazyResponding<T>>
       if (Repeating || !ensured)
       {
          _value = func();
-         ensured = true;
+         ensured = _value;
       }
    }
 
@@ -77,7 +77,7 @@ public class LazyResponding<T> : Responding<T>, IEquatable<LazyResponding<T>>
       if (Repeating || !ensured)
       {
          _value = value;
-         ensured = true;
+         ensured = _value;
       }
    }
 

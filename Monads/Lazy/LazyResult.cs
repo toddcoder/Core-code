@@ -59,7 +59,7 @@ public class LazyResult<T> : Result<T>, IEquatable<LazyResult<T>>
       if (Repeating || !ensured)
       {
          _value = func();
-         ensured = true;
+         ensured = _value;
       }
    }
 
@@ -80,7 +80,7 @@ public class LazyResult<T> : Result<T>, IEquatable<LazyResult<T>>
       if (Repeating || !ensured)
       {
          _value = value;
-         ensured = true;
+         ensured = _value;
       }
    }
 

@@ -5,20 +5,15 @@ namespace Core.Markup.Xml;
 
 public class MarkupTextHolder
 {
-   public static string Markupify(string text, bool html)
+   public static string Markupify(string text)
    {
-      text = text.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;");
-      if (!html)
-      {
-         text = text.Replace("~", "&nbsp;");
-      }
-
+      text = text.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;").Replace("~", "&nbsp;");
       return replaceBrackets(text);
    }
 
    public static string Markupify(string text, QuoteType quoteType)
    {
-      text = Markupify(text, false);
+      text = Markupify(text);
       switch (quoteType)
       {
          case QuoteType.Double:
@@ -41,7 +36,7 @@ public class MarkupTextHolder
 
    protected string text;
 
-   public MarkupTextHolder(string text) => this.text = text.IsNotEmpty() ? Markupify(text, false) : string.Empty;
+   public MarkupTextHolder(string text) => this.text = text.IsNotEmpty() ? Markupify(text) : string.Empty;
 
    public virtual string Text => text;
 

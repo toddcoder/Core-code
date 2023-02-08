@@ -49,10 +49,10 @@ public class LazyMaybe<T> : Maybe<T>, IEquatable<LazyMaybe<T>>
 
    public void Activate()
    {
-      if (Repeating || !ensured)
+      if (Repeating || !_value)
       {
          _value = func();
-         ensured = true;
+         ensured = _value;
       }
    }
 
@@ -70,10 +70,10 @@ public class LazyMaybe<T> : Maybe<T>, IEquatable<LazyMaybe<T>>
 
    public void Activate(Maybe<T> value)
    {
-      if (Repeating || !ensured)
+      if (Repeating || !_value)
       {
          _value = value;
-         ensured = true;
+         ensured = _value;
       }
    }
 
@@ -140,7 +140,7 @@ public class LazyMaybe<T> : Maybe<T>, IEquatable<LazyMaybe<T>>
       if (!ensured)
       {
          _value = func();
-         ensured = true;
+         ensured = _value;
       }
    }
 

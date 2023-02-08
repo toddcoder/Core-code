@@ -1,9 +1,8 @@
-﻿namespace Core.Strings
+﻿namespace Core.Strings;
+
+public enum SplitType
 {
-   public enum SplitType
-   {
-      CRLF,
-      CR,
-      LF
-   }
+   CRLF,
+   CR,
+   LF
 }
