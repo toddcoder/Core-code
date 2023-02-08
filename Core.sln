@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Test", "Core.Test\Core
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Data.Sqlite", "Core.Data.Sqlite\Core.Data.Sqlite.csproj", "{B4371C23-FC5D-400A-819A-236417D0C917}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinFormsTest", "WinFormsTest\WinFormsTest.csproj", "{8ACE5255-EDEF-4570-A6ED-7150ADA2E4D4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +89,10 @@ Global
 		{B4371C23-FC5D-400A-819A-236417D0C917}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B4371C23-FC5D-400A-819A-236417D0C917}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B4371C23-FC5D-400A-819A-236417D0C917}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8ACE5255-EDEF-4570-A6ED-7150ADA2E4D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8ACE5255-EDEF-4570-A6ED-7150ADA2E4D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8ACE5255-EDEF-4570-A6ED-7150ADA2E4D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8ACE5255-EDEF-4570-A6ED-7150ADA2E4D4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -834,4 +834,15 @@ public class WinFormsTests
 
       form.ShowDialog();
    }
+
+   [TestMethod]
+   public void LabelBusyTest()
+   {
+      var form = new Form();
+      var uiAction = new UiAction(form, true);
+      uiAction.SetUp(0, 0, 400, 40);
+      uiAction.Label("Busy").End.Busy(true);
+
+      form.ShowDialog();
+   }
 }
