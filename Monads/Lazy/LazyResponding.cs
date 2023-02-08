@@ -51,6 +51,36 @@ public class LazyResponding<T> : Responding<T>, IEquatable<LazyResponding<T>>
    {
    }
 
+   public void Activate()
+   {
+      if (Repeating || !ensured)
+      {
+         _value = func();
+         ensured = true;
+      }
+   }
+
+   public void Activate(Func<Responding<T>> func)
+   {
+      if (Repeating)
+      {
+         Activate(func());
+      }
+      else
+      {
+         this.func = func;
+      }
+   }
+
+   public void Activate(Responding<T> value)
+   {
+      if (Repeating || !ensured)
+      {
+         _value = value;
+         ensured = true;
+      }
+   }
+
    public LazyResponding<T> ValueOf(Func<Responding<T>> func)
    {
       if (Repeating)
@@ -124,6 +154,12 @@ public class LazyResponding<T> : Responding<T>, IEquatable<LazyResponding<T>>
          _value = func();
          ensured = true;
       }
+   }
+
+   public void Reset()
+   {
+      ensured = false;
+      _value = nil;
    }
 
    public override Exception Exception

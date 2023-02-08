@@ -51,6 +51,36 @@ public class LazyCompletion<T> : Completion<T>
    {
    }
 
+   public void Activate()
+   {
+      if (Repeating || !ensured)
+      {
+         _value = func();
+         ensured = true;
+      }
+   }
+
+   public void Activate(Func<Completion<T>> func)
+   {
+      if (Repeating)
+      {
+         Activate(func());
+      }
+      else
+      {
+         this.func = func;
+      }
+   }
+
+   public void Activate(Completion<T> value)
+   {
+      if (Repeating || !ensured)
+      {
+         _value = value;
+         ensured = true;
+      }
+   }
+
    public LazyCompletion<T> ValueOf(Func<Completion<T>> func)
    {
       if (Repeating)
@@ -124,6 +154,12 @@ public class LazyCompletion<T> : Completion<T>
          _value = func();
          ensured = true;
       }
+   }
+
+   public void Reset()
+   {
+      ensured = false;
+      _value = nil;
    }
 
    public override Completion<TResult> Map<TResult>(Func<T, Completion<TResult>> ifCompleted)

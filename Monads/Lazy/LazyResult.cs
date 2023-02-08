@@ -54,6 +54,36 @@ public class LazyResult<T> : Result<T>, IEquatable<LazyResult<T>>
       ensured = false;
    }
 
+   public void Activate()
+   {
+      if (Repeating || !ensured)
+      {
+         _value = func();
+         ensured = true;
+      }
+   }
+
+   public void Activate(Func<Result<T>> func)
+   {
+      if (Repeating)
+      {
+         Activate(func());
+      }
+      else
+      {
+         this.func = func;
+      }
+   }
+
+   public void Activate(Result<T> value)
+   {
+      if (Repeating || !ensured)
+      {
+         _value = value;
+         ensured = true;
+      }
+   }
+
    public LazyResult<T> ValueOf(Func<Result<T>> func)
    {
       if (Repeating)
@@ -119,6 +149,12 @@ public class LazyResult<T> : Result<T>, IEquatable<LazyResult<T>>
          _value = func();
          ensured = true;
       }
+   }
+
+   public void Reset()
+   {
+      ensured = false;
+      _value = fail("Uninitialized");
    }
 
    public override Result<TResult> Map<TResult>(Func<T, Result<TResult>> ifSuccessful)

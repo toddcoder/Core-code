@@ -65,7 +65,7 @@ public class BusyTextProcessor
    protected static Rectangle getDrawRectangle(Rectangle clientRectangle)
    {
       var side = clientRectangle.Height;
-      return new Rectangle(0, 0, side, side);
+      return clientRectangle with { Width = side, Height = side };
    }
 
    protected static Rectangle getTextRectangle(Rectangle drawRectangle, Rectangle clientRectangle)
@@ -75,7 +75,7 @@ public class BusyTextProcessor
 
    protected static PointF getCenter(Rectangle drawRectangle)
    {
-      return new PointF(drawRectangle.Height / 2, drawRectangle.Height / 2);
+      return new PointF(drawRectangle.X + drawRectangle.Height / 2, drawRectangle.Y + drawRectangle.Height / 2);
    }
 
    public BusyTextProcessor(Color color, Rectangle clientRectangle)

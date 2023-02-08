@@ -9,26 +9,28 @@ public class BusyProcessor
    protected int height;
    protected int x;
    protected int speed;
+   protected int currentX;
 
    public BusyProcessor(Rectangle clientRectangle)
    {
       width = clientRectangle.Width;
       height = clientRectangle.Height;
-      x = 0;
+      x = clientRectangle.X;
       speed = 0;
+      currentX = x;
    }
 
    public void Advance()
    {
       if (speed++ >= 3)
       {
-         if (x < width)
+         if (currentX < width)
          {
-            x += 20;
+            currentX += 20;
          }
          else
          {
-            x = 0;
+            currentX = x;
          }
 
          speed = 0;
@@ -40,8 +42,8 @@ public class BusyProcessor
       graphics.HighQuality();
       graphics.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
       using var whitePen = new Pen(Color.White, 5);
-      graphics.DrawLine(whitePen, x + 1, 1, x + 1, height - 1);
+      graphics.DrawLine(whitePen, currentX + 1, 1, currentX + 1, height - 1);
       using var greenPen = new Pen(Color.Green, 5);
-      graphics.DrawLine(greenPen, x, 0, x, height);
+      graphics.DrawLine(greenPen, currentX, 0, currentX, height);
    }
 }

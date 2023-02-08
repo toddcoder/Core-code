@@ -47,6 +47,36 @@ public class LazyMaybe<T> : Maybe<T>, IEquatable<LazyMaybe<T>>
    {
    }
 
+   public void Activate()
+   {
+      if (Repeating || !ensured)
+      {
+         _value = func();
+         ensured = true;
+      }
+   }
+
+   public void Activate(Func<Maybe<T>> func)
+   {
+      if (Repeating)
+      {
+         Activate(func());
+      }
+      else
+      {
+         this.func = func;
+      }
+   }
+
+   public void Activate(Maybe<T> value)
+   {
+      if (Repeating || !ensured)
+      {
+         _value = value;
+         ensured = true;
+      }
+   }
+
    public LazyMaybe<T> ValueOf(Func<Maybe<T>> func)
    {
       if (Repeating)
@@ -112,6 +142,12 @@ public class LazyMaybe<T> : Maybe<T>, IEquatable<LazyMaybe<T>>
          _value = func();
          ensured = true;
       }
+   }
+
+   public void Reset()
+   {
+      ensured = false;
+      _value = nil;
    }
 
    public override Maybe<TResult> Map<TResult>(Func<T, TResult> ifSome)

@@ -11,9 +11,10 @@ using Core.Collections;
 using Core.DataStructures;
 using Core.Dates.DateIncrements;
 using Core.Monads;
-using Core.Objects;
+using Core.Monads.Lazy;
 using Core.Strings;
 using Core.WinForms.ControlWrappers;
+using static Core.Monads.Lazy.LazyMonads;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Controls;
@@ -115,6 +116,7 @@ public class UiAction : UserControl
    protected const string PROGRESS_DEFINITE_PROCESSOR_NOT_INITIALIZED = "Progress Definite Processor not initialized";
    protected const string BUSY_PROCESSOR_NOT_INITIALIZED = "Busy Processor Not Initialized";
    protected const float START_AMOUNT = .9f;
+   protected const string LABEL_PROCESSOR_NOT_INITIALIZED = "Label processor not initialized";
 
    protected static Hash<UiActionType, Color> globalForeColors;
    protected static Hash<UiActionType, Color> globalBackColors;
@@ -199,9 +201,10 @@ public class UiAction : UserControl
    protected bool mouseDown;
    protected ToolTip toolTip;
    protected Maybe<string> _clickText;
-   protected LateLazy<BusyTextProcessor> busyTextProcessor;
-   protected LateLazy<ProgressDefiniteProcessor> progressDefiniteProcessor;
-   protected LateLazy<BusyProcessor> busyProcessor;
+   protected LazyMaybe<BusyTextProcessor> _busyTextProcessor;
+   protected LazyMaybe<ProgressDefiniteProcessor> _progressDefiniteProcessor;
+   protected LazyMaybe<BusyProcessor> _busyProcessor;
+   protected LazyMaybe<LabelProcessor> _labelProcessor;
    protected Maybe<int> _percentage;
    protected Maybe<Color> _foreColor;
    protected Maybe<Color> _backColor;
@@ -285,8 +288,8 @@ public class UiAction : UserControl
          {
             switch (type)
             {
-               case UiActionType.BusyText:
-                  busyTextProcessor.Value.OnTick();
+               case UiActionType.BusyText when _busyTextProcessor is (true, var busyTextProcessor):
+                  busyTextProcessor.OnTick();
                   break;
                case UiActionType.Automatic:
                {
@@ -300,8 +303,8 @@ public class UiAction : UserControl
 
                   break;
                }
-               case UiActionType.Busy or UiActionType.ProgressIndefinite:
-                  busyProcessor.Value.Advance();
+               case UiActionType.Busy or UiActionType.ProgressIndefinite when _busyProcessor is (true, var busyProcessor):
+                  busyProcessor.Advance();
                   break;
             }
          }
@@ -330,14 +333,17 @@ public class UiAction : UserControl
       toolTip = new ToolTip { IsBalloon = true };
       toolTip.SetToolTip(this, "");
 
-      busyTextProcessor = new LateLazy<BusyTextProcessor>(true, BUSY_TEXT_PROCESSOR_NOT_INITIALIZED);
-      progressDefiniteProcessor = new LateLazy<ProgressDefiniteProcessor>(errorMessage: PROGRESS_DEFINITE_PROCESSOR_NOT_INITIALIZED);
-      busyProcessor = new LateLazy<BusyProcessor>(true, BUSY_PROCESSOR_NOT_INITIALIZED);
+      _busyTextProcessor = lazy.maybe<BusyTextProcessor>();
+      _progressDefiniteProcessor = lazy.maybe<ProgressDefiniteProcessor>();
+      _busyProcessor = lazy.maybe<BusyProcessor>();
+      _labelProcessor = lazy.maybe<LabelProcessor>();
+
       Resize += (_, _) =>
       {
-         busyTextProcessor.ActivateWith(() => new BusyTextProcessor(Color.White, ClientRectangle));
-         busyProcessor.ActivateWith(() => new BusyProcessor(ClientRectangle));
-         progressDefiniteProcessor.Reset();
+         _busyTextProcessor.Reset();
+         _progressDefiniteProcessor.Reset();
+         _busyProcessor.Reset();
+         _labelProcessor.Reset();
       };
       _percentage = nil;
 
@@ -386,6 +392,36 @@ public class UiAction : UserControl
       isUrlGood = false;
       marqueeFont = new Lazy<Font>(() => new Font("Consolas", 8));
       scroller = new Lazy<UiActionScroller>(() => new UiActionScroller(marqueeFont.Value, getClientRectangle(nil), getForeColor(), getBackColor()));
+   }
+
+   protected void activateProcessor(Graphics graphics)
+   {
+      if (_label)
+      {
+         _labelProcessor.Activate(new LabelProcessor(_label, _labelWidth, getFont(), EmptyTextTitle, graphics, ClientRectangle));
+      }
+
+      switch (type)
+      {
+         case UiActionType.BusyText:
+         {
+            var clientRectangle = getRectangle();
+            _busyTextProcessor.Activate(() => new BusyTextProcessor(Color.White, clientRectangle));
+            break;
+         }
+         case UiActionType.Busy:
+         {
+            var clientRectangle = getRectangle();
+            _busyProcessor.Activate(() => new BusyProcessor(clientRectangle));
+            break;
+         }
+         case UiActionType.ProgressDefinite:
+         {
+            var clientRectangle = getRectangle();
+            _progressDefiniteProcessor.Activate(() => new ProgressDefiniteProcessor(Font, graphics, clientRectangle));
+            break;
+         }
+      }
    }
 
    public Guid Id => id;
@@ -762,6 +798,18 @@ public class UiAction : UserControl
       }
    }
 
+   protected Rectangle getRectangle()
+   {
+      if (_labelProcessor is (true, var labelProcessor))
+      {
+         return getClientRectangle(labelProcessor.Rectangle);
+      }
+      else
+      {
+         return getClientRectangle(nil);
+      }
+   }
+
    protected override void OnPaint(PaintEventArgs e)
    {
       base.OnPaint(e);
@@ -785,13 +833,13 @@ public class UiAction : UserControl
          return;
       }
 
-      var _labelProcessor = _label.Map(label => new LabelProcessor(label, _labelWidth, getFont(), EmptyTextTitle));
-      var clientRectangle = getClientRectangle(_labelProcessor.Map(lp => lp.LabelRectangle(e.Graphics, ClientRectangle)));
-
+      activateProcessor(e.Graphics);
       if (_labelProcessor is (true, var labelProcessor))
       {
          labelProcessor.OnPaint(e.Graphics);
       }
+
+      var clientRectangle = getRectangle();
 
       void paintStopwatch()
       {
@@ -840,25 +888,25 @@ public class UiAction : UserControl
          case UiActionType.ProgressIndefinite:
             writer.Value.Write(text, e.Graphics);
             break;
-         case UiActionType.Busy:
-            busyProcessor.Value.OnPaint(e.Graphics);
+         case UiActionType.Busy when _busyProcessor is (true, var busyProcessor):
+            busyProcessor.OnPaint(e.Graphics);
             break;
-         case UiActionType.ProgressDefinite:
+         case UiActionType.ProgressDefinite when _progressDefiniteProcessor is (true, var progressDefiniteProcessor):
          {
             var percentText = $"{getPercentage()}%";
-            writer.Value.Rectangle = progressDefiniteProcessor.Value.PercentRectangle;
+            writer.Value.Rectangle = progressDefiniteProcessor.PercentRectangle;
             writer.Value.Center(true);
             writer.Value.Color = Color.Black;
             writer.Value.Write(percentText, e.Graphics);
 
-            writer.Value.Rectangle = progressDefiniteProcessor.Value.TextRectangle;
+            writer.Value.Rectangle = progressDefiniteProcessor.TextRectangle;
             writer.Value.Color = getForeColor();
             writer.Value.Write(text, e.Graphics);
             break;
          }
-         case UiActionType.BusyText:
+         case UiActionType.BusyText when _busyTextProcessor is (true, var busyTextProcessor):
          {
-            writer.Value.Rectangle = busyTextProcessor.Value.TextRectangle;
+            writer.Value.Rectangle = busyTextProcessor.TextRectangle;
             writer.Value.Center(true);
             writer.Value.Write(text, e.Graphics);
             break;
@@ -982,15 +1030,15 @@ public class UiAction : UserControl
          return;
       }
 
-      var _labelProcessor = _label.Map(label => new LabelProcessor(label, _labelWidth, getFont(), EmptyTextTitle));
-      var clientRectangle = getClientRectangle(_labelProcessor.Map(lp => lp.LabelRectangle(pevent.Graphics, ClientRectangle)));
-
       base.OnPaintBackground(pevent);
 
+      activateProcessor(pevent.Graphics);
       if (_labelProcessor is (true, var labelProcessor))
       {
          labelProcessor.OnPaintBackground(pevent.Graphics);
       }
+
+      var clientRectangle = getRectangle();
 
       switch (type)
       {
@@ -1006,11 +1054,10 @@ public class UiAction : UserControl
             fillRectangle(pevent.Graphics, brush, clientRectangle);
             break;
          }
-         case UiActionType.ProgressDefinite:
+         case UiActionType.ProgressDefinite when _progressDefiniteProcessor is (true, var progressDefiniteProcessor):
          {
-            progressDefiniteProcessor.ActivateWith(() => new ProgressDefiniteProcessor(Font, pevent.Graphics, clientRectangle));
-            progressDefiniteProcessor.Value.OnPaint(pevent.Graphics);
-            var textRectangle = progressDefiniteProcessor.Value.TextRectangle;
+            progressDefiniteProcessor.OnPaint(pevent.Graphics);
+            var textRectangle = progressDefiniteProcessor.TextRectangle;
 
             using var coralBrush = new SolidBrush(Color.Coral);
             fillRectangle(pevent.Graphics, coralBrush, textRectangle);
@@ -1041,12 +1088,12 @@ public class UiAction : UserControl
             drawRectangle(pevent.Graphics, pen, clientRectangle);
             break;
          }
-         case UiActionType.BusyText:
+         case UiActionType.BusyText when _busyTextProcessor is (true, var busyTextProcessor):
          {
             using var brush = new SolidBrush(Color.Teal);
             fillRectangle(pevent.Graphics, brush, clientRectangle);
 
-            busyTextProcessor.Value.OnPaint(pevent);
+            busyTextProcessor.OnPaint(pevent);
 
             break;
          }
