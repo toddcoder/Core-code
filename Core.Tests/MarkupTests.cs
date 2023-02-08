@@ -148,4 +148,13 @@ public class MarkupTests
 
       Console.WriteLine(builder);
    }
+
+   [TestMethod]
+   public void LinkTest()
+   {
+      var builder = new HtmlBuilder();
+      var body = builder.Body;
+      _ = body + "link|https://www.w3schools.com/html/html_links.asp|HTML Links";
+      Console.WriteLine(builder);
+   }
 }

@@ -4,6 +4,7 @@ using Core.Computers;
 using Core.Matching;
 using Core.Monads;
 using Core.Strings;
+using static Core.Monads.Lazy.LazyMonads;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Markup.Xml;
@@ -12,14 +13,24 @@ public class Element : IRendering
 {
    public static implicit operator Element(string source)
    {
-      var _result = source.Matches("^ /(['a-zA-Z_'] [/w '-']*) /s* '>' /s* [quote]? /(.*) $; f");
-      if (_result is (true, var (name, text)))
+      var _tag = source.Matches("^ /(['a-zA-Z_'] [/w '-']*) /s* '>' /s* [quote]? /(.*) $; f");
+      var _link = lazy.maybe<MatchResult>();
+
+      if (_tag is (true, var (name, text)))
       {
          return new Element
          {
             Name = name,
             Text = text
          };
+      }
+      else if (_link.ValueOf(source.Matches("^ 'link|' /(-['|']+) ('|' /(.+))? $; f")) is (true, var (link, linkText)))
+      {
+         return new Element
+         {
+            Name = "a",
+            Text = linkText
+         } + $"@href={link}";
       }
       else
       {
