@@ -77,10 +77,11 @@ public class Selector : IEquatable<Selector>
    public override string ToString()
    {
       using var writer = new StringWriter();
+      writer.WriteLine();
       writer.WriteLine($"   {Name} {{");
       foreach (var style in styles)
       {
-         writer.WriteLine($"      {style}");
+         writer.WriteLine($"      {style};");
       }
       writer.WriteLine("   }");
 
