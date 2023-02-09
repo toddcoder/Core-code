@@ -107,42 +107,29 @@ public class MarkupTests
       var body = builder.Body;
       _ = body + "@style='font-family: Verdana; font-size: 11px'";
 
-      var p = body + "p>Merged Branches";
-      _ = p + "@class=title";
+      _ = body + "p>Merged Branches" + "@class=title";
 
-      var table = body + "table>";
-      _ = table + "@border=1px black solid";
-      var th = table + "th>";
-      _ = th + "@class=header";
-      _ = th + "b>Branch";
+      var table = body + "table>" + "@border=1px black solid";
+      _ = table + "th>" + "@class=header" + "b>Branch";
 
-      var tr = table + "tr>";
-      _ = tr + "td>Alpha";
-      tr = table + "tr>";
-      _ = tr + "td>Bravo";
-      tr = table + "tr>";
-      _ = tr + "td>Charlie";
+      _ = table + "tr>" + "td>Alpha";
+      _ = table + "tr>" + "td>Bravo";
+      _ = table + "tr>" + "td>Charlie";
 
       _ = body + "hr>";
-      p = body + "p>Conflicted Branches";
-      _ = p + "@class=title";
+      _ = body + "p>Conflicted Branches" + "@class=title";
 
       foreach (var branch in array("branch1", "branch2", "branch3"))
       {
          _ = body + "hr>";
 
-         table = body + "table>";
-         _ = table + "@border=1px black solid";
-         th = table + $"th>{branch}";
-         _ = th + "@class=header";
-         th = table + "th>File";
-         _ = th + "@class=header";
+         table = body + "table>" + "@border=1px black solid";
+         _ = table + $"th>{branch}" + "@class=header";
+         _ = table + "th>File" + "@class=header";
 
          foreach (var file in array("file1", "file2", "file3", "file4"))
          {
-            tr = table + "tr>";
-            _ = tr + "td>";
-            _ = tr + $"td>{file}";
+            _ = table + "tr>" + "td>" + $"td>{file}";
          }
       }
 

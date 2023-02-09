@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using Core.Enumerables;
 using Core.Matching;
 using Core.Strings;
@@ -73,5 +74,16 @@ public class Selector : IEquatable<Selector>
 
    public static bool operator !=(Selector left, Selector right) => !Equals(left, right);
 
-   public override string ToString() => $"{Name} {{ {styles.ToString("; ")} }}";
+   public override string ToString()
+   {
+      using var writer = new StringWriter();
+      writer.WriteLine($"   {Name} {{");
+      foreach (var style in styles)
+      {
+         writer.WriteLine($"      {style}");
+      }
+      writer.WriteLine("   }");
+
+      return writer.ToString();
+   }
 }
