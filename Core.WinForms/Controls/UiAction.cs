@@ -1342,7 +1342,11 @@ public class UiAction : UserControl
 
    public SubText SubText(string text) => SubText(text, 0, 0);
 
-   public void RemoveSubText(Guid id) => subTexts.Remove(id);
+   public void RemoveSubText(Guid id)
+   {
+      subTexts.Remove(id);
+      Refresh();
+   }
 
    public void RemoveSubText(SubText subText) => RemoveSubText(subText.Id);
 
