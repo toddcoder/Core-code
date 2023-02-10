@@ -1942,4 +1942,8 @@ public class UiAction : UserControl
 
       refresh();
    }
+
+   public void FloatingFailure(string message) => UiFailure.Failure(message, this);
+
+   public void FloatingException(Exception exception) => UiFailure.Exception(exception, this);
 }

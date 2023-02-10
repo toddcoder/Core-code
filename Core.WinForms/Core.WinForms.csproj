@@ -106,6 +106,12 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Controls\SubText.cs" />
+    <Compile Include="Controls\UiFailure.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\UiFailure.Designer.cs">
+      <DependentUpon>UiFailure.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ValidatedArgs.cs" />
     <Compile Include="ControlWrappers\MessageStyle.cs" />
     <Compile Include="Documents\Colorizer.cs" />
@@ -141,6 +147,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Controls\Chooser.resx">
       <DependentUpon>Chooser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\UiFailure.resx">
+      <DependentUpon>UiFailure.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ControlWrappers\tape.png" />
   </ItemGroup>

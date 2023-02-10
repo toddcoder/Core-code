@@ -12,12 +12,10 @@ public partial class Form1 : Form
       InitializeComponent();
 
       uiAction = new UiAction(this);
-      uiAction.Label("Busy").End.SetUp(0, 0, 300, 27, AnchorStyles.Left | AnchorStyles.Right);
-      uiAction.Uninitialized("ready");
+      uiAction.SetUp(0, 0, 300, 27, AnchorStyles.Left | AnchorStyles.Right);
+      uiAction.Button("Show Floating Failure");
+      uiAction.Click += (_, _) => uiAction.FloatingFailure("Failed!");
    }
 
-   protected void button1_Click(object sender, System.EventArgs e)
-   {
-      uiAction.Busy(true);
-   }
+   protected void button1_Click(object sender, System.EventArgs e) => uiAction.Busy(true);
 }

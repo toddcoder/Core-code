@@ -845,4 +845,17 @@ public class WinFormsTests
 
       form.ShowDialog();
    }
+
+   [TestMethod]
+   public void FloatingFailureTest()
+   {
+      var form = new Form();
+      var uiAction = new UiAction(form, true);
+      uiAction.SetUp(0, 0, 400, 40);
+
+      uiAction.Button("Show Floating Failure");
+      uiAction.Click += (_, _) => uiAction.FloatingFailure("Failed!");
+
+      form.ShowDialog();
+   }
 }
