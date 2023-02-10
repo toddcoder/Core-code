@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Drawing.Text;
 using System.Windows.Forms;
 using Core.Monads;
@@ -20,6 +21,8 @@ public class SubText
       Y = y;
       this.size = size;
       this.invert = invert;
+
+      Id = Guid.NewGuid();
 
       _foreColor = nil;
       _backColor = nil;
@@ -51,6 +54,8 @@ public class SubText
       get => invert;
       set => invert = value;
    }
+
+   public Guid Id { get; }
 
    public Maybe<Color> ForeColor
    {

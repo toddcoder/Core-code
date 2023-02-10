@@ -215,7 +215,7 @@ public class UiAction : UserControl
    protected Maybe<Color> _lastBackColor;
    protected Maybe<MessageStyle> _lastStyle;
    protected Maybe<Image> _image;
-   protected List<SubText> subTexts;
+   protected Hash<Guid, SubText> subTexts;
    protected Lazy<Stopwatch> stopwatch;
    protected Lazy<BackgroundWorker> backgroundWorker;
    protected Maybe<string> _label;
@@ -273,7 +273,7 @@ public class UiAction : UserControl
       _lastBackColor = nil;
       _lastStyle = nil;
       _image = nil;
-      subTexts = new List<SubText>();
+      subTexts = new Hash<Guid, SubText>();
       CheckStyle = CheckStyle.None;
       stopwatch = new Lazy<Stopwatch>(() => new Stopwatch());
 
@@ -986,7 +986,7 @@ public class UiAction : UserControl
          working.Draw(graphics, foreColor.Value, backColor.Value);
       }
 
-      foreach (var subText in subTexts)
+      foreach (var subText in subTexts.Values)
       {
          subText.Draw(graphics, foreColor.Value, backColor.Value);
       }
@@ -1335,14 +1335,16 @@ public class UiAction : UserControl
    public SubText SubText(string text, int x, int y)
    {
       var subText = new SubText(text, x, y, ClientSize);
-      subTexts.Add(subText);
+      subTexts[subText.Id] = subText;
 
       return subText;
    }
 
    public SubText SubText(string text) => SubText(text, 0, 0);
 
-   public void RemoveSubTextAt(int index) => subTexts.RemoveAt(index);
+   public void RemoveSubText(Guid id) => subTexts.Remove(id);
+
+   public void RemoveSubText(SubText subText) => RemoveSubText(subText.Id);
 
    public void ClearSubTexts() => subTexts.Clear();
 
