@@ -134,5 +134,22 @@ public class SubTextSet
       return X(x).Y(y);
    }
 
+   public SubTextSet GoToTop(int margin)
+   {
+      var textSize = getTextSize();
+      var x = (size.Width - textSize.Width) / 2;
+
+      return X(x).Y(margin);
+   }
+
+   public SubTextSet GoToBottom(int margin)
+   {
+      var textSize = getTextSize();
+      var x = (size.Width - textSize.Width) / 2;
+      var y = size.Height - margin;
+
+      return X(x).Y(y);
+   }
+
    public SubText End => subText;
 }

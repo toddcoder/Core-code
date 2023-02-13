@@ -14,6 +14,7 @@ using Core.Monads;
 using Core.Monads.Lazy;
 using Core.Strings;
 using Core.WinForms.ControlWrappers;
+using static Core.Lambdas.LambdaFunctions;
 using static Core.Monads.Lazy.LazyMonads;
 using static Core.Monads.MonadFunctions;
 
@@ -112,11 +113,7 @@ public class UiAction : UserControl
       public UiAction End => uiAction;
    }
 
-   protected const string BUSY_TEXT_PROCESSOR_NOT_INITIALIZED = "BusyTextProcessor not initialized";
-   protected const string PROGRESS_DEFINITE_PROCESSOR_NOT_INITIALIZED = "Progress Definite Processor not initialized";
-   protected const string BUSY_PROCESSOR_NOT_INITIALIZED = "Busy Processor Not Initialized";
    protected const float START_AMOUNT = .9f;
-   protected const string LABEL_PROCESSOR_NOT_INITIALIZED = "Label processor not initialized";
 
    protected static Hash<UiActionType, Color> globalForeColors;
    protected static Hash<UiActionType, Color> globalBackColors;
@@ -199,7 +196,7 @@ public class UiAction : UserControl
    protected int index;
    protected bool mouseInside;
    protected bool mouseDown;
-   protected ToolTip toolTip;
+   protected UiToolTip toolTip;
    protected Maybe<string> _clickText;
    protected LazyMaybe<BusyTextProcessor> _busyTextProcessor;
    protected LazyMaybe<ProgressDefiniteProcessor> _progressDefiniteProcessor;
@@ -231,6 +228,10 @@ public class UiAction : UserControl
    protected bool isUrlGood;
    protected Lazy<Font> marqueeFont;
    protected Lazy<UiActionScroller> scroller;
+   protected Maybe<string> _failureToolTip;
+   protected Maybe<string> _exceptionToolTip;
+   protected Maybe<SubText> _failureSubText;
+   protected Maybe<SubText> _exceptionSubText;
 
    public event EventHandler<AutomaticMessageArgs> AutomaticMessage;
    public event EventHandler<PaintEventArgs> Painting;
@@ -330,7 +331,7 @@ public class UiAction : UserControl
       Minimum = 1;
       maximum = 0;
 
-      toolTip = new ToolTip { IsBalloon = true };
+      toolTip = new UiToolTip(this);
       toolTip.SetToolTip(this, "");
 
       _busyTextProcessor = lazy.maybe<BusyTextProcessor>();
@@ -392,6 +393,10 @@ public class UiAction : UserControl
       isUrlGood = false;
       marqueeFont = new Lazy<Font>(() => new Font("Consolas", 8));
       scroller = new Lazy<UiActionScroller>(() => new UiActionScroller(marqueeFont.Value, getClientRectangle(nil), getForeColor(), getBackColor()));
+      _failureToolTip = nil;
+      _exceptionToolTip = nil;
+      _failureSubText = nil;
+      _exceptionSubText = nil;
    }
 
    protected void activateProcessor(Graphics graphics)
@@ -483,17 +488,38 @@ public class UiAction : UserControl
          italicFont = new Font(base.Font, FontStyle.Italic);
          boldFont = new Font(base.Font, FontStyle.Bold);
          italicBoldFont = new Font(base.Font, FontStyle.Italic | FontStyle.Bold);
+         toolTip.Font = value;
       }
    }
 
    protected void setToolTip()
    {
-      if (Clickable && ClickText.IsNotEmpty())
+      if (_failureToolTip is (true, var failureToolTip))
       {
+         toolTip.ToolTipTitle = "failure";
+         toolTip.Action = action<object, DrawToolTipEventArgs>((_, e) =>
+         {
+            toolTip.DrawTextInRectangle(e.Graphics, failureToolTip, toolTip.Font, Color.Black, Color.Gold, e.Bounds);
+            toolTip.DrawTitle(e.Graphics, toolTip.Font, Color.Gold, Color.Black, e.Bounds);
+         });
+      }
+      else if (_exceptionToolTip is (true, var exceptionToolTip))
+      {
+         toolTip.ToolTipTitle = "exception";
+         toolTip.Action = action<object, DrawToolTipEventArgs>((_, e) =>
+         {
+            toolTip.DrawTextInRectangle(e.Graphics, exceptionToolTip, toolTip.Font, Color.White, Color.Red, e.Bounds);
+            toolTip.DrawTitle(e.Graphics, toolTip.Font, Color.Red, Color.White, e.Bounds);
+         });
+      }
+      else if (Clickable && ClickText.IsNotEmpty())
+      {
+         toolTip.Action = nil;
          toolTip.SetToolTip(this, ClickText);
       }
       else
       {
+         toolTip.Action = nil;
          toolTip.SetToolTip(this, text);
       }
    }
@@ -989,6 +1015,15 @@ public class UiAction : UserControl
       foreach (var subText in subTexts.Values)
       {
          subText.Draw(graphics, foreColor.Value, backColor.Value);
+      }
+
+      if (_failureSubText is (true, var failureSubText))
+      {
+         failureSubText.Draw(graphics);
+      }
+      else if (_exceptionSubText is (true, var exceptionSubText))
+      {
+         exceptionSubText.Draw(graphics);
       }
    }
 
@@ -1943,7 +1978,59 @@ public class UiAction : UserControl
       refresh();
    }
 
-   public void FloatingFailure(string message) => UiFailure.Failure(message, this);
+   public void FloatingFailure(string message)
+   {
+      _failureToolTip = message;
+      if (_failureSubText)
+      {
+         _failureSubText = nil;
+      }
 
-   public void FloatingException(Exception exception) => UiFailure.Exception(exception, this);
+      setToolTip();
+
+      _failureSubText = SubText("failure").Set.GoToUpperLeft(0).Font("Consolas", 8).ForeColor(Color.Black).BackColor(Color.Gold).End;
+
+      Refresh();
+   }
+
+   public void FloatingFailure()
+   {
+      _failureToolTip = nil;
+      _failureSubText = nil;
+
+      setToolTip();
+
+      Refresh();
+   }
+
+   public bool IsFloatingFailure => _failureToolTip;
+
+   public void FloatingException(Exception exception)
+   {
+      _exceptionToolTip = exception.Message;
+      if (_exceptionSubText)
+      {
+         _exceptionSubText = nil;
+      }
+
+      setToolTip();
+
+      _exceptionSubText = SubText("exception").Set.GoToUpperLeft(0).Font("Consolas", 8).ForeColor(Color.White).BackColor(Color.Red).End;
+
+      Refresh();
+   }
+
+   public void FloatingException()
+   {
+      _failureToolTip = nil;
+      _failureSubText = nil;
+
+      setToolTip();
+
+      Refresh();
+   }
+
+   public bool IsFloatingException => _exceptionToolTip;
+
+   public bool HasFloatingFailureOrException => _failureToolTip || _exceptionToolTip;
 }

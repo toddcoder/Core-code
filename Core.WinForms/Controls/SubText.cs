@@ -7,7 +7,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Controls;
 
-public class SubText
+public class SubText : IEquatable<SubText>
 {
    protected Size size;
    protected bool invert;
@@ -76,11 +76,8 @@ public class SubText
       return this;
    }
 
-   public SubText Draw(Graphics graphics, Color foreColor, Color backColor)
+   protected SubText draw(Graphics graphics, Color foreColor, Color backColor)
    {
-      foreColor = _foreColor | foreColor;
-      backColor = _backColor | backColor;
-
       using var font = new Font(FontName, FontSize, FontStyle);
       var location = new Point(X, Y);
       var flags = TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix | TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter;
@@ -106,4 +103,34 @@ public class SubText
 
       return this;
    }
+
+   public SubText Draw(Graphics graphics, Color foreColor, Color backColor)
+   {
+      foreColor = _foreColor | foreColor;
+      backColor = _backColor | backColor;
+
+      return draw(graphics, foreColor, backColor);
+   }
+
+   public Maybe<SubText> Draw(Graphics graphics)
+   {
+      if (_foreColor is (true, var foreColor) && _backColor is (true, var backColor))
+      {
+         return draw(graphics, foreColor, backColor);
+      }
+      else
+      {
+         return nil;
+      }
+   }
+
+   public bool Equals(SubText other) => Id.Equals(other.Id);
+
+   public override bool Equals(object obj) => obj is SubText other && Equals(other);
+
+   public override int GetHashCode() => Id.GetHashCode();
+
+   public static bool operator ==(SubText left, SubText right) => Equals(left, right);
+
+   public static bool operator !=(SubText left, SubText right) => !Equals(left, right);
 }
