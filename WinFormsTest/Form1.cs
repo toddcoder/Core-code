@@ -1,6 +1,6 @@
 ﻿using System.Windows.Forms;
-using Core.Monads;
 using Core.WinForms.Controls;
+using static Core.Monads.MonadFunctions;
 
 namespace WinFormsTest;
 
@@ -24,10 +24,10 @@ public partial class Form1 : Form
       {
          uiAction.FloatingFailure("This has failed");
       }
-      else if (uiAction.IsFloatingFailure)
+      else if (uiAction.FailureToolTip)
       {
          uiAction.FloatingFailure();
-         uiAction.FloatingException(MonadFunctions.fail("This was an exception"));
+         uiAction.FloatingException(fail("This was an exception"));
       }
       else
       {

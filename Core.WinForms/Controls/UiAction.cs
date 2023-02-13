@@ -2003,7 +2003,7 @@ public class UiAction : UserControl
       Refresh();
    }
 
-   public bool IsFloatingFailure => _failureToolTip;
+   public Maybe<string> FailureToolTip => _failureToolTip;
 
    public void FloatingException(Exception exception)
    {
@@ -2030,7 +2030,7 @@ public class UiAction : UserControl
       Refresh();
    }
 
-   public bool IsFloatingException => _exceptionToolTip;
+   public Maybe<string> ExceptionToolTip => _exceptionToolTip;
 
    public bool HasFloatingFailureOrException => _failureToolTip || _exceptionToolTip;
 }
