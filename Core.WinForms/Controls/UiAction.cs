@@ -232,6 +232,7 @@ public class UiAction : UserControl
    protected Maybe<string> _exceptionToolTip;
    protected Maybe<SubText> _failureSubText;
    protected Maybe<SubText> _exceptionSubText;
+   protected Maybe<string> _oldTitle;
 
    public event EventHandler<AutomaticMessageArgs> AutomaticMessage;
    public event EventHandler<PaintEventArgs> Painting;
@@ -397,6 +398,7 @@ public class UiAction : UserControl
       _exceptionToolTip = nil;
       _failureSubText = nil;
       _exceptionSubText = nil;
+      _oldTitle = nil;
    }
 
    protected void activateProcessor(Graphics graphics)
@@ -496,6 +498,7 @@ public class UiAction : UserControl
    {
       if (_failureToolTip is (true, var failureToolTip))
       {
+         _oldTitle = toolTip.ToolTipTitle.NotEmpty();
          toolTip.ToolTipTitle = "failure";
          toolTip.Action = action<object, DrawToolTipEventArgs>((_, e) =>
          {
@@ -506,6 +509,7 @@ public class UiAction : UserControl
       }
       else if (_exceptionToolTip is (true, var exceptionToolTip))
       {
+         _oldTitle = toolTip.ToolTipTitle.NotEmpty();
          toolTip.ToolTipTitle = "exception";
          toolTip.Action = action<object, DrawToolTipEventArgs>((_, e) =>
          {
@@ -516,13 +520,23 @@ public class UiAction : UserControl
       }
       else if (Clickable && ClickText.IsNotEmpty())
       {
-         toolTip.ToolTipTitle = "";
+         if (_oldTitle is (true, var oldTitle))
+         {
+            toolTip.ToolTipTitle = oldTitle;
+            _oldTitle = nil;
+         }
+
          toolTip.Action = nil;
          this.Do(() => toolTip.SetToolTip(this, ClickText));
       }
       else
       {
-         toolTip.ToolTipTitle = "";
+         if (_oldTitle is (true, var oldTitle))
+         {
+            toolTip.ToolTipTitle = oldTitle;
+            _oldTitle = nil;
+         }
+
          toolTip.Action = nil;
          this.Do(() => toolTip.SetToolTip(this, text));
       }
@@ -2048,5 +2062,25 @@ public class UiAction : UserControl
       FloatingException(false);
 
       setToolTip();
+   }
+
+   public string ToolTipTitle
+   {
+      get => toolTip.ToolTipTitle;
+      set
+      {
+         toolTip.ToolTipTitle = value;
+         setToolTip();
+      }
+   }
+
+   public bool ToolTipBox
+   {
+      get => toolTip.ToolTipBox;
+      set
+      {
+         toolTip.ToolTipBox = value;
+         setToolTip();
+      }
    }
 }

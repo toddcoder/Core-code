@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Windows.Forms;
 using Core.WinForms.Controls;
 using static Core.Monads.MonadFunctions;
 
@@ -18,11 +19,11 @@ public partial class Form1 : Form
       uiAction.Click += (_, _) => uiAction.FloatingFailure("Failed!");
    }
 
-   protected void button1_Click(object sender, System.EventArgs e)
+   protected void button1_Click(object sender, EventArgs e)
    {
       if (!uiAction.HasFloatingFailureOrException)
       {
-         uiAction.FloatingFailure("This has failed");
+         uiAction.FloatingFailure("This has failed\r\nOne more line");
       }
       else if (uiAction.FailureToolTip)
       {
@@ -33,5 +34,15 @@ public partial class Form1 : Form
       {
          uiAction.FloatingException();
       }
+   }
+
+   protected void button2_Click(object sender, EventArgs e)
+   {
+      uiAction.ToolTipTitle = "Title";
+   }
+
+   protected void button3_Click(object sender, EventArgs e)
+   {
+      uiAction.Success("Success!");
    }
 }

@@ -49,6 +49,8 @@ public class UiToolTip : ToolTip
       set => _action = value;
    }
 
+   public bool ToolTipBox { get; set; }
+
    protected void onPopUp(object sender, PopupEventArgs e)
    {
       Size getTextSize(string text)
@@ -105,7 +107,8 @@ public class UiToolTip : ToolTip
       {
          Font = font,
          Color = foreColor,
-         Rectangle = bounds
+         Rectangle = bounds,
+         Flags = textFormatFlags
       };
       writer.Write(text, graphics);
    }
@@ -138,8 +141,19 @@ public class UiToolTip : ToolTip
       }
       else
       {
-         DrawTextInRectangle(e.Graphics, e.ToolTipText, font, SystemColors.InfoText, SystemColors.Info, e.Bounds);
-         DrawTitle(e.Graphics, font, SystemColors.Info, SystemColors.InfoText, e.Bounds);
+         var foreColor = Color.White;
+         var backColor = Color.CadetBlue;
+
+         DrawTextInRectangle(e.Graphics, e.ToolTipText, font, foreColor, backColor, e.Bounds);
+         DrawTitle(e.Graphics, font, backColor, foreColor, e.Bounds);
+
+         if (ToolTipBox)
+         {
+            using var pen = new Pen(foreColor);
+            var bounds = e.Bounds;
+            bounds.Inflate(-2, -1);
+            e.Graphics.DrawRectangle(pen, bounds);
+         }
       }
    }
 }
