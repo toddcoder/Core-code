@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using Core.Monads;
 using Core.Strings;
 using static Core.Monads.MonadFunctions;
+using Timer = System.Timers.Timer;
 
 namespace Core.WinForms.Controls;
 
@@ -13,6 +14,7 @@ public class UiToolTip : ToolTip
    protected Font font;
    protected Maybe<Action<object, DrawToolTipEventArgs>> _action;
    protected TextFormatFlags textFormatFlags;
+   protected Timer timer;
 
    public UiToolTip(UiAction uiAction)
    {
@@ -22,6 +24,12 @@ public class UiToolTip : ToolTip
       _action = nil;
       textFormatFlags = TextFormatFlags.VerticalCenter | TextFormatFlags.LeftAndRightPadding | TextFormatFlags.HorizontalCenter |
          TextFormatFlags.NoClipping;
+      timer = new Timer { Interval = 10000 };
+      timer.Elapsed += (_, _) =>
+      {
+         this.uiAction.ClearFloating();
+         timer.Stop();
+      };
 
       OwnerDraw = true;
       IsBalloon = false;
@@ -126,6 +134,7 @@ public class UiToolTip : ToolTip
       if (_action is (true, var action))
       {
          action(sender, e);
+         timer.Start();
       }
       else
       {

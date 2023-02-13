@@ -502,6 +502,7 @@ public class UiAction : UserControl
             toolTip.DrawTextInRectangle(e.Graphics, failureToolTip, toolTip.Font, Color.Black, Color.Gold, e.Bounds);
             toolTip.DrawTitle(e.Graphics, toolTip.Font, Color.Gold, Color.Black, e.Bounds);
          });
+         this.Do(() => toolTip.SetToolTip(this, failureToolTip));
       }
       else if (_exceptionToolTip is (true, var exceptionToolTip))
       {
@@ -511,17 +512,22 @@ public class UiAction : UserControl
             toolTip.DrawTextInRectangle(e.Graphics, exceptionToolTip, toolTip.Font, Color.White, Color.Red, e.Bounds);
             toolTip.DrawTitle(e.Graphics, toolTip.Font, Color.Red, Color.White, e.Bounds);
          });
+         this.Do(() => toolTip.SetToolTip(this, exceptionToolTip));
       }
       else if (Clickable && ClickText.IsNotEmpty())
       {
+         toolTip.ToolTipTitle = "";
          toolTip.Action = nil;
-         toolTip.SetToolTip(this, ClickText);
+         this.Do(() => toolTip.SetToolTip(this, ClickText));
       }
       else
       {
+         toolTip.ToolTipTitle = "";
          toolTip.Action = nil;
-         toolTip.SetToolTip(this, text);
+         this.Do(() => toolTip.SetToolTip(this, text));
       }
+
+      refresh();
    }
 
    public override string Text
@@ -1017,14 +1023,14 @@ public class UiAction : UserControl
          subText.Draw(graphics, foreColor.Value, backColor.Value);
       }
 
-      if (_failureSubText is (true, var failureSubText))
+      /*if (_failureSubText is (true, var failureSubText))
       {
          failureSubText.Draw(graphics);
       }
       else if (_exceptionSubText is (true, var exceptionSubText))
       {
          exceptionSubText.Draw(graphics);
-      }
+      }*/
    }
 
    private void drawClickGlyph(PaintEventArgs e, Rectangle clientRectangle, Color color)
@@ -1980,57 +1986,67 @@ public class UiAction : UserControl
 
    public void FloatingFailure(string message)
    {
+      FloatingFailure(false);
+
       _failureToolTip = message;
-      if (_failureSubText)
-      {
-         _failureSubText = nil;
-      }
-
-      setToolTip();
-
       _failureSubText = SubText("failure").Set.GoToUpperLeft(0).Font("Consolas", 8).ForeColor(Color.Black).BackColor(Color.Gold).End;
 
-      Refresh();
+      setToolTip();
    }
 
-   public void FloatingFailure()
+   public void FloatingFailure(bool set = true)
    {
       _failureToolTip = nil;
+      if (_failureSubText is (true, var failureSubText))
+      {
+         subTexts.Remove(failureSubText.Id);
+      }
+
       _failureSubText = nil;
 
-      setToolTip();
-
-      Refresh();
+      if (set)
+      {
+         setToolTip();
+      }
    }
 
    public Maybe<string> FailureToolTip => _failureToolTip;
 
    public void FloatingException(Exception exception)
    {
+      FloatingException(false);
+
       _exceptionToolTip = exception.Message;
-      if (_exceptionSubText)
-      {
-         _exceptionSubText = nil;
-      }
-
-      setToolTip();
-
       _exceptionSubText = SubText("exception").Set.GoToUpperLeft(0).Font("Consolas", 8).ForeColor(Color.White).BackColor(Color.Red).End;
 
-      Refresh();
+      setToolTip();
    }
 
-   public void FloatingException()
+   public void FloatingException(bool set = true)
    {
-      _failureToolTip = nil;
-      _failureSubText = nil;
+      _exceptionToolTip = nil;
+      if (_exceptionSubText is (true, var exceptionSubText))
+      {
+         subTexts.Remove(exceptionSubText.Id);
+      }
 
-      setToolTip();
+      _exceptionSubText = nil;
 
-      Refresh();
+      if (set)
+      {
+         setToolTip();
+      }
    }
 
    public Maybe<string> ExceptionToolTip => _exceptionToolTip;
 
    public bool HasFloatingFailureOrException => _failureToolTip || _exceptionToolTip;
+
+   public void ClearFloating()
+   {
+      FloatingFailure(false);
+      FloatingException(false);
+
+      setToolTip();
+   }
 }
