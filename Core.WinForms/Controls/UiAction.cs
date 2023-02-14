@@ -419,6 +419,10 @@ public class UiAction : UserControl
       {
          _labelProcessor.Activate(new LabelProcessor(_label, _labelWidth, getFont(), EmptyTextTitle, graphics, ClientRectangle));
       }
+      else
+      {
+         _labelProcessor.Reset();
+      }
 
       switch (type)
       {

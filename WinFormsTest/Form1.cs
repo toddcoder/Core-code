@@ -15,8 +15,9 @@ public partial class Form1 : Form
 
       uiAction = new UiAction(this, true);
       uiAction.SetUp(0, 0, 300, 40, AnchorStyles.Left | AnchorStyles.Right);
-      uiAction.Button("Show Floating Failure");
-      uiAction.Click += (_, _) => uiAction.FloatingFailure("Failed!");
+      uiAction.Label("Alpha").End.Message("Label Removal");
+      uiAction.Click += (_, _) => uiAction.Label().End.Success("Label Removed");
+      uiAction.ClickText = "Remove label";
    }
 
    protected void button1_Click(object sender, EventArgs e)
