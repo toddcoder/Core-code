@@ -1,6 +1,7 @@
 ﻿using System;
 using Core.Assertions;
 using Core.Enumerables;
+using Core.Numbers;
 using Core.Strings;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Core.Arrays.ArrayFunctions;
@@ -14,16 +15,16 @@ public class StringExtensionTests
    public void PluralTest()
    {
       var message = "There (is,are) # book(s)";
-      Console.WriteLine(message.Plural(1));
-      Console.WriteLine(message.Plural(2));
+      Console.WriteLine(1.Plural(message));
+      Console.WriteLine(2.Plural(message));
 
       message = "child(ren)";
-      Console.WriteLine(message.Plural(1));
-      Console.WriteLine(message.Plural(2));
+      Console.WriteLine(1.Plural(message));
+      Console.WriteLine(2.Plural(message));
 
       message = @"\#G(OO,EE)SE";
-      Console.WriteLine(message.Plural(1));
-      Console.WriteLine(message.Plural(2));
+      Console.WriteLine(1.Plural(message));
+      Console.WriteLine(2.Plural(message));
    }
 
    protected static void test(string name, string camelResult, string pascalResult)

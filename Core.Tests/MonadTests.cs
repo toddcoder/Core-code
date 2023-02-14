@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Core.DataStructures;
 using Core.Dates.DateIncrements;
 using Core.Monads;
+using Core.Numbers;
 using Core.Strings;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Core.Applications.Async.AsyncFunctions;
@@ -328,7 +329,7 @@ public class MonadTests
    public void ResultIfTest()
    {
       var date = DateTime.Now;
-      var _result = result<string>() & date.Second < 30 & "seconds < 30" & fail($"Only {"second(s)".Plural(date.Second)}");
+      var _result = result<string>() & date.Second < 30 & "seconds < 30" & fail(date.Second.Plural($"Only {"second(s)"}"));
       if (_result is (true, var result))
       {
          Console.WriteLine(result);

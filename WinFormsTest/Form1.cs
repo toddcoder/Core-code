@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Windows.Forms;
 using Core.Dates.DateIncrements;
+using Core.Numbers;
 using Core.Strings;
 using Core.WinForms.Controls;
 using static Core.Monads.MonadFunctions;
@@ -31,7 +32,7 @@ public partial class Form1 : Form
             if (index % 10 == 0 || sin < 0)
             {
                errorCount++;
-               var errorText = "error(s)".Plural(errorCount);
+               var errorText = errorCount.Plural("error(s)");
                if (!uiAction.ProgressSubText)
                {
                   uiAction.ProgressSubText = uiAction.SubText(errorText).Set.GoToMiddleLeft(100).ForeColor(Color.White).BackColor(Color.Red).End;

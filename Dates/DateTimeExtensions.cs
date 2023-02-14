@@ -275,13 +275,13 @@ public static class DateTimeExtensions
    private static Maybe<string> differenceInMinutes(int minutes) => minutes switch
    {
       0 => "Just now",
-      < 60 => "minute(s) ago".Plural(minutes),
+      < 60 => minutes.Plural("minute(s) ago"),
       _ => nil
    };
 
    private static Maybe<string> differenceInHours(int hours) => hours switch
    {
-      < 24 => "hour(s) ago".Plural(hours),
+      < 24 => hours.Plural("hour(s) ago"),
       _ => nil
    };
 

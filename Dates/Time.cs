@@ -121,27 +121,27 @@ public class Time : IComparable<DateTime>, IComparable<Time>
 
       if (days > 0)
       {
-         list.Add("day(s)".Plural(days));
+         list.Add(days.Plural("day(s)"));
       }
 
       if (hours > 0)
       {
-         list.Add("hr(s)".Plural(hours));
+         list.Add(hours.Plural("hr(s)"));
       }
 
       if (minutes > 0)
       {
-         list.Add("min(s)".Plural(minutes));
+         list.Add(minutes.Plural("min(s)"));
       }
 
       if (seconds > 0)
       {
-         list.Add("sec(s)".Plural(seconds));
+         list.Add(seconds.Plural("sec(s)"));
       }
 
-      if (_milliseconds && _milliseconds > 0)
+      if (_milliseconds is (true, var milliseconds and > 0))
       {
-         list.Add("msec(s)".Plural(_milliseconds));
+         list.Add(milliseconds.Plural("msec(s)"));
       }
 
       if (list.Count == 0)

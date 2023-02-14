@@ -3,9 +3,9 @@ using Core.Applications;
 using Core.Configurations;
 using Core.Internet.Smtp;
 using Core.Monads;
+using Core.Numbers;
 using Core.Services.Loggers;
 using Core.Services.Scheduling;
-using Core.Strings;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Services.Plugins;
@@ -125,7 +125,7 @@ public abstract class Plugin
             {
                retries = jobSetting.Maybe.Int32("retries") | 0;
                SetRetrier();
-               finalExceptionMessage = $"All {retries} {"retr(y|ies)".Plural(retries)} failed";
+               finalExceptionMessage = $"All {retries} {retries.Plural("retr(y|ies)")} failed";
 
                var namedExceptions = new NamedExceptions(address, name, exceptionsTitle, retries);
 

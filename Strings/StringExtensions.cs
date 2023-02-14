@@ -694,6 +694,7 @@ public static class StringExtensions
 
    public static string ToLower1(this string source) => source.Map(s => s.Keep(1).ToLower() + s.Drop(1));
 
+   [Obsolete("Use int.Plural(string)")]
    public static string Plural(this string source, int number, bool omitNumber = false)
    {
       if (source.IsEmpty())
