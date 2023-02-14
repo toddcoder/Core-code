@@ -384,7 +384,7 @@ public class UiAction : UserControl
 
       legends = new MaybeStack<SubText>();
       _working = nil;
-      EmptyTextTitle = "none";
+      EmptyTextTitle = nil;
 
       workingTimer = new Timer { Interval = 1000 };
       workingTimer.Tick += (_, _) =>
