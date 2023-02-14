@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Windows.Forms;
 using Core.Dates.DateIncrements;
+using Core.Strings;
 using Core.WinForms.Controls;
 using static Core.Monads.MonadFunctions;
 
@@ -16,6 +17,8 @@ public partial class Form1 : Form
       InitializeComponent();
 
       var index = 0;
+      var errorCount = 0;
+
       uiAction = new UiAction(this, true);
       uiAction.SetUp(0, 0, 300, 40, AnchorStyles.Left | AnchorStyles.Right);
       uiAction.Message("Progress");
@@ -24,11 +27,23 @@ public partial class Form1 : Form
          if (++index <= 100)
          {
             var sin = Math.Sin(index);
-            uiAction.Progress(sin.ToString("##.000"));
-            if (index == 10 && !uiAction.ProgressSubText)
+
+            if (index % 10 == 0 || sin < 0)
             {
-               uiAction.ProgressSubText = uiAction.SubText("error").Set.GoToMiddleLeft(100).ForeColor(Color.White).BackColor(Color.Red).End;
+               errorCount++;
+               var errorText = "error(s)".Plural(errorCount);
+               if (!uiAction.ProgressSubText)
+               {
+                  uiAction.ProgressSubText = uiAction.SubText(errorText).Set.GoToMiddleLeft(100).ForeColor(Color.White).BackColor(Color.Red).End;
+               }
+
+               if (uiAction.ProgressSubText is (true, var progressSubText))
+               {
+                  progressSubText.Text = errorText;
+               }
             }
+
+            uiAction.Progress(sin.ToString("##.000"));
          }
          else
          {
