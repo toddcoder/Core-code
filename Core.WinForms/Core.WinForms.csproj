@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ColorType.cs" />
+    <Compile Include="ComboBoxExtensions.cs" />
     <Compile Include="Consoles\CommandLineHistory.cs" />
     <Compile Include="Consoles\ConsoleWriter.cs" />
     <Compile Include="Consoles\IOStatusType.cs" />
