@@ -245,6 +245,7 @@ public class UiAction : UserControl
    protected Maybe<SubText> _failureSubText;
    protected Maybe<SubText> _exceptionSubText;
    protected Maybe<string> _oldTitle;
+   protected Maybe<SubText> _progressSubText;
 
    public event EventHandler<AutomaticMessageArgs> AutomaticMessage;
    public event EventHandler<PaintEventArgs> Painting;
@@ -359,7 +360,6 @@ public class UiAction : UserControl
          _busyProcessor.Reset();
          _labelProcessor.Reset();
       };
-      ProgressSubText = nil;
       _percentage = nil;
 
       _foreColor = nil;
@@ -412,6 +412,7 @@ public class UiAction : UserControl
       _failureSubText = nil;
       _exceptionSubText = nil;
       _oldTitle = nil;
+      _progressSubText = nil;
    }
 
    protected void activateProcessor(Graphics graphics)
@@ -949,15 +950,8 @@ public class UiAction : UserControl
       switch (type)
       {
          case UiActionType.ProgressIndefinite:
-         {
             writer.Value.Write(text, e.Graphics);
-            if (ProgressSubText is (true, var progressSubText))
-            {
-               progressSubText.Draw(e.Graphics);
-            }
-
             break;
-         }
          case UiActionType.Busy when _busyProcessor is (true, var busyProcessor):
             busyProcessor.OnPaint(e.Graphics);
             break;
@@ -972,6 +966,12 @@ public class UiAction : UserControl
             writer.Value.Rectangle = progressDefiniteProcessor.TextRectangle;
             writer.Value.Color = getForeColor();
             writer.Value.Write(text, e.Graphics);
+
+            if (_progressSubText is (true, var progressSubText))
+            {
+               progressSubText.Draw(e.Graphics);
+            }
+
             break;
          }
          case UiActionType.BusyText when _busyTextProcessor is (true, var busyTextProcessor):
@@ -1147,6 +1147,7 @@ public class UiAction : UserControl
             var rectangle = new Rectangle(location, size);
             using var cornflowerBlueBrush = new SolidBrush(Color.CornflowerBlue);
             fillRectangle(pevent.Graphics, cornflowerBlueBrush, rectangle);
+
             break;
          }
          case UiActionType.Unselected:
@@ -2114,5 +2115,17 @@ public class UiAction : UserControl
       }
    }
 
-   public Maybe<SubText> ProgressSubText { get; set; }
+   public Maybe<SubText> ProgressSubText
+   {
+      get => _progressSubText;
+      set
+      {
+         if (_progressSubText is (true, var progressSubText))
+         {
+            RemoveSubText(progressSubText);
+         }
+
+         _progressSubText = value;
+      }
+   }
 }

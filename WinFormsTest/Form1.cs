@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
+using Core.Dates.DateIncrements;
 using Core.WinForms.Controls;
 using static Core.Monads.MonadFunctions;
 
@@ -13,10 +15,32 @@ public partial class Form1 : Form
    {
       InitializeComponent();
 
+      var index = 0;
       uiAction = new UiAction(this, true);
       uiAction.SetUp(0, 0, 300, 40, AnchorStyles.Left | AnchorStyles.Right);
-      uiAction.Label("Alpha").End.Message("Label Removal");
-      uiAction.Click += (_, _) => uiAction.Label().End.Success("Label Removed");
+      uiAction.Message("Progress");
+      uiAction.Tick += (_, _) =>
+      {
+         if (++index <= 100)
+         {
+            var sin = Math.Sin(index);
+            uiAction.Progress(sin.ToString("##.000"));
+            if (index == 10 && !uiAction.ProgressSubText)
+            {
+               uiAction.ProgressSubText = uiAction.SubText("error").Set.GoToMiddleLeft(100).ForeColor(Color.White).BackColor(Color.Red).End;
+            }
+         }
+         else
+         {
+            uiAction.Success("Done");
+            uiAction.StopTimer();
+         }
+      };
+      uiAction.Click += (_, _) =>
+      {
+         uiAction.Maximum = 100;
+         uiAction.StartTimer(1.Second());
+      };
       uiAction.ClickText = "Remove label";
    }
 
