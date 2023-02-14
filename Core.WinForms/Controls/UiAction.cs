@@ -1981,6 +1981,8 @@ public class UiAction : UserControl
 
    public LabelSetter Label(string label) => new LabelSetter(this).Label(label);
 
+   public LabelSetter Label() => new LabelSetter(this).Label();
+
    public void Http(string url)
    {
       isUrlGood = HttpWriter.IsGoodUrl(url);
