@@ -70,6 +70,8 @@ public static class MonadExtensions
 
    public static Maybe<string> NotEmpty(this string text) => maybe(text.IsNotEmpty(), text.Some);
 
+   public static Maybe<int> NotNegative(this int number) => maybe<int>() & number > -1 & number;
+
    public static Maybe<Type> UnderlyingType(this object obj)
    {
       if (obj is null)
