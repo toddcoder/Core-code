@@ -100,13 +100,25 @@ public class UiAction : UserControl
 
       public LabelSetter Label(string label)
       {
-         uiAction._label = label;
+         uiAction._label = label.NotEmpty();
+         return this;
+      }
+
+      public LabelSetter Label()
+      {
+         uiAction._label = nil;
          return this;
       }
 
       public LabelSetter LabelWidth(int labelWidth)
       {
          uiAction._labelWidth = labelWidth;
+         return this;
+      }
+
+      public LabelSetter LabelWidth()
+      {
+         uiAction._labelWidth = nil;
          return this;
       }
 
@@ -1405,7 +1417,11 @@ public class UiAction : UserControl
 
    public void RemoveSubText(SubText subText) => RemoveSubText(subText.Id);
 
-   public void ClearSubTexts() => subTexts.Clear();
+   public void ClearSubTexts()
+   {
+      subTexts.Clear();
+      Refresh();
+   }
 
    public void RunAsync()
    {
