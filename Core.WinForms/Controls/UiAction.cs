@@ -359,6 +359,7 @@ public class UiAction : UserControl
          _busyProcessor.Reset();
          _labelProcessor.Reset();
       };
+      ProgressSubText = nil;
       _percentage = nil;
 
       _foreColor = nil;
@@ -948,8 +949,15 @@ public class UiAction : UserControl
       switch (type)
       {
          case UiActionType.ProgressIndefinite:
+         {
             writer.Value.Write(text, e.Graphics);
+            if (ProgressSubText is (true, var progressSubText))
+            {
+               progressSubText.Draw(e.Graphics);
+            }
+
             break;
+         }
          case UiActionType.Busy when _busyProcessor is (true, var busyProcessor):
             busyProcessor.OnPaint(e.Graphics);
             break;
@@ -2105,4 +2113,6 @@ public class UiAction : UserControl
          setToolTip();
       }
    }
+
+   public Maybe<SubText> ProgressSubText { get; set; }
 }
