@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Drawing;
 using System.Windows.Forms;
-using Core.Dates.DateIncrements;
+using Core.Computers;
+using Core.Dates;
 using Core.Numbers;
-using Core.Strings;
 using Core.WinForms.Controls;
 using static Core.Monads.MonadFunctions;
 
@@ -17,47 +16,29 @@ public partial class Form1 : Form
    {
       InitializeComponent();
 
-      var index = 0;
-      var errorCount = 0;
-
       uiAction = new UiAction(this, true);
-      uiAction.SetUp(0, 0, 300, 40, AnchorStyles.Left | AnchorStyles.Right);
+      uiAction.SetUpInPanel(panel1);
       uiAction.Message("Progress");
-      uiAction.Tick += (_, _) =>
-      {
-         if (++index <= 100)
-         {
-            var sin = Math.Sin(index);
 
-            if (index % 10 == 0 || sin < 0)
-            {
-               errorCount++;
-               var errorText = errorCount.Plural("error(s)");
-               if (!uiAction.ProgressSubText)
-               {
-                  uiAction.ProgressSubText = uiAction.SubText(errorText).Set.GoToMiddleLeft(100).ForeColor(Color.White).BackColor(Color.Red).End;
-               }
+      FileName sourceFile = @"C:\Temp\GoogleChromeStandaloneEnterprise_108.0.5359.125_x64_tw60560-67391.msi";
+      FolderName targetFolder = @"C:\Users\tebennett\Working";
 
-               if (uiAction.ProgressSubText is (true, var progressSubText))
-               {
-                  progressSubText.Text = errorText;
-               }
-            }
-
-            uiAction.Progress(sin.ToString("##.000"));
-         }
-         else
-         {
-            uiAction.Success("Done");
-            uiAction.StopTimer();
-         }
-      };
       uiAction.Click += (_, _) =>
       {
-         uiAction.Maximum = 100;
-         uiAction.StartTimer(1.Second());
+         sourceFile.Percentage += (_, e) => uiAction.Progress((int)e.Percentage);
+         sourceFile.Finished += (_, e) =>
+         {
+            uiAction.SubText(e.BytesTransferred.ByteSize()).Set.GoToUpperLeft(8);
+            uiAction.SubText(e.ElapsedTime.ToLongString(true)).Set.GoToUpperRight(8);
+         };
+         uiAction.RunWorkerAsync();
       };
-      uiAction.ClickText = "Remove label";
+      uiAction.ClickText = "CopyFile";
+      uiAction.DoWork += (_, _) =>
+      {
+         var _result = sourceFile.CopyToNotify(targetFolder);
+         uiAction.Result(_result.Map(_ => "Copied"));
+      };
    }
 
    protected void button1_Click(object sender, EventArgs e)

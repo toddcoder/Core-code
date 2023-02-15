@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -162,6 +163,8 @@ public class FileName : IComparable, IComparable<FileName>, IEquatable<FileName>
    protected StringBuilder buffer;
    protected bool useBuffer;
 
+   public event EventHandler<FileCopyProgressArgs> Percentage;
+   public event EventHandler<FileCopyFinishedArgs> Finished;
    public FileName(FolderName folder, string name, string extension) => initialize(folder, name, extension);
 
    public FileName(FolderName folder, string name)
@@ -1095,5 +1098,84 @@ public class FileName : IComparable, IComparable<FileName>, IEquatable<FileName>
 
       reader?.Dispose();
       file?.Dispose();
+   }
+
+   protected enum CopyProgressResult : uint
+   {
+      ProgressContinue = 0,
+      ProgressCancel = 1,
+      ProgressStop = 2,
+      ProgressQuiet = 3
+   }
+
+   protected enum CopyProgressCallbackReason : uint
+   {
+      CallbackChunkFinished = 0x00000000,
+      CallbackStreamSwitch = 0x00000001
+   }
+
+   [Flags]
+   protected enum CopyFileFlags : uint
+   {
+      CopyFileFailIfExists = 0x00000001,
+      CopyFileNoBuffering = 0x00001000,
+      CopyFileRestartable = 0x00000002,
+      CopyFileOpenSourceForWrite = 0x00000004,
+      CopyFileAllowDecryptedDestination = 0x00000008
+   }
+
+   protected delegate CopyProgressResult CopyProgressRoutine(long totalFileSize, long totalBytesTransferred, long streamSize,
+      long streamBytesTransferred, uint streamNumber, CopyProgressCallbackReason callbackReason, IntPtr sourceFile, IntPtr destinationFile,
+      IntPtr data);
+
+   [DllImport("kernel32", SetLastError = true)]
+   protected static extern bool CopyFileEx(string existingFile, string newFileName, CopyProgressRoutine progressRoutine, IntPtr data, ref int cancel,
+      CopyFileFlags copyFlags);
+
+   public Result<Unit> CopyToNotify(FileName targetFile, bool overwrite = true, bool noBuffering = false)
+   {
+      var stopwatch = new Stopwatch();
+
+      CopyProgressResult copyProgressHandler(long total, long transferred, long streamSize, long streamByteTransferred, uint streamNumber,
+         CopyProgressCallbackReason reason, IntPtr sourceFile, IntPtr destinationFile, IntPtr data)
+      {
+         if (reason == CopyProgressCallbackReason.CallbackChunkFinished)
+         {
+            Percentage?.Invoke(this, new FileCopyProgressArgs(transferred / (double)total * 100));
+         }
+
+         if (transferred >= total)
+         {
+            Finished?.Invoke(this, new FileCopyFinishedArgs(total, stopwatch.Elapsed));
+         }
+
+         return CopyProgressResult.ProgressContinue;
+      }
+
+      try
+      {
+         stopwatch.Start();
+
+         Bits32<CopyFileFlags> copyFileFlags = CopyFileFlags.CopyFileRestartable;
+         copyFileFlags[CopyFileFlags.CopyFileFailIfExists] = !overwrite;
+         copyFileFlags[CopyFileFlags.CopyFileNoBuffering] = noBuffering;
+
+         var cancel = 0;
+         var result = CopyFileEx(fullPath, targetFile.fullPath, copyProgressHandler, IntPtr.Zero, ref cancel, copyFileFlags);
+
+         stopwatch.Stop();
+
+         return result ? unit : new Win32Exception(Marshal.GetLastWin32Error());
+      }
+      catch (Exception exception)
+      {
+         return exception;
+      }
+   }
+
+   public Result<Unit> CopyToNotify(FolderName folder, bool overwrite = true, bool noBuffering = false)
+   {
+      var targetFile = folder + NameExtension;
+      return CopyToNotify(targetFile, overwrite, noBuffering);
    }
 }

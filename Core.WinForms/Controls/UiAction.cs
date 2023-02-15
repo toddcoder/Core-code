@@ -152,7 +152,8 @@ public class UiAction : UserControl
          [UiActionType.ControlLabel] = Color.White,
          [UiActionType.Button] = Color.Black,
          [UiActionType.Console] = Color.White,
-         [UiActionType.Busy] = Color.White
+         [UiActionType.Busy] = Color.White,
+         [UiActionType.MuteProgress] = Color.White
       };
       globalBackColors = new Hash<UiActionType, Color>
       {
@@ -812,6 +813,19 @@ public class UiAction : UserControl
       refresh();
    }
 
+   public void Progress(int percentage)
+   {
+      _percentage = percentage;
+
+      EmptyTextTitle = nil;
+      Text = "";
+      type = UiActionType.MuteProgress;
+
+      MessageShown?.Invoke(this, new MessageShownArgs("", type));
+
+      refresh();
+   }
+
    public void StartStopwatch() => stopwatch.Value.Start();
 
    public void StopStopwatch() => stopwatch.Value.Stop();
@@ -936,7 +950,7 @@ public class UiAction : UserControl
 
       var style = type switch
       {
-         UiActionType.Busy or UiActionType.BusyText or UiActionType.ProgressDefinite => CheckStyle.None,
+         UiActionType.Busy or UiActionType.BusyText or UiActionType.ProgressDefinite or UiActionType.MuteProgress => CheckStyle.None,
          _ => CheckStyle
       };
       var writer = new Lazy<UiActionWriter>(() => new UiActionWriter(Center, style, EmptyTextTitle)
@@ -966,6 +980,18 @@ public class UiAction : UserControl
             writer.Value.Rectangle = progressDefiniteProcessor.TextRectangle;
             writer.Value.Color = getForeColor();
             writer.Value.Write(text, e.Graphics);
+
+            if (_progressSubText is (true, var progressSubText))
+            {
+               progressSubText.Draw(e.Graphics);
+            }
+
+            break;
+         }
+         case UiActionType.MuteProgress:
+         {
+            var percentText = $"{getPercentage()}%";
+            writer.Value.Write(percentText, e.Graphics);
 
             if (_progressSubText is (true, var progressSubText))
             {
@@ -1037,7 +1063,7 @@ public class UiAction : UserControl
 
    protected void drawAllSubTexts(Graphics graphics, UiActionType type)
    {
-      if (type is UiActionType.Busy or UiActionType.BusyText or UiActionType.ProgressDefinite)
+      if (type is UiActionType.Busy or UiActionType.BusyText or UiActionType.ProgressDefinite or UiActionType.MuteProgress)
       {
          return;
       }
@@ -1060,15 +1086,6 @@ public class UiAction : UserControl
       {
          subText.Draw(graphics, foreColor.Value, backColor.Value);
       }
-
-      /*if (_failureSubText is (true, var failureSubText))
-      {
-         failureSubText.Draw(graphics);
-      }
-      else if (_exceptionSubText is (true, var exceptionSubText))
-      {
-         exceptionSubText.Draw(graphics);
-      }*/
    }
 
    private void drawClickGlyph(PaintEventArgs e, Rectangle clientRectangle, Color color)
@@ -1144,6 +1161,20 @@ public class UiAction : UserControl
             var percentWidth = getPercentage(width);
             var location = textRectangle.Location;
             var size = new Size(percentWidth, textRectangle.Height);
+            var rectangle = new Rectangle(location, size);
+            using var cornflowerBlueBrush = new SolidBrush(Color.CornflowerBlue);
+            fillRectangle(pevent.Graphics, cornflowerBlueBrush, rectangle);
+
+            break;
+         }
+         case UiActionType.MuteProgress:
+         {
+            using var coralBrush = new SolidBrush(Color.Coral);
+            fillRectangle(pevent.Graphics, coralBrush, clientRectangle);
+            var width = clientRectangle.Width;
+            var percentWidth = getPercentage(width);
+            var location = clientRectangle.Location;
+            var size = new Size(percentWidth, clientRectangle.Height);
             var rectangle = new Rectangle(location, size);
             using var cornflowerBlueBrush = new SolidBrush(Color.CornflowerBlue);
             fillRectangle(pevent.Graphics, cornflowerBlueBrush, rectangle);

@@ -180,6 +180,8 @@
     <Compile Include="Computers\ComputerExtensions.cs" />
     <Compile Include="Computers\ComputerFunctions.cs" />
     <Compile Include="Computers\FileArgs.cs" />
+    <Compile Include="Computers\FileCopyFinishedArgs.cs" />
+    <Compile Include="Computers\FileCopyProgressArgs.cs" />
     <Compile Include="Computers\FileExceptionArgs.cs" />
     <Compile Include="Computers\FileFolderExtensions.cs" />
     <Compile Include="Computers\FileNameWriter.cs" />

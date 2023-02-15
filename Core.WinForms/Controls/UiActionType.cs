@@ -17,9 +17,9 @@ public enum UiActionType
    Automatic,
    Disabled,
    Caution,
-   Labeled,
    ControlLabel,
    Button,
    Http,
-   Console
+   Console,
+   MuteProgress
 }
