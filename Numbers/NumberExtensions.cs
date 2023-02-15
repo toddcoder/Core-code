@@ -4,8 +4,11 @@ using System.Text;
 using Core.Assertions;
 using Core.Enumerables;
 using Core.Matching;
+using Core.Monads;
 using Core.Strings;
 using static System.Math;
+using static Core.Monads.Lazy.LazyMonads;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Numbers;
 
@@ -330,4 +333,62 @@ public static class NumberExtensions
          return source;
       }
    }
+
+   private static string[] units =
+   {
+      "Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen",
+      "Sixteen", "Seventeen", "Eighteen", "Nineteen"
+   };
+
+   private static string[] tens =
+   {
+      "", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"
+   };
+
+   public static Result<string> ToWords(this double amount)
+   {
+      try
+      {
+         var intAmount = (long)amount;
+         var decAmount = (long)Round((amount - intAmount) * 100);
+         var _words = intAmount.ToWords();
+         var _decimals = lazy.result<string>();
+         if (_words is (true, var words))
+         {
+            if (decAmount == 0)
+            {
+               return words;
+            }
+            else if (_decimals.ValueOf(decAmount.ToWords()) is (true, var decimals))
+            {
+               return $"{words} And {decimals}";
+            }
+            else
+            {
+               return _decimals.Exception;
+            }
+         }
+         else
+         {
+            return _words;
+         }
+      }
+      catch (Exception exception)
+      {
+         return exception;
+      }
+   }
+
+   private static string convert(long i) => i switch
+   {
+      < 20L => units[i],
+      < 100L => tens[i / 10] + (i % 10 > 0 ? " " + convert(i % 10) : ""),
+      < 1_000L => units[i / 100] + " Hundred" + (i % 100 > 0 ? ", " + convert(i % 100) : ""),
+      < 10_000L => convert(i / 1_000) + " Thousand" + (i % 1_000 > 0 ? ", " + convert(i % 1_000) : ""),
+      < 100_000L => convert(i / 10_000) + " Million" + (i % 10_000 > 0 ? ", " + convert(i % 10_000) : ""),
+      < 1_000_000L => convert(i / 100_000) + " Billion" + (i % 100_000 > 0 ? ", " + convert(i % 100_000) : ""),
+      _ => throw fail($"{i} is not handled")
+   };
+
+   public static Result<string> ToWords(this long amount) => convert(amount);
 }
