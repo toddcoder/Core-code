@@ -112,6 +112,7 @@
     </Compile>
     <Compile Include="Controls\ValidatedArgs.cs" />
     <Compile Include="ControlWrappers\MessageStyle.cs" />
+    <Compile Include="DialogFunctions.cs" />
     <Compile Include="Documents\Colorizer.cs" />
     <Compile Include="Documents\ConsoleConfiguration.cs" />
     <Compile Include="Documents\ConsoleDocument.cs" />
