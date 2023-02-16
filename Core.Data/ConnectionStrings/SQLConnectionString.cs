@@ -30,7 +30,7 @@ public class SqlConnectionString : IConnectionString
    public static string GetConnectionString(string server, string database, string application, string user, string password,
       bool readOnly = false)
    {
-      var baseValue = GetConnectionString(server, database, application, false, readOnly);
+      var baseValue = GetConnectionString(server, database, application, user.IsEmpty() && password.IsEmpty(), readOnly);
       return user.IsNotEmpty() && password.IsNotEmpty() ? $"{baseValue}User ID={user}; Password={password}" : baseValue;
    }
 
