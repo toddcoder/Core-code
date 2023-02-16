@@ -71,13 +71,13 @@ public class SubTextSet
       return this;
    }
 
-   public SubTextSet Outline(bool outline)
+   public SubTextSet Outline(bool outline = true)
    {
       subText.Outline = outline;
       return this;
    }
 
-   public SubTextSet Invert(bool invert)
+   public SubTextSet Invert(bool invert = true)
    {
       subText.Invert = invert;
       return this;
@@ -150,6 +150,12 @@ public class SubTextSet
 
       return X(x).Y(y);
    }
+
+   public SubTextSet Small() => FontSize(8);
+
+   public SubTextSet Italic() => FontStyle(System.Drawing.FontStyle.Italic);
+
+   public SubTextSet Bold() => FontStyle(System.Drawing.FontStyle.Bold);
 
    public SubText End => subText;
 }

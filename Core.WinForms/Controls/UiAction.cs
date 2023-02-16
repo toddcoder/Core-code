@@ -1317,7 +1317,10 @@ public class UiAction : UserControl
 
    protected int getPercentage() => _percentage | (() => (int)((float)value / maximum * 100));
 
-   protected int getPercentage(int width) => (int)((float)value / maximum * width);
+   protected int getPercentage(int width)
+   {
+      return _percentage.Map(p => (int)(width * (p / 100.0))) | (() => (int)((float)value / maximum * width));
+   }
 
    public int Index(bool increment) => increment ? index++ : index;
 
