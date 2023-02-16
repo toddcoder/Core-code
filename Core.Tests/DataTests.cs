@@ -243,4 +243,21 @@ public class DataTests
       Console.WriteLine(user);
       Console.WriteLine(password);
    }
+
+   [TestMethod]
+   public void ConnectionStringBuildTest()
+   {
+      var builder = new SqlSetupBuilder();
+      _ = builder + server(Environment.MachineName) + database("master") + applicationName("MergePalette");
+      _ = builder + commandText("sp_RestoreDBFromSnapshot") + commandTimeout(30.Minutes());
+      _ = builder + parameter("@p_strDBNameTo") + type(typeof(string)) + signature("DatabaseName");
+      _ = builder + parameter("@p_strRestoreFileName") + type(typeof(string)) + signature("FileName");
+      _ = builder + parameter("@p_strFQNRestoreFolderName") + type(typeof(string)) + signature("FolderName");
+      _ = builder + parameter("@p_Verbose") + type(typeof(int)) + signature("Verbose");
+      var _setup = builder.Build();
+      if (_setup is (true, var setup))
+      {
+         Console.WriteLine(setup.ConnectionString.ConnectionString);
+      }
+   }
 }

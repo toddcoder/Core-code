@@ -43,7 +43,7 @@ public class SqlConnectionString : IConnectionString
       }
       else
       {
-         return GetConnectionString(server, database, application, readOnly);
+         return GetConnectionString(server, database, application, true, readOnly);
       }
    }
 
