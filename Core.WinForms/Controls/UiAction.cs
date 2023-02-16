@@ -521,6 +521,7 @@ public class UiAction : UserControl
          {
             _oldTitle = toolTip.ToolTipTitle.NotEmpty();
          }
+
          toolTip.ToolTipTitle = "failure";
          toolTip.Action = action<object, DrawToolTipEventArgs>((_, e) =>
          {
@@ -535,6 +536,7 @@ public class UiAction : UserControl
          {
             _oldTitle = toolTip.ToolTipTitle.NotEmpty();
          }
+
          toolTip.ToolTipTitle = "exception";
          toolTip.Action = action<object, DrawToolTipEventArgs>((_, e) =>
          {
@@ -1502,7 +1504,7 @@ public class UiAction : UserControl
    public void RunWorkerAsync()
    {
       var args = new InitializeArgs();
-      Initialize?.Invoke(this, args);
+      this.Do(() => Initialize?.Invoke(this, args));
       if (!args.Cancel && !backgroundWorker.Value.IsBusy)
       {
          var _argument = args.Argument;
@@ -1520,7 +1522,7 @@ public class UiAction : UserControl
    public void RunWorkerAsync(object argument)
    {
       var args = new InitializeArgs { Argument = argument };
-      Initialize?.Invoke(this, args);
+      this.Do(() => Initialize?.Invoke(this, args));
       if (!args.Cancel && !backgroundWorker.Value.IsBusy)
       {
          backgroundWorker.Value.RunWorkerAsync(argument);
