@@ -15,6 +15,10 @@ public class SqlSetupBuilderParameters
 
       public static ApplicationName applicationName(string value) => new(value);
 
+      public static User user(string value) => new(value);
+
+      public static Password password(string value) => new(value);
+
       public static CommandText commandText(string value) => new(value);
 
       public static ParameterName parameter(string value) => new(value);
@@ -100,6 +104,20 @@ public class SqlSetupBuilderParameters
    public sealed class ApplicationName : StringParameter, IConnectionStringParameter
    {
       public ApplicationName(string value) : base(value)
+      {
+      }
+   }
+
+   public sealed class User : StringParameter, IConnectionStringParameter
+   {
+      public User(string value) : base(value)
+      {
+      }
+   }
+
+   public sealed class Password : StringParameter, IConnectionStringParameter
+   {
+      public Password(string value) : base(value)
       {
       }
    }

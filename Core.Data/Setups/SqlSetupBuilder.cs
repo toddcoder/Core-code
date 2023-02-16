@@ -26,6 +26,8 @@ public class SqlSetupBuilder
          SqlSetupBuilderParameters.Database database => connectionStringBuilder.Database(database),
          SqlSetupBuilderParameters.ReadOnly readOnly => connectionStringBuilder.ReadOnly(readOnly),
          SqlSetupBuilderParameters.Server server => connectionStringBuilder.Server(server),
+         SqlSetupBuilderParameters.User user => connectionStringBuilder.User(user),
+         SqlSetupBuilderParameters.Password password => connectionStringBuilder.Password(password),
          _ => throw new ArgumentOutOfRangeException(nameof(parameter))
       };
    }

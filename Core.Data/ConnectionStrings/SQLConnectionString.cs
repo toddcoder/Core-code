@@ -63,7 +63,7 @@ public class SqlConnectionString : IConnectionString
       return (server, database, application, user, password);
    }
 
-   public static Result<SqlConnectionString> FromConnection(Connection connection, bool readOnly = false)
+   public static Result<SqlConnectionString> FromConnection(Connection connection)
    {
       var _connectionString = connection.Maybe()["connection"];
       if (_connectionString)
