@@ -458,7 +458,7 @@ public class UiAction : UserControl
       var size = TextRenderer.MeasureText("working", font);
       var y = ClientSize.Height - size.Height - 4;
 
-      return new SubText("working", 4, y, ClientSize).Set.FontSize(8).Invert(true).Outline(true).End;
+      return new SubText("working", 4, y, ClientSize).Set.FontSize(8).Invert().Outline().End;
    }
 
    public UiActionType Type
@@ -517,7 +517,10 @@ public class UiAction : UserControl
    {
       if (_failureToolTip is (true, var failureToolTip))
       {
-         _oldTitle = toolTip.ToolTipTitle.NotEmpty();
+         if (!toolTip.Action)
+         {
+            _oldTitle = toolTip.ToolTipTitle.NotEmpty();
+         }
          toolTip.ToolTipTitle = "failure";
          toolTip.Action = action<object, DrawToolTipEventArgs>((_, e) =>
          {
@@ -528,7 +531,10 @@ public class UiAction : UserControl
       }
       else if (_exceptionToolTip is (true, var exceptionToolTip))
       {
-         _oldTitle = toolTip.ToolTipTitle.NotEmpty();
+         if (!toolTip.Action)
+         {
+            _oldTitle = toolTip.ToolTipTitle.NotEmpty();
+         }
          toolTip.ToolTipTitle = "exception";
          toolTip.Action = action<object, DrawToolTipEventArgs>((_, e) =>
          {
@@ -544,6 +550,10 @@ public class UiAction : UserControl
             toolTip.ToolTipTitle = oldTitle;
             _oldTitle = nil;
          }
+         else
+         {
+            toolTip.ToolTipTitle = "";
+         }
 
          toolTip.Action = nil;
          this.Do(() => toolTip.SetToolTip(this, ClickText));
@@ -554,6 +564,10 @@ public class UiAction : UserControl
          {
             toolTip.ToolTipTitle = oldTitle;
             _oldTitle = nil;
+         }
+         else
+         {
+            toolTip.ToolTipTitle = "";
          }
 
          toolTip.Action = nil;
@@ -1575,7 +1589,7 @@ public class UiAction : UserControl
       var legend = new SubText(text, x, y, ClientSize, true)
          .Set
          .FontSize(8)
-         .Outline(true)
+         .Outline()
          .Invert(invert)
          .End;
       legends.Push(legend);
@@ -1588,7 +1602,7 @@ public class UiAction : UserControl
       var legend = new SubText(text, x, y, ClientSize, true)
          .Set
          .FontSize(8)
-         .Outline(true)
+         .Outline()
          .Invert(invert)
          .End;
       legends.Push(legend);
