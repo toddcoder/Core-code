@@ -80,6 +80,10 @@ public class FileNameTrying
       return tryTo(() => fileName.Execute(passedFileName, wait, useShellExecute, createNoWindow));
    }
 
+   public Result<string> Open(string arguments = "") => tryTo(() => fileName.Open(arguments));
+
+   public Result<string> Open(FileName file) => tryTo(() => fileName.Open(file));
+
    public Result<long> Length => tryTo(() => fileName.Length);
 
    public Result<string> Size => tryTo(() => fileName.Size);
