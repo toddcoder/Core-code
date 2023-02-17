@@ -1475,7 +1475,7 @@ public class UiAction : UserControl
    public void RemoveSubText(Guid id)
    {
       subTexts.Remove(id);
-      Refresh();
+      refresh();
    }
 
    public void RemoveSubText(SubText subText) => RemoveSubText(subText.Id);
@@ -1483,7 +1483,7 @@ public class UiAction : UserControl
    public void ClearSubTexts()
    {
       subTexts.Clear();
-      Refresh();
+      refresh();
    }
 
    public void RunAsync()
