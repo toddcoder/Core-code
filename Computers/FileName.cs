@@ -955,6 +955,10 @@ public class FileName : IComparable, IComparable<FileName>, IEquatable<FileName>
       return Execute(fileName.ToString().Quotify(), wait, useShellExecute, createNoWindow);
    }
 
+   public string Open(string arguments = "") => Execute(arguments, false, true);
+
+   public string Open(FileName file) => Open(file.FullPath);
+
    public FileStream WritingStream(bool shared = false)
    {
       folder.CreateIfNonExistent();

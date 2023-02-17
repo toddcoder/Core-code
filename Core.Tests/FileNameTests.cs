@@ -91,4 +91,11 @@ public class FileNameTests
       var uri = file.Uri();
       Console.WriteLine(uri);
    }
+
+   [TestMethod]
+   public void OpenFileTest()
+   {
+      FileName file = @"~\source\repos\toddcoder\Core\Core.Tests\TestData\connections.txt";
+      file.Open();
+   }
 }
