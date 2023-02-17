@@ -289,6 +289,12 @@ public class LazyResponding<T> : Responding<T>, IEquatable<LazyResponding<T>>
       return _value.Completion();
    }
 
+   public override object ToObject()
+   {
+      ensureValue();
+      return _value.ToObject();
+   }
+
    public bool Equals(LazyResponding<T> other) => _value == other._value;
 
    public override bool Equals(object obj) => obj is LazyResponding<T> other && Equals(other);

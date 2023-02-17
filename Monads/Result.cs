@@ -181,5 +181,7 @@ namespace Core.Monads
          action(this);
          return this;
       });
+
+      public abstract object ToObject();
    }
 }

@@ -58,6 +58,8 @@ public class Some<T> : Maybe<T>, IEquatable<Some<T>>
 
    public override Maybe<T> Initialize(Func<T> initializer) => this;
 
+   public override object ToObject() => value;
+
    public bool Equals(Some<T> other)
    {
       return other is not null && ReferenceEquals(this, other) || EqualityComparer<T>.Default.Equals(value, other.value);

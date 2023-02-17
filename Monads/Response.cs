@@ -92,6 +92,8 @@ public class Response<T> : Responding<T>, IEquatable<Response<T>>
 
    public override Completion<T> Completion() => value;
 
+   public override object ToObject() => value;
+
    public bool Equals(Response<T> other) => value.Equals(other.value);
 
    public override bool Equals(object obj) => obj is Response<T> other && Equals(other);

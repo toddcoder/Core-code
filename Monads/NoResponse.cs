@@ -75,6 +75,8 @@ public class NoResponse<T> : Responding<T>, IEquatable<NoResponse<T>>
 
    public override Completion<T> Completion() => nil;
 
+   public override object ToObject() => nil;
+
    public bool Equals(NoResponse<T> other) => true;
 
    public override bool Equals(object obj) => obj is NoResponse<T>;

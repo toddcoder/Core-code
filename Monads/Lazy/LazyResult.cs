@@ -312,6 +312,12 @@ public class LazyResult<T> : Result<T>, IEquatable<LazyResult<T>>
       return _value.ExceptionMessage(message);
    }
 
+   public override object ToObject()
+   {
+      ensureValue();
+      return _value.ToObject();
+   }
+
    public bool Equals(LazyResult<T> other)
    {
       ensureValue();

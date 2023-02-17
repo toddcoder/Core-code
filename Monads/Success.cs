@@ -150,6 +150,8 @@ public class Success<T> : Result<T>, IEquatable<Success<T>>
 
    public override Result<T> ExceptionMessage(Func<Exception, string> message) => this;
 
+   public override object ToObject() => value;
+
    public bool Equals(Success<T> other)
    {
       return other is not null && ReferenceEquals(this, other) || EqualityComparer<T>.Default.Equals(value, other.value);

@@ -128,6 +128,8 @@ public class Cancelled<T> : Completion<T>, IEquatable<Cancelled<T>>
 
    public override Maybe<Exception> AnyException => nil;
 
+   public override object ToObject() => nil;
+
    public bool Equals(Cancelled<T> other) => true;
 
    public override bool Equals(object obj) => obj is Cancelled<T> other && Equals(other);

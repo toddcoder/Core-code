@@ -132,4 +132,6 @@ public abstract class Completion<T>
    public abstract Exception Exception { get; }
 
    public abstract Maybe<Exception> AnyException { get; }
+
+   public abstract object ToObject();
 }

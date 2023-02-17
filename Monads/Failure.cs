@@ -120,6 +120,8 @@ public class Failure<T> : Result<T>, IEquatable<Failure<T>>
       return new FullStackException(message(exception), exception);
    }
 
+   public override object ToObject() => exception;
+
    public bool Equals(Failure<T> other)
    {
       return other is not null && ReferenceEquals(this, other) || Equals(exception, other.exception);

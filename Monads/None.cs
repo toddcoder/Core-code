@@ -41,6 +41,8 @@ public class None<T> : Maybe<T>, IEquatable<None<T>>
 
    public override Maybe<T> Initialize(Func<T> initializer) => initializer();
 
+   public override object ToObject() => nil;
+
    public bool Equals(None<T> other) => true;
 
    public override bool Equals(object obj) => obj is None<T>;

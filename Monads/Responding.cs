@@ -135,4 +135,6 @@ public abstract class Responding<T>
    public abstract Result<T> Result();
 
    public abstract Completion<T> Completion();
+
+   public abstract object ToObject();
 }

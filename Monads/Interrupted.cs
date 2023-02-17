@@ -129,6 +129,8 @@ public class Interrupted<T> : Completion<T>, IEquatable<Interrupted<T>>
 
    public override Maybe<Exception> AnyException => exception;
 
+   public override object ToObject() => exception;
+
    public bool Equals(Interrupted<T> other)
    {
       return other is not null && ReferenceEquals(this, other) || Equals(exception, other.exception);

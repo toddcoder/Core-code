@@ -78,6 +78,8 @@ public class FailedResponse<T> : Responding<T>, IEquatable<FailedResponse<T>>
 
    public override Completion<T> Completion() => new Interrupted<T>(exception);
 
+   public override object ToObject() => exception;
+
    public bool Equals(FailedResponse<T> other) => Equals(exception, other.exception);
 
    public override bool Equals(object obj) => obj is FailedResponse<T> other && Equals(other);

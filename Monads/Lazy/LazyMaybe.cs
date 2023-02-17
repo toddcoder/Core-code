@@ -228,6 +228,12 @@ public class LazyMaybe<T> : Maybe<T>, IEquatable<LazyMaybe<T>>
       return _value.Initialize(initializer);
    }
 
+   public override object ToObject()
+   {
+      ensureValue();
+      return _value.ToObject();
+   }
+
    public bool Equals(LazyMaybe<T> other)
    {
       ensureValue();
