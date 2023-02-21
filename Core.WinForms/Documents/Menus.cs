@@ -371,7 +371,17 @@ public class Menus : IHash<string, ToolStripMenuItem>
 
       foreach (var (item, func) in dynamicResultTextItems)
       {
-         item.Text = func() | (e => e.Message);
+         var _text = func();
+         if (_text is (true, var text))
+         {
+            item.Text = text;
+            item.Enabled = true;
+         }
+         else
+         {
+            item.Text = _text.Exception.Message;
+            item.Enabled = false;
+         }
       }
    }
 }
