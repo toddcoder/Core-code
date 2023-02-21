@@ -192,6 +192,7 @@ public class LazyMaybe<T> : Maybe<T>, IEquatable<LazyMaybe<T>>
       _value.Deconstruct(out isSome, out value);
    }
 
+   [Obsolete("Use if")]
    public override Maybe<T> IfThen(Action<T> action)
    {
       ensureValue();

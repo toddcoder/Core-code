@@ -32,6 +32,7 @@ public class Some<T> : Maybe<T>, IEquatable<Some<T>>
       value = this.value;
    }
 
+   [Obsolete("Use if")]
    public override Maybe<T> IfThen(Action<T> action)
    {
       action(value);

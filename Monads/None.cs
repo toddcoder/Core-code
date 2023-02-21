@@ -29,6 +29,7 @@ public class None<T> : Maybe<T>, IEquatable<None<T>>
       value = default;
    }
 
+   [Obsolete("Use if")]
    public override Maybe<T> IfThen(Action<T> action) => this;
 
    public override bool EqualToValueOf(Maybe<T> otherMaybe) => false;
