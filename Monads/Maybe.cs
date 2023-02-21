@@ -75,7 +75,7 @@ public abstract class Maybe<T>
 
    public static implicit operator T(Maybe<T> value) => value switch
    {
-      (true, var internalValue)=>internalValue,
+      (true, var internalValue) => internalValue,
       _ => throw new InvalidCastException("Must be a Some to return a value")
    };
 
