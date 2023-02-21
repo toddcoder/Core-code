@@ -168,7 +168,7 @@ public class Menus : IHash<string, ToolStripMenuItem>
       }
       else
       {
-         item = Menu(parentText, _text.Exception.Message, handler, shortcut, isChecked: isChecked, enabled: false);
+         item = Menu(parentText, _text.Exception.Message, handler, shortcut, isChecked, index, false);
       }
 
       dynamicResultTextItems[item] = textFunc;
@@ -186,7 +186,7 @@ public class Menus : IHash<string, ToolStripMenuItem>
       }
       else
       {
-         item = Menu(_text.Exception.Message, (_, _) => { }, isChecked: isChecked, enabled: false);
+         item = Menu(_text.Exception.Message, handler, shortcut, isChecked, index, false);
       }
 
       dynamicResultTextItems[item] = textFunc;
