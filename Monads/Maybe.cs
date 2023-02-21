@@ -93,6 +93,7 @@ public abstract class Maybe<T>
 
    public abstract void Deconstruct(out bool isSome, out T value);
 
+   [Obsolete("Use if")]
    public abstract Maybe<T> IfThen(Action<T> action);
 
    public abstract bool EqualToValueOf(Maybe<T> otherMaybe);

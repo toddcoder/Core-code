@@ -250,7 +250,10 @@ public class Job : IDisposable, IEquatable<Job>, IAddServiceMessages
    protected void stopTimer()
    {
       enableTimer(false);
-      _timer.IfThen(timer => timer.Dispose());
+      if (_timer is (true, var timer))
+      {
+         timer.Dispose();
+      }
    }
 
    public void OnStop()
