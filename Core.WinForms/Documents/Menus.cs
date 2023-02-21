@@ -16,6 +16,7 @@ public class Menus : IHash<string, ToolStripMenuItem>
 {
    protected StringHash<ToolStripItem> menuItems;
    protected Hash<ToolStripItem, Func<string>> dynamicTextItems;
+   protected Hash<ToolStripItem, Func<Result<string>>> dynamicResultTextItems;
    protected StringHash<int> tabIndexes;
    protected int tabIndex;
    protected Result<string> _currentMenu;
@@ -24,6 +25,7 @@ public class Menus : IHash<string, ToolStripMenuItem>
    {
       menuItems = new StringHash<ToolStripItem>(true);
       dynamicTextItems = new Hash<ToolStripItem, Func<string>>();
+      dynamicResultTextItems = new Hash<ToolStripItem, Func<Result<string>>>();
       tabIndexes = new StringHash<int>(true);
       tabIndex = 0;
       _currentMenu = fail("Parent menu not set");
@@ -89,7 +91,7 @@ public class Menus : IHash<string, ToolStripMenuItem>
       }
    }
 
-   public void Menu(string parentText, string text, EventHandler handler, string shortcut = "", bool isChecked = false, int index = -1,
+   public ToolStripMenuItem Menu(string parentText, string text, EventHandler handler, string shortcut = "", bool isChecked = false, int index = -1,
       bool enabled = true)
    {
       var parent = getParent(parentText);
@@ -104,17 +106,25 @@ public class Menus : IHash<string, ToolStripMenuItem>
       {
          parent.DropDownItems.Insert(index, item);
       }
+
+      return item;
    }
 
-   public void Menu(string text, EventHandler handler, string shortcut = "", bool isChecked = false, int index = -1, bool enabled = true)
+   public Maybe<ToolStripMenuItem> Menu(string text, EventHandler handler, string shortcut = "", bool isChecked = false, int index = -1,
+      bool enabled = true)
    {
       if (_currentMenu is (true, var currentMenu))
       {
-         Menu(currentMenu, text, handler, shortcut, isChecked, index, enabled);
+         return Menu(currentMenu, text, handler, shortcut, isChecked, index, enabled);
+      }
+      else
+      {
+         return nil;
       }
    }
 
-   public void Menu(string parentText, Func<string> textFunc, EventHandler handler, string shortcut = "", bool isChecked = false, int index = -1,
+   public ToolStripMenuItem Menu(string parentText, Func<string> textFunc, EventHandler handler, string shortcut = "", bool isChecked = false,
+      int index = -1,
       bool enabled = true)
    {
       var parent = getParent(parentText);
@@ -132,42 +142,56 @@ public class Menus : IHash<string, ToolStripMenuItem>
       }
 
       dynamicTextItems[item] = textFunc;
+      return item;
    }
 
-   public void Menu(Func<string> textFunc, EventHandler handler, string shortcut = "", bool isChecked = false, int index = -1, bool enabled = true)
+   public Maybe<ToolStripMenuItem> Menu(Func<string> textFunc, EventHandler handler, string shortcut = "", bool isChecked = false, int index = -1,
+      bool enabled = true)
    {
       if (_currentMenu is (true, var currentMenu))
       {
-         Menu(currentMenu, textFunc, handler, shortcut, isChecked, index, enabled);
+         return Menu(currentMenu, textFunc, handler, shortcut, isChecked, index, enabled);
+      }
+      else
+      {
+         return nil;
       }
    }
 
-   public void Menu(string parentText, Func<Result<string>> textFunc, EventHandler handler, string shortcut = "", bool isChecked = false,
+   public ToolStripMenuItem Menu(string parentText, Func<Result<string>> textFunc, EventHandler handler, string shortcut = "", bool isChecked = false,
       int index = -1, bool enabled = true)
    {
       var _text = textFunc();
+      ToolStripMenuItem item;
       if (_text is (true, var text))
       {
-         Menu(parentText, text, handler, shortcut, isChecked, index, enabled);
+         item = Menu(parentText, text, handler, shortcut, isChecked, index, enabled);
       }
       else
       {
-         Menu(parentText, _text.Exception.Message, (_, _) => { }, enabled: false);
+         item = Menu(parentText, _text.Exception.Message, (_, _) => { }, enabled: false);
       }
+
+      dynamicResultTextItems[item] = textFunc;
+      return item;
    }
 
-   public void Menu(Func<Result<string>> textFunc, EventHandler handler, string shortcut = "", bool isChecked = false, int index = -1,
+   public ToolStripMenuItem Menu(Func<Result<string>> textFunc, EventHandler handler, string shortcut = "", bool isChecked = false, int index = -1,
       bool enabled = true)
    {
       var _text = textFunc();
+      ToolStripMenuItem item;
       if (_text is (true, var text))
       {
-         Menu(text, handler, shortcut, isChecked, index, enabled);
+         item = Menu(text, handler, shortcut, isChecked, index, enabled);
       }
       else
       {
-         Menu(_text.Exception.Message, (_, _) => { }, enabled: false);
+         item = Menu(_text.Exception.Message, (_, _) => { }, enabled: false);
       }
+
+      dynamicResultTextItems[item] = textFunc;
+      return item;
    }
 
    public void AddHandler(string parentText, string text, EventHandler handler)
@@ -228,6 +252,11 @@ public class Menus : IHash<string, ToolStripMenuItem>
       if (item != null && dynamicTextItems.ContainsKey(item))
       {
          dynamicTextItems.Remove(item);
+      }
+
+      if (item != null && dynamicResultTextItems.ContainsKey(item))
+      {
+         dynamicResultTextItems.Remove(item);
       }
 
       parent.DropDownItems.Remove(item);
@@ -338,6 +367,11 @@ public class Menus : IHash<string, ToolStripMenuItem>
       foreach (var (item, func) in dynamicTextItems)
       {
          item.Text = func();
+      }
+
+      foreach (var (item, func) in dynamicResultTextItems)
+      {
+         item.Text = func() | (e => e.Message);
       }
    }
 }
