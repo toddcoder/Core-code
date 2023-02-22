@@ -545,6 +545,36 @@ public class UiAction : UserControl
          });
          this.Do(() => toolTip.SetToolTip(this, exceptionToolTip));
       }
+      else if (type == UiActionType.Failure)
+      {
+         if (!toolTip.Action)
+         {
+            _oldTitle = toolTip.ToolTipTitle.NotEmpty();
+         }
+
+         toolTip.ToolTipTitle = "failure";
+         toolTip.Action = action<object, DrawToolTipEventArgs>((_, e) =>
+         {
+            toolTip.DrawTextInRectangle(e.Graphics, text, toolTip.Font, Color.Black, Color.Gold, e.Bounds);
+            toolTip.DrawTitle(e.Graphics, toolTip.Font, Color.Gold, Color.Black, e.Bounds);
+         });
+         this.Do(() => toolTip.SetToolTip(this, text));
+      }
+      else if (type == UiActionType.Exception)
+      {
+         if (!toolTip.Action)
+         {
+            _oldTitle = toolTip.ToolTipTitle.NotEmpty();
+         }
+
+         toolTip.ToolTipTitle = "exception";
+         toolTip.Action = action<object, DrawToolTipEventArgs>((_, e) =>
+         {
+            toolTip.DrawTextInRectangle(e.Graphics, text, toolTip.Font, Color.White, Color.Red, e.Bounds);
+            toolTip.DrawTitle(e.Graphics, toolTip.Font, Color.Red, Color.White, e.Bounds);
+         });
+         this.Do(() => toolTip.SetToolTip(this, text));
+      }
       else if (Clickable && ClickText.IsNotEmpty())
       {
          if (_oldTitle is (true, var oldTitle))
@@ -637,9 +667,10 @@ public class UiAction : UserControl
 
    public void ShowMessage(string message, UiActionType type)
    {
+      FloatingException(false);
       Busy(false);
-      Text = message;
       this.type = type;
+      Text = message;
 
       MessageShown?.Invoke(this, new MessageShownArgs(text, this.type));
 
@@ -664,7 +695,10 @@ public class UiAction : UserControl
 
    public void Message(string message) => ShowMessage(message, UiActionType.Message);
 
-   public void Exception(Exception exception) => ShowMessage(exception.Message, UiActionType.Exception);
+   public void Exception(Exception exception)
+   {
+      ShowMessage(exception.Message, UiActionType.Exception);
+   }
 
    public void Success(string message) => ShowMessage(message, UiActionType.Success);
 
@@ -2178,4 +2212,6 @@ public class UiAction : UserControl
          _progressSubText = value;
       }
    }
+
+   public bool IsFailureOrException => type is UiActionType.Failure or UiActionType.Exception;
 }

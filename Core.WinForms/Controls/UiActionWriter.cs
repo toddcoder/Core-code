@@ -86,8 +86,8 @@ public class UiActionWriter
                "double-right" => "»",
                "times" => "×",
                "divide" => "÷",
-               "low-left" => "„",
-               "low-right" => "“",
+               "paws-left" => "„",
+               "paws-right" => "“",
                "not-equal" => "≠",
                _ => nil
             };

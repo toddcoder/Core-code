@@ -83,7 +83,7 @@ public class UiToolTip : ToolTip
       {
          e.ToolTipSize = getTextSize(exceptionToolTip);
       }
-      else if (uiAction.Clickable)
+      else if (uiAction.Clickable && !uiAction.IsFailureOrException)
       {
          e.ToolTipSize = getTextSize(uiAction.ClickText);
       }

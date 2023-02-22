@@ -18,7 +18,7 @@ public partial class Form1 : Form
 
       uiAction = new UiAction(this, true);
       uiAction.SetUpInPanel(panel1);
-      uiAction.Message("Progress /arrow end");
+      uiAction.Message("Progress /arrow /paws-left.end/paws-right");
 
       FileName sourceFile = @"C:\Temp\GoogleChromeStandaloneEnterprise_108.0.5359.125_x64_tw60560-67391.msi";
       FolderName targetFolder = @"C:\Users\tebennett\Working";
@@ -43,19 +43,7 @@ public partial class Form1 : Form
 
    protected void button1_Click(object sender, EventArgs e)
    {
-      if (!uiAction.HasFloatingFailureOrException)
-      {
-         uiAction.FloatingFailure("This has failed\r\nOne more line");
-      }
-      else if (uiAction.FailureToolTip)
-      {
-         uiAction.FloatingFailure();
-         uiAction.FloatingException(fail("This was an exception"));
-      }
-      else
-      {
-         uiAction.FloatingException();
-      }
+      uiAction.Exception(fail("Testing exception"));
    }
 
    protected void button2_Click(object sender, EventArgs e)
