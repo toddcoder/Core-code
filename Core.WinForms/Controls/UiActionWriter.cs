@@ -67,7 +67,7 @@ public class UiActionWriter
 
    protected static string substitutions(string text)
    {
-      var _result = text.Matches("-(< '//') /('//' /([/w '-']+)); f");
+      var _result = text.Matches("-(< '//') /('//' /([/w '-']+) '.'?); f");
       if (_result is (true, var result))
       {
          foreach (var match in result)
