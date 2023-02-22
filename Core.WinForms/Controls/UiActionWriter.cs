@@ -65,7 +65,7 @@ public class UiActionWriter
 
    public TextFormatFlags Flags { get; set; }
 
-   protected string substitutions(string text)
+   protected static string substitutions(string text)
    {
       var _result = text.Matches("-(< '//') /('//' /([/w '-']+)); f");
       if (_result is (true, var result))
@@ -82,6 +82,13 @@ public class UiActionWriter
                "copyright" => "©",
                "pilcrow" => "¶",
                "diamond" => "♦",
+               "double-left" => "«",
+               "double-right" => "»",
+               "times" => "×",
+               "divide" => "÷",
+               "low-left" => "„",
+               "low-right" => "“",
+               "not-equal" => "≠",
                _ => nil
             };
             if (_replacement is (true, var replacement))
@@ -90,7 +97,7 @@ public class UiActionWriter
             }
          }
 
-         return result.ToString().Replace("//", "//");
+         return result.ToString().Replace("//", "/");
       }
       else
       {
