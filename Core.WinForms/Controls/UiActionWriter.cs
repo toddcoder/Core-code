@@ -74,7 +74,7 @@ public class UiActionWriter
          {
             Maybe<string> _replacement = match.SecondGroup switch
             {
-               "arrow" => "@\u21d2",
+               "arrow" => "⇒",
                "check" => "✔",
                "x" => "✘",
                "dot" => "•",
