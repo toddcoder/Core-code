@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Drawing.Text;
 using System.Windows.Forms;
+using Core.Matching;
 using Core.Monads;
 using Core.Strings;
 using static Core.Monads.Lazy.LazyMonads;
@@ -64,8 +65,43 @@ public class UiActionWriter
 
    public TextFormatFlags Flags { get; set; }
 
+   protected string substitutions(string text)
+   {
+      var _result = text.Matches("-(< '//') /('//' /([/w '-']+)); f");
+      if (_result is (true, var result))
+      {
+         foreach (var match in result)
+         {
+            Maybe<string> _replacement = match.SecondGroup switch
+            {
+               "arrow" => "@\u21d2",
+               "check" => "✔",
+               "x" => "✘",
+               "dot" => "•",
+               "degree" => "°",
+               "copyright" => "©",
+               "pilcrow" => "¶",
+               "diamond" => "♦",
+               _ => nil
+            };
+            if (_replacement is (true, var replacement))
+            {
+               match.FirstGroup = replacement;
+            }
+         }
+
+         return result.ToString().Replace("//", "//");
+      }
+      else
+      {
+         return text;
+      }
+   }
+
    public Result<Unit> Write(string text, Graphics graphics)
    {
+      text = substitutions(text);
+
       var _existingRectangle = lazy.result(_rectangle);
       var _existingFont = _existingRectangle.Then(_font);
       var _existingColor = _existingFont.Then(_color);
