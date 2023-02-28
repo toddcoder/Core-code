@@ -80,6 +80,8 @@ public class FailedResponse<T> : Responding<T>, IEquatable<FailedResponse<T>>
 
    public override object ToObject() => exception;
 
+   public override Responding<T> Initialize(Func<T> initializer) => initializer();
+
    public bool Equals(FailedResponse<T> other) => Equals(exception, other.exception);
 
    public override bool Equals(object obj) => obj is FailedResponse<T> other && Equals(other);

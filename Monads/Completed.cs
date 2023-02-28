@@ -127,8 +127,10 @@ public class Completed<T> : Completion<T>, IEquatable<Completed<T>>
 
    public override Completion<T> Where(Predicate<T> predicate) => predicate(value) ? this : nil;
 
-   public override Completion<T> Where(Predicate<T> predicate, string exceptionMessage) =>
-      predicate(value) ? this : exceptionMessage.Interrupted<T>();
+   public override Completion<T> Where(Predicate<T> predicate, string exceptionMessage)
+   {
+      return predicate(value) ? this : exceptionMessage.Interrupted<T>();
+   }
 
    public override Completion<T> Where(Predicate<T> predicate, Func<string> exceptionMessage)
    {
@@ -148,6 +150,8 @@ public class Completed<T> : Completion<T>, IEquatable<Completed<T>>
    public override Maybe<Exception> AnyException => nil;
 
    public override object ToObject() => value;
+
+   public override Completion<T> Initialize(Func<T> initializer) => this;
 
    public bool Equals(Completed<T> other)
    {

@@ -122,6 +122,8 @@ public class Failure<T> : Result<T>, IEquatable<Failure<T>>
 
    public override object ToObject() => exception;
 
+   public override Result<T> Initialize(Func<T> initializer) => initializer();
+
    public bool Equals(Failure<T> other)
    {
       return other is not null && ReferenceEquals(this, other) || Equals(exception, other.exception);

@@ -137,4 +137,6 @@ public abstract class Responding<T>
    public abstract Completion<T> Completion();
 
    public abstract object ToObject();
+
+   public abstract Responding<T> Initialize(Func<T> initializer);
 }

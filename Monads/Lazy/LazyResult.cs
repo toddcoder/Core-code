@@ -318,6 +318,12 @@ public class LazyResult<T> : Result<T>, IEquatable<LazyResult<T>>
       return _value.ToObject();
    }
 
+   public override Result<T> Initialize(Func<T> initializer)
+   {
+      ensureValue();
+      return _value.Initialize(initializer);
+   }
+
    public bool Equals(LazyResult<T> other)
    {
       ensureValue();

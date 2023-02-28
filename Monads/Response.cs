@@ -94,6 +94,8 @@ public class Response<T> : Responding<T>, IEquatable<Response<T>>
 
    public override object ToObject() => value;
 
+   public override Responding<T> Initialize(Func<T> initializer) => this;
+
    public bool Equals(Response<T> other) => value.Equals(other.value);
 
    public override bool Equals(object obj) => obj is Response<T> other && Equals(other);

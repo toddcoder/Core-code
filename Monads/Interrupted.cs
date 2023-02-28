@@ -131,6 +131,8 @@ public class Interrupted<T> : Completion<T>, IEquatable<Interrupted<T>>
 
    public override object ToObject() => exception;
 
+   public override Completion<T> Initialize(Func<T> initializer) => initializer();
+
    public bool Equals(Interrupted<T> other)
    {
       return other is not null && ReferenceEquals(this, other) || Equals(exception, other.exception);

@@ -412,5 +412,11 @@ public class LazyCompletion<T> : Completion<T>
       return _value.ToObject();
    }
 
+   public override Completion<T> Initialize(Func<T> initializer)
+   {
+      ensureValue();
+      return _value.Initialize(initializer);
+   }
+
    public override string ToString() => _value.ToString();
 }

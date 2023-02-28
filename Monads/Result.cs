@@ -183,5 +183,7 @@ namespace Core.Monads
       });
 
       public abstract object ToObject();
+
+      public abstract Result<T> Initialize(Func<T> initializer);
    }
 }

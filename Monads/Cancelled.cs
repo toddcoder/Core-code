@@ -130,6 +130,8 @@ public class Cancelled<T> : Completion<T>, IEquatable<Cancelled<T>>
 
    public override object ToObject() => nil;
 
+   public override Completion<T> Initialize(Func<T> initializer) => initializer();
+
    public bool Equals(Cancelled<T> other) => true;
 
    public override bool Equals(object obj) => obj is Cancelled<T> other && Equals(other);

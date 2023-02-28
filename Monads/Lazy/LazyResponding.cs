@@ -295,6 +295,12 @@ public class LazyResponding<T> : Responding<T>, IEquatable<LazyResponding<T>>
       return _value.ToObject();
    }
 
+   public override Responding<T> Initialize(Func<T> initializer)
+   {
+      ensureValue();
+      return _value.Initialize(initializer);
+   }
+
    public bool Equals(LazyResponding<T> other) => _value == other._value;
 
    public override bool Equals(object obj) => obj is LazyResponding<T> other && Equals(other);

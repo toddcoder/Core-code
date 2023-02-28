@@ -77,6 +77,8 @@ public class NoResponse<T> : Responding<T>, IEquatable<NoResponse<T>>
 
    public override object ToObject() => nil;
 
+   public override Responding<T> Initialize(Func<T> initializer) => initializer();
+
    public bool Equals(NoResponse<T> other) => true;
 
    public override bool Equals(object obj) => obj is NoResponse<T>;
