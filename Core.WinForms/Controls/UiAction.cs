@@ -262,6 +262,7 @@ public class UiAction : UserControl
    public event EventHandler<AppearanceOverrideArgs> AppearanceOverride;
    public new event EventHandler TextChanged;
    public event EventHandler<MessageShownArgs> MessageShown;
+   public event EventHandler<DrawToolTipEventArgs> PaintToolTip;
 
    public UiAction(Control control, bool center = false, bool is3D = true)
    {
@@ -515,7 +516,11 @@ public class UiAction : UserControl
 
    protected void setToolTip()
    {
-      if (_failureToolTip is (true, var failureToolTip))
+      if (PaintToolTip is not null)
+      {
+         toolTip.Action = action<object, DrawToolTipEventArgs>((_, e) => PaintToolTip.Invoke(this, e));
+      }
+      else if (_failureToolTip is (true, var failureToolTip))
       {
          if (!toolTip.Action)
          {
