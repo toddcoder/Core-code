@@ -198,6 +198,22 @@ public class Menus : IHash<string, ToolStripMenuItem>
       }
    }
 
+   public Maybe<ToolStripMenuItem> SubMenu(string text, int index = -1)
+   {
+      if (_currentMenu is (true, var currentMenu))
+      {
+         return SubMenu(currentMenu, text, index);
+      }
+      else if (_currentItem is (true, var currentItem))
+      {
+         return SubMenu(currentItem, text, index);
+      }
+      else
+      {
+         return nil;
+      }
+   }
+
    public ToolStripMenuItem Menu(string parentText, Func<string> textFunc, EventHandler handler, string shortcut = "", bool isChecked = false,
       int index = -1, bool enabled = true)
    {
