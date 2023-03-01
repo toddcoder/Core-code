@@ -4,6 +4,7 @@ using Core.Computers;
 using Core.Dates;
 using Core.Numbers;
 using Core.WinForms.Controls;
+using Core.WinForms.Documents;
 using static Core.Monads.MonadFunctions;
 
 namespace WinFormsTest;
@@ -39,6 +40,13 @@ public partial class Form1 : Form
          var _result = sourceFile.CopyToNotify(targetFolder);
          uiAction.Result(_result.Map(_ => "Copied"));
       };
+
+      var menus = new FreeMenus { Form = this };
+      menus.Menu("File");
+      var item = menus.Menu("Alpha", (_, _) => uiAction.Message("Alpha"));
+      menus.Menu(item, "Bravo", (_, _) => uiAction.Message("Bravo"));
+      menus.Menu("Charlie", (_, _) => uiAction.Message("Charlie"));
+      menus.RenderMainMenu();
    }
 
    protected void button1_Click(object sender, EventArgs e)

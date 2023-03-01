@@ -19,7 +19,8 @@ public class Menus : IHash<string, ToolStripMenuItem>
    protected Hash<ToolStripItem, Func<Result<string>>> dynamicResultTextItems;
    protected StringHash<int> tabIndexes;
    protected int tabIndex;
-   protected Result<string> _currentMenu;
+   protected Maybe<string> _currentMenu;
+   protected Maybe<ToolStripMenuItem> _currentItem;
 
    public Menus()
    {
@@ -28,7 +29,20 @@ public class Menus : IHash<string, ToolStripMenuItem>
       dynamicResultTextItems = new Hash<ToolStripItem, Func<Result<string>>>();
       tabIndexes = new StringHash<int>(true);
       tabIndex = 0;
-      _currentMenu = fail("Parent menu not set");
+      _currentMenu = nil;
+      _currentItem = nil;
+   }
+
+   protected void setParent(string text)
+   {
+      _currentMenu = text;
+      _currentItem = nil;
+   }
+
+   protected void setParent(ToolStripMenuItem item)
+   {
+      _currentMenu = nil;
+      _currentItem = item;
    }
 
    public void Menu(string text, string shortcut = "")
@@ -45,7 +59,7 @@ public class Menus : IHash<string, ToolStripMenuItem>
 
       menuItems[item.Name] = item;
       tabIndexes[item.Name] = tabIndex++;
-      _currentMenu = text;
+      setParent(text);
    }
 
    public void ContextMenu(string text, EventHandler handler, string shortcut = "", bool isChecked = false, bool enabled = true)
@@ -94,6 +108,8 @@ public class Menus : IHash<string, ToolStripMenuItem>
    public ToolStripMenuItem Menu(string parentText, string text, EventHandler handler, string shortcut = "", bool isChecked = false, int index = -1,
       bool enabled = true)
    {
+      setParent(parentText);
+
       var parent = getParent(parentText);
       var item = new ToolStripMenuItem(text) { Name = SubmenuName(parentText, text), Checked = isChecked, Enabled = enabled };
       item.Click += handler;
@@ -110,12 +126,36 @@ public class Menus : IHash<string, ToolStripMenuItem>
       return item;
    }
 
+   public ToolStripMenuItem Menu(ToolStripMenuItem parentItem, string text, EventHandler handler, string shortcut = "", bool isChecked = false,
+      int index = -1, bool enabled = true)
+   {
+      setParent(parentItem);
+
+      var item = new ToolStripMenuItem(text) { Name = SubmenuName(parentItem.Text, text), Checked = isChecked, Enabled = enabled };
+      item.Click += handler;
+      setShortcut(item, shortcut);
+      if (index == -1)
+      {
+         parentItem.DropDownItems.Add(item);
+      }
+      else
+      {
+         parentItem.DropDownItems.Insert(index, item);
+      }
+
+      return item;
+   }
+
    public Maybe<ToolStripMenuItem> Menu(string text, EventHandler handler, string shortcut = "", bool isChecked = false, int index = -1,
       bool enabled = true)
    {
       if (_currentMenu is (true, var currentMenu))
       {
          return Menu(currentMenu, text, handler, shortcut, isChecked, index, enabled);
+      }
+      else if (_currentItem is (true, var currentItem))
+      {
+         return Menu(currentItem, text, handler, shortcut, isChecked, index, enabled);
       }
       else
       {
@@ -126,6 +166,8 @@ public class Menus : IHash<string, ToolStripMenuItem>
    public ToolStripMenuItem Menu(string parentText, Func<string> textFunc, EventHandler handler, string shortcut = "", bool isChecked = false,
       int index = -1, bool enabled = true)
    {
+      setParent(parentText);
+
       var parent = getParent(parentText);
       var text = textFunc();
       var item = new ToolStripMenuItem(text) { Name = SubmenuName(parentText, text), Checked = isChecked, Enabled = enabled };
@@ -144,12 +186,38 @@ public class Menus : IHash<string, ToolStripMenuItem>
       return item;
    }
 
+   public ToolStripMenuItem Menu(ToolStripMenuItem parentItem, Func<string> textFunc, EventHandler handler, string shortcut = "",
+      bool isChecked = false, int index = -1, bool enabled = true)
+   {
+      setParent(parentItem);
+
+      var text = textFunc();
+      var item = new ToolStripMenuItem(text) { Name = SubmenuName(parentItem.Text, text), Checked = isChecked, Enabled = enabled };
+      item.Click += handler;
+      setShortcut(item, shortcut);
+      if (index == -1)
+      {
+         parentItem.DropDownItems.Add(item);
+      }
+      else
+      {
+         parentItem.DropDownItems.Insert(index, item);
+      }
+
+      dynamicTextItems[item] = textFunc;
+      return item;
+   }
+
    public Maybe<ToolStripMenuItem> Menu(Func<string> textFunc, EventHandler handler, string shortcut = "", bool isChecked = false, int index = -1,
       bool enabled = true)
    {
       if (_currentMenu is (true, var currentMenu))
       {
          return Menu(currentMenu, textFunc, handler, shortcut, isChecked, index, enabled);
+      }
+      else if (_currentItem is (true, var currentItem))
+      {
+         return Menu(currentItem, textFunc, handler, shortcut, isChecked, index, enabled);
       }
       else
       {
@@ -160,6 +228,8 @@ public class Menus : IHash<string, ToolStripMenuItem>
    public ToolStripMenuItem Menu(string parentText, Func<Result<string>> textFunc, EventHandler handler, string shortcut = "", bool isChecked = false,
       int index = -1, bool checkOnResult = false)
    {
+      setParent(parentText);
+
       var _text = textFunc();
       ToolStripMenuItem item;
       if (_text is (true, var text))
@@ -169,6 +239,26 @@ public class Menus : IHash<string, ToolStripMenuItem>
       else
       {
          item = Menu(parentText, _text.Exception.Message, handler, shortcut, isChecked, index, false);
+      }
+
+      dynamicResultTextItems[item] = textFunc;
+      return item;
+   }
+
+   public ToolStripMenuItem Menu(ToolStripMenuItem parentItem, Func<Result<string>> textFunc, EventHandler handler, string shortcut = "",
+      bool isChecked = false, int index = -1, bool checkOnResult = false)
+   {
+      setParent(parentItem);
+
+      var _text = textFunc();
+      ToolStripMenuItem item;
+      if (_text is (true, var text))
+      {
+         item = Menu(parentItem, text, handler, shortcut, isChecked || checkOnResult, index);
+      }
+      else
+      {
+         item = Menu(parentItem, _text.Exception.Message, handler, shortcut, isChecked, index, false);
       }
 
       dynamicResultTextItems[item] = textFunc;
@@ -233,7 +323,23 @@ public class Menus : IHash<string, ToolStripMenuItem>
       parent.DropDownItems.Add(item);
    }
 
-   public void MenuSeparator() => MenuSeparator(_currentMenu);
+   public void MenuSeparator(ToolStripMenuItem parentItem)
+   {
+      var item = new ToolStripSeparator();
+      parentItem.DropDownItems.Add(item);
+   }
+
+   public void MenuSeparator()
+   {
+      if (_currentMenu is (true, var currentMenu))
+      {
+         MenuSeparator(currentMenu);
+      }
+      else if (_currentItem is (true, var currentItem))
+      {
+         MenuSeparator(currentItem);
+      }
+   }
 
    public void ContextMenuSeparator()
    {
@@ -244,6 +350,8 @@ public class Menus : IHash<string, ToolStripMenuItem>
 
    public void RemoveMenu(string parentText, string text)
    {
+      setParent(parentText);
+
       var parent = getParent(parentText);
       var name = SubmenuName(parentText, text);
 
@@ -261,11 +369,35 @@ public class Menus : IHash<string, ToolStripMenuItem>
       parent.DropDownItems.Remove(item);
    }
 
+   public void RemoveMenu(ToolStripMenuItem parentItem, string text)
+   {
+      setParent(parentItem);
+
+      var name = SubmenuName(parentItem.Text, text);
+
+      var item = parentItem.DropDownItems[name];
+      if (item != null && dynamicTextItems.ContainsKey(item))
+      {
+         dynamicTextItems.Remove(item);
+      }
+
+      if (item != null && dynamicResultTextItems.ContainsKey(item))
+      {
+         dynamicResultTextItems.Remove(item);
+      }
+
+      parentItem.DropDownItems.Remove(item);
+   }
+
    public void RemoveMenu(string text)
    {
       if (_currentMenu is (true, var currentMenu))
       {
          RemoveMenu(currentMenu, text);
+      }
+      else if (_currentItem is (true, var currentItem))
+      {
+         RemoveMenu(currentItem, text);
       }
    }
 
@@ -282,12 +414,32 @@ public class Menus : IHash<string, ToolStripMenuItem>
       parent.DropDownItems.RemoveAt(index);
    }
 
-   public void RemoveMenu(int index) => RemoveMenu(_currentMenu, index);
+   public void RemoveMenu(ToolStripMenuItem parentItem, int index)
+   {
+      var item = parentItem.DropDownItems[index];
+      if (item != null && dynamicTextItems.ContainsKey(item))
+      {
+         dynamicTextItems.Remove(item);
+      }
+
+      parentItem.DropDownItems.RemoveAt(index);
+   }
+
+   public void RemoveMenu(int index)
+   {
+      if (_currentMenu is (true, var currentMenu))
+      {
+         RemoveMenu(currentMenu, index);
+      }
+      else if (_currentItem is (true, var currentItem))
+      {
+         RemoveMenu(currentItem, index);
+      }
+   }
 
    protected static Result<Keys> shortcutKeys(string text)
    {
-      var _result = text.Matches("^ /(['^%|']+)? /(/w+) $; f");
-      if (_result is (true, var result))
+      if (text.Matches("^ /(['^%|']+)? /(/w+) $; f") is (true, var result))
       {
          var keys = (Keys)0;
          var prefix = result[0, 1];
