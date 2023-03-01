@@ -126,6 +126,24 @@ public class Menus : IHash<string, ToolStripMenuItem>
       return item;
    }
 
+   public ToolStripMenuItem SubMenu(string parentText, string text, int index = -1)
+   {
+      setParent(parentText);
+
+      var parentItem = getParent(parentText);
+      var item = new ToolStripMenuItem(text) { Name = SubmenuName(parentText, text) };
+      if (index == -1)
+      {
+         parentItem.DropDownItems.Add(item);
+      }
+      else
+      {
+         parentItem.DropDownItems.Insert(index, item);
+      }
+
+      return item;
+   }
+
    public ToolStripMenuItem Menu(ToolStripMenuItem parentItem, string text, EventHandler handler, string shortcut = "", bool isChecked = false,
       int index = -1, bool enabled = true)
    {
@@ -134,6 +152,23 @@ public class Menus : IHash<string, ToolStripMenuItem>
       var item = new ToolStripMenuItem(text) { Name = SubmenuName(parentItem.Text, text), Checked = isChecked, Enabled = enabled };
       item.Click += handler;
       setShortcut(item, shortcut);
+      if (index == -1)
+      {
+         parentItem.DropDownItems.Add(item);
+      }
+      else
+      {
+         parentItem.DropDownItems.Insert(index, item);
+      }
+
+      return item;
+   }
+
+   public ToolStripMenuItem SubMenu(ToolStripMenuItem parentItem, string text, int index = -1)
+   {
+      setParent(parentItem);
+
+      var item = new ToolStripMenuItem(text) { Name = SubmenuName(parentItem.Text, text) };
       if (index == -1)
       {
          parentItem.DropDownItems.Add(item);
