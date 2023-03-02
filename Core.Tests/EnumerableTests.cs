@@ -174,7 +174,7 @@ public class EnumerableTests
    [TestMethod]
    public void SortByListTest()
    {
-      ItemToSort[] array = { new("a"), new("b"), new("c"), new("d"), new("e"), new("f") };
+      ItemToSort[] array = { new("z"), new("a"), new("b"), new("c"), new("d"), new("e"), new("f"), new("y"), new("x") };
       var enumerable = array.SortByList(i => i.Key, "f", "e", "b", "a", "c", "d");
       foreach (var itemToSort in enumerable)
       {

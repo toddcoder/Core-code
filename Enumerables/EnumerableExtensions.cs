@@ -1049,11 +1049,33 @@ public static class EnumerableExtensions
 
    public static IEnumerable<T> SortByList<T>(this IEnumerable<T> enumerable, Func<T, string> keyMap, params string[] keys)
    {
-      var mapper = enumerable.ToStringHash(keyMap, true);
       var keySet = new StringSet(true, keys);
-      foreach (var _value in keySet.Select(key => mapper.Map(key)).Where(_value => _value))
+      var matching = new StringHash<T>(true);
+      var remainder = new List<T>();
+      foreach (var item in enumerable)
       {
-         yield return _value;
+         var key = keyMap(item);
+         if (keySet.Contains(key))
+         {
+            matching[key] = item;
+         }
+         else
+         {
+            remainder.Add(item);
+         }
+      }
+
+      foreach (var key in keySet)
+      {
+         if (matching.Maybe[key] is (true, var item))
+         {
+            yield return item;
+         }
+      }
+
+      foreach (var item in remainder.OrderBy(keyMap))
+      {
+         yield return item;
       }
    }
 
