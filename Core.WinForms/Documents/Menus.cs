@@ -157,6 +157,8 @@ public class Menus : IHash<string, ToolStripMenuItem>
          parentItem.DropDownItems.Insert(index, item);
       }
 
+      setParent(item);
+
       return item;
    }
 
@@ -193,6 +195,8 @@ public class Menus : IHash<string, ToolStripMenuItem>
       {
          parentItem.DropDownItems.Insert(index, item);
       }
+
+      setParent(item);
 
       return item;
    }

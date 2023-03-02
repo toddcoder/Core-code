@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using Core.Monads;
 using Core.Numbers;
+using static Core.Monads.MonadFunctions;
 using static Core.Objects.ConversionFunctions;
 
 namespace Core.WinForms.Documents;
@@ -117,12 +118,12 @@ public class MenuBuilder
       string text => menus.Menu(text, handler, shortcut, isChecked, index, enabled, keys),
       Func<string> func => menus.Menu(func, handler, shortcut, isChecked, index, enabled, keys),
       Func<Result<string>> func => menus.Menu(func, handler, shortcut, isChecked, index, enabled, keys),
-      _ => throw MonadFunctions.fail("Unexpected item")
+      _ => throw fail("Unexpected item")
    };
 
    public ToolStripMenuItem SubMenu() => menuText.ToObject() switch
    {
       string text => menus.SubMenu(text, index),
-      _ => throw MonadFunctions.fail("Unexpected item")
+      _ => throw fail("Unexpected item")
    };
 }
