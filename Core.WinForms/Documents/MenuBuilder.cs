@@ -9,7 +9,7 @@ namespace Core.WinForms.Documents;
 public class MenuBuilder
 {
    protected Menus menus;
-   protected Either<string, Func<string>> _text;
+   protected MenuText menuText;
    protected EventHandler handler;
    protected string shortcut;
    protected bool isChecked;
@@ -21,7 +21,7 @@ public class MenuBuilder
    {
       this.menus = menus;
 
-      _text = "menuItem";
+      menuText = MenuText.Empty;
       handler = (_, _) => { };
       shortcut = "";
       isChecked = false;
@@ -32,13 +32,19 @@ public class MenuBuilder
 
    public MenuBuilder Text(string text)
    {
-      _text = text;
+      menuText = text;
       return this;
    }
 
    public MenuBuilder Text(Func<string> textFunc)
    {
-      _text = textFunc;
+      menuText = textFunc;
+      return this;
+   }
+
+   public MenuBuilder Text(Func<Result<string>> textFunc)
+   {
+      menuText = textFunc;
       return this;
    }
 
@@ -106,17 +112,17 @@ public class MenuBuilder
       return this;
    }
 
-   public ToolStripMenuItem Menu() => _text switch
+   public ToolStripMenuItem Menu() => menuText.ToObject() switch
    {
-      (true, var text, _) => menus.Menu(text, handler, shortcut, isChecked, index, enabled, keys),
-      (false, _, var textFunc) => menus.Menu(textFunc, handler, shortcut, isChecked, index, enabled, keys),
-      _ => new ToolStripMenuItem("")
+      string text => menus.Menu(text, handler, shortcut, isChecked, index, enabled, keys),
+      Func<string> func => menus.Menu(func, handler, shortcut, isChecked, index, enabled, keys),
+      Func<Result<string>> func => menus.Menu(func, handler, shortcut, isChecked, index, enabled, keys),
+      _ => throw MonadFunctions.fail("Unexpected item")
    };
 
-   public ToolStripMenuItem SubMenu() => _text switch
+   public ToolStripMenuItem SubMenu() => menuText.ToObject() switch
    {
-      (true, var text, _) => menus.SubMenu(text, index),
-      (false, _, var textFunc) => menus.SubMenu(textFunc(), index),
-      _ => new ToolStripMenuItem("")
+      string text => menus.SubMenu(text, index),
+      _ => throw MonadFunctions.fail("Unexpected item")
    };
 }

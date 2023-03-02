@@ -15,8 +15,7 @@ namespace Core.WinForms.Documents;
 public class Menus : IHash<string, ToolStripMenuItem>
 {
    protected StringHash<ToolStripItem> menuItems;
-   protected Hash<ToolStripItem, Func<string>> dynamicTextItems;
-   protected Hash<ToolStripItem, Func<Result<string>>> dynamicResultTextItems;
+   protected Hash<ToolStripItem, MenuText> dynamicTextItems;
    protected StringHash<int> tabIndexes;
    protected int tabIndex;
    protected Maybe<string> _currentMenu;
@@ -25,8 +24,7 @@ public class Menus : IHash<string, ToolStripMenuItem>
    public Menus()
    {
       menuItems = new StringHash<ToolStripItem>(true);
-      dynamicTextItems = new Hash<ToolStripItem, Func<string>>();
-      dynamicResultTextItems = new Hash<ToolStripItem, Func<Result<string>>>();
+      dynamicTextItems = new Hash<ToolStripItem, MenuText>();
       tabIndexes = new StringHash<int>(true);
       tabIndex = 0;
       _currentMenu = nil;
@@ -310,7 +308,7 @@ public class Menus : IHash<string, ToolStripMenuItem>
          item = Menu(parentText, _text.Exception.Message, handler, shortcut, isChecked, index, false, keys);
       }
 
-      dynamicResultTextItems[item] = textFunc;
+      dynamicTextItems[item] = textFunc;
       return item;
    }
 
@@ -330,7 +328,7 @@ public class Menus : IHash<string, ToolStripMenuItem>
          item = Menu(parentItem, _text.Exception.Message, handler, shortcut, isChecked, index, false, keys);
       }
 
-      dynamicResultTextItems[item] = textFunc;
+      dynamicTextItems[item] = textFunc;
       return item;
    }
 
@@ -348,7 +346,7 @@ public class Menus : IHash<string, ToolStripMenuItem>
          item = Menu(_text.Exception.Message, handler, shortcut, isChecked, index, false, keys);
       }
 
-      dynamicResultTextItems[item] = textFunc;
+      dynamicTextItems[item] = textFunc;
       return item;
    }
 
@@ -430,11 +428,6 @@ public class Menus : IHash<string, ToolStripMenuItem>
          dynamicTextItems.Remove(item);
       }
 
-      if (item != null && dynamicResultTextItems.ContainsKey(item))
-      {
-         dynamicResultTextItems.Remove(item);
-      }
-
       parent.DropDownItems.Remove(item);
    }
 
@@ -448,11 +441,6 @@ public class Menus : IHash<string, ToolStripMenuItem>
       if (item != null && dynamicTextItems.ContainsKey(item))
       {
          dynamicTextItems.Remove(item);
-      }
-
-      if (item != null && dynamicResultTextItems.ContainsKey(item))
-      {
-         dynamicResultTextItems.Remove(item);
       }
 
       parentItem.DropDownItems.Remove(item);
@@ -584,24 +572,9 @@ public class Menus : IHash<string, ToolStripMenuItem>
 
    public void RefreshText()
    {
-      foreach (var (item, func) in dynamicTextItems)
+      foreach (var (item, menuText) in dynamicTextItems)
       {
-         item.Text = func();
-      }
-
-      foreach (var (item, func) in dynamicResultTextItems)
-      {
-         var _text = func();
-         if (_text is (true, var text))
-         {
-            item.Text = text;
-            item.Enabled = true;
-         }
-         else
-         {
-            item.Text = _text.Exception.Message;
-            item.Enabled = false;
-         }
+         item.Text = menuText.Text;
       }
    }
 }
