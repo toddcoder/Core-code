@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads
 {
@@ -11,44 +10,6 @@ namespace Core.Monads
       internal Left(TLeft value) => this.value = value;
 
       public TLeft Value => value;
-
-      [Obsolete("Use deconstruction")]
-      public override bool IfLeft(out TLeft value)
-      {
-         value = this.value;
-         return true;
-      }
-
-      [Obsolete("Use deconstruction")]
-      public override bool IfLeft(out TLeft left, out TRight right)
-      {
-         left = value;
-         right = default;
-
-         return true;
-      }
-
-      [Obsolete("Use deconstruction")]
-      public override bool IfRight(out TRight value)
-      {
-         value = default;
-         return false;
-      }
-
-      [Obsolete("Use deconstruction")]
-      public override bool IfRight(out TRight right, out TLeft left)
-      {
-         right = default;
-         left = value;
-
-         return false;
-      }
-
-      [Obsolete("Use deconstruction")]
-      public override bool IsLeft => true;
-
-      [Obsolete("Use deconstruction")]
-      public override bool IsRight => false;
 
       public override Either<TLeftResult, TRightResult> Map<TLeftResult, TRightResult>(Func<TLeft, TLeftResult> leftMap,
          Func<TRight, TRightResult> rightMap)
@@ -62,51 +23,11 @@ namespace Core.Monads
          return leftMap(value);
       }
 
-
-      [Obsolete("Use deconstruction")]
-      public override Maybe<TLeft> LeftValue => value;
-
-      [Obsolete("Use deconstruction")]
-      public override Maybe<TRight> RightValue => nil;
-
-      [Obsolete("Use LeftValue")]
-      public override Maybe<TLeft> MaybeFromLeft() => value;
-
-      [Obsolete("Use RightValue")]
-      public override Maybe<TRight> MaybeFromRight() => nil;
-
-      [Obsolete("Use deconstruction")]
-      public override Result<TLeft> ResultFromLeft(string exceptionMessage) => value;
-
-      [Obsolete("Use deconstruction")]
-      public override Result<TLeft> ResultFromLeft(Func<TRight, string> exceptionMessage) => value;
-
-      [Obsolete("Use deconstruction")]
-      public override Result<TRight> ResultFromRight(string exceptionMessage) => fail(exceptionMessage);
-
-      [Obsolete("Use deconstruction")]
-      public override Result<TRight> ResultFromRight(Func<TLeft, string> exceptionMessage) => fail(exceptionMessage(value));
-
-      [Obsolete("Use deconstruction")]
-      public override Either<TLeft, TRight> OnLeft(Action<TLeft> action)
+      public override void Deconstruct(out bool isLeft, out TLeft left, out TRight right)
       {
-         action(value);
-         return this;
-      }
-
-      [Obsolete("Use deconstruction")]
-      public override Either<TLeft, TRight> OnRight(Action<TRight> action) => this;
-
-      [Obsolete("Use deconstruction")]
-      public override TLeft DefaultToLeft(Func<TLeft> map) => value;
-
-      [Obsolete("Use deconstruction")]
-      public override TRight DefaultToRight(Func<TRight> map) => map();
-
-      public override void Deconstruct(out Maybe<TLeft> left, out Maybe<TRight> right)
-      {
+         isLeft = true;
          left = value;
-         right = nil;
+         right = default;
       }
 
       public bool Equals(Left<TLeft, TRight> other)

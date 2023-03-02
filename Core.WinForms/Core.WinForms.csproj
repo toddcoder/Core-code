@@ -121,6 +121,7 @@
     <Compile Include="Documents\DocumentTrying.cs" />
     <Compile Include="Documents\FreeMenus.cs" />
     <Compile Include="Documents\Menus.cs" />
+    <Compile Include="Documents\MenuBuilder.cs" />
     <Compile Include="Documents\Submenus.cs" />
     <Compile Include="GraphicsExtensions.cs" />
     <Compile Include="ListBoxExtensions.cs" />

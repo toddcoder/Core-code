@@ -12,12 +12,12 @@ public class EitherTests
    {
       Either<char, string> _left = 'a';
       Either<char, string> _right = "a";
-      if (_left is ((true, var left), _))
+      if (_left is (true, var left, _))
       {
          Console.WriteLine($"char {left}");
       }
 
-      if (_right is (_, (true, var right)))
+      if (_right is  (false, _, var right))
       {
          Console.WriteLine($"string {right}");
       }
@@ -30,10 +30,10 @@ public class EitherTests
       var dLeft = _left.Map(i => (double)i, d => (int)d);
       switch (dLeft)
       {
-         case ((true, var @double), _):
+         case (true, var @double, _):
             Console.WriteLine($"double {@double} is good");
             break;
-         case ((_, (true, var @int))):
+         case (false, _, var @int):
             Console.WriteLine($"int {@int} is good");
             break;
       }
@@ -42,10 +42,10 @@ public class EitherTests
       var iRight = _right.Map(i => i / 2.0, d => (int)d / 2);
       switch (iRight)
       {
-         case ((true, var @double), _):
+         case (true, var @double, _):
             Console.WriteLine($"double {@double} is good");
             break;
-         case ((_, (true, var @int))):
+         case (false, _, var @int):
             Console.WriteLine($"int {@int} is good");
             break;
       }

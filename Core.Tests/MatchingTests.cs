@@ -158,10 +158,10 @@ public class MatchingTests
          {
             switch (item)
             {
-               case ((true, var left), _):
+               case (true, var left, _):
                   Console.WriteLine($"Leading: <{left.Text}>");
                   break;
-               case (_,(true, var right)):
+               case (false, _, var right):
                   Console.WriteLine($"Match: <{right.Text}>");
                   break;
             }

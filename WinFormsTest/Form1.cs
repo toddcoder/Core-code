@@ -43,9 +43,10 @@ public partial class Form1 : Form
 
       var menus = new FreeMenus { Form = this };
       menus.Menu("File");
-      var item = menus.Menu("Alpha", (_, _) => uiAction.Message("Alpha"));
-      menus.Menu(item, "Bravo", (_, _) => uiAction.Message("Bravo"));
-      menus.Menu("Charlie", (_, _) => uiAction.Message("Charlie"));
+      menus.Add().Text("Alpha").Handler(() => uiAction.Message("Alpha")).Control().Key("A").Menu();
+      var restItem = menus.Add().Text("Rest of the alphabet").SubMenu();
+      menus.Add(restItem).Text("Bravo").Handler(() => uiAction.Message("Bravo")).Alt().Key("B").Menu();
+      menus.Add().Text("Charlie").Handler(() => uiAction.Message("Charlie")).Shift().Control("C").Menu();
       menus.RenderMainMenu();
    }
 
