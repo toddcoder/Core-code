@@ -153,7 +153,8 @@ public class UiAction : UserControl
          [UiActionType.Button] = Color.Black,
          [UiActionType.Console] = Color.White,
          [UiActionType.Busy] = Color.White,
-         [UiActionType.MuteProgress] = Color.White
+         [UiActionType.MuteProgress] = Color.White,
+         [UiActionType.FlipFlop] = Color.White
       };
       globalBackColors = new Hash<UiActionType, Color>
       {
@@ -169,7 +170,8 @@ public class UiAction : UserControl
          [UiActionType.Caution] = Color.CadetBlue,
          [UiActionType.ControlLabel] = Color.CadetBlue,
          [UiActionType.Button] = Color.LightGray,
-         [UiActionType.Console] = Color.Blue
+         [UiActionType.Console] = Color.Blue,
+         [UiActionType.FlipFlop] = Color.Black
       };
       globalStyles = new Hash<UiActionType, MessageStyle>
       {
@@ -247,6 +249,7 @@ public class UiAction : UserControl
    protected Maybe<SubText> _exceptionSubText;
    protected Maybe<string> _oldTitle;
    protected Maybe<SubText> _progressSubText;
+   protected bool flipOn;
 
    public event EventHandler<AutomaticMessageArgs> AutomaticMessage;
    public event EventHandler<PaintEventArgs> Painting;
@@ -1073,6 +1076,12 @@ public class UiAction : UserControl
          case UiActionType.Console:
             scroller.Value.OnPaint(e.Graphics);
             break;
+         case UiActionType.FlipFlop:
+            writer.Value.Color = flipOn ? getForeColor() : getBackColor();
+            writer.Value.Center(true);
+            writer.Value.Write(text, e.Graphics);
+            flipOn = !flipOn;
+            break;
          default:
          {
             if (type != UiActionType.Tape)
@@ -1281,6 +1290,13 @@ public class UiAction : UserControl
          default:
          {
             var backColor = getBackColor();
+            using var brush = new SolidBrush(backColor);
+            fillRectangle(pevent.Graphics, brush, clientRectangle);
+            break;
+         }
+         case UiActionType.FlipFlop:
+         {
+            var backColor = flipOn ? getBackColor() : getForeColor();
             using var brush = new SolidBrush(backColor);
             fillRectangle(pevent.Graphics, brush, clientRectangle);
             break;
@@ -2172,6 +2188,12 @@ public class UiAction : UserControl
       }
    }
 
+   public void FlipFlop()
+   {
+      type = UiActionType.FlipFlop;
+      this.Do(() => timerPaint.Enabled = true);
+   }
+
    public Maybe<string> ExceptionToolTip => _exceptionToolTip;
 
    public bool HasFloatingFailureOrException => _failureToolTip || _exceptionToolTip;
@@ -2219,4 +2241,13 @@ public class UiAction : UserControl
    }
 
    public bool IsFailureOrException => type is UiActionType.Failure or UiActionType.Exception;
+
+   public bool IsABusyType
+   {
+      get
+      {
+         return type is UiActionType.Busy or UiActionType.BusyText or UiActionType.ProgressDefinite or UiActionType.ProgressIndefinite
+            or UiActionType.MuteProgress or UiActionType.FlipFlop;
+      }
+   }
 }

@@ -5,7 +5,6 @@ using Core.Dates;
 using Core.Numbers;
 using Core.WinForms.Controls;
 using Core.WinForms.Documents;
-using static Core.Monads.MonadFunctions;
 
 namespace WinFormsTest;
 
@@ -52,7 +51,7 @@ public partial class Form1 : Form
 
    protected void button1_Click(object sender, EventArgs e)
    {
-      uiAction.Exception(fail("Testing exception"));
+      uiAction.FlipFlop();
    }
 
    protected void button2_Click(object sender, EventArgs e)
