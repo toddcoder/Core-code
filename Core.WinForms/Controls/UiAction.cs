@@ -153,8 +153,7 @@ public class UiAction : UserControl
          [UiActionType.Button] = Color.Black,
          [UiActionType.Console] = Color.White,
          [UiActionType.Busy] = Color.White,
-         [UiActionType.MuteProgress] = Color.White,
-         [UiActionType.FlipFlop] = Color.White
+         [UiActionType.MuteProgress] = Color.White
       };
       globalBackColors = new Hash<UiActionType, Color>
       {
@@ -170,8 +169,7 @@ public class UiAction : UserControl
          [UiActionType.Caution] = Color.CadetBlue,
          [UiActionType.ControlLabel] = Color.CadetBlue,
          [UiActionType.Button] = Color.LightGray,
-         [UiActionType.Console] = Color.Blue,
-         [UiActionType.FlipFlop] = Color.Black
+         [UiActionType.Console] = Color.Blue
       };
       globalStyles = new Hash<UiActionType, MessageStyle>
       {
@@ -250,6 +248,7 @@ public class UiAction : UserControl
    protected Maybe<string> _oldTitle;
    protected Maybe<SubText> _progressSubText;
    protected bool flipOn;
+   protected Maybe<SubText> _flipFlop;
 
    public event EventHandler<AutomaticMessageArgs> AutomaticMessage;
    public event EventHandler<PaintEventArgs> Painting;
@@ -418,6 +417,7 @@ public class UiAction : UserControl
       _exceptionSubText = nil;
       _oldTitle = nil;
       _progressSubText = nil;
+      _flipFlop = nil;
    }
 
    protected void activateProcessor(Graphics graphics)
@@ -1024,6 +1024,23 @@ public class UiAction : UserControl
          case UiActionType.ProgressIndefinite:
             writer.Value.Write(text, e.Graphics);
             break;
+         case UiActionType.Busy when FlipFlop:
+         {
+            var foreColor = flipOn ? Color.White : Color.Black;
+            var backColor = flipOn ? Color.Black : Color.White;
+            var flipFlop = SubText("starting").Set.ForeColor(foreColor).BackColor(backColor).GoToUpperLeft(2).End;
+            if (_flipFlop is (true, var oldFlipFlop))
+            {
+               RemoveSubText(oldFlipFlop);
+               _flipFlop = flipFlop;
+            }
+
+            flipFlop.Draw(e.Graphics);
+
+            flipOn = !flipOn;
+
+            break;
+         }
          case UiActionType.Busy when _busyProcessor is (true, var busyProcessor):
             busyProcessor.OnPaint(e.Graphics);
             break;
@@ -1075,12 +1092,6 @@ public class UiAction : UserControl
          }
          case UiActionType.Console:
             scroller.Value.OnPaint(e.Graphics);
-            break;
-         case UiActionType.FlipFlop:
-            writer.Value.Color = flipOn ? getForeColor() : getBackColor();
-            writer.Value.Center(true);
-            writer.Value.Write(text, e.Graphics);
-            flipOn = !flipOn;
             break;
          default:
          {
@@ -1290,13 +1301,6 @@ public class UiAction : UserControl
          default:
          {
             var backColor = getBackColor();
-            using var brush = new SolidBrush(backColor);
-            fillRectangle(pevent.Graphics, brush, clientRectangle);
-            break;
-         }
-         case UiActionType.FlipFlop:
-         {
-            var backColor = flipOn ? getBackColor() : getForeColor();
             using var brush = new SolidBrush(backColor);
             fillRectangle(pevent.Graphics, brush, clientRectangle);
             break;
@@ -2188,11 +2192,7 @@ public class UiAction : UserControl
       }
    }
 
-   public void FlipFlop()
-   {
-      type = UiActionType.FlipFlop;
-      this.Do(() => timerPaint.Enabled = true);
-   }
+   public bool FlipFlop { get; set; }
 
    public Maybe<string> ExceptionToolTip => _exceptionToolTip;
 
@@ -2247,7 +2247,7 @@ public class UiAction : UserControl
       get
       {
          return type is UiActionType.Busy or UiActionType.BusyText or UiActionType.ProgressDefinite or UiActionType.ProgressIndefinite
-            or UiActionType.MuteProgress or UiActionType.FlipFlop;
+            or UiActionType.MuteProgress;
       }
    }
 }

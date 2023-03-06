@@ -51,7 +51,8 @@ public partial class Form1 : Form
 
    protected void button1_Click(object sender, EventArgs e)
    {
-      uiAction.FlipFlop();
+      uiAction.FlipFlop = true;
+      uiAction.Busy(true);
    }
 
    protected void button2_Click(object sender, EventArgs e)

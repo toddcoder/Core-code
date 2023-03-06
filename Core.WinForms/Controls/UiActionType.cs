@@ -21,6 +21,5 @@ public enum UiActionType
    Button,
    Http,
    Console,
-   MuteProgress,
-   FlipFlop
+   MuteProgress
 }
