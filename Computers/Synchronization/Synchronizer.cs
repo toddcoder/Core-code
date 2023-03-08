@@ -78,7 +78,7 @@ public class Synchronizer
       }
    }
 
-   protected Responding<FileName> copyIfNeeded(FileName sourceFile, FileName targetFile)
+   protected Optional<FileName> copyIfNeeded(FileName sourceFile, FileName targetFile)
    {
       try
       {
@@ -102,7 +102,7 @@ public class Synchronizer
       }
    }
 
-   protected Responding<FileName> copy(FileName sourceFile, FileName targetFile)
+   protected Optional<FileName> copy(FileName sourceFile, FileName targetFile)
    {
       var targetFileFolder = targetFile.Folder;
       var _wasCreated = targetFileFolder.TryTo.WasCreated();

@@ -67,7 +67,7 @@ public static class ConsoleFunctions
       Console.Write(TWIRL[progress % TWIRL.Length]);
    }
 
-   public static Responding<string> readConsole(string prompt, string suggestion)
+   public static Optional<string> readConsole(string prompt, string suggestion)
    {
       try
       {
@@ -75,7 +75,7 @@ public static class ConsoleFunctions
          var left = Console.CursorLeft;
          Console.Write(suggestion);
 
-         Responding<string> _input = suggestion;
+         Optional<string> _input = suggestion;
          var looping = true;
          while (looping)
          {

@@ -14,7 +14,7 @@ public class EnumerableQueue<T>
       enumerator = enumerable.GetEnumerator();
    }
 
-   public Responding<T> Next()
+   public Optional<T> Next()
    {
       try
       {

@@ -119,7 +119,7 @@ public class Success<T> : Result<T>, IEquatable<Success<T>>
 
    public override Maybe<T> Maybe() => value;
 
-   public override Responding<T> Responding() => value;
+   public override Optional<T> Optional() => value;
 
    public override bool EqualToValueOf(Result<T> otherResult) => otherResult.Map(ValueEqualTo) | false;
 

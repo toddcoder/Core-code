@@ -2,7 +2,7 @@
 
 namespace Core.Monads
 {
-   [Obsolete("Use Responding")]
+   [Obsolete("Use Optional")]
    public abstract class Matched<T>
    {
       public static Matched<T> Nil(string message) => new FailedMatch<T>(new Exception(message));

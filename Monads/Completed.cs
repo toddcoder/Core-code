@@ -143,7 +143,7 @@ public class Completed<T> : Completion<T>, IEquatable<Completed<T>>
 
    public override Result<T> Result() => value;
 
-   public override Responding<T> Responding() => value;
+   public override Optional<T> Optional() => value;
 
    public override Exception Exception => throw fail("Completed has no Exception");
 

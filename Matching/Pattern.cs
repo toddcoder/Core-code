@@ -125,7 +125,7 @@ public class Pattern : IEquatable<Pattern>
 
    public Pattern Unfriend() => new(regex, options, false);
 
-   public Responding<MatchResult> MatchedBy(string input)
+   public Optional<MatchResult> MatchedBy(string input)
    {
       try
       {

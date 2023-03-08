@@ -37,11 +37,11 @@ public class LazyMonads
 
    public LazyResult<T> result<T>() => new();
 
-   public LazyResponding<T> responding<T>(Func<Responding<T>> func) => new(func);
+   public LazyOptional<T> optional<T>(Func<Optional<T>> func) => new(func);
 
-   public LazyResponding<T> responding<T>(Responding<T> responding) => new(responding);
+   public LazyOptional<T> optional<T>(Optional<T> optional) => new(optional);
 
-   public LazyResponding<T> responding<T>() => new();
+   public LazyOptional<T> optional<T>() => new();
 
    public LazyCompletion<T> completion<T>(Func<Completion<T>> func) => new(func);
 

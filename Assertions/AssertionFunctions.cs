@@ -75,19 +75,19 @@ public static class AssertionFunctions
       return result.Map(v => v.ToNonNullString()).Recover(e => $"failure<{typeof(T).Name}>({e.Message})");
    }
 
-   public static string respondingImage<T>(Responding<T> matched)
+   public static string optionalImage<T>(Optional<T> optional)
    {
-      if (matched is (true, var matchedValue))
+      if (optional is (true, var optionalValue))
       {
-         return matchedValue.ToNonNullString();
+         return optionalValue.ToNonNullString();
       }
-      else if (matched.AnyException)
+      else if (optional.AnyException)
       {
-         return $"failedResponse<{typeof(T).Name}>({matched.Exception.Message})";
+         return $"failed<{typeof(T).Name}>({optional.Exception.Message})";
       }
       else
       {
-         return $"noResponse<{typeof(T).Name}>";
+         return $"empty<{typeof(T).Name}>";
       }
    }
 

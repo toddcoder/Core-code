@@ -123,7 +123,7 @@ public class Interrupted<T> : Completion<T>, IEquatable<Interrupted<T>>
 
    public override Result<T> Result() => exception;
 
-   public override Responding<T> Responding() => exception;
+   public override Optional<T> Optional() => exception;
 
    public override Exception Exception => exception;
 

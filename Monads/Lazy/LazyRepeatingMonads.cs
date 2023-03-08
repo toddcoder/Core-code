@@ -28,7 +28,7 @@ public class LazyRepeatingMonads
 
    public LazyResult<T> result<T>() => new() { Repeating = true };
 
-   public LazyResponding<T> responding<T>() => new() { Repeating = true };
+   public LazyOptional<T> optional<T>() => new() { Repeating = true };
 
    public LazyCompletion<T> completion<T>() => new() { Repeating = true };
 }

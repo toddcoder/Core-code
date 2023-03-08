@@ -125,7 +125,7 @@ public class Adapter<T> : IEnumerable<T> where T : class
       return entity;
    }
 
-   public Responding<T> ExecuteResponding()
+   public Optional<T> ExecuteOptional()
    {
       try
       {

@@ -252,10 +252,10 @@ public class LazyResult<T> : Result<T>, IEquatable<LazyResult<T>>
       return _value.Maybe();
    }
 
-   public override Responding<T> Responding()
+   public override Optional<T> Optional()
    {
       ensureValue();
-      return _value.Responding();
+      return _value.Optional();
    }
 
    public override bool EqualToValueOf(Result<T> otherResult)

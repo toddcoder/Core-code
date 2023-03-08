@@ -40,11 +40,11 @@ public static class MonadExtensions
       }
    }
 
-   public static Responding<T> Response<T>(this T obj)
+   public static Optional<T> Just<T>(this T obj)
    {
       if (obj is null)
       {
-         return fail("Responses cannot be null");
+         return fail("Optional cannot be null");
       }
       else if (obj is ITuple tuple)
       {
@@ -56,15 +56,15 @@ public static class MonadExtensions
             }
          }
 
-         return new Response<T>(obj);
+         return new Just<T>(obj);
       }
       else
       {
-         return new Response<T>(obj);
+         return new Just<T>(obj);
       }
    }
 
-   public static Responding<T> FailedResponse<T>(this string message) => fail(message);
+   public static Optional<T> Failed<T>(this string message) => fail(message);
 
    public static Maybe<T> NotNull<T>(this T obj) => obj.Some();
 
@@ -914,7 +914,7 @@ public static class MonadExtensions
       }
    }
 
-   public static Responding<T> RespondingIf<T>(this T value, Func<T, bool> predicate)
+   public static Optional<T> OptionalIf<T>(this T value, Func<T, bool> predicate)
    {
       try
       {
@@ -926,7 +926,7 @@ public static class MonadExtensions
       }
    }
 
-   public static Responding<T> RespondingIf<T>(this T value, Func<T, bool> predicate, string failMessage)
+   public static Optional<T> OptionalIf<T>(this T value, Func<T, bool> predicate, string failMessage)
    {
       try
       {
@@ -938,7 +938,7 @@ public static class MonadExtensions
       }
    }
 
-   public static Responding<T> RespondingIf<T>(this T value, Func<T, bool> predicate, Func<string> failMessage)
+   public static Optional<T> OptionalIf<T>(this T value, Func<T, bool> predicate, Func<string> failMessage)
    {
       try
       {
@@ -950,7 +950,7 @@ public static class MonadExtensions
       }
    }
 
-   public static Responding<T> RespondingIf<T>(this T value, Func<T, bool> predicate, Exception exception)
+   public static Optional<T> OptionalIf<T>(this T value, Func<T, bool> predicate, Exception exception)
    {
       try
       {
@@ -962,7 +962,7 @@ public static class MonadExtensions
       }
    }
 
-   public static Responding<T> RespondingIf<T>(this T value, Func<T, bool> predicate, Maybe<Exception> _exception)
+   public static Optional<T> OptionalIf<T>(this T value, Func<T, bool> predicate, Maybe<Exception> _exception)
    {
       try
       {
@@ -989,7 +989,7 @@ public static class MonadExtensions
 
    public static bool IsSuccess(this Result<bool> result) => result is Success<bool>;
 
-   public static bool IsResponse(this Responding<bool> responding) => responding is Response<bool>;
+   public static bool IsJust(this Optional<bool> optional) => optional is Just<bool>;
 
    public static bool IsCompletion(this Completion<bool> completion) => completion is Completed<bool>;
 
@@ -1015,13 +1015,13 @@ public static class MonadExtensions
       }
    }
 
-   public static IEnumerable<T> OnlyTrue<T>(this IEnumerable<Responding<T>> enumerable)
+   public static IEnumerable<T> OnlyTrue<T>(this IEnumerable<Optional<T>> enumerable)
    {
-      foreach (var responding in enumerable)
+      foreach (var optional in enumerable)
       {
-         if (responding is (true, var respondingValue))
+         if (optional is (true, var optionalValue))
          {
-            yield return respondingValue;
+            yield return optionalValue;
          }
       }
    }

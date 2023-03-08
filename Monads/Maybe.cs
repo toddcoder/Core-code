@@ -87,7 +87,7 @@ public abstract class Maybe<T>
 
    public abstract Result<T> Result(string message);
 
-   public abstract Responding<T> Responding();
+   public abstract Optional<T> Optional();
 
    public abstract void Force(string message);
 

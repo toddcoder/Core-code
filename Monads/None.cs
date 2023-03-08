@@ -19,7 +19,7 @@ public class None<T> : Maybe<T>, IEquatable<None<T>>
 
    public override Result<T> Result(string message) => fail(message);
 
-   public override Responding<T> Responding() => nil;
+   public override Optional<T> Optional() => nil;
 
    public override void Force(string message) => throw fail(message);
 

@@ -28,7 +28,7 @@ public class Scraper : IHash<string, string>
       variables = new StringHash(true);
    }
 
-   public Responding<Scraper> Match(Pattern pattern, params string[] names)
+   public Optional<Scraper> Match(Pattern pattern, params string[] names)
    {
       if (!source.More)
       {
@@ -58,7 +58,7 @@ public class Scraper : IHash<string, string>
       }
    }
 
-   public Responding<Scraper> Match(Pattern pattern, Func<string, string> nameFunc)
+   public Optional<Scraper> Match(Pattern pattern, Func<string, string> nameFunc)
    {
       if (!source.More)
       {
@@ -87,7 +87,7 @@ public class Scraper : IHash<string, string>
       }
    }
 
-   public Responding<Scraper> Split(Pattern pattern, Func<string, string> nameFunc)
+   public Optional<Scraper> Split(Pattern pattern, Func<string, string> nameFunc)
    {
       if (!source.More)
       {
@@ -104,7 +104,7 @@ public class Scraper : IHash<string, string>
       return this;
    }
 
-   public Responding<Scraper> Skip(Pattern pattern)
+   public Optional<Scraper> Skip(Pattern pattern)
    {
       if (!source.More)
       {
@@ -127,7 +127,7 @@ public class Scraper : IHash<string, string>
       }
    }
 
-   public Responding<Scraper> Skip(int count)
+   public Optional<Scraper> Skip(int count)
    {
       if (!source.More)
       {
@@ -144,7 +144,7 @@ public class Scraper : IHash<string, string>
 
    public Result<Hash<string, string>> AnyHash() => variables;
 
-   public Responding<Scraper> Push(Pattern pattern)
+   public Optional<Scraper> Push(Pattern pattern)
    {
       var _length = pattern.MatchedBy(source.Current).Map(r => r.Length);
       if (_length)
@@ -165,7 +165,7 @@ public class Scraper : IHash<string, string>
       }
    }
 
-   public Responding<Scraper> Pop()
+   public Optional<Scraper> Pop()
    {
       var _scraper = scraperStack.Pop();
       if (_scraper is (true, var scraper))

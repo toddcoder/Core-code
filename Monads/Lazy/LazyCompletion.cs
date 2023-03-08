@@ -382,10 +382,10 @@ public class LazyCompletion<T> : Completion<T>
       return _value.Result();
    }
 
-   public override Responding<T> Responding()
+   public override Optional<T> Optional()
    {
       ensureValue();
-      return _value.Responding();
+      return _value.Optional();
    }
 
    public override Exception Exception

@@ -20,7 +20,7 @@ public class Some<T> : Maybe<T>, IEquatable<Some<T>>
 
    public override Result<T> Result(string message) => value;
 
-   public override Responding<T> Responding() => value;
+   public override Optional<T> Optional() => value;
 
    public override void Force(string message)
    {

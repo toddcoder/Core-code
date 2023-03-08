@@ -82,7 +82,7 @@ public static class ObjectExtensions
       }
    }
 
-   public static Responding<T> RespondingAs<T>(this object obj)
+   public static Optional<T> OptionalAs<T>(this object obj)
    {
       try
       {

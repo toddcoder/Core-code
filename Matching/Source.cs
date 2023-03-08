@@ -188,5 +188,5 @@ public class Source
       }
    }
 
-   public Responding<Unit> Responding => More ? unit : nil;
+   public Optional<Unit> Optional => More ? unit : nil;
 }

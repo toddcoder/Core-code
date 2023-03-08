@@ -405,7 +405,7 @@ public class MatchResult : IEnumerable<Match>
 
    public string Unmatched => input.Drop(Index + Length);
 
-   public Responding<MatchResult> MatchedBy(Pattern pattern) => pattern.MatchedBy(Unmatched);
+   public Optional<MatchResult> MatchedBy(Pattern pattern) => pattern.MatchedBy(Unmatched);
 
    public string[] Groups(int matchIndex) => getMatch(matchIndex).Groups.Select(g => g.GetSlice(slicer)).ToArray();
 

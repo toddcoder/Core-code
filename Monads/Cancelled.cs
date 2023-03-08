@@ -122,7 +122,7 @@ public class Cancelled<T> : Completion<T>, IEquatable<Cancelled<T>>
 
    public override Result<T> Result() => new Failure<T>(new CancelException());
 
-   public override Responding<T> Responding() => nil;
+   public override Optional<T> Optional() => nil;
 
    public override Exception Exception => throw fail("Cancelled has no Exception");
 

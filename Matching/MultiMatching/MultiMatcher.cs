@@ -74,7 +74,7 @@ public class MultiMatcher<T>
       return this;
    }
 
-   public Responding<T> Matches(string input)
+   public Optional<T> Matches(string input)
    {
       foreach (var (pattern, func) in patternActions)
       {
@@ -177,7 +177,7 @@ public class MultiMatcher
       return this;
    }
 
-   public Responding<Unit> Matches(string input)
+   public Optional<Unit> Matches(string input)
    {
       foreach (var (pattern, action) in patternActions)
       {

@@ -3,39 +3,39 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads.Lazy;
 
-public class LazyResponding<T> : Responding<T>, IEquatable<LazyResponding<T>>
+public class LazyOptional<T> : Optional<T>, IEquatable<LazyOptional<T>>
 {
-   public static implicit operator bool(LazyResponding<T> responding)
+   public static implicit operator bool(LazyOptional<T> optional)
    {
-      responding.ensureValue();
-      return responding._value;
+      optional.ensureValue();
+      return optional._value;
    }
 
-   public static implicit operator LazyResponding<T>(Func<Responding<T>> func) => new(func);
+   public static implicit operator LazyOptional<T>(Func<Optional<T>> func) => new(func);
 
-   public static bool operator true(LazyResponding<T> responding)
+   public static bool operator true(LazyOptional<T> optional)
    {
-      responding.ensureValue();
-      return responding._value;
+      optional.ensureValue();
+      return optional._value;
    }
 
-   public static bool operator false(LazyResponding<T> responding)
+   public static bool operator false(LazyOptional<T> optional)
    {
-      responding.ensureValue();
-      return !responding._value;
+      optional.ensureValue();
+      return !optional._value;
    }
 
-   public static bool operator !(LazyResponding<T> responding)
+   public static bool operator !(LazyOptional<T> optional)
    {
-      responding.ensureValue();
-      return !responding._value;
+      optional.ensureValue();
+      return !optional._value;
    }
 
-   protected Func<Responding<T>> func;
-   protected Responding<T> _value;
+   protected Func<Optional<T>> func;
+   protected Optional<T> _value;
    protected bool ensured;
 
-   internal LazyResponding(Func<Responding<T>> func)
+   internal LazyOptional(Func<Optional<T>> func)
    {
       this.func = func;
 
@@ -43,11 +43,11 @@ public class LazyResponding<T> : Responding<T>, IEquatable<LazyResponding<T>>
       ensured = false;
    }
 
-   internal LazyResponding(Responding<T> responding) : this(() => responding)
+   internal LazyOptional(Optional<T> optional) : this(() => optional)
    {
    }
 
-   internal LazyResponding() : this(() => nil)
+   internal LazyOptional() : this(() => nil)
    {
    }
 
@@ -60,7 +60,7 @@ public class LazyResponding<T> : Responding<T>, IEquatable<LazyResponding<T>>
       }
    }
 
-   public void Activate(Func<Responding<T>> func)
+   public void Activate(Func<Optional<T>> func)
    {
       if (Repeating)
       {
@@ -72,7 +72,7 @@ public class LazyResponding<T> : Responding<T>, IEquatable<LazyResponding<T>>
       }
    }
 
-   public void Activate(Responding<T> value)
+   public void Activate(Optional<T> value)
    {
       if (Repeating || !ensured)
       {
@@ -81,7 +81,7 @@ public class LazyResponding<T> : Responding<T>, IEquatable<LazyResponding<T>>
       }
    }
 
-   public LazyResponding<T> ValueOf(Func<Responding<T>> func)
+   public LazyOptional<T> ValueOf(Func<Optional<T>> func)
    {
       if (Repeating)
       {
@@ -94,7 +94,7 @@ public class LazyResponding<T> : Responding<T>, IEquatable<LazyResponding<T>>
       }
    }
 
-   public LazyResponding<T> ValueOf(Responding<T> value)
+   public LazyOptional<T> ValueOf(Optional<T> value)
    {
       if (Repeating || !ensured)
       {
@@ -105,9 +105,9 @@ public class LazyResponding<T> : Responding<T>, IEquatable<LazyResponding<T>>
       return this;
    }
 
-   public LazyResponding<TNext> Then<TNext>(Func<T, Responding<TNext>> func)
+   public LazyOptional<TNext> Then<TNext>(Func<T, Optional<TNext>> func)
    {
-      var _next = new LazyResponding<TNext>();
+      var _next = new LazyOptional<TNext>();
       ensureValue();
 
       if (_value is (true, var value))
@@ -124,11 +124,11 @@ public class LazyResponding<T> : Responding<T>, IEquatable<LazyResponding<T>>
       }
    }
 
-   public LazyResponding<TNext> Then<TNext>(Responding<TNext> next) => Then(_ => next);
+   public LazyOptional<TNext> Then<TNext>(Optional<TNext> next) => Then(_ => next);
 
-   public LazyResponding<TNext> Then<TNext>(Func<T, TNext> func)
+   public LazyOptional<TNext> Then<TNext>(Func<T, TNext> func)
    {
-      var _next = new LazyResponding<TNext>();
+      var _next = new LazyOptional<TNext>();
       ensureValue();
 
       if (_value is (true, var value))
@@ -180,77 +180,77 @@ public class LazyResponding<T> : Responding<T>, IEquatable<LazyResponding<T>>
       }
    }
 
-   public override Responding<TResult> Map<TResult>(Func<T, Responding<TResult>> ifResponse)
+   public override Optional<TResult> Map<TResult>(Func<T, Optional<TResult>> ifJust)
    {
       ensureValue();
-      return _value.Map(ifResponse);
+      return _value.Map(ifJust);
    }
 
-   public override Responding<TResult> Map<TResult>(Func<T, TResult> ifResponse)
+   public override Optional<TResult> Map<TResult>(Func<T, TResult> ifJust)
    {
       ensureValue();
-      return _value.Map(ifResponse);
+      return _value.Map(ifJust);
    }
 
-   public override Responding<TResult> Map<TResult>(Func<T, Responding<TResult>> ifResponse,
-      Func<Responding<TResult>> ifNoResponse, Func<Exception, Responding<TResult>> ifFailedResponse)
+   public override Optional<TResult> Map<TResult>(Func<T, Optional<TResult>> ifJust,
+      Func<Optional<TResult>> ifEmpty, Func<Exception, Optional<TResult>> ifFailed)
    {
       ensureValue();
-      return _value.Map(ifResponse, ifNoResponse, ifFailedResponse);
+      return _value.Map(ifJust, ifEmpty, ifFailed);
    }
 
-   public override Responding<T> OnResponse(Action<T> action)
+   public override Optional<T> OnJust(Action<T> action)
    {
       ensureValue();
-      return _value.OnResponse(action);
+      return _value.OnJust(action);
    }
 
-   public override Responding<T> OnNoResponse(Action action)
+   public override Optional<T> OnEmpty(Action action)
    {
       ensureValue();
-      return _value.OnNoResponse(action);
+      return _value.OnEmpty(action);
    }
 
-   public override Responding<T> OnFailedResponse(Action<Exception> action)
+   public override Optional<T> OnFailed(Action<Exception> action)
    {
       ensureValue();
-      return _value.OnFailedResponse(action);
+      return _value.OnFailed(action);
    }
 
-   public override Responding<TResult> SelectMany<TResult>(Func<T, Responding<TResult>> projection)
+   public override Optional<TResult> SelectMany<TResult>(Func<T, Optional<TResult>> projection)
    {
       ensureValue();
       return _value.SelectMany(projection);
    }
 
-   public override Responding<T2> SelectMany<T1, T2>(Func<T, Responding<T1>> func, Func<T, T1, T2> projection)
+   public override Optional<T2> SelectMany<T1, T2>(Func<T, Optional<T1>> func, Func<T, T1, T2> projection)
    {
       ensureValue();
       return _value.SelectMany(func, projection);
    }
 
-   public override Responding<TResult> SelectMany<TResult>(Func<T, TResult> func)
+   public override Optional<TResult> SelectMany<TResult>(Func<T, TResult> func)
    {
       ensureValue();
       return _value.SelectMany(func);
    }
 
-   public override Responding<TResult> Select<TResult>(Responding<T> result, Func<T, TResult> func)
+   public override Optional<TResult> Select<TResult>(Optional<T> result, Func<T, TResult> func)
    {
       ensureValue();
       return _value.Select(result, func);
    }
 
-   public override bool IfNoResponse()
+   public override bool IfEmpty()
    {
       ensureValue();
-      return _value.IfNoResponse();
+      return _value.IfEmpty();
    }
 
-   public override bool IfFailedResponse(out Exception exception)
+   public override bool IfFailed(out Exception exception)
    {
       ensureValue();
-      return _value.IfFailedResponse(out exception);
+      return _value.IfFailed(out exception);
    }
 
    public override T Force()
@@ -265,10 +265,10 @@ public class LazyResponding<T> : Responding<T>, IEquatable<LazyResponding<T>>
       return _value.DefaultTo(func);
    }
 
-   public override void Deconstruct(out bool isResponding, out T value)
+   public override void Deconstruct(out bool isJust, out T value)
    {
       ensureValue();
-      _value.Deconstruct(out isResponding, out value);
+      _value.Deconstruct(out isJust, out value);
    }
 
    public override Maybe<T> Maybe()
@@ -295,21 +295,21 @@ public class LazyResponding<T> : Responding<T>, IEquatable<LazyResponding<T>>
       return _value.ToObject();
    }
 
-   public override Responding<T> Initialize(Func<T> initializer)
+   public override Optional<T> Initialize(Func<T> initializer)
    {
       ensureValue();
       return _value.Initialize(initializer);
    }
 
-   public bool Equals(LazyResponding<T> other) => _value == other._value;
+   public bool Equals(LazyOptional<T> other) => _value == other._value;
 
-   public override bool Equals(object obj) => obj is LazyResponding<T> other && Equals(other);
+   public override bool Equals(object obj) => obj is LazyOptional<T> other && Equals(other);
 
    public override int GetHashCode() => _value.GetHashCode();
 
-   public static bool operator ==(LazyResponding<T> left, LazyResponding<T> right) => Equals(left, right);
+   public static bool operator ==(LazyOptional<T> left, LazyOptional<T> right) => Equals(left, right);
 
-   public static bool operator !=(LazyResponding<T> left, LazyResponding<T> right) => !Equals(left, right);
+   public static bool operator !=(LazyOptional<T> left, LazyOptional<T> right) => !Equals(left, right);
 
    public override string ToString() => _value.ToString();
 }

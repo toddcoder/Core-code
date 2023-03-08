@@ -8,7 +8,7 @@ namespace Core.WinForms;
 
 public static class DialogFunctions
 {
-   public static Responding<FileName> fileDialog(string title, FolderName defaultFolder, string fileName, string fileType)
+   public static Optional<FileName> fileDialog(string title, FolderName defaultFolder, string fileName, string fileType)
    {
       try
       {
@@ -39,7 +39,7 @@ public static class DialogFunctions
       }
    }
 
-   public static Responding<FolderName> folderDialog(string description, FolderName defaultFolder, Maybe<Environment.SpecialFolder> rootFolder)
+   public static Optional<FolderName> folderDialog(string description, FolderName defaultFolder, Maybe<Environment.SpecialFolder> rootFolder)
    {
       try
       {
@@ -69,5 +69,5 @@ public static class DialogFunctions
       }
    }
 
-   public static Responding<FolderName> folderDialog(string description, FolderName defaultFolder) => folderDialog(description, defaultFolder, nil);
+   public static Optional<FolderName> folderDialog(string description, FolderName defaultFolder) => folderDialog(description, defaultFolder, nil);
 }

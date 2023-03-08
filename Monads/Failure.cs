@@ -77,7 +77,7 @@ public class Failure<T> : Result<T>, IEquatable<Failure<T>>
 
    public override Maybe<T> Maybe() => nil;
 
-   public override Responding<T> Responding() => Exception;
+   public override Optional<T> Optional() => Exception;
 
    public override bool EqualToValueOf(Result<T> otherResult) => false;
 

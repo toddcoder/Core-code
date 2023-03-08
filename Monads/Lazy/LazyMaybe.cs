@@ -174,10 +174,10 @@ public class LazyMaybe<T> : Maybe<T>, IEquatable<LazyMaybe<T>>
       return _value.Result(message);
    }
 
-   public override Responding<T> Responding()
+   public override Optional<T> Optional()
    {
       ensureValue();
-      return _value.Responding();
+      return _value.Optional();
    }
 
    public override void Force(string message)

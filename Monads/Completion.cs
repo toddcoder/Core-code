@@ -127,7 +127,7 @@ public abstract class Completion<T>
 
    public abstract Result<T> Result();
 
-   public abstract Responding<T> Responding();
+   public abstract Optional<T> Optional();
 
    public abstract Exception Exception { get; }
 
