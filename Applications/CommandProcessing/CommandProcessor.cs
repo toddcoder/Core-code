@@ -137,9 +137,9 @@ public abstract class CommandProcessor : IDisposable
       {
          return ("help", "");
       }
-      else if (_help.ValueOf(commandLine.Matches("^ 'help' (/s+ /(.+))? $; f").Map(r => r.FirstGroup)))
+      else if (_help.ValueOf(commandLine.Matches("^ 'help' (/s+ /(.+))? $; f").Map(r => r.FirstGroup)) is (true, var help))
       {
-         return ("help", _help);
+         return ("help", help);
       }
       else if (commandLine.IsMatch("^ /s* [/w '-']+ /s* $; f"))
       {
@@ -160,9 +160,9 @@ public abstract class CommandProcessor : IDisposable
       try
       {
          var _configuration = InitializeConfiguration();
-         if (_configuration)
+         if (_configuration is (true, var configurationValue))
          {
-            configuration = _configuration;
+            configuration = configurationValue;
             ConfigurationLoaded();
             commandLine = removeExecutableFromCommandLine(commandLine);
             Arguments = commandLine;
@@ -270,9 +270,9 @@ public abstract class CommandProcessor : IDisposable
       {
          help = generator.Help();
       }
-      else if (_help.ValueOf(generator.Help(rest)))
+      else if (_help.ValueOf(generator.Help(rest)) is (true, var generatedHelp))
       {
-         help = _help;
+         help = generatedHelp;
       }
       else
       {
@@ -357,10 +357,11 @@ public abstract class CommandProcessor : IDisposable
 
    public virtual void AllConfiguration()
    {
-      var tableMaker = new TableMaker(("Key", Justification.Left), ("Value", Justification.Left)) { Title = "All Configurations" };
+      var tableMaker = new TableMaker(("Key", Justification.Left), ("Value", Justification.Left), ("Help", Justification.Left)) { Title = "All Configurations" };
       foreach (var (key, value) in configuration.Items())
       {
-         tableMaker.Add(key, value);
+         var help = configurationHelp.Maybe[key] | "no help";
+         tableMaker.Add(key, value, help);
       }
 
       StandardWriter.WriteLine(tableMaker);
@@ -375,9 +376,15 @@ public abstract class CommandProcessor : IDisposable
             configuration[key] = value;
          }
 
-         configuration.Save()
-            .OnSuccess(_ => StandardWriter.WriteLine("Configuration reset"))
-            .OnFailure(ExceptionWriter.WriteExceptionLine);
+         var _result = configuration.Save();
+         if (_result)
+         {
+            StandardWriter.WriteLine("Configuration reset");
+         }
+         else
+         {
+            ExceptionWriter.WriteExceptionLine(_result.Exception);
+         }
       }
    }
 

@@ -1521,13 +1521,13 @@ public class UiAction : UserControl
       }
    }
 
-   public SubText SubText(string text, int x, int y)
+   public SubText SubText(SubText subText)
    {
-      var subText = new SubText(text, x, y, ClientSize);
       subTexts[subText.Id] = subText;
-
       return subText;
    }
+
+   public SubText SubText(string text, int x, int y) => SubText(new SubText(text, x, y, ClientSize));
 
    public SubText SubText(string text) => SubText(text, 0, 0);
 

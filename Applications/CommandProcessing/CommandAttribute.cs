@@ -14,10 +14,10 @@ public class CommandAttribute : Attribute, IHash<string, string>
    {
       var hash = new StringHash(true);
 
-      var items = source.Unjoin(@"/s* -(< '\') ';' /s*").Select(i => i.Replace(@"\;", ";")).ToArray();
+      var items = source.Unjoin(@"/s* -(< '\') ';' /s*; f").Select(i => i.Replace(@"\;", ";")).ToArray();
       foreach (var item in items)
       {
-         if (item.Matches("^ /(-[':']+) ':' /s* /(.+) $") is (true, var (key, value)))
+         if (item.Matches("^ /(-[':']+) ':' /s* /(.+) $; f") is (true, var (key, value)))
          {
             hash[key.TrimEnd()] = value;
          }

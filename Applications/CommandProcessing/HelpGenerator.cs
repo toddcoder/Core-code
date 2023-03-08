@@ -79,9 +79,9 @@ public class HelpGenerator
             {
                var formatter = new SwitchHelpFormatter(command, _helpText, _switchPattern, switchHelp, prefix, shortCut, replacements);
                var _formattedHelp = formatter.Format();
-               if (_formattedHelp)
+               if (_formattedHelp is (true, var formattedHelp))
                {
-                  return _formattedHelp;
+                  return formattedHelp;
                }
                else
                {
