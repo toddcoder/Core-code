@@ -69,6 +69,7 @@ public class StandardDialog
          dialog.CheckPathExists = CheckPathExists;
          if (FileName is (true, var fileName))
          {
+            dialog.FileName = fileName;
             dialog.DefaultExt = DefaultExt.IsEmpty() ? Path.GetExtension(fileName) : DefaultExt;
          }
          else
@@ -109,6 +110,7 @@ public class StandardDialog
          dialog.CreatePrompt = CreatePrompt;
          if (FileName is (true, var fileName))
          {
+            dialog.FileName = fileName;
             dialog.DefaultExt = DefaultExt.IsEmpty() ? Path.GetExtension(fileName) : DefaultExt;
          }
          else
