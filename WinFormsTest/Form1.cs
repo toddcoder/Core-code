@@ -3,6 +3,7 @@ using System.Windows.Forms;
 using Core.Computers;
 using Core.Dates;
 using Core.Numbers;
+using Core.WinForms;
 using Core.WinForms.Controls;
 using Core.WinForms.Documents;
 
@@ -57,7 +58,8 @@ public partial class Form1 : Form
 
    protected void button2_Click(object sender, EventArgs e)
    {
-      uiAction.ToolTipTitle = "Title";
+      _ = new StandardDialog { Title = "Test", FileName = "foobar.txt", InitialFolder = (FolderName)@"C:\Temp" }
+         .OpenFileDialog(this, "Text");
    }
 
    protected void button3_Click(object sender, EventArgs e)

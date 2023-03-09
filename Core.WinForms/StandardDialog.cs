@@ -59,6 +59,8 @@ public class StandardDialog
 
    public bool ValidateNames { get; set; }
 
+   protected string removeDot(string extension) => extension.StartsWith(".") ? extension.Drop(1) : extension;
+
    public Optional<FileName> OpenFileDialog(Form parentForm, string fileType = "")
    {
       try
@@ -70,14 +72,14 @@ public class StandardDialog
          if (FileName is (true, var fileName))
          {
             dialog.FileName = fileName;
-            dialog.DefaultExt = DefaultExt.IsEmpty() ? Path.GetExtension(fileName) : DefaultExt;
+            dialog.DefaultExt = removeDot(DefaultExt.IsEmpty() ? Path.GetExtension(fileName) : DefaultExt);
          }
          else
          {
-            dialog.DefaultExt = DefaultExt;
+            dialog.DefaultExt = removeDot(DefaultExt);
          }
 
-         dialog.Filter = Filter | $"{fileType} files (*{DefaultExt})|*{DefaultExt}|All files (*.*)|*.*";
+         dialog.Filter = Filter | $"{fileType} files (*.{dialog.DefaultExt})|*.{dialog.DefaultExt}|All files (*.*)|*.*";
          dialog.FilterIndex = FilterIndex;
          dialog.InitialDirectory = InitialFolder.Map(f => f.FullPath) | "";
          dialog.RestoreDirectory = RestoreFolder;
@@ -111,14 +113,14 @@ public class StandardDialog
          if (FileName is (true, var fileName))
          {
             dialog.FileName = fileName;
-            dialog.DefaultExt = DefaultExt.IsEmpty() ? Path.GetExtension(fileName) : DefaultExt;
+            dialog.DefaultExt = removeDot(DefaultExt.IsEmpty() ? Path.GetExtension(fileName) : DefaultExt);
          }
          else
          {
-            dialog.DefaultExt = DefaultExt;
+            dialog.DefaultExt = removeDot(DefaultExt);
          }
 
-         dialog.Filter = Filter | $"{fileType} files (*{DefaultExt})|*{DefaultExt}|All files (*.*)|*.*";
+         dialog.Filter = Filter | $"{fileType} files (*.{dialog.DefaultExt})|*.{dialog.DefaultExt}|All files (*.*)|*.*";
          dialog.FilterIndex = FilterIndex;
          dialog.InitialDirectory = InitialFolder.Map(f => f.FullPath) | "";
          dialog.OverwritePrompt = OverwritePrompt;
