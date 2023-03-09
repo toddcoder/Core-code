@@ -8,7 +8,8 @@ namespace Core.WinForms;
 
 public static class DialogFunctions
 {
-   public static Optional<FileName> fileDialog(string title, FolderName defaultFolder, string fileName, string fileType)
+   public static Optional<FileName> fileDialog(string title, FolderName defaultFolder, string fileName, string fileType, bool restoreDirectory = true,
+      bool checkFileExists = true)
    {
       try
       {
@@ -22,7 +23,40 @@ public static class DialogFunctions
             FileName = fileName,
             DefaultExt = extension,
             Filter = filter,
-            RestoreDirectory = true
+            RestoreDirectory = restoreDirectory,
+            CheckFileExists = checkFileExists,
+         };
+         if (dialog.ShowDialog() == DialogResult.OK)
+         {
+            return (FileName)dialog.FileName;
+         }
+         else
+         {
+            return nil;
+         }
+      }
+      catch (Exception exception)
+      {
+         return exception;
+      }
+   }
+
+   public static Optional<FileName> fileDialog(string title, string fileName, string fileType, bool restoreDirectory = true,
+      bool checkFileExists = true)
+   {
+      try
+      {
+         FileName file = fileName;
+         var extension = file.Extension;
+         var filter = $"{fileType} files (*{extension})|*{extension}|All files (*.*)|*.*";
+         using var dialog = new OpenFileDialog
+         {
+            Title = title,
+            FileName = fileName,
+            DefaultExt = extension,
+            Filter = filter,
+            RestoreDirectory = restoreDirectory,
+            CheckFileExists = checkFileExists
          };
          if (dialog.ShowDialog() == DialogResult.OK)
          {
