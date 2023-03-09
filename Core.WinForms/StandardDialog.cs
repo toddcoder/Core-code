@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Windows.Forms;
 using Core.Computers;
 using Core.Monads;
@@ -16,7 +17,7 @@ public class StandardDialog
       CheckPathExists = true;
       CreatePrompt = false;
       DefaultExt = "";
-      File = nil;
+      FileName = nil;
       Filter = nil;
       FilterIndex = 1;
       InitialFolder = nil;
@@ -38,7 +39,7 @@ public class StandardDialog
 
    public string DefaultExt { get; set; }
 
-   public Maybe<FileName> File { get; set; }
+   public Maybe<string> FileName { get; set; }
 
    public Maybe<string> Filter { get; set; }
 
@@ -66,9 +67,9 @@ public class StandardDialog
          dialog.AddExtension = AddExtension;
          dialog.CheckFileExists = CheckFileExists;
          dialog.CheckPathExists = CheckPathExists;
-         if (File is (true, var file))
+         if (FileName is (true, var fileName))
          {
-            dialog.DefaultExt = DefaultExt.IsEmpty() ? file.Extension : DefaultExt;
+            dialog.DefaultExt = DefaultExt.IsEmpty() ? Path.GetExtension(fileName) : DefaultExt;
          }
          else
          {
@@ -106,9 +107,9 @@ public class StandardDialog
          dialog.CheckFileExists = false;
          dialog.CheckPathExists = CheckPathExists;
          dialog.CreatePrompt = CreatePrompt;
-         if (File is (true, var file))
+         if (FileName is (true, var fileName))
          {
-            dialog.DefaultExt = DefaultExt.IsEmpty() ? file.Extension : DefaultExt;
+            dialog.DefaultExt = DefaultExt.IsEmpty() ? Path.GetExtension(fileName) : DefaultExt;
          }
          else
          {
