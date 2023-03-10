@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 using Core.Applications;
 using Core.Collections;
@@ -35,6 +36,12 @@ public class Menus : IHash<string, ToolStripMenuItem>
    public static ToolStripMenuItem operator +(Menus menus, MenuBuilder.BuilderSubMenu _) => menus.Add().SubMenu();
 
    public static MenuBuilder operator +(Menus menus, ToolStripMenuItem item) => menus.Add(item);
+
+   public static Menus operator +(Menus menus, MenuBuilder.Separator _)
+   {
+      menus.MenuSeparator();
+      return menus;
+   }
 
    protected StringHash<ToolStripItem> menuItems;
    protected Hash<ToolStripItem, MenuText> dynamicTextItems;

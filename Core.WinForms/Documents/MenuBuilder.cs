@@ -21,6 +21,10 @@ public class MenuBuilder
    {
    }
 
+   public class Separator
+   {
+   }
+
    public static MenuBuilder operator +(MenuBuilder builder, string text) => builder.Text(text);
 
    public static MenuBuilder operator +(MenuBuilder builder, Func<string> textFunc) => builder.Text(textFunc);

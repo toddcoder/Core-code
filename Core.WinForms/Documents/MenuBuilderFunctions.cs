@@ -7,4 +7,6 @@ public static class MenuBuilderFunctions
    public static MenuBuilder.BuilderSubMenu subMenu => new();
 
    public static MenuBuilder.BuilderIsChecked isChecked => new();
+
+   public static MenuBuilder.Separator separator => new();
 }
