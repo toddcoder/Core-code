@@ -9,6 +9,38 @@ namespace Core.WinForms.Documents;
 
 public class MenuBuilder
 {
+   public class MenuEnd
+   {
+   }
+
+   public class BuilderSubMenu
+   {
+   }
+
+   public class BuilderIsChecked
+   {
+   }
+
+   public static MenuBuilder operator +(MenuBuilder builder, string text) => builder.Text(text);
+
+   public static MenuBuilder operator +(MenuBuilder builder, Func<string> textFunc) => builder.Text(textFunc);
+
+   public static MenuBuilder operator +(MenuBuilder builder, Func<Result<string>> textFunc) => builder.Text(textFunc);
+
+   public static MenuBuilder operator +(MenuBuilder builder, EventHandler handler) => builder.Handler(handler);
+
+   public static MenuBuilder operator +(MenuBuilder builder, Action handler) => builder.Handler(handler);
+
+   public static MenuBuilder operator +(MenuBuilder builder, Keys keys) => builder.Keys(keys);
+
+   public static MenuBuilder operator +(MenuBuilder builder, bool enabled) => builder.Enabled(enabled);
+
+   public static MenuBuilder operator +(MenuBuilder builder, BuilderIsChecked _) => builder.IsChecked(true);
+
+   public static ToolStripMenuItem operator +(MenuBuilder builder, MenuEnd _) => builder.Menu();
+
+   public static ToolStripMenuItem operator +(MenuBuilder builder, BuilderSubMenu _) => builder.SubMenu();
+
    protected Menus menus;
    protected MenuText menuText;
    protected EventHandler handler;
@@ -28,7 +60,7 @@ public class MenuBuilder
       isChecked = false;
       index = -1;
       enabled = true;
-      keys = Keys.None;
+      keys = System.Windows.Forms.Keys.None;
    }
 
    public MenuBuilder Text(string text)
@@ -69,7 +101,7 @@ public class MenuBuilder
 
    public MenuBuilder Control()
    {
-      keys[Keys.Control] = true;
+      keys[System.Windows.Forms.Keys.Control] = true;
       return this;
    }
 
@@ -77,7 +109,7 @@ public class MenuBuilder
 
    public MenuBuilder Alt()
    {
-      keys[Keys.Alt] = true;
+      keys[System.Windows.Forms.Keys.Alt] = true;
       return this;
    }
 
@@ -85,7 +117,7 @@ public class MenuBuilder
 
    public MenuBuilder Shift()
    {
-      keys[Keys.Shift] = true;
+      keys[System.Windows.Forms.Keys.Shift] = true;
       return this;
    }
 
@@ -98,6 +130,12 @@ public class MenuBuilder
          keys[keyValue] = true;
       }
 
+      return this;
+   }
+
+   public MenuBuilder Keys(Keys keys)
+   {
+      this.keys[keys] = true;
       return this;
    }
 

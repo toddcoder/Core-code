@@ -14,6 +14,28 @@ namespace Core.WinForms.Documents;
 
 public class Menus : IHash<string, ToolStripMenuItem>
 {
+   public static MenuBuilder operator +(Menus menus, string text) => menus.Add().Text(text);
+
+   public static MenuBuilder operator +(Menus menus, Func<string> textFunc) => menus.Add().Text(textFunc);
+
+   public static MenuBuilder operator +(Menus menus, Func<Result<string>> textFunc) => menus.Add().Text(textFunc);
+
+   public static MenuBuilder operator +(Menus menus, EventHandler handler) => menus.Add().Handler(handler);
+
+   public static MenuBuilder operator +(Menus menus, Action handler) => menus.Add().Handler(handler);
+
+   public static MenuBuilder operator +(Menus menus, Keys keys) => menus.Add().Keys(keys);
+
+   public static MenuBuilder operator +(Menus menus, bool enabled) => menus.Add().Enabled(enabled);
+
+   public static MenuBuilder operator +(Menus menus, MenuBuilder.BuilderIsChecked _) => menus.Add().IsChecked(true);
+
+   public static ToolStripMenuItem operator +(Menus menus, MenuBuilder.MenuEnd _) => menus.Add().Menu();
+
+   public static ToolStripMenuItem operator +(Menus menus, MenuBuilder.BuilderSubMenu _) => menus.Add().SubMenu();
+
+   public static MenuBuilder operator +(Menus menus, ToolStripMenuItem item) => menus.Add(item);
+
    protected StringHash<ToolStripItem> menuItems;
    protected Hash<ToolStripItem, MenuText> dynamicTextItems;
    protected StringHash<int> tabIndexes;

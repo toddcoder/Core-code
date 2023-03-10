@@ -2,10 +2,12 @@
 using System.Windows.Forms;
 using Core.Computers;
 using Core.Dates;
+using Core.Monads;
 using Core.Numbers;
 using Core.WinForms;
 using Core.WinForms.Controls;
 using Core.WinForms.Documents;
+using static Core.WinForms.Documents.MenuBuilderFunctions;
 
 namespace WinFormsTest;
 
@@ -43,10 +45,10 @@ public partial class Form1 : Form
 
       var menus = new FreeMenus { Form = this };
       menus.Menu("File");
-      menus.Add().Text("Alpha").Handler(() => uiAction.Message("Alpha")).Control().Key("A").Menu();
-      var restItem = menus.Add().Text("Rest of the alphabet").SubMenu();
-      menus.Add(restItem).Text("Bravo").Handler(() => uiAction.Message("Bravo")).Alt().Key("B").Menu();
-      menus.Add().Text("Charlie").Handler(() => uiAction.Message("Charlie")).Shift().Control("C").Menu();
+      _ = menus + "Alpha" + (() => uiAction.Message("Alpha")) + Keys.Control + Keys.A + menu;
+      var restItem = menus + "Rest of the alphabet" + subMenu;
+      _ = menus + restItem + "Bravo" + (() => uiAction.Message("Bravo")) + Keys.Alt + Keys.B + menu;
+      _ = menus + "Charlie" + (() => uiAction.Message("Charlie")) + Keys.Shift + Keys.Control + Keys.C + menu;
       menus.RenderMainMenu();
    }
 
