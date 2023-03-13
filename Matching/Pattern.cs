@@ -86,6 +86,8 @@ public class Pattern : IEquatable<Pattern>
       return pattern + pattern2;
    }
 
+   public static Maybe<MatchResult> operator &(Pattern pattern, string input) => input.Matches(pattern);
+
    protected static StringHash<string> friendlyPatterns;
    protected static StringHash<RRegex> compiledRegex;
 
@@ -193,11 +195,17 @@ public class Pattern : IEquatable<Pattern>
 
    public bool Equals(Pattern other) => other is not null && regex == other.regex && options == other.options && friendly == other.friendly;
 
-   public override bool Equals(object obj) => obj is Pattern other && Equals(other);
+   public bool Equals(string input) => input.IsMatch(this);
+
+   public override bool Equals(object obj) => obj is Pattern other && Equals(other) || obj is string input && Equals(input);
 
    public override int GetHashCode() => hashCode() + regex + options + friendly;
 
    public static bool operator ==(Pattern left, Pattern right) => Equals(left, right);
 
+   public static bool operator ==(Pattern pattern, string input) => pattern.Equals(input);
+
    public static bool operator !=(Pattern left, Pattern right) => !Equals(left, right);
+
+   public static bool operator !=(Pattern pattern, string input) => !pattern.Equals(input);
 }

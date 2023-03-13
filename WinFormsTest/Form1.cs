@@ -2,7 +2,7 @@
 using System.Windows.Forms;
 using Core.Computers;
 using Core.Dates;
-using Core.Monads;
+using Core.Matching;
 using Core.Numbers;
 using Core.WinForms;
 using Core.WinForms.Controls;
@@ -54,8 +54,24 @@ public partial class Form1 : Form
 
    protected void button1_Click(object sender, EventArgs e)
    {
-      uiAction.FlipFlop = true;
-      uiAction.Busy(true);
+      Pattern pattern1 = "^ 'foobaz' $; f";
+      Pattern pattern2 = "^ 'foo' /(.) /(.) /(.) $; f";
+
+      foreach (var input in new[] { "foobar", "foobaz", "???" })
+      {
+         if ((pattern1 & input) is (true, var result))
+         {
+            uiAction.WriteLine($"1. Foobaz: <{result.ZerothGroup}>");
+         }
+         else if ((pattern2 & input) is (true, var (g1, g2, g3)))
+         {
+            uiAction.WriteLine($"2. Foo<{g1}><{g2}><{g3}>");
+         }
+         else
+         {
+            uiAction.WriteLine("3. No match");
+         }
+      }
    }
 
    protected void button2_Click(object sender, EventArgs e)

@@ -114,7 +114,7 @@ public class MatchingTests
    {
       var match = match<string>()
          & "^ 'foobaz' $; f" & (_ => "1. Foobaz")
-         & "^ 'foo' /(.3) $; f" & (r => $"2. Foo{r.FifthGroup}")
+         & "^ 'foo' /(.3) $; f" & (r => $"2. Foo{r.FirstGroup}")
          & (_ => "3. No match");
       foreach (var input in new[] { "foobar", "foobaz", "???" })
       {
@@ -130,6 +130,24 @@ public class MatchingTests
          else
          {
             Console.WriteLine("Default happened");
+         }
+      }
+
+      Pattern pattern1 = "^ 'foobaz' $; f";
+
+      foreach (var input in new[] { "foobar", "foobaz", "???" })
+      {
+         if (pattern1 & input)
+         {
+            Console.WriteLine("1. Foobaz");
+         }
+         else if (((Pattern)"^ 'foo' /(.3) $; f" & input) is (true, var result))
+         {
+            Console.WriteLine($"2. Foo{result.FirstGroup}");
+         }
+         else
+         {
+            Console.WriteLine("3. No match");
          }
       }
    }
