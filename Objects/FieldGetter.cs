@@ -1,13 +1,12 @@
 ﻿using System.Reflection;
 
-namespace Core.Objects
+namespace Core.Objects;
+
+public class FieldGetter : IGetter
 {
-   public class FieldGetter : IGetter
-   {
-      protected FieldInfo fieldInfo;
+   protected FieldInfo fieldInfo;
 
-      public FieldGetter(FieldInfo fieldInfo) => this.fieldInfo = fieldInfo;
+   public FieldGetter(FieldInfo fieldInfo) => this.fieldInfo = fieldInfo;
 
-      public object GetValue(object obj) => fieldInfo.GetValue(obj);
-   }
+   public object GetValue(object obj) => fieldInfo.GetValue(obj);
 }

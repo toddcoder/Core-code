@@ -1,9 +1,8 @@
-﻿namespace Core.Strings
+﻿namespace Core.Strings;
+
+public enum Justification
 {
-   public enum Justification
-   {
-      Left,
-      Right,
-      Center
-   }
+   Left,
+   Right,
+   Center
 }

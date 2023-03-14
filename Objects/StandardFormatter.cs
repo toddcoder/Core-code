@@ -1,11 +1,10 @@
-﻿namespace Core.Objects
+﻿namespace Core.Objects;
+
+public class StandardFormatter : IFormatter
 {
-   public class StandardFormatter : IFormatter
-   {
-      protected string format;
+   protected string format;
 
-      public StandardFormatter(string format) => this.format = $"{{0{format}}}";
+   public StandardFormatter(string format) => this.format = $"{{0{format}}}";
 
-      public string Format(object obj) => string.Format(format, obj);
-   }
+   public string Format(object obj) => string.Format(format, obj);
 }

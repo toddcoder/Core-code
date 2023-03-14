@@ -1,11 +1,10 @@
-﻿namespace Core.Strings
+﻿namespace Core.Strings;
+
+public static class TableMakerManager
 {
-   public static class TableMakerManager
+   public static TableMaker AddToTable(TableMaker table, params object[] items)
    {
-      public static TableMaker AddToTable(TableMaker table, params object[] items)
-      {
-         table.Add(items);
-         return table;
-      }
+      table.Add(items);
+      return table;
    }
 }

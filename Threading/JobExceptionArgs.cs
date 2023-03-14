@@ -1,17 +1,16 @@
 ﻿using System;
 
-namespace Core.Threading
+namespace Core.Threading;
+
+public class JobExceptionArgs : EventArgs
 {
-   public class JobExceptionArgs : EventArgs
+   public JobExceptionArgs(int affinity, Exception exception)
    {
-      public JobExceptionArgs(int affinity, Exception exception)
-      {
-         Affinity = affinity;
-         Exception = exception;
-      }
-
-      public int Affinity { get; }
-
-      public Exception Exception { get; }
+      Affinity = affinity;
+      Exception = exception;
    }
+
+   public int Affinity { get; }
+
+   public Exception Exception { get; }
 }

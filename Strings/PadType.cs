@@ -1,9 +1,8 @@
-﻿namespace Core.Strings
+﻿namespace Core.Strings;
+
+public enum PadType
 {
-	public enum PadType
-	{
-		Left,
-		Right,
-		Center
-	}
+   Left,
+   Right,
+   Center
 }

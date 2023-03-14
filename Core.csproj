@@ -287,21 +287,18 @@
     <Compile Include="Monads\Completed.cs" />
     <Compile Include="Monads\Either.cs" />
     <Compile Include="Monads\EitherExtensions.cs" />
-    <Compile Include="Monads\EitherType.cs" />
     <Compile Include="Monads\FailedMatch.cs" />
     <Compile Include="Monads\Failed.cs" />
     <Compile Include="Monads\Failure.cs" />
     <Compile Include="Monads\FailureEventArgs.cs" />
     <Compile Include="Monads\FullStackException.cs" />
     <Compile Include="Monads\Completion.cs" />
-    <Compile Include="Monads\IHasValue.cs" />
     <Compile Include="Monads\Lazy\LazyCompletion.cs" />
     <Compile Include="Monads\Lazy\LazyMonads.cs" />
     <Compile Include="Monads\Lazy\LazyMaybe.cs" />
     <Compile Include="Monads\Lazy\LazyRepeatingMonads.cs" />
     <Compile Include="Monads\Lazy\LazyOptional.cs" />
     <Compile Include="Monads\Lazy\LazyResult.cs" />
-    <Compile Include="Monads\LeftHand.cs" />
     <Compile Include="Monads\Matched.cs" />
     <Compile Include="Monads\Maybe.cs" />
     <Compile Include="Monads\Interrupted.cs" />
@@ -321,7 +318,6 @@
     <Compile Include="Monads\NoMatch.cs" />
     <Compile Include="Monads\ResultIterator.cs" />
     <Compile Include="Monads\Right.cs" />
-    <Compile Include="Monads\RightHand.cs" />
     <Compile Include="Monads\Some.cs" />
     <Compile Include="Monads\Success.cs" />
     <Compile Include="Monads\SuccessEventArgs.cs" />
@@ -330,7 +326,6 @@
     <Compile Include="Numbers\Between.cs" />
     <Compile Include="Numbers\Bits32.cs" />
     <Compile Include="Numbers\Comparison.cs" />
-    <Compile Include="Numbers\GetHashCodeFunctions.cs" />
     <Compile Include="Numbers\NumberExtensions.cs" />
     <Compile Include="Objects\ComparableAttribute.cs" />
     <Compile Include="Objects\ConversionFunctions.cs" />
@@ -338,7 +333,6 @@
     <Compile Include="Objects\DataContainerEvaluator.cs" />
     <Compile Include="Objects\DataContainerExtensions.cs" />
     <Compile Include="Objects\DisposeExtensions.cs" />
-    <Compile Include="Objects\Equatable.cs" />
     <Compile Include="Objects\EquatableAttribute.cs" />
     <Compile Include="Objects\EquatableBase.cs" />
     <Compile Include="Objects\EquatableComparableBase.cs" />
@@ -350,7 +344,6 @@
     <Compile Include="Objects\Instance.cs" />
     <Compile Include="Objects\Invoker.cs" />
     <Compile Include="Objects\InvokerTrying.cs" />
-    <Compile Include="Objects\ITryAsync.cs" />
     <Compile Include="Objects\LateLazy.cs" />
     <Compile Include="Objects\LateLazyTrying.cs" />
     <Compile Include="Objects\NewFormatter.cs" />

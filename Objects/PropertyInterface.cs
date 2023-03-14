@@ -2,51 +2,50 @@
 using Core.Collections;
 using Core.Monads;
 
-namespace Core.Objects
+namespace Core.Objects;
+
+public class PropertyInterface
 {
-   public class PropertyInterface
+   public static IEvaluator GetEvaluator(object obj) => obj is DataContainer dc ? new DataContainerEvaluator(dc) : new PropertyEvaluator(obj);
+
+   protected IEvaluator evaluator;
+   protected bool isConvertible;
+
+   public PropertyInterface(string name, string signature)
    {
-      public static IEvaluator GetEvaluator(object obj) => obj is DataContainer dc ? new DataContainerEvaluator(dc) : new PropertyEvaluator(obj);
+      Name = name;
+      Signature = signature;
+   }
 
-      protected IEvaluator evaluator;
-      protected bool isConvertible;
+   public string Name { get; set; }
 
-      public PropertyInterface(string name, string signature)
+   public string Signature { get; set; }
+
+   public virtual Type PropertyType { get; private set; }
+
+   protected static bool getIsConvertible(Type type) => type?.GetInterface("IConvertible") is not null;
+
+   public void DeterminePropertyType(object entity)
+   {
+      evaluator = GetEvaluator(entity);
+      PropertyType = evaluator.Contains(Signature) ? evaluator.Type(Signature) : typeof(string);
+      isConvertible = getIsConvertible(PropertyType);
+   }
+
+   public Maybe<object> GetValue(object entity)
+   {
+      evaluator = GetEvaluator(entity);
+      return ((IHash<string, object>)evaluator).Map(Signature);
+   }
+
+   public void SetValue(object entity, object value)
+   {
+      evaluator = GetEvaluator(entity);
+      if (isConvertible && getIsConvertible(value?.GetType()))
       {
-         Name = name;
-         Signature = signature;
+         value = Convert.ChangeType(value, PropertyType);
       }
 
-      public string Name { get; set; }
-
-      public string Signature { get; set; }
-
-      public virtual Type PropertyType { get; private set; }
-
-      protected static bool getIsConvertible(Type type) => type?.GetInterface("IConvertible") is not null;
-
-      public void DeterminePropertyType(object entity)
-      {
-         evaluator = GetEvaluator(entity);
-         PropertyType = evaluator.Contains(Signature) ? evaluator.Type(Signature) : typeof(string);
-         isConvertible = getIsConvertible(PropertyType);
-      }
-
-      public Maybe<object> GetValue(object entity)
-      {
-         evaluator = GetEvaluator(entity);
-         return ((IHash<string, object>)evaluator).Map(Signature);
-      }
-
-      public void SetValue(object entity, object value)
-      {
-         evaluator = GetEvaluator(entity);
-         if (isConvertible && getIsConvertible(value?.GetType()))
-         {
-            value = Convert.ChangeType(value, PropertyType);
-         }
-
-         evaluator[Signature] = value;
-      }
+      evaluator[Signature] = value;
    }
 }

@@ -1,9 +1,8 @@
-﻿namespace Core.Strings
+﻿namespace Core.Strings;
+
+public enum RestringifyQuotes
 {
-   public enum RestringifyQuotes
-   {
-      None,
-      DoubleQuote,
-      SingleQuote
-   }
+   None,
+   DoubleQuote,
+   SingleQuote
 }

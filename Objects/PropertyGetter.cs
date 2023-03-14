@@ -1,13 +1,12 @@
 ﻿using System.Reflection;
 
-namespace Core.Objects
+namespace Core.Objects;
+
+public class PropertyGetter : IGetter
 {
-   public class PropertyGetter : IGetter
-   {
-      protected PropertyInfo propertyInfo;
+   protected PropertyInfo propertyInfo;
 
-      public PropertyGetter(PropertyInfo propertyInfo) => this.propertyInfo = propertyInfo;
+   public PropertyGetter(PropertyInfo propertyInfo) => this.propertyInfo = propertyInfo;
 
-      public object GetValue(object obj) => propertyInfo.GetValue(obj);
-   }
+   public object GetValue(object obj) => propertyInfo.GetValue(obj);
 }

@@ -2,28 +2,27 @@
 using System.Data;
 using System.IO;
 
-namespace Core.Objects
+namespace Core.Objects;
+
+public static class DisposeExtensions
 {
-   public static class DisposeExtensions
+   public static void Close(this IDbConnection connection)
    {
-      public static void Close(this IDbConnection connection)
+      if ((connection?.State ?? ConnectionState.Open) != ConnectionState.Closed)
       {
-         if ((connection?.State ?? ConnectionState.Open) != ConnectionState.Closed)
-         {
-            connection.Close();
-         }
+         connection.Close();
       }
+   }
 
-      public static void Close(this Stream stream) => stream?.Close();
+   public static void Close(this Stream stream) => stream?.Close();
 
-      public static bool IsDisposable(this object disposable) => disposable is IDisposable;
+   public static bool IsDisposable(this object disposable) => disposable is IDisposable;
 
-      public static void DisposeIfDisposable(this object obj)
+   public static void DisposeIfDisposable(this object obj)
+   {
+      if (obj is IDisposable disp)
       {
-         if (obj is IDisposable disp)
-         {
-            disp.Dispose();
-         }
+         disp.Dispose();
       }
    }
 }

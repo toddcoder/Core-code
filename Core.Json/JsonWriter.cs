@@ -5,135 +5,134 @@ using Core.Dates;
 using Core.Monads;
 using Newtonsoft.Json;
 
-namespace Core.Json
+namespace Core.Json;
+
+public class JsonWriter : IDisposable
 {
-   public class JsonWriter : IDisposable
+   protected MemoryStream stream;
+   protected StreamWriter streamWriter;
+   protected JsonTextWriter writer;
+
+   public JsonWriter()
    {
-      protected MemoryStream stream;
-      protected StreamWriter streamWriter;
-      protected JsonTextWriter writer;
-
-      public JsonWriter()
+      stream = new MemoryStream();
+      streamWriter = new StreamWriter(stream);
+      writer = new JsonTextWriter(streamWriter)
       {
-         stream = new MemoryStream();
-         streamWriter = new StreamWriter(stream);
-         writer = new JsonTextWriter(streamWriter)
-         {
-            Formatting = Formatting.Indented,
-            Indentation = 2,
-            QuoteChar = '"',
-            IndentChar = ' ',
-            QuoteName = true
-         };
+         Formatting = Formatting.Indented,
+         Indentation = 2,
+         QuoteChar = '"',
+         IndentChar = ' ',
+         QuoteName = true
+      };
+   }
+
+   public void BeginObject() => writer.WriteStartObject();
+
+   public void BeginObject(string propertyName)
+   {
+      writer.WritePropertyName(propertyName);
+      writer.WriteStartObject();
+   }
+
+   public void BeginArray() => writer.WriteStartArray();
+
+   public void BeginArray(string propertyName)
+   {
+      writer.WritePropertyName(propertyName);
+      writer.WriteStartArray();
+   }
+
+   public void EndArray() => writer.WriteEndArray();
+
+   public void EndObject() => writer.WriteEndObject();
+
+   public void Write(string value) => writer.WriteValue(value);
+
+   public void Write(int value) => writer.WriteValue(value);
+
+   public void Write(double value) => writer.WriteValue(value);
+
+   public void Write(bool value) => writer.WriteValue(value);
+
+   public void Write(DateTime value, bool zulu = false)
+   {
+      if (zulu)
+      {
+         writer.WriteValue(value.Zulu());
       }
-
-      public void BeginObject() => writer.WriteStartObject();
-
-      public void BeginObject(string propertyName)
+      else
       {
-         writer.WritePropertyName(propertyName);
-         writer.WriteStartObject();
-      }
-
-      public void BeginArray() => writer.WriteStartArray();
-
-      public void BeginArray(string propertyName)
-      {
-         writer.WritePropertyName(propertyName);
-         writer.WriteStartArray();
-      }
-
-      public void EndArray() => writer.WriteEndArray();
-
-      public void EndObject() => writer.WriteEndObject();
-
-      public void Write(string value) => writer.WriteValue(value);
-
-      public void Write(int value) => writer.WriteValue(value);
-
-      public void Write(double value) => writer.WriteValue(value);
-
-      public void Write(bool value) => writer.WriteValue(value);
-
-      public void Write(DateTime value, bool zulu = false)
-      {
-         if (zulu)
-         {
-            writer.WriteValue(value.Zulu());
-         }
-         else
-         {
-            writer.WriteValue(value);
-         }
-      }
-
-      public void Write(Guid value) => writer.WriteValue(value);
-
-      public void WritePropertyNameIf(Maybe<string> _propertyName)
-      {
-         if (_propertyName)
-         {
-            writer.WritePropertyName(_propertyName);
-         }
-      }
-
-      public void Write(string propertyName, string value)
-      {
-         writer.WritePropertyName(propertyName);
          writer.WriteValue(value);
       }
+   }
 
-      public void Write(string propertyName, int value)
+   public void Write(Guid value) => writer.WriteValue(value);
+
+   public void WritePropertyNameIf(Maybe<string> _propertyName)
+   {
+      if (_propertyName is (true, var propertyName))
       {
          writer.WritePropertyName(propertyName);
-         writer.WriteValue(value);
       }
+   }
 
-      public void Write(string propertyName, double value)
-      {
-         writer.WritePropertyName(propertyName);
-         writer.WriteValue(value);
-      }
+   public void Write(string propertyName, string value)
+   {
+      writer.WritePropertyName(propertyName);
+      writer.WriteValue(value);
+   }
 
-      public void Write(string propertyName, bool value)
-      {
-         writer.WritePropertyName(propertyName);
-         writer.WriteValue(value);
-      }
+   public void Write(string propertyName, int value)
+   {
+      writer.WritePropertyName(propertyName);
+      writer.WriteValue(value);
+   }
 
-      public void Write(string propertyName, DateTime value)
-      {
-         writer.WritePropertyName(propertyName);
-         writer.WriteValue(value);
-      }
+   public void Write(string propertyName, double value)
+   {
+      writer.WritePropertyName(propertyName);
+      writer.WriteValue(value);
+   }
 
-      public void Write(string propertyName, Guid value)
-      {
-         writer.WritePropertyName(propertyName);
-         writer.WriteValue(value);
-      }
+   public void Write(string propertyName, bool value)
+   {
+      writer.WritePropertyName(propertyName);
+      writer.WriteValue(value);
+   }
 
-      public void Write(string propertyName, byte[] value)
-      {
-         writer.WritePropertyName(propertyName);
-         writer.WriteValue(value);
-      }
+   public void Write(string propertyName, DateTime value)
+   {
+      writer.WritePropertyName(propertyName);
+      writer.WriteValue(value);
+   }
 
-      public void WriteNull(string propertyName)
-      {
-         writer.WritePropertyName(propertyName);
-         writer.WriteNull();
-      }
+   public void Write(string propertyName, Guid value)
+   {
+      writer.WritePropertyName(propertyName);
+      writer.WriteValue(value);
+   }
 
-      public override string ToString()
-      {
-         writer.Flush();
-         return Encoding.UTF8.GetString(stream.ToArray());
-      }
+   public void Write(string propertyName, byte[] value)
+   {
+      writer.WritePropertyName(propertyName);
+      writer.WriteValue(value);
+   }
 
-      public void Dispose()
-      {
-         stream?.Dispose();
-      }
+   public void WriteNull(string propertyName)
+   {
+      writer.WritePropertyName(propertyName);
+      writer.WriteNull();
+   }
+
+   public override string ToString()
+   {
+      writer.Flush();
+      return Encoding.UTF8.GetString(stream.ToArray());
+   }
+
+   public void Dispose()
+   {
+      stream?.Dispose();
    }
 }

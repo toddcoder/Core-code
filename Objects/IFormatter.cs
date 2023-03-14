@@ -1,7 +1,6 @@
-﻿namespace Core.Objects
+﻿namespace Core.Objects;
+
+public interface IFormatter
 {
-   public interface IFormatter
-   {
-      string Format(object obj);
-   }
+   string Format(object obj);
 }

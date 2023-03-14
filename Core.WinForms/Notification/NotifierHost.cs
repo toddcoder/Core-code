@@ -2,83 +2,82 @@
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace Core.WinForms.Notification
+namespace Core.WinForms.Notification;
+
+public partial class NotifierHost : Form
 {
-   public partial class NotifierHost : Form
+   protected int x;
+   protected Image iconImage;
+
+   public NotifierHost(int duration, string title, string text, object icon, Color leftColor, Color rightColor, Color titleColor, Color textColor)
    {
-      protected int x;
-      protected Image iconImage;
+      InitializeComponent();
 
-      public NotifierHost(int duration, string title, string text, object icon, Color leftColor, Color rightColor, Color titleColor, Color textColor)
+      AutoScaleDimensions = new SizeF(6f, 13f);
+      AutoScaleMode = AutoScaleMode.Font;
+      panelRight.AutoSize = true;
+      panelRight.AutoSizeMode = AutoSizeMode.GrowOnly;
+
+      panelLeft.BackColor = leftColor;
+      panelRight.BackColor = rightColor;
+      labelTitle.Text = title;
+      labelMessage.Text = text;
+      iconImage = icon switch
       {
-         InitializeComponent();
+         Image image => image,
+         string name => icons.Images[name],
+         _ => iconImage
+      };
 
-         AutoScaleDimensions = new SizeF(6f, 13f);
-         AutoScaleMode = AutoScaleMode.Font;
-         panelRight.AutoSize = true;
-         panelRight.AutoSizeMode = AutoSizeMode.GrowOnly;
+      panelLeft.Image = iconImage;
 
-         panelLeft.BackColor = leftColor;
-         panelRight.BackColor = rightColor;
-         labelTitle.Text = title;
-         labelMessage.Text = text;
-         iconImage = icon switch
-         {
-            Image image => image,
-            string name => icons.Images[name],
-            _ => iconImage
-         };
+      labelTitle.ForeColor = titleColor;
+      labelMessage.ForeColor = textColor;
+      ShowInTaskbar = false;
+      timerCloser.Interval = duration;
 
-         panelLeft.Image = iconImage;
+      x = 1;
+   }
 
-         labelTitle.ForeColor = titleColor;
-         labelMessage.ForeColor = textColor;
-         ShowInTaskbar = false;
-         timerCloser.Interval = duration;
-
-         x = 1;
-      }
-
-      protected void timerCloser_Tick(object sender, EventArgs e)
+   protected void timerCloser_Tick(object sender, EventArgs e)
+   {
+      try
       {
-         try
+         Capture = true;
+         var mousePosition = PointToClient(MousePosition);
+         if (!ClientRectangle.Contains(mousePosition))
          {
-            Capture = true;
-            var mousePosition = PointToClient(MousePosition);
-            if (!ClientRectangle.Contains(mousePosition))
-            {
-               Close();
-            }
-         }
-         finally
-         {
-            Capture = false;
+            Close();
          }
       }
-
-      protected void NotifierHost_Load(object sender, EventArgs e)
+      finally
       {
-         var labelWidth = labelMessage.Size.Width;
-         if (labelWidth > panelRight.Width)
-         {
-            labelWidth += 32;
-            Width = panelLeft.Width + labelWidth;
-            panelRight.Width = labelWidth;
-         }
+         Capture = false;
+      }
+   }
 
-         timerStyler.Start();
-         timerCloser.Start();
+   protected void NotifierHost_Load(object sender, EventArgs e)
+   {
+      var labelWidth = labelMessage.Size.Width;
+      if (labelWidth > panelRight.Width)
+      {
+         labelWidth += 32;
+         Width = panelLeft.Width + labelWidth;
+         panelRight.Width = labelWidth;
       }
 
-      protected void timerStyler_Tick(object sender, EventArgs e)
+      timerStyler.Start();
+      timerCloser.Start();
+   }
+
+   protected void timerStyler_Tick(object sender, EventArgs e)
+   {
+      x += 20;
+      var workingArea = Screen.PrimaryScreen.WorkingArea;
+      Location = new Point(workingArea.Right - x, workingArea.Bottom - Size.Height - 30);
+      if (Location.X == workingArea.Right - Size.Width || Location.X < workingArea.Right - Size.Width)
       {
-         x += 20;
-         var workingArea = Screen.PrimaryScreen.WorkingArea;
-         Location = new Point(workingArea.Right - x, workingArea.Bottom - Size.Height - 30);
-         if (Location.X == workingArea.Right - Size.Width || Location.X < workingArea.Right - Size.Width)
-         {
-            timerStyler.Stop();
-         }
+         timerStyler.Stop();
       }
    }
 }

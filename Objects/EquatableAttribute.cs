@@ -1,9 +1,8 @@
 ﻿using System;
 
-namespace Core.Objects
+namespace Core.Objects;
+
+[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+public class EquatableAttribute : Attribute
 {
-   [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-   public class EquatableAttribute : Attribute
-   {
-   }
 }

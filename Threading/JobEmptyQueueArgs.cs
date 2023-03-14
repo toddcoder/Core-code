@@ -1,16 +1,15 @@
 ﻿using System;
 
-namespace Core.Threading
+namespace Core.Threading;
+
+public class JobEmptyQueueArgs : EventArgs
 {
-   public class JobEmptyQueueArgs : EventArgs
+   public JobEmptyQueueArgs(int affinity)
    {
-      public JobEmptyQueueArgs(int affinity)
-      {
-         Affinity = affinity;
-      }
-
-      public int Affinity { get; }
-
-      public bool Quit { get; set; }
+      Affinity = affinity;
    }
+
+   public int Affinity { get; }
+
+   public bool Quit { get; set; }
 }

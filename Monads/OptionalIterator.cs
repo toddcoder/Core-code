@@ -1,71 +1,70 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Core.Monads
+namespace Core.Monads;
+
+public class OptionalIterator<T>
 {
-   public class OptionalIterator<T>
+   protected IEnumerable<Optional<T>> enumerable;
+   protected Maybe<Action<T>> _just;
+   protected Maybe<Action> _empty;
+   protected Maybe<Action<Exception>> _failed;
+
+   public OptionalIterator(IEnumerable<Optional<T>> enumerable, Action<T> response = null, Action noResponse = null,
+      Action<Exception> failure = null)
    {
-      protected IEnumerable<Optional<T>> enumerable;
-      protected Maybe<Action<T>> _just;
-      protected Maybe<Action> _empty;
-      protected Maybe<Action<Exception>> _failed;
+      this.enumerable = enumerable;
+      _just = response.Some();
+      _empty = noResponse.Some();
+      _failed = failure.Some();
+   }
 
-      public OptionalIterator(IEnumerable<Optional<T>> enumerable, Action<T> response = null, Action noResponse = null,
-         Action<Exception> failure = null)
+   protected void handle(Optional<T> optional)
+   {
+      if (optional is (true, var optionalValue) && _just is (true, var action))
       {
-         this.enumerable = enumerable;
-         _just = response.Some();
-         _empty = noResponse.Some();
-         _failed = failure.Some();
+         action(optionalValue);
+      }
+      else if (optional.AnyException && _failed is (true, var failed))
+      {
+         failed(optional.Exception);
+      }
+      else if (_empty is (true, var empty))
+      {
+         empty();
+      }
+   }
+
+   public IEnumerable<Optional<T>> All()
+   {
+      foreach (var optional in enumerable)
+      {
+         handle(optional);
       }
 
-      protected void handle(Optional<T> optional)
+      return enumerable;
+   }
+
+   public IEnumerable<T> JustOnly()
+   {
+      foreach (var optional in enumerable)
       {
-         if (optional is (true, var optionalValue) && _just is (true, var action))
+         handle(optional);
+         if (optional)
          {
-            action(optionalValue);
-         }
-         else if (optional.AnyException && _failed is (true, var failed))
-         {
-            failed(optional.Exception);
-         }
-         else if (_empty is (true, var empty))
-         {
-            empty();
+            yield return optional;
          }
       }
+   }
 
-      public IEnumerable<Optional<T>> All()
+   public IEnumerable<Exception> FailedOnly()
+   {
+      foreach (var optional in enumerable)
       {
-         foreach (var optional in enumerable)
+         handle(optional);
+         if (!optional && optional.AnyException)
          {
-            handle(optional);
-         }
-
-         return enumerable;
-      }
-
-      public IEnumerable<T> JustOnly()
-      {
-         foreach (var optional in enumerable)
-         {
-            handle(optional);
-            if (optional)
-            {
-               yield return optional;
-            }
-         }
-      }
-
-      public IEnumerable<Exception> FailedOnly()
-      {
-         foreach (var optional in enumerable)
-         {
-            handle(optional);
-            if (!optional && optional.AnyException)
-            {
-               yield return optional.Exception;
-            }
+            yield return optional.Exception;
          }
       }
    }

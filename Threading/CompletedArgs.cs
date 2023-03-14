@@ -1,14 +1,13 @@
 ﻿using System;
 
-namespace Core.Threading
-{
-   public class CompletedArgs : EventArgs
-   {
-      public CompletedArgs(TimeSpan elapsed)
-      {
-         Elapsed = elapsed;
-      }
+namespace Core.Threading;
 
-      public TimeSpan Elapsed { get; }
+public class CompletedArgs : EventArgs
+{
+   public CompletedArgs(TimeSpan elapsed)
+   {
+      Elapsed = elapsed;
    }
+
+   public TimeSpan Elapsed { get; }
 }

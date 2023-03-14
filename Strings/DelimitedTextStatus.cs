@@ -1,13 +1,12 @@
 ﻿using System;
 
-namespace Core.Strings
+namespace Core.Strings;
+
+[Flags]
+public enum DelimitedTextStatus
 {
-   [Flags]
-   public enum DelimitedTextStatus
-   {
-      Outside = 1,
-      Inside = 2,
-      BeginDelimiter = 4,
-      EndDelimiter = 8
-   }
+   Outside = 1,
+   Inside = 2,
+   BeginDelimiter = 4,
+   EndDelimiter = 8
 }

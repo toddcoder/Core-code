@@ -1,7 +1,6 @@
-﻿namespace Core.Strings
+﻿namespace Core.Strings;
+
+public interface IStringStream
 {
-   public interface IStringStream
-   {
-      StringStream ToStream();
-   }
+   StringStream ToStream();
 }
