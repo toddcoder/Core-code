@@ -64,7 +64,24 @@ public abstract class CommandProcessor : IDisposable
       {
          if (configurationFile.Exists())
          {
-            return Configuration.Open(configurationFile);
+            var _configuration = Configuration.Open(configurationFile);
+            if (_configuration is (true, var openedConfiguration))
+            {
+               var _defaultValues = enforceDefaults(openedConfiguration);
+               if (_defaultValues is (true, var dirty))
+               {
+                  foreach (var (key, value) in dirty)
+                  {
+                     StandardWriter.WriteLine($"Configuration item {key} set to default value of {value}");
+                  }
+               }
+               else if (_defaultValues.AnyException)
+               {
+                  return _defaultValues.Exception;
+               }
+            }
+
+            return _configuration;
          }
          else
          {
@@ -73,6 +90,37 @@ public abstract class CommandProcessor : IDisposable
             ResetConfiguration();
 
             return configuration;
+         }
+      }
+      catch (Exception exception)
+      {
+         return exception;
+      }
+   }
+
+   protected Optional<StringHash> enforceDefaults(Configuration configuration)
+   {
+      try
+      {
+         var defaultValues = new StringHash(true);
+         foreach (var (key, defaultValue) in configurationDefaults)
+         {
+            var _value = configuration.Maybe.String(key);
+            if (!_value)
+            {
+               configuration[key] = defaultValue;
+               defaultValues[key] = defaultValue;
+            }
+         }
+
+         if (defaultValues.Count > 0)
+         {
+            ConfigurationChanged();
+            return configuration.Save().Optional().Map(_ => defaultValues);
+         }
+         else
+         {
+            return nil;
          }
       }
       catch (Exception exception)
@@ -357,7 +405,8 @@ public abstract class CommandProcessor : IDisposable
 
    public virtual void AllConfiguration()
    {
-      var tableMaker = new TableMaker(("Key", Justification.Left), ("Value", Justification.Left), ("Help", Justification.Left)) { Title = "All Configurations" };
+      var tableMaker = new TableMaker(("Key", Justification.Left), ("Value", Justification.Left), ("Help", Justification.Left))
+         { Title = "All Configurations" };
       foreach (var (key, value) in configuration.Items())
       {
          var help = configurationHelp.Maybe[key] | "no help";
