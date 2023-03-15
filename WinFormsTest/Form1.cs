@@ -48,7 +48,7 @@ public partial class Form1 : Form
       _ = menus + "Alpha" + (() => uiAction.Message("Alpha")) + Keys.Control + Keys.A + menu;
       var restItem = menus + "Rest of the alphabet" + subMenu;
       _ = menus + restItem + "Bravo" + (() => uiAction.Message("Bravo")) + Keys.Alt + Keys.B + menu;
-      _ = menus + "Charlie" + (() => uiAction.Message("Charlie")) + Keys.Shift + Keys.Control + Keys.C + menu;
+      _ = menus + ("File", "Charlie") + (() => uiAction.Message("Charlie")) + Keys.Shift + Keys.Control + Keys.C + menu;
       menus.RenderMainMenu();
    }
 

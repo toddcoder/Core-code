@@ -53,6 +53,8 @@ public class MenuBuilder
    protected int index;
    protected bool enabled;
    protected Bits32<Keys> keys;
+   protected Maybe<string> _parentText;
+   protected Maybe<ToolStripMenuItem> _parentItem;
 
    public MenuBuilder(Menus menus)
    {
@@ -65,6 +67,19 @@ public class MenuBuilder
       index = -1;
       enabled = true;
       keys = System.Windows.Forms.Keys.None;
+      _parentText = nil;
+      _parentItem = nil;
+   }
+
+   public MenuBuilder(Menus menus, string parentText) : this(menus)
+   {
+      _parentText = parentText;
+   }
+
+   public MenuBuilder(Menus menus, ToolStripMenuItem parentItem, string parentText = "") : this(menus)
+   {
+      _parentItem = parentItem;
+      _parentText = parentText.NotEmpty();
    }
 
    public MenuBuilder Text(string text)
@@ -155,13 +170,45 @@ public class MenuBuilder
       return this;
    }
 
-   public ToolStripMenuItem Menu() => menuText.ToObject() switch
+   protected ToolStripMenuItem menu(string parentText) => menuText.ToObject() switch
+   {
+      string text => menus.Menu(parentText, text, handler, shortcut, isChecked, index, enabled, keys),
+      Func<string> func => menus.Menu(parentText, func, handler, shortcut, isChecked, index, enabled, keys),
+      Func<Result<string>> func => menus.Menu(parentText, func, handler, shortcut, isChecked, index, enabled, keys),
+      _ => throw fail("Unexpected item")
+   };
+
+   protected ToolStripMenuItem menu(ToolStripMenuItem parentItem) => menuText.ToObject() switch
+   {
+      string text => menus.Menu(parentItem, text, handler, shortcut, isChecked, index, enabled, keys),
+      Func<string> func => menus.Menu(parentItem, func, handler, shortcut, isChecked, index, enabled, keys),
+      Func<Result<string>> func => menus.Menu(parentItem, func, handler, shortcut, isChecked, index, enabled, keys),
+      _ => throw fail("Unexpected item")
+   };
+
+   protected ToolStripMenuItem menu() => menuText.ToObject() switch
    {
       string text => menus.Menu(text, handler, shortcut, isChecked, index, enabled, keys),
       Func<string> func => menus.Menu(func, handler, shortcut, isChecked, index, enabled, keys),
       Func<Result<string>> func => menus.Menu(func, handler, shortcut, isChecked, index, enabled, keys),
       _ => throw fail("Unexpected item")
    };
+
+   public ToolStripMenuItem Menu()
+   {
+      if (_parentText is (true, var parentText))
+      {
+         return menu(parentText);
+      }
+      else if (_parentItem is (true, var parentItem))
+      {
+         return menu(parentItem);
+      }
+      else
+      {
+         return menu();
+      }
+   }
 
    public ToolStripMenuItem SubMenu() => menuText.ToObject() switch
    {

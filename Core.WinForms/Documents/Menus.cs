@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 using Core.Applications;
 using Core.Collections;
@@ -36,6 +35,12 @@ public class Menus : IHash<string, ToolStripMenuItem>
    public static ToolStripMenuItem operator +(Menus menus, MenuBuilder.BuilderSubMenu _) => menus.Add().SubMenu();
 
    public static MenuBuilder operator +(Menus menus, ToolStripMenuItem item) => menus.Add(item);
+
+   public static MenuBuilder operator +(Menus menus, (string parentText, string menuText) texts) => menus.Add(texts.parentText).Text(texts.menuText);
+
+   public static MenuBuilder operator +(Menus menus, (string parentText, Func<string> menuText) texts) => menus.Add(texts.parentText).Text(texts.menuText);
+
+   public static MenuBuilder operator +(Menus menus, (string parentText, Func<Result<string>> menuText) texts) => menus.Add(texts.parentText).Text(texts.menuText);
 
    public static Menus operator +(Menus menus, MenuBuilder.Separator _)
    {
@@ -75,13 +80,13 @@ public class Menus : IHash<string, ToolStripMenuItem>
    public MenuBuilder Add(string parentText)
    {
       setParent(parentText);
-      return new MenuBuilder(this);
+      return new MenuBuilder(this, parentText);
    }
 
    public MenuBuilder Add(ToolStripMenuItem parentItem)
    {
       setParent(parentItem);
-      return new MenuBuilder(this);
+      return new MenuBuilder(this, parentItem);
    }
 
    public MenuBuilder Add() => new(this);
