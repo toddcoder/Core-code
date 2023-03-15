@@ -620,6 +620,7 @@ public class Menus : IHash<string, ToolStripMenuItem>
       foreach (var (item, menuText) in dynamicTextItems)
       {
          item.Text = menuText.Text;
+         item.Enabled = menuText.Enabled;
       }
    }
 }

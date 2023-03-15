@@ -16,6 +16,8 @@ public abstract class MenuText
 
    public abstract string Text { get; }
 
+   public virtual bool Enabled => true;
+
    public abstract object ToObject();
 }
 
@@ -72,6 +74,8 @@ public sealed class MenuResultStringFunction : MenuText
       }
    }
 
+   public override bool Enabled => func();
+
    public override object ToObject() => func;
 }
 
@@ -80,4 +84,6 @@ public sealed class EmptyText : MenuText
    public override string Text => throw fail("Text not provided");
 
    public override object ToObject() => fail("Object not provided");
+
+   public override bool Enabled => false;
 }
