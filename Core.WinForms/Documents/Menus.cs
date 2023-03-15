@@ -34,13 +34,20 @@ public class Menus : IHash<string, ToolStripMenuItem>
 
    public static ToolStripMenuItem operator +(Menus menus, MenuBuilder.BuilderSubMenu _) => menus.Add().SubMenu();
 
+   public static ToolStripMenuItem operator +(Menus menus, (string parentText, MenuBuilder.BuilderSubMenu) items)
+   {
+      return menus.Add(items.parentText).SubMenu();
+   }
+
    public static MenuBuilder operator +(Menus menus, ToolStripMenuItem item) => menus.Add(item);
 
    public static MenuBuilder operator +(Menus menus, (string parentText, string menuText) texts) => menus.Add(texts.parentText).Text(texts.menuText);
 
-   public static MenuBuilder operator +(Menus menus, (string parentText, Func<string> menuText) texts) => menus.Add(texts.parentText).Text(texts.menuText);
+   public static MenuBuilder operator +(Menus menus, (string parentText, Func<string> menuText) texts) =>
+      menus.Add(texts.parentText).Text(texts.menuText);
 
-   public static MenuBuilder operator +(Menus menus, (string parentText, Func<Result<string>> menuText) texts) => menus.Add(texts.parentText).Text(texts.menuText);
+   public static MenuBuilder operator +(Menus menus, (string parentText, Func<Result<string>> menuText) texts) =>
+      menus.Add(texts.parentText).Text(texts.menuText);
 
    public static Menus operator +(Menus menus, MenuBuilder.Separator _)
    {
