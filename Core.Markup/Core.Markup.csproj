@@ -68,6 +68,7 @@
     <Compile Include="Rtf\PendingFormatter.cs" />
     <Compile Include="Rtf\RowBuilder.cs" />
     <Compile Include="Rtf\RtfExtensions.cs" />
+    <Compile Include="Rtf\RtfStripperFunction.cs" />
     <Compile Include="Rtf\RtfWriter.cs" />
     <Compile Include="Rtf\Style.cs" />
     <Compile Include="Rtf\TableCellArgs.cs" />
