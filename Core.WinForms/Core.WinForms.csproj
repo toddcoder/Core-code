@@ -81,6 +81,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\HttpWriter.cs" />
+    <Compile Include="Controls\ImageAlignment.cs" />
     <Compile Include="Controls\InitializeArgs.cs" />
     <Compile Include="Controls\LabelProcessor.cs" />
     <Compile Include="Controls\LineChangedEventArgs.cs" />

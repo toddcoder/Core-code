@@ -418,13 +418,16 @@ public class UiAction : UserControl
       _oldTitle = nil;
       _progressSubText = nil;
       _flipFlop = nil;
+
+      ClickGlyph = true;
+      ImageAlignment = ImageAlignment.Center;
    }
 
    protected void activateProcessor(Graphics graphics)
    {
-      if (_label)
+      if (_label is (true, var label))
       {
-         _labelProcessor.Activate(new LabelProcessor(_label, _labelWidth, getFont(), EmptyTextTitle, graphics, ClientRectangle));
+         _labelProcessor.Activate(new LabelProcessor(label, _labelWidth, getFont(), EmptyTextTitle, graphics, ClientRectangle));
       }
       else
       {
@@ -654,6 +657,8 @@ public class UiAction : UserControl
    }
 
    public bool StretchImage { get; set; }
+
+   public ImageAlignment ImageAlignment { get; set; }
 
    protected Font getFont() => getStyle() switch
    {
@@ -946,6 +951,8 @@ public class UiAction : UserControl
       }
    }
 
+   public bool ClickGlyph { get; set; }
+
    protected override void OnPaint(PaintEventArgs e)
    {
       base.OnPaint(e);
@@ -1165,24 +1172,27 @@ public class UiAction : UserControl
 
    private void drawClickGlyph(PaintEventArgs e, Rectangle clientRectangle, Color color)
    {
-      using var pen = new Pen(color, 4);
-      if (Arrow)
+      if (ClickGlyph)
       {
-         var arrowSection = ClientRectangle.Width * START_AMOUNT;
-         var arrowPoints = new PointF[]
+         using var pen = new Pen(color, 4);
+         if (Arrow)
          {
-            new(arrowSection, 4),
-            new(ClientRectangle.Width - 4, ClientRectangle.Height / 2.0f),
-            new(arrowSection, ClientRectangle.Height - 4)
-         };
-         using var path = new GraphicsPath();
-         path.AddLines(arrowPoints);
+            var arrowSection = ClientRectangle.Width * START_AMOUNT;
+            var arrowPoints = new PointF[]
+            {
+               new(arrowSection, 4),
+               new(ClientRectangle.Width - 4, ClientRectangle.Height / 2.0f),
+               new(arrowSection, ClientRectangle.Height - 4)
+            };
+            using var path = new GraphicsPath();
+            path.AddLines(arrowPoints);
 
-         e.Graphics.DrawPath(pen, path);
-      }
-      else
-      {
-         e.Graphics.DrawLine(pen, clientRectangle.Right - 4, 4, clientRectangle.Right - 4, clientRectangle.Bottom - 4);
+            e.Graphics.DrawPath(pen, path);
+         }
+         else
+         {
+            e.Graphics.DrawLine(pen, clientRectangle.Right - 4, 4, clientRectangle.Right - 4, clientRectangle.Bottom - 4);
+         }
       }
    }
 
@@ -1331,15 +1341,56 @@ public class UiAction : UserControl
          pevent.Graphics.DrawLine(lightPen, new Point(width, top), new Point(width, height));
       }
 
-      if (_image)
+      int centerHorizontal(Image image)
+      {
+         var x = (clientRectangle.Width - image.Width) / 2;
+         return x < 0 ? 0 : x;
+      }
+
+      int rightHorizontal(Image image)
+      {
+         var x = clientRectangle.Width - image.Width;
+         return x < 0 ? 0 : x;
+      }
+
+      int centerVertical(Image image)
+      {
+         var y = (clientRectangle.Height - image.Height) / 2;
+         return y < 0 ? 0 : y;
+      }
+
+      int bottomVertical(Image image)
+      {
+         var y = clientRectangle.Height - image.Height;
+         return y < 0 ? 0 : y;
+      }
+
+      if (_image is (true, var image))
       {
          if (StretchImage)
          {
-            pevent.Graphics.DrawImage(_image, clientRectangle with { X = 0, Y = 0 });
+            pevent.Graphics.DrawImage(image, clientRectangle with { X = 0, Y = 0 });
          }
          else
          {
-            pevent.Graphics.DrawImage(_image, Point.Empty);
+            var x = new Lazy<int>(() => centerHorizontal(image));
+            var y = new Lazy<int>(() => centerVertical(image));
+            var right = new Lazy<int>(() => rightHorizontal(image));
+            var bottom = new Lazy<int>(() => bottomVertical(image));
+            var location = ImageAlignment switch
+            {
+               ImageAlignment.Center => new Point(x.Value, y.Value),
+               ImageAlignment.North => new Point(x.Value, 0),
+               ImageAlignment.NorthEast => new Point(right.Value, 0),
+               ImageAlignment.East => new Point(right.Value, y.Value),
+               ImageAlignment.SouthEast => new Point(right.Value, bottom.Value),
+               ImageAlignment.South => new Point(x.Value, bottom.Value),
+               ImageAlignment.SouthWest => new Point(0, bottom.Value),
+               ImageAlignment.West => new Point(0, y.Value),
+               ImageAlignment.NorthWest => new Point(0, 0),
+               _ => new Point(0, 0)
+            };
+            pevent.Graphics.DrawImage(image, location);
          }
       }
 
@@ -1625,14 +1676,14 @@ public class UiAction : UserControl
 
    protected (int, int) legendLocation()
    {
-      if (_labelWidth)
+      if (_labelWidth is (true, var labelWidth))
       {
-         return (_labelWidth + 2, 2);
+         return (labelWidth + 2, 2);
       }
-      else if (_label)
+      else if (_label is (true, var label))
       {
-         var _width = LabelProcessor.LabelWidth(_label, getFont());
-         return (_width + 2 | 2, 2);
+         var width = LabelProcessor.LabelWidth(label, getFont()) | 2;
+         return (width + 2, 2);
       }
       else if (CheckStyle != CheckStyle.None)
       {

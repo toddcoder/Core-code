@@ -28,10 +28,14 @@
       /// </summary>
       private void InitializeComponent()
       {
+         this.components = new System.ComponentModel.Container();
+         System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
          this.button1 = new System.Windows.Forms.Button();
          this.button2 = new System.Windows.Forms.Button();
          this.button3 = new System.Windows.Forms.Button();
          this.panel1 = new System.Windows.Forms.Panel();
+         this.imageList1 = new System.Windows.Forms.ImageList(this.components);
+         this.panel2 = new System.Windows.Forms.Panel();
          this.SuspendLayout();
          // 
          // button1
@@ -72,11 +76,25 @@
          this.panel1.Size = new System.Drawing.Size(695, 40);
          this.panel1.TabIndex = 3;
          // 
+         // imageList1
+         // 
+         this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
+         this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
+         this.imageList1.Images.SetKeyName(0, "AbstractAssociation.png");
+         // 
+         // panel2
+         // 
+         this.panel2.Location = new System.Drawing.Point(12, 99);
+         this.panel2.Name = "panel2";
+         this.panel2.Size = new System.Drawing.Size(20, 20);
+         this.panel2.TabIndex = 4;
+         // 
          // Form1
          // 
          this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
          this.ClientSize = new System.Drawing.Size(800, 450);
+         this.Controls.Add(this.panel2);
          this.Controls.Add(this.panel1);
          this.Controls.Add(this.button3);
          this.Controls.Add(this.button2);
@@ -93,6 +111,8 @@
       private System.Windows.Forms.Button button2;
       private System.Windows.Forms.Button button3;
       private System.Windows.Forms.Panel panel1;
+      private System.Windows.Forms.ImageList imageList1;
+      private System.Windows.Forms.Panel panel2;
    }
 }
 

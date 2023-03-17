@@ -14,6 +14,7 @@ namespace WinFormsTest;
 public partial class Form1 : Form
 {
    protected UiAction uiAction;
+   protected UiAction uiButton;
 
    public Form1()
    {
@@ -42,6 +43,14 @@ public partial class Form1 : Form
          var _result = sourceFile.CopyToNotify(targetFolder);
          uiAction.Result(_result.Map(_ => "Copied"));
       };
+
+      uiButton = new UiAction(this, true);
+      uiButton.SetUpInPanel(panel2);
+      uiButton.Image = imageList1.Images[0];
+      uiButton.ImageAlignment = ImageAlignment.Center;
+      uiButton.Click += (_, _) => { };
+      uiButton.ClickText = "Click";
+      uiButton.ClickGlyph = false;
 
       var menus = new FreeMenus { Form = this };
       menus.Menu("File");
