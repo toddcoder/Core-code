@@ -18,7 +18,7 @@ public class PropertyEvaluator : IEvaluator, IHash<string, object>, IHash<Signat
    public static Maybe<object> GetValue(object obj, string signature)
    {
       var evaluator = new PropertyEvaluator(obj);
-      return ((IHash<string, object>)evaluator).Map(signature, o => o);
+      return ((IHash<string, object>)evaluator).Maybe(signature);
    }
 
    protected object obj;
@@ -226,7 +226,7 @@ public class PropertyEvaluator : IEvaluator, IHash<string, object>, IHash<Signat
 
       foreach (var signature in properties)
       {
-         return ((IHash<Signature, object>)this).Map(signature, o => (T)o);
+         return ((IHash<Signature, object>)this).Maybe(signature).Map(o => (T)o);
       }
 
       return nil;

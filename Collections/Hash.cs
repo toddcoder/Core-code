@@ -259,7 +259,7 @@ public class Hash<TKey, TValue> : Dictionary<TKey, TValue>, IHash<TKey, TValue>
 
    public Maybe<TValue> Replace(TKey key, TValue newValue)
    {
-      var oldValue = this.Map(key);
+      var oldValue = this.Maybe(key);
       this[key] = newValue;
 
       return oldValue;

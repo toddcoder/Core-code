@@ -26,7 +26,7 @@ public class ExpiringCache<TKey, TValue> : IHash<TKey, TValue>
          lock (locker)
          {
             var expiredKeys = cache
-               .Where(i => expirationPolicies.FlatMap(i.Key, v => v.ItemEvictable(i.Value), false))
+               .Where(i => expirationPolicies.Maybe[i.Key].Map(v => v.ItemEvictable(i.Value)) | false)
                .Select(i => i.Key)
                .ToArray();
             foreach (var key in expiredKeys)

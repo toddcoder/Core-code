@@ -91,8 +91,8 @@ public class SqlConnectionString : IConnectionString
 
    internal SqlConnectionString(string server, string database, string application, Connection connection)
    {
-      var user = connection.Map("user");
-      var password = connection.Map("password");
+      var user = connection.Maybe("user");
+      var password = connection.Maybe("password");
       connectionString = GetConnectionString(server, database, application, user, password, connection.ReadOnly);
       connectionTimeout = connection.Timeout;
    }
@@ -102,8 +102,8 @@ public class SqlConnectionString : IConnectionString
       var server = connection.Value("server");
       var database = connection.Value("database");
       var application = connection.Value("application");
-      var user = connection.Map("user");
-      var password = connection.Map("password");
+      var user = connection.Maybe("user");
+      var password = connection.Maybe("password");
       var readOnly = connection.ReadOnly;
       connectionString = GetConnectionString(server, database, application, user, password, readOnly);
       connectionTimeout = connection.Timeout;

@@ -39,7 +39,7 @@ public class OleDbSetup : ISetup
             "access" => new AccessConnectionString(),
             "excel" => new ExcelConnectionString(),
             "csv" => new CSVConnectionString(),
-            _ => registeredTypes.Map(type).Map(f => f())
+            _ => registeredTypes.Maybe(type).Map(f => f())
          };
 
          return _connectionString.Map(connectionString => new OleDbSetup(file)

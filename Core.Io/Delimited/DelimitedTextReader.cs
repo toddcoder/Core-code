@@ -185,7 +185,14 @@ public class DelimitedTextReader : IDataReader, IEnumerable<string[]>
 
    object IDataRecord.this[int i] => fields[i];
 
-   public object this[int i] => hasConverters ? converters.FlatMap(i, f => f(fields[i]), () => fields[i]) : fields[i];
+   public object this[int i]
+   {
+      get
+      {
+         var field = fields[i];
+         return hasConverters ? converters.Maybe[i].Map(func => func(field)) | (() => field) : field;
+      }
+   }
 
    object IDataRecord.this[string name] => fields[indexes.Value(name)];
 

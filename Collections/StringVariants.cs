@@ -77,7 +77,7 @@ public class StringVariants : IHash<string, string>
    {
       var _template =
          from templateName in _templateName
-         from mappedTemplate in this.Map(templateName)
+         from mappedTemplate in this.Maybe(templateName)
          select mappedTemplate;
       if (_template)
       {

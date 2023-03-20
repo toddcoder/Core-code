@@ -94,9 +94,9 @@ public class MatchResult : IEnumerable<Match>
 
    public int GroupCount(int index) => getMatch(index).Groups.Length;
 
-   public Maybe<string> NameFromIndex(int index) => indexesToNames.Map(index);
+   public Maybe<string> NameFromIndex(int index) => indexesToNames.Maybe(index);
 
-   public Maybe<int> IndexFromName(string name) => namesToIndexes.Map(name);
+   public Maybe<int> IndexFromName(string name) => namesToIndexes.Maybe(name);
 
    public int MatchCount => matches.Length;
 

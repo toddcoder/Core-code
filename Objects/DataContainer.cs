@@ -31,7 +31,7 @@ public class DataContainer : StringHash<object>
 
    public string Format { get; set; }
 
-   protected Maybe<Action> initializeAction(string key) => this.Map(key, o => o.IfCast<Action>());
+   protected Maybe<Action> initializeAction(string key) => Maybe[key].Map(o => o.IfCast<Action>());
 
    public void BeforeExecute()
    {
@@ -76,15 +76,15 @@ public class DataContainer : StringHash<object>
       return result;
    }
 
-   public DateTime AsDateTime(string key, DateTime defaultValue) => this.FlatMap(key, dt => (DateTime)dt, () => defaultValue);
+   public DateTime AsDateTime(string key, DateTime defaultValue) => Maybe[key].Map(dt => (DateTime)dt) | defaultValue;
 
-   public string AsString(string key, string defaultValue = "") => this.FlatMap(key, s => (string)s, () => defaultValue);
+   public string AsString(string key, string defaultValue = "") => Maybe[key].Map(s => (string)s) | defaultValue;
 
-   public int AsInt(string key, int defaultValue = 0) => this.FlatMap(key, i => (int)i, () => defaultValue);
+   public int AsInt(string key, int defaultValue = 0) => Maybe[key].Map(i => (int)i) | defaultValue;
 
-   public double AsDouble(string key, double defaultValue = 0d) => this.FlatMap(key, d => (double)d, () => defaultValue);
+   public double AsDouble(string key, double defaultValue = 0d) => Maybe[key].Map(d => (double)d) | defaultValue;
 
-   public bool AsBoolean(string key, bool defaultValue = false) => this.FlatMap(key, b => (bool)b, () => defaultValue);
+   public bool AsBoolean(string key, bool defaultValue = false) => Maybe[key].Map(b => (bool)b) | defaultValue;
 
    public override string ToString()
    {

@@ -121,7 +121,7 @@ public class TypeManager
       }
    }
 
-   protected Result<string> getTypeName(string name) => typeNames.Map(name).Result($"Couldn't determine type name {name}");
+   protected Result<string> getTypeName(string name) => typeNames.Maybe(name).Result($"Couldn't determine type name {name}");
 
    protected static Result<Type> getTypeFromAssembly(Assembly assembly, string typeName) => tryTo(() => assembly.GetType(typeName, true));
 
