@@ -1,7 +1,9 @@
-﻿using Core.Markup.Rtf;
+﻿using System;
+using Core.Markup.Rtf;
 using Core.Monads;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Core.Markup.Rtf.RtfFunctions;
+using static Core.Markup.Rtf.RtfStripperFunction;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Tests;
@@ -84,6 +86,16 @@ public class RtfTests
          "r-6.41.10" | boldStyle;
 
       document.Save(@"C:\Temp\Basic.rtf");
+      var rtf = document.Render();
+      var _text = stripRichTextFormat(rtf);
+      if (_text is (true, var text))
+      {
+         Console.WriteLine(text);
+      }
+      else
+      {
+         Console.WriteLine(_text.Exception);
+      }
    }
 
    [TestMethod]

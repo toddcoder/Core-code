@@ -24,13 +24,13 @@ public class ConfigurationResult
 
    public Result<string> String(string key) => getter.GetItem(key).Map(i => i.Text).Result($"Item {key} required");
 
-   public Result<int> Int32(string key) => String(key).Map(Result.Int32);
+   public Result<int> Int32(string key) => String(key).Map(i => Result.Int32(i));
 
-   public Result<long> Int64(string key) => String(key).Map(Result.Int64);
+   public Result<long> Int64(string key) => String(key).Map(l => Result.Int64(l));
 
-   public Result<float> Single(string key) => String(key).Map(Result.Single);
+   public Result<float> Single(string key) => String(key).Map(s => Result.Single(s));
 
-   public Result<double> Double(string key) => String(key).Map(Result.Double);
+   public Result<double> Double(string key) => String(key).Map(d => Result.Double(d));
 
    public Result<bool> Boolean(string key) => String(key).Map(Result.Boolean);
 

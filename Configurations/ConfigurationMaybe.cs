@@ -24,13 +24,13 @@ public class ConfigurationMaybe
 
    public Maybe<string> String(string key) => getter.GetItem(key).Map(i => i.Text);
 
-   public Maybe<int> Int32(string key) => String(key).Map(Maybe.Int32);
+   public Maybe<int> Int32(string key) => String(key).Map(i => Maybe.Int32(i));
 
-   public Maybe<long> Int64(string key) => String(key).Map(Maybe.Int64);
+   public Maybe<long> Int64(string key) => String(key).Map(l => Maybe.Int64(l));
 
-   public Maybe<float> Single(string key) => String(key).Map(Maybe.Single);
+   public Maybe<float> Single(string key) => String(key).Map(s => Maybe.Single(s));
 
-   public Maybe<double> Double(string key) => String(key).Map(Maybe.Double);
+   public Maybe<double> Double(string key) => String(key).Map(d => Maybe.Double(d));
 
    public Maybe<bool> Boolean(string key) => String(key).Map(Maybe.Boolean);
 

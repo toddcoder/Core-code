@@ -6,17 +6,17 @@ namespace Core.Configurations;
 
 public static class ConfigurationExtensions
 {
-   public static Maybe<int> GetInt32(this IConfigurationItem item, string key) => item.GetValue(key).Map(Maybe.Int32);
+   public static Maybe<int> GetInt32(this IConfigurationItem item, string key) => item.GetValue(key).Map(i => Maybe.Int32(i));
 
-   public static Maybe<double> GetDouble(this IConfigurationItem item, string key) => item.GetValue(key).Map(Maybe.Double);
+   public static Maybe<double> GetDouble(this IConfigurationItem item, string key) => item.GetValue(key).Map(d => Maybe.Double(d));
 
    public static Maybe<bool> GetBoolean(this IConfigurationItem item, string key) => item.GetValue(key).Map(Maybe.Boolean);
 
    public static Maybe<byte[]> GetBytes(this IConfigurationItem item, string key) => item.GetValue(key).Map(s => s.FromBase64());
 
-   public static Result<int> RequireInt32(this IConfigurationItem item, string key) => item.RequireValue(key).Map(Result.Int32);
+   public static Result<int> RequireInt32(this IConfigurationItem item, string key) => item.RequireValue(key).Map(i => Result.Int32(i));
 
-   public static Result<double> RequireDouble(this IConfigurationItem item, string key) => item.RequireValue(key).Map(Result.Double);
+   public static Result<double> RequireDouble(this IConfigurationItem item, string key) => item.RequireValue(key).Map(d => Result.Double(d));
 
    public static Result<bool> RequireBoolean(this IConfigurationItem item, string key) => item.RequireValue(key).Map(Result.Boolean);
 

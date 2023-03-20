@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using Core.Matching;
 using Core.Monads;
@@ -29,11 +30,23 @@ public static class ConversionFunctions
          }
       }
 
-      public static byte Byte(string source, byte defaultValue = 0)
+      public static CultureInfo FormatProvider(NumberStyles numberStyles)
+      {
+         if ((numberStyles & NumberStyles.AllowCurrencySymbol) > 0)
+         {
+            return new CultureInfo("en-US");
+         }
+         else
+         {
+            return CultureInfo.InvariantCulture;
+         }
+      }
+
+      public static byte Byte(string source, byte defaultValue = 0, NumberStyles numberStyles = NumberStyles.Integer)
       {
          if (source.IsNotEmpty())
          {
-            return byte.TryParse(source, out var result) ? result : defaultValue;
+            return byte.TryParse(source, numberStyles, FormatProvider(numberStyles), out var result) ? result : defaultValue;
          }
          else
          {
@@ -41,11 +54,11 @@ public static class ConversionFunctions
          }
       }
 
-      public static int Int32(string source, int defaultValue = 0)
+      public static int Int32(string source, int defaultValue = 0, NumberStyles numberStyles = NumberStyles.Integer)
       {
          if (source.IsNotEmpty())
          {
-            return int.TryParse(source, out var result) ? result : defaultValue;
+            return int.TryParse(source, numberStyles, FormatProvider(numberStyles), out var result) ? result : defaultValue;
          }
          else
          {
@@ -53,11 +66,11 @@ public static class ConversionFunctions
          }
       }
 
-      public static long Int64(string source, long defaultValue = 0)
+      public static long Int64(string source, long defaultValue = 0, NumberStyles numberStyles = NumberStyles.Integer)
       {
          if (source.IsNotEmpty())
          {
-            return long.TryParse(source, out var result) ? result : defaultValue;
+            return long.TryParse(source, numberStyles, FormatProvider(numberStyles), out var result) ? result : defaultValue;
          }
          else
          {
@@ -65,11 +78,11 @@ public static class ConversionFunctions
          }
       }
 
-      public static float Single(string source, float defaultValue = 0)
+      public static float Single(string source, float defaultValue = 0, NumberStyles numberStyles = NumberStyles.Float)
       {
          if (source.IsNotEmpty())
          {
-            return float.TryParse(source, out var result) ? result : defaultValue;
+            return float.TryParse(source, numberStyles, FormatProvider(numberStyles), out var result) ? result : defaultValue;
          }
          else
          {
@@ -77,11 +90,11 @@ public static class ConversionFunctions
          }
       }
 
-      public static double Double(string source, double defaultValue = 0)
+      public static double Double(string source, double defaultValue = 0, NumberStyles numberStyles = NumberStyles.Float)
       {
          if (source.IsNotEmpty())
          {
-            return double.TryParse(source, out var result) ? result : defaultValue;
+            return double.TryParse(source, numberStyles, FormatProvider(numberStyles), out var result) ? result : defaultValue;
          }
          else
          {
@@ -89,11 +102,11 @@ public static class ConversionFunctions
          }
       }
 
-      public static decimal Decimal(string source, decimal defaultValue = 0)
+      public static decimal Decimal(string source, decimal defaultValue = 0, NumberStyles numberStyles = NumberStyles.Float)
       {
          if (source.IsNotEmpty())
          {
-            return decimal.TryParse(source, out var result) ? result : defaultValue;
+            return decimal.TryParse(source, numberStyles, FormatProvider(numberStyles), out var result) ? result : defaultValue;
          }
          else
          {
@@ -180,11 +193,11 @@ public static class ConversionFunctions
          }
       }
 
-      public static Maybe<byte> Byte(string source)
+      public static Maybe<byte> Byte(string source, NumberStyles numberStyles = NumberStyles.Integer)
       {
          if (source.IsNotEmpty())
          {
-            return byte.TryParse(source, out var result) ? result : nil;
+            return byte.TryParse(source, numberStyles, Value.FormatProvider(numberStyles), out var result) ? result : nil;
          }
          else
          {
@@ -192,11 +205,11 @@ public static class ConversionFunctions
          }
       }
 
-      public static Maybe<int> Int32(string source)
+      public static Maybe<int> Int32(string source, NumberStyles numberStyles = NumberStyles.Integer)
       {
          if (source.IsNotEmpty())
          {
-            return int.TryParse(source, out var result) ? result : nil;
+            return int.TryParse(source, numberStyles, Value.FormatProvider(numberStyles), out var result) ? result : nil;
          }
          else
          {
@@ -204,11 +217,11 @@ public static class ConversionFunctions
          }
       }
 
-      public static Maybe<long> Int64(string source)
+      public static Maybe<long> Int64(string source, NumberStyles numberStyles = NumberStyles.Integer)
       {
          if (source.IsNotEmpty())
          {
-            return long.TryParse(source, out var result) ? result : nil;
+            return long.TryParse(source, numberStyles, Value.FormatProvider(numberStyles), out var result) ? result : nil;
          }
          else
          {
@@ -216,11 +229,11 @@ public static class ConversionFunctions
          }
       }
 
-      public static Maybe<float> Single(string source)
+      public static Maybe<float> Single(string source, NumberStyles numberStyles = NumberStyles.Float)
       {
          if (source.IsNotEmpty())
          {
-            return float.TryParse(source, out var result) ? result : nil;
+            return float.TryParse(source, numberStyles, Value.FormatProvider(numberStyles), out var result) ? result : nil;
          }
          else
          {
@@ -228,11 +241,11 @@ public static class ConversionFunctions
          }
       }
 
-      public static Maybe<double> Double(string source)
+      public static Maybe<double> Double(string source, NumberStyles numberStyles = NumberStyles.Float)
       {
          if (source.IsNotEmpty())
          {
-            return double.TryParse(source, out var result) ? result : nil;
+            return double.TryParse(source, numberStyles, Value.FormatProvider(numberStyles), out var result) ? result : nil;
          }
          else
          {
@@ -240,11 +253,11 @@ public static class ConversionFunctions
          }
       }
 
-      public static Maybe<decimal> Decimal(string source)
+      public static Maybe<decimal> Decimal(string source, NumberStyles numberStyles = NumberStyles.Float)
       {
          if (source.IsNotEmpty())
          {
-            return decimal.TryParse(source, out var result) ? result : nil;
+            return decimal.TryParse(source, numberStyles, Value.FormatProvider(numberStyles), out var result) ? result : nil;
          }
          else
          {
@@ -319,17 +332,35 @@ public static class ConversionFunctions
    {
       public static Result<bool> Boolean(string source) => tryTo(() => bool.Parse(source));
 
-      public static Result<byte> Byte(string source) => tryTo(() => byte.Parse(source));
+      public static Result<byte> Byte(string source, NumberStyles numberStyles = NumberStyles.Integer)
+      {
+         return tryTo(() => byte.Parse(source, numberStyles));
+      }
 
-      public static Result<int> Int32(string source) => tryTo(() => int.Parse(source));
+      public static Result<int> Int32(string source, NumberStyles numberStyles = NumberStyles.Integer)
+      {
+         return tryTo(() => int.Parse(source, numberStyles));
+      }
 
-      public static Result<long> Int64(string source) => tryTo(() => long.Parse(source));
+      public static Result<long> Int64(string source, NumberStyles numberStyles = NumberStyles.Integer)
+      {
+         return tryTo(() => long.Parse(source, numberStyles));
+      }
 
-      public static Result<float> Single(string source) => tryTo(() => float.Parse(source));
+      public static Result<float> Single(string source, NumberStyles numberStyles = NumberStyles.Float)
+      {
+         return tryTo(() => float.Parse(source, numberStyles));
+      }
 
-      public static Result<double> Double(string source) => tryTo(() => double.Parse(source));
+      public static Result<double> Double(string source, NumberStyles numberStyles = NumberStyles.Float)
+      {
+         return tryTo(() => double.Parse(source, numberStyles));
+      }
 
-      public static Result<decimal> Decimal(string source) => tryTo(() => decimal.Parse(source));
+      public static Result<decimal> Decimal(string source, NumberStyles numberStyles = NumberStyles.Float)
+      {
+         return tryTo(() => decimal.Parse(source, numberStyles));
+      }
 
       public static Result<DateTime> DateTime(string source) => tryTo(() => System.DateTime.Parse(source));
 

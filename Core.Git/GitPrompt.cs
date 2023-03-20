@@ -159,14 +159,14 @@ public class GitPrompt
             if (aheadBehind.IsNotEmpty())
             {
                var aheadCount = 0;
-               var _aheadCount = aheadBehind.Matches("'ahead' /s+ /(/d+); f").Map(r => r.FirstGroup).Map(Maybe.Int32);
+               var _aheadCount = aheadBehind.Matches("'ahead' /s+ /(/d+); f").Map(r => r.FirstGroup).Map(i => Maybe.Int32(i));
                if (_aheadCount)
                {
                   aheadCount = _aheadCount;
                }
 
                var behindCount = 0;
-               var _behindCount = aheadBehind.Matches("'behind' /s+ /(/d+); f").Map(r => r.FirstGroup).Map(Maybe.Int32);
+               var _behindCount = aheadBehind.Matches("'behind' /s+ /(/d+); f").Map(r => r.FirstGroup).Map(i => Maybe.Int32(i));
                if (_behindCount)
                {
                   behindCount = _behindCount;
