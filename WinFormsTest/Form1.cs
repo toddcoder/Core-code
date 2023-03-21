@@ -59,6 +59,11 @@ public partial class Form1 : Form
       _ = menus + restItem + "Bravo" + (() => uiAction.Message("Bravo")) + Keys.Alt + Keys.B + menu;
       _ = menus + ("File", "Charlie") + (() => uiAction.Message("Charlie")) + Keys.Shift + Keys.Control + Keys.C + menu;
       menus.RenderMainMenu();
+
+      var contextMenus = new FreeMenus { Form = this };
+      _ = contextMenus + "Copy" + (() => textBox1.Copy()) + Keys.Control + Keys.Alt + Keys.C + contextMenu;
+      _ = contextMenus + "Paste" + (() => textBox1.Paste()) + Keys.Control + Keys.Alt + Keys.P + contextMenu;
+      contextMenus.CreateContextMenu(textBox1);
    }
 
    protected void button1_Click(object sender, EventArgs e)

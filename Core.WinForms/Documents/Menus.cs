@@ -55,6 +55,8 @@ public class Menus : IHash<string, ToolStripMenuItem>
       return menus;
    }
 
+   public static MenuBuilder operator +(Menus menus, MenuBuilder.ContextMenuItem _) => menus.Add();
+
    protected StringHash<ToolStripItem> menuItems;
    protected Hash<ToolStripItem, MenuText> dynamicTextItems;
    protected StringHash<int> tabIndexes;
@@ -115,21 +117,46 @@ public class Menus : IHash<string, ToolStripMenuItem>
       setParent(text);
    }
 
-   public void ContextMenu(string text, EventHandler handler, string shortcut = "", bool isChecked = false, bool enabled = true)
+   public ToolStripMenuItem ContextMenu(string text, EventHandler handler, string shortcut = "", bool isChecked = false, bool enabled = true,
+      Keys keys = Keys.None)
    {
       var item = new ToolStripMenuItem(text) { Name = MenuName(text), Checked = isChecked, Enabled = enabled };
       item.Click += handler;
-      if (shortcut.IsNotEmpty())
-      {
-         var _keys = shortcutKeys(shortcut);
-         if (_keys is (true, var keys))
-         {
-            item.ShortcutKeys = keys;
-         }
-      }
+      setShortcut(item, shortcut, keys);
 
       menuItems[item.Name] = item;
       tabIndexes[item.Name] = tabIndex++;
+
+      return item;
+   }
+
+   public ToolStripMenuItem ContextMenu(Func<string> textFunc, EventHandler handler, string shortcut = "", bool isChecked = false, bool enabled = true,
+      Keys keys = Keys.None)
+   {
+      var text = textFunc();
+      var item = new ToolStripMenuItem(text) { Name = MenuName(text), Checked = isChecked, Enabled = enabled };
+      item.Click += handler;
+      setShortcut(item, shortcut, keys);
+
+      menuItems[item.Name] = item;
+      tabIndexes[item.Name] = tabIndex++;
+
+      return item;
+   }
+
+   public ToolStripMenuItem ContextMenu(Func<Result<string>> textFunc, EventHandler handler, string shortcut = "", bool isChecked = false, bool enabled = true,
+      Keys keys = Keys.None)
+   {
+      var _text = textFunc();
+      var text = _text | (e => e.Message);
+      var item = new ToolStripMenuItem(text) { Name = MenuName(text), Checked = isChecked, Enabled = enabled };
+      item.Click += handler;
+      setShortcut(item, shortcut, keys);
+
+      menuItems[item.Name] = item;
+      tabIndexes[item.Name] = tabIndex++;
+
+      return item;
    }
 
    public static string MenuName(string text) => $"menu{makeIdentifier(text)}";

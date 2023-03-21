@@ -9,4 +9,6 @@ public static class MenuBuilderFunctions
    public static MenuBuilder.BuilderIsChecked isChecked => new();
 
    public static MenuBuilder.Separator separator => new();
+
+   public static MenuBuilder.ContextMenuItem contextMenu => new();
 }

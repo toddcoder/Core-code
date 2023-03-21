@@ -25,6 +25,10 @@ public class MenuBuilder
    {
    }
 
+   public class ContextMenuItem
+   {
+   }
+
    public static MenuBuilder operator +(MenuBuilder builder, string text) => builder.Text(text);
 
    public static MenuBuilder operator +(MenuBuilder builder, Func<string> textFunc) => builder.Text(textFunc);
@@ -44,6 +48,8 @@ public class MenuBuilder
    public static ToolStripMenuItem operator +(MenuBuilder builder, MenuEnd _) => builder.Menu();
 
    public static ToolStripMenuItem operator +(MenuBuilder builder, BuilderSubMenu _) => builder.SubMenu();
+
+   public static ToolStripMenuItem operator +(MenuBuilder builder, ContextMenuItem _) => builder.ContextMenu();
 
    protected Menus menus;
    protected MenuText menuText;
@@ -213,6 +219,14 @@ public class MenuBuilder
    public ToolStripMenuItem SubMenu() => menuText.ToObject() switch
    {
       string text => menus.SubMenu(text, index),
+      _ => throw fail("Unexpected item")
+   };
+
+   public ToolStripMenuItem ContextMenu() => menuText.ToObject() switch
+   {
+      string text => menus.ContextMenu(text, handler, shortcut, isChecked, enabled, keys),
+      Func<string> textFunc => menus.ContextMenu(textFunc, handler, shortcut, isChecked, enabled, keys),
+      Func<Result<string>> textFunc => menus.ContextMenu(textFunc, handler, shortcut, isChecked, enabled, keys),
       _ => throw fail("Unexpected item")
    };
 }
