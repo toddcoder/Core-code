@@ -1,6 +1,7 @@
 ﻿using System;
 using Core.Collections;
 using Core.Dates.DateIncrements;
+using Core.Strings;
 
 namespace Core.Data.ConnectionStrings;
 
@@ -21,7 +22,7 @@ public class TextConnectionString : IConnectionString
          "," => "CSVDelimited",
          "tab" => "TabDelimited",
          "\t" => "TabDelimited",
-         _ => $"Delimited({delimited.Substring(0, 1)})"
+         _ => $"Delimited({delimited.Keep(1)})"
       };
    }
 

@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Core.DataStructures;
 using Core.Dates.DateIncrements;
+using Core.Enumerables;
 using Core.Monads;
 using Core.Numbers;
 using Core.Strings;
@@ -170,7 +171,7 @@ public class MonadTests
    [TestMethod]
    public void SomeIfTest()
    {
-      var _text = (1 > 0).SomeIf(() => "foobar");
+      var _text = maybe<string>() & 1 > 0 & "foobar";
       if (_text is (true, var text1))
       {
          Console.WriteLine(text1);
@@ -567,6 +568,127 @@ public class MonadTests
       else
       {
          Console.WriteLine(_third.Exception);
+      }
+   }
+
+   [TestMethod]
+   public void MaybeFunctionTest()
+   {
+      var greet = true;
+      var _value = maybe<string>() & greet & "world";
+      if (_value is (true, var who))
+      {
+         Console.WriteLine($"hello {who}!");
+      }
+      else
+      {
+         Console.WriteLine("?");
+      }
+   }
+
+   [TestMethod]
+   public void LinkTest()
+   {
+      Maybe<int> _result1 = 30;
+      Maybe<int> _result2 = 10;
+      Maybe<int> _result3 = 2;
+
+      var _sum =
+         from r1 in _result1
+         from r2 in _result2
+         where r1 > 0
+         select r1 - r2 into temp
+         from r3 in _result3
+         select temp * r3;
+      if (_sum is (true, var sum))
+      {
+         Console.WriteLine(sum);
+      }
+      else
+      {
+         Console.WriteLine("?");
+      }
+   }
+
+   [TestMethod]
+   public void SequenceTest()
+   {
+      var _first = new[] { 0, 1, 2 }.FirstOrNone(x => x == 1);
+      if (_first is (true, var first))
+      {
+         Console.WriteLine(first);
+      }
+   }
+
+   protected class Request
+   {
+      public Request(string name, string email)
+      {
+         Name = name;
+         Email = email;
+      }
+
+      public string Name { get; }
+
+      public string Email { get; }
+
+      public void SendMail() => Console.WriteLine($"sending to {Name} via {Email}");
+   }
+
+   [TestMethod]
+   public void ResultTest()
+   {
+      Result<Request> validateInput(Request input)
+      {
+         if (input.Name.IsEmpty())
+         {
+            return fail("No must not be blank");
+         }
+
+         if (input.Email.IsEmpty())
+         {
+            return fail("Email must not be blank");
+         }
+
+         return input;
+      }
+
+      var request = new Request("Todd", "toddcoder@comcast.net");
+      var _result = validateInput(request);
+      if (_result is (true, var result))
+      {
+         result.SendMail();
+      }
+   }
+
+   [TestMethod]
+   public void EitherTest()
+   {
+      Either<Request, string> validateInput(Request input)
+      {
+         if (input.Name.IsEmpty())
+         {
+            return "No must not be blank";
+         }
+
+         if (input.Email.IsEmpty())
+         {
+            return "Email must not be blank";
+         }
+
+         return input;
+      }
+
+      var request = new Request("Todd", "toddcoder@comcast.net");
+      var _result = validateInput(request);
+      switch (_result)
+      {
+         case (true, var result, _):
+            result.SendMail();
+            break;
+         case (false, _, var message):
+            Console.WriteLine(message);
+            break;
       }
    }
 }

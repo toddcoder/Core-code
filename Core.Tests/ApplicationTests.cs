@@ -224,7 +224,7 @@ internal class TestProgram : CommandProcessor
    [Switch("file", "file", "File to use", "f")]
    public Maybe<FileName> File { get; set; }
 
-   [Switch("folder", "folder", "Folder to use", "F")]
+   [Switch("folder", "folder", "Folder to use", "f2")]
    public Maybe<FolderName> Folder { get; set; }
 
    public override StringHash GetConfigurationDefaults() => new(true);
@@ -361,6 +361,13 @@ public class ApplicationTests
    }
 
    [TestMethod]
+   public void CommandHelpOnScanTest()
+   {
+      var processor = new TestProgram();
+      processor.Run("help scan");
+   }
+
+   [TestMethod]
    public void CommandHelpOnConfigTest()
    {
       var processor = new TestProgram();
@@ -384,7 +391,7 @@ public class ApplicationTests
       processor.Run(@"scan -f C:\Temp\max.txt");
 
       processor = new TestProgram();
-      processor.Run(@"scan -F C:\Temp");
+      processor.Run(@"scan -f2 C:\Temp");
 
       processor = new TestProgram();
       processor.Run("scan");

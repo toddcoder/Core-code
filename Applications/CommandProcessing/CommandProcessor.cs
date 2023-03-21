@@ -479,41 +479,46 @@ public abstract class CommandProcessor : IDisposable
 
       while (true)
       {
-         var _result = noStrings.Matches($"^ /s* /('{Prefix}' | '{ShortCut}') /(/w [/w '-']*) /b; f");
+         var _result = noStrings.Matches($"^ /s* ( /('{Prefix}') /(/w [/w '-']*) /b | /('{ShortCut}') /(/w1%2) /b ); f");
          if (_result is (true, var result))
          {
+            var (prefix, name, shortCut, shortName) = result;
+            if (prefix.IsEmpty())
+            {
+               prefix = shortCut;
+               name = shortName;
+            }
+
+            noStrings = noStrings.Drop(result.Length);
+            if (noStrings.IsEmpty() || noStrings.IsMatch($"^ /s* ('{Prefix}' | '{ShortCut}'); f"))
+            {
+               yield return (prefix, name, nil);
+            }
+            else
+            {
+               var _bareString = lazy.maybe<(string, int)>();
+               var _nonSpace = lazy.maybe<(string, int)>();
+               if (_bareString.ValueOf(noStrings.Matches("^ /s* /([quote]) /(-[quote]*) /1; f").Map(r => r.SecondGroupAndLength)) is
+                   (true, var (bareString, bareStringLength)))
+               {
+                  var value = delimitedText.Restringify(bareString, RestringifyQuotes.None);
+
+                  yield return (prefix, name, value);
+
+                  noStrings = noStrings.Drop(bareStringLength);
+               }
+               else if (_nonSpace.ValueOf(noStrings.Matches("^ /s* /(-/s+); f").Map(r => r.FirstGroupAndLength)) is
+                        (true, var (nonSpace, nonSpaceLength)))
+               {
+                  yield return (prefix, name, nonSpace);
+
+                  noStrings = noStrings.Drop(nonSpaceLength);
+               }
+            }
          }
          else
          {
             break;
-         }
-
-         var (prefix, name) = result;
-         noStrings = noStrings.Drop(result.Length);
-         if (noStrings.IsEmpty() || noStrings.IsMatch($"^ /s* ('{Prefix}' | '{ShortCut}'); f"))
-         {
-            yield return (prefix, name, nil);
-         }
-         else
-         {
-            var _bareString = lazy.maybe<(string, int)>();
-            var _nonSpace = lazy.maybe<(string, int)>();
-            if (_bareString.ValueOf(noStrings.Matches("^ /s* /([quote]) /(-[quote]*) /1; f").Map(r => r.SecondGroupAndLength)) is
-                (true, var (bareString, bareStringLength)))
-            {
-               var value = delimitedText.Restringify(bareString, RestringifyQuotes.None);
-
-               yield return (prefix, name, value);
-
-               noStrings = noStrings.Drop(bareStringLength);
-            }
-            else if (_nonSpace.ValueOf(noStrings.Matches("^ /s* /(-/s+); f").Map(r => r.FirstGroupAndLength)) is
-                     (true, var (nonSpace, nonSpaceLength)))
-            {
-               yield return (prefix, name, nonSpace);
-
-               noStrings = noStrings.Drop(nonSpaceLength);
-            }
          }
       }
    }
