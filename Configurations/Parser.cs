@@ -22,13 +22,13 @@ internal class Parser
       this.source = source;
    }
 
-   public Result<Setting> Parse()
+   public Optional<Setting> Parse()
    {
       var rootSetting = new Setting();
       var stack = new MaybeStack<ConfigurationItem>();
       stack.Push(rootSetting);
 
-      Maybe<Setting> peekSetting()
+      Optional<Setting> peekSetting()
       {
          return
             from parentItem in stack.Peek()
@@ -36,7 +36,7 @@ internal class Parser
             select parentGroup;
       }
 
-      Maybe<Setting> popSetting()
+      Optional<Setting> popSetting()
       {
          return
             from parentItem in stack.Pop()
@@ -44,7 +44,7 @@ internal class Parser
             select parentGroup;
       }
 
-      Result<(string, string, bool)> getLinesAsArray(string source)
+      Optional<(string, string, bool)> getLinesAsArray(string source)
       {
          var lines = new List<string>();
          while (source.Length > 0)
@@ -74,7 +74,7 @@ internal class Parser
          return fail("No terminating }");
       }
 
-      Result<(string newSource, string str, bool isArray)> getString(string source)
+      Optional<(string newSource, string str, bool isArray)> getString(string source)
       {
          var _quote = lazy.maybe<(string, int)>();
          var _openBrace = lazy.maybe<MatchResult>();
@@ -128,7 +128,7 @@ internal class Parser
          }
       }
 
-      static Result<(string newSource, string str, bool isArray)> getQuotedString(string source, char quote)
+      static Optional<(string newSource, string str, bool isArray)> getQuotedString(string source, char quote)
       {
          var escaped = false;
          var builder = new StringBuilder();

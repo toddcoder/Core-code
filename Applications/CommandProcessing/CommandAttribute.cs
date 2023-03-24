@@ -28,7 +28,7 @@ public class CommandAttribute : Attribute, IHash<string, string>
 
    protected StringHash replacements;
 
-   protected CommandAttribute(string name, Maybe<string> helpText, Maybe<string> switchPattern, bool initialize = true, string replacements = "")
+   protected CommandAttribute(string name, Optional<string> helpText, Optional<string> switchPattern, bool initialize = true, string replacements = "")
    {
       Name = name;
       HelpText = helpText;
@@ -54,9 +54,9 @@ public class CommandAttribute : Attribute, IHash<string, string>
 
    public string Name { get; }
 
-   public Maybe<string> HelpText { get; }
+   public Optional<string> HelpText { get; }
 
-   public Maybe<string> SwitchPattern { get; }
+   public Optional<string> SwitchPattern { get; }
 
    public bool Initialize { get; }
 
@@ -68,5 +68,5 @@ public class CommandAttribute : Attribute, IHash<string, string>
 
    public bool ContainsKey(string key) => replacements.ContainsKey(key);
 
-   public Result<Hash<string, string>> AnyHash() => replacements;
+   public Optional<Hash<string, string>> AnyHash() => replacements;
 }

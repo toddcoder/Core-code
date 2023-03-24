@@ -7,7 +7,7 @@ namespace Core.WinForms.Notification;
 
 public class ImagePanel : Panel
 {
-   protected Maybe<Image> _image;
+   protected Optional<Image> _image;
 
    public ImagePanel()
    {

@@ -14,7 +14,7 @@ public class Failed<T> : Optional<T>, IEquatable<Failed<T>>
 
    public override Exception Exception => exception;
 
-   public override Maybe<Exception> AnyException => exception;
+   public override Optional<Exception> AnyException => exception;
 
    public override Optional<TResult> Map<TResult>(Func<T, Optional<TResult>> ifJust) => new Failed<TResult>(exception);
 
@@ -64,7 +64,7 @@ public class Failed<T> : Optional<T>, IEquatable<Failed<T>>
 
    public override T Force() => throw exception;
 
-   public override T DefaultTo(Func<Maybe<Exception>, T> func) => func(exception);
+   public override T DefaultTo(Func<Optional<Exception>, T> func) => func(exception);
 
    public override void Deconstruct(out bool isJust, out T value)
    {
@@ -72,9 +72,9 @@ public class Failed<T> : Optional<T>, IEquatable<Failed<T>>
       value = default;
    }
 
-   public override Maybe<T> Maybe() => new None<T>();
+   public override Optional<T> Maybe() => new None<T>();
 
-   public override Result<T> Result() => new Failure<T>(exception);
+   public override Optional<T> Result() => new Failure<T>(exception);
 
    public override Completion<T> Completion() => new Interrupted<T>(exception);
 

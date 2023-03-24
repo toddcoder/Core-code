@@ -93,7 +93,7 @@ public class Arguments : IEnumerable<Argument>
       }
    }
 
-   public Maybe<Argument> Argument(int index) => maybe(Exists(index), () => arguments[index]);
+   public Optional<Argument> Argument(int index) => maybe(Exists(index), () => arguments[index]);
 
    public IEnumerator<Argument> GetEnumerator()
    {

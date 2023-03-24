@@ -17,7 +17,7 @@ public static class DateTimeExtensions
 
    public class ValidDate
    {
-      protected static Result<DateTime> valid(int year, int month, int day)
+      protected static Optional<DateTime> valid(int year, int month, int day)
       {
          if (year <= 0)
          {
@@ -34,11 +34,11 @@ public static class DateTimeExtensions
          }
       }
 
-      public Result<int> Year { get; set; }
+      public Optional<int> Year { get; set; }
 
-      public Result<int> Month { get; set; }
+      public Optional<int> Month { get; set; }
 
-      public Result<int> Day { get; set; }
+      public Optional<int> Day { get; set; }
 
       public ValidDate()
       {
@@ -47,7 +47,7 @@ public static class DateTimeExtensions
          Day = fail("Day not set");
       }
 
-      protected Result<DateTime> validate()
+      protected Optional<DateTime> validate()
       {
          return
             from year in Year
@@ -56,37 +56,37 @@ public static class DateTimeExtensions
             select valid(year, month, day);
       }
 
-      public Result<ValidDate> AndYear(int year) => ((bool)Month || (bool)Day).Result(() =>
+      public Optional<ValidDate> AndYear(int year) => ((bool)Month || (bool)Day).Result(() =>
       {
          Year = year;
          return this;
       }, "Month or day must be set");
 
-      public Result<DateTime> AndYearValid(int year)
+      public Optional<DateTime> AndYearValid(int year)
       {
          Year = year;
          return validate();
       }
 
-      public Result<ValidDate> AndMonth(int month) => ((bool)Year || (bool)Day).Result(() =>
+      public Optional<ValidDate> AndMonth(int month) => ((bool)Year || (bool)Day).Result(() =>
       {
          Month = month;
          return this;
       }, "Year or day must be set");
 
-      public Result<DateTime> AndMonthValid(int month)
+      public Optional<DateTime> AndMonthValid(int month)
       {
          Month = month;
          return validate();
       }
 
-      public Result<ValidDate> AndDay(int day) => ((bool)Year || (bool)Month).Result(() =>
+      public Optional<ValidDate> AndDay(int day) => ((bool)Year || (bool)Month).Result(() =>
       {
          Day = day;
          return this;
       }, "Year or month must be set");
 
-      public Result<DateTime> AndDayValid(int day)
+      public Optional<DateTime> AndDayValid(int day)
       {
          Day = day;
          return validate();
@@ -95,33 +95,33 @@ public static class DateTimeExtensions
 
    public static ValidDate IsYear(this int year) => new() { Year = year };
 
-   public static Result<ValidDate> AndYear(this Result<ValidDate> validDate, int year)
+   public static Optional<ValidDate> AndYear(this Optional<ValidDate> validDate, int year)
    {
       return validDate.Map(vd => vd.AndYear(year));
    }
 
-   public static Result<DateTime> AndYearValid(this Result<ValidDate> validDate, int year)
+   public static Optional<DateTime> AndYearValid(this Optional<ValidDate> validDate, int year)
    {
       return validDate.Map(vd => vd.AndYearValid(year));
    }
 
    public static ValidDate IsMonth(this int month) => new() { Month = month };
 
-   public static Result<ValidDate> AndMonth(this Result<ValidDate> validDate, int month)
+   public static Optional<ValidDate> AndMonth(this Optional<ValidDate> validDate, int month)
    {
       return validDate.Map(vd => vd.AndMonth(month));
    }
 
-   public static Result<DateTime> AndMonthValid(this Result<ValidDate> validDate, int month)
+   public static Optional<DateTime> AndMonthValid(this Optional<ValidDate> validDate, int month)
    {
       return validDate.Map(vd => vd.AndMonthValid(month));
    }
 
    public static ValidDate IsDay(this int day) => new() { Day = day };
 
-   public static Result<ValidDate> AndDay(this Result<ValidDate> validDate, int day) => validDate.Map(vd => vd.AndDay(day));
+   public static Optional<ValidDate> AndDay(this Optional<ValidDate> validDate, int day) => validDate.Map(vd => vd.AndDay(day));
 
-   public static Result<DateTime> AndDayValid(this Result<ValidDate> validDate, int day)
+   public static Optional<DateTime> AndDayValid(this Optional<ValidDate> validDate, int day)
    {
       return validDate.Map(vd => vd.AndDayValid(day));
    }
@@ -167,7 +167,7 @@ public static class DateTimeExtensions
 
    public static DateEnumerator To(this DateTime beginDate, DateTime endDate) => new(beginDate, endDate);
 
-   public static Result<string> MonthName(this int month) => month switch
+   public static Optional<string> MonthName(this int month) => month switch
    {
       1 => "January",
       2 => "February",
@@ -184,7 +184,7 @@ public static class DateTimeExtensions
       _ => fail("Month must be in a range from 1 to 12")
    };
 
-   public static Result<int> MonthNumber(this string name) => name.ToLower() switch
+   public static Optional<int> MonthNumber(this string name) => name.ToLower() switch
    {
       "january" or "jan" => 1,
       "february" or "feb" => 2,
@@ -201,7 +201,7 @@ public static class DateTimeExtensions
       _ => fail($"Didn't understand {name}")
    };
 
-   public static Result<DateTime> RelativeTo(this DateTime date, string pattern)
+   public static Optional<DateTime> RelativeTo(this DateTime date, string pattern)
    {
       var _result = lazy.maybe<MatchResult>();
       if (pattern.IsMatch("^ ['//|'] /s* ['//|'] /s* ['//|'] $; f"))
@@ -272,14 +272,14 @@ public static class DateTimeExtensions
 
    public static bool OldEnough(this DateTime date, TimeSpan age) => NowServer.Now - date >= age;
 
-   private static Maybe<string> differenceInMinutes(int minutes) => minutes switch
+   private static Optional<string> differenceInMinutes(int minutes) => minutes switch
    {
       0 => "Just now",
       < 60 => minutes.Plural("minute(s) ago"),
       _ => nil
    };
 
-   private static Maybe<string> differenceInHours(int hours) => hours switch
+   private static Optional<string> differenceInHours(int hours) => hours switch
    {
       < 24 => hours.Plural("hour(s) ago"),
       _ => nil

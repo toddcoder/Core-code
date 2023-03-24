@@ -11,7 +11,7 @@ namespace Core.Data;
 
 public class Command
 {
-   public static Result<Command> FromSetting(Setting commandSetting)
+   public static Optional<Command> FromSetting(Setting commandSetting)
    {
       var name = commandSetting.Key;
       return
@@ -19,7 +19,7 @@ public class Command
          select new Command { Name = name, Text = values.text, CommandTimeout = values.timeout };
    }
 
-   protected static Result<(string text, TimeSpan timeout)> getValues(Setting commandSetting)
+   protected static Optional<(string text, TimeSpan timeout)> getValues(Setting commandSetting)
    {
       try
       {

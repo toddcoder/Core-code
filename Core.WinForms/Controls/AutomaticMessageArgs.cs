@@ -6,7 +6,7 @@ namespace Core.WinForms.Controls;
 
 public class AutomaticMessageArgs : EventArgs
 {
-   protected Maybe<string> _text;
+   protected Optional<string> _text;
 
    public AutomaticMessageArgs()
    {
@@ -18,5 +18,5 @@ public class AutomaticMessageArgs : EventArgs
       set => _text = value;
    }
 
-   internal Maybe<string> GetText() => _text;
+   internal Optional<string> GetText() => _text;
 }

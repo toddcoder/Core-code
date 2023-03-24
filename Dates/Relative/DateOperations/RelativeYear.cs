@@ -9,5 +9,5 @@ public class RelativeYear : DateOperation
 
    public override OperationType Type => OperationType.Year;
 
-   public override Result<DateTime> Operate(DateTime dateTime) => dateTime.AddYears(amount);
+   public override Optional<DateTime> Operate(DateTime dateTime) => dateTime.AddYears(amount);
 }

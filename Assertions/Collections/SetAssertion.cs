@@ -126,13 +126,13 @@ public class SetAssertion<T> : IAssertion<Set<T>>
       return forceConvert<Set<T>, TException, TResult>(this, args);
    }
 
-   public Result<Set<T>> OrFailure() => orFailure(this);
+   public Optional<Set<T>> OrFailure() => orFailure(this);
 
-   public Result<Set<T>> OrFailure(string message) => orFailure(this, message);
+   public Optional<Set<T>> OrFailure(string message) => orFailure(this, message);
 
-   public Result<Set<T>> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
+   public Optional<Set<T>> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
 
-   public Maybe<Set<T>> OrNone() => orNone(this);
+   public Optional<Set<T>> OrNone() => orNone(this);
 
    public async Task<Completion<Set<T>>> OrFailureAsync(CancellationToken token) => await orFailureAsync(this, token);
 

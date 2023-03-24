@@ -11,8 +11,8 @@ public class LateLazy<T>
 
    protected bool overriding;
    protected string errorMessage;
-   protected Maybe<T> _value;
-   protected Maybe<Func<T>> _activator;
+   protected Optional<T> _value;
+   protected Optional<Func<T>> _activator;
    protected bool reset;
 
    public LateLazy(bool overriding = false, string errorMessage = DEFAULT_ERROR_MESSAGE)
@@ -63,7 +63,7 @@ public class LateLazy<T>
 
    public bool IsActivated => _value;
 
-   public Maybe<T> AnyValue => _value;
+   public Optional<T> AnyValue => _value;
 
    public bool HasActivator { get; set; }
 

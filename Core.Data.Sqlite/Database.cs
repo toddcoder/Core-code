@@ -43,7 +43,7 @@ public abstract class Database
       }
    }
 
-   public abstract Result<Unit> CreateTables();
+   public abstract Optional<Unit> CreateTables();
 
    public void CreateDatabaseIfNonExistent()
    {
@@ -72,7 +72,7 @@ public abstract class Database
       }
    }
 
-   public Result<Unit> CreateTable(string fileName)
+   public Optional<Unit> CreateTable(string fileName)
    {
       try
       {
@@ -87,7 +87,7 @@ public abstract class Database
       }
    }
 
-   public Result<int> ExecuteNonQuery(string commandText, params (string, object)[] parameters)
+   public Optional<int> ExecuteNonQuery(string commandText, params (string, object)[] parameters)
    {
       using var connection = GetConnection();
       try
@@ -121,7 +121,7 @@ public abstract class Database
       return command.ExecuteReader();
    }
 
-   public Result<T> ExecuteScalar<T>(string commandText, params (string, object)[] parameters)
+   public Optional<T> ExecuteScalar<T>(string commandText, params (string, object)[] parameters)
    {
       var connection = GetConnection();
       try
@@ -148,7 +148,7 @@ public abstract class Database
       }
    }
 
-   public Result<StringHash> ExecuteFirstRow(SQLiteCommand command, string commandText, params (string, object)[] parameters)
+   public Optional<StringHash> ExecuteFirstRow(SQLiteCommand command, string commandText, params (string, object)[] parameters)
    {
       try
       {

@@ -31,7 +31,7 @@ public class Reader<T> : IDisposable, IEnumerable<T>
 
    public object Entity { get; set; }
 
-   public Maybe<T> Next() => dataSource.NextReading(entityFunc()).Map(obj => (T)obj);
+   public Optional<T> Next() => dataSource.NextReading(entityFunc()).Map(obj => (T)obj);
 
    void IDisposable.Dispose()
    {

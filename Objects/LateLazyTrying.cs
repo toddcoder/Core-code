@@ -16,7 +16,7 @@ public class LateLazyTrying<T>
       this.lateLazy = lateLazy;
    }
 
-   public Result<T> ActivateWith(Func<T> activator) => tryTo(() =>
+   public Optional<T> ActivateWith(Func<T> activator) => tryTo(() =>
    {
       lateLazy.ActivateWith(activator);
       return lateLazy.Value.Success();
@@ -27,11 +27,11 @@ public class LateLazyTrying<T>
       return await runAsync(t => ActivateWith(activator).Completion(t), token);
    }
 
-   public Result<T> Value => tryTo(() => lateLazy.Value);
+   public Optional<T> Value => tryTo(() => lateLazy.Value);
 
    public bool IsActivated => lateLazy.IsActivated;
 
-   public Maybe<T> AnyValue => lateLazy.AnyValue;
+   public Optional<T> AnyValue => lateLazy.AnyValue;
 
    public bool HasActivator => lateLazy.HasActivator;
 }

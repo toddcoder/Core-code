@@ -17,7 +17,7 @@ namespace Core.Data.Setups;
 
 public class SqlSetup : ISetup, ISetupWithInfo
 {
-   public static Result<SqlSetup> FromDataGroups(DataSettings dataSettings, string adapterName)
+   public static Optional<SqlSetup> FromDataGroups(DataSettings dataSettings, string adapterName)
    {
       var connectionsSetting = dataSettings.ConnectionsSetting;
       var commandsSetting = dataSettings.CommandsSetting;
@@ -44,7 +44,7 @@ public class SqlSetup : ISetup, ISetupWithInfo
          };
    }
 
-   public static Result<SqlSetup> FromGroup(Setting setting, string adapterName)
+   public static Optional<SqlSetup> FromGroup(Setting setting, string adapterName)
    {
       return
          from dataGraphs in setting.DataSettings().Result("Data graphs unavailable")
@@ -94,7 +94,7 @@ public class SqlSetup : ISetup, ISetupWithInfo
       loadAttributes(setupObject.Attributes);
    }
 
-   internal SqlSetup(Maybe<Setting> attributesSetting)
+   internal SqlSetup(Optional<Setting> attributesSetting)
    {
       attributes = new StringHash(true);
       Handler = nil;
@@ -128,7 +128,7 @@ public class SqlSetup : ISetup, ISetupWithInfo
       Handler = nil;
    }
 
-   protected void loadAttributes(Maybe<Setting> _attributesSetting)
+   protected void loadAttributes(Optional<Setting> _attributesSetting)
    {
       if (_attributesSetting is (true, var attributesSetting))
       {
@@ -175,5 +175,5 @@ public class SqlSetup : ISetup, ISetupWithInfo
 
    public TimeSpan CommandTimeout { get; set; }
 
-   public Maybe<SqlInfoMessageEventHandler> Handler { get; set; }
+   public Optional<SqlInfoMessageEventHandler> Handler { get; set; }
 }

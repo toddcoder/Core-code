@@ -30,7 +30,7 @@ public class StringVariants : IHash<string, string>
 
    protected StringHash templates;
    protected StringHash<KeyValue> keyValues;
-   protected Maybe<string> _templateName;
+   protected Optional<string> _templateName;
    protected string[] aliases;
 
    public StringVariants()
@@ -57,7 +57,7 @@ public class StringVariants : IHash<string, string>
 
    public bool ContainsKey(string key) => templates.ContainsKey(key);
 
-   public Result<Hash<string, string>> AnyHash() => templates;
+   public Optional<Hash<string, string>> AnyHash() => templates;
 
    public StringVariants Alias(string alias, string key, string value)
    {
@@ -73,7 +73,7 @@ public class StringVariants : IHash<string, string>
       return this;
    }
 
-   public Maybe<string> Evaluate(params string[] aliases)
+   public Optional<string> Evaluate(params string[] aliases)
    {
       var _template =
          from templateName in _templateName

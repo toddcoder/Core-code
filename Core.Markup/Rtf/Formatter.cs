@@ -35,7 +35,7 @@ public class Formatter
 
    public static Formatter operator |(Formatter formatter, FirstLineIndent firstLineIndent) => formatter.FirstLineIndent(firstLineIndent.Amount);
 
-   public static Formatter operator |(Formatter formatter, (Maybe<float>, Maybe<float>, Maybe<float>, Maybe<float>) margins)
+   public static Formatter operator |(Formatter formatter, (Optional<float>, Optional<float>, Optional<float>, Optional<float>) margins)
    {
       return formatter.Margins(margins);
    }
@@ -189,7 +189,7 @@ public class Formatter
       return this;
    }
 
-   public virtual Formatter Margins((Maybe<float> left, Maybe<float> top, Maybe<float> right, Maybe<float> bottom) margins)
+   public virtual Formatter Margins((Optional<float> left, Optional<float> top, Optional<float> right, Optional<float> bottom) margins)
    {
       if (margins.left)
       {

@@ -6,5 +6,5 @@ public class NonCapturingGroupParser : BaseParser
 {
    public override string Pattern => @"^\s*\(";
 
-   public override Maybe<string> Parse(string source, ref int index) => "(?:";
+   public override Optional<string> Parse(string source, ref int index) => "(?:";
 }

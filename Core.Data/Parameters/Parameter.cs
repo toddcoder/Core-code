@@ -11,7 +11,7 @@ namespace Core.Data.Parameters;
 
 public class Parameter : PropertyInterface
 {
-   public static Maybe<Parameter> FromString(string input)
+   public static Optional<Parameter> FromString(string input)
    {
       var _result = input.Matches("^ '@'? /(/w+) /s* ('[' /(/w+) ']')? /s* ':' /s* /('$'? [/w '.']+) ('(' /(/d+) ')')? (/s+ /('output'))? $; f");
       if (_result is (true, var result))
@@ -65,7 +65,7 @@ public class Parameter : PropertyInterface
       };
    }
 
-   protected static Maybe<Type> getType(string typeName)
+   protected static Optional<Type> getType(string typeName)
    {
       return maybe(typeName.IsNotEmpty(), () => System.Type.GetType(typeName, true, true));
    }
@@ -89,13 +89,13 @@ public class Parameter : PropertyInterface
       Default = nil;
    }
 
-   public Maybe<Type> Type { get; set; }
+   public Optional<Type> Type { get; set; }
 
-   public Maybe<int> Size { get; set; }
+   public Optional<int> Size { get; set; }
 
    public bool Output { get; set; }
 
-   public Maybe<string> Value { get; set; }
+   public Optional<string> Value { get; set; }
 
-   public Maybe<string> Default { get; set; }
+   public Optional<string> Default { get; set; }
 }

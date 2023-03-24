@@ -11,13 +11,13 @@ public interface IConfigurationItem
 
    IConfigurationItem GetItem(string key);
 
-   Maybe<IConfigurationItem> GetSomeItem(string key);
+   Optional<IConfigurationItem> GetSomeItem(string key);
 
    void SetItem(string key, IConfigurationItem item);
 
-   Maybe<string> GetValue(string key);
+   Optional<string> GetValue(string key);
 
-   Result<string> RequireValue(string key);
+   Optional<string> RequireValue(string key);
 
    string ValueAt(string key);
 
@@ -25,9 +25,9 @@ public interface IConfigurationItem
 
    string At(string key);
 
-   Maybe<Setting> GetSetting(string key);
+   Optional<Setting> GetSetting(string key);
 
-   Result<Setting> RequireSetting(string key);
+   Optional<Setting> RequireSetting(string key);
 
    Setting SettingAt(string key);
 

@@ -8,5 +8,5 @@ public interface IHash<TKey, TValue>
 
    bool ContainsKey(TKey key);
 
-   Result<Hash<TKey, TValue>> AnyHash();
+   Optional<Hash<TKey, TValue>> AnyHash();
 }

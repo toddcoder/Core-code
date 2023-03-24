@@ -31,7 +31,7 @@ public class Comparison<T> where T : IComparable<T>
       .FirstOrDefault();
 
    protected List<Pair> pairs;
-   protected Maybe<T> _left;
+   protected Optional<T> _left;
 
    public Comparison(T left, T right)
    {

@@ -65,7 +65,7 @@ public static class TimeSpanExtensions
       return Time.ToShortString(span, includeMilliseconds);
    }
 
-   public static Result<TimeSpan> TimeSpan(this string source)
+   public static Optional<TimeSpan> TimeSpan(this string source)
    {
       var intervals = source.Unjoin("/s* (',' | 'and') /s*; f");
       var spans = intervals.Where(i => i.IsNotEmpty()).Select(getSpan);
@@ -86,7 +86,7 @@ public static class TimeSpanExtensions
       return newSpan;
    }
 
-   private static Result<TimeSpan> getSpan(string source)
+   private static Optional<TimeSpan> getSpan(string source)
    {
       return
          from result in source.Matches(REGEX_TIMER_INTERVAL).Result($"Can't match {source}")
@@ -94,7 +94,7 @@ public static class TimeSpanExtensions
          select span;
    }
 
-   private static Result<TimeSpan> getSpan(MatchResult result)
+   private static Optional<TimeSpan> getSpan(MatchResult result)
    {
       var value = result.FirstGroup;
       var unit = result.SecondGroup;

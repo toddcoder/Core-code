@@ -32,7 +32,7 @@ public class PropertyInterface
       isConvertible = getIsConvertible(PropertyType);
    }
 
-   public Maybe<object> GetValue(object entity)
+   public Optional<object> GetValue(object entity)
    {
       evaluator = GetEvaluator(entity);
       return ((IHash<string, object>)evaluator).Maybe(Signature);

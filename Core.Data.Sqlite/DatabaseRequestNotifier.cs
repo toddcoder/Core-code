@@ -17,7 +17,7 @@ public static class DatabaseRequestNotifier
 
    public static void LeaveScope() => notifications.Pop();
 
-   public static Maybe<IDatabaseRequestNotification> CurrentNotification => notifications.Peek();
+   public static Optional<IDatabaseRequestNotification> CurrentNotification => notifications.Peek();
 
    public static void ShowMessage(string message)
    {

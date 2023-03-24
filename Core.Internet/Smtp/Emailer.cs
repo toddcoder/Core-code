@@ -13,7 +13,7 @@ namespace Core.Internet.Smtp;
 
 public class Emailer
 {
-   public static Result<Emailer> StandardEmailer(Address address, string body) => tryTo(() => new Emailer
+   public static Optional<Emailer> StandardEmailer(Address address, string body) => tryTo(() => new Emailer
    {
       Address = address, Priority = PriorityType.High, UseCredentials = true, Body = body
    });
@@ -33,9 +33,9 @@ public class Emailer
 
    public string Body { get; set; }
 
-   public Maybe<FileName[]> Attachments { get; set; }
+   public Optional<FileName[]> Attachments { get; set; }
 
-   public Maybe<int> Port { get; set; }
+   public Optional<int> Port { get; set; }
 
    public PriorityType Priority { get; set; }
 

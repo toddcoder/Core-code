@@ -149,7 +149,7 @@ public class SqlDataSource : DataSource, IBulkCopyTarget, IHash<string, string>
 
    public bool ContainsKey(string key) => attributes.ContainsKey(key);
 
-   public Result<Hash<string, string>> AnyHash() => attributes;
+   public Optional<Hash<string, string>> AnyHash() => attributes;
 
    public override IDbConnection GetConnection()
    {

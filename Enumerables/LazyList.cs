@@ -10,7 +10,7 @@ namespace Core.Enumerables;
 public class LazyList<T> : IList<T>
 {
    protected List<IEnumerable<T>> enumerables;
-   protected Maybe<T[]> _flattened;
+   protected Optional<T[]> _flattened;
 
    public event EventHandler Flattened;
    public event EventHandler Unflattened;

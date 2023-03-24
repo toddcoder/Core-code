@@ -6,9 +6,9 @@ namespace Core.Monads;
 public class OptionalIterator<T>
 {
    protected IEnumerable<Optional<T>> enumerable;
-   protected Maybe<Action<T>> _just;
-   protected Maybe<Action> _empty;
-   protected Maybe<Action<Exception>> _failed;
+   protected Optional<Action<T>> _just;
+   protected Optional<Action> _empty;
+   protected Optional<Action<Exception>> _failed;
 
    public OptionalIterator(IEnumerable<Optional<T>> enumerable, Action<T> response = null, Action noResponse = null,
       Action<Exception> failure = null)

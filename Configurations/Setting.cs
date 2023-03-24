@@ -38,7 +38,7 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
 
    public static implicit operator Setting(string source) => FromString(source).ForceValue();
 
-   public static Result<Setting> FromString(string source)
+   public static Optional<Setting> FromString(string source)
    {
       var parser = new Parser(source);
       return parser.Parse();
@@ -59,7 +59,7 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
 
    public bool IsArray { get; set; }
 
-   Maybe<Setting> IConfigurationItemGetter.GetSetting(string key)
+   Optional<Setting> IConfigurationItemGetter.GetSetting(string key)
    {
       if (items.Maybe[key] is (true, Setting setting))
       {
@@ -71,7 +71,7 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
       }
    }
 
-   Maybe<Item> IConfigurationItemGetter.GetItem(string key)
+   Optional<Item> IConfigurationItemGetter.GetItem(string key)
    {
       if (items.Maybe[key] is (true, Item item))
       {
@@ -95,7 +95,7 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
 
    public bool ContainsKey(string key) => items.ContainsKey(key);
 
-   public Result<Hash<string, string>> AnyHash() => items.ToStringHash(i => i.Key, i => i.Value.ToString(), true);
+   public Optional<Hash<string, string>> AnyHash() => items.ToStringHash(i => i.Key, i => i.Value.ToString(), true);
 
    public StringHash ToStringHash() => Items().ToHash(t => t.key, t => t.text).ToStringHash(true);
 
@@ -187,7 +187,7 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
       return newArray;
    }
 
-   protected static Maybe<object> makeArray(Type elementType, Setting[] settings)
+   protected static Optional<object> makeArray(Type elementType, Setting[] settings)
    {
       var length = settings.Length;
       var newArray = Array.CreateInstance(elementType, length);
@@ -208,7 +208,7 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
       return newArray;
    }
 
-   protected static Maybe<object> getConversion(Type type, string source)
+   protected static Optional<object> getConversion(Type type, string source)
    {
       string sourceWithoutQuotes()
       {
@@ -340,12 +340,12 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
       return type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.SetProperty | BindingFlags.GetProperty);
    }
 
-   public static Result<Setting> Serialize<T>(T obj, string name = ROOT_NAME) where T : class, new()
+   public static Optional<Setting> Serialize<T>(T obj, string name = ROOT_NAME) where T : class, new()
    {
       return tryTo(() => Serialize(typeof(T), obj, name));
    }
 
-   public static Result<Setting> Serialize(Type type, object obj, string name = ROOT_NAME)
+   public static Optional<Setting> Serialize(Type type, object obj, string name = ROOT_NAME)
    {
       if (type.IsValueType)
       {
@@ -446,7 +446,7 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
       return makeArray(elementType, array).Required($"Couldn't make array of element type {elementType.FullName}");
    }
 
-   public Result<object> Deserialize(Type type)
+   public Optional<object> Deserialize(Type type)
    {
       try
       {
@@ -459,7 +459,7 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
       }
    }
 
-   public Result<T> Deserialize<T>() where T : class, new()
+   public Optional<T> Deserialize<T>() where T : class, new()
    {
       return
          from obj in tryTo(() => Deserialize(typeof(T)))
@@ -467,7 +467,7 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
          select cast;
    }
 
-   protected Result<Unit> fill(ref object obj, Type type)
+   protected Optional<Unit> fill(ref object obj, Type type)
    {
       try
       {
@@ -510,7 +510,7 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
       }
    }
 
-   public Result<Unit> Fill(ref object obj)
+   public Optional<Unit> Fill(ref object obj)
    {
       if (obj is null)
       {

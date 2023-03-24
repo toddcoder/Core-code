@@ -22,9 +22,9 @@ public class Item : ConfigurationItem, IConfigurationItemGetter
 
    public bool IsNull { get; set; }
 
-   Maybe<Setting> IConfigurationItemGetter.GetSetting(string key) => nil;
+   Optional<Setting> IConfigurationItemGetter.GetSetting(string key) => nil;
 
-   Maybe<Item> IConfigurationItemGetter.GetItem(string key) => nil;
+   Optional<Item> IConfigurationItemGetter.GetItem(string key) => nil;
 
    public override void SetItem(string key, ConfigurationItem item)
    {

@@ -10,7 +10,7 @@ public class ReflectorReplacement
    protected int index;
    protected int length;
    protected string memberName;
-   protected Maybe<IFormatter> _formatter;
+   protected Optional<IFormatter> _formatter;
 
    public ReflectorReplacement(int index, int length, Group group)
    {

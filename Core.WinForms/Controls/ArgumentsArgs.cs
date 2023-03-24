@@ -11,5 +11,5 @@ public class ArgumentsArgs : EventArgs
       Arguments = nil;
    }
 
-   public Maybe<object> Arguments { get; set; }
+   public Optional<object> Arguments { get; set; }
 }

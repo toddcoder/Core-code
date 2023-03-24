@@ -22,7 +22,7 @@ public class Parameters : IEnumerable<Parameter>, IHash<string, Parameter>
       }
    }
 
-   public static Result<Parameters> FromSetting(Maybe<Setting> parametersGroup) => tryTo(() => new Parameters(parametersGroup));
+   public static Optional<Parameters> FromSetting(Optional<Setting> parametersGroup) => tryTo(() => new Parameters(parametersGroup));
 
    protected StringHash<Parameter> parameters;
 
@@ -36,7 +36,7 @@ public class Parameters : IEnumerable<Parameter>, IHash<string, Parameter>
       }
    }
 
-   public Parameters(Maybe<Setting> _parametersSetting) : this()
+   public Parameters(Optional<Setting> _parametersSetting) : this()
    {
       if (_parametersSetting is (true, var parametersSetting))
       {
@@ -55,7 +55,7 @@ public class Parameters : IEnumerable<Parameter>, IHash<string, Parameter>
 
    public bool ContainsKey(string key) => parameters.ContainsKey(key);
 
-   public Result<Hash<string, Parameter>> AnyHash() => parameters.AsHash;
+   public Optional<Hash<string, Parameter>> AnyHash() => parameters.AsHash;
 
    public int Count => parameters.Count;
 

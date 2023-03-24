@@ -34,11 +34,11 @@ public class Logger : IDisposable
       now = DateTime.MinValue;
    }
 
-   public Maybe<string> Key { get; set; }
+   public Optional<string> Key { get; set; }
 
-   public Maybe<DateTime> MinDateTime { get; set; }
+   public Optional<DateTime> MinDateTime { get; set; }
 
-   public Maybe<DateTime> MaxDateTime { get; set; }
+   public Optional<DateTime> MaxDateTime { get; set; }
 
    public void PushIndentation(int amount = 2)
    {
@@ -139,7 +139,7 @@ public class Logger : IDisposable
       logFile.Text = writer.ToString();
    }
 
-   public Result<Unit> TryToFlush(FileName logFile) => tryTo(() => Flush(logFile));
+   public Optional<Unit> TryToFlush(FileName logFile) => tryTo(() => Flush(logFile));
 
    public void Flush(StringWriter outerWriter) => outerWriter.Write(writer.ToString());
 

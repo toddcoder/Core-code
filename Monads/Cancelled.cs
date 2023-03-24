@@ -116,17 +116,17 @@ public class Cancelled<T> : Completion<T>, IEquatable<Cancelled<T>>
 
    public override Completion<T> Where(Predicate<T> predicate, Func<string> exceptionMessage) => this;
 
-   public override T DefaultTo(Func<Maybe<Exception>, T> defaultFunc) => defaultFunc(nil);
+   public override T DefaultTo(Func<Optional<Exception>, T> defaultFunc) => defaultFunc(nil);
 
-   public override Maybe<T> Maybe() => nil;
+   public override Optional<T> Maybe() => nil;
 
-   public override Result<T> Result() => new Failure<T>(new CancelException());
+   public override Optional<T> Result() => new Failure<T>(new CancelException());
 
    public override Optional<T> Optional() => nil;
 
    public override Exception Exception => throw fail("Cancelled has no Exception");
 
-   public override Maybe<Exception> AnyException => nil;
+   public override Optional<Exception> AnyException => nil;
 
    public override object ToObject() => nil;
 

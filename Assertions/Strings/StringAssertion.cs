@@ -177,13 +177,13 @@ public class StringAssertion : IAssertion<string>
 
    public TResult Force<TException, TResult>(params object[] args) where TException : Exception => Force<TResult>();
 
-   public Result<string> OrFailure() => orFailure(this);
+   public Optional<string> OrFailure() => orFailure(this);
 
-   public Result<string> OrFailure(string message) => orFailure(this, message);
+   public Optional<string> OrFailure(string message) => orFailure(this, message);
 
-   public Result<string> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
+   public Optional<string> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
 
-   public Maybe<string> OrNone() => orNone(this);
+   public Optional<string> OrNone() => orNone(this);
 
    public async Task<Completion<string>> OrFailureAsync(CancellationToken token) => await orFailureAsync(this, token);
 

@@ -26,7 +26,7 @@ public class Signature
 
    public string Name { get; set; }
 
-   public Maybe<int> Index { get; set; }
+   public Optional<int> Index { get; set; }
 
    public override string ToString() => Index.Map(i => $"{Name}[{i}]") | Name;
 }

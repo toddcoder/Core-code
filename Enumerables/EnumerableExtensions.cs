@@ -46,9 +46,9 @@ public static class EnumerableExtensions
 
    public static IEnumerable<IEnumerable<T>> Pivot<T>(this IEnumerable<IEnumerable<T>> source) => source.Pivot(() => default);
 
-   public static Result<T[]> ToResultOfArray<T>(this IEnumerable<T> enumerable) => tryTo(enumerable.ToArray);
+   public static Optional<T[]> ToResultOfArray<T>(this IEnumerable<T> enumerable) => tryTo(enumerable.ToArray);
 
-   public static Result<List<T>> ToResultOfList<T>(this IEnumerable<T> enumerable) => tryTo(enumerable.ToList);
+   public static Optional<List<T>> ToResultOfList<T>(this IEnumerable<T> enumerable) => tryTo(enumerable.ToList);
 
    public static IEnumerable<int> UpTo(this int from, int to, int by = 1)
    {
@@ -138,7 +138,7 @@ public static class EnumerableExtensions
       }
    }
 
-   public static Maybe<T> FirstOrNone<T>(this IEnumerable<T> enumerable)
+   public static Optional<T> FirstOrNone<T>(this IEnumerable<T> enumerable)
    {
       var first = enumerable.FirstOrDefault();
 
@@ -156,7 +156,7 @@ public static class EnumerableExtensions
       }
    }
 
-   public static Maybe<T> LastOrNone<T>(this IEnumerable<T> enumerable)
+   public static Optional<T> LastOrNone<T>(this IEnumerable<T> enumerable)
    {
       var last = enumerable.LastOrDefault();
 
@@ -174,7 +174,7 @@ public static class EnumerableExtensions
       }
    }
 
-   public static Result<T> FirstOrFail<T>(this IEnumerable<T> enumerable, string failureMessage = "Default value")
+   public static Optional<T> FirstOrFail<T>(this IEnumerable<T> enumerable, string failureMessage = "Default value")
    {
       try
       {
@@ -190,7 +190,7 @@ public static class EnumerableExtensions
       }
    }
 
-   public static Result<T> FirstOrFail<T>(this IEnumerable<T> enumerable, Predicate<T> predicate,
+   public static Optional<T> FirstOrFail<T>(this IEnumerable<T> enumerable, Predicate<T> predicate,
       string failureMessage = "Default value")
    {
       try
@@ -207,7 +207,7 @@ public static class EnumerableExtensions
       }
    }
 
-   public static Result<(T1, T2)> FirstOrFail<T1, T2>(this IEnumerable<(T1, T2)> enumerable, Func<T1, T2, bool> predicate,
+   public static Optional<(T1, T2)> FirstOrFail<T1, T2>(this IEnumerable<(T1, T2)> enumerable, Func<T1, T2, bool> predicate,
       string failureMessage = "Default value")
    {
       try
@@ -224,7 +224,7 @@ public static class EnumerableExtensions
       }
    }
 
-   public static Result<(T1, T2, T3)> FirstOrFail<T1, T2, T3>(this IEnumerable<(T1, T2, T3)> enumerable,
+   public static Optional<(T1, T2, T3)> FirstOrFail<T1, T2, T3>(this IEnumerable<(T1, T2, T3)> enumerable,
       Func<T1, T2, T3, bool> predicate, string failureMessage = "Default value")
    {
       try
@@ -241,7 +241,7 @@ public static class EnumerableExtensions
       }
    }
 
-   public static Result<(T1, T2, T3, T4)> FirstOrFail<T1, T2, T3, T4>(this IEnumerable<(T1, T2, T3, T4)> enumerable,
+   public static Optional<(T1, T2, T3, T4)> FirstOrFail<T1, T2, T3, T4>(this IEnumerable<(T1, T2, T3, T4)> enumerable,
       Func<T1, T2, T3, T4, bool> predicate, string failureMessage = "Default value")
    {
       try
@@ -258,7 +258,7 @@ public static class EnumerableExtensions
       }
    }
 
-   public static Result<T> FirstOrFail<T>(this IEnumerable<T> enumerable, Func<string> failureMessage)
+   public static Optional<T> FirstOrFail<T>(this IEnumerable<T> enumerable, Func<string> failureMessage)
    {
       try
       {
@@ -274,7 +274,7 @@ public static class EnumerableExtensions
       }
    }
 
-   public static Result<T> FirstOrFail<T>(this IEnumerable<T> enumerable, Predicate<T> predicate, Func<string> failureMessage)
+   public static Optional<T> FirstOrFail<T>(this IEnumerable<T> enumerable, Predicate<T> predicate, Func<string> failureMessage)
    {
       try
       {
@@ -290,7 +290,7 @@ public static class EnumerableExtensions
       }
    }
 
-   public static Result<(T1, T2)> FirstOrFail<T1, T2>(this IEnumerable<(T1, T2)> enumerable, Func<T1, T2, bool> predicate,
+   public static Optional<(T1, T2)> FirstOrFail<T1, T2>(this IEnumerable<(T1, T2)> enumerable, Func<T1, T2, bool> predicate,
       Func<string> failureMessage)
    {
       try
@@ -307,7 +307,7 @@ public static class EnumerableExtensions
       }
    }
 
-   public static Result<(T1, T2, T3)> FirstOrFail<T1, T2, T3>(this IEnumerable<(T1, T2, T3)> enumerable,
+   public static Optional<(T1, T2, T3)> FirstOrFail<T1, T2, T3>(this IEnumerable<(T1, T2, T3)> enumerable,
       Func<T1, T2, T3, bool> predicate, Func<string> failureMessage)
    {
       try
@@ -324,7 +324,7 @@ public static class EnumerableExtensions
       }
    }
 
-   public static Result<(T1, T2, T3, T4)> FirstOrFail<T1, T2, T3, T4>(this IEnumerable<(T1, T2, T3, T4)> enumerable,
+   public static Optional<(T1, T2, T3, T4)> FirstOrFail<T1, T2, T3, T4>(this IEnumerable<(T1, T2, T3, T4)> enumerable,
       Func<T1, T2, T3, T4, bool> predicate, Func<string> failureMessage)
    {
       try
@@ -341,7 +341,7 @@ public static class EnumerableExtensions
       }
    }
 
-   public static Result<T> LastOrFail<T>(this IEnumerable<T> enumerable, string failureMessage = "Default value")
+   public static Optional<T> LastOrFail<T>(this IEnumerable<T> enumerable, string failureMessage = "Default value")
    {
       try
       {
@@ -357,7 +357,7 @@ public static class EnumerableExtensions
       }
    }
 
-   public static Result<T> LastOrFail<T>(this IEnumerable<T> enumerable, Predicate<T> predicate,
+   public static Optional<T> LastOrFail<T>(this IEnumerable<T> enumerable, Predicate<T> predicate,
       string failureMessage = "Default value")
    {
       try
@@ -374,7 +374,7 @@ public static class EnumerableExtensions
       }
    }
 
-   public static Result<(T1, T2)> LastOrFail<T1, T2>(this IEnumerable<(T1, T2)> enumerable, Func<T1, T2, bool> predicate,
+   public static Optional<(T1, T2)> LastOrFail<T1, T2>(this IEnumerable<(T1, T2)> enumerable, Func<T1, T2, bool> predicate,
       string failureMessage = "Default value")
    {
       try
@@ -391,7 +391,7 @@ public static class EnumerableExtensions
       }
    }
 
-   public static Result<(T1, T2, T3)> LastOrFail<T1, T2, T3>(this IEnumerable<(T1, T2, T3)> enumerable,
+   public static Optional<(T1, T2, T3)> LastOrFail<T1, T2, T3>(this IEnumerable<(T1, T2, T3)> enumerable,
       Func<T1, T2, T3, bool> predicate, string failureMessage = "Default value")
    {
       try
@@ -408,7 +408,7 @@ public static class EnumerableExtensions
       }
    }
 
-   public static Result<T> LastOrFail<T>(this IEnumerable<T> enumerable, Func<string> failureMessage)
+   public static Optional<T> LastOrFail<T>(this IEnumerable<T> enumerable, Func<string> failureMessage)
    {
       try
       {
@@ -424,7 +424,7 @@ public static class EnumerableExtensions
       }
    }
 
-   public static Result<T> LastOrFail<T>(this IEnumerable<T> enumerable, Predicate<T> predicate, Func<string> failureMessage)
+   public static Optional<T> LastOrFail<T>(this IEnumerable<T> enumerable, Predicate<T> predicate, Func<string> failureMessage)
    {
       try
       {
@@ -436,7 +436,7 @@ public static class EnumerableExtensions
       }
    }
 
-   public static Result<(T1, T2)> LastOrFail<T1, T2>(this IEnumerable<(T1, T2)> enumerable, Func<T1, T2, bool> predicate,
+   public static Optional<(T1, T2)> LastOrFail<T1, T2>(this IEnumerable<(T1, T2)> enumerable, Func<T1, T2, bool> predicate,
       Func<string> failureMessage)
    {
       try
@@ -449,7 +449,7 @@ public static class EnumerableExtensions
       }
    }
 
-   public static Result<(T1, T2, T3)> LastOrFail<T1, T2, T3>(this IEnumerable<(T1, T2, T3)> enumerable,
+   public static Optional<(T1, T2, T3)> LastOrFail<T1, T2, T3>(this IEnumerable<(T1, T2, T3)> enumerable,
       Func<T1, T2, T3, bool> predicate, Func<string> failureMessage)
    {
       try
@@ -462,7 +462,7 @@ public static class EnumerableExtensions
       }
    }
 
-   public static Result<(T1, T2, T3, T4)> LastOrFail<T1, T2, T3, T4>(this IEnumerable<(T1, T2, T3, T4)> enumerable,
+   public static Optional<(T1, T2, T3, T4)> LastOrFail<T1, T2, T3, T4>(this IEnumerable<(T1, T2, T3, T4)> enumerable,
       Func<T1, T2, T3, T4, bool> predicate, Func<string> failureMessage)
    {
       try
@@ -475,7 +475,7 @@ public static class EnumerableExtensions
       }
    }
 
-   public static Maybe<T> FirstOrNone<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate)
+   public static Optional<T> FirstOrNone<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate)
    {
       var first = enumerable.FirstOrDefault(predicate);
 
@@ -493,7 +493,7 @@ public static class EnumerableExtensions
       }
    }
 
-   public static Maybe<(T1, T2)> FirstOrNone<T1, T2>(this IEnumerable<(T1, T2)> enumerable, Func<T1, T2, bool> predicate)
+   public static Optional<(T1, T2)> FirstOrNone<T1, T2>(this IEnumerable<(T1, T2)> enumerable, Func<T1, T2, bool> predicate)
    {
       var first = enumerable.FirstOrDefault(i => predicate(i.Item1, i.Item2));
 
@@ -511,7 +511,7 @@ public static class EnumerableExtensions
       }
    }
 
-   public static Maybe<(T1, T2, T3)> FirstOrNone<T1, T2, T3>(this IEnumerable<(T1, T2, T3)> enumerable,
+   public static Optional<(T1, T2, T3)> FirstOrNone<T1, T2, T3>(this IEnumerable<(T1, T2, T3)> enumerable,
       Func<T1, T2, T3, bool> predicate)
    {
       var first = enumerable.FirstOrDefault(i => predicate(i.Item1, i.Item2, i.Item3));
@@ -530,7 +530,7 @@ public static class EnumerableExtensions
       }
    }
 
-   public static Maybe<(T1, T2, T3, T4)> FirstOrNone<T1, T2, T3, T4>(this IEnumerable<(T1, T2, T3, T4)> enumerable,
+   public static Optional<(T1, T2, T3, T4)> FirstOrNone<T1, T2, T3, T4>(this IEnumerable<(T1, T2, T3, T4)> enumerable,
       Func<T1, T2, T3, T4, bool> predicate)
    {
       var first = enumerable.FirstOrDefault(i => predicate(i.Item1, i.Item2, i.Item3, i.Item4));
@@ -549,7 +549,7 @@ public static class EnumerableExtensions
       }
    }
 
-   public static Maybe<T> LastOrNone<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate)
+   public static Optional<T> LastOrNone<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate)
    {
       var last = enumerable.LastOrDefault(predicate);
 
@@ -567,7 +567,7 @@ public static class EnumerableExtensions
       }
    }
 
-   public static Maybe<(T1, T2)> LastOrNone<T1, T2>(this IEnumerable<(T1, T2)> enumerable, Func<T1, T2, bool> predicate)
+   public static Optional<(T1, T2)> LastOrNone<T1, T2>(this IEnumerable<(T1, T2)> enumerable, Func<T1, T2, bool> predicate)
    {
       var last = enumerable.LastOrDefault(i => predicate(i.Item1, i.Item2));
 
@@ -585,7 +585,7 @@ public static class EnumerableExtensions
       }
    }
 
-   public static Maybe<(T1, T2, T3)> LastOrNone<T1, T2, T3>(this IEnumerable<(T1, T2, T3)> enumerable,
+   public static Optional<(T1, T2, T3)> LastOrNone<T1, T2, T3>(this IEnumerable<(T1, T2, T3)> enumerable,
       Func<T1, T2, T3, bool> predicate)
    {
       var last = enumerable.LastOrDefault(i => predicate(i.Item1, i.Item2, i.Item3));
@@ -604,7 +604,7 @@ public static class EnumerableExtensions
       }
    }
 
-   public static Maybe<(T1, T2, T3, T4)> LastOrNone<T1, T2, T3, T4>(this IEnumerable<(T1, T2, T3, T4)> enumerable,
+   public static Optional<(T1, T2, T3, T4)> LastOrNone<T1, T2, T3, T4>(this IEnumerable<(T1, T2, T3, T4)> enumerable,
       Func<T1, T2, T3, T4, bool> predicate)
    {
       var last = enumerable.LastOrDefault(i => predicate(i.Item1, i.Item2, i.Item3, i.Item4));
@@ -780,11 +780,11 @@ public static class EnumerableExtensions
       return (isTrue, isFalse);
    }
 
-   public static Maybe<int> IndexOfMax<T>(this IEnumerable<T> enumerable) where T : IComparable<T>
+   public static Optional<int> IndexOfMax<T>(this IEnumerable<T> enumerable) where T : IComparable<T>
    {
-      Maybe<int> _index = nil;
+      Optional<int> _index = nil;
       var currentIndex = 0;
-      Maybe<T> _currentValue = nil;
+      Optional<T> _currentValue = nil;
       foreach (var item in enumerable)
       {
          if (_currentValue is (true, var currentValue))
@@ -807,12 +807,12 @@ public static class EnumerableExtensions
       return _index;
    }
 
-   public static Maybe<int> IndexOfMax<TSource, TResult>(this IEnumerable<TSource> enumerable, Func<TSource, TResult> mappingFunc)
+   public static Optional<int> IndexOfMax<TSource, TResult>(this IEnumerable<TSource> enumerable, Func<TSource, TResult> mappingFunc)
       where TResult : IComparable<TResult>
    {
-      Maybe<int> _index = nil;
+      Optional<int> _index = nil;
       var currentIndex = 0;
-      Maybe<TResult> _currentValue = nil;
+      Optional<TResult> _currentValue = nil;
       foreach (var item in enumerable)
       {
          var mappedItem = mappingFunc(item);
@@ -836,11 +836,11 @@ public static class EnumerableExtensions
       return _index;
    }
 
-   public static Maybe<int> IndexOfMin<T>(this IEnumerable<T> enumerable) where T : IComparable<T>
+   public static Optional<int> IndexOfMin<T>(this IEnumerable<T> enumerable) where T : IComparable<T>
    {
-      Maybe<int> _index = nil;
+      Optional<int> _index = nil;
       var currentIndex = 0;
-      Maybe<T> _currentValue = nil;
+      Optional<T> _currentValue = nil;
       foreach (var item in enumerable)
       {
          if (_currentValue is (true, var currentValue))
@@ -863,12 +863,12 @@ public static class EnumerableExtensions
       return _index;
    }
 
-   public static Maybe<int> IndexOfMin<TSource, TResult>(this IEnumerable<TSource> enumerable, Func<TSource, TResult> mappingFunc)
+   public static Optional<int> IndexOfMin<TSource, TResult>(this IEnumerable<TSource> enumerable, Func<TSource, TResult> mappingFunc)
       where TResult : IComparable<TResult>
    {
-      Maybe<int> _index = nil;
+      Optional<int> _index = nil;
       var currentIndex = 0;
-      Maybe<TResult> _currentValue = nil;
+      Optional<TResult> _currentValue = nil;
       foreach (var item in enumerable)
       {
          var mappedItem = mappingFunc(item);
@@ -900,12 +900,12 @@ public static class EnumerableExtensions
       return list;
    }
 
-   public static Maybe<TResult> FirstOrNoneAs<T, TResult>(this IEnumerable<T> enumerable)
+   public static Optional<TResult> FirstOrNoneAs<T, TResult>(this IEnumerable<T> enumerable)
    {
       return enumerable.FirstOrNone(i => i is TResult).CastAs<TResult>();
    }
 
-   public static Result<TResult> FirstOrFailAs<T, TResult>(this IEnumerable<T> enumerable)
+   public static Optional<TResult> FirstOrFailAs<T, TResult>(this IEnumerable<T> enumerable)
    {
       return enumerable.FirstOrFail(i => i is TResult).CastAs<TResult>();
    }
@@ -975,7 +975,7 @@ public static class EnumerableExtensions
       return true;
    }
 
-   public static IEnumerable<(T1, Maybe<T2>)> AllMatched<T1, T2>(this IEnumerable<T1> leftEnumerable, IEnumerable<T2> rightEnumerable,
+   public static IEnumerable<(T1, Optional<T2>)> AllMatched<T1, T2>(this IEnumerable<T1> leftEnumerable, IEnumerable<T2> rightEnumerable,
       Func<T1, T2, bool> matcher)
    {
       var rightArray = rightEnumerable.ToArray();

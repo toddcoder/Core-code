@@ -69,7 +69,7 @@ public class JsonWriter : IDisposable
 
    public void Write(Guid value) => writer.WriteValue(value);
 
-   public void WritePropertyNameIf(Maybe<string> _propertyName)
+   public void WritePropertyNameIf(Optional<string> _propertyName)
    {
       if (_propertyName is (true, var propertyName))
       {

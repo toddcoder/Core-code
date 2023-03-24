@@ -38,13 +38,13 @@ public interface IAssertion<T> : ICanBeTrue
 
    TResult Force<TException, TResult>(params object[] args) where TException : Exception;
 
-   Result<T> OrFailure();
+   Optional<T> OrFailure();
 
-   Result<T> OrFailure(string message);
+   Optional<T> OrFailure(string message);
 
-   Result<T> OrFailure(Func<string> messageFunc);
+   Optional<T> OrFailure(Func<string> messageFunc);
 
-   Maybe<T> OrNone();
+   Optional<T> OrNone();
 
    Task<Completion<T>> OrFailureAsync(CancellationToken token);
 

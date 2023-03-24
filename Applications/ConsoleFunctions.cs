@@ -16,7 +16,7 @@ public static class ConsoleFunctions
 
    private static string errorMessage() => new Win32Exception(Marshal.GetLastWin32Error()).Message;
 
-   public static Result<Unit> consoleNew(bool alwaysCreateNewConsole = true)
+   public static Optional<Unit> consoleNew(bool alwaysCreateNewConsole = true)
    {
       if (alwaysCreateNewConsole ? !Kernel32.consoleAllocate() : !Kernel32.consoleAttach())
       {
@@ -157,7 +157,7 @@ public static class ConsoleFunctions
       return nearestConsoleColor(red, green, blue);
    }
 
-   public static Maybe<ConsoleColor> consoleColorFromName(string name)
+   public static Optional<ConsoleColor> consoleColorFromName(string name)
    {
       if (Enum.TryParse(name, true, out ConsoleColor color))
       {

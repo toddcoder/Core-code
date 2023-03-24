@@ -10,7 +10,7 @@ namespace Core.Data.Fields;
 
 public class Field : PropertyInterface
 {
-   public static Maybe<Field> FromString(string input)
+   public static Optional<Field> FromString(string input)
    {
       var _result = input.Matches("^ /(/w+) /('?')? /s* ('[' /(/w+) ']')? (/s* ':' /s* /('$'? [/w '.']+))? $; f");
       if (_result is (true, var result))
@@ -45,7 +45,7 @@ public class Field : PropertyInterface
       return new Field(name, signature, optional) { Type = type };
    }
 
-   protected static Maybe<Type> getType(string typeName)
+   protected static Optional<Type> getType(string typeName)
    {
       if (typeName.IsEmpty())
       {
@@ -81,7 +81,7 @@ public class Field : PropertyInterface
 
    public bool Optional { get; set; }
 
-   public Maybe<Type> Type { get; set; }
+   public Optional<Type> Type { get; set; }
 
    public override Type PropertyType => Type | (() => base.PropertyType);
 }

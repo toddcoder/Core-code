@@ -12,9 +12,9 @@ namespace Core.Computers;
 
 public static class ComputerExtensions
 {
-   public static Maybe<FileName> AsFileName(this string file) => (FileName)file;
+   public static Optional<FileName> AsFileName(this string file) => (FileName)file;
 
-   public static Maybe<FolderName> AsFolderName(this string folder) => (FolderName)folder;
+   public static Optional<FolderName> AsFolderName(this string folder) => (FolderName)folder;
 
    public static IEnumerable<FileName> LocalAndParentFiles(this IEnumerable<FolderName> folders)
    {
@@ -27,7 +27,7 @@ public static class ComputerExtensions
       }
    }
 
-   public static Result<FileName> LocalAndParentFiles(this IEnumerable<FolderName> folders, Predicate<FileName> predicate)
+   public static Optional<FileName> LocalAndParentFiles(this IEnumerable<FolderName> folders, Predicate<FileName> predicate)
    {
       foreach (var folder in folders)
       {
@@ -63,7 +63,7 @@ public static class ComputerExtensions
       }
    }
 
-   public static Result<FolderName> LocalAndParentFolders(this IEnumerable<FolderName> folders, Predicate<FolderName> predicate)
+   public static Optional<FolderName> LocalAndParentFolders(this IEnumerable<FolderName> folders, Predicate<FolderName> predicate)
    {
       foreach (var subFolder in folders)
       {

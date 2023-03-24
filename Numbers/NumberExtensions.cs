@@ -345,7 +345,7 @@ public static class NumberExtensions
       "", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"
    };
 
-   public static Result<string> ToWords(this double amount)
+   public static Optional<string> ToWords(this double amount)
    {
       try
       {
@@ -390,5 +390,5 @@ public static class NumberExtensions
       _ => throw fail($"{i} is not handled")
    };
 
-   public static Result<string> ToWords(this long amount) => convert(amount);
+   public static Optional<string> ToWords(this long amount) => convert(amount);
 }

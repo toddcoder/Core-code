@@ -16,7 +16,7 @@ namespace Core.Services;
 
 public class Job : IDisposable, IEquatable<Job>, IAddServiceMessages
 {
-   public static Result<Job> New(Setting jobSetting, TypeManager typeManager, Configuration configuration)
+   public static Optional<Job> New(Setting jobSetting, TypeManager typeManager, Configuration configuration)
    {
       return
          from serviceLogger in ServiceLogger.FromConfiguration(configuration)
@@ -26,16 +26,16 @@ public class Job : IDisposable, IEquatable<Job>, IAddServiceMessages
    }
 
    protected Plugin plugin;
-   protected Maybe<Timer> _timer;
-   protected Maybe<DateTime> _stopTime;
+   protected Optional<Timer> _timer;
+   protected Optional<DateTime> _stopTime;
    protected TimeSpan interval;
    protected bool stopped;
-   protected Maybe<Scheduler> _scheduler;
+   protected Optional<Scheduler> _scheduler;
    protected string name;
    protected Setting jobSetting;
    protected Configuration configuration;
    protected bool canStop;
-   protected Maybe<string> _subscription;
+   protected Optional<string> _subscription;
    protected ServiceMessage serviceMessage;
 
    protected Job(Setting jobSetting, Configuration configuration, ServiceLogger serviceLogger)
@@ -55,9 +55,9 @@ public class Job : IDisposable, IEquatable<Job>, IAddServiceMessages
       _subscription = nil;
    }
 
-   protected static Result<(string assemblyName, string typeName)> typeInfo(TypeManager typeManager, Setting setting)
+   protected static Optional<(string assemblyName, string typeName)> typeInfo(TypeManager typeManager, Setting setting)
    {
-      Result<string> getValue(string objectName, Func<Maybe<string>> defaultValue, string message)
+      Optional<string> getValue(string objectName, Func<Optional<string>> defaultValue, string message)
       {
          var _nameFromObjectName = lazy.maybe<string>();
          var _nameFromDefaultValue = lazy.maybe<string>();
@@ -75,9 +75,9 @@ public class Job : IDisposable, IEquatable<Job>, IAddServiceMessages
          }
       }
 
-      Result<string> getAssemblyName() => getValue("assembly", () => typeManager.DefaultAssemblyName, "No default assembly name specified");
+      Optional<string> getAssemblyName() => getValue("assembly", () => typeManager.DefaultAssemblyName, "No default assembly name specified");
 
-      Result<string> getTypeName() => getValue("type", () => typeManager.DefaultTypeName, "No default type name specified");
+      Optional<string> getTypeName() => getValue("type", () => typeManager.DefaultTypeName, "No default type name specified");
 
       return
          from assemblyName in getAssemblyName()
@@ -85,7 +85,7 @@ public class Job : IDisposable, IEquatable<Job>, IAddServiceMessages
          select (assemblyName, typeName);
    }
 
-   public Result<Unit> Load(TypeManager typeManager)
+   public Optional<Unit> Load(TypeManager typeManager)
    {
       var _plugin =
          from typeInfo in typeInfo(typeManager, jobSetting)

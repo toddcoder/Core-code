@@ -7,7 +7,7 @@ public class NumericQuantificationParser : BaseParser
 {
    public override string Pattern => @"^\s*(\d+)(\s*%\s*)?(\d*)";
 
-   public override Maybe<string> Parse(string source, ref int index)
+   public override Optional<string> Parse(string source, ref int index)
    {
       var number1 = tokens[1];
       var separator = tokens[2].IsNotEmpty() ? "," : "";

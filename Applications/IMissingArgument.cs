@@ -5,7 +5,7 @@ namespace Core.Applications;
 
 public interface IMissingArgument
 {
-   Result<object> BadType(string name, Type type, string rest);
+   Optional<object> BadType(string name, Type type, string rest);
 
    bool Handled(string name, string reset, bool isFirstMatch);
 }

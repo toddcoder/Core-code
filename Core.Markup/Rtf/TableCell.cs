@@ -55,7 +55,7 @@ public class TableCell : BlockList
 
    public Table ParentTable { get; }
 
-   public Maybe<ColorDescriptor> BackgroundColor { get; set; }
+   public Optional<ColorDescriptor> BackgroundColor { get; set; }
 
    public Alignment Alignment
    {

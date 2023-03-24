@@ -17,7 +17,7 @@ public class OleDbSetup : ISetup
 
    public static void RegisterType(string type, Func<IConnectionString> func) => registeredTypes[type] = func;
 
-   public static Result<OleDbSetup> FromDataGroups(DataSettings dataSettings, string adapterName, Maybe<FileName> file)
+   public static Optional<OleDbSetup> FromDataGroups(DataSettings dataSettings, string adapterName, Optional<FileName> file)
    {
       var _result =
          from adapterSetting in dataSettings.AdaptersSetting.Result.Setting(adapterName)
@@ -54,9 +54,9 @@ public class OleDbSetup : ISetup
       }
    }
 
-   protected Maybe<FileName> file;
+   protected Optional<FileName> file;
 
-   public OleDbSetup(Maybe<FileName> file)
+   public OleDbSetup(Optional<FileName> file)
    {
       this.file = file;
    }

@@ -34,7 +34,7 @@ public class Connection : IHash<string, string>
 
    public bool ContainsKey(string key) => data.ContainsKey(key);
 
-   public Result<Hash<string, string>> AnyHash() => data.AsHash;
+   public Optional<Hash<string, string>> AnyHash() => data.AsHash;
 
    public string Type { get; set; }
 

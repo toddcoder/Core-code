@@ -33,7 +33,7 @@ public class MenuBuilder
 
    public static MenuBuilder operator +(MenuBuilder builder, Func<string> textFunc) => builder.Text(textFunc);
 
-   public static MenuBuilder operator +(MenuBuilder builder, Func<Result<string>> textFunc) => builder.Text(textFunc);
+   public static MenuBuilder operator +(MenuBuilder builder, Func<Optional<string>> textFunc) => builder.Text(textFunc);
 
    public static MenuBuilder operator +(MenuBuilder builder, EventHandler handler) => builder.Handler(handler);
 
@@ -59,8 +59,8 @@ public class MenuBuilder
    protected int index;
    protected bool enabled;
    protected Bits32<Keys> keys;
-   protected Maybe<string> _parentText;
-   protected Maybe<ToolStripMenuItem> _parentItem;
+   protected Optional<string> _parentText;
+   protected Optional<ToolStripMenuItem> _parentItem;
 
    public MenuBuilder(Menus menus)
    {
@@ -100,7 +100,7 @@ public class MenuBuilder
       return this;
    }
 
-   public MenuBuilder Text(Func<Result<string>> textFunc)
+   public MenuBuilder Text(Func<Optional<string>> textFunc)
    {
       menuText = textFunc;
       return this;
@@ -180,7 +180,7 @@ public class MenuBuilder
    {
       string text => menus.Menu(parentText, text, handler, shortcut, isChecked, index, enabled, keys),
       Func<string> func => menus.Menu(parentText, func, handler, shortcut, isChecked, index, enabled, keys),
-      Func<Result<string>> func => menus.Menu(parentText, func, handler, shortcut, isChecked, index, enabled, keys),
+      Func<Optional<string>> func => menus.Menu(parentText, func, handler, shortcut, isChecked, index, enabled, keys),
       _ => throw fail("Unexpected item")
    };
 
@@ -188,7 +188,7 @@ public class MenuBuilder
    {
       string text => menus.Menu(parentItem, text, handler, shortcut, isChecked, index, enabled, keys),
       Func<string> func => menus.Menu(parentItem, func, handler, shortcut, isChecked, index, enabled, keys),
-      Func<Result<string>> func => menus.Menu(parentItem, func, handler, shortcut, isChecked, index, enabled, keys),
+      Func<Optional<string>> func => menus.Menu(parentItem, func, handler, shortcut, isChecked, index, enabled, keys),
       _ => throw fail("Unexpected item")
    };
 
@@ -196,7 +196,7 @@ public class MenuBuilder
    {
       string text => menus.Menu(text, handler, shortcut, isChecked, index, enabled, keys),
       Func<string> func => menus.Menu(func, handler, shortcut, isChecked, index, enabled, keys),
-      Func<Result<string>> func => menus.Menu(func, handler, shortcut, isChecked, index, enabled, keys),
+      Func<Optional<string>> func => menus.Menu(func, handler, shortcut, isChecked, index, enabled, keys),
       _ => throw fail("Unexpected item")
    };
 
@@ -226,7 +226,7 @@ public class MenuBuilder
    {
       string text => menus.ContextMenu(text, handler, shortcut, isChecked, enabled, keys),
       Func<string> textFunc => menus.ContextMenu(textFunc, handler, shortcut, isChecked, enabled, keys),
-      Func<Result<string>> textFunc => menus.ContextMenu(textFunc, handler, shortcut, isChecked, enabled, keys),
+      Func<Optional<string>> textFunc => menus.ContextMenu(textFunc, handler, shortcut, isChecked, enabled, keys),
       _ => throw fail("Unexpected item")
    };
 }

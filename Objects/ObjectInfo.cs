@@ -8,15 +8,15 @@ namespace Core.Objects;
 
 internal class ObjectInfo
 {
-   public static Maybe<PropertyInfo> PropertyInfo(object obj, Signature signature)
+   public static Optional<PropertyInfo> PropertyInfo(object obj, Signature signature)
    {
       var info = obj.GetType().GetProperty(signature.Name);
       return maybe(info != null, () => info);
    }
 
    protected object obj;
-   protected Maybe<int> _index;
-   protected Maybe<PropertyInfo> _info;
+   protected Optional<int> _index;
+   protected Optional<PropertyInfo> _info;
 
    public ObjectInfo(object obj, Signature signature)
    {
@@ -34,18 +34,18 @@ internal class ObjectInfo
 
    public ObjectInfo()
    {
-      obj = new None<object>();
+      obj = new Empty<object>();
       _index = nil;
       _info = nil;
    }
 
    public object Object => obj;
 
-   public Maybe<int> Index => _index;
+   public Optional<int> Index => _index;
 
-   public Maybe<Type> PropertyType => _info.Map(pi => pi.PropertyType);
+   public Optional<Type> PropertyType => _info.Map(pi => pi.PropertyType);
 
-   public Maybe<object> Value
+   public Optional<object> Value
    {
       get
       {
@@ -95,7 +95,7 @@ internal class ObjectInfo
       }
    }
 
-   protected Maybe<object> getValue(int defaultIndex)
+   protected Optional<object> getValue(int defaultIndex)
    {
       if (_info is (true, var info))
       {

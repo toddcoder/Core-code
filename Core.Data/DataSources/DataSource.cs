@@ -29,10 +29,10 @@ public abstract class DataSource
       _ => DbType.Object
    };
 
-   protected Maybe<IDbConnection> _connection;
+   protected Optional<IDbConnection> _connection;
    protected TimeSpan commandTimeout;
    protected Fields.Fields fields;
-   protected Maybe<IActive> _activeObject;
+   protected Optional<IActive> _activeObject;
 
    public event EventHandler<CancelEventArgs> NextRow;
 
@@ -50,7 +50,7 @@ public abstract class DataSource
 
    public int ResultIndex { get; set; }
 
-   public Maybe<IDbCommand> Command { get; set; }
+   public Optional<IDbCommand> Command { get; set; }
 
    public string ConnectionString { get; set; }
 
@@ -171,7 +171,7 @@ public abstract class DataSource
       }
    }
 
-   public Maybe<IDataReader> Reader { get; set; }
+   public Optional<IDataReader> Reader { get; set; }
 
    internal void BeginReading(object entity, string command, Parameters.Parameters parameters, Fields.Fields inFields)
    {
@@ -237,7 +237,7 @@ public abstract class DataSource
       }
    }
 
-   internal Maybe<object> NextReading(object entity)
+   internal Optional<object> NextReading(object entity)
    {
       if (Reader is (true, var reader) && reader.Read())
       {
@@ -398,7 +398,7 @@ public abstract class DataSource
       }
    }
 
-   protected string getFileConnectionString(Maybe<FileName> associatedFile)
+   protected string getFileConnectionString(Optional<FileName> associatedFile)
    {
       if (associatedFile is (true, var associatedFileValue))
       {

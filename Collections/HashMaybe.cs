@@ -3,7 +3,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Collections;
 
-public class HashMaybe<TKey, TValue>
+public class HashOptional<TKey, TValue>
 {
    protected Hash<TKey, TValue> hash;
 
@@ -12,7 +12,7 @@ public class HashMaybe<TKey, TValue>
       this.hash = hash;
    }
 
-   public Maybe<TValue> this[TKey key]
+   public Optional<TValue> this[TKey key]
    {
       get
       {

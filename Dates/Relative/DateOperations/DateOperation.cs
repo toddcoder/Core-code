@@ -38,5 +38,5 @@ public abstract class DateOperation : IComparable<DateOperation>
       return -2;
    }
 
-   public abstract Result<DateTime> Operate(DateTime dateTime);
+   public abstract Optional<DateTime> Operate(DateTime dateTime);
 }

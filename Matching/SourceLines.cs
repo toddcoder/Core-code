@@ -16,7 +16,7 @@ public class SourceLines
    protected string source;
    protected int index;
    protected int length;
-   protected Maybe<int> _peekLength;
+   protected Optional<int> _peekLength;
    protected MaybeStack<int> bookmarks;
 
    public SourceLines(string source)
@@ -155,7 +155,7 @@ public class SourceLines
       _peekLength = nil;
    }
 
-   public Maybe<string> PeekNextLine()
+   public Optional<string> PeekNextLine()
    {
       _peekLength = nil;
 

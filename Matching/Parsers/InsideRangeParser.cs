@@ -8,7 +8,7 @@ public class InsideRangeParser : BaseParser
 {
    public override string Pattern => $@"^\s*/({REGEX_IDENTIFIER})\b";
 
-   public override Maybe<string> Parse(string source, ref int index)
+   public override Optional<string> Parse(string source, ref int index)
    {
       var word = tokens[1];
       var result = OutsideRangeParser.GetRange(word);

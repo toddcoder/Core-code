@@ -30,12 +30,12 @@ public class UiActionWriter
    }
 
    protected CheckStyle checkStyle;
-   protected Maybe<string> _emptyTextTitle;
-   protected Result<Rectangle> _rectangle;
-   protected Result<Font> _font;
-   protected Result<Color> _color;
+   protected Optional<string> _emptyTextTitle;
+   protected Optional<Rectangle> _rectangle;
+   protected Optional<Font> _font;
+   protected Optional<Color> _color;
 
-   public UiActionWriter(bool center, CheckStyle checkStyle, Maybe<string> emptyTextTitle)
+   public UiActionWriter(bool center, CheckStyle checkStyle, Optional<string> emptyTextTitle)
    {
       Center(center || checkStyle != CheckStyle.None);
       this.checkStyle = checkStyle;
@@ -72,7 +72,7 @@ public class UiActionWriter
       {
          foreach (var match in result)
          {
-            Maybe<string> _replacement = match.SecondGroup switch
+            Optional<string> _replacement = match.SecondGroup switch
             {
                "arrow" => "⇒",
                "check" => "✔",
@@ -105,7 +105,7 @@ public class UiActionWriter
       }
    }
 
-   public Result<Unit> Write(string text, Graphics graphics)
+   public Optional<Unit> Write(string text, Graphics graphics)
    {
       text = substitutions(text);
 

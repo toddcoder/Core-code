@@ -8,7 +8,7 @@ namespace Core.Io;
 
 public static class StreamExtensions
 {
-   public static Result<string> FromStream(this Stream stream, Encoding encoding)
+   public static Optional<string> FromStream(this Stream stream, Encoding encoding)
    {
       try
       {

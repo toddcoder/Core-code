@@ -19,7 +19,7 @@ public class Document
 
    public static string[] SetWindowsText(string text) => text.Unjoin(PATTERN_CRLF);
 
-   public static Maybe<string> ClipboardText()
+   public static Optional<string> ClipboardText()
    {
       return maybe(Clipboard.ContainsText(TextDataFormat.Text), () => Clipboard.GetText(TextDataFormat.Text));
    }
@@ -29,7 +29,7 @@ public class Document
    protected string extension;
    protected string documentName;
    protected string formName;
-   protected Maybe<FileName> _file;
+   protected Optional<FileName> _file;
    protected bool isDirty;
    protected OpenFileDialog openFileDialog;
    protected SaveFileDialog saveFileDialog;
@@ -37,7 +37,7 @@ public class Document
    protected string fontName;
    protected float fontSize;
    protected bool displayFileName;
-   protected Maybe<Colorizer> _colorizer;
+   protected Optional<Colorizer> _colorizer;
    protected string filter;
    protected bool keepClean;
 
@@ -117,7 +117,7 @@ public class Document
       DisplayFileName();
    }
 
-   public Maybe<Colorizer> Colorizer
+   public Optional<Colorizer> Colorizer
    {
       get => _colorizer;
       set => _colorizer = value;
@@ -194,7 +194,7 @@ public class Document
       textBox.ScrollBars = RichTextBoxScrollBars.Both;
    }
 
-   public Maybe<string> FileName => _file.Map(f => f.ToString());
+   public Optional<string> FileName => _file.Map(f => f.ToString());
 
    public bool IsDirty => isDirty;
 

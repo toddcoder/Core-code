@@ -148,13 +148,13 @@ public class TypeAssertion : IAssertion<Type>
       return forceConvert<Type, TException, TResult>(this, args);
    }
 
-   public Result<Type> OrFailure() => orFailure(this);
+   public Optional<Type> OrFailure() => orFailure(this);
 
-   public Result<Type> OrFailure(string message) => orFailure(this, message);
+   public Optional<Type> OrFailure(string message) => orFailure(this, message);
 
-   public Result<Type> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
+   public Optional<Type> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
 
-   public Maybe<Type> OrNone() => orNone(this);
+   public Optional<Type> OrNone() => orNone(this);
 
    public async Task<Completion<Type>> OrFailureAsync(CancellationToken token) => await orFailureAsync(assertion: this, token);
 

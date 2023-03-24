@@ -14,7 +14,7 @@ public abstract class AfterPlugin : Plugin
       this.parentSetting = parentSetting;
    }
 
-   public override Result<Unit> Dispatch() => unit;
+   public override Optional<Unit> Dispatch() => unit;
 
    public abstract void AfterSuccess();
 

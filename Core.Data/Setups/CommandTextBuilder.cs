@@ -20,9 +20,9 @@ public class CommandTextBuilder
    }
 
    protected SqlSetupBuilder setupBuilder;
-   protected Maybe<string> _commandText;
-   protected Maybe<FileName> _commandTextFile;
-   protected Maybe<TimeSpan> _commandTimeout;
+   protected Optional<string> _commandText;
+   protected Optional<FileName> _commandTextFile;
+   protected Optional<TimeSpan> _commandTimeout;
 
    public CommandTextBuilder(SqlSetupBuilder setupBuilder)
    {
@@ -52,7 +52,7 @@ public class CommandTextBuilder
       return this;
    }
 
-   public Result<(string, TimeSpan)> Build()
+   public Optional<(string, TimeSpan)> Build()
    {
       var commandTimeout = _commandTimeout | (() => 30.Seconds());
       if (_commandText)

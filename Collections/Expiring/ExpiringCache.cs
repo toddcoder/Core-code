@@ -10,7 +10,7 @@ public class ExpiringCache<TKey, TValue> : IHash<TKey, TValue>
 {
    protected Hash<TKey, TValue> cache;
    protected Hash<TKey, ExpirationPolicy<TValue>> expirationPolicies;
-   protected Maybe<Timer> _timer;
+   protected Optional<Timer> _timer;
    protected object locker;
    protected Func<ExpirationPolicy<TValue>> newPolicy;
 
@@ -125,7 +125,7 @@ public class ExpiringCache<TKey, TValue> : IHash<TKey, TValue>
       }
    }
 
-   public Result<Hash<TKey, TValue>> AnyHash() => cache.Success();
+   public Optional<Hash<TKey, TValue>> AnyHash() => cache.Success();
 
    public void Remove(TKey key)
    {

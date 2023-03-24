@@ -10,13 +10,13 @@ public interface IQueue<T>
 
    bool Contains(T item);
 
-   Result<T[]> ToArray(int arrayIndex = 0);
+   Optional<T[]> ToArray(int arrayIndex = 0);
 
-   Maybe<T> Dequeue();
+   Optional<T> Dequeue();
 
    void Enqueue(T item);
 
-   Maybe<T> Peek();
+   Optional<T> Peek();
 
    bool IsEmpty { get; }
 

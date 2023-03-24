@@ -12,7 +12,7 @@ public class SynchronizerTrying
       this.synchronizer = synchronizer;
    }
 
-   public Result<Unit> Synchronize() => tryTo(() => synchronizer.Synchronize());
+   public Optional<Unit> Synchronize() => tryTo(() => synchronizer.Synchronize());
 
-   public Result<Unit> Synchronize(params string[] fileNames) => tryTo(() => synchronizer.Synchronize(fileNames));
+   public Optional<Unit> Synchronize(params string[] fileNames) => tryTo(() => synchronizer.Synchronize(fileNames));
 }

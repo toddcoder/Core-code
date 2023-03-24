@@ -44,7 +44,7 @@ public class Subscription : Plugin, IRequiresTypeManager
       }
    }
 
-   public override Result<Unit> Dispatch()
+   public override Optional<Unit> Dispatch()
    {
       var _jobsSetting = configuration.Result.Setting("jobs");
       if (_jobsSetting)

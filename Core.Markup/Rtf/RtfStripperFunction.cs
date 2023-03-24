@@ -92,7 +92,7 @@ public static class RtfStripperFunction
       { "rdblquote", "\u201D" },
    };
 
-   public static Result<string> stripRichTextFormat(string inputRtf)
+   public static Optional<string> stripRichTextFormat(string inputRtf)
    {
       if (inputRtf.IsEmpty())
       {

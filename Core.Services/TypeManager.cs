@@ -26,7 +26,7 @@ public class TypeManager
       return typesSetting.Items().ToStringHash(i => i.key, i => i.text, true);
    }
 
-   public static Result<TypeManager> FromConfiguration(Configuration configuration)
+   public static Optional<TypeManager> FromConfiguration(Configuration configuration)
    {
       return
          from assembliesSetting in configuration.Result.Setting("assemblies")
@@ -42,8 +42,8 @@ public class TypeManager
    protected StringHash assemblyNames;
    protected StringHash<Type> typeCache;
    protected StringHash typeNames;
-   protected Maybe<string> _defaultAssemblyName;
-   protected Maybe<string> _defaultTypeName;
+   protected Optional<string> _defaultAssemblyName;
+   protected Optional<string> _defaultTypeName;
 
    public TypeManager(StringHash assemblyNames, StringHash typeNames)
    {
@@ -57,7 +57,7 @@ public class TypeManager
       _defaultTypeName = typeNames.Tuples().FirstOrNone(i => i.key == "default").Map((_, typeName) => typeName);
    }
 
-   public Result<Type> Type(string assemblyName, string typeName)
+   public Optional<Type> Type(string assemblyName, string typeName)
    {
       if (assemblyName == "$")
       {
@@ -72,7 +72,7 @@ public class TypeManager
       }
    }
 
-   protected Result<Type> getTypeFromCache(string name, Assembly assembly)
+   protected Optional<Type> getTypeFromCache(string name, Assembly assembly)
    {
       try
       {
@@ -121,11 +121,11 @@ public class TypeManager
       }
    }
 
-   protected Result<string> getTypeName(string name) => typeNames.Maybe(name).Result($"Couldn't determine type name {name}");
+   protected Optional<string> getTypeName(string name) => typeNames.Maybe(name).Result($"Couldn't determine type name {name}");
 
-   protected static Result<Type> getTypeFromAssembly(Assembly assembly, string typeName) => tryTo(() => assembly.GetType(typeName, true));
+   protected static Optional<Type> getTypeFromAssembly(Assembly assembly, string typeName) => tryTo(() => assembly.GetType(typeName, true));
 
-   protected Result<Assembly> getAssemblyFromCache(string name)
+   protected Optional<Assembly> getAssemblyFromCache(string name)
    {
       try
       {
@@ -154,7 +154,7 @@ public class TypeManager
       }
    }
 
-   public Maybe<string> DefaultAssemblyName => _defaultAssemblyName;
+   public Optional<string> DefaultAssemblyName => _defaultAssemblyName;
 
-   public Maybe<string> DefaultTypeName => _defaultTypeName;
+   public Optional<string> DefaultTypeName => _defaultTypeName;
 }

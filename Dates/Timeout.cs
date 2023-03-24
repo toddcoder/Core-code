@@ -17,7 +17,7 @@ public class Timeout
    public static bool operator false(Timeout timeout) => timeout.Expired;
 
    protected TimeSpan timeoutPeriod;
-   protected Maybe<DateTime> _targetDateTime;
+   protected Optional<DateTime> _targetDateTime;
 
    public Timeout(TimeSpan timeoutPeriod)
    {
@@ -60,5 +60,5 @@ public class Timeout
       }
    }
 
-   public Maybe<DateTime> TargetDateTime => _targetDateTime;
+   public Optional<DateTime> TargetDateTime => _targetDateTime;
 }

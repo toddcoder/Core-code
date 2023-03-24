@@ -16,7 +16,7 @@ public class Range : IEnumerable<int>
       protected int stop;
       protected int increment;
       protected Func<int, int, bool> endingPredicate;
-      protected Maybe<int> _current;
+      protected Optional<int> _current;
 
       public RangeEnumerator(int start, int stop, int increment, Func<int, int, bool> endingPredicate)
       {
@@ -66,9 +66,9 @@ public class Range : IEnumerable<int>
    }
 
    protected int start;
-   protected Maybe<int> _stop;
+   protected Optional<int> _stop;
    protected int increment;
-   protected Maybe<Func<int, int, bool>> _endingPredicate;
+   protected Optional<Func<int, int, bool>> _endingPredicate;
    protected bool inclusive;
 
    public Range(int start)

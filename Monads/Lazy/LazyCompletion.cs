@@ -364,19 +364,19 @@ public class LazyCompletion<T> : Completion<T>
       return _value.Where(predicate, exceptionMessage);
    }
 
-   public override T DefaultTo(Func<Maybe<Exception>, T> defaultFunc)
+   public override T DefaultTo(Func<Optional<Exception>, T> defaultFunc)
    {
       ensureValue();
       return _value.DefaultTo(defaultFunc);
    }
 
-   public override Maybe<T> Maybe()
+   public override Optional<T> Maybe()
    {
       ensureValue();
       return _value.Maybe();
    }
 
-   public override Result<T> Result()
+   public override Optional<T> Result()
    {
       ensureValue();
       return _value.Result();
@@ -397,7 +397,7 @@ public class LazyCompletion<T> : Completion<T>
       }
    }
 
-   public override Maybe<Exception> AnyException
+   public override Optional<Exception> AnyException
    {
       get
       {

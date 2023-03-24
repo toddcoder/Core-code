@@ -35,7 +35,7 @@ public class RowBuilder
 
    public static RowBuilder operator |(RowBuilder rowBuilder, FirstLineIndent firstLineIndent) => rowBuilder.FirstLineIndent(firstLineIndent);
 
-   public static RowBuilder operator |(RowBuilder rowBuilder, (Maybe<float>, Maybe<float>, Maybe<float>, Maybe<float>) margins)
+   public static RowBuilder operator |(RowBuilder rowBuilder, (Optional<float>, Optional<float>, Optional<float>, Optional<float>) margins)
    {
       return rowBuilder.Margins(margins);
    }
@@ -153,7 +153,7 @@ public class RowBuilder
       return this;
    }
 
-   public RowBuilder Margins((Maybe<float>, Maybe<float>, Maybe<float>, Maybe<float>) margins)
+   public RowBuilder Margins((Optional<float>, Optional<float>, Optional<float>, Optional<float>) margins)
    {
       formatter.Margins(margins);
       return this;

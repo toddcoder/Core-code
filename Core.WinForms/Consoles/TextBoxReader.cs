@@ -10,7 +10,7 @@ public class TextBoxReader : Stream
 {
    protected Form form;
    protected TextBoxConsole console;
-   protected Maybe<Control> _previouslyFocused;
+   protected Optional<Control> _previouslyFocused;
 
    public TextBoxReader(Form form, TextBoxConsole console)
    {

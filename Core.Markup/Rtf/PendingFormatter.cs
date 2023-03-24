@@ -45,22 +45,22 @@ public class PendingFormatter
       return formatter.FirstLineIndent(firstLineIndent);
    }
 
-   public static PendingFormatter operator |(PendingFormatter formatter, (Maybe<float>, Maybe<float>, Maybe<float>, Maybe<float>) margins)
+   public static PendingFormatter operator |(PendingFormatter formatter, (Optional<float>, Optional<float>, Optional<float>, Optional<float>) margins)
    {
       return formatter.Margins(margins);
    }
 
    protected Table table;
    protected Set<Feature> features;
-   protected Maybe<Alignment> _alignment;
-   protected Maybe<ForegroundColorDescriptor> _foregroundColor;
-   protected Maybe<BackgroundColorDescriptor> _backgroundColor;
-   protected Maybe<Hyperlink> _hyperlink;
-   protected Maybe<FontDescriptor> _font;
-   protected Maybe<float> _fontSize;
-   protected Maybe<FirstLineIndent> _firstLineIndent;
-   protected (Maybe<float>, Maybe<float>, Maybe<float>, Maybe<float>) margins;
-   protected Maybe<Style> _style;
+   protected Optional<Alignment> _alignment;
+   protected Optional<ForegroundColorDescriptor> _foregroundColor;
+   protected Optional<BackgroundColorDescriptor> _backgroundColor;
+   protected Optional<Hyperlink> _hyperlink;
+   protected Optional<FontDescriptor> _font;
+   protected Optional<float> _fontSize;
+   protected Optional<FirstLineIndent> _firstLineIndent;
+   protected (Optional<float>, Optional<float>, Optional<float>, Optional<float>) margins;
+   protected Optional<Style> _style;
 
    public PendingFormatter(Table table)
    {
@@ -182,7 +182,7 @@ public class PendingFormatter
       return this;
    }
 
-   public PendingFormatter Margins((Maybe<float>, Maybe<float>, Maybe<float>, Maybe<float>) margins)
+   public PendingFormatter Margins((Optional<float>, Optional<float>, Optional<float>, Optional<float>) margins)
    {
       this.margins = margins;
       return this;

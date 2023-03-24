@@ -8,7 +8,7 @@ public class StringParser : BaseParser
 {
    public override string Pattern => @"^\s*(/)?(['""])";
 
-   public override Maybe<string> Parse(string source, ref int index)
+   public override Optional<string> Parse(string source, ref int index)
    {
       var enclose = tokens[1] == "/";
       var quote = tokens[2][0];

@@ -26,13 +26,13 @@ public class FileName : IComparable, IComparable<FileName>, IEquatable<FileName>
    public class Try
    {
       [Obsolete("Use static FromString")]
-      public static Result<FileName> FromString(string file)
+      public static Optional<FileName> FromString(string file)
       {
          return file.Must().BeAValidFileName().OrFailure().Map(f => (FileName)f);
       }
    }
 
-   public static Result<FileName> FromString(string file) => file.Must().BeAValidFileName().OrFailure().Map(f => (FileName)f);
+   public static Optional<FileName> FromString(string file) => file.Must().BeAValidFileName().OrFailure().Map(f => (FileName)f);
 
    [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
    public static extern bool PathYetAnotherMakeUniqueName(StringBuilder uniqueName, string path, string shortTemplate, string longTemplate);
@@ -90,7 +90,7 @@ public class FileName : IComparable, IComparable<FileName>, IEquatable<FileName>
       return folder.File(UniqueName(folder, name), extension);
    }
 
-   public static Maybe<string> ResolvedFileName(string name)
+   public static Optional<string> ResolvedFileName(string name)
    {
       try
       {
@@ -423,7 +423,7 @@ public class FileName : IComparable, IComparable<FileName>, IEquatable<FileName>
 
    public bool Valid { get; private set; }
 
-   public Maybe<FileName> Parent
+   public Optional<FileName> Parent
    {
       get
       {
@@ -474,7 +474,7 @@ public class FileName : IComparable, IComparable<FileName>, IEquatable<FileName>
       setFullPath();
    }
 
-   public Maybe<FileName> Unique()
+   public Optional<FileName> Unique()
    {
       var uniqueName = new StringBuilder(260);
       if (PathYetAnotherMakeUniqueName(uniqueName, FullPath, null, NameExtension))
@@ -487,7 +487,7 @@ public class FileName : IComparable, IComparable<FileName>, IEquatable<FileName>
       }
    }
 
-   public Maybe<FileName> Truncated(int limit)
+   public Optional<FileName> Truncated(int limit)
    {
       if (limit < 3)
       {
@@ -556,7 +556,7 @@ public class FileName : IComparable, IComparable<FileName>, IEquatable<FileName>
       }
    }
 
-   public Result<FileName> Next()
+   public Optional<FileName> Next()
    {
       try
       {
@@ -1010,7 +1010,7 @@ public class FileName : IComparable, IComparable<FileName>, IEquatable<FileName>
 
    public FileNameTrying TryTo => new(this);
 
-   public Result<object> NewObject(string typeName, params object[] args) => tryTo(() =>
+   public Optional<object> NewObject(string typeName, params object[] args) => tryTo(() =>
    {
       var assembly = Assembly.LoadFile(fullPath);
       var type = assembly.GetType(typeName, true);
@@ -1032,7 +1032,7 @@ public class FileName : IComparable, IComparable<FileName>, IEquatable<FileName>
 
    public bool IsNotEmpty => !IsEmpty;
 
-   public Maybe<FileName> Indexed(int maximumIndex = 1000)
+   public Optional<FileName> Indexed(int maximumIndex = 1000)
    {
       for (var index = 0; index < maximumIndex; index++)
       {
@@ -1050,7 +1050,7 @@ public class FileName : IComparable, IComparable<FileName>, IEquatable<FileName>
 
    public FileNameCore Core => new(this);
 
-   public Result<FileName> Validate(bool allowRelativePaths = false) => ValidatePath(this, allowRelativePaths).Map(s => (FileName)s);
+   public Optional<FileName> Validate(bool allowRelativePaths = false) => ValidatePath(this, allowRelativePaths).Map(s => (FileName)s);
 
    public bool IsValid => Validate(true);
 
@@ -1136,7 +1136,7 @@ public class FileName : IComparable, IComparable<FileName>, IEquatable<FileName>
    protected static extern bool CopyFileEx(string existingFile, string newFileName, CopyProgressRoutine progressRoutine, IntPtr data, ref int cancel,
       CopyFileFlags copyFlags);
 
-   public Result<Unit> CopyToNotify(FileName targetFile, bool overwrite = true, bool noBuffering = false)
+   public Optional<Unit> CopyToNotify(FileName targetFile, bool overwrite = true, bool noBuffering = false)
    {
       var stopwatch = new Stopwatch();
 
@@ -1177,7 +1177,7 @@ public class FileName : IComparable, IComparable<FileName>, IEquatable<FileName>
       }
    }
 
-   public Result<Unit> CopyToNotify(FolderName folder, bool overwrite = true, bool noBuffering = false)
+   public Optional<Unit> CopyToNotify(FolderName folder, bool overwrite = true, bool noBuffering = false)
    {
       var targetFile = folder + NameExtension;
       return CopyToNotify(targetFile, overwrite, noBuffering);

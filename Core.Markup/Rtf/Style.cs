@@ -35,20 +35,20 @@ public class Style
 
    public static Style operator |(Style style, FirstLineIndent firstLineIndent) => style.FirstLineIndent(firstLineIndent);
 
-   public static Style operator |(Style style, (Maybe<float>, Maybe<float>, Maybe<float>, Maybe<float>) margins)
+   public static Style operator |(Style style, (Optional<float>, Optional<float>, Optional<float>, Optional<float>) margins)
    {
       return style.Margins(margins);
    }
 
    protected Set<Feature> features;
-   protected Maybe<Alignment> _alignment;
-   protected Maybe<ForegroundColorDescriptor> _foregroundColor;
-   protected Maybe<BackgroundColorDescriptor> _backgroundColor;
-   protected Maybe<Hyperlink> _hyperlink;
-   protected Maybe<FontDescriptor> _font;
-   protected Maybe<float> _fontSize;
-   protected Maybe<FirstLineIndent> _firstLineIndent;
-   protected (Maybe<float>, Maybe<float>, Maybe<float>, Maybe<float>) margins;
+   protected Optional<Alignment> _alignment;
+   protected Optional<ForegroundColorDescriptor> _foregroundColor;
+   protected Optional<BackgroundColorDescriptor> _backgroundColor;
+   protected Optional<Hyperlink> _hyperlink;
+   protected Optional<FontDescriptor> _font;
+   protected Optional<float> _fontSize;
+   protected Optional<FirstLineIndent> _firstLineIndent;
+   protected (Optional<float>, Optional<float>, Optional<float>, Optional<float>) margins;
 
    public Style()
    {
@@ -281,7 +281,7 @@ public class Style
       return this;
    }
 
-   public Style Margins((Maybe<float>, Maybe<float>, Maybe<float>, Maybe<float>) margins)
+   public Style Margins((Optional<float>, Optional<float>, Optional<float>, Optional<float>) margins)
    {
       this.margins = margins;
       return this;

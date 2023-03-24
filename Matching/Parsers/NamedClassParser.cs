@@ -9,7 +9,7 @@ public class NamedClassParser : BaseParser
    public override string Pattern => @"^\s*\b(alpha|digit|alnum|blank|cntrl|graph|lower|upper|print|punct|space|" +
       @"xdigit|lcon|ucon|lvow|uvow|squote|dquote|quote)\b";
 
-   public override Maybe<string> Parse(string source, ref int index) => tokens[1] switch
+   public override Optional<string> Parse(string source, ref int index) => tokens[1] switch
    {
       "alpha" => "a-zA-Z",
       "digit" => "0-9",

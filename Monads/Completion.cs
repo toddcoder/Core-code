@@ -15,7 +15,7 @@ public abstract class Completion<T>
 
    public static implicit operator Completion<T>(Nil _) => new Cancelled<T>();
 
-   public static implicit operator Completion<T>(Maybe<Exception> _exception)
+   public static implicit operator Completion<T>(Optional<Exception> _exception)
    {
       return _exception.Map(e => (Completion<T>)new Interrupted<T>(e)) | (() => new Cancelled<T>());
    }
@@ -121,17 +121,17 @@ public abstract class Completion<T>
       return this;
    }
 
-   public abstract T DefaultTo(Func<Maybe<Exception>, T> defaultFunc);
+   public abstract T DefaultTo(Func<Optional<Exception>, T> defaultFunc);
 
-   public abstract Maybe<T> Maybe();
+   public abstract Optional<T> Maybe();
 
-   public abstract Result<T> Result();
+   public abstract Optional<T> Result();
 
    public abstract Optional<T> Optional();
 
    public abstract Exception Exception { get; }
 
-   public abstract Maybe<Exception> AnyException { get; }
+   public abstract Optional<Exception> AnyException { get; }
 
    public abstract object ToObject();
 

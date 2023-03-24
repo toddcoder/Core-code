@@ -89,13 +89,13 @@ public class MatchResultAssertion : IAssertion<MatchResult>
 
    public TResult Force<TException, TResult>(params object[] args) where TException : Exception => Force<TResult>();
 
-   public Result<MatchResult> OrFailure() => orFailure(this);
+   public Optional<MatchResult> OrFailure() => orFailure(this);
 
-   public Result<MatchResult> OrFailure(string message) => orFailure(this, message);
+   public Optional<MatchResult> OrFailure(string message) => orFailure(this, message);
 
-   public Result<MatchResult> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
+   public Optional<MatchResult> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
 
-   public Maybe<MatchResult> OrNone() => orNone(this);
+   public Optional<MatchResult> OrNone() => orNone(this);
 
    public async Task<Completion<MatchResult>> OrFailureAsync(CancellationToken token) => await orFailureAsync(this, token);
 

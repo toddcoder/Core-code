@@ -29,9 +29,9 @@ public class OleDbDataSource : DataSource
       _ => throw fail($"Doesn't support {type}")
    };
 
-   protected Maybe<FileName> associatedFile;
+   protected Optional<FileName> associatedFile;
 
-   public OleDbDataSource(string connectionString, Maybe<FileName> associatedFile) : base(connectionString, 30.Seconds())
+   public OleDbDataSource(string connectionString, Optional<FileName> associatedFile) : base(connectionString, 30.Seconds())
    {
       ConnectionString = getFileConnectionString(associatedFile);
       this.associatedFile = associatedFile;

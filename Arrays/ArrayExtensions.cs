@@ -186,21 +186,21 @@ public static class ArrayExtensions
       return index.Between(0).Until(array.Length) ? array[index] : defaultValue;
    }
 
-   public static Maybe<T> Of<T>(this T[] array, int index) => maybe(index.Between(0).Until(array.Length), () => array[index]);
+   public static Optional<T> Of<T>(this T[] array, int index) => maybe(index.Between(0).Until(array.Length), () => array[index]);
 
    public static T First<T>(this T[] array, T defaultValue) => array.IsEmpty() ? defaultValue : array[0];
 
-   public static Maybe<T> First<T>(this T[] array) => maybe(array.IsNotEmpty(), () => array[0]);
+   public static Optional<T> First<T>(this T[] array) => maybe(array.IsNotEmpty(), () => array[0]);
 
    public static T Last<T>(this T[] array, T defaultValue) => array.IsEmpty() ? defaultValue : array[array.Length - 1];
 
-   public static Maybe<T> Last<T>(this T[] array) => maybe(array.IsNotEmpty(), () => array[array.Length - 1]);
+   public static Optional<T> Last<T>(this T[] array) => maybe(array.IsNotEmpty(), () => array[array.Length - 1]);
 
    public static T[] Tail<T>(this T[] array) => array.IsEmpty() ? Array.Empty<T>() : array.Skip(1).ToArray();
 
    public static T[] AllButLast<T>(this T[] array) => array.IsEmpty() ? Array.Empty<T>() : array.Take(array.Length - 1).ToArray();
 
-   public static Maybe<Slice<T>> Balanced<T>(this T[] array, Predicate<T> startCondition, Predicate<T> stopCondition, int startIndex = 0)
+   public static Optional<Slice<T>> Balanced<T>(this T[] array, Predicate<T> startCondition, Predicate<T> stopCondition, int startIndex = 0)
    {
       if (array.IsEmpty())
       {
@@ -251,7 +251,7 @@ public static class ArrayExtensions
       }
    }
 
-   public static Maybe<(T[] array, T element)> Pop<T>(this T[] array)
+   public static Optional<(T[] array, T element)> Pop<T>(this T[] array)
    {
       if (!array.IsEmpty())
       {
@@ -269,7 +269,7 @@ public static class ArrayExtensions
       }
    }
 
-   public static Maybe<T[]> Push<T>(this T[] array, T element)
+   public static Optional<T[]> Push<T>(this T[] array, T element)
    {
       if (!array.IsEmpty())
       {
@@ -287,7 +287,7 @@ public static class ArrayExtensions
       }
    }
 
-   public static Maybe<(T[] array, T element)> Shift<T>(this T[] array)
+   public static Optional<(T[] array, T element)> Shift<T>(this T[] array)
    {
       if (!array.IsEmpty())
       {
@@ -305,7 +305,7 @@ public static class ArrayExtensions
       }
    }
 
-   public static Maybe<T[]> Unshift<T>(this T[] array, T element)
+   public static Optional<T[]> Unshift<T>(this T[] array, T element)
    {
       if (!array.IsEmpty())
       {
@@ -376,9 +376,9 @@ public static class ArrayExtensions
       return list.ToArray();
    }
 
-   public static Maybe<(T1, T2)>[] ZipUnevenly<T1, T2>(this T1[] leftArray, T2[] rightArray)
+   public static Optional<(T1, T2)>[] ZipUnevenly<T1, T2>(this T1[] leftArray, T2[] rightArray)
    {
-      var list = new List<Maybe<(T1, T2)>>();
+      var list = new List<Optional<(T1, T2)>>();
 
       var leftLength = leftArray.Length;
       var rightLength = rightArray.Length;
@@ -410,7 +410,7 @@ public static class ArrayExtensions
       return result.ToArray();
    }
 
-   public static Result<int> Assign<T>(this T[] array, out T var0, out T var1)
+   public static Optional<int> Assign<T>(this T[] array, out T var0, out T var1)
    {
       var0 = var1 = default;
       if (array.Length >= 2)
@@ -426,7 +426,7 @@ public static class ArrayExtensions
       }
    }
 
-   public static Result<int> Assign<T>(this T[] array, out T var0, out T var1, out T var2)
+   public static Optional<int> Assign<T>(this T[] array, out T var0, out T var1, out T var2)
    {
       var2 = default;
       var _index = Assign(array, out var0, out var1);
@@ -441,7 +441,7 @@ public static class ArrayExtensions
       }
    }
 
-   public static Result<int> Assign<T>(this T[] array, out T var0, out T var1, out T var2, out T var3)
+   public static Optional<int> Assign<T>(this T[] array, out T var0, out T var1, out T var2, out T var3)
    {
       var3 = default;
       var _index = Assign(array, out var0, out var1, out var2);
@@ -456,7 +456,7 @@ public static class ArrayExtensions
       }
    }
 
-   public static Result<int> Assign<T>(this T[] array, out T var0, out T var1, out T var2, out T var3,
+   public static Optional<int> Assign<T>(this T[] array, out T var0, out T var1, out T var2, out T var3,
       out T var4)
    {
       var4 = default;
@@ -472,7 +472,7 @@ public static class ArrayExtensions
       }
    }
 
-   public static Result<int> Assign<T>(this T[] array, out T var0, out T var1, out T var2, out T var3,
+   public static Optional<int> Assign<T>(this T[] array, out T var0, out T var1, out T var2, out T var3,
       out T var4, out T var5)
    {
       var5 = default;
@@ -488,7 +488,7 @@ public static class ArrayExtensions
       }
    }
 
-   public static Result<int> Assign<T>(this T[] array, out T var0, out T var1, out T var2, out T var3,
+   public static Optional<int> Assign<T>(this T[] array, out T var0, out T var1, out T var2, out T var3,
       out T var4, out T var5, out T var6)
    {
       var6 = default;
@@ -504,13 +504,13 @@ public static class ArrayExtensions
       }
    }
 
-   public static Maybe<int> Index<T>(this T[] array, T item, int startIndex = 0)
+   public static Optional<int> Index<T>(this T[] array, T item, int startIndex = 0)
    {
       var index = Array.IndexOf(array, item, startIndex);
       return maybe(index > -1, () => index);
    }
 
-   public static Maybe<int[]> Indexes<T>(this T[] array, T item, int startIndex = 0)
+   public static Optional<int[]> Indexes<T>(this T[] array, T item, int startIndex = 0)
    {
       var list = new List<int>();
       var index = Array.IndexOf(array, item, startIndex);

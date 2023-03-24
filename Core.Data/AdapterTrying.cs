@@ -14,7 +14,7 @@ public class AdapterTrying<T> where T : class
 
    public AdapterTrying(Adapter<T> adapter) => this.adapter = adapter;
 
-   public Result<T> Execute()
+   public Optional<T> Execute()
    {
       try
       {
@@ -27,19 +27,19 @@ public class AdapterTrying<T> where T : class
       }
    }
 
-   public Result<IBulkCopyTarget> BulkCopy<TSource>(Adapter<TSource> sourceAdapter) where TSource : class
+   public Optional<IBulkCopyTarget> BulkCopy<TSource>(Adapter<TSource> sourceAdapter) where TSource : class
    {
       return tryTo(() => adapter.BulkCopy(sourceAdapter));
    }
 
-   public Result<IBulkCopyTarget> BulkCopy(IDataReader reader, TimeSpan timeout)
+   public Optional<IBulkCopyTarget> BulkCopy(IDataReader reader, TimeSpan timeout)
    {
       return tryTo(() => adapter.BulkCopy(reader, timeout));
    }
 
-   public Result<IEnumerable<T>> Enumerable() => tryTo(() => success<IEnumerable<T>>(adapter));
+   public Optional<IEnumerable<T>> Enumerable() => tryTo(() => success<IEnumerable<T>>(adapter));
 
-   public Result<Adapter<T>> WithNewCommand(string newCommand) => tryTo(() => adapter.WithNewCommand(newCommand));
+   public Optional<Adapter<T>> WithNewCommand(string newCommand) => tryTo(() => adapter.WithNewCommand(newCommand));
 
-   public Result<T[]> ToArray() => Enumerable().Map(e => e.ToArray());
+   public Optional<T[]> ToArray() => Enumerable().Map(e => e.ToArray());
 }

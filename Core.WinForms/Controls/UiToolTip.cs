@@ -12,7 +12,7 @@ public class UiToolTip : ToolTip
 {
    protected UiAction uiAction;
    protected Font font;
-   protected Maybe<Action<object, DrawToolTipEventArgs>> _action;
+   protected Optional<Action<object, DrawToolTipEventArgs>> _action;
    protected TextFormatFlags textFormatFlags;
    protected Timer timer;
 
@@ -43,7 +43,7 @@ public class UiToolTip : ToolTip
       set => font = value;
    }
 
-   public Maybe<Action<object, DrawToolTipEventArgs>> Action
+   public Optional<Action<object, DrawToolTipEventArgs>> Action
    {
       get => _action;
       set => _action = value;

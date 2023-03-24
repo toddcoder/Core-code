@@ -11,17 +11,17 @@ public static class Instance
 {
    public static T Create<T>() => Create<T>(null);
 
-   public static Result<T> TryCreate<T>() => tryTo(Create<T>);
+   public static Optional<T> TryCreate<T>() => tryTo(Create<T>);
 
    public static T Create<T>(params object[] args) => (T)typeof(T).Create(args);
 
-   public static Result<T> TryCreate<T>(params object[] args) => tryTo(() => Create<T>(args));
+   public static Optional<T> TryCreate<T>(params object[] args) => tryTo(() => Create<T>(args));
 
    public static object Create(this Type type) => type.Create(null);
 
-   public static Result<object> TryCreate(this Type type) => tryTo(() => Create(type));
+   public static Optional<object> TryCreate(this Type type) => tryTo(() => Create(type));
 
-   public static Result<T> TryCreate<T>(this Type type) where T : new()
+   public static Optional<T> TryCreate<T>(this Type type) where T : new()
    {
       return
          from obj in tryTo(type.Create)
@@ -54,9 +54,9 @@ public static class Instance
       }
    }
 
-   public static Result<object> TryCreate(this Type type, params object[] args) => tryTo(() => Create(type, args));
+   public static Optional<object> TryCreate(this Type type, params object[] args) => tryTo(() => Create(type, args));
 
-   public static Result<T> TryCreate<T>(this Type type, params object[] args)
+   public static Optional<T> TryCreate<T>(this Type type, params object[] args)
    {
       return
          from obj in tryTo(() => type.Create(args))
@@ -66,9 +66,9 @@ public static class Instance
 
    public static object Create(this string typeName) => Type.GetType(typeName, true, true).Create();
 
-   public static Result<object> TryCreate(this string typeName) => tryTo(() => Create(typeName));
+   public static Optional<object> TryCreate(this string typeName) => tryTo(() => Create(typeName));
 
-   public static Result<T> TryCreate<T>(this string typeName) where T : new()
+   public static Optional<T> TryCreate<T>(this string typeName) where T : new()
    {
       return
          from obj in tryTo(typeName.Create)
@@ -78,9 +78,9 @@ public static class Instance
 
    public static object Create(this string typeName, params object[] args) => Type.GetType(typeName, true, true).Create(args);
 
-   public static Result<object> TryCreate(this string typeName, params object[] args) => tryTo(() => Create(typeName, args));
+   public static Optional<object> TryCreate(this string typeName, params object[] args) => tryTo(() => Create(typeName, args));
 
-   public static Result<T> TryCreate<T>(this string typeName, params object[] args)
+   public static Optional<T> TryCreate<T>(this string typeName, params object[] args)
    {
       return
          from obj in tryTo(() => typeName.Create(args))

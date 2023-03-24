@@ -103,7 +103,7 @@ public class Formatter : IHash<string, string>
 
    public bool ContainsKey(string key) => names.ContainsKey(key);
 
-   public Result<Hash<string, string>> AnyHash() => names.Success<Hash<string, string>>();
+   public Optional<Hash<string, string>> AnyHash() => names.Success<Hash<string, string>>();
 
    public string[] Names => names.Select(item => item.Key).ToArray();
 

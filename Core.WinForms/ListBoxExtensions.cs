@@ -24,19 +24,19 @@ public static class ListBoxExtensions
       }
    }
 
-   public static Maybe<string> SelectedText(this ListBox listBox)
+   public static Optional<string> SelectedText(this ListBox listBox)
    {
       var index = listBox.SelectedIndex;
       return maybe<string>() & index > -1 & (() => listBox.Items[index].ToNonNullString());
    }
 
-   public static Maybe<int> SelectedIndex(this ListBox listBox)
+   public static Optional<int> SelectedIndex(this ListBox listBox)
    {
       var index = listBox.SelectedIndex;
       return maybe<int>() & index > -1 & index;
    }
 
-   public static Maybe<(string text, int index)> SelectedTextWithIndex(this ListBox listBox)
+   public static Optional<(string text, int index)> SelectedTextWithIndex(this ListBox listBox)
    {
       var index = listBox.SelectedIndex;
       return maybe<(string text, int index)>() & index > -1 & (() => (listBox.Items[index].ToNonNullString(), index));

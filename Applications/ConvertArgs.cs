@@ -14,5 +14,5 @@ public class ConvertArgs : EventArgs
 
    public string Source { get; }
 
-   public Maybe<object> Result { get; set; }
+   public Optional<object> Result { get; set; }
 }

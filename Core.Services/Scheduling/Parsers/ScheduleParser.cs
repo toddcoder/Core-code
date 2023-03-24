@@ -20,7 +20,7 @@ public class ScheduleParser
       new SecondParser()
    };
 
-   public Maybe<ScheduleIncrement> Parse(string source)
+   public Optional<ScheduleIncrement> Parse(string source)
    {
       foreach (var parser in parsers)
       {

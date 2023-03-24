@@ -222,10 +222,10 @@ internal class TestProgram : CommandProcessor
    public string Replacement { get; set; }
 
    [Switch("file", "file", "File to use", "f")]
-   public Maybe<FileName> File { get; set; }
+   public Optional<FileName> File { get; set; }
 
    [Switch("folder", "folder", "Folder to use", "f2")]
-   public Maybe<FolderName> Folder { get; set; }
+   public Optional<FolderName> Folder { get; set; }
 
    public override StringHash GetConfigurationDefaults() => new(true);
 

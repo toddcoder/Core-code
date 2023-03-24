@@ -9,11 +9,11 @@ public class EmailerTrying
 
    public EmailerTrying(Emailer emailer) => this.emailer = emailer;
 
-   public Result<Unit> SendText() => tryTo(() => emailer.SendText());
+   public Optional<Unit> SendText() => tryTo(() => emailer.SendText());
 
-   public Result<Unit> SendHtml() => tryTo(() => emailer.SendHtml());
+   public Optional<Unit> SendHtml() => tryTo(() => emailer.SendHtml());
 
-   public Result<Unit> SendAsHtmlIf(bool isHTML) => tryTo(() => emailer.SendAsHtmlIf(isHTML));
+   public Optional<Unit> SendAsHtmlIf(bool isHTML) => tryTo(() => emailer.SendAsHtmlIf(isHTML));
 
-   public Result<Unit> SendAsTextIf(bool isText) => tryTo(() => emailer.SendAsTextIf(isText));
+   public Optional<Unit> SendAsTextIf(bool isText) => tryTo(() => emailer.SendAsTextIf(isText));
 }

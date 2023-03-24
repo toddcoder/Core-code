@@ -98,7 +98,7 @@ public class GitPrompt
       set => unstagedSymbol = value;
    }
 
-   public Result<string> Prompt()
+   public Optional<string> Prompt()
    {
       try
       {

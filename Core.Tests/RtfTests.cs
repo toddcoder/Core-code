@@ -174,7 +174,7 @@ public class RtfTests
    [TestMethod]
    public void Hyperlink2Test()
    {
-      Maybe<string> _workItemId = "301905";
+      Optional<string> _workItemId = "301905";
 
       var document = new Document();
       var font = document.Font("Calibri");

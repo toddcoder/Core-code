@@ -15,9 +15,9 @@ namespace Core.Data;
 
 public class Adapter<T> : IEnumerable<T> where T : class
 {
-   public static Result<Adapter<T>> FromSetup(ISetup setup, T entity) => tryTo(() => new Adapter<T>(entity, setup));
+   public static Optional<Adapter<T>> FromSetup(ISetup setup, T entity) => tryTo(() => new Adapter<T>(entity, setup));
 
-   public static Result<Adapter<T>> FromSetupObject(T entity)
+   public static Optional<Adapter<T>> FromSetupObject(T entity)
    {
       if (entity is ISetupObject setupObject)
       {
@@ -140,7 +140,7 @@ public class Adapter<T> : IEnumerable<T> where T : class
       }
    }
 
-   public Maybe<T> ExecuteMaybe()
+   public Optional<T> ExecuteMaybe()
    {
       try
       {

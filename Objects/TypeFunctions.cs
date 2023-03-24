@@ -4,5 +4,5 @@ namespace Core.Objects;
 
 public static class TypeFunctions
 {
-   public static Result<T> newObject<T>(params object[] args) => typeof(T).New(args).Map(obj => (T)obj);
+   public static Optional<T> newObject<T>(params object[] args) => typeof(T).New(args).Map(obj => (T)obj);
 }

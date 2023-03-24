@@ -199,7 +199,7 @@ public class Responder : UserControl, IHash<string, Responder.ResponderButton>
 
    public bool ContainsKey(string key) => responderButtons.ContainsKey(key);
 
-   public Result<Hash<string, ResponderButton>> AnyHash() => responderButtons;
+   public Optional<Hash<string, ResponderButton>> AnyHash() => responderButtons;
 
    protected override void OnEnabledChanged(EventArgs e)
    {

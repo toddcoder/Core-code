@@ -53,7 +53,7 @@ public abstract class CommandProcessor : IDisposable
       Command = string.Empty;
    }
 
-   public virtual Result<Configuration> InitializeConfiguration()
+   public virtual Optional<Configuration> InitializeConfiguration()
    {
       FileName configurationFile = $@"~\AppData\Local\{application}\{application}.configuration";
 
@@ -177,7 +177,7 @@ public abstract class CommandProcessor : IDisposable
          .Map(result => result.FirstGroup) | commandLine;
    }
 
-   protected static Maybe<(string command, string rest)> splitCommandFromRest(string commandLine)
+   protected static Optional<(string command, string rest)> splitCommandFromRest(string commandLine)
    {
       var _help = lazy.maybe<string>();
       var _length = lazy.maybe<int>();
@@ -304,7 +304,7 @@ public abstract class CommandProcessor : IDisposable
       }
    }
 
-   protected Maybe<(MethodInfo methodInfo, CommandAttribute CommandAttribute)> getMethod(string command)
+   protected Optional<(MethodInfo methodInfo, CommandAttribute CommandAttribute)> getMethod(string command)
    {
       return this.MethodsUsing<CommandAttribute>().FirstOrNone(t => t.attribute.Name.Same(command));
    }
@@ -341,14 +341,14 @@ public abstract class CommandProcessor : IDisposable
       return this.MethodsUsing<CommandAttribute>().ToArray();
    }
 
-   public StringHash<(Maybe<string> _helpText, Maybe<string> _switchPattern, IHash<string, string> replacements)> GetCommandHelp()
+   public StringHash<(Optional<string> _helpText, Optional<string> _switchPattern, IHash<string, string> replacements)> GetCommandHelp()
    {
       return getCommandAttributes()
          .Select(a => (a.attribute.Name, a.attribute.HelpText, a.attribute.SwitchPattern, (IHash<string, string>)a.attribute))
          .ToStringHash(t => t.Name, t => (t.HelpText, t.SwitchPattern, t.Item4), true);
    }
 
-   public StringHash<(string type, string argument, Maybe<string> _shortCut)> GetSwitchHelp()
+   public StringHash<(string type, string argument, Optional<string> _shortCut)> GetSwitchHelp()
    {
       return getSwitchAttributes()
          .Select(a => (a.attribute.Name, a.attribute.Type, a.attribute.Argument, a.attribute.ShortCut))
@@ -472,7 +472,7 @@ public abstract class CommandProcessor : IDisposable
       }
    }
 
-   protected IEnumerable<(string prefix, string name, Maybe<string> _value)> switchData(string source)
+   protected IEnumerable<(string prefix, string name, Optional<string> _value)> switchData(string source)
    {
       var delimitedText = DelimitedText.BothQuotes();
       var noStrings = delimitedText.Destringify(source, true);
@@ -523,7 +523,7 @@ public abstract class CommandProcessor : IDisposable
       }
    }
 
-   protected Result<Unit> executeMethod(MethodInfo methodInfo)
+   protected Optional<Unit> executeMethod(MethodInfo methodInfo)
    {
       try
       {
@@ -543,7 +543,7 @@ public abstract class CommandProcessor : IDisposable
       }
    }
 
-   protected Result<Unit> executeMethod(MethodInfo methodInfo, string rest)
+   protected Optional<Unit> executeMethod(MethodInfo methodInfo, string rest)
    {
       if (rest.IsEmpty())
       {
@@ -579,8 +579,8 @@ public abstract class CommandProcessor : IDisposable
       return executeMethod(methodInfo);
    }
 
-   protected Maybe<Unit> fillSwitch((PropertyInfo propertyInfo, SwitchAttribute attribute)[] switchAttributes, string name,
-      Maybe<string> _value)
+   protected Optional<Unit> fillSwitch((PropertyInfo propertyInfo, SwitchAttribute attribute)[] switchAttributes, string name,
+      Optional<string> _value)
    {
       return
          from propertyInfo in switchAttributes.FirstOrNone((_, a) => a.Name == name).Select(t => t.Item1)
@@ -588,8 +588,8 @@ public abstract class CommandProcessor : IDisposable
          select filled;
    }
 
-   protected Maybe<Unit> fillShortCut((PropertyInfo propertyInfo, SwitchAttribute attribute)[] switchAttributes, string name,
-      Maybe<string> _value)
+   protected Optional<Unit> fillShortCut((PropertyInfo propertyInfo, SwitchAttribute attribute)[] switchAttributes, string name,
+      Optional<string> _value)
    {
       return
          from propertyInfo in switchAttributes.FirstOrNone((_, a) => (a.ShortCut | "") == name).Select(t => t.Item1)
@@ -597,18 +597,18 @@ public abstract class CommandProcessor : IDisposable
          select filled;
    }
 
-   protected Maybe<Unit> fillProperty(PropertyInfo propertyInfo, Maybe<string> _value)
+   protected Optional<Unit> fillProperty(PropertyInfo propertyInfo, Optional<string> _value)
    {
       var type = propertyInfo.PropertyType;
-      Maybe<object> _object = nil;
+      Optional<object> _object = nil;
       if (_value is (true, var value))
       {
          if (type == typeof(bool))
          {
             _object = getBoolean(value);
          }
-         else if (type == typeof(string) || type == typeof(Maybe<string>) || type == typeof(FileName) || type == typeof(FolderName) ||
-                  type == typeof(Maybe<FileName>) || type == typeof(Maybe<FolderName>))
+         else if (type == typeof(string) || type == typeof(Optional<string>) || type == typeof(FileName) || type == typeof(FolderName) ||
+                  type == typeof(Optional<FileName>) || type == typeof(Optional<FolderName>))
          {
             _object = getString(value, type);
          }
@@ -650,7 +650,7 @@ public abstract class CommandProcessor : IDisposable
       }
    }
 
-   protected static Maybe<object> getBoolean(string value)
+   protected static Optional<object> getBoolean(string value)
    {
       if (value.IsMatch("^ /s* $; f"))
       {
@@ -670,9 +670,9 @@ public abstract class CommandProcessor : IDisposable
       }
    }
 
-   protected static Maybe<object> getInt32(string value) => Maybe.Int32(value).Map(i => (object)i);
+   protected static Optional<object> getInt32(string value) => Maybe.Int32(value).Map(i => (object)i);
 
-   protected static Maybe<object> getFloatingPoint(string value, Type type)
+   protected static Optional<object> getFloatingPoint(string value, Type type)
    {
       if (type == typeof(double))
       {
@@ -688,19 +688,19 @@ public abstract class CommandProcessor : IDisposable
       }
    }
 
-   protected static Maybe<object> getDate(string value) => Maybe.DateTime(value).CastAs<object>();
+   protected static Optional<object> getDate(string value) => Maybe.DateTime(value).CastAs<object>();
 
-   protected static Maybe<object> getString(string value, Type type)
+   protected static Optional<object> getString(string value, Type type)
    {
       if (type == typeof(string))
       {
          return value.Some<object>();
       }
-      else if (type == typeof(Maybe<string>))
+      else if (type == typeof(Optional<string>))
       {
          if (value.IsNotEmpty())
          {
-            Maybe<string> _someString = value;
+            Optional<string> _someString = value;
             return ((object)_someString).Some();
          }
          else
@@ -716,12 +716,12 @@ public abstract class CommandProcessor : IDisposable
       {
          return value.Some<object>();
       }
-      else if (type == typeof(Maybe<FolderName>))
+      else if (type == typeof(Optional<FolderName>))
       {
          if (value.IsNotEmpty())
          {
             FolderName folder = value;
-            Maybe<FolderName> _folder = folder;
+            Optional<FolderName> _folder = folder;
             return ((object)_folder).Some();
          }
          else
@@ -729,12 +729,12 @@ public abstract class CommandProcessor : IDisposable
             return nil;
          }
       }
-      else if (type == typeof(Maybe<FileName>))
+      else if (type == typeof(Optional<FileName>))
       {
          if (value.IsNotEmpty())
          {
             FileName file = value;
-            Maybe<FileName> _file = file;
+            Optional<FileName> _file = file;
             return ((object)_file).Some();
          }
          else
@@ -748,9 +748,9 @@ public abstract class CommandProcessor : IDisposable
       }
    }
 
-   protected static Maybe<object> getEnum(string value, Type type) => Maybe.Enumeration(type, value);
+   protected static Optional<object> getEnum(string value, Type type) => Maybe.Enumeration(type, value);
 
-   protected static Maybe<object> getStringArray(string value)
+   protected static Optional<object> getStringArray(string value)
    {
       var _list = value.Matches("^/s* '[' /s*  /(.*) /s* ']'; f").Map(r => r.FirstGroup);
       if (_list is (true, var list))

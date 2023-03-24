@@ -18,7 +18,7 @@ public class Menus : IHash<string, ToolStripMenuItem>
 
    public static MenuBuilder operator +(Menus menus, Func<string> textFunc) => menus.Add().Text(textFunc);
 
-   public static MenuBuilder operator +(Menus menus, Func<Result<string>> textFunc) => menus.Add().Text(textFunc);
+   public static MenuBuilder operator +(Menus menus, Func<Optional<string>> textFunc) => menus.Add().Text(textFunc);
 
    public static MenuBuilder operator +(Menus menus, EventHandler handler) => menus.Add().Handler(handler);
 
@@ -46,7 +46,7 @@ public class Menus : IHash<string, ToolStripMenuItem>
    public static MenuBuilder operator +(Menus menus, (string parentText, Func<string> menuText) texts) =>
       menus.Add(texts.parentText).Text(texts.menuText);
 
-   public static MenuBuilder operator +(Menus menus, (string parentText, Func<Result<string>> menuText) texts) =>
+   public static MenuBuilder operator +(Menus menus, (string parentText, Func<Optional<string>> menuText) texts) =>
       menus.Add(texts.parentText).Text(texts.menuText);
 
    public static Menus operator +(Menus menus, MenuBuilder.Separator _)
@@ -61,8 +61,8 @@ public class Menus : IHash<string, ToolStripMenuItem>
    protected Hash<ToolStripItem, MenuText> dynamicTextItems;
    protected StringHash<int> tabIndexes;
    protected int tabIndex;
-   protected Maybe<string> _currentMenu;
-   protected Maybe<ToolStripMenuItem> _currentItem;
+   protected Optional<string> _currentMenu;
+   protected Optional<ToolStripMenuItem> _currentItem;
 
    public Menus()
    {
@@ -144,7 +144,7 @@ public class Menus : IHash<string, ToolStripMenuItem>
       return item;
    }
 
-   public ToolStripMenuItem ContextMenu(Func<Result<string>> textFunc, EventHandler handler, string shortcut = "", bool isChecked = false, bool enabled = true,
+   public ToolStripMenuItem ContextMenu(Func<Optional<string>> textFunc, EventHandler handler, string shortcut = "", bool isChecked = false, bool enabled = true,
       Keys keys = Keys.None)
    {
       var _text = textFunc();
@@ -269,7 +269,7 @@ public class Menus : IHash<string, ToolStripMenuItem>
       return item;
    }
 
-   public Maybe<ToolStripMenuItem> Menu(string text, EventHandler handler, string shortcut = "", bool isChecked = false, int index = -1,
+   public Optional<ToolStripMenuItem> Menu(string text, EventHandler handler, string shortcut = "", bool isChecked = false, int index = -1,
       bool enabled = true, Keys keys = Keys.None)
    {
       if (_currentMenu is (true, var currentMenu))
@@ -286,7 +286,7 @@ public class Menus : IHash<string, ToolStripMenuItem>
       }
    }
 
-   public Maybe<ToolStripMenuItem> SubMenu(string text, int index = -1)
+   public Optional<ToolStripMenuItem> SubMenu(string text, int index = -1)
    {
       if (_currentMenu is (true, var currentMenu))
       {
@@ -347,7 +347,7 @@ public class Menus : IHash<string, ToolStripMenuItem>
       return item;
    }
 
-   public Maybe<ToolStripMenuItem> Menu(Func<string> textFunc, EventHandler handler, string shortcut = "", bool isChecked = false, int index = -1,
+   public Optional<ToolStripMenuItem> Menu(Func<string> textFunc, EventHandler handler, string shortcut = "", bool isChecked = false, int index = -1,
       bool enabled = true, Keys keys = Keys.None)
    {
       if (_currentMenu is (true, var currentMenu))
@@ -364,7 +364,7 @@ public class Menus : IHash<string, ToolStripMenuItem>
       }
    }
 
-   public ToolStripMenuItem Menu(string parentText, Func<Result<string>> textFunc, EventHandler handler, string shortcut = "", bool isChecked = false,
+   public ToolStripMenuItem Menu(string parentText, Func<Optional<string>> textFunc, EventHandler handler, string shortcut = "", bool isChecked = false,
       int index = -1, bool checkOnResult = false, Keys keys = Keys.None)
    {
       setParent(parentText);
@@ -384,7 +384,7 @@ public class Menus : IHash<string, ToolStripMenuItem>
       return item;
    }
 
-   public ToolStripMenuItem Menu(ToolStripMenuItem parentItem, Func<Result<string>> textFunc, EventHandler handler, string shortcut = "",
+   public ToolStripMenuItem Menu(ToolStripMenuItem parentItem, Func<Optional<string>> textFunc, EventHandler handler, string shortcut = "",
       bool isChecked = false, int index = -1, bool checkOnResult = false, Keys keys = Keys.None)
    {
       setParent(parentItem);
@@ -404,7 +404,7 @@ public class Menus : IHash<string, ToolStripMenuItem>
       return item;
    }
 
-   public ToolStripMenuItem Menu(Func<Result<string>> textFunc, EventHandler handler, string shortcut = "", bool isChecked = false, int index = -1,
+   public ToolStripMenuItem Menu(Func<Optional<string>> textFunc, EventHandler handler, string shortcut = "", bool isChecked = false, int index = -1,
       bool checkOnResult = false, Keys keys = Keys.None)
    {
       var _text = textFunc();
@@ -434,7 +434,7 @@ public class Menus : IHash<string, ToolStripMenuItem>
       }
    }
 
-   public Maybe<Delegate> ReplaceHandler(string parentText, string text, EventHandler handler)
+   public Optional<Delegate> ReplaceHandler(string parentText, string text, EventHandler handler)
    {
       var _submenus = LazyMonads.lazy.maybe(() => Submenus(parentText));
       var _item = _submenus.Then(submenus => submenus.Maybe(text));
@@ -450,7 +450,7 @@ public class Menus : IHash<string, ToolStripMenuItem>
       }
    }
 
-   public Maybe<Delegate> ReplaceHandler(string text, EventHandler handler)
+   public Optional<Delegate> ReplaceHandler(string text, EventHandler handler)
    {
       return _currentMenu.Map(currentMenu => ReplaceHandler(currentMenu, text, handler));
    }
@@ -566,7 +566,7 @@ public class Menus : IHash<string, ToolStripMenuItem>
       }
    }
 
-   protected static Result<Keys> shortcutKeys(string text)
+   protected static Optional<Keys> shortcutKeys(string text)
    {
       if (text.Matches("^ /(['^%|']+)? /(/w+) $; f") is (true, var result))
       {
@@ -638,9 +638,9 @@ public class Menus : IHash<string, ToolStripMenuItem>
 
    public bool ContainsKey(string key) => menuItems.ContainsKey(MenuName(key));
 
-   public Result<Hash<string, ToolStripMenuItem>> AnyHash() => menuItems.ToHash(i => i.Key, i => (ToolStripMenuItem)i.Value);
+   public Optional<Hash<string, ToolStripMenuItem>> AnyHash() => menuItems.ToHash(i => i.Key, i => (ToolStripMenuItem)i.Value);
 
-   public Maybe<Submenus> Submenus(string parentText) => this.Maybe(parentText).Map(p => new Submenus(p));
+   public Optional<Submenus> Submenus(string parentText) => this.Maybe(parentText).Map(p => new Submenus(p));
 
    public void RefreshText()
    {

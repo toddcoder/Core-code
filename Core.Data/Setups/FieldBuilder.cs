@@ -18,10 +18,10 @@ public class FieldBuilder
    };
 
    protected SqlSetupBuilder setupBuilder;
-   protected Maybe<string> _name;
-   protected Maybe<string> _signature;
+   protected Optional<string> _name;
+   protected Optional<string> _signature;
    protected bool optional;
-   protected Maybe<Type> _type;
+   protected Optional<Type> _type;
 
    public FieldBuilder(SqlSetupBuilder setupBuilder)
    {
@@ -58,7 +58,7 @@ public class FieldBuilder
       return this;
    }
 
-   public Result<Field> Build()
+   public Optional<Field> Build()
    {
       if (_name is (true, var name))
       {

@@ -138,7 +138,7 @@ public static class AsyncFunctions
       }
    }
 
-   public static async Task<Completion<T>> runFromResultAsync<T>(Func<Result<T>> func)
+   public static async Task<Completion<T>> runFromResultAsync<T>(Func<Optional<T>> func)
    {
       try
       {
@@ -154,12 +154,12 @@ public static class AsyncFunctions
       }
    }
 
-   public static async Task<Completion<T>> runFromResultAsync<T>(Func<CancellationToken, Result<T>> func, CancellationTokenSource source)
+   public static async Task<Completion<T>> runFromResultAsync<T>(Func<CancellationToken, Optional<T>> func, CancellationTokenSource source)
    {
       return await runFromResultAsync(func, source.Token);
    }
 
-   public static async Task<Completion<T>> runFromResultAsync<T>(Func<CancellationToken, Result<T>> func, CancellationToken token)
+   public static async Task<Completion<T>> runFromResultAsync<T>(Func<CancellationToken, Optional<T>> func, CancellationToken token)
    {
       try
       {

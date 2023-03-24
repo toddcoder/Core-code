@@ -32,7 +32,7 @@ public class Program : CommandProcessor
    }
 
    [Switch("repo", "Folder", "Repository")]
-   public Maybe<string> Repo { get; set; }
+   public Optional<string> Repo { get; set; }
 
    [Switch("alt-sym", "boolean", "Use alternate symbols for ASCII strings")]
    public bool AlternateSymbols { get; set; }

@@ -13,21 +13,21 @@ public class DocumentTrying
 
    public Document Document => document;
 
-   public Result<Unit> RenderMainMenu() => tryTo(() => document.RenderMainMenu());
+   public Optional<Unit> RenderMainMenu() => tryTo(() => document.RenderMainMenu());
 
-   public Result<Unit> RenderContextMenu() => tryTo(() => document.RenderContextMenu());
+   public Optional<Unit> RenderContextMenu() => tryTo(() => document.RenderContextMenu());
 
-   public Result<Unit> RenderContextMenu(Control control) => tryTo(() => document.RenderContextMenu(control));
+   public Optional<Unit> RenderContextMenu(Control control) => tryTo(() => document.RenderContextMenu(control));
 
-   public Result<Unit> New() => tryTo(() => document.New());
+   public Optional<Unit> New() => tryTo(() => document.New());
 
-   public Result<Unit> Open() => tryTo(() => document.Open());
+   public Optional<Unit> Open() => tryTo(() => document.Open());
 
-   public Result<Unit> Open(FileName fileName) => tryTo(() => document.Open(fileName));
+   public Optional<Unit> Open(FileName fileName) => tryTo(() => document.Open(fileName));
 
-   public Result<Unit> Save() => tryTo(() => document.Save());
+   public Optional<Unit> Save() => tryTo(() => document.Save());
 
-   public Result<Unit> SaveAs() => tryTo(() => document.SaveAs());
+   public Optional<Unit> SaveAs() => tryTo(() => document.SaveAs());
 
-   public Result<Unit> Close(FormClosingEventArgs e) => tryTo(() => document.Close(e));
+   public Optional<Unit> Close(FormClosingEventArgs e) => tryTo(() => document.Close(e));
 }

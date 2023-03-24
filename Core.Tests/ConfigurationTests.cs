@@ -78,7 +78,7 @@ public class ConfigurationTests
       public override int GetHashCode() => Payload?.GetHashCode() ?? 0;
    }
 
-   protected Maybe<(string server, string database)> getServerDatabase(Setting setting)
+   protected Optional<(string server, string database)> getServerDatabase(Setting setting)
    {
       return
          from connections in setting.Maybe.Setting("connections")

@@ -11,8 +11,8 @@ public class SubText : IEquatable<SubText>
 {
    protected Size size;
    protected bool invert;
-   protected Maybe<Color> _foreColor;
-   protected Maybe<Color> _backColor;
+   protected Optional<Color> _foreColor;
+   protected Optional<Color> _backColor;
 
    public SubText(string text, int x, int y, Size size, bool invert = false)
    {
@@ -57,12 +57,12 @@ public class SubText : IEquatable<SubText>
 
    public Guid Id { get; }
 
-   public Maybe<Color> ForeColor
+   public Optional<Color> ForeColor
    {
       set => _foreColor = value;
    }
 
-   public Maybe<Color> BackColor
+   public Optional<Color> BackColor
    {
       set => _backColor = value;
    }
@@ -112,7 +112,7 @@ public class SubText : IEquatable<SubText>
       return draw(graphics, foreColor, backColor);
    }
 
-   public Maybe<SubText> Draw(Graphics graphics)
+   public Optional<SubText> Draw(Graphics graphics)
    {
       if (_foreColor is (true, var foreColor) && _backColor is (true, var backColor))
       {

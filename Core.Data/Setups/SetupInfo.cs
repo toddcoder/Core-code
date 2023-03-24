@@ -6,7 +6,7 @@ namespace Core.Data.Setups;
 public class SetupInfo
 {
    protected string connection;
-   protected Maybe<string> _command;
+   protected Optional<string> _command;
    protected string adapter;
 
    public string Connection
@@ -41,7 +41,7 @@ public class SetupInfo
       adapter = string.Empty;
    }
 
-   public SetupInfo(string connectionName, string adapterName, Maybe<string> commandName)
+   public SetupInfo(string connectionName, string adapterName, Optional<string> commandName)
    {
       connection = connectionName;
       adapter = adapterName;

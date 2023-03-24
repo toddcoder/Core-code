@@ -25,7 +25,7 @@ public class Fields : IEnumerable<Field>
    protected StringHash<Field> fields;
    protected List<string> ordered;
 
-   public static Result<Fields> FromSetting(Maybe<Setting> fieldsGroup) => tryTo(() => new Fields(fieldsGroup));
+   public static Optional<Fields> FromSetting(Optional<Setting> fieldsGroup) => tryTo(() => new Fields(fieldsGroup));
 
    public Fields()
    {
@@ -41,7 +41,7 @@ public class Fields : IEnumerable<Field>
       }
    }
 
-   public Fields(Maybe<Setting> _fieldsSetting) : this()
+   public Fields(Optional<Setting> _fieldsSetting) : this()
    {
       if (_fieldsSetting is (true, var fieldsSetting))
       {
@@ -58,9 +58,9 @@ public class Fields : IEnumerable<Field>
       ordered.Add(field.Name);
    }
 
-   public Maybe<Field> this[string name] => fields.Maybe(name);
+   public Optional<Field> this[string name] => fields.Maybe(name);
 
-   public Maybe<Field> Ordered(int index) => fields.Maybe(ordered[index]);
+   public Optional<Field> Ordered(int index) => fields.Maybe(ordered[index]);
 
    public void DeterminePropertyTypes(object entity)
    {

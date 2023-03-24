@@ -16,7 +16,7 @@ namespace Core.Monads;
 
 public static class MonadExtensions
 {
-   public static Maybe<T> Some<T>(this T obj)
+   public static Optional<T> Some<T>(this T obj)
    {
       if (obj is null)
       {
@@ -66,13 +66,13 @@ public static class MonadExtensions
 
    public static Optional<T> Failed<T>(this string message) => fail(message);
 
-   public static Maybe<T> NotNull<T>(this T obj) => obj.Some();
+   public static Optional<T> NotNull<T>(this T obj) => obj.Some();
 
-   public static Maybe<string> NotEmpty(this string text) => maybe(text.IsNotEmpty(), text.Some);
+   public static Optional<string> NotEmpty(this string text) => maybe(text.IsNotEmpty(), text.Some);
 
-   public static Maybe<int> NotNegative(this int number) => maybe<int>() & number > -1 & number;
+   public static Optional<int> NotNegative(this int number) => maybe<int>() & number > -1 & number;
 
-   public static Maybe<Type> UnderlyingType(this object obj)
+   public static Optional<Type> UnderlyingType(this object obj)
    {
       if (obj is null)
       {
@@ -85,7 +85,7 @@ public static class MonadExtensions
       }
    }
 
-   public static Maybe<Type> UnderlyingTypeOf(this Type type)
+   public static Optional<Type> UnderlyingTypeOf(this Type type)
    {
       if (type.Name.IsMatch("^ ('Maybe' | 'Some' | 'None') '`1'; f"))
       {
@@ -98,13 +98,13 @@ public static class MonadExtensions
    }
 
    [DebuggerStepThrough]
-   public static Result<TResult> SelectMany<T, TResult>(this Maybe<T> maybe, Func<T, Result<TResult>> projection)
+   public static Optional<TResult> SelectMany<T, TResult>(this Optional<T> maybe, Func<T, Optional<TResult>> projection)
    {
       return maybe.Map(projection) | (() => fail("Value not provided"));
    }
 
    [DebuggerStepThrough]
-   public static Result<TResult> Select<T, TResult>(this Result<T> result, Func<T, TResult> func)
+   public static Optional<TResult> Select<T, TResult>(this Optional<T> result, Func<T, TResult> func)
    {
       if (result is (true, var resultValue))
       {
@@ -116,7 +116,7 @@ public static class MonadExtensions
       }
    }
 
-   public static Result<T> Success<T>(this T value)
+   public static Optional<T> Success<T>(this T value)
    {
       if (value is null)
       {
@@ -140,9 +140,9 @@ public static class MonadExtensions
       }
    }
 
-   public static Result<T> Failure<T>(this string message) => fail(message);
+   public static Optional<T> Failure<T>(this string message) => fail(message);
 
-   public static Result<T> Failure<T, TException>(this object firstItem, params object[] args) where TException : Exception
+   public static Optional<T> Failure<T, TException>(this object firstItem, params object[] args) where TException : Exception
    {
       var list = new List<object> { firstItem };
       list.AddRange(args);
@@ -150,7 +150,7 @@ public static class MonadExtensions
       return (TException)typeof(TException).Create(list.ToArray());
    }
 
-   public static Result<T> Result<T>(this bool test, Func<T> ifFunc, string exceptionMessage)
+   public static Optional<T> Optional<T>(this bool test, Func<T> ifFunc, string exceptionMessage)
    {
       if (test)
       {
@@ -162,7 +162,7 @@ public static class MonadExtensions
       }
    }
 
-   public static Result<T> Result<T>(this bool test, Func<T> ifFunc, Func<string> exceptionMessage)
+   public static Optional<T> Optional<T>(this bool test, Func<T> ifFunc, Func<string> exceptionMessage)
    {
       if (test)
       {
@@ -174,7 +174,7 @@ public static class MonadExtensions
       }
    }
 
-   public static Result<T> Result<T>(this bool test, Func<Result<T>> ifFunc, string exceptionMessage)
+   public static Optional<T> Optional<T>(this bool test, Func<Optional<T>> ifFunc, string exceptionMessage)
    {
       if (test)
       {
@@ -186,7 +186,7 @@ public static class MonadExtensions
       }
    }
 
-   public static Result<T> Result<T>(this bool test, Func<Result<T>> ifFunc,
+   public static Optional<T> Optional<T>(this bool test, Func<Optional<T>> ifFunc,
       Func<string> exceptionMessage)
    {
       if (test)
@@ -199,7 +199,7 @@ public static class MonadExtensions
       }
    }
 
-   public static IEnumerable<T> WhereIsSome<T>(this IEnumerable<Maybe<T>> enumerable)
+   public static IEnumerable<T> WhereIsSome<T>(this IEnumerable<Optional<T>> enumerable)
    {
       foreach (var _maybe in enumerable)
       {
@@ -210,7 +210,7 @@ public static class MonadExtensions
       }
    }
 
-   public static IEnumerable<(T item, TMaybe maybe)> WhereIsSome<T, TMaybe>(this IEnumerable<T> enumerable, Func<T, Maybe<TMaybe>> predicate)
+   public static IEnumerable<(T item, TMaybe maybe)> WhereIsSome<T, TMaybe>(this IEnumerable<T> enumerable, Func<T, Optional<TMaybe>> predicate)
    {
       foreach (var item in enumerable)
       {
@@ -222,7 +222,7 @@ public static class MonadExtensions
       }
    }
 
-   public static IEnumerable<T> WhereIsSuccessful<T>(this IEnumerable<Result<T>> enumerable)
+   public static IEnumerable<T> WhereIsSuccessful<T>(this IEnumerable<Optional<T>> enumerable)
    {
       foreach (var _result in enumerable)
       {
@@ -234,7 +234,7 @@ public static class MonadExtensions
    }
 
    public static IEnumerable<(T item, TResult result)> WhereIsSuccessful<T, TResult>(this IEnumerable<T> enumerable,
-      Func<T, Result<TResult>> predicate)
+      Func<T, Optional<TResult>> predicate)
    {
       foreach (var item in enumerable)
       {
@@ -246,7 +246,7 @@ public static class MonadExtensions
       }
    }
 
-   public static IEnumerable<Either<T, Exception>> Successful<T>(this IEnumerable<Result<T>> enumerable)
+   public static IEnumerable<Either<T, Exception>> Successful<T>(this IEnumerable<Optional<T>> enumerable)
    {
       foreach (var _result in enumerable)
       {
@@ -285,7 +285,7 @@ public static class MonadExtensions
       }
    }
 
-   public static Maybe<IEnumerable<T>> AllAreSome<T>(this IEnumerable<Maybe<T>> enumerable)
+   public static Optional<IEnumerable<T>> AllAreSome<T>(this IEnumerable<Optional<T>> enumerable)
    {
       var result = new List<T>();
       foreach (var _value in enumerable)
@@ -303,42 +303,42 @@ public static class MonadExtensions
       return result;
    }
 
-   public static IEnumerable<Result<T>> All<T>(this IEnumerable<Result<T>> enumerable, Action<T> success = null,
+   public static IEnumerable<Optional<T>> All<T>(this IEnumerable<Optional<T>> enumerable, Action<T> success = null,
       Action<Exception> failure = null)
    {
       return new ResultIterator<T>(enumerable, success, failure).All();
    }
 
-   public static IEnumerable<T> Successes<T>(this IEnumerable<Result<T>> enumerable, Action<T> success = null,
+   public static IEnumerable<T> Successes<T>(this IEnumerable<Optional<T>> enumerable, Action<T> success = null,
       Action<Exception> failure = null)
    {
       return new ResultIterator<T>(enumerable, success, failure).SuccessesOnly();
    }
 
-   public static IEnumerable<Exception> Failures<T>(this IEnumerable<Result<T>> enumerable,
+   public static IEnumerable<Exception> Failures<T>(this IEnumerable<Optional<T>> enumerable,
       Action<T> success = null, Action<Exception> failure = null)
    {
       return new ResultIterator<T>(enumerable, success, failure).FailuresOnly();
    }
 
-   public static (IEnumerable<T> enumerable, Maybe<Exception> exception) SuccessesFirst<T>(this IEnumerable<Result<T>> enumerable,
+   public static (IEnumerable<T> enumerable, Optional<Exception> exception) SuccessesFirst<T>(this IEnumerable<Optional<T>> enumerable,
       Action<T> success = null, Action<Exception> failure = null)
    {
       return new ResultIterator<T>(enumerable, success, failure).SuccessesThenFailure();
    }
 
-   public static Result<IEnumerable<T>> IfAllSuccesses<T>(this IEnumerable<Result<T>> enumerable,
+   public static Optional<IEnumerable<T>> IfAllSuccesses<T>(this IEnumerable<Optional<T>> enumerable,
       Action<T> success = null, Action<Exception> failure = null)
    {
       return new ResultIterator<T>(enumerable, success, failure).IfAllSuccesses();
    }
 
-   public static Result<TResult> ForAny<TSource, TResult>(this IEnumerable<TSource> enumerable,
+   public static Optional<TResult> ForAny<TSource, TResult>(this IEnumerable<TSource> enumerable,
       Func<TSource, TResult> func)
    {
       try
       {
-         Maybe<TResult> _firstItem = nil;
+         Optional<TResult> _firstItem = nil;
          foreach (var _result in enumerable.Select(item => tryTo(() => func(item))))
          {
             if (_result is (true, var result))
@@ -362,13 +362,13 @@ public static class MonadExtensions
       }
    }
 
-   public static Result<TResult> ForAny<TSource, TResult>(this Result<IEnumerable<TSource>> enumerable,
+   public static Optional<TResult> ForAny<TSource, TResult>(this Optional<IEnumerable<TSource>> enumerable,
       Func<TSource, TResult> func)
    {
       return enumerable.Map(e => e.ForAny(func));
    }
 
-   public static Result<TResult> ForAny<TSource, TResult>(this IEnumerable<TSource> enumerable, Action<TSource> action, TResult result)
+   public static Optional<TResult> ForAny<TSource, TResult>(this IEnumerable<TSource> enumerable, Action<TSource> action, TResult result)
    {
       try
       {
@@ -392,13 +392,13 @@ public static class MonadExtensions
       }
    }
 
-   public static Result<TResult> ForAny<TSource, TResult>(this Result<IEnumerable<TSource>> enumerable,
+   public static Optional<TResult> ForAny<TSource, TResult>(this Optional<IEnumerable<TSource>> enumerable,
       Action<TSource> action, TResult result)
    {
       return enumerable.Map(e => e.ForAny(action, result));
    }
 
-   public static Result<TResult> ForAny<TSource, TResult>(this IEnumerable<TSource> enumerable,
+   public static Optional<TResult> ForAny<TSource, TResult>(this IEnumerable<TSource> enumerable,
       Action<TSource> action, Func<TResult> result) => tryTo(() =>
    {
       foreach (var item in enumerable)
@@ -409,15 +409,15 @@ public static class MonadExtensions
       return result();
    });
 
-   public static Result<TResult> ForAny<TSource, TResult>(this Result<IEnumerable<TSource>> enumerable,
+   public static Optional<TResult> ForAny<TSource, TResult>(this Optional<IEnumerable<TSource>> enumerable,
       Action<TSource> action, Func<TResult> result)
    {
       return enumerable.Map(e => e.ForAny(action, result));
    }
 
-   public static Result<T> Flat<T>(this Result<Result<T>> result) => result.Recover(e => e);
+   public static Optional<T> Flat<T>(this Optional<Optional<T>> result) => result.Recover(e => e);
 
-   public static T ThrowIfFailed<T>(this Result<T> result)
+   public static T ThrowIfFailed<T>(this Optional<T> result)
    {
       if (result is (true, var resultValue))
       {
@@ -429,7 +429,7 @@ public static class MonadExtensions
       }
    }
 
-   public static void ForEach<T>(this Result<IEnumerable<T>> enumerable, Action<T> ifSuccess,
+   public static void ForEach<T>(this Optional<IEnumerable<T>> enumerable, Action<T> ifSuccess,
       Action<Exception> ifFailure)
    {
       if (enumerable is (true, var enumerableValue))
@@ -481,9 +481,9 @@ public static class MonadExtensions
       }
    }
 
-   public static Maybe<T> IfCast<T>(this object obj) => obj is T t ? t : nil;
+   public static Optional<T> IfCast<T>(this object obj) => obj is T t ? t : nil;
 
-   public static IEnumerable<T> SomeValue<T>(this IEnumerable<Maybe<T>> enumerable)
+   public static IEnumerable<T> SomeValue<T>(this IEnumerable<Optional<T>> enumerable)
    {
       foreach (var _item in enumerable)
       {
@@ -494,7 +494,7 @@ public static class MonadExtensions
       }
    }
 
-   public static IEnumerable<T> SuccessfulValue<T>(this IEnumerable<Result<T>> enumerable)
+   public static IEnumerable<T> SuccessfulValue<T>(this IEnumerable<Optional<T>> enumerable)
    {
       foreach (var _result in enumerable)
       {
@@ -551,16 +551,16 @@ public static class MonadExtensions
       return (TException)typeof(TException).Create(list.ToArray());
    }
 
-   public static Completion<T> Completion<T>(this Result<T> result) => result.Map(v => v.Completed()).Recover(e => e);
+   public static Completion<T> Completion<T>(this Optional<T> result) => result.Map(v => v.Completed()).Recover(e => e);
 
-   public static Completion<T> Completion<T>(this Result<T> result, CancellationToken token)
+   public static Completion<T> Completion<T>(this Optional<T> result, CancellationToken token)
    {
       return result.Map(v => v.Completed(token)).Recover(e => e);
    }
 
-   public static Completion<T> Completion<T>(this Maybe<T> maybe) => maybe.Map(v => new Completed<T>(v)) | nil;
+   public static Completion<T> Completion<T>(this Optional<T> maybe) => maybe.Map(v => new Completed<T>(v)) | nil;
 
-   public static Completion<T> Completion<T>(this Maybe<T> maybe, CancellationToken token)
+   public static Completion<T> Completion<T>(this Optional<T> maybe, CancellationToken token)
    {
       return maybe.Map(v => v.Completed(token)) | (() => new Cancelled<T>());
    }
@@ -604,7 +604,7 @@ public static class MonadExtensions
       }
    }
 
-   public static Result<T> Result<T>(this Completion<T> completion)
+   public static Optional<T> Optional<T>(this Completion<T> completion)
    {
       if (completion is (true, var completionValue))
       {
@@ -620,13 +620,13 @@ public static class MonadExtensions
       }
    }
 
-   public static Maybe<T> MaxOrNone<T>(this IEnumerable<T> enumerable)
+   public static Optional<T> MaxOrNone<T>(this IEnumerable<T> enumerable)
    {
       var array = enumerable.ToArray();
       return maybe(array.Length > 0, () => array.Max());
    }
 
-   public static Maybe<T> MaxOrNone<T, TMax>(this IEnumerable<T> enumerable, Func<T, TMax> maxOnFunc)
+   public static Optional<T> MaxOrNone<T, TMax>(this IEnumerable<T> enumerable, Func<T, TMax> maxOnFunc)
    {
       var array = enumerable.ToArray();
       return maybe(array.Length > 0, () =>
@@ -636,13 +636,13 @@ public static class MonadExtensions
       });
    }
 
-   public static Maybe<T> MinOrNone<T>(this IEnumerable<T> enumerable)
+   public static Optional<T> MinOrNone<T>(this IEnumerable<T> enumerable)
    {
       var array = enumerable.ToArray();
       return maybe(array.Length > 0, () => array.Min());
    }
 
-   public static Maybe<T> MinOrNone<T, TMin>(this IEnumerable<T> enumerable, Func<T, TMin> minOnFunc)
+   public static Optional<T> MinOrNone<T, TMin>(this IEnumerable<T> enumerable, Func<T, TMin> minOnFunc)
    {
       var array = enumerable.ToArray();
       return maybe(array.Length > 0, () =>
@@ -652,13 +652,13 @@ public static class MonadExtensions
       });
    }
 
-   public static Result<T> MaxOrFail<T>(this IEnumerable<T> enumerable, Func<string> exceptionMessage) => tryTo(() =>
+   public static Optional<T> MaxOrFail<T>(this IEnumerable<T> enumerable, Func<string> exceptionMessage) => tryTo(() =>
    {
       var array = enumerable.ToArray();
       return assert(array.Length > 0, () => array.Max(), exceptionMessage);
    });
 
-   public static Result<T> MaxOrFail<T, TMax>(this IEnumerable<T> enumerable, Func<T, TMax> maxOnFunc, Func<string> exceptionMessage)
+   public static Optional<T> MaxOrFail<T, TMax>(this IEnumerable<T> enumerable, Func<T, TMax> maxOnFunc, Func<string> exceptionMessage)
    {
       return tryTo(() =>
       {
@@ -671,13 +671,13 @@ public static class MonadExtensions
       });
    }
 
-   public static Result<T> MinOrFail<T>(this IEnumerable<T> enumerable, Func<string> exceptionMessage) => tryTo(() =>
+   public static Optional<T> MinOrFail<T>(this IEnumerable<T> enumerable, Func<string> exceptionMessage) => tryTo(() =>
    {
       var array = enumerable.ToArray();
       return assert(array.Length > 0, () => array.Min(), exceptionMessage);
    });
 
-   public static Result<T> MinOrFail<T, TMin>(this IEnumerable<T> enumerable, Func<T, TMin> minOnFunc, Func<string> exceptionMessage)
+   public static Optional<T> MinOrFail<T, TMin>(this IEnumerable<T> enumerable, Func<T, TMin> minOnFunc, Func<string> exceptionMessage)
    {
       return tryTo(() =>
       {
@@ -690,62 +690,62 @@ public static class MonadExtensions
       });
    }
 
-   public static Maybe<TResult> Map<T1, T2, TResult>(this Maybe<(T1, T2)> maybe, Func<T1, T2, TResult> func)
+   public static Optional<TResult> Map<T1, T2, TResult>(this Optional<(T1, T2)> maybe, Func<T1, T2, TResult> func)
    {
       return maybe.Map(t => func(t.Item1, t.Item2));
    }
 
-   public static Maybe<TResult> Map<T1, T2, TResult>(this Maybe<(T1, T2)> maybe, Func<T1, T2, Maybe<TResult>> func)
+   public static Optional<TResult> Map<T1, T2, TResult>(this Optional<(T1, T2)> maybe, Func<T1, T2, Optional<TResult>> func)
    {
       return maybe.Map(t => func(t.Item1, t.Item2));
    }
 
-   public static Maybe<TResult> Map<T1, T2, T3, TResult>(this Maybe<(T1, T2, T3)> maybe, Func<T1, T2, T3, TResult> func)
+   public static Optional<TResult> Map<T1, T2, T3, TResult>(this Optional<(T1, T2, T3)> maybe, Func<T1, T2, T3, TResult> func)
    {
       return maybe.Map(t => func(t.Item1, t.Item2, t.Item3));
    }
 
-   public static Maybe<TResult> Map<T1, T2, T3, TResult>(this Maybe<(T1, T2, T3)> maybe, Func<T1, T2, T3, Maybe<TResult>> func)
+   public static Optional<TResult> Map<T1, T2, T3, TResult>(this Optional<(T1, T2, T3)> maybe, Func<T1, T2, T3, Optional<TResult>> func)
    {
       return maybe.Map(t => func(t.Item1, t.Item2, t.Item3));
    }
 
-   public static Maybe<TResult> Map<T1, T2, T3, T4, TResult>(this Maybe<(T1, T2, T3, T4)> maybe, Func<T1, T2, T3, T4, TResult> func)
+   public static Optional<TResult> Map<T1, T2, T3, T4, TResult>(this Optional<(T1, T2, T3, T4)> maybe, Func<T1, T2, T3, T4, TResult> func)
    {
       return maybe.Map(t => func(t.Item1, t.Item2, t.Item3, t.Item4));
    }
 
-   public static Maybe<TResult> Map<T1, T2, T3, T4, TResult>(this Maybe<(T1, T2, T3, T4)> maybe, Func<T1, T2, T3, T4, Maybe<TResult>> func)
+   public static Optional<TResult> Map<T1, T2, T3, T4, TResult>(this Optional<(T1, T2, T3, T4)> maybe, Func<T1, T2, T3, T4, Optional<TResult>> func)
    {
       return maybe.Map(t => func(t.Item1, t.Item2, t.Item3, t.Item4));
    }
 
-   public static Result<TResult> Map<T1, T2, TResult>(this Result<(T1, T2)> result, Func<T1, T2, TResult> func)
+   public static Optional<TResult> Map<T1, T2, TResult>(this Optional<(T1, T2)> result, Func<T1, T2, TResult> func)
    {
       return result.Map(t => func(t.Item1, t.Item2));
    }
 
-   public static Result<TResult> Map<T1, T2, TResult>(this Result<(T1, T2)> result, Func<T1, T2, Result<TResult>> func)
+   public static Optional<TResult> Map<T1, T2, TResult>(this Optional<(T1, T2)> result, Func<T1, T2, Optional<TResult>> func)
    {
       return result.Map(t => func(t.Item1, t.Item2));
    }
 
-   public static Result<TResult> Map<T1, T2, T3, TResult>(this Result<(T1, T2, T3)> result, Func<T1, T2, T3, TResult> func)
+   public static Optional<TResult> Map<T1, T2, T3, TResult>(this Optional<(T1, T2, T3)> result, Func<T1, T2, T3, TResult> func)
    {
       return result.Map(t => func(t.Item1, t.Item2, t.Item3));
    }
 
-   public static Result<TResult> Map<T1, T2, T3, TResult>(this Result<(T1, T2, T3)> result, Func<T1, T2, T3, Result<TResult>> func)
+   public static Optional<TResult> Map<T1, T2, T3, TResult>(this Optional<(T1, T2, T3)> result, Func<T1, T2, T3, Optional<TResult>> func)
    {
       return result.Map(t => func(t.Item1, t.Item2, t.Item3));
    }
 
-   public static Result<TResult> Map<T1, T2, T3, T4, TResult>(this Result<(T1, T2, T3, T4)> result, Func<T1, T2, T3, T4, TResult> func)
+   public static Optional<TResult> Map<T1, T2, T3, T4, TResult>(this Optional<(T1, T2, T3, T4)> result, Func<T1, T2, T3, T4, TResult> func)
    {
       return result.Map(t => func(t.Item1, t.Item2, t.Item3, t.Item4));
    }
 
-   public static Result<TResult> Map<T1, T2, T3, T4, TResult>(this Result<(T1, T2, T3, T4)> result, Func<T1, T2, T3, T4, Result<TResult>> func)
+   public static Optional<TResult> Map<T1, T2, T3, T4, TResult>(this Optional<(T1, T2, T3, T4)> result, Func<T1, T2, T3, T4, Optional<TResult>> func)
    {
       return result.Map(t => func(t.Item1, t.Item2, t.Item3, t.Item4));
    }
@@ -783,29 +783,29 @@ public static class MonadExtensions
       return completion.Map(t => func(t.Item1, t.Item2, t.Item3, t.Item4));
    }
 
-   public static Maybe<T> SomeIf<T>(this Func<bool> boolExpression, Func<T> value)
+   public static Optional<T> SomeIf<T>(this Func<bool> boolExpression, Func<T> value)
    {
       return boolExpression() ? value() : nil;
    }
 
-   public static Maybe<T> SomeIf<T>(this Func<bool> boolExpression, Func<Maybe<T>> value)
+   public static Optional<T> SomeIf<T>(this Func<bool> boolExpression, Func<Optional<T>> value)
    {
       return boolExpression() ? value() : nil;
    }
 
-   public static Maybe<T> SomeIf<T>(this bool boolExpression, Func<T> value)
+   public static Optional<T> SomeIf<T>(this bool boolExpression, Func<T> value)
    {
       return boolExpression ? value() : nil;
    }
 
-   public static Maybe<T> SomeIf<T>(this bool boolExpression, Func<Maybe<T>> value)
+   public static Optional<T> SomeIf<T>(this bool boolExpression, Func<Optional<T>> value)
    {
       return boolExpression ? value() : nil;
    }
 
-   public static Maybe<T> MaybeIf<T>(this T value, Func<T, bool> predicate) => predicate(value) ? value : nil;
+   public static Optional<T> MaybeIf<T>(this T value, Func<T, bool> predicate) => predicate(value) ? value : nil;
 
-   public static Result<T> ResultIf<T>(this T value, Func<T, bool> predicate, string failMessage)
+   public static Optional<T> ResultIf<T>(this T value, Func<T, bool> predicate, string failMessage)
    {
       try
       {
@@ -817,7 +817,7 @@ public static class MonadExtensions
       }
    }
 
-   public static Result<T> ResultIf<T>(this T value, Func<T, bool> predicate, Func<string> failMessage)
+   public static Optional<T> ResultIf<T>(this T value, Func<T, bool> predicate, Func<string> failMessage)
    {
       try
       {
@@ -829,7 +829,7 @@ public static class MonadExtensions
       }
    }
 
-   public static Result<T> ResultIf<T>(this T value, Func<T, bool> predicate, Exception exception)
+   public static Optional<T> ResultIf<T>(this T value, Func<T, bool> predicate, Exception exception)
    {
       try
       {
@@ -841,7 +841,7 @@ public static class MonadExtensions
       }
    }
 
-   public static Completion<T> CompletionIf<T>(this T value, Func<T, bool> predicate, Maybe<string> _failMessage)
+   public static Completion<T> CompletionIf<T>(this T value, Func<T, bool> predicate, Optional<string> _failMessage)
    {
       try
       {
@@ -864,7 +864,7 @@ public static class MonadExtensions
       }
    }
 
-   public static Completion<T> CompletionIf<T>(this T value, Func<T, bool> predicate, Func<Maybe<string>> failMessage)
+   public static Completion<T> CompletionIf<T>(this T value, Func<T, bool> predicate, Func<Optional<string>> failMessage)
    {
       try
       {
@@ -891,7 +891,7 @@ public static class MonadExtensions
       }
    }
 
-   public static Completion<T> CompletionIf<T>(this T value, Func<T, bool> predicate, Maybe<Exception> _exception)
+   public static Completion<T> CompletionIf<T>(this T value, Func<T, bool> predicate, Optional<Exception> _exception)
    {
       try
       {
@@ -962,7 +962,7 @@ public static class MonadExtensions
       }
    }
 
-   public static Optional<T> OptionalIf<T>(this T value, Func<T, bool> predicate, Maybe<Exception> _exception)
+   public static Optional<T> OptionalIf<T>(this T value, Func<T, bool> predicate, Optional<Exception> _exception)
    {
       try
       {
@@ -985,15 +985,15 @@ public static class MonadExtensions
       }
    }
 
-   public static bool IsSome(this Maybe<bool> maybe) => maybe is Some<bool>;
+   public static bool IsSome(this Optional<bool> maybe) => maybe is Some<bool>;
 
-   public static bool IsSuccess(this Result<bool> result) => result is Success<bool>;
+   public static bool IsSuccess(this Optional<bool> result) => result is Success<bool>;
 
    public static bool IsJust(this Optional<bool> optional) => optional is Just<bool>;
 
    public static bool IsCompletion(this Completion<bool> completion) => completion is Completed<bool>;
 
-   public static IEnumerable<T> OnlyTrue<T>(this IEnumerable<Maybe<T>> enumerable)
+   public static IEnumerable<T> OnlyTrue<T>(this IEnumerable<Optional<T>> enumerable)
    {
       foreach (var maybe in enumerable)
       {
@@ -1004,7 +1004,7 @@ public static class MonadExtensions
       }
    }
 
-   public static IEnumerable<T> OnlyTrue<T>(this IEnumerable<Result<T>> enumerable)
+   public static IEnumerable<T> OnlyTrue<T>(this IEnumerable<Optional<T>> enumerable)
    {
       foreach (var result in enumerable)
       {

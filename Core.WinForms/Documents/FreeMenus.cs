@@ -14,11 +14,11 @@ public class FreeMenus : Menus
       SaveAll = nil;
    }
 
-   public Maybe<Document> Document { get; set; }
+   public Optional<Document> Document { get; set; }
 
-   public Maybe<Form> Form { get; set; }
+   public Optional<Form> Form { get; set; }
 
-   public Maybe<EventHandler> SaveAll { get; set; }
+   public Optional<EventHandler> SaveAll { get; set; }
 
    public void StandardContextEdit()
    {

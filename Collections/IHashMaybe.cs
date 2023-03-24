@@ -4,7 +4,7 @@ using static Core.Monads.MonadFunctions;
 namespace Core.Collections;
 
 // ReSharper disable once InconsistentNaming
-public class IHashMaybe<TKey, TValue>
+public class IHashOptional<TKey, TValue>
 {
    protected IHash<TKey, TValue> hash;
 
@@ -13,7 +13,7 @@ public class IHashMaybe<TKey, TValue>
       this.hash = hash;
    }
 
-   public Maybe<TValue> this[TKey key]
+   public Optional<TValue> this[TKey key]
    {
       get
       {

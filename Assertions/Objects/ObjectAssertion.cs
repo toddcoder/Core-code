@@ -99,13 +99,13 @@ public class ObjectAssertion : IAssertion<object>
       return (TResult)Force<TException>(args);
    }
 
-   public Result<object> OrFailure() => orFailure(this);
+   public Optional<object> OrFailure() => orFailure(this);
 
-   public Result<object> OrFailure(string message) => orFailure(this, message);
+   public Optional<object> OrFailure(string message) => orFailure(this, message);
 
-   public Result<object> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
+   public Optional<object> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
 
-   public Maybe<object> OrNone() => orNone(this);
+   public Optional<object> OrNone() => orNone(this);
 
    public async Task<Completion<object>> OrFailureAsync(CancellationToken token) => await orFailureAsync(assertion: this, token);
 

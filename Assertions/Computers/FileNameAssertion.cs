@@ -151,13 +151,13 @@ public class FileNameAssertion : IAssertion<FileName>
       return forceConvert<FileName, TException, TResult>(this, args);
    }
 
-   public Result<FileName> OrFailure() => orFailure(this);
+   public Optional<FileName> OrFailure() => orFailure(this);
 
-   public Result<FileName> OrFailure(string message) => orFailure(this, message);
+   public Optional<FileName> OrFailure(string message) => orFailure(this, message);
 
-   public Result<FileName> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
+   public Optional<FileName> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
 
-   public Maybe<FileName> OrNone() => orNone(this);
+   public Optional<FileName> OrNone() => orNone(this);
 
    public async Task<Completion<FileName>> OrFailureAsync(CancellationToken token) => await orFailureAsync(this, token);
 

@@ -18,7 +18,7 @@ public class Serializer
       this.setting = setting;
    }
 
-   public Result<string> Serialize()
+   public Optional<string> Serialize()
    {
       try
       {
@@ -60,9 +60,9 @@ public class Serializer
 
    protected static bool isGeneratedKey(string key) => key.IsMatch("^ '$' /d+ $; f");
 
-   protected static Maybe<string> getName(ConfigurationItem item) => maybe<string>() & !isGeneratedKey(item.Key) & (() => item.Key);
+   protected static Optional<string> getName(ConfigurationItem item) => maybe<string>() & !isGeneratedKey(item.Key) & (() => item.Key);
 
-   protected static void writeText(JsonWriter writer, Maybe<string> _name, string text)
+   protected static void writeText(JsonWriter writer, Optional<string> _name, string text)
    {
       var _int = lazy.maybe<int>();
       var _float = lazy.maybe<double>();

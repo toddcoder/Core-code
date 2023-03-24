@@ -30,13 +30,13 @@ public class Table : Block
 
       public object[] Specifiers { get; set; }
 
-      public Maybe<PendingFormatter> PendingFormatter { get; set; }
+      public Optional<PendingFormatter> PendingFormatter { get; set; }
 
-      public Maybe<FileName> ImageFile { get; set; }
+      public Optional<FileName> ImageFile { get; set; }
 
-      public Maybe<ImageFileType> ImageFileType { get; set; }
+      public Optional<ImageFileType> ImageFileType { get; set; }
 
-      public Maybe<ColorDescriptor> BackgroundColor { get; set; }
+      public Optional<ColorDescriptor> BackgroundColor { get; set; }
    }
 
    public static RowBuilder operator |(Table table, string columnText)
@@ -64,8 +64,8 @@ public class Table : Block
    protected int rowIndex;
    protected bool arrayCreated;
    protected MaybeQueue<(int topRow, int leftColumn, int rowSpan, int colSpan)> pendingMerges;
-   protected Maybe<Action<Paragraph, int, int>> _formatAction;
-   protected Maybe<CellData> _currentCell;
+   protected Optional<Action<Paragraph, int, int>> _formatAction;
+   protected Optional<CellData> _currentCell;
 
    public Table(float horizontalWidth, float fontSize)
    {
@@ -93,7 +93,7 @@ public class Table : Block
       _currentCell = nil;
    }
 
-   public Maybe<CellData> CurrentCell => _currentCell;
+   public Optional<CellData> CurrentCell => _currentCell;
 
    public Action<Paragraph, int, int> FormatAction
    {
@@ -214,11 +214,11 @@ public class Table : Block
       arrayCreated = true;
    }
 
-   public Maybe<ColorDescriptor> HeaderBackgroundColor { get; set; }
+   public Optional<ColorDescriptor> HeaderBackgroundColor { get; set; }
 
-   public Maybe<ColorDescriptor> RowBackgroundColor { get; set; }
+   public Optional<ColorDescriptor> RowBackgroundColor { get; set; }
 
-   public Maybe<ColorDescriptor> RowAltBackgroundColor { get; set; }
+   public Optional<ColorDescriptor> RowAltBackgroundColor { get; set; }
 
    public override Alignment Alignment
    {

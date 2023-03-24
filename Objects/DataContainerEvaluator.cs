@@ -20,7 +20,7 @@ public class DataContainerEvaluator : IEvaluator, IHash<string, object>, IHash<S
 
    public bool ContainsKey(string key) => data.ContainsKey(key);
 
-   Result<Hash<string, object>> IHash<string, object>.AnyHash()
+   Optional<Hash<string, object>> IHash<string, object>.AnyHash()
    {
       return Signatures.Select(s => (key: s.Name, value: data[s.Name])).ToHash(i => i.key, i => i.value).Success();
    }
@@ -33,7 +33,7 @@ public class DataContainerEvaluator : IEvaluator, IHash<string, object>, IHash<S
 
    public bool ContainsKey(Signature key) => data.ContainsKey(key.Name);
 
-   Result<Hash<Signature, object>> IHash<Signature, object>.AnyHash()
+   Optional<Hash<Signature, object>> IHash<Signature, object>.AnyHash()
    {
       return Signatures.Select(s => (key: s, value: data[s.Name])).ToHash(i => i.key, i => i.value).Success();
    }

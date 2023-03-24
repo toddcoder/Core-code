@@ -23,7 +23,7 @@ public class JsonLogger : Logger
    {
       base.WriteRaw(prefix, message);
 
-      Maybe<string> _type = prefix switch
+      Optional<string> _type = prefix switch
       {
          '.' => "m",
          '!' => "s",

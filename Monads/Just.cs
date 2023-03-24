@@ -15,7 +15,7 @@ public class Just<T> : Optional<T>, IEquatable<Just<T>>
 
    public override Exception Exception => throw fail("Response has no Exception");
 
-   public override Maybe<Exception> AnyException => nil;
+   public override Optional<Exception> AnyException => nil;
 
    public override Optional<TResult> Map<TResult>(Func<T, Optional<TResult>> ifJust)
    {
@@ -78,17 +78,13 @@ public class Just<T> : Optional<T>, IEquatable<Just<T>>
 
    public override T Force() => value;
 
-   public override T DefaultTo(Func<Maybe<Exception>, T> func) => value;
+   public override T DefaultTo(Func<Optional<Exception>, T> func) => value;
 
    public override void Deconstruct(out bool isJust, out T value)
    {
       isJust = true;
       value = this.value;
    }
-
-   public override Maybe<T> Maybe() => value;
-
-   public override Result<T> Result() => value;
 
    public override Completion<T> Completion() => value;
 

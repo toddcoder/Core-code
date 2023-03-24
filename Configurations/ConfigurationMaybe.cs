@@ -18,27 +18,27 @@ public class ConfigurationMaybe
       this.getter = getter;
    }
 
-   public Maybe<Setting> Setting(string key) => getter.GetSetting(key);
+   public Optional<Setting> Setting(string key) => getter.GetSetting(key);
 
-   public Maybe<Item> Item(string key) => getter.GetItem(key);
+   public Optional<Item> Item(string key) => getter.GetItem(key);
 
-   public Maybe<string> String(string key) => getter.GetItem(key).Map(i => i.Text);
+   public Optional<string> String(string key) => getter.GetItem(key).Map(i => i.Text);
 
-   public Maybe<int> Int32(string key) => String(key).Map(i => Maybe.Int32(i));
+   public Optional<int> Int32(string key) => String(key).Map(i => Maybe.Int32(i));
 
-   public Maybe<long> Int64(string key) => String(key).Map(l => Maybe.Int64(l));
+   public Optional<long> Int64(string key) => String(key).Map(l => Maybe.Int64(l));
 
-   public Maybe<float> Single(string key) => String(key).Map(s => Maybe.Single(s));
+   public Optional<float> Single(string key) => String(key).Map(s => Maybe.Single(s));
 
-   public Maybe<double> Double(string key) => String(key).Map(d => Maybe.Double(d));
+   public Optional<double> Double(string key) => String(key).Map(d => Maybe.Double(d));
 
-   public Maybe<bool> Boolean(string key) => String(key).Map(Maybe.Boolean);
+   public Optional<bool> Boolean(string key) => String(key).Map(Maybe.Boolean);
 
-   public Maybe<DateTime> DateTime(string key) => String(key).Map(Maybe.DateTime);
+   public Optional<DateTime> DateTime(string key) => String(key).Map(Maybe.DateTime);
 
-   public Maybe<Guid> Guid(string key) => String(key).Map(Maybe.Guid);
+   public Optional<Guid> Guid(string key) => String(key).Map(Maybe.Guid);
 
-   public Maybe<FileName> FileName(string key)
+   public Optional<FileName> FileName(string key)
    {
       try
       {
@@ -57,7 +57,7 @@ public class ConfigurationMaybe
       }
    }
 
-   public Maybe<FolderName> FolderName(string key)
+   public Optional<FolderName> FolderName(string key)
    {
       try
       {
@@ -76,7 +76,7 @@ public class ConfigurationMaybe
       }
    }
 
-   public Maybe<byte[]> Bytes(string key)
+   public Optional<byte[]> Bytes(string key)
    {
       try
       {
@@ -88,11 +88,11 @@ public class ConfigurationMaybe
       }
    }
 
-   public Maybe<TimeSpan> TimeSpan(string key) => String(key).Map(Maybe.TimeSpan);
+   public Optional<TimeSpan> TimeSpan(string key) => String(key).Map(Maybe.TimeSpan);
 
-   public Maybe<string[]> Strings(string key) => String(key).Map(s => s.Unjoin("/s* ',' /s*"));
+   public Optional<string[]> Strings(string key) => String(key).Map(s => s.Unjoin("/s* ',' /s*"));
 
-   public Maybe<string[]> SettingTexts(string key) => Setting(key).Map(s => s.Items().Select(i => i.text).ToArray());
+   public Optional<string[]> SettingTexts(string key) => Setting(key).Map(s => s.Items().Select(i => i.text).ToArray());
 
-   public Maybe<string[]> SettingKeys(string key) => Setting(key).Map(s => s.Items().Select(i => i.key).ToArray());
+   public Optional<string[]> SettingKeys(string key) => Setting(key).Map(s => s.Items().Select(i => i.key).ToArray());
 }

@@ -39,13 +39,13 @@ public class StandardDialog
 
    public string DefaultExt { get; set; }
 
-   public Maybe<string> FileName { get; set; }
+   public Optional<string> FileName { get; set; }
 
-   public Maybe<string> Filter { get; set; }
+   public Optional<string> Filter { get; set; }
 
    public int FilterIndex { get; set; }
 
-   public Maybe<FolderName> InitialFolder { get; set; }
+   public Optional<FolderName> InitialFolder { get; set; }
 
    public bool OverwritePrompt { get; set; }
 

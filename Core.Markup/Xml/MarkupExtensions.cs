@@ -14,7 +14,7 @@ public static class MarkupExtensions
    private const string TEXT_EMPTY_ELEMENT = "<$1/>";
    private const string PATTERN_HEADER = "/s* '<?' -['?']+ '?>'; mf";
 
-   private static Result<string> fromStream(Stream stream, Encoding encoding) => tryTo(() =>
+   private static Optional<string> fromStream(Stream stream, Encoding encoding) => tryTo(() =>
    {
       stream.Position = 0;
       using var reader = new StreamReader(stream, encoding);

@@ -38,9 +38,9 @@ public class CommandLineHistory
       position = lines.Count;
    }
 
-   public Maybe<string> Current => maybe(position.Between(0).Until(lines.Count), () => lines[position]);
+   public Optional<string> Current => maybe(position.Between(0).Until(lines.Count), () => lines[position]);
 
-   public Maybe<string> Forward()
+   public Optional<string> Forward()
    {
       if (position + 1 < lines.Count)
       {
@@ -53,7 +53,7 @@ public class CommandLineHistory
       }
    }
 
-   public Maybe<string> Backward()
+   public Optional<string> Backward()
    {
       if (position > 0)
       {

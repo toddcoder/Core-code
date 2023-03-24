@@ -176,7 +176,7 @@ public static class MatchingExtensions
 
    public static Optional<MatchResult> Matched(this string input, Pattern pattern) => pattern.MatchedBy(input);
 
-   public static Maybe<MatchResult> Matches(this string input, Pattern pattern) => pattern.MatchedBy(input).Maybe();
+   public static Optional<MatchResult> Matches(this string input, Pattern pattern) => pattern.MatchedBy(input).Maybe();
 
    public static Pattern Pattern(this string pattern, bool ignoreCase, bool multiline, bool friendly)
    {
@@ -209,7 +209,7 @@ public static class MatchingExtensions
       }
    }
 
-   public static Maybe<MatchResult> FirstMatch(this IEnumerable<Pattern> patterns, string input)
+   public static Optional<MatchResult> FirstMatch(this IEnumerable<Pattern> patterns, string input)
    {
       foreach (var pattern in patterns)
       {

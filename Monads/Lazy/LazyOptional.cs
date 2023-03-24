@@ -171,7 +171,7 @@ public class LazyOptional<T> : Optional<T>, IEquatable<LazyOptional<T>>
       }
    }
 
-   public override Maybe<Exception> AnyException
+   public override Optional<Exception> AnyException
    {
       get
       {
@@ -259,7 +259,7 @@ public class LazyOptional<T> : Optional<T>, IEquatable<LazyOptional<T>>
       return _value.Force();
    }
 
-   public override T DefaultTo(Func<Maybe<Exception>, T> func)
+   public override T DefaultTo(Func<Optional<Exception>, T> func)
    {
       ensureValue();
       return _value.DefaultTo(func);
@@ -271,13 +271,13 @@ public class LazyOptional<T> : Optional<T>, IEquatable<LazyOptional<T>>
       _value.Deconstruct(out isJust, out value);
    }
 
-   public override Maybe<T> Maybe()
+   public override Optional<T> Maybe()
    {
       ensureValue();
       return _value.Maybe();
    }
 
-   public override Result<T> Result()
+   public override Optional<T> Result()
    {
       ensureValue();
       return _value.Result();

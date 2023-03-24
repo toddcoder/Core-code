@@ -5,7 +5,7 @@ namespace Core.Monads.Lazy;
 
 public class LazyMonads
 {
-   protected static Maybe<LazyMonads> _function;
+   protected static Optional<LazyMonads> _function;
 
    static LazyMonads()
    {
@@ -25,17 +25,17 @@ public class LazyMonads
       }
    }
 
-   public LazyMaybe<T> maybe<T>(Func<Maybe<T>> func) => new(func);
+   public LazyOptional<T> maybe<T>(Func<Optional<T>> func) => new(func);
 
-   public LazyMaybe<T> maybe<T>(Maybe<T> maybe) => new(maybe);
+   public LazyOptional<T> maybe<T>(Optional<T> maybe) => new(maybe);
 
-   public LazyMaybe<T> maybe<T>() => new();
+   public LazyOptional<T> maybe<T>() => new();
 
-   public LazyResult<T> result<T>(Func<Result<T>> func) => new(func);
+   public LazyOptional<T> result<T>(Func<Optional<T>> func) => new(func);
 
-   public LazyResult<T> result<T>(Result<T> result) => new(result);
+   public LazyOptional<T> result<T>(Optional<T> result) => new(result);
 
-   public LazyResult<T> result<T>() => new();
+   public LazyOptional<T> result<T>() => new();
 
    public LazyOptional<T> optional<T>(Func<Optional<T>> func) => new(func);
 

@@ -57,12 +57,12 @@ public class ReflectorFormat
       public string Source { get; }
    }
 
-   public static Result<ReflectorFormat> GetReflector(object obj) =>
+   public static Optional<ReflectorFormat> GetReflector(object obj) =>
       from nonNullObject in obj.Must().Not.BeNull().OrFailure()
       from type in tryTo(nonNullObject.GetType)
       select new ReflectorFormat(nonNullObject, type);
 
-   protected static Result<Replacements> getReplacements(string source)
+   protected static Optional<Replacements> getReplacements(string source)
    {
       var _matches = source.Matches(@"-(< '\') '{' /(-['}']+) '}'; f").Map(r => r.Matches);
       if (_matches)
@@ -81,7 +81,7 @@ public class ReflectorFormat
       return matches.Select(match => new ReflectorReplacement(match.Index, match.Length, match.Groups[1]));
    }
 
-   protected static Result<MemberData> getMembers(Type type, string template)
+   protected static Optional<MemberData> getMembers(Type type, string template)
    {
       var members = new Hash<string, Pair>();
       const MemberTypes memberTypes = Field | Property;
@@ -95,7 +95,7 @@ public class ReflectorFormat
             var memberInfos = type.GetMember(reflectorReplacement.MemberName, memberTypes, bindingFlags);
             if (memberInfos.Length != 0)
             {
-               Maybe<IGetter> _chosen = nil;
+               Optional<IGetter> _chosen = nil;
                foreach (var info in memberInfos)
                {
                   if (info is FieldInfo fieldInfo)
@@ -134,7 +134,7 @@ public class ReflectorFormat
       }
    }
 
-   protected static Result<MemberData> failedFind(Type type, string memberName) => fail($"Member {memberName} in type {type} couldn't be found");
+   protected static Optional<MemberData> failedFind(Type type, string memberName) => fail($"Member {memberName} in type {type} couldn't be found");
 
    protected object obj;
    protected Type type;
@@ -145,12 +145,12 @@ public class ReflectorFormat
       this.type = type;
    }
 
-   public Result<string> Format(string template) =>
+   public Optional<string> Format(string template) =>
       tryTo(() => from memberData in getMembers(type, template)
          from formatted in getText(memberData)
          select formatted.Substitute(@"'\{'; f", "{"));
 
-   protected Result<string> getText(MemberData memberData) => tryTo(() =>
+   protected Optional<string> getText(MemberData memberData) => tryTo(() =>
    {
       var slicer = new Slicer(memberData.Source);
 
@@ -162,7 +162,7 @@ public class ReflectorFormat
       return slicer.ToString();
    });
 
-   protected Result<object> getValue(MemberInfo info) => info switch
+   protected Optional<object> getValue(MemberInfo info) => info switch
    {
       FieldInfo fieldInfo => fieldInfo.GetValue(obj),
       PropertyInfo propertyInfo => propertyInfo.GetValue(obj),

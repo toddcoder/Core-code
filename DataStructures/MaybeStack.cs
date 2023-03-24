@@ -13,7 +13,7 @@ namespace Core.DataStructures;
 public class MaybeStack<T> : IEnumerable<T>
 {
    protected Stack<T> stack;
-   protected Maybe<T> _last;
+   protected Optional<T> _last;
 
    public MaybeStack()
    {
@@ -31,7 +31,7 @@ public class MaybeStack<T> : IEnumerable<T>
 
    public bool Contains(T item) => stack.Contains(item);
 
-   public Result<T[]> ToArray(int arrayIndex = 0)
+   public Optional<T[]> ToArray(int arrayIndex = 0)
    {
       return
          from assertion in arrayIndex.Must().BeBetween(0).Until(Count).OrFailure()
@@ -45,7 +45,7 @@ public class MaybeStack<T> : IEnumerable<T>
          select array;
    }
 
-   public Result<T> Item(int index)
+   public Optional<T> Item(int index)
    {
       return
          from assertion in index.Must().BeBetween(0).Until(Count).OrFailure()
@@ -53,9 +53,9 @@ public class MaybeStack<T> : IEnumerable<T>
          select item;
    }
 
-   public Maybe<T> Peek() => maybe<T>() & IsNotEmpty & (() => stack.Peek());
+   public Optional<T> Peek() => maybe<T>() & IsNotEmpty & (() => stack.Peek());
 
-   public Maybe<T> Pop() => maybe<T>() & IsNotEmpty & (() => stack.Pop());
+   public Optional<T> Pop() => maybe<T>() & IsNotEmpty & (() => stack.Pop());
 
    public void Push(T item) => stack.Push(item);
 
@@ -90,5 +90,5 @@ public class MaybeStack<T> : IEnumerable<T>
       return _last;
    }
 
-   public Maybe<T> Last => _last;
+   public Optional<T> Last => _last;
 }

@@ -19,9 +19,9 @@ public class Hyperlink
 
    public string Link { get; }
 
-   public Maybe<string> LinkTip { get; }
+   public Optional<string> LinkTip { get; }
 
-   public void Deconstruct(out string link, out Maybe<string> linkTip)
+   public void Deconstruct(out string link, out Optional<string> linkTip)
    {
       link = Link;
       linkTip = LinkTip;

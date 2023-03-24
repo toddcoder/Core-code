@@ -12,7 +12,7 @@ public partial class Chooser : Form
 {
    protected const int WM_NCACTIVATE = 0x86;
 
-   public Maybe<Chosen> Get(UiAction parent)
+   public Optional<Chosen> Get(UiAction parent)
    {
       //ShowDialog(parent);
       ShowDialog();
@@ -23,16 +23,16 @@ public partial class Chooser : Form
    protected UiAction uiAction;
    protected Point uiLocation;
    protected StringHash choices;
-   protected Maybe<Color> _foreColor;
-   protected Maybe<Color> _backColor;
-   protected Maybe<string> _nilItem;
+   protected Optional<Color> _foreColor;
+   protected Optional<Color> _backColor;
+   protected Optional<string> _nilItem;
    protected bool modifyTitle;
    protected string emptyTitle;
    protected bool sizeToText;
 
    public event EventHandler<AppearanceOverrideArgs> AppearanceOverride;
 
-   public Chooser(string title, UiAction uiAction, Maybe<int> _width)
+   public Chooser(string title, UiAction uiAction, Optional<int> _width)
    {
       this.title = title;
       this.uiAction = uiAction;
@@ -86,7 +86,7 @@ public partial class Chooser : Form
       set => _backColor = value;
    }
 
-   public Maybe<string> NilItem
+   public Optional<string> NilItem
    {
       get => _nilItem;
       set => _nilItem = value;
@@ -110,11 +110,11 @@ public partial class Chooser : Form
       set => sizeToText = value;
    }
 
-   public Maybe<Chosen> Choice { get; set; }
+   public Optional<Chosen> Choice { get; set; }
 
    protected void addItem(string text, Color foreColor, Color backColor)
    {
-      Maybe<Font> _font = nil;
+      Optional<Font> _font = nil;
 
       if (AppearanceOverride is not null)
       {
@@ -221,7 +221,7 @@ public partial class Chooser : Form
 
    protected bool returnSome(int index) => _nilItem.Map(_ => index > 0) | (() => index > -1);
 
-   protected Maybe<Chosen> getChosen(ListViewItem item)
+   protected Optional<Chosen> getChosen(ListViewItem item)
    {
       return choices.Maybe(item.Text).Map(value => new Chosen(value, item));
    }

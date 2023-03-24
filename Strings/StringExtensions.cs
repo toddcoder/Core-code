@@ -9,6 +9,7 @@ using Core.Enumerables;
 using Core.Matching;
 using Core.Monads;
 using Core.Numbers;
+using Core.Objects;
 using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
 using static Core.Objects.ConversionFunctions;
@@ -104,7 +105,7 @@ public static class StringExtensions
       return source.Drop(startIndex).Keep(length);
    }
 
-   public static string Slice(this string source, Maybe<int> startIndex, Maybe<int> stopIndex)
+   public static string Slice(this string source, Optional<int> startIndex, Optional<int> stopIndex)
    {
       return source.Slice(startIndex | 0, stopIndex | (() => source.Length - 1));
    }
@@ -1128,85 +1129,85 @@ public static class StringExtensions
    }
 
    [Obsolete("Use ConversionFunctions")]
-   public static Maybe<bool> AsBool(this string source)
+   public static Optional<bool> AsBool(this string source)
    {
       return source.IsNotEmpty() ? maybe(bool.TryParse(source, out var result), () => result) : nil;
    }
 
    [Obsolete("Use ConversionFunctions")]
-   public static Result<bool> Boolean(this string source) => tryTo(() => bool.Parse(source));
+   public static Optional<bool> Boolean(this string source) => tryTo(() => bool.Parse(source));
 
    [Obsolete("Use ConversionFunctions")]
-   public static Maybe<byte> AsByte(this string source)
+   public static Optional<byte> AsByte(this string source)
    {
       return source.IsNotEmpty() ? maybe(byte.TryParse(source, out var result), () => result) : nil;
    }
 
    [Obsolete("Use ConversionFunctions")]
-   public static Result<byte> Byte(this string source) => tryTo(() => byte.Parse(source));
+   public static Optional<byte> Byte(this string source) => tryTo(() => byte.Parse(source));
 
    [Obsolete("Use ConversionFunctions")]
-   public static Maybe<int> AsInt(this string source)
+   public static Optional<int> AsInt(this string source)
    {
       return source.IsNotEmpty() ? maybe(int.TryParse(source, out var result), () => result) : nil;
    }
 
    [Obsolete("Use ConversionFunctions")]
-   public static Result<int> Int32(this string source) => tryTo(() => int.Parse(source));
+   public static Optional<int> Int32(this string source) => tryTo(() => int.Parse(source));
 
    [Obsolete("Use ConversionFunctions")]
-   public static Maybe<long> AsLong(this string source)
+   public static Optional<long> AsLong(this string source)
    {
       return source.IsNotEmpty() ? maybe(long.TryParse(source, out var result), () => result) : nil;
    }
 
    [Obsolete("Use ConversionFunctions")]
-   public static Result<long> Int64(this string source) => tryTo(() => long.Parse(source));
+   public static Optional<long> Int64(this string source) => tryTo(() => long.Parse(source));
 
    [Obsolete("Use ConversionFunctions")]
-   public static Maybe<float> AsFloat(this string source)
+   public static Optional<float> AsFloat(this string source)
    {
       return source.IsNotEmpty() ? maybe(float.TryParse(source, out var result), () => result) : nil;
    }
 
    [Obsolete("Use ConversionFunctions")]
-   public static Result<float> Single(this string source) => tryTo(() => float.Parse(source));
+   public static Optional<float> Single(this string source) => tryTo(() => float.Parse(source));
 
    [Obsolete("Use ConversionFunctions")]
-   public static Maybe<double> AsDouble(this string source)
+   public static Optional<double> AsDouble(this string source)
    {
       return source.IsNotEmpty() ? maybe(double.TryParse(source, out var result), () => result) : nil;
    }
 
    [Obsolete("Use ConversionFunctions")]
-   public static Result<double> Double(this string source) => tryTo(() => double.Parse(source));
+   public static Optional<double> Double(this string source) => tryTo(() => double.Parse(source));
 
    [Obsolete("Use ConversionFunctions")]
-   public static Maybe<decimal> AsDecimal(this string source)
+   public static Optional<decimal> AsDecimal(this string source)
    {
       return source.IsNotEmpty() ? maybe(decimal.TryParse(source, out var result), () => result) : nil;
    }
 
    [Obsolete("Use ConversionFunctions")]
-   public static Result<decimal> Decimal(this string source) => tryTo(() => decimal.Parse(source));
+   public static Optional<decimal> Decimal(this string source) => tryTo(() => decimal.Parse(source));
 
    [Obsolete("Use ConversionFunctions")]
-   public static Maybe<DateTime> AsDateTime(this string source)
+   public static Optional<DateTime> AsDateTime(this string source)
    {
       return source.IsNotEmpty() ? maybe(System.DateTime.TryParse(source, out var result), () => result) : nil;
    }
 
    [Obsolete("Use ConversionFunctions")]
-   public static Result<DateTime> DateTime(this string source) => tryTo(() => System.DateTime.Parse(source));
+   public static Optional<DateTime> DateTime(this string source) => tryTo(() => System.DateTime.Parse(source));
 
    [Obsolete("Use ConversionFunctions")]
-   public static Maybe<Guid> AsGuid(this string source)
+   public static Optional<Guid> AsGuid(this string source)
    {
       return source.IsNotEmpty() ? maybe(System.Guid.TryParse(source, out var guid), () => guid) : nil;
    }
 
    [Obsolete("Use ConversionFunctions")]
-   public static Result<Guid> Guid(this string source) => tryTo(() => System.Guid.Parse(source));
+   public static Optional<Guid> Guid(this string source) => tryTo(() => System.Guid.Parse(source));
 
    public static string ToBase64(this string source, Encoding encoding)
    {
@@ -1255,7 +1256,7 @@ public static class StringExtensions
    public static T ToEnumeration<T>(this string value, T defaultValue) where T : struct => value.ToEnumeration(true, defaultValue);
 
    [Obsolete("Use ConversionFunctions")]
-   public static Maybe<T> AsEnumeration<T>(this string value, bool ignoreCase = true) where T : struct
+   public static Optional<T> AsEnumeration<T>(this string value, bool ignoreCase = true) where T : struct
    {
       try
       {
@@ -1268,19 +1269,19 @@ public static class StringExtensions
    }
 
    [Obsolete("Use ConversionFunctions")]
-   public static Maybe<object> AsEnumeration(this string value, Type enumerationType, bool ignoreCase = true)
+   public static Optional<object> AsEnumeration(this string value, Type enumerationType, bool ignoreCase = true)
    {
-      return value.Enumeration(enumerationType, ignoreCase).Maybe();
+      return value.Enumeration(enumerationType, ignoreCase);
    }
 
    [Obsolete("Use ConversionFunctions")]
-   public static Result<object> Enumeration(this string value, Type enumerationType, bool ignoreCase = true)
+   public static Optional<object> Enumeration(this string value, Type enumerationType, bool ignoreCase = true)
    {
       return tryTo(() => Enum.Parse(enumerationType, value, ignoreCase));
    }
 
    [Obsolete("Use ConversionFunctions")]
-   public static Result<T> Enumeration<T>(this string value, bool ignoreCase = true) where T : struct
+   public static Optional<T> Enumeration<T>(this string value, bool ignoreCase = true) where T : struct
    {
       try
       {
@@ -1297,7 +1298,7 @@ public static class StringExtensions
       return source.Map(s => s.Matches("^ [quote] /(.*?) [quote] $; f").Map(result => result.FirstGroup) | s);
    }
 
-   public static Maybe<object> ToObject(this string value)
+   public static Optional<object> ToObject(this string value)
    {
       if (value == null)
       {
@@ -1361,7 +1362,7 @@ public static class StringExtensions
       }
    }
 
-   public static Maybe<Type> ToType(this string value)
+   public static Optional<Type> ToType(this string value)
    {
       if (value.IsEmpty())
       {
@@ -1405,7 +1406,7 @@ public static class StringExtensions
       }
    }
 
-   public static Maybe<object> ToParsed(this string value, Type type)
+   public static Optional<object> ToParsed(this string value, Type type)
    {
       if (value.IsEmpty())
       {
@@ -1449,7 +1450,7 @@ public static class StringExtensions
       }
    }
 
-   public static Result<object> AsObject(this string value)
+   public static Optional<object> AsObject(this string value)
    {
       if (value.IsEmpty())
       {
@@ -1509,7 +1510,7 @@ public static class StringExtensions
       }
    }
 
-   public static Result<Type> Type(this string value)
+   public static Optional<Type> Type(this string value)
    {
       if (value.IsEmpty())
       {
@@ -1553,7 +1554,7 @@ public static class StringExtensions
       }
    }
 
-   public static Result<object> Parsed(this string value, Type type)
+   public static Optional<object> Parsed(this string value, Type type)
    {
       if (value.IsEmpty())
       {
@@ -1599,7 +1600,7 @@ public static class StringExtensions
 
    public static string ToNonNullString(this object value) => value?.ToString() ?? string.Empty;
 
-   public static Maybe<string> ToIMaybeString(this object value) => maybe(value != null, value.ToString);
+   public static Optional<string> ToIMaybeString(this object value) => maybe(value != null, value.ToString);
 
    public static string ToLiteral(this object value)
    {
@@ -1639,39 +1640,39 @@ public static class StringExtensions
       }
    }
 
-   public static Maybe<int> ExtractInt(this string source)
+   public static Optional<int> ExtractInt(this string source)
    {
       return maybe(source.IsNotEmpty(), () => source.Matches("/(['+-']? /d+); f")).Map(result => Maybe.Int32(result[0, 1]));
    }
 
-   public static Maybe<double> ExtractDouble(this string source)
+   public static Optional<double> ExtractDouble(this string source)
    {
       return maybe(source.IsNotEmpty(), () => source.Matches("/(['+-']? /d* '.' /d* (['eE'] ['-+']? /d+)?); f"))
          .Map(result => Value.Double(result[0, 1]));
    }
 
-   public static Maybe<char> First(this string source) => maybe(source.IsNotEmpty(), () => source[0]);
+   public static Optional<char> First(this string source) => maybe(source.IsNotEmpty(), () => source[0]);
 
-   public static Maybe<char> Last(this string source) => maybe(source.IsNotEmpty(), () => source[source.Length - 1]);
+   public static Optional<char> Last(this string source) => maybe(source.IsNotEmpty(), () => source[source.Length - 1]);
 
-   public static Maybe<string> Left(this string source, int length)
+   public static Optional<string> Left(this string source, int length)
    {
       var minLength = length.MinOf(source.Length);
       return maybe(minLength > 0, () => source.Keep(minLength));
    }
 
-   public static Maybe<string> Right(this string source, int length)
+   public static Optional<string> Right(this string source, int length)
    {
       var minLength = Math.Min(length, source.Length);
       return maybe(source.IsNotEmpty() && minLength > 0, () => source.Drop(source.Length - minLength).Keep(minLength));
    }
 
-   public static Maybe<string> Sub(this string source, int index, int length)
+   public static Optional<string> Sub(this string source, int index, int length)
    {
       return maybe(source.IsNotEmpty() && length > 0 && index >= 0 && index + length - 1 < source.Length, () => source.Drop(index).Keep(length));
    }
 
-   public static Maybe<string> Sub(this string source, int index)
+   public static Optional<string> Sub(this string source, int index)
    {
       return maybe(source.IsNotEmpty() && index >= 0 && index < source.Length, () => source.Drop(index));
    }
@@ -2088,9 +2089,9 @@ public static class StringExtensions
       return builder.ToString();
    }
 
-   public static Maybe<int> FromHex(this string source)
+   public static Optional<int> FromHex(this string source)
    {
-      Maybe<int> matches()
+      Optional<int> matches()
       {
          return source.Matches("^ ('0x')? /(['0-9a-fA-F']+) $; f").Map(m => int.Parse(m.FirstGroup, NumberStyles.HexNumber));
       }
@@ -2098,7 +2099,7 @@ public static class StringExtensions
       return maybe(source.IsNotEmpty(), matches);
    }
 
-   public static Maybe<string> GetSignature(this string parameterName)
+   public static Optional<string> GetSignature(this string parameterName)
    {
       return maybe(parameterName.IsNotEmpty(), () => parameterName.Matches("^ '@' /(.*) $; f").Map(m => m.FirstGroup.SnakeToCamelCase(true)));
    }
@@ -2201,7 +2202,7 @@ public static class StringExtensions
       return builder.ToString();
    }
 
-   public static Result<long> ByteSize(this string source)
+   public static Optional<long> ByteSize(this string source)
    {
       if (source.IsEmpty())
       {
@@ -2241,7 +2242,7 @@ public static class StringExtensions
       }
    }
 
-   public static Maybe<long> AsByteSize(this string source) => source.ByteSize().Map(l => l.Some()).Recover(_ => nil);
+   public static Optional<long> AsByteSize(this string source) => source.ByteSize().Map(l => l.Some()).Recover(_ => nil);
 
    public static long ToByteSize(this string source, long defaultValue = 0)
    {
@@ -2261,7 +2262,7 @@ public static class StringExtensions
       return result.Center(allowedLength).Elliptical(allowedLength, ' ');
    }
 
-   public static Maybe<int> Find(this string source, string substring, int startIndex = 0, bool ignoreCase = false)
+   public static Optional<int> Find(this string source, string substring, int startIndex = 0, bool ignoreCase = false)
    {
       if (source.IsNotEmpty() && substring.IsNotEmpty())
       {
@@ -2276,7 +2277,7 @@ public static class StringExtensions
       }
    }
 
-   public static Maybe<int> FindBackward(this string source, string substring, int startIndex = -1, bool ignoreCase = false)
+   public static Optional<int> FindBackward(this string source, string substring, int startIndex = -1, bool ignoreCase = false)
    {
       if (source.IsNotEmpty() && substring.IsNotEmpty())
       {
@@ -2296,7 +2297,7 @@ public static class StringExtensions
       }
    }
 
-   public static Maybe<Slice> FindByRegex(this string source, Pattern pattern)
+   public static Optional<Slice> FindByRegex(this string source, Pattern pattern)
    {
       var _result = source.Matches(pattern);
       if (_result is (true, var result))
@@ -2412,7 +2413,7 @@ public static class StringExtensions
    }
 
    [Obsolete("Use EqualTo")]
-   public static Maybe<bool> IsExactlyEqualTo(this string left, string right)
+   public static Optional<bool> IsExactlyEqualTo(this string left, string right)
    {
       if (left == right)
       {

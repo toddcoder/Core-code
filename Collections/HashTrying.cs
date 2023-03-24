@@ -11,9 +11,9 @@ public class HashTrying<TKey, TValue>
 
    public HashTrying(Hash<TKey, TValue> hash) => this.hash = hash;
 
-   public Result<TValue> this[TKey key] => hash.Must().HaveKeyOf(key).OrFailure().Map(d => d[key].Success());
+   public Optional<TValue> this[TKey key] => hash.Must().HaveKeyOf(key).OrFailure().Map(d => d[key].Success());
 
-   public Result<TValue> Find(TKey key, Func<TKey, Result<TValue>> defaultValue, bool addIfNotFound = false)
+   public Optional<TValue> Find(TKey key, Func<TKey, Optional<TValue>> defaultValue, bool addIfNotFound = false)
    {
       var result = this[key];
       if (result)
@@ -39,7 +39,7 @@ public class HashTrying<TKey, TValue>
       }
    }
 
-   public Result<TValue> Map(TKey key, string notFoundMessage)
+   public Optional<TValue> Map(TKey key, string notFoundMessage)
    {
       var _value = hash.Maybe[key];
       if (_value is (true, var value))
@@ -52,7 +52,7 @@ public class HashTrying<TKey, TValue>
       }
    }
 
-   public Result<TValue> Map(TKey key, Func<string> notFoundMessage)
+   public Optional<TValue> Map(TKey key, Func<string> notFoundMessage)
    {
       var _value = hash.Maybe[key];
       if (_value is (true, var value))

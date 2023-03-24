@@ -47,27 +47,27 @@ public class MatchResult : IEnumerable<Match>
 
    public Match[] Matches => matches;
 
-   protected Maybe<Match> getMatchMaybe(int index) => maybe(index.Between(0).Until(matches.Length), () => matches[index]);
+   protected Optional<Match> getMatchMaybe(int index) => maybe(index.Between(0).Until(matches.Length), () => matches[index]);
 
-   protected static Maybe<Group> getGroupMaybe(Maybe<Match> match, int index)
+   protected static Optional<Group> getGroupMaybe(Optional<Match> match, int index)
    {
       return match.Map(m => maybe(index.Between(0).Until(m.Groups.Length), () => m.Groups[index]));
    }
 
    public int Index => matches.Length == 0 ? -1 : matches[0].Index;
 
-   public Maybe<int> IndexOf(int matchIndex) => getMatchMaybe(matchIndex).Map(m => m.Index);
+   public Optional<int> IndexOf(int matchIndex) => getMatchMaybe(matchIndex).Map(m => m.Index);
 
-   public Maybe<int> IndexOf(int matchIndex, int groupIndex)
+   public Optional<int> IndexOf(int matchIndex, int groupIndex)
    {
       return getGroupMaybe(getMatchMaybe(matchIndex), groupIndex).Map(g => g.Index);
    }
 
    public int Length => matches.Length == 0 ? 0 : matches[0].Length;
 
-   public Maybe<int> LengthOf(int matchIndex) => getMatchMaybe(matchIndex).Map(m => m.Length);
+   public Optional<int> LengthOf(int matchIndex) => getMatchMaybe(matchIndex).Map(m => m.Length);
 
-   public Maybe<int> LengthOf(int matchIndex, int groupIndex)
+   public Optional<int> LengthOf(int matchIndex, int groupIndex)
    {
       return getGroupMaybe(getMatchMaybe(matchIndex), groupIndex).Map(g => g.Length);
    }
@@ -94,9 +94,9 @@ public class MatchResult : IEnumerable<Match>
 
    public int GroupCount(int index) => getMatch(index).Groups.Length;
 
-   public Maybe<string> NameFromIndex(int index) => indexesToNames.Maybe(index);
+   public Optional<string> NameFromIndex(int index) => indexesToNames.Maybe(index);
 
-   public Maybe<int> IndexFromName(string name) => namesToIndexes.Maybe(name);
+   public Optional<int> IndexFromName(string name) => namesToIndexes.Maybe(name);
 
    public int MatchCount => matches.Length;
 
@@ -120,7 +120,7 @@ public class MatchResult : IEnumerable<Match>
       }
    }
 
-   public Maybe<string> Maybe(int matchIndex, int groupIndex)
+   public Optional<string> Maybe(int matchIndex, int groupIndex)
    {
       var value = this[matchIndex, groupIndex];
       return maybe(value.IsNotEmpty(), () => value);
@@ -132,7 +132,7 @@ public class MatchResult : IEnumerable<Match>
       set => getMatch(matchIndex).SetSlice(slicer, value);
    }
 
-   public Maybe<string> Maybe(int matchIndex)
+   public Optional<string> Maybe(int matchIndex)
    {
       var value = this[matchIndex];
       return maybe(value.IsNotEmpty(), () => value);
@@ -409,7 +409,7 @@ public class MatchResult : IEnumerable<Match>
 
    public string[] Groups(int matchIndex) => getMatch(matchIndex).Groups.Select(g => g.GetSlice(slicer)).ToArray();
 
-   public string EvaluateMatches(Func<Match, int, Maybe<string>> func)
+   public string EvaluateMatches(Func<Match, int, Optional<string>> func)
    {
       Slicer evaluated = input;
 
@@ -426,7 +426,7 @@ public class MatchResult : IEnumerable<Match>
       return evaluated.ToString();
    }
 
-   public string EvaluateGroups(Func<Group, int, Maybe<string>> func, bool skipGroup0)
+   public string EvaluateGroups(Func<Group, int, Optional<string>> func, bool skipGroup0)
    {
       Slicer evaluated = input;
 

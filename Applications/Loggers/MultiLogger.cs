@@ -11,7 +11,7 @@ public class MultiLogger
    // ReSharper disable once CollectionNeverUpdated.Global
    protected AutoStringHash<Logger> loggers;
    protected StringSet keys;
-   protected Maybe<string> _key;
+   protected Optional<string> _key;
 
    public MultiLogger(int indentation = 2)
    {

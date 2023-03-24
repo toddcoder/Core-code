@@ -12,5 +12,5 @@ public class RequiredHash<TKey, TValue>
       this.hash = hash.Must().Force<IHash<TKey, TValue>>();
    }
 
-   public Result<TValue> this[TKey key] => hash.Must().HaveKeyOf(key).OrFailure().Map(d => d[key]);
+   public Optional<TValue> this[TKey key] => hash.Must().HaveKeyOf(key).OrFailure().Map(d => d[key]);
 }

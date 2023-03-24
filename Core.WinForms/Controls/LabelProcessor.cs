@@ -8,12 +8,12 @@ public class LabelProcessor
 {
    protected const int LABEL_MARGIN = 8;
    protected string label;
-   protected Maybe<int> _labelWidth;
+   protected Optional<int> _labelWidth;
    protected Font font;
-   protected Maybe<string> _emptyTextTitle;
+   protected Optional<string> _emptyTextTitle;
    protected Rectangle labelRectangle;
 
-   public LabelProcessor(string label, Maybe<int> _labelWidth, Font font, Maybe<string> _emptyTextTitle, Graphics graphics, Rectangle clientRectangle)
+   public LabelProcessor(string label, Optional<int> _labelWidth, Font font, Optional<string> _emptyTextTitle, Graphics graphics, Rectangle clientRectangle)
    {
       this.label = label;
       this._labelWidth = _labelWidth;
@@ -25,7 +25,7 @@ public class LabelProcessor
 
    public Rectangle Rectangle => labelRectangle;
 
-  public static Maybe<int> LabelWidth(Maybe<string> _label, Font font)
+  public static Optional<int> LabelWidth(Optional<string> _label, Font font)
    {
       return _label.Map(label => TextRenderer.MeasureText(label, font).Width + LABEL_MARGIN);
    }

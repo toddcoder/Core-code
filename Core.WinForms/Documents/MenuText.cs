@@ -10,7 +10,7 @@ public abstract class MenuText
 
    public static implicit operator MenuText(Func<string> func) => new MenuStringFunction(func);
 
-   public static implicit operator MenuText(Func<Result<string>> func) => new MenuResultStringFunction(func);
+   public static implicit operator MenuText(Func<Optional<string>> func) => new MenuResultStringFunction(func);
 
    public static MenuText Empty = new EmptyText();
 
@@ -51,9 +51,9 @@ public sealed class MenuStringFunction : MenuText
 
 public sealed class MenuResultStringFunction : MenuText
 {
-   internal Func<Result<string>> func;
+   internal Func<Optional<string>> func;
 
-   public MenuResultStringFunction(Func<Result<string>> func)
+   public MenuResultStringFunction(Func<Optional<string>> func)
    {
       this.func = func;
    }

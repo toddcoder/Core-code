@@ -32,12 +32,12 @@ public static class HashExtensions
       }
    }
 
-   public static Result<TValue> Require<TKey, TValue>(this IHash<TKey, TValue> hash, TKey key)
+   public static Optional<TValue> Require<TKey, TValue>(this IHash<TKey, TValue> hash, TKey key)
    {
       return hash.Require(key, $"Value for key {key} not found");
    }
 
-   public static Result<TValue> Require<TKey, TValue>(this IHash<TKey, TValue> hash, TKey key, string message)
+   public static Optional<TValue> Require<TKey, TValue>(this IHash<TKey, TValue> hash, TKey key, string message)
    {
       if (hash.ContainsKey(key))
       {
@@ -97,7 +97,7 @@ public static class HashExtensions
       }
    }
 
-   public static Maybe<TValue> Maybe<TKey, TValue>(this IHash<TKey, TValue> hash, TKey key)
+   public static Optional<TValue> Optional<TKey, TValue>(this IHash<TKey, TValue> hash, TKey key)
    {
       if (hash.ContainsKey(key))
       {
@@ -110,27 +110,27 @@ public static class HashExtensions
    }
 
    [Obsolete("Use Maybe")]
-   public static Maybe<TValue> Map<TKey, TValue>(this IHash<TKey, TValue> hash, TKey key)
+   public static Optional<TValue> Map<TKey, TValue>(this IHash<TKey, TValue> hash, TKey key)
    {
       return maybe(hash.ContainsKey(key), () => hash[key]);
    }
 
    [Obsolete("Use Maybe")]
-   public static Maybe<TValue> Of<TKey, TValue>(this IHash<TKey, TValue> hash, TKey key)
+   public static Optional<TValue> Of<TKey, TValue>(this IHash<TKey, TValue> hash, TKey key)
    {
       return maybe(hash.ContainsKey(key), () => hash[key]);
    }
 
    [Obsolete("Use Maybe")]
-   public static Maybe<TResult> Map<TKey, TValue, TResult>(this IHash<TKey, TValue> hash, TKey key,
+   public static Optional<TResult> Map<TKey, TValue, TResult>(this IHash<TKey, TValue> hash, TKey key,
       Func<TValue, TResult> func)
    {
       return maybe(hash.ContainsKey(key), () => func(hash[key]));
    }
 
    [Obsolete("Use Maybe")]
-   public static Maybe<TResult> Map<TKey, TValue, TResult>(this IHash<TKey, TValue> hash, TKey key,
-      Func<TValue, Maybe<TResult>> func)
+   public static Optional<TResult> Map<TKey, TValue, TResult>(this IHash<TKey, TValue> hash, TKey key,
+      Func<TValue, Optional<TResult>> func)
    {
       return maybe(hash.ContainsKey(key), () => func(hash[key]));
    }
@@ -168,7 +168,7 @@ public static class HashExtensions
    }
 
    [Obsolete("Use Maybe")]
-   public static Maybe<TValue> Get<TKey, TValue>(this IHash<TKey, TValue> hash, TKey key)
+   public static Optional<TValue> Get<TKey, TValue>(this IHash<TKey, TValue> hash, TKey key)
    {
       return maybe(hash.ContainsKey(key), () => hash[key]);
    }
@@ -386,8 +386,8 @@ public static class HashExtensions
       return result;
    }
 
-   public static Result<Hash<TKey, TValue>> TryToHash<TKey, TValue, T>(this IEnumerable<T> enumerable, Func<T, TKey> keySelector,
-      Func<T, Result<TValue>> valueSelector)
+   public static Optional<Hash<TKey, TValue>> TryToHash<TKey, TValue, T>(this IEnumerable<T> enumerable, Func<T, TKey> keySelector,
+      Func<T, Optional<TValue>> valueSelector)
    {
       var result = new Hash<TKey, TValue>();
       foreach (var item in enumerable)
@@ -406,8 +406,8 @@ public static class HashExtensions
       return result;
    }
 
-   public static Result<StringHash<TValue>> TryToStringHash<TValue, T>(this IEnumerable<T> enumerable, Func<T, string> keySelector,
-      Func<T, Result<TValue>> valueSelector, bool ignoreCase)
+   public static Optional<StringHash<TValue>> TryToStringHash<TValue, T>(this IEnumerable<T> enumerable, Func<T, string> keySelector,
+      Func<T, Optional<TValue>> valueSelector, bool ignoreCase)
    {
       var result = new StringHash<TValue>(ignoreCase);
       foreach (var item in enumerable)
@@ -426,8 +426,8 @@ public static class HashExtensions
       return result;
    }
 
-   public static Result<Hash<TKey, TValue>> TryToHash<TKey, TValue, T>(this IEnumerable<T> enumerable, Func<T, TKey> keySelector,
-      Func<T, Result<TValue>> valueSelector, IEqualityComparer<TKey> comparer)
+   public static Optional<Hash<TKey, TValue>> TryToHash<TKey, TValue, T>(this IEnumerable<T> enumerable, Func<T, TKey> keySelector,
+      Func<T, Optional<TValue>> valueSelector, IEqualityComparer<TKey> comparer)
    {
       var result = new Hash<TKey, TValue>(comparer);
       foreach (var item in enumerable)
@@ -446,8 +446,8 @@ public static class HashExtensions
       return result;
    }
 
-   public static Result<Hash<TKey, TValue>> TryToHash<TKey, TValue, T>(this IEnumerable<T> enumerable, Func<T, Result<TKey>> keySelector,
-      Func<T, Result<TValue>> valueSelector)
+   public static Optional<Hash<TKey, TValue>> TryToHash<TKey, TValue, T>(this IEnumerable<T> enumerable, Func<T, Optional<TKey>> keySelector,
+      Func<T, Optional<TValue>> valueSelector)
    {
       var result = new Hash<TKey, TValue>();
       foreach (var item in enumerable)
@@ -467,8 +467,8 @@ public static class HashExtensions
       return result;
    }
 
-   public static Result<StringHash<TValue>> TryToStringHash<TValue, T>(this IEnumerable<T> enumerable, Func<T, Result<string>> keySelector,
-      Func<T, Result<TValue>> valueSelector, bool ignoreCase)
+   public static Optional<StringHash<TValue>> TryToStringHash<TValue, T>(this IEnumerable<T> enumerable, Func<T, Optional<string>> keySelector,
+      Func<T, Optional<TValue>> valueSelector, bool ignoreCase)
    {
       var result = new StringHash<TValue>(ignoreCase);
       foreach (var item in enumerable)
@@ -488,8 +488,8 @@ public static class HashExtensions
       return result;
    }
 
-   public static Result<Hash<TKey, TValue>> TryToHash<TKey, TValue, T>(this IEnumerable<T> enumerable, Func<T, Result<TKey>> keySelector,
-      Func<T, Result<TValue>> valueSelector, IEqualityComparer<TKey> comparer)
+   public static Optional<Hash<TKey, TValue>> TryToHash<TKey, TValue, T>(this IEnumerable<T> enumerable, Func<T, Optional<TKey>> keySelector,
+      Func<T, Optional<TValue>> valueSelector, IEqualityComparer<TKey> comparer)
    {
       var result = new Hash<TKey, TValue>(comparer);
       foreach (var item in enumerable)
@@ -509,7 +509,7 @@ public static class HashExtensions
       return result;
    }
 
-   public static Result<Hash<TKey, TValue>> TryToHash<TKey, TValue, T>(this IEnumerable<T> enumerable, Func<T, TKey> keySelector,
+   public static Optional<Hash<TKey, TValue>> TryToHash<TKey, TValue, T>(this IEnumerable<T> enumerable, Func<T, TKey> keySelector,
       Func<T, TValue> valueSelector)
    {
       var result = new Hash<TKey, TValue>();
@@ -529,7 +529,7 @@ public static class HashExtensions
       return result;
    }
 
-   public static Result<StringHash<TValue>> TryToStringHash<TValue, T>(this IEnumerable<T> enumerable, Func<T, string> keySelector,
+   public static Optional<StringHash<TValue>> TryToStringHash<TValue, T>(this IEnumerable<T> enumerable, Func<T, string> keySelector,
       Func<T, TValue> valueSelector, bool ignoreCase)
    {
       var result = new StringHash<TValue>(ignoreCase);
@@ -549,7 +549,7 @@ public static class HashExtensions
       return result;
    }
 
-   public static Result<Hash<TKey, TValue>> TryToHash<TKey, TValue, T>(this IEnumerable<T> enumerable, Func<T, TKey> keySelector,
+   public static Optional<Hash<TKey, TValue>> TryToHash<TKey, TValue, T>(this IEnumerable<T> enumerable, Func<T, TKey> keySelector,
       Func<T, TValue> valueSelector, IEqualityComparer<TKey> comparer)
    {
       var result = new Hash<TKey, TValue>(comparer);
@@ -571,7 +571,7 @@ public static class HashExtensions
 
    public static IEnumerator<T> AsEnumerator<T>(this IEnumerable enumerable) => ((IEnumerable<T>)enumerable).GetEnumerator();
 
-   public static Result<Setting> ToSetting<TKey, TValue>(this IHash<TKey, TValue> hash)
+   public static Optional<Setting> ToSetting<TKey, TValue>(this IHash<TKey, TValue> hash)
    {
       try
       {
@@ -598,7 +598,7 @@ public static class HashExtensions
       }
    }
 
-   public static Result<Configuration> ToConfiguration<TKey, TValue>(this IHash<TKey, TValue> hash, FileName file, string name = Setting.ROOT_NAME,
+   public static Optional<Configuration> ToConfiguration<TKey, TValue>(this IHash<TKey, TValue> hash, FileName file, string name = Setting.ROOT_NAME,
       bool save = false)
    {
       var _configuration = hash.ToSetting().Map(setting => new Configuration(file, setting.items, name));
@@ -619,7 +619,7 @@ public static class HashExtensions
       }
    }
 
-   public static Result<Hash<TKey, TValue[]>> GroupToHash<T, TKey, TValue>(this IEnumerable<T> enumerable, Func<T, TKey> keyFunc,
+   public static Optional<Hash<TKey, TValue[]>> GroupToHash<T, TKey, TValue>(this IEnumerable<T> enumerable, Func<T, TKey> keyFunc,
       Func<T, TValue> valueFunc)
    {
       try
@@ -646,7 +646,7 @@ public static class HashExtensions
       }
    }
 
-   public static Result<Hash<TKey, T[]>> GroupToHash<T, TKey>(this IEnumerable<T> enumerable, Func<T, TKey> keyFunc)
+   public static Optional<Hash<TKey, T[]>> GroupToHash<T, TKey>(this IEnumerable<T> enumerable, Func<T, TKey> keyFunc)
    {
       try
       {
@@ -671,8 +671,8 @@ public static class HashExtensions
       }
    }
 
-   public static Result<Hash<TKey, TValue>> GroupToHash<T, TKey, TValue>(this IEnumerable<T> enumerable, Func<T, TKey> keyFunc,
-      Func<Maybe<TValue>, T, TValue> valueFunc)
+   public static Optional<Hash<TKey, TValue>> GroupToHash<T, TKey, TValue>(this IEnumerable<T> enumerable, Func<T, TKey> keyFunc,
+      Func<Optional<TValue>, T, TValue> valueFunc)
    {
       try
       {
@@ -693,7 +693,7 @@ public static class HashExtensions
       }
    }
 
-   public static Maybe<TaggedValue<MatchResult>> Matches(this Hash<string, Pattern> patterns, string input)
+   public static Optional<TaggedValue<MatchResult>> Matches(this Hash<string, Pattern> patterns, string input)
    {
       foreach (var (name, pattern) in patterns)
       {
@@ -707,5 +707,5 @@ public static class HashExtensions
       return nil;
    }
 
-   public static IHashMaybe<TKey, TValue> Maybe<TKey, TValue>(this IHash<TKey, TValue> hash) => new(hash);
+   public static IHashOptional<TKey, TValue> Optional<TKey, TValue>(this IHash<TKey, TValue> hash) => new(hash);
 }

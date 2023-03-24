@@ -13,7 +13,7 @@ public class PadderTable
 {
    protected struct PadderItem
    {
-      public Maybe<int> Length;
+      public Optional<int> Length;
       public PadType PadType;
    }
 

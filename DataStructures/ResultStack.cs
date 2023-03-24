@@ -8,11 +8,11 @@ public class ResultStack<T>
 
    internal ResultStack(MaybeStack<T> stack) => this.stack = stack;
 
-   public Result<T> Peek(string message) => stack.Peek().Result(message);
+   public Optional<T> Peek(string message) => stack.Peek().Result(message);
 
-   public Result<T> Peek() => Peek("Empty stack");
+   public Optional<T> Peek() => Peek("Empty stack");
 
-   public Result<T> Pop(string message) => stack.Pop().Result(message);
+   public Optional<T> Pop(string message) => stack.Pop().Result(message);
 
-   public Result<T> Pop() => Pop("Empty stack");
+   public Optional<T> Pop() => Pop("Empty stack");
 }

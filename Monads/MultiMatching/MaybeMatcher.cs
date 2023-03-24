@@ -8,17 +8,17 @@ public class MaybeMatcher<T, TResult>
 {
    public class MaybeFunction
    {
-      public MaybeFunction(Maybe<T> maybe, Func<T, TResult> func)
+      public MaybeFunction(Optional<T> maybe, Func<T, TResult> func)
       {
          Maybe = maybe;
          Func = func;
       }
 
-      public Maybe<T> Maybe { get; }
+      public Optional<T> Maybe { get; }
 
       public Func<T, TResult> Func { get; }
 
-      public void Deconstruct(out Maybe<T> maybe, out Func<T, TResult> func)
+      public void Deconstruct(out Optional<T> maybe, out Func<T, TResult> func)
       {
          maybe = Maybe;
          func = Func;
@@ -31,14 +31,14 @@ public class MaybeMatcher<T, TResult>
 
       protected MaybeMatcher<T, TResult> maybeMatcher;
 
-      public Case(MaybeMatcher<T, TResult> maybeMatcher, Maybe<T> maybe)
+      public Case(MaybeMatcher<T, TResult> maybeMatcher, Optional<T> maybe)
       {
          this.maybeMatcher = maybeMatcher;
 
          Maybe = maybe;
       }
 
-      public Maybe<T> Maybe { get; }
+      public Optional<T> Maybe { get; }
 
       public MaybeMatcher<T, TResult> Then(Func<T, TResult> func)
       {
@@ -47,12 +47,12 @@ public class MaybeMatcher<T, TResult>
       }
    }
 
-   public static Case operator &(MaybeMatcher<T, TResult> maybeMatcher, Maybe<T> maybe) => maybeMatcher.When(maybe);
+   public static Case operator &(MaybeMatcher<T, TResult> maybeMatcher, Optional<T> maybe) => maybeMatcher.When(maybe);
 
    public static MaybeMatcher<T, TResult> operator &(MaybeMatcher<T, TResult> maybeMatcher, Func<TResult> func) => maybeMatcher.Else(func);
 
    protected List<MaybeFunction> maybeFunctions;
-   protected Maybe<Func<TResult>> _defaultFunction;
+   protected Optional<Func<TResult>> _defaultFunction;
 
    internal MaybeMatcher()
    {
@@ -60,9 +60,9 @@ public class MaybeMatcher<T, TResult>
       _defaultFunction = nil;
    }
 
-   public Case When(Maybe<T> maybe) => new(this, maybe);
+   public Case When(Optional<T> maybe) => new(this, maybe);
 
-   internal void AddMaybe(Maybe<T> maybe, Func<T, TResult> func) => maybeFunctions.Add(new MaybeFunction(maybe, func));
+   internal void AddMaybe(Optional<T> maybe, Func<T, TResult> func) => maybeFunctions.Add(new MaybeFunction(maybe, func));
 
    public MaybeMatcher<T, TResult> Else(Func<TResult> func)
    {
@@ -74,7 +74,7 @@ public class MaybeMatcher<T, TResult>
       return this;
    }
 
-   public Maybe<TResult> Matches()
+   public Optional<TResult> Matches()
    {
       foreach (var (_maybe, func) in maybeFunctions)
       {
@@ -99,17 +99,17 @@ public class MaybeMatcher<T>
 {
    public class MaybeAction
    {
-      public MaybeAction(Maybe<T> maybe, Action<T> action)
+      public MaybeAction(Optional<T> maybe, Action<T> action)
       {
          Maybe = maybe;
          Action = action;
       }
 
-      public Maybe<T> Maybe { get; }
+      public Optional<T> Maybe { get; }
 
       public Action<T> Action { get; }
 
-      public void Deconstruct(out Maybe<T> maybe, out Action<T> action)
+      public void Deconstruct(out Optional<T> maybe, out Action<T> action)
       {
          maybe = Maybe;
          action = Action;
@@ -122,14 +122,14 @@ public class MaybeMatcher<T>
 
       protected MaybeMatcher<T> maybeMatcher;
 
-      public Case(MaybeMatcher<T> maybeMatcher, Maybe<T> maybe)
+      public Case(MaybeMatcher<T> maybeMatcher, Optional<T> maybe)
       {
          this.maybeMatcher = maybeMatcher;
 
          Maybe = maybe;
       }
 
-      public Maybe<T> Maybe { get; }
+      public Optional<T> Maybe { get; }
 
       public MaybeMatcher<T> Then(Action<T> action)
       {
@@ -138,12 +138,12 @@ public class MaybeMatcher<T>
       }
    }
 
-   public static Case operator &(MaybeMatcher<T> maybeMatcher, Maybe<T> maybe) => maybeMatcher.When(maybe);
+   public static Case operator &(MaybeMatcher<T> maybeMatcher, Optional<T> maybe) => maybeMatcher.When(maybe);
 
    public static MaybeMatcher<T> operator &(MaybeMatcher<T> maybeMatcher, Action action) => maybeMatcher.Else(action);
 
    protected List<MaybeAction> maybeActions;
-   protected Maybe<Action> _defaultAction;
+   protected Optional<Action> _defaultAction;
 
    internal MaybeMatcher()
    {
@@ -151,9 +151,9 @@ public class MaybeMatcher<T>
       _defaultAction = nil;
    }
 
-   public Case When(Maybe<T> maybe) => new(this, maybe);
+   public Case When(Optional<T> maybe) => new(this, maybe);
 
-   internal void AddMaybe(Maybe<T> maybe, Action<T> action) => maybeActions.Add(new MaybeAction(maybe, action));
+   internal void AddMaybe(Optional<T> maybe, Action<T> action) => maybeActions.Add(new MaybeAction(maybe, action));
 
    public MaybeMatcher<T> Else(Action action)
    {
@@ -165,7 +165,7 @@ public class MaybeMatcher<T>
       return this;
    }
 
-   public Maybe<T> Matches()
+   public Optional<T> Matches()
    {
       foreach (var (_maybe, action) in maybeActions)
       {

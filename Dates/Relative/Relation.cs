@@ -35,7 +35,7 @@ public class Relation
 
    protected static int safeDay(DateTime date, int month) => Min(date.Day, month.LastOfMonth(date.Year));
 
-   public Result<DateTime> Month(DateTime date)
+   public Optional<DateTime> Month(DateTime date)
    {
       if (isRelative)
       {
@@ -51,7 +51,7 @@ public class Relation
       }
    }
 
-   public Result<DateTime> Day(DateTime date)
+   public Optional<DateTime> Day(DateTime date)
    {
       if (isRelative)
       {

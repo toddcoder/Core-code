@@ -9,5 +9,5 @@ public class RelativeMonth : DateOperation
 
    public override OperationType Type => OperationType.Month;
 
-   public override Result<DateTime> Operate(DateTime dateTime) => dateTime.AddMonths(amount);
+   public override Optional<DateTime> Operate(DateTime dateTime) => dateTime.AddMonths(amount);
 }

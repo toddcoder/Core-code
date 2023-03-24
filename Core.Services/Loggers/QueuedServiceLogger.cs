@@ -32,9 +32,9 @@ public class QueuedServiceLogger : ServiceLogger
 
    protected MaybeQueue<QueueItem> queue;
 
-   public new static Result<QueuedServiceLogger> FromConfiguration(Configuration configuration)
+   public new static Optional<QueuedServiceLogger> FromConfiguration(Configuration configuration)
    {
-      Result<ServiceLogger> creator(FolderName baseFolder, string jobName, int sizeLimit, TimeSpan expiry, Maybe<EventLogger> _eventLogger)
+      Optional<ServiceLogger> creator(FolderName baseFolder, string jobName, int sizeLimit, TimeSpan expiry, Optional<EventLogger> _eventLogger)
       {
          return new QueuedServiceLogger(baseFolder, jobName, sizeLimit, expiry, _eventLogger);
       }
@@ -42,7 +42,7 @@ public class QueuedServiceLogger : ServiceLogger
       return fromConfiguration(configuration, creator).Map(sl => (QueuedServiceLogger)sl);
    }
 
-   public QueuedServiceLogger(FolderName baseFolder, string jobName, int sizeLimit, TimeSpan expiry, Maybe<EventLogger> _eventLogger) :
+   public QueuedServiceLogger(FolderName baseFolder, string jobName, int sizeLimit, TimeSpan expiry, Optional<EventLogger> _eventLogger) :
       base(baseFolder, jobName, sizeLimit, expiry, _eventLogger)
    {
       queue = new MaybeQueue<QueueItem>();

@@ -12,7 +12,7 @@ public class DataSettings
 
    public Setting AdaptersSetting { get; set; }
 
-   public Result<string> Command(string adapterName)
+   public Optional<string> Command(string adapterName)
    {
       var _adapterSetting = AdaptersSetting.Maybe.Setting(adapterName);
       if (_adapterSetting is (true, var adapterSetting))

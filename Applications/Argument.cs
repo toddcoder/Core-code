@@ -8,8 +8,8 @@ public class Argument
 {
    protected string text;
    protected int index;
-   protected Maybe<FileName> fileName;
-   protected Maybe<FolderName> folderName;
+   protected Optional<FileName> fileName;
+   protected Optional<FolderName> folderName;
 
    public Argument(string text, int index)
    {
@@ -21,7 +21,7 @@ public class Argument
 
    public string Text => text;
 
-   public Maybe<FileName> FileName
+   public Optional<FileName> FileName
    {
       get
       {
@@ -39,7 +39,7 @@ public class Argument
       }
    }
 
-   public Maybe<FolderName> FolderName
+   public Optional<FolderName> FolderName
    {
       get
       {

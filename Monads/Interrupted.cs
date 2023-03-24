@@ -117,17 +117,17 @@ public class Interrupted<T> : Completion<T>, IEquatable<Interrupted<T>>
 
    public override Completion<T> Where(Predicate<T> predicate, Func<string> exceptionMessage) => this;
 
-   public override T DefaultTo(Func<Maybe<Exception>, T> defaultFunc) => defaultFunc(exception);
+   public override T DefaultTo(Func<Optional<Exception>, T> defaultFunc) => defaultFunc(exception);
 
-   public override Maybe<T> Maybe() => nil;
+   public override Optional<T> Maybe() => nil;
 
-   public override Result<T> Result() => exception;
+   public override Optional<T> Result() => exception;
 
    public override Optional<T> Optional() => exception;
 
    public override Exception Exception => exception;
 
-   public override Maybe<Exception> AnyException => exception;
+   public override Optional<Exception> AnyException => exception;
 
    public override object ToObject() => exception;
 

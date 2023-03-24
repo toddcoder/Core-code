@@ -54,14 +54,14 @@ public class DelimitedText
    }
 
    protected Pattern beginPattern;
-   protected Maybe<Pattern> _endPattern;
+   protected Optional<Pattern> _endPattern;
    protected Pattern exceptPattern;
-   protected Maybe<string> _exceptReplacement;
+   protected Optional<string> _exceptReplacement;
    protected LateLazy<Slicer> slicer;
    protected Bits32<DelimitedTextStatus> status;
    protected List<string> strings;
 
-   protected DelimitedText(Pattern beginPattern, Maybe<Pattern> _endPattern, Pattern exceptPattern)
+   protected DelimitedText(Pattern beginPattern, Optional<Pattern> _endPattern, Pattern exceptPattern)
    {
       this.beginPattern = beginPattern;
       this._endPattern = _endPattern;
@@ -93,7 +93,7 @@ public class DelimitedText
       }
    }
 
-   public Maybe<Pattern> EndPattern
+   public Optional<Pattern> EndPattern
    {
       get => _endPattern;
       set => _endPattern = value.Map(p => p.Regex.StartsWith("^") ? p : p.WithPattern(r => $"^{r}"));
@@ -109,7 +109,7 @@ public class DelimitedText
       }
    }
 
-   public Maybe<string> ExceptReplacement
+   public Optional<string> ExceptReplacement
    {
       get => _exceptReplacement;
       set => _exceptReplacement = value;
@@ -121,7 +121,7 @@ public class DelimitedText
       set => status = value;
    }
 
-   public Maybe<Func<string, string>> TransformingMap { get; set; }
+   public Optional<Func<string, string>> TransformingMap { get; set; }
 
    protected static Pattern getEndPattern(char ch) => ch switch
    {
@@ -141,7 +141,7 @@ public class DelimitedText
       var current = source;
       var insideStart = 0;
       var outsideStart = 0;
-      Maybe<Pattern> _endMatcher = nil;
+      Optional<Pattern> _endMatcher = nil;
 
       var i = 0;
       while (i < source.Length)

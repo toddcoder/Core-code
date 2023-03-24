@@ -19,13 +19,13 @@ public class Deserializer
       this.source = source;
    }
 
-   public Result<Setting> Deserialize()
+   public Optional<Setting> Deserialize()
    {
       var rootSetting = new Setting("/");
       var stack = new MaybeStack<ConfigurationItem>();
       stack.Push(rootSetting);
 
-      Maybe<Setting> peekSetting()
+      Optional<Setting> peekSetting()
       {
          return
             from parentItem in stack.Peek()
@@ -35,7 +35,7 @@ public class Deserializer
 
       int itemCount() => peekSetting().Map(setting => setting.AnyHash().Map(h => h.Values.Count)) | 0;
 
-      Maybe<string> _propertyName = nil;
+      Optional<string> _propertyName = nil;
 
       void setItem(string value)
       {

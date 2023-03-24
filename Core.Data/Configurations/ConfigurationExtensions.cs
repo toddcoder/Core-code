@@ -5,7 +5,7 @@ namespace Core.Data.Configurations;
 
 public static class ConfigurationExtensions
 {
-   public static Maybe<DataSettings> DataSettings(this Setting setting)
+   public static Optional<DataSettings> DataSettings(this Setting setting)
    {
       return
          from connectionsSetting in setting.Maybe.Setting("connections")

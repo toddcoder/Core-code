@@ -11,11 +11,11 @@ public class ResultQueue<T>
       this.queue = queue;
    }
 
-   public Result<T> Dequeue(string message) => queue.Dequeue().Result(message);
+   public Optional<T> Dequeue(string message) => queue.Dequeue().Result(message);
 
-   public Result<T> Dequeue() => Dequeue("Empty queue");
+   public Optional<T> Dequeue() => Dequeue("Empty queue");
 
-   public Result<T> Peek(string message) => queue.Peek().Result(message);
+   public Optional<T> Peek(string message) => queue.Peek().Result(message);
 
-   public Result<T> Peek() => Peek("Empty queue");
+   public Optional<T> Peek() => Peek("Empty queue");
 }

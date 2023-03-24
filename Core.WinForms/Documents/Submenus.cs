@@ -20,7 +20,7 @@ public class Submenus : IHash<string, ToolStripMenuItem>, IEnumerable<ToolStripM
 
    public bool ContainsKey(string key) => parent.DropDownItems.ContainsKey(Menus.SubmenuName(parentText, key));
 
-   public Result<Hash<string, ToolStripMenuItem>> AnyHash() => fail("Not implemented");
+   public Optional<Hash<string, ToolStripMenuItem>> AnyHash() => fail("Not implemented");
 
    ToolStripMenuItem IHash<string, ToolStripMenuItem>.this[string text]
    {

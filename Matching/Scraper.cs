@@ -142,7 +142,7 @@ public class Scraper : IHash<string, string>
 
    public bool ContainsKey(string key) => variables.ContainsKey(key);
 
-   public Result<Hash<string, string>> AnyHash() => variables;
+   public Optional<Hash<string, string>> AnyHash() => variables;
 
    public Optional<Scraper> Push(Pattern pattern)
    {

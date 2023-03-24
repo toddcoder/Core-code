@@ -125,13 +125,13 @@ public class EnumAssertion<TEnum> : IAssertion<TEnum> where TEnum : struct, Enum
       return forceConvert<TEnum, TException, TResult>(this);
    }
 
-   public Result<TEnum> OrFailure() => orFailure(this);
+   public Optional<TEnum> OrFailure() => orFailure(this);
 
-   public Result<TEnum> OrFailure(string message) => orFailure(this, message);
+   public Optional<TEnum> OrFailure(string message) => orFailure(this, message);
 
-   public Result<TEnum> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
+   public Optional<TEnum> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
 
-   public Maybe<TEnum> OrNone() => orNone(this);
+   public Optional<TEnum> OrNone() => orNone(this);
 
    public async Task<Completion<TEnum>> OrFailureAsync(CancellationToken token) => await orFailureAsync(this, token);
 

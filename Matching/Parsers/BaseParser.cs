@@ -29,7 +29,7 @@ public abstract class BaseParser
 
    protected static string escape(string text) => RRegex.Escape(text).Replace("]", @"\]");
 
-   public Maybe<string> Scan(string source, ref int index)
+   public Optional<string> Scan(string source, ref int index)
    {
       static IEnumerable<System.Text.RegularExpressions.Group> getGroups(System.Text.RegularExpressions.Match match)
       {
@@ -67,5 +67,5 @@ public abstract class BaseParser
       }
    }
 
-   public abstract Maybe<string> Parse(string source, ref int index);
+   public abstract Optional<string> Parse(string source, ref int index);
 }

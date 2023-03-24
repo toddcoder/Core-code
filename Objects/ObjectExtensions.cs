@@ -63,7 +63,7 @@ public static class ObjectExtensions
 
    public static int HashCode(this object obj, string signature) => PropertyEvaluator.GetValue(obj, signature).GetHashCode();
 
-   public static Result<T> CastAs<T>(this object obj)
+   public static Optional<T> CastAs<T>(this object obj)
    {
       try
       {
@@ -112,7 +112,7 @@ public static class ObjectExtensions
       return date is DateTime || DateTime.TryParse(date.ToString(), out _);
    }
 
-   public static Result<string> FormatObject(this object obj, string format) => GetReflector(obj).Map(rf => rf.Format(format));
+   public static Optional<string> FormatObject(this object obj, string format) => GetReflector(obj).Map(rf => rf.Format(format));
 
    public static string FormatAs(this object obj, string format)
    {

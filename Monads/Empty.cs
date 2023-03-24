@@ -14,7 +14,7 @@ public class Empty<T> : Optional<T>, IEquatable<Empty<T>>
 
    public override Exception Exception => throw fail("Empty has no Exception");
 
-   public override Maybe<Exception> AnyException => nil;
+   public override Optional<Exception> AnyException => nil;
 
    public override Optional<TResult> Map<TResult>(Func<T, Optional<TResult>> ifJust) => nil;
 
@@ -61,17 +61,13 @@ public class Empty<T> : Optional<T>, IEquatable<Empty<T>>
 
    public override T Force() => throw fail("There is no value");
 
-   public override T DefaultTo(Func<Maybe<Exception>, T> func) => func(nil);
+   public override T DefaultTo(Func<Optional<Exception>, T> func) => func(nil);
 
    public override void Deconstruct(out bool isJust, out T value)
    {
       isJust = false;
       value = default;
    }
-
-   public override Maybe<T> Maybe() => nil;
-
-   public override Result<T> Result() => fail("There is no value");
 
    public override Completion<T> Completion() => nil;
 

@@ -4,7 +4,7 @@ namespace Core.Configurations;
 
 public interface IConfigurationItemGetter
 {
-   Maybe<Setting> GetSetting(string key);
+   Optional<Setting> GetSetting(string key);
 
-   Maybe<Item> GetItem(string key);
+   Optional<Item> GetItem(string key);
 }

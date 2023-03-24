@@ -10,7 +10,7 @@ public class ScheduleIncrement
 {
    protected int year;
    protected int month;
-   protected Maybe<int> _day;
+   protected Optional<int> _day;
    protected DayOfWeek dayOfWeek;
    protected int hour;
    protected int minute;
@@ -38,7 +38,7 @@ public class ScheduleIncrement
 
    protected static int moveToEndOfMonthIf(int day, int year, int month) => day == 0 ? DateTime.DaysInMonth(year, month) : day;
 
-   public Result<DateTime> Next
+   public Optional<DateTime> Next
    {
       get
       {

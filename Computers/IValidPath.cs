@@ -4,7 +4,7 @@ namespace Core.Computers;
 
 public interface IValidPath<T> where T : IFullPath
 {
-   Result<T> Validate(bool allowRelativePaths = false);
+   Optional<T> Validate(bool allowRelativePaths = false);
 
    bool IsValid { get; }
 }

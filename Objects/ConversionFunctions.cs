@@ -154,9 +154,9 @@ public static class ConversionFunctions
 
       public static object Enumeration(Type type, string source, bool ignoreCase = true) => Enum.Parse(type, source, ignoreCase);
 
-      public static TimeSpan TimeSpan(string source, TimeSpan defaultValue) => getSpans(source).Recover(_ => defaultValue);
+      public static TimeSpan TimeSpan(string source, TimeSpan defaultValue) => getSpans(source) | (_ => defaultValue);
 
-      public static TimeSpan TimeSpan(string source) => getSpans(source).ForceValue();
+      public static TimeSpan TimeSpan(string source) => getSpans(source).Force();
 
       public static T Cast<T>(object obj, Func<string> message)
       {
@@ -176,7 +176,7 @@ public static class ConversionFunctions
 
    public static class Maybe
    {
-      public static Maybe<bool> Boolean(string source)
+      public static Optional<bool> Boolean(string source)
       {
          if (source.IsNotEmpty())
          {
@@ -193,7 +193,7 @@ public static class ConversionFunctions
          }
       }
 
-      public static Maybe<byte> Byte(string source, NumberStyles numberStyles = NumberStyles.Integer)
+      public static Optional<byte> Byte(string source, NumberStyles numberStyles = NumberStyles.Integer)
       {
          if (source.IsNotEmpty())
          {
@@ -205,7 +205,7 @@ public static class ConversionFunctions
          }
       }
 
-      public static Maybe<int> Int32(string source, NumberStyles numberStyles = NumberStyles.Integer)
+      public static Optional<int> Int32(string source, NumberStyles numberStyles = NumberStyles.Integer)
       {
          if (source.IsNotEmpty())
          {
@@ -217,7 +217,7 @@ public static class ConversionFunctions
          }
       }
 
-      public static Maybe<long> Int64(string source, NumberStyles numberStyles = NumberStyles.Integer)
+      public static Optional<long> Int64(string source, NumberStyles numberStyles = NumberStyles.Integer)
       {
          if (source.IsNotEmpty())
          {
@@ -229,7 +229,7 @@ public static class ConversionFunctions
          }
       }
 
-      public static Maybe<float> Single(string source, NumberStyles numberStyles = NumberStyles.Float)
+      public static Optional<float> Single(string source, NumberStyles numberStyles = NumberStyles.Float)
       {
          if (source.IsNotEmpty())
          {
@@ -241,7 +241,7 @@ public static class ConversionFunctions
          }
       }
 
-      public static Maybe<double> Double(string source, NumberStyles numberStyles = NumberStyles.Float)
+      public static Optional<double> Double(string source, NumberStyles numberStyles = NumberStyles.Float)
       {
          if (source.IsNotEmpty())
          {
@@ -253,7 +253,7 @@ public static class ConversionFunctions
          }
       }
 
-      public static Maybe<decimal> Decimal(string source, NumberStyles numberStyles = NumberStyles.Float)
+      public static Optional<decimal> Decimal(string source, NumberStyles numberStyles = NumberStyles.Float)
       {
          if (source.IsNotEmpty())
          {
@@ -265,7 +265,7 @@ public static class ConversionFunctions
          }
       }
 
-      public static Maybe<DateTime> DateTime(string source)
+      public static Optional<DateTime> DateTime(string source)
       {
          if (source.IsNotEmpty())
          {
@@ -277,7 +277,7 @@ public static class ConversionFunctions
          }
       }
 
-      public static Maybe<Guid> Guid(string source)
+      public static Optional<Guid> Guid(string source)
       {
          if (source.IsNotEmpty())
          {
@@ -289,7 +289,7 @@ public static class ConversionFunctions
          }
       }
 
-      public static Maybe<T> Enumeration<T>(string source, bool ignoreCase = true) where T : struct, Enum
+      public static Optional<T> Enumeration<T>(string source, bool ignoreCase = true) where T : struct, Enum
       {
          try
          {
@@ -301,7 +301,7 @@ public static class ConversionFunctions
          }
       }
 
-      public static Maybe<object> Enumeration(Type type, string source, bool ignoreCase = true)
+      public static Optional<object> Enumeration(Type type, string source, bool ignoreCase = true)
       {
          try
          {
@@ -313,9 +313,9 @@ public static class ConversionFunctions
          }
       }
 
-      public static Maybe<TimeSpan> TimeSpan(string source) => getSpans(source).Maybe();
+      public static Optional<TimeSpan> TimeSpan(string source) => getSpans(source);
 
-      public static Maybe<T> Cast<T>(object obj)
+      public static Optional<T> Cast<T>(object obj)
       {
          if (obj is T cast)
          {
@@ -330,55 +330,55 @@ public static class ConversionFunctions
 
    public static class Result
    {
-      public static Result<bool> Boolean(string source) => tryTo(() => bool.Parse(source));
+      public static Optional<bool> Boolean(string source) => tryTo(() => bool.Parse(source));
 
-      public static Result<byte> Byte(string source, NumberStyles numberStyles = NumberStyles.Integer)
+      public static Optional<byte> Byte(string source, NumberStyles numberStyles = NumberStyles.Integer)
       {
          return tryTo(() => byte.Parse(source, numberStyles));
       }
 
-      public static Result<int> Int32(string source, NumberStyles numberStyles = NumberStyles.Integer)
+      public static Optional<int> Int32(string source, NumberStyles numberStyles = NumberStyles.Integer)
       {
          return tryTo(() => int.Parse(source, numberStyles));
       }
 
-      public static Result<long> Int64(string source, NumberStyles numberStyles = NumberStyles.Integer)
+      public static Optional<long> Int64(string source, NumberStyles numberStyles = NumberStyles.Integer)
       {
          return tryTo(() => long.Parse(source, numberStyles));
       }
 
-      public static Result<float> Single(string source, NumberStyles numberStyles = NumberStyles.Float)
+      public static Optional<float> Single(string source, NumberStyles numberStyles = NumberStyles.Float)
       {
          return tryTo(() => float.Parse(source, numberStyles));
       }
 
-      public static Result<double> Double(string source, NumberStyles numberStyles = NumberStyles.Float)
+      public static Optional<double> Double(string source, NumberStyles numberStyles = NumberStyles.Float)
       {
          return tryTo(() => double.Parse(source, numberStyles));
       }
 
-      public static Result<decimal> Decimal(string source, NumberStyles numberStyles = NumberStyles.Float)
+      public static Optional<decimal> Decimal(string source, NumberStyles numberStyles = NumberStyles.Float)
       {
          return tryTo(() => decimal.Parse(source, numberStyles));
       }
 
-      public static Result<DateTime> DateTime(string source) => tryTo(() => System.DateTime.Parse(source));
+      public static Optional<DateTime> DateTime(string source) => tryTo(() => System.DateTime.Parse(source));
 
-      public static Result<Guid> Guid(string source) => tryTo(() => System.Guid.Parse(source));
+      public static Optional<Guid> Guid(string source) => tryTo(() => System.Guid.Parse(source));
 
-      public static Result<T> Enumeration<T>(string source, bool ignoreCase = true) where T : struct, Enum
+      public static Optional<T> Enumeration<T>(string source, bool ignoreCase = true) where T : struct, Enum
       {
          return tryTo(() => (T)Enum.Parse(typeof(T), source, ignoreCase));
       }
 
-      public static Result<object> Enumeration(Type type, string source, bool ignoreCase = true)
+      public static Optional<object> Enumeration(Type type, string source, bool ignoreCase = true)
       {
          return tryTo(() => Enum.Parse(type, source, ignoreCase));
       }
 
-      public static Result<TimeSpan> TimeSpan(string source) => getSpans(source);
+      public static Optional<TimeSpan> TimeSpan(string source) => getSpans(source);
 
-      public static Result<T> Cast<T>(object obj)
+      public static Optional<T> Cast<T>(object obj)
       {
          try
          {
@@ -399,15 +399,15 @@ public static class ConversionFunctions
    private const string REGEX_TIMER_INTERVAL = "/(/d+) /s+ /(('milli')? 'sec' ('ond')? 's'? | 'min' ('ute')? 's'? | " +
       "'h' ('ou')? 'r' 's'? | 'days'?); f";
 
-   private static Result<TimeSpan> getSpan(string source)
+   private static Optional<TimeSpan> getSpan(string source)
    {
       return
-         from result in source.Matches(REGEX_TIMER_INTERVAL).Result($"Can't match {source}")
+         from result in source.Matches(REGEX_TIMER_INTERVAL)
          from span in getSpan(result)
          select span;
    }
 
-   private static Result<TimeSpan> getSpans(string source)
+   private static Optional<TimeSpan> getSpans(string source)
    {
       var intervals = source.Unjoin("/s* (',' | 'and') /s*; f");
       var spans = intervals.Where(i => i.IsNotEmpty()).Select(getSpan);
@@ -428,7 +428,7 @@ public static class ConversionFunctions
       return newSpan;
    }
 
-   private static Result<TimeSpan> getSpan(MatchResult result)
+   private static Optional<TimeSpan> getSpan(MatchResult result)
    {
       var value = result.FirstGroup;
       var unit = result.SecondGroup;

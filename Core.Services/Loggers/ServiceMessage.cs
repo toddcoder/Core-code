@@ -11,12 +11,12 @@ namespace Core.Services.Loggers;
 public class ServiceMessage : IServiceMessage
 {
    protected List<IServiceMessage> messages;
-   protected Maybe<ServiceLogger> _logger;
-   protected Maybe<NamedExceptions> _namedExceptions;
-   protected Maybe<IServiceWriter> _serviceWriter;
-   protected Maybe<EventWriter> _eventWriter;
+   protected Optional<ServiceLogger> _logger;
+   protected Optional<NamedExceptions> _namedExceptions;
+   protected Optional<IServiceWriter> _serviceWriter;
+   protected Optional<EventWriter> _eventWriter;
    protected bool autoBegin;
-   protected Maybe<StringBuilder> _errorMessage;
+   protected Optional<StringBuilder> _errorMessage;
 
    public ServiceMessage(string applicationName)
    {
@@ -37,11 +37,11 @@ public class ServiceMessage : IServiceMessage
       _errorMessage = nil;
    }
 
-   public Maybe<ServiceLogger> Logger => _logger;
+   public Optional<ServiceLogger> Logger => _logger;
 
-   public Maybe<NamedExceptions> NamedExceptions => _namedExceptions;
+   public Optional<NamedExceptions> NamedExceptions => _namedExceptions;
 
-   public Maybe<IServiceWriter> ServiceWriter => _serviceWriter;
+   public Optional<IServiceWriter> ServiceWriter => _serviceWriter;
 
    public bool AutoBegin
    {
@@ -323,7 +323,7 @@ public class ServiceMessage : IServiceMessage
       }
    }
 
-   public void EmitResult<T>(Result<T> _result, Func<T, string> ifSuccessful)
+   public void EmitOptional<T>(Optional<T> _result, Func<T, string> ifSuccessful)
    {
       beginIfAutoBegin();
 
@@ -337,7 +337,7 @@ public class ServiceMessage : IServiceMessage
       }
    }
 
-   public void EmitResult<T>(Result<T> _result, Func<T, string> ifSuccessful, Func<Exception, string> ifFailure)
+   public void EmitOptional<T>(Optional<T> _result, Func<T, string> ifSuccessful, Func<Exception, string> ifFailure)
    {
       beginIfAutoBegin();
 
@@ -351,7 +351,7 @@ public class ServiceMessage : IServiceMessage
       }
    }
 
-   public void EmitSuccess<T>(Result<T> _result, Func<T, string> ifSuccessful)
+   public void EmitSuccess<T>(Optional<T> _result, Func<T, string> ifSuccessful)
    {
       beginIfAutoBegin();
 
@@ -361,7 +361,7 @@ public class ServiceMessage : IServiceMessage
       }
    }
 
-   public void EmitFailure<T>(Result<T> _result)
+   public void EmitFailure<T>(Optional<T> _result)
    {
       beginIfAutoBegin();
 
@@ -371,7 +371,7 @@ public class ServiceMessage : IServiceMessage
       }
    }
 
-   public void EmitFailure<T>(Result<T> _result, Func<Exception, string> ifFailure)
+   public void EmitFailure<T>(Optional<T> _result, Func<Exception, string> ifFailure)
    {
       beginIfAutoBegin();
 

@@ -20,7 +20,7 @@ public class CharFormat
       yield return FontStyleFlag.Underline;
    }
 
-   protected static Maybe<string> fontStyleKeyword(FontStyleFlag fontStyleFlag) => fontStyleFlag switch
+   protected static Optional<string> fontStyleKeyword(FontStyleFlag fontStyleFlag) => fontStyleFlag switch
    {
       FontStyleFlag.Bold => "b",
       FontStyleFlag.Italic => "i",
@@ -34,18 +34,18 @@ public class CharFormat
 
    public static LateLazy<CharFormat> Lazy() => new(errorMessage: "DefaultCharFormat referenced before being set");
 
-   protected Maybe<int> _begin;
-   protected Maybe<int> _end;
-   protected Maybe<FontDescriptor> _font;
-   protected Maybe<FontDescriptor> _ansiFont;
-   protected Maybe<float> _fontSize;
+   protected Optional<int> _begin;
+   protected Optional<int> _end;
+   protected Optional<FontDescriptor> _font;
+   protected Optional<FontDescriptor> _ansiFont;
+   protected Optional<float> _fontSize;
    protected FontStyle fontStyle;
-   protected Maybe<ColorDescriptor> _backgroundColor;
-   protected Maybe<ColorDescriptor> _foregroundColor;
+   protected Optional<ColorDescriptor> _backgroundColor;
+   protected Optional<ColorDescriptor> _foregroundColor;
    protected TwoInOneStyle twoInOneStyle;
-   protected Maybe<string> _bookmark;
-   protected Maybe<string> _hyperlink;
-   protected Maybe<string> _hyperlinkTip;
+   protected Optional<string> _bookmark;
+   protected Optional<string> _hyperlink;
+   protected Optional<string> _hyperlinkTip;
 
    public CharFormat()
    {
@@ -132,41 +132,41 @@ public class CharFormat
       }
    }
 
-   public Maybe<int> Begin => _begin;
+   public Optional<int> Begin => _begin;
 
-   public Maybe<int> End => _end;
+   public Optional<int> End => _end;
 
-   public Maybe<string> Bookmark
+   public Optional<string> Bookmark
    {
       get => _bookmark;
       set => _bookmark = value;
    }
 
-   public Maybe<string> Hyperlink
+   public Optional<string> Hyperlink
    {
       get => _hyperlink;
       set => _hyperlink = value;
    }
 
-   public Maybe<string> HyperlinkTip
+   public Optional<string> HyperlinkTip
    {
       get => _hyperlinkTip;
       set => _hyperlinkTip = value;
    }
 
-   public Maybe<FontDescriptor> Font
+   public Optional<FontDescriptor> Font
    {
       get => _font;
       set => _font = value;
    }
 
-   public Maybe<FontDescriptor> AnsiFont
+   public Optional<FontDescriptor> AnsiFont
    {
       get => _ansiFont;
       set => _ansiFont = value;
    }
 
-   public Maybe<float> FontSize
+   public Optional<float> FontSize
    {
       get => _fontSize;
       set => _fontSize = value;
@@ -178,13 +178,13 @@ public class CharFormat
       set => fontStyle = value;
    }
 
-   public Maybe<ColorDescriptor> ForegroundColor
+   public Optional<ColorDescriptor> ForegroundColor
    {
       get => _foregroundColor;
       set => _foregroundColor = value;
    }
 
-   public Maybe<ColorDescriptor> BackgroundColor
+   public Optional<ColorDescriptor> BackgroundColor
    {
       get => _backgroundColor;
       set => _backgroundColor = value;

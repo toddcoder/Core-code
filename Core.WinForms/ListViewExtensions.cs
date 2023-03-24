@@ -46,7 +46,7 @@ public static class ListViewExtensions
       }
    }
 
-   public static Maybe<ListViewItem> SelectedItem(this ListView listView)
+   public static Optional<ListViewItem> SelectedItem(this ListView listView)
    {
       if (listView.SelectedIndices.Count > 0)
       {
@@ -60,7 +60,7 @@ public static class ListViewExtensions
       return nil;
    }
 
-   public static Maybe<(ListViewItem item, int index)> SelectedItemWithIndex(this ListView listView)
+   public static Optional<(ListViewItem item, int index)> SelectedItemWithIndex(this ListView listView)
    {
       if (listView.SelectedIndices.Count > 0)
       {
@@ -74,7 +74,7 @@ public static class ListViewExtensions
       return nil;
    }
 
-   public static Maybe<(string text, int index)> SelectedText(this ListView listView)
+   public static Optional<(string text, int index)> SelectedText(this ListView listView)
    {
       if (listView.SelectedIndices.Count > 0)
       {

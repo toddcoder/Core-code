@@ -14,7 +14,7 @@ internal static class GitExtensions
       Error
    }
 
-   public static Result<string[]> EnumerableToResult(this IEnumerable<GitResult> enumerable)
+   public static Optional<string[]> EnumerableToResult(this IEnumerable<GitResult> enumerable)
    {
       var list = new List<string>();
       var status = GitStatus.NotSet;

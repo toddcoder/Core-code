@@ -8,7 +8,7 @@ namespace Core.Applications;
 
 public static class EventExtensions
 {
-   public static Maybe<Delegate> ClearEvent(this object obj, string eventName)
+   public static Optional<Delegate> ClearEvent(this object obj, string eventName)
    {
       try
       {

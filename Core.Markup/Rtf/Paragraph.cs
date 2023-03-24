@@ -56,7 +56,7 @@ public class Paragraph : Block
 
    public static Formatter operator |(Paragraph paragraph, Feature feature) => paragraph.Format() | feature;
 
-   public static Formatter operator |(Paragraph paragraph, (Maybe<float>, Maybe<float>, Maybe<float>, Maybe<float>) margins)
+   public static Formatter operator |(Paragraph paragraph, (Optional<float>, Optional<float>, Optional<float>, Optional<float>) margins)
    {
       return new Formatter(paragraph, paragraph.DefaultCharFormat).Margins(margins);
    }
@@ -79,7 +79,7 @@ public class Paragraph : Block
    }
 
    protected StringBuilder text;
-   protected Maybe<float> _lineSpacing;
+   protected Optional<float> _lineSpacing;
    protected Margins margins;
    protected Alignment alignment;
    protected List<CharFormat> charFormats;
@@ -193,7 +193,7 @@ public class Paragraph : Block
          var offset = 1;
          foreach (var match in result)
          {
-            Maybe<FieldType> _fieldType = match.Text switch
+            Optional<FieldType> _fieldType = match.Text switch
             {
                "@" => FieldType.Page,
                "#" => FieldType.NumPages,
@@ -251,7 +251,7 @@ public class Paragraph : Block
       return formatter.Bookmark(bookmark.Name);
    }
 
-   public Maybe<float> LineSpacing
+   public Optional<float> LineSpacing
    {
       get => _lineSpacing;
       set => _lineSpacing = value;
@@ -309,7 +309,7 @@ public class Paragraph : Block
       return format;
    }
 
-   public Maybe<CharFormat> CharFormat(Pattern pattern, int groupIndex = 0)
+   public Optional<CharFormat> CharFormat(Pattern pattern, int groupIndex = 0)
    {
       var _result = text.ToString().Matches(pattern);
       if (_result is (true, var result))
@@ -322,7 +322,7 @@ public class Paragraph : Block
       }
    }
 
-   public Maybe<CharFormat> CharFormatFind(string substring, bool ignoreCase = false)
+   public Optional<CharFormat> CharFormatFind(string substring, bool ignoreCase = false)
    {
       var _index = text.ToString().Find(substring, ignoreCase: ignoreCase);
       if (_index)
@@ -343,7 +343,7 @@ public class Paragraph : Block
       }
    }
 
-   public Maybe<CharFormat> CharFormat(MatchResult result, int groupIndex = 0)
+   public Optional<CharFormat> CharFormat(MatchResult result, int groupIndex = 0)
    {
       if (groupIndex < result.GroupCount(0))
       {
@@ -476,7 +476,7 @@ public class Paragraph : Block
          var offset = 1;
          foreach (var match in result)
          {
-            Maybe<FieldType> _fieldType = match.Text switch
+            Optional<FieldType> _fieldType = match.Text switch
             {
                "@" => FieldType.Page,
                "#" => FieldType.NumPages,

@@ -59,7 +59,7 @@ public class ChooserSet
       return this;
    }
 
-   public ChooserSet NilItem(Maybe<string> _firstItem)
+   public ChooserSet NilItem(Optional<string> _firstItem)
    {
       chooser.NilItem = _firstItem;
       return this;
@@ -77,7 +77,7 @@ public class ChooserSet
       return this;
    }
 
-   public Maybe<Chosen> Choose()
+   public Optional<Chosen> Choose()
    {
       var _chosen = chooser.Get(chooser.UiAction);
       if (chooser.ModifyTitle)

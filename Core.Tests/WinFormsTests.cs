@@ -809,7 +809,7 @@ public class WinFormsTests
       var uiAction = new UiAction(form, true);
       uiAction.SetUp(0, 0, 400, 40);
 
-      Result<(string, string)> _result = fail("failed");
+      Optional<(string, string)> _result = fail("failed");
 
       form.Click += (_, _) =>
       {

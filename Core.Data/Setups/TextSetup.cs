@@ -8,7 +8,7 @@ namespace Core.Data.Setups;
 
 public class TextSetup : ISetup
 {
-   public static Result<TextSetup> FromDataSettings(DataSettings dataSettings, string adapterName, string fileName)
+   public static Optional<TextSetup> FromDataSettings(DataSettings dataSettings, string adapterName, string fileName)
    {
       var connectionsSetting = dataSettings.ConnectionsSetting;
       var commandsSetting = dataSettings.CommandsSetting;

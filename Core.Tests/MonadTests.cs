@@ -151,7 +151,7 @@ public class MonadTests
    [TestMethod]
    public void MappingExtensionsTest()
    {
-      Maybe<(int, string)> _result = (1, "foobar");
+      Optional<(int, string)> _result = (1, "foobar");
       var _result1 = _result.Map((i, s) => i + s);
       if (_result1)
       {
@@ -187,9 +187,9 @@ public class MonadTests
    [TestMethod]
    public void MaybeOrTest()
    {
-      Maybe<int> some1 = 1;
-      Maybe<int> some2 = 2;
-      Maybe<int> none = nil;
+      Optional<int> some1 = 1;
+      Optional<int> some2 = 2;
+      Optional<int> none = nil;
 
       var or1 = some1 | none;
       var or2 = none | some2;
@@ -207,9 +207,9 @@ public class MonadTests
    [TestMethod]
    public void ResultOrTest()
    {
-      Result<int> success1 = 1;
-      Result<int> success2 = 2;
-      Result<int> failure = fail("Divide by zero");
+      Optional<int> success1 = 1;
+      Optional<int> success2 = 2;
+      Optional<int> failure = fail("Divide by zero");
 
       var or1 = success1 | failure;
       var or2 = failure | success2;
@@ -227,7 +227,7 @@ public class MonadTests
    [TestMethod]
    public void ImplicitMaybeTest()
    {
-      Maybe<string> maybe = "foobar";
+      Optional<string> maybe = "foobar";
       Console.WriteLine(maybe.ToString());
 
       maybe = nil;
@@ -237,7 +237,7 @@ public class MonadTests
    [TestMethod]
    public void ImplicitResultTest()
    {
-      Result<string> result = "Good!";
+      Optional<string> result = "Good!";
       Console.WriteLine(result.ToString());
 
       result = fail("Bad!");
@@ -248,14 +248,14 @@ public class MonadTests
    public void NullTupleItemTest()
    {
       (int, string, int) items = (1, null, 10);
-      Maybe<(int, string, int)> _items = items;
+      Optional<(int, string, int)> _items = items;
       Console.WriteLine(!_items);
    }
 
    [TestMethod]
    public void BooleanTest()
    {
-      Maybe<string> _string = nil;
+      Optional<string> _string = nil;
       if (!_string)
       {
          Console.WriteLine("not");
@@ -277,7 +277,7 @@ public class MonadTests
          return "default";
       }
 
-      var _maybe = (Maybe<string>)"Test";
+      var _maybe = (Optional<string>)"Test";
       var text = _maybe | "nothing";
       Console.WriteLine(text);
 
@@ -291,7 +291,7 @@ public class MonadTests
       text = _maybe | defaultTo;
       Console.WriteLine(text);
 
-      var _result = (Result<int>)153;
+      var _result = (Optional<int>)153;
       var result = _result | -1;
       Console.WriteLine(result);
 
@@ -344,7 +344,7 @@ public class MonadTests
    [TestMethod]
    public void IfTest()
    {
-      Maybe<string> _maybe = "foobar";
+      Optional<string> _maybe = "foobar";
       if (_maybe is (true, var value))
       {
          Console.WriteLine(value);
@@ -368,7 +368,7 @@ public class MonadTests
          return 153;
       }
 
-      Maybe<int> _number = 1;
+      Optional<int> _number = 1;
       Console.WriteLine(_number | defaultValue);
       Console.WriteLine(_number ? _number : () => defaultValue());
    }
@@ -391,7 +391,7 @@ public class MonadTests
    [TestMethod]
    public void MaybeValueOperator()
    {
-      Maybe<int> _number = 153;
+      Optional<int> _number = 153;
       if (_number is (true, var number))
       {
          Console.WriteLine(number);
@@ -401,9 +401,9 @@ public class MonadTests
    [TestMethod]
    public void MonadMatcherTest()
    {
-      Maybe<int> _one = nil;
-      Maybe<int> _two = 2;
-      Maybe<int> _three = nil;
+      Optional<int> _one = nil;
+      Optional<int> _two = 2;
+      Optional<int> _three = nil;
 
       var matcher = maybeMatcher<int, string>()
          & _one & (_ => "one")
@@ -515,7 +515,7 @@ public class MonadTests
       }
    }
 
-   protected static Result<string> getResult(string text, bool success, int index) => success ? text : fail($"Failure {index}");
+   protected static Optional<string> getResult(string text, bool success, int index) => success ? text : fail($"Failure {index}");
 
    [TestMethod]
    public void ChainedResultsTest()
@@ -589,9 +589,9 @@ public class MonadTests
    [TestMethod]
    public void LinkTest()
    {
-      Maybe<int> _result1 = 30;
-      Maybe<int> _result2 = 10;
-      Maybe<int> _result3 = 2;
+      Optional<int> _result1 = 30;
+      Optional<int> _result2 = 10;
+      Optional<int> _result3 = 2;
 
       var _sum =
          from r1 in _result1
@@ -638,7 +638,7 @@ public class MonadTests
    [TestMethod]
    public void ResultTest()
    {
-      Result<Request> validateInput(Request input)
+      Optional<Request> validateInput(Request input)
       {
          if (input.Name.IsEmpty())
          {

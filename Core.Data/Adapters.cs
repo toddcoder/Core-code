@@ -33,11 +33,11 @@ public class Adapters<T> : IEnumerable<Adapter<T>> where T : class
       };
    }
 
-   public static Maybe<SqlInfoMessageEventHandler> Handler { get; set; } = nil;
+   public static Optional<SqlInfoMessageEventHandler> Handler { get; set; } = nil;
 
    public static void RegisterSetup(string name, Func<DataSettings, string, ISetup> func) => setups[name] = func;
 
-   public static Result<Func<DataSettings, string, ISetup>> Setup(string setupType) => setups.Require(setupType);
+   public static Optional<Func<DataSettings, string, ISetup>> Setup(string setupType) => setups.Require(setupType);
 
    protected DataSettings dataSettings;
    protected StringHash<Adapter<T>> adapters;
@@ -68,17 +68,17 @@ public class Adapters<T> : IEnumerable<Adapter<T>> where T : class
       this.isValidAdapterName = isValidAdapterName;
    }
 
-   protected Result<string> validAdapterName(string adapterName)
+   protected Optional<string> validAdapterName(string adapterName)
    {
       return isValidAdapterName(adapterName).Result(() => adapterName, $"Adapter name {adapterName} is invalid");
    }
 
-   protected Result<string> adapterExists(string adapterName)
+   protected Optional<string> adapterExists(string adapterName)
    {
       return dataSettings.AdaptersSetting.Result.String(adapterName);
    }
 
-   public Result<Adapter<T>> Adapter(string adapterName, T entity, string setupType = "sql")
+   public Optional<Adapter<T>> Adapter(string adapterName, T entity, string setupType = "sql")
    {
       if (adapters.ContainsKey(adapterName))
       {
@@ -96,7 +96,7 @@ public class Adapters<T> : IEnumerable<Adapter<T>> where T : class
          select adapter;
    }
 
-   protected Result<Adapter<T>> getAdapter(T entity, string child, Func<DataSettings, string, ISetup> setup) => tryTo(() =>
+   protected Optional<Adapter<T>> getAdapter(T entity, string child, Func<DataSettings, string, ISetup> setup) => tryTo(() =>
    {
       var adapter = adapters.Find(child, an => new Adapter<T>(entity, setup(dataSettings, an)), true);
       adapter.Entity = entity;
@@ -104,12 +104,12 @@ public class Adapters<T> : IEnumerable<Adapter<T>> where T : class
       return adapter;
    });
 
-   protected Result<Adapter<T>> getAdapter(Func<T> alwaysUse, string child, Func<DataSettings, string, ISetup> setup)
+   protected Optional<Adapter<T>> getAdapter(Func<T> alwaysUse, string child, Func<DataSettings, string, ISetup> setup)
    {
       return tryTo(() => adapters.Find(child, an => new Adapter<T>(alwaysUse(), setup(dataSettings, an)), true));
    }
 
-   public Result<TResult> Execute<TResult>(string adapterName, T entity, Func<T, TResult> map, string setupType = "sql")
+   public Optional<TResult> Execute<TResult>(string adapterName, T entity, Func<T, TResult> map, string setupType = "sql")
    {
       if (adapters.ContainsKey(adapterName))
       {
@@ -128,7 +128,7 @@ public class Adapters<T> : IEnumerable<Adapter<T>> where T : class
          select result;
    }
 
-   public Result<T> Execute(string adapterName, T entity, string setupType = "sql")
+   public Optional<T> Execute(string adapterName, T entity, string setupType = "sql")
    {
       if (adapters.ContainsKey(adapterName))
       {
@@ -146,7 +146,7 @@ public class Adapters<T> : IEnumerable<Adapter<T>> where T : class
          select obj;
    }
 
-   public Result<Adapter<T>> Adapter(string adapterName, Func<T> entityFunc, string setupType = "sql")
+   public Optional<Adapter<T>> Adapter(string adapterName, Func<T> entityFunc, string setupType = "sql")
    {
       if (adapters.ContainsKey(adapterName))
       {
@@ -164,7 +164,7 @@ public class Adapters<T> : IEnumerable<Adapter<T>> where T : class
          select adapter;
    }
 
-   public Result<T> Execute(string adapterName, Func<T> entityFunc, string setupType = "sql")
+   public Optional<T> Execute(string adapterName, Func<T> entityFunc, string setupType = "sql")
    {
       if (adapters.ContainsKey(adapterName))
       {
@@ -198,7 +198,7 @@ public class Adapters<T> : IEnumerable<Adapter<T>> where T : class
       validAdapters.Add(adapterName);
    }
 
-   public Result<IBulkCopyTarget> BulkCopy(string sourceAdapterName, string targetAdapterName, Func<T> entityFunc,
+   public Optional<IBulkCopyTarget> BulkCopy(string sourceAdapterName, string targetAdapterName, Func<T> entityFunc,
       string sourceSetupType = "sql")
    {
       return
@@ -208,7 +208,7 @@ public class Adapters<T> : IEnumerable<Adapter<T>> where T : class
          select target;
    }
 
-   public Result<IBulkCopyTarget> BulkCopy(string sourceAdapterName, string targetAdapterName, T entity,
+   public Optional<IBulkCopyTarget> BulkCopy(string sourceAdapterName, string targetAdapterName, T entity,
       string sourceSetupType = "sql")
    {
       return
@@ -218,12 +218,12 @@ public class Adapters<T> : IEnumerable<Adapter<T>> where T : class
          select target;
    }
 
-   public IEnumerable<Result<T>> ExecuteAll(T entity, string setupType = "sql")
+   public IEnumerable<Optional<T>> ExecuteAll(T entity, string setupType = "sql")
    {
       return validAdapters.Select(key => Execute(key, entity, setupType));
    }
 
-   public IEnumerable<Result<T>> ExecuteAll(Func<string, T> map, string setupType = "sql")
+   public IEnumerable<Optional<T>> ExecuteAll(Func<string, T> map, string setupType = "sql")
    {
       return validAdapters
          .Select(name => new { Name = name, Entity = tryTo(() => map(name)) })

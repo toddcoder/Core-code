@@ -6,5 +6,5 @@ public class UnmodifiedParser : BaseParser
 {
    public override string Pattern => @"^\s*([*?.+,|^$){}0-9])";
 
-   public override Maybe<string> Parse(string source, ref int index) => tokens[1];
+   public override Optional<string> Parse(string source, ref int index) => tokens[1];
 }

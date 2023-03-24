@@ -7,7 +7,7 @@ namespace Core.Applications.CommandProcessing;
 [AttributeUsage(AttributeTargets.Property)]
 public class SwitchAttribute : Attribute
 {
-   protected SwitchAttribute(string name, string type, string argument, Maybe<string> shortCut)
+   protected SwitchAttribute(string name, string type, string argument, Optional<string> shortCut)
    {
       Name = name;
       Type = type;
@@ -29,5 +29,5 @@ public class SwitchAttribute : Attribute
 
    public string Argument { get; }
 
-   public Maybe<string> ShortCut { get; }
+   public Optional<string> ShortCut { get; }
 }

@@ -121,7 +121,7 @@ public abstract class CommandLineInterface : IDisposable
       aliasFile.Lines = aliases.Select(kv => $"{kv.Key}~{kv.Value}").ToArray();
    }
 
-   protected Result<(MethodInfo, EntryPointType)> getEntryPoint()
+   protected Optional<(MethodInfo, EntryPointType)> getEntryPoint()
    {
       return GetType()
          .GetMethods()
@@ -178,7 +178,7 @@ public abstract class CommandLineInterface : IDisposable
       {
          return source;
       }
-      else if (type == typeof(Maybe<string>))
+      else if (type == typeof(Optional<string>))
       {
          return maybe(source.IsNotEmpty(), () => source);
       }
@@ -190,11 +190,11 @@ public abstract class CommandLineInterface : IDisposable
       {
          return (FileName)source;
       }
-      else if (type == typeof(Maybe<FolderName>))
+      else if (type == typeof(Optional<FolderName>))
       {
          return maybe(source.IsNotEmpty(), () => (FolderName)source);
       }
-      else if (type == typeof(Maybe<FileName>))
+      else if (type == typeof(Optional<FileName>))
       {
          return maybe(source.IsNotEmpty(), () => (FileName)source);
       }
@@ -241,7 +241,7 @@ public abstract class CommandLineInterface : IDisposable
       }
    }
 
-   protected Result<object> retrieveItem(string name, Type type, Maybe<object> _defaultValue, string prefix, string suffix, string commandLine)
+   protected Optional<object> retrieveItem(string name, Type type, Optional<object> _defaultValue, string prefix, string suffix, string commandLine)
    {
       return tryTo(() =>
       {
@@ -370,12 +370,12 @@ public abstract class CommandLineInterface : IDisposable
       }
    }
 
-   protected static Maybe<string> getCommand(string commandLine)
+   protected static Optional<string> getCommand(string commandLine)
    {
       return commandLine.Matches($"^ /({REGEX_PARAMETER}) /b; f").Map(result => result.FirstGroup);
    }
 
-   protected Maybe<string> getCommandsFromFile(string prefix, string suffix, string commandLine)
+   protected Optional<string> getCommandsFromFile(string prefix, string suffix, string commandLine)
    {
       var opensCommandFile = $"{prefix}cmd{suffix}";
       if (commandLine.StartsWith(opensCommandFile))
@@ -598,7 +598,7 @@ public abstract class CommandLineInterface : IDisposable
       }
    }
 
-   protected Result<object> fillObject(object emptyObject, string prefix, string suffix, string commandLine)
+   protected Optional<object> fillObject(object emptyObject, string prefix, string suffix, string commandLine)
    {
       try
       {
@@ -630,8 +630,8 @@ public abstract class CommandLineInterface : IDisposable
                   {
                      evaluator[name] = getBoolean(rest, suffix);
                   }
-                  else if (type == typeof(string) || type == typeof(Maybe<string>) || type == typeof(FileName) || type == typeof(FolderName) ||
-                           type == typeof(Maybe<FileName>) || type == typeof(Maybe<FolderName>))
+                  else if (type == typeof(string) || type == typeof(Optional<string>) || type == typeof(FileName) || type == typeof(FolderName) ||
+                           type == typeof(Optional<FileName>) || type == typeof(Optional<FolderName>))
                   {
                      evaluator[name] = getString(rest, type);
                   }

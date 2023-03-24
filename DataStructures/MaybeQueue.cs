@@ -11,7 +11,7 @@ namespace Core.DataStructures;
 public class MaybeQueue<T> : IQueue<T>, IEnumerable<T>
 {
    protected Queue<T> queue;
-   protected Maybe<T> _last;
+   protected Optional<T> _last;
 
    public MaybeQueue()
    {
@@ -29,7 +29,7 @@ public class MaybeQueue<T> : IQueue<T>, IEnumerable<T>
 
    public bool Contains(T item) => queue.Contains(item);
 
-   public Result<T[]> ToArray(int arrayIndex = 0)
+   public Optional<T[]> ToArray(int arrayIndex = 0)
    {
       return
          from assertion in arrayIndex.Must().BeBetween(0).Until(Count).OrFailure()
@@ -43,7 +43,7 @@ public class MaybeQueue<T> : IQueue<T>, IEnumerable<T>
          select array;
    }
 
-   public Result<T> Item(int index)
+   public Optional<T> Item(int index)
    {
       return
          from assertion in index.Must().BeBetween(0).Until(Count).OrFailure()
@@ -51,7 +51,7 @@ public class MaybeQueue<T> : IQueue<T>, IEnumerable<T>
          select item;
    }
 
-   public Maybe<T> Dequeue() => maybe<T>() & IsNotEmpty & (() => queue.Dequeue());
+   public Optional<T> Dequeue() => maybe<T>() & IsNotEmpty & (() => queue.Dequeue());
 
    public void Enqueue(T item) => queue.Enqueue(item);
 
@@ -63,7 +63,7 @@ public class MaybeQueue<T> : IQueue<T>, IEnumerable<T>
 
    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-   public Maybe<T> Peek() => maybe<T>() & IsNotEmpty & (() => queue.Peek());
+   public Optional<T> Peek() => maybe<T>() & IsNotEmpty & (() => queue.Peek());
 
    public T[] ToArray() => queue.ToArray();
 
@@ -89,5 +89,5 @@ public class MaybeQueue<T> : IQueue<T>, IEnumerable<T>
       return _last;
    }
 
-   public Maybe<T> Last => _last;
+   public Optional<T> Last => _last;
 }

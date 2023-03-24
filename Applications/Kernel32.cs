@@ -36,7 +36,7 @@ public static class Kernel32
    private static extern IntPtr CreateFileW(string fileName, uint desiredAccess, uint shareMode, IntPtr securityAttributes,
       uint creationDisposition, uint flagsAndAttributes, IntPtr templateFile);
 
-   private static Result<FileStream> fileStream(string fileName, uint fileAccessMode, uint fileShareMode, FileAccess fileAccess) => tryTo(() =>
+   private static Optional<FileStream> fileStream(string fileName, uint fileAccessMode, uint fileShareMode, FileAccess fileAccess) => tryTo(() =>
    {
       var handle = CreateFileW(fileName, fileAccessMode, fileShareMode, IntPtr.Zero, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, IntPtr.Zero);
       var file = new SafeFileHandle(handle, true);
@@ -50,17 +50,17 @@ public static class Kernel32
       }
    });
 
-   internal static Result<Unit> initializeOutStream() =>
+   internal static Optional<Unit> initializeOutStream() =>
       from fs in fileStream("CONOUT$", GENERIC_WRITE, FILE_SHARE_WRITE, FileAccess.Write)
       from writer in getTextWriter(fs)
       select unit;
 
-   internal static Result<Unit> initializeInStream() =>
+   internal static Optional<Unit> initializeInStream() =>
       from fs in fileStream("CONIN$", GENERIC_READ, FILE_SHARE_READ, FileAccess.Read)
       from reader in getTextReader(fs)
       select unit;
 
-   private static Result<TextWriter> getTextWriter(FileStream fileStream) => tryTo(() =>
+   private static Optional<TextWriter> getTextWriter(FileStream fileStream) => tryTo(() =>
    {
       var writer = new StreamWriter(fileStream) { AutoFlush = true };
       Console.SetOut(writer);
@@ -69,7 +69,7 @@ public static class Kernel32
       return writer.Success<TextWriter>();
    });
 
-   private static Result<TextReader> getTextReader(FileStream fileStream) => tryTo(() =>
+   private static Optional<TextReader> getTextReader(FileStream fileStream) => tryTo(() =>
    {
       var reader = new StreamReader(fileStream);
       Console.SetIn(reader);

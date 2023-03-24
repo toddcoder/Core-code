@@ -136,7 +136,7 @@ public class Hash<TKey, TValue> : Dictionary<TKey, TValue>, IHash<TKey, TValue>
       }
    }
 
-   public Result<Hash<TKey, TValue>> AnyHash() => this;
+   public Optional<Hash<TKey, TValue>> AnyHash() => this;
 
    public TValue Find(TKey key, Func<TKey, TValue> defaultValue, bool addIfNotFound = false)
    {
@@ -257,7 +257,7 @@ public class Hash<TKey, TValue> : Dictionary<TKey, TValue>, IHash<TKey, TValue>
       return result;
    }
 
-   public Maybe<TValue> Replace(TKey key, TValue newValue)
+   public Optional<TValue> Replace(TKey key, TValue newValue)
    {
       var oldValue = this.Maybe(key);
       this[key] = newValue;
@@ -265,7 +265,7 @@ public class Hash<TKey, TValue> : Dictionary<TKey, TValue>, IHash<TKey, TValue>
       return oldValue;
    }
 
-   public Maybe<TValue> OneTime(TKey key)
+   public Optional<TValue> OneTime(TKey key)
    {
       if (ContainsKey(key))
       {
@@ -305,5 +305,5 @@ public class Hash<TKey, TValue> : Dictionary<TKey, TValue>, IHash<TKey, TValue>
 
    public virtual Hash<TKey, TValue> Subset(IEnumerable<TKey> keys) => Subset(keys.ToArray());
 
-   public HashMaybe<TKey, TValue> Maybe => new(this);
+   public HashOptional<TKey, TValue> Maybe => new(this);
 }

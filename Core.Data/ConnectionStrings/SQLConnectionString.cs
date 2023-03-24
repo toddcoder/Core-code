@@ -34,7 +34,7 @@ public class SqlConnectionString : IConnectionString
       return user.IsNotEmpty() && password.IsNotEmpty() ? $"{baseValue}User ID={user}; Password={password}" : baseValue;
    }
 
-   public static string GetConnectionString(string server, string database, string application, Maybe<string> _user, Maybe<string> _password,
+   public static string GetConnectionString(string server, string database, string application, Optional<string> _user, Optional<string> _password,
       bool readOnly = false)
    {
       if (_user && _password)
@@ -63,7 +63,7 @@ public class SqlConnectionString : IConnectionString
       return (server, database, application, user, password);
    }
 
-   public static Result<SqlConnectionString> FromConnection(Connection connection)
+   public static Optional<SqlConnectionString> FromConnection(Connection connection)
    {
       var _connectionString = connection.Maybe()["connection"];
       if (_connectionString)
@@ -123,7 +123,7 @@ public class SqlConnectionString : IConnectionString
       connectionTimeout = timeout;
    }
 
-   public SqlConnectionString(string server, string database, string application, TimeSpan timeout, Maybe<string> _user, Maybe<string> _password,
+   public SqlConnectionString(string server, string database, string application, TimeSpan timeout, Optional<string> _user, Optional<string> _password,
       bool readOnly = false)
    {
       connectionString = GetConnectionString(server, database, application, _user, _password, readOnly);

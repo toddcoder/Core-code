@@ -35,7 +35,7 @@ internal class DifferenceBuilder
       }
    }
 
-   protected Result<Unit> buildModifications()
+   protected Optional<Unit> buildModifications()
    {
       var oldSize = oldModification.HashedItems.Length;
       var newSize = newModification.HashedItems.Length;
@@ -46,7 +46,7 @@ internal class DifferenceBuilder
       return buildModifications(0, oldSize, 0, newSize, forwardDiagonal, reverseDiagonal);
    }
 
-   protected Result<Unit> buildModifications(int oldStart, int oldEnd, int newStart, int newEnd, int[] forwardDiagonal, int[] reverseDiagonal)
+   protected Optional<Unit> buildModifications(int oldStart, int oldEnd, int newStart, int newEnd, int[] forwardDiagonal, int[] reverseDiagonal)
    {
       while (oldStart < oldEnd && newStart < newEnd && oldModification.HashedItems[oldStart] == newModification.HashedItems[newStart])
       {
@@ -133,7 +133,7 @@ internal class DifferenceBuilder
       return unit;
    }
 
-   protected static Result<EditLengthResult> calculateEditLength(int[] oldItems, int oldStart, int oldEnd, int[] newItems, int newStart,
+   protected static Optional<EditLengthResult> calculateEditLength(int[] oldItems, int oldStart, int oldEnd, int[] newItems, int newStart,
       int newEnd, int[] forwardDiagonal, int[] reverseDiagonal)
    {
       if (oldItems.Length == 0 && newItems.Length == 0)
@@ -264,7 +264,7 @@ internal class DifferenceBuilder
       newModification = new Modification(newText);
    }
 
-   public Result<DifferenceResult> Build()
+   public Optional<DifferenceResult> Build()
    {
       var itemHash = new StringHash<int>(ignoreCase);
       var lineDiffs = new List<DifferenceBlock>();

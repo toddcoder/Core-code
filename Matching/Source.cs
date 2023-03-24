@@ -12,7 +12,7 @@ public class Source
    protected string source;
    protected int index;
    protected int length;
-   protected Maybe<int> _peekLength;
+   protected Optional<int> _peekLength;
 
    public Source(string source)
    {
@@ -26,7 +26,7 @@ public class Source
 
    public string Current => source.Drop(index);
 
-   public Maybe<string> NextLine(Pattern pattern)
+   public Optional<string> NextLine(Pattern pattern)
    {
       if (More)
       {
@@ -45,7 +45,7 @@ public class Source
       return nil;
    }
 
-   public Maybe<string> PeekNextLine(Pattern pattern)
+   public Optional<string> PeekNextLine(Pattern pattern)
    {
       _peekLength = nil;
       if (More)
@@ -65,7 +65,7 @@ public class Source
       return nil;
    }
 
-   public Maybe<(MatchResult result, string line)> NextLineMatch(Pattern pattern)
+   public Optional<(MatchResult result, string line)> NextLineMatch(Pattern pattern)
    {
       if (More)
       {
@@ -83,7 +83,7 @@ public class Source
       return nil;
    }
 
-   public Maybe<(MatchResult result, string line)> PeekNextLineMatch(Pattern pattern)
+   public Optional<(MatchResult result, string line)> PeekNextLineMatch(Pattern pattern)
    {
       _peekLength = nil;
       if (More)
@@ -101,7 +101,7 @@ public class Source
       return nil;
    }
 
-   public Maybe<string> NextLine()
+   public Optional<string> NextLine()
    {
       if (More)
       {
@@ -127,7 +127,7 @@ public class Source
       }
    }
 
-   public Maybe<string> PeekNextLine()
+   public Optional<string> PeekNextLine()
    {
       _peekLength = nil;
       if (More)
@@ -144,7 +144,7 @@ public class Source
       }
    }
 
-   public Maybe<string> GoTo(Pattern pattern)
+   public Optional<string> GoTo(Pattern pattern)
    {
       while (true)
       {

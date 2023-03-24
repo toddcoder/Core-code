@@ -4,7 +4,7 @@ namespace Core.Monads.Lazy;
 
 public class LazyRepeatingMonads
 {
-   protected static Maybe<LazyRepeatingMonads> _function;
+   protected static Optional<LazyRepeatingMonads> _function;
 
    static LazyRepeatingMonads()
    {
@@ -24,9 +24,9 @@ public class LazyRepeatingMonads
       }
    }
 
-   public LazyMaybe<T> maybe<T>() => new() { Repeating = true };
+   public LazyOptional<T> maybe<T>() => new() { Repeating = true };
 
-   public LazyResult<T> result<T>() => new() { Repeating = true };
+   public LazyOptional<T> result<T>() => new() { Repeating = true };
 
    public LazyOptional<T> optional<T>() => new() { Repeating = true };
 

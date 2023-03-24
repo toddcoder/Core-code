@@ -18,7 +18,7 @@ public class Working
    public static bool operator !(Working working) => !working.isWorking();
 
    protected TimeSpan workingPeriod;
-   protected Maybe<DateTime> _targetDateTime;
+   protected Optional<DateTime> _targetDateTime;
 
    protected Working(TimeSpan workingPeriod)
    {

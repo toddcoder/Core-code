@@ -7,5 +7,5 @@ public class RemainderParser : BaseParser
 {
    public override string Pattern => @"^\s*(/\s*)?@";
 
-   public override Maybe<string> Parse(string source, ref int index) => tokens[1].IsNotEmpty() ? "(.*)$" : ".*$";
+   public override Optional<string> Parse(string source, ref int index) => tokens[1].IsNotEmpty() ? "(.*)$" : ".*$";
 }

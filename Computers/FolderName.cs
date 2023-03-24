@@ -26,13 +26,13 @@ public class FolderName : IComparable, IComparable<FolderName>, IEquatable<Folde
    public class Try
    {
       [Obsolete("Use static FromString")]
-      public static Result<FolderName> FromString(string folder)
+      public static Optional<FolderName> FromString(string folder)
       {
          return folder.Must().BeAValidFolderName().OrFailure().Map(f => (FolderName)f);
       }
    }
 
-   public static Result<FolderName> FromString(string folder)
+   public static Optional<FolderName> FromString(string folder)
    {
       return folder.Must().BeAValidFolderName().OrFailure().Map(f => (FolderName)f);
    }
@@ -93,7 +93,7 @@ public class FolderName : IComparable, IComparable<FolderName>, IEquatable<Folde
 
    public static FolderName Configurations => CorporateBase["Configurations"];
 
-   public static Maybe<FolderName> ExecutableFolder
+   public static Optional<FolderName> ExecutableFolder
    {
       get => Environment.GetCommandLineArgs()[0].Matches(@"^ /(.+) '\' -['\']+ '.'('exe' | 'dll') $; f").Map(r => (FolderName)r.FirstGroup);
    }
@@ -207,7 +207,7 @@ public class FolderName : IComparable, IComparable<FolderName>, IEquatable<Folde
 
    public FolderName this[string subfolder] => new(root, subfolders.Augment(subfolder));
 
-   public Maybe<FolderName> Parent
+   public Optional<FolderName> Parent
    {
       get
       {
@@ -232,11 +232,11 @@ public class FolderName : IComparable, IComparable<FolderName>, IEquatable<Folde
       }
    }
 
-   public Maybe<FolderName> Parents(int count)
+   public Optional<FolderName> Parents(int count)
    {
       if (count > 0)
       {
-         Maybe<FolderName> _parent = nil;
+         Optional<FolderName> _parent = nil;
          var self = this;
          for (var i = 0; i < count; i++)
          {
@@ -904,24 +904,24 @@ public class FolderName : IComparable, IComparable<FolderName>, IEquatable<Folde
 
    public bool IsNotEmpty => !IsEmpty;
 
-   public Maybe<FileName> ExistingFile(string nameExtension, bool parallel = false)
+   public Optional<FileName> ExistingFile(string nameExtension, bool parallel = false)
    {
       var files = parallel ? getFilesParallel(fullPath) : getFiles(fullPath);
       return files.Where(f => f.NameExtension == nameExtension).FirstOrNone();
    }
 
-   public Maybe<FileName> ExistingFile(string nameExtension, CancellationToken token)
+   public Optional<FileName> ExistingFile(string nameExtension, CancellationToken token)
    {
       return getFilesParallel(fullPath, token).Where(f => f.NameExtension == nameExtension).FirstOrNone();
    }
 
-   public Maybe<FolderName> ExistingFolderName(string name, bool parallel)
+   public Optional<FolderName> ExistingFolderName(string name, bool parallel)
    {
       var folders = parallel ? getFoldersParallel(fullPath) : getFolders(fullPath);
       return folders.Where(f => f.Name == name).FirstOrNone();
    }
 
-   public Maybe<FolderName> ExistingFolderName(string name, CancellationToken token)
+   public Optional<FolderName> ExistingFolderName(string name, CancellationToken token)
    {
       return getFoldersParallel(fullPath, token).Where(f => f.Name == name).FirstOrNone();
    }
@@ -944,7 +944,7 @@ public class FolderName : IComparable, IComparable<FolderName>, IEquatable<Folde
 
    public bool ContainsImmediateFolderName(string name) => Combine(name).Exists();
 
-   public Result<FolderName> Validate(bool allowRelativePaths = false) => ValidatePath(this, allowRelativePaths).Map(s => (FolderName)s);
+   public Optional<FolderName> Validate(bool allowRelativePaths = false) => ValidatePath(this, allowRelativePaths).Map(s => (FolderName)s);
 
    public bool IsValid => Validate(true);
 }

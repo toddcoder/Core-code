@@ -75,7 +75,7 @@ public class Identity : IDisposable
    protected IntPtr tokenHandle;
    protected IntPtr dupTokenHandle;
    protected bool impersonating;
-   protected Maybe<WindowsImpersonationContext> _impersonatedUser;
+   protected Optional<WindowsImpersonationContext> _impersonatedUser;
 
    public Identity()
    {
@@ -153,7 +153,7 @@ public class Identity : IDisposable
       }
    }
 
-   protected static Maybe<WindowsImpersonationContext> getContext(WindowsIdentity identity) => identity.Impersonate();
+   protected static Optional<WindowsImpersonationContext> getContext(WindowsIdentity identity) => identity.Impersonate();
 
    protected void unimpersonate()
    {

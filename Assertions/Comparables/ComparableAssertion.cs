@@ -213,13 +213,13 @@ public class ComparableAssertion<T> : IAssertion<T> where T : struct, IComparabl
       return forceConvert<T, TException, TResult>(this, args);
    }
 
-   public Result<T> OrFailure() => orFailure(this);
+   public Optional<T> OrFailure() => orFailure(this);
 
-   public Result<T> OrFailure(string message) => orFailure(this, message);
+   public Optional<T> OrFailure(string message) => orFailure(this, message);
 
-   public Result<T> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
+   public Optional<T> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
 
-   public Maybe<T> OrNone() => orNone(this);
+   public Optional<T> OrNone() => orNone(this);
 
    public async Task<Completion<T>> OrFailureAsync(CancellationToken token) => await orFailureAsync(this, token);
 

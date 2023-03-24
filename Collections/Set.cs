@@ -22,7 +22,7 @@ public class Set<T> : IEnumerable<T>, IEquatable<Set<T>>
    public static Set<T> operator ^(Set<T> set1, IEnumerable<T> set2) => set1.Except(set2, true);
 
    protected HashSet<T> content;
-   protected Maybe<IEqualityComparer<T>> _equalityComparer;
+   protected Optional<IEqualityComparer<T>> _equalityComparer;
 
    public Set()
    {

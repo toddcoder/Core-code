@@ -35,7 +35,7 @@ public class Schedule
       set => autoNext = value;
    }
 
-   public Result<DateTime> Next() => increment.Next.Map(next =>
+   public Optional<DateTime> Next() => increment.Next.Map(next =>
    {
       targetDateTime = next;
       return targetDateTime;

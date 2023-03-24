@@ -7,7 +7,7 @@ namespace Core.Computers;
 
 public static class FullPathFunctions
 {
-   internal static Result<string> ValidatePath(IFullPath fullPathObject, bool allowRelativePaths = false)
+   internal static Optional<string> ValidatePath(IFullPath fullPathObject, bool allowRelativePaths = false)
    {
       try
       {

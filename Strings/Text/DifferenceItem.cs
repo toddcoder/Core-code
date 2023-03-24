@@ -12,7 +12,7 @@ public class DifferenceItem : IEquatable<DifferenceItem>
 {
    protected List<DifferenceItem> subItems;
 
-   public DifferenceItem(string text, DifferenceType type, Maybe<int> position)
+   public DifferenceItem(string text, DifferenceType type, Optional<int> position)
    {
       Text = text;
       Type = type;
@@ -40,7 +40,7 @@ public class DifferenceItem : IEquatable<DifferenceItem>
    [Equatable]
    public DifferenceType Type { get; set; }
 
-   public Maybe<int> Position { get; }
+   public Optional<int> Position { get; }
 
    [Equatable]
    public string Text { get; }

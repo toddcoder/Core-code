@@ -137,13 +137,13 @@ public class TableMaker
 
    public void Clear() => rows.Clear();
 
-   public Maybe<char> HeaderFoot { get; set; }
+   public Optional<char> HeaderFoot { get; set; }
 
    public string ColumnSeparator { get; set; }
 
-   public Maybe<char> RowSeparator { get; set; }
+   public Optional<char> RowSeparator { get; set; }
 
-   public Maybe<string> Title { get; set; }
+   public Optional<string> Title { get; set; }
 
    public TableMaker Add(params object[] items)
    {

@@ -23,14 +23,14 @@ public class ConnectionStringBuilder
    }
 
    protected SqlSetupBuilder setupBuilder;
-   protected Maybe<string> _connectionString;
-   protected Maybe<TimeSpan> _connectionTimeout;
-   protected Maybe<string> _server;
-   protected Maybe<string> _database;
-   protected Maybe<string> _user;
-   protected Maybe<string> _password;
-   protected Maybe<string> _applicationName;
-   protected Maybe<bool> _readonly;
+   protected Optional<string> _connectionString;
+   protected Optional<TimeSpan> _connectionTimeout;
+   protected Optional<string> _server;
+   protected Optional<string> _database;
+   protected Optional<string> _user;
+   protected Optional<string> _password;
+   protected Optional<string> _applicationName;
+   protected Optional<bool> _readonly;
 
    public ConnectionStringBuilder(SqlSetupBuilder setupBuilder)
    {
@@ -95,7 +95,7 @@ public class ConnectionStringBuilder
       return this;
    }
 
-   public Result<SqlConnectionString> Build()
+   public Optional<SqlConnectionString> Build()
    {
       var connectionTimeout = _connectionTimeout | (() => 30.Seconds());
       var applicationName = _applicationName | "";

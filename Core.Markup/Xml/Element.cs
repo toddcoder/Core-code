@@ -72,7 +72,7 @@ public class Element : IRendering
 
    protected string name;
    protected MarkupTextHolder text;
-   protected Maybe<Element> _parent;
+   protected Optional<Element> _parent;
    protected Elements siblings;
    protected Elements children;
    protected Attributes attributes;
@@ -120,7 +120,7 @@ public class Element : IRendering
       set => text = value;
    }
 
-   public Maybe<Element> Parent
+   public Optional<Element> Parent
    {
       get => _parent;
       set => _parent = value;

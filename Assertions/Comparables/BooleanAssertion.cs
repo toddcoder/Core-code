@@ -101,13 +101,13 @@ public class BooleanAssertion : IAssertion<bool>
       return forceConvert<bool, TException, TResult>(this, args);
    }
 
-   public Result<bool> OrFailure() => orFailure(this);
+   public Optional<bool> OrFailure() => orFailure(this);
 
-   public Result<bool> OrFailure(string message) => orFailure(this, message);
+   public Optional<bool> OrFailure(string message) => orFailure(this, message);
 
-   public Result<bool> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
+   public Optional<bool> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
 
-   public Maybe<bool> OrNone() => orNone(this);
+   public Optional<bool> OrNone() => orNone(this);
 
    public async Task<Completion<bool>> OrFailureAsync(CancellationToken token) => await orFailureAsync(this, token);
 

@@ -22,7 +22,7 @@ public class HtmlBuilder : MarkupBuilder
 
    protected Element head;
    protected Element meta;
-   protected Maybe<Element> _style;
+   protected Optional<Element> _style;
    protected Element body;
    protected Set<Selector> selectors;
 

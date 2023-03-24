@@ -27,17 +27,17 @@ public class StringSet : Set<string>
       this.ignoreCase = ignoreCase;
    }
 
-   public Maybe<string> FirstStartsWith(string needle) => this.FirstOrNone(i => i.StartsWith(needle, ignoreCase, CultureInfo.CurrentCulture));
+   public Optional<string> FirstStartsWith(string needle) => this.FirstOrNone(i => i.StartsWith(needle, ignoreCase, CultureInfo.CurrentCulture));
 
-   public Maybe<string> FirstEndsWith(string needle) => this.FirstOrNone(i => i.EndsWith(needle, ignoreCase, CultureInfo.CurrentCulture));
+   public Optional<string> FirstEndsWith(string needle) => this.FirstOrNone(i => i.EndsWith(needle, ignoreCase, CultureInfo.CurrentCulture));
 
-   public Maybe<string> FirstWithin(string needle)
+   public Optional<string> FirstWithin(string needle)
    {
       var comparison = stringComparison(ignoreCase);
       return this.FirstOrNone(i => i.IndexOf(needle, comparison) > -1);
    }
 
-   public Maybe<string> FirstMatch(Pattern pattern) => this.FirstOrNone(i => i.IsMatch(pattern));
+   public Optional<string> FirstMatch(Pattern pattern) => this.FirstOrNone(i => i.IsMatch(pattern));
 
    public bool AnyStartsWith(string needle) => this.Any(i => i.StartsWith(needle, ignoreCase, CultureInfo.CurrentCulture));
 

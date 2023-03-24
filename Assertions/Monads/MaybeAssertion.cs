@@ -15,12 +15,12 @@ public class MaybeAssertion<T> : IAssertion<T>
 
    public static bool operator |(MaybeAssertion<T> x, ICanBeTrue y) => or(x, y);
 
-   protected Maybe<T> maybe;
+   protected Optional<T> maybe;
    protected List<Constraint> constraints;
    protected bool not;
    protected string name;
 
-   public MaybeAssertion(Maybe<T> maybe)
+   public MaybeAssertion(Optional<T> maybe)
    {
       this.maybe = maybe;
       constraints = new List<Constraint>();
@@ -53,7 +53,7 @@ public class MaybeAssertion<T> : IAssertion<T>
          case T otherT:
             constraints.Add(new Constraint(() => constraintFunction(otherT), message, not, name, maybeImage(maybe)));
             break;
-         case Maybe<T> _value:
+         case Optional<T> _value:
             if (_value is (true, var value))
             {
                constraints.Add(new Constraint(() => constraintFunction(value), message, not, name, maybeImage(maybe)));
@@ -83,7 +83,7 @@ public class MaybeAssertion<T> : IAssertion<T>
 
    public MaybeAssertion<T> HaveValue() => add(() => maybe, "$name must $not have a value");
 
-   public MaybeAssertion<T> EqualToValueOf(Maybe<T> otherMaybe)
+   public MaybeAssertion<T> EqualToValueOf(Optional<T> otherMaybe)
    {
       return add(() => maybe.EqualToValueOf(otherMaybe), $"Value of $name must $not equal to value of {maybeImage(otherMaybe)}");
    }
@@ -126,13 +126,13 @@ public class MaybeAssertion<T> : IAssertion<T>
       return forceConvert<T, TimeoutException, TResult>(this);
    }
 
-   public Result<T> OrFailure() => orFailure(this);
+   public Optional<T> OrFailure() => orFailure(this);
 
-   public Result<T> OrFailure(string message) => orFailure(this, message);
+   public Optional<T> OrFailure(string message) => orFailure(this, message);
 
-   public Result<T> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
+   public Optional<T> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
 
-   public Maybe<T> OrNone() => orNone(this);
+   public Optional<T> OrNone() => orNone(this);
 
    public async Task<Completion<T>> OrFailureAsync(CancellationToken token) => await orFailureAsync(this, token);
 

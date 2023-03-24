@@ -60,11 +60,6 @@ public abstract class Optional<T>
 
    public static implicit operator Optional<T>(Nil _) => new Empty<T>();
 
-   public static implicit operator Optional<T>(Maybe<Exception> _exception)
-   {
-      return _exception.Map(e => (Optional<T>)new Failed<T>(e)) | (() => new Empty<T>());
-   }
-
    public static bool operator true(Optional<T> value) => value is Just<T> || value is Lazy.LazyOptional<T> lazyOptional && lazyOptional;
 
    public static bool operator false(Optional<T> value)
@@ -93,11 +88,11 @@ public abstract class Optional<T>
 
    public static T operator |(Optional<T> optional, Func<T> defaultFunc) => optional ? optional : defaultFunc();
 
-   public static T operator |(Optional<T> optional, Func<Maybe<Exception>, T> defaultFunc) => optional.DefaultTo(defaultFunc);
+   public static T operator |(Optional<T> optional, Func<Optional<Exception>, T> defaultFunc) => optional.DefaultTo(defaultFunc);
 
    public abstract Exception Exception { get; }
 
-   public abstract Maybe<Exception> AnyException { get; }
+   public abstract Optional<Exception> AnyException { get; }
 
    public abstract Optional<TResult> Map<TResult>(Func<T, Optional<TResult>> ifJust);
 
@@ -126,13 +121,13 @@ public abstract class Optional<T>
 
    public abstract T Force();
 
-   public abstract T DefaultTo(Func<Maybe<Exception>, T> func);
+   public abstract T Required(string message);
+
+   public abstract T Required(Func<string> message);
+
+   public abstract T DefaultTo(Func<Optional<Exception>, T> func);
 
    public abstract void Deconstruct(out bool isJust, out T value);
-
-   public abstract Maybe<T> Maybe();
-
-   public abstract Result<T> Result();
 
    public abstract Completion<T> Completion();
 

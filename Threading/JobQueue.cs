@@ -33,7 +33,7 @@ public class JobQueue
       }
    }
 
-   public Maybe<Action<int>> Dequeue(int affinity)
+   public Optional<Action<int>> Dequeue(int affinity)
    {
       affinity.Must().BeBetween(0).Until(affinityCount).OrThrow();
 

@@ -79,8 +79,8 @@ public class SqlSetupBuilder
       };
    }
 
-   protected Maybe<ConnectionStringBuilder> _connectionStringBuilder;
-   protected Maybe<CommandTextBuilder> _commandTextBuilder;
+   protected Optional<ConnectionStringBuilder> _connectionStringBuilder;
+   protected Optional<CommandTextBuilder> _commandTextBuilder;
    protected List<ParameterBuilder> parameterBuilders;
    protected List<FieldBuilder> fieldBuilders;
 
@@ -100,7 +100,7 @@ public class SqlSetupBuilder
 
    internal void ParameterBuilder(ParameterBuilder builder) => parameterBuilders.Add(builder);
 
-   public Result<SqlSetup> Build()
+   public Optional<SqlSetup> Build()
    {
       var sqlSetup = new SqlSetup();
       var _connectionString = lazy.result<SqlConnectionString>();

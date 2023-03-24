@@ -10,5 +10,5 @@ public class LastDayOfMonth : DateOperation
 
    public override OperationType Type => OperationType.Day;
 
-   public override Result<DateTime> Operate(DateTime dateTime) => dateTime.LastOfMonth();
+   public override Optional<DateTime> Operate(DateTime dateTime) => dateTime.LastOfMonth();
 }

@@ -48,7 +48,7 @@ public class SwitchHelpFormatter
    protected string source;
    protected StringHash replacements;
 
-   public SwitchHelpFormatter(string command, string helpText, string source, StringHash<(string, string, Maybe<string>)> switchHelp,
+   public SwitchHelpFormatter(string command, string helpText, string source, StringHash<(string, string, Optional<string>)> switchHelp,
       string prefix, string shortCutPrefix, IHash<string, string> commandReplacements)
    {
       this.command = command;
@@ -77,7 +77,7 @@ public class SwitchHelpFormatter
       }
    }
 
-   public Result<string> Format()
+   public Optional<string> Format()
    {
       try
       {
@@ -88,8 +88,8 @@ public class SwitchHelpFormatter
          var length = firstLine.Length.MaxOf(80);
          writer.WriteLine("=".Repeat(length));
 
-         Maybe<string> _divider = nil;
-         Maybe<string> _indent = nil;
+         Optional<string> _divider = nil;
+         Optional<string> _indent = nil;
 
          foreach (var line in source.Unjoin("/s* ';' /s*; f"))
          {

@@ -13,7 +13,7 @@ namespace Core.Objects;
 
 public static class TypeExtensions
 {
-   public static Maybe<object> DefaultValue(this Type type)
+   public static Optional<object> DefaultValue(this Type type)
    {
       return maybe(type is not null, () =>
       {
@@ -22,7 +22,7 @@ public static class TypeExtensions
       });
    }
 
-   public static Maybe<object> DefaultValue(this string typeName, bool defaultStringToEmpty = false)
+   public static Optional<object> DefaultValue(this string typeName, bool defaultStringToEmpty = false)
    {
       if (typeName.StartsWith("$"))
       {
@@ -59,7 +59,7 @@ public static class TypeExtensions
       }
    }
 
-   public static Result<Type> TypeOf(this string source)
+   public static Optional<Type> TypeOf(this string source)
    {
       try
       {
@@ -110,5 +110,5 @@ public static class TypeExtensions
       }
    }
 
-   public static Result<object> New(this Type type, params object[] args) => tryTo(() => Activator.CreateInstance(type, array(args)));
+   public static Optional<object> New(this Type type, params object[] args) => tryTo(() => Activator.CreateInstance(type, array(args)));
 }

@@ -12,8 +12,8 @@ public class HelpGenerator
 {
    protected const string CONFIG_HELP = "View all configuration items, get or set configuration items";
 
-   protected StringHash<(Maybe<string> _helpText, Maybe<string> _switchPattern, IHash<string, string> replacements)> commandHelp;
-   protected StringHash<(string type, string argument, Maybe<string> _shortCut)> switchHelp;
+   protected StringHash<(Optional<string> _helpText, Optional<string> _switchPattern, IHash<string, string> replacements)> commandHelp;
+   protected StringHash<(string type, string argument, Optional<string> _shortCut)> switchHelp;
    protected string prefix;
    protected string shortCut;
 
@@ -41,7 +41,7 @@ public class HelpGenerator
       return table.ToString();
    }
 
-   protected static Result<string> displayConfigurationHelp()
+   protected static Optional<string> displayConfigurationHelp()
    {
       try
       {
@@ -65,7 +65,7 @@ public class HelpGenerator
       }
    }
 
-   public Result<string> Help(string command)
+   public Optional<string> Help(string command)
    {
       if (command.Same("config"))
       {

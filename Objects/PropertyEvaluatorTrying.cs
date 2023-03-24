@@ -12,17 +12,17 @@ public class PropertyEvaluatorTrying
 
    public PropertyEvaluator Evaluator => evaluator;
 
-   public Result<object> this[string signature] => tryTo(() => evaluator[signature]);
+   public Optional<object> this[string signature] => tryTo(() => evaluator[signature]);
 
-   public Result<object> Set(string signature, object value) => tryTo(() => evaluator[signature] = value);
+   public Optional<object> Set(string signature, object value) => tryTo(() => evaluator[signature] = value);
 
-   public Result<object> this[Signature signature] => tryTo(() => evaluator[signature]);
+   public Optional<object> this[Signature signature] => tryTo(() => evaluator[signature]);
 
-   public Result<object> Set(Signature signature, object value) => tryTo(() => evaluator[signature] = value);
+   public Optional<object> Set(Signature signature, object value) => tryTo(() => evaluator[signature] = value);
 
-   public Result<Type> Type(string signature) => tryTo(() => evaluator.Type(signature));
+   public Optional<Type> Type(string signature) => tryTo(() => evaluator.Type(signature));
 
-   public Result<Type> Type(Signature signature) => tryTo(() => evaluator.Type(signature));
+   public Optional<Type> Type(Signature signature) => tryTo(() => evaluator.Type(signature));
 
-   public Result<bool> Contains(string signature) => tryTo(() => evaluator.Contains(signature));
+   public Optional<bool> Contains(string signature) => tryTo(() => evaluator.Contains(signature));
 }

@@ -699,7 +699,7 @@ public class ExRichTextBox : RichTextBox
       }
    }
 
-   public Maybe<Rectangle> WordAtSelection(Graphics graphics, int start, int length)
+   public Optional<Rectangle> WordAtSelection(Graphics graphics, int start, int length)
    {
       if (length == 0)
       {
@@ -716,7 +716,7 @@ public class ExRichTextBox : RichTextBox
       }
    }
 
-   public Maybe<Rectangle> WordAtSelection(Graphics graphics, int start)
+   public Optional<Rectangle> WordAtSelection(Graphics graphics, int start)
    {
       var text = Text;
       if (text.IsEmpty() || start >= text.Length)
@@ -739,7 +739,7 @@ public class ExRichTextBox : RichTextBox
       }
    }
 
-   public Maybe<Rectangle> WordAtCurrentSelection(Graphics graphics)
+   public Optional<Rectangle> WordAtCurrentSelection(Graphics graphics)
    {
       return WordAtSelection(graphics, SelectionStart, SelectionLength);
    }

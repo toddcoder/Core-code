@@ -83,13 +83,13 @@ public class PatternAssertion : IAssertion<Pattern>
 
    public TResult Force<TException, TResult>(params object[] args) where TException : Exception => Force<TResult>();
 
-   public Result<Pattern> OrFailure() => orFailure(this);
+   public Optional<Pattern> OrFailure() => orFailure(this);
 
-   public Result<Pattern> OrFailure(string message) => orFailure(this, message);
+   public Optional<Pattern> OrFailure(string message) => orFailure(this, message);
 
-   public Result<Pattern> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
+   public Optional<Pattern> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
 
-   public Maybe<Pattern> OrNone() => orNone(this);
+   public Optional<Pattern> OrNone() => orNone(this);
 
    public async Task<Completion<Pattern>> OrFailureAsync(CancellationToken token) => await orFailureAsync(this, token);
 

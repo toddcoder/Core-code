@@ -9,7 +9,7 @@ public class AbsoluteDay : DateOperation
 
    public override OperationType Type => OperationType.Day;
 
-   public override Result<DateTime> Operate(DateTime dateTime)
+   public override Optional<DateTime> Operate(DateTime dateTime)
    {
       return amount.IsDay().AndYear(dateTime.Year).AndMonthValid(dateTime.Month);
    }

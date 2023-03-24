@@ -9,5 +9,5 @@ public static class DateFunctions
 {
    public static DateTime date(string source) => Parse(source);
 
-   public static Result<DateTime> attemptDate(string source) => tryTo(() => date(source));
+   public static Optional<DateTime> attemptDate(string source) => tryTo(() => date(source));
 }

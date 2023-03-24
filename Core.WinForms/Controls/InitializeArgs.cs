@@ -13,5 +13,5 @@ public class InitializeArgs : EventArgs
 
    public bool Cancel { get; set; }
 
-   public Maybe<object> Argument;
+   public Optional<object> Argument;
 }

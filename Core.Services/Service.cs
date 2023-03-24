@@ -10,7 +10,7 @@ namespace Core.Services;
 
 public class Service
 {
-   protected static Result<Service> fromConfiguration(Configuration configuration, Maybe<IServiceMessage> _serviceMessage)
+   protected static Optional<Service> fromConfiguration(Configuration configuration, Optional<IServiceMessage> _serviceMessage)
    {
       return
          from name in configuration.Result.String("name")
@@ -21,9 +21,9 @@ public class Service
          select new Service(configuration, name, exceptionAddress, typeManager, serviceLogger, _serviceMessage);
    }
 
-   public static Result<Service> FromConfiguration(Configuration configuration) => fromConfiguration(configuration, nil);
+   public static Optional<Service> FromConfiguration(Configuration configuration) => fromConfiguration(configuration, nil);
 
-   public static Result<Service> FromConfiguration(Configuration configuration, IServiceMessage serviceMessage)
+   public static Optional<Service> FromConfiguration(Configuration configuration, IServiceMessage serviceMessage)
    {
       return fromConfiguration(configuration, serviceMessage.Some());
    }
@@ -37,7 +37,7 @@ public class Service
    protected ServiceMessage serviceMessage;
 
    protected Service(Configuration configuration, string name, Address exceptionAddress, TypeManager typeManager, ServiceLogger serviceLogger,
-      Maybe<IServiceMessage> _serviceMessage)
+      Optional<IServiceMessage> _serviceMessage)
    {
       this.configuration = configuration;
       this.name = name;

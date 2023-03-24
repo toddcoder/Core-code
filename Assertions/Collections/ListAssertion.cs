@@ -123,13 +123,13 @@ public class ListAssertion<T> : IAssertion<List<T>>
       return forceConvert<List<T>, TException, TResult>(this, args);
    }
 
-   public Result<List<T>> OrFailure() => orFailure(this);
+   public Optional<List<T>> OrFailure() => orFailure(this);
 
-   public Result<List<T>> OrFailure(string message) => orFailure(this, message);
+   public Optional<List<T>> OrFailure(string message) => orFailure(this, message);
 
-   public Result<List<T>> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
+   public Optional<List<T>> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
 
-   public Maybe<List<T>> OrNone() => orNone(this);
+   public Optional<List<T>> OrNone() => orNone(this);
 
    public async Task<Completion<List<T>>> OrFailureAsync(CancellationToken token) => await orFailureAsync(this, token);
 

@@ -26,7 +26,7 @@ public class Differentiator
       this.ignoreCase = ignoreCase;
    }
 
-   public Result<DifferenceModel> BuildModel()
+   public Optional<DifferenceModel> BuildModel()
    {
       var differ = new DifferenceBuilder(oldText, newText, ignoreWhiteSpace, ignoreCase);
       var _differenceResult = differ.Build();
@@ -59,7 +59,7 @@ public class Differentiator
    }
 
    protected static void buildItems(DifferenceResult result, List<DifferenceItem> oldItems, List<DifferenceItem> newItems,
-      Maybe<ItemBuilder> _subItemBuilder)
+      Optional<ItemBuilder> _subItemBuilder)
    {
       var oldPosition = 0;
       var newPosition = 0;

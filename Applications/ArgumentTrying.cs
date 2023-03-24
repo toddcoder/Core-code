@@ -10,7 +10,7 @@ public class ArgumentTrying
 
    public ArgumentTrying(Argument argument) => this.argument = argument;
 
-   public Result<FileName> FileName
+   public Optional<FileName> FileName
    {
       get
       {
@@ -22,7 +22,7 @@ public class ArgumentTrying
       }
    }
 
-   public Result<FolderName> FolderName
+   public Optional<FolderName> FolderName
    {
       get
       {

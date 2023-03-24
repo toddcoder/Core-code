@@ -15,7 +15,7 @@ public class PropertyEvaluator : IEvaluator, IHash<string, object>, IHash<Signat
 {
    public static void SetValue(object obj, string signature, object value) => new PropertyEvaluator(obj) { [signature] = value };
 
-   public static Maybe<object> GetValue(object obj, string signature)
+   public static Optional<object> GetValue(object obj, string signature)
    {
       var evaluator = new PropertyEvaluator(obj);
       return ((IHash<string, object>)evaluator).Maybe(signature);
@@ -66,7 +66,7 @@ public class PropertyEvaluator : IEvaluator, IHash<string, object>, IHash<Signat
          {
             var current = obj;
 
-            Maybe<ObjectInfo> _lastInfo = nil;
+            Optional<ObjectInfo> _lastInfo = nil;
 
             foreach (var info in new SignatureCollection(signature).Select(s => new ObjectInfo(current, s)))
             {
@@ -101,7 +101,7 @@ public class PropertyEvaluator : IEvaluator, IHash<string, object>, IHash<Signat
 
    public bool ContainsKey(Signature key) => Contains(key.Name);
 
-   Result<Hash<Signature, object>> IHash<Signature, object>.AnyHash()
+   Optional<Hash<Signature, object>> IHash<Signature, object>.AnyHash()
    {
       var hash = new Hash<Signature, object>();
       var info = obj.GetType().GetProperties();
@@ -188,7 +188,7 @@ public class PropertyEvaluator : IEvaluator, IHash<string, object>, IHash<Signat
       }
    }
 
-   public Result<Hash<string, object>> AnyHash()
+   public Optional<Hash<string, object>> AnyHash()
    {
       var hash = new Hash<string, object>();
       var info = obj.GetType().GetProperties();
@@ -217,7 +217,7 @@ public class PropertyEvaluator : IEvaluator, IHash<string, object>, IHash<Signat
       return info.GetCustomAttributes(true).OfType<TAttribute>().Any();
    }
 
-   public Maybe<T> ValueAtAttribute<TAttribute, T>() where TAttribute : Attribute
+   public Optional<T> ValueAtAttribute<TAttribute, T>() where TAttribute : Attribute
    {
       var properties = type
          .GetProperties(BindingFlags.Instance | BindingFlags.Public)
@@ -240,12 +240,12 @@ public class PropertyEvaluator : IEvaluator, IHash<string, object>, IHash<Signat
          .Select(i => new Signature(i.Name));
    }
 
-   public Maybe<TAttribute> Attribute<TAttribute>(string signature) where TAttribute : Attribute
+   public Optional<TAttribute> Attribute<TAttribute>(string signature) where TAttribute : Attribute
    {
       return Attribute<TAttribute>(new Signature(signature));
    }
 
-   public Maybe<TAttribute> Attribute<TAttribute>(Signature signature) where TAttribute : Attribute
+   public Optional<TAttribute> Attribute<TAttribute>(Signature signature) where TAttribute : Attribute
    {
       var info = ObjectInfo.PropertyInfo(obj, signature);
       return info.Map(i => i.GetCustomAttributes(true).OfType<TAttribute>().FirstOrNone());

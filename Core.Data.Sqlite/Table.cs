@@ -38,7 +38,7 @@ public abstract class Table<TKey, TValue> : IEnumerable<TValue>, IHash<TKey, TVa
 
    public abstract TKey KeyFromValue(TValue value);
 
-   public virtual Result<TValue> Retrieve(TKey key)
+   public virtual Optional<TValue> Retrieve(TKey key)
    {
       var whereClause = $"{KeyName} = $key";
       using var connection = database.GetConnection();
@@ -65,7 +65,7 @@ public abstract class Table<TKey, TValue> : IEnumerable<TValue>, IHash<TKey, TVa
       }
    }
 
-   public virtual Result<int> Save(TValue value)
+   public virtual Optional<int> Save(TValue value)
    {
       var fromObject = value.FromObject();
       var fields = fromObject.Keys.ToString(", ");
@@ -109,7 +109,7 @@ public abstract class Table<TKey, TValue> : IEnumerable<TValue>, IHash<TKey, TVa
       connection.Close();
    }
 
-   public Result<T> ExecuteScalar<T>(string fieldName, string whereClause, params (string, object)[] parameters)
+   public Optional<T> ExecuteScalar<T>(string fieldName, string whereClause, params (string, object)[] parameters)
    {
       return database.ExecuteScalar<T>($"SELECT {fieldName} FROM {TableName} WHERE {whereClause}", parameters);
    }
@@ -120,7 +120,7 @@ public abstract class Table<TKey, TValue> : IEnumerable<TValue>, IHash<TKey, TVa
       return _count ? _count : -1;
    }
 
-   public Result<int> DeleteAll() => database.ExecuteNonQuery($"DELETE FROM {TableName}");
+   public Optional<int> DeleteAll() => database.ExecuteNonQuery($"DELETE FROM {TableName}");
 
    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
@@ -132,5 +132,5 @@ public abstract class Table<TKey, TValue> : IEnumerable<TValue>, IHash<TKey, TVa
       return _scalar.Map(r => r.Equals(key)).Recover(_ => false);
    }
 
-   public Result<Hash<TKey, TValue>> AnyHash() => this.ToHash(KeyFromValue);
+   public Optional<Hash<TKey, TValue>> AnyHash() => this.ToHash(KeyFromValue);
 }

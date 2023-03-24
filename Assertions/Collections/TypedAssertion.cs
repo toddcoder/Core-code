@@ -86,13 +86,13 @@ public class TypedAssertion<T> : IAssertion<T>
 
    public TResult Force<TException, TResult>(params object[] args) where TException : Exception => throw fail("Not implemented");
 
-   public Result<T> OrFailure() => orFailure(this);
+   public Optional<T> OrFailure() => orFailure(this);
 
-   public Result<T> OrFailure(string message) => orFailure(this, message);
+   public Optional<T> OrFailure(string message) => orFailure(this, message);
 
-   public Result<T> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
+   public Optional<T> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
 
-   public Maybe<T> OrNone() => orNone(this);
+   public Optional<T> OrNone() => orNone(this);
 
    public async Task<Completion<T>> OrFailureAsync(CancellationToken token) => await orFailureAsync(assertion: this, token);
 

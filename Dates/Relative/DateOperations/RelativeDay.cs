@@ -9,5 +9,5 @@ public class RelativeDay : DateOperation
 
    public override OperationType Type => OperationType.Year;
 
-   public override Result<DateTime> Operate(DateTime dateTime) => dateTime.AddDays(amount);
+   public override Optional<DateTime> Operate(DateTime dateTime) => dateTime.AddDays(amount);
 }

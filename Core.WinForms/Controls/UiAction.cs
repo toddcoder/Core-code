@@ -26,7 +26,7 @@ public class UiAction : UserControl
    {
       protected Hash<Guid, string> uiActions;
       protected AutoStringHash<List<UiAction>> groups;
-      protected Result<string> _group;
+      protected Optional<string> _group;
 
       public CheckToggler()
       {
@@ -43,7 +43,7 @@ public class UiAction : UserControl
 
       public CheckToggler Group(Control control) => Group(control.Name);
 
-      protected Maybe<List<UiAction>> getUiActionList(Guid id)
+      protected Optional<List<UiAction>> getUiActionList(Guid id)
       {
          return
             from @group in uiActions.Maybe(id)
@@ -210,28 +210,28 @@ public class UiAction : UserControl
    protected bool mouseInside;
    protected bool mouseDown;
    protected UiToolTip toolTip;
-   protected Maybe<string> _clickText;
-   protected LazyMaybe<BusyTextProcessor> _busyTextProcessor;
-   protected LazyMaybe<ProgressDefiniteProcessor> _progressDefiniteProcessor;
-   protected LazyMaybe<BusyProcessor> _busyProcessor;
-   protected LazyMaybe<LabelProcessor> _labelProcessor;
-   protected Maybe<int> _percentage;
-   protected Maybe<Color> _foreColor;
-   protected Maybe<Color> _backColor;
-   protected Maybe<MessageStyle> _style;
-   protected Maybe<UiActionType> _lastType;
-   protected Maybe<bool> _lastEnabled;
-   protected Maybe<Color> _lastForeColor;
-   protected Maybe<Color> _lastBackColor;
-   protected Maybe<MessageStyle> _lastStyle;
-   protected Maybe<Image> _image;
+   protected Optional<string> _clickText;
+   protected LazyOptional<BusyTextProcessor> _busyTextProcessor;
+   protected LazyOptional<ProgressDefiniteProcessor> _progressDefiniteProcessor;
+   protected LazyOptional<BusyProcessor> _busyProcessor;
+   protected LazyOptional<LabelProcessor> _labelProcessor;
+   protected Optional<int> _percentage;
+   protected Optional<Color> _foreColor;
+   protected Optional<Color> _backColor;
+   protected Optional<MessageStyle> _style;
+   protected Optional<UiActionType> _lastType;
+   protected Optional<bool> _lastEnabled;
+   protected Optional<Color> _lastForeColor;
+   protected Optional<Color> _lastBackColor;
+   protected Optional<MessageStyle> _lastStyle;
+   protected Optional<Image> _image;
    protected Hash<Guid, SubText> subTexts;
    protected Lazy<Stopwatch> stopwatch;
    protected Lazy<BackgroundWorker> backgroundWorker;
-   protected Maybe<string> _label;
-   protected Maybe<int> _labelWidth;
+   protected Optional<string> _label;
+   protected Optional<int> _labelWidth;
    protected bool oneTimeTimer;
-   protected Maybe<SubText> _working;
+   protected Optional<SubText> _working;
    protected Timer workingTimer;
    protected MaybeStack<SubText> legends;
    protected bool isDirty;
@@ -241,14 +241,14 @@ public class UiAction : UserControl
    protected bool isUrlGood;
    protected Lazy<Font> marqueeFont;
    protected Lazy<UiActionScroller> scroller;
-   protected Maybe<string> _failureToolTip;
-   protected Maybe<string> _exceptionToolTip;
-   protected Maybe<SubText> _failureSubText;
-   protected Maybe<SubText> _exceptionSubText;
-   protected Maybe<string> _oldTitle;
-   protected Maybe<SubText> _progressSubText;
+   protected Optional<string> _failureToolTip;
+   protected Optional<string> _exceptionToolTip;
+   protected Optional<SubText> _failureSubText;
+   protected Optional<SubText> _exceptionSubText;
+   protected Optional<string> _oldTitle;
+   protected Optional<SubText> _progressSubText;
    protected bool flipOn;
-   protected Maybe<SubText> _flipFlop;
+   protected Optional<SubText> _flipFlop;
 
    public event EventHandler<AutomaticMessageArgs> AutomaticMessage;
    public event EventHandler<PaintEventArgs> Painting;
@@ -737,7 +737,7 @@ public class UiAction : UserControl
       refresh();
    }
 
-   public void Result(Result<(string, UiActionType)> _result)
+   public void Result(Optional<(string, UiActionType)> _result)
    {
       if (_result is (true, var (message, messageProgressType)))
       {
@@ -749,7 +749,7 @@ public class UiAction : UserControl
       }
    }
 
-   public void Result(Result<string> _result)
+   public void Result(Optional<string> _result)
    {
       if (_result)
       {
@@ -761,7 +761,7 @@ public class UiAction : UserControl
       }
    }
 
-   public void Result(Result<(string label, string text)> _result, int labelWidth)
+   public void Result(Optional<(string label, string text)> _result, int labelWidth)
    {
       if (_result is (true, var (label, message)))
       {
@@ -774,7 +774,7 @@ public class UiAction : UserControl
       }
    }
 
-   public void Result(Result<(string label, string text)> _result)
+   public void Result(Optional<(string label, string text)> _result)
    {
       if (_result is (true, var (label, message)))
       {
@@ -843,7 +843,7 @@ public class UiAction : UserControl
 
    public bool StopwatchInverted { get; set; }
 
-   public Maybe<TimeSpan> Elapsed => maybe<TimeSpan>() & Stopwatch & (() => stopwatch.Value.Elapsed);
+   public Optional<TimeSpan> Elapsed => maybe<TimeSpan>() & Stopwatch & (() => stopwatch.Value.Elapsed);
 
    public void Progress(int value, string text = "", bool asPercentage = false)
    {
@@ -918,7 +918,7 @@ public class UiAction : UserControl
 
    protected MessageStyle getStyle() => _style | (() => styles[type]);
 
-   protected Rectangle getClientRectangle(Maybe<Rectangle> _labelRectangle)
+   protected Rectangle getClientRectangle(Optional<Rectangle> _labelRectangle)
    {
       if (Arrow)
       {
@@ -1882,7 +1882,7 @@ public class UiAction : UserControl
 
    public void ExceptionLegendTemp(Exception exception, int x, int y) => ExceptionLegendTemp(exception, x, y, 2.Seconds());
 
-   public SubText ResultLegend(Result<string> _result)
+   public SubText ResultLegend(Optional<string> _result)
    {
       if (_result)
       {
@@ -1894,7 +1894,7 @@ public class UiAction : UserControl
       }
    }
 
-   public SubText ResultLegend(Result<string> _result, int x, int y)
+   public SubText ResultLegend(Optional<string> _result, int x, int y)
    {
       if (_result)
       {
@@ -1906,7 +1906,7 @@ public class UiAction : UserControl
       }
    }
 
-   public async Task ResultLegendAsync(Result<string> _result, TimeSpan delay)
+   public async Task ResultLegendAsync(Optional<string> _result, TimeSpan delay)
    {
       ResultLegend(_result);
       refresh();
@@ -1914,9 +1914,9 @@ public class UiAction : UserControl
       await Task.Delay(delay).ContinueWith(_ => Legend());
    }
 
-   public async Task ResultLegendAsync(Result<string> _result) => await ResultLegendAsync(_result, 2.Seconds());
+   public async Task ResultLegendAsync(Optional<string> _result) => await ResultLegendAsync(_result, 2.Seconds());
 
-   public async Task ResultLegendAsync(Result<string> _result, int x, int y, TimeSpan delay)
+   public async Task ResultLegendAsync(Optional<string> _result, int x, int y, TimeSpan delay)
    {
       ResultLegend(_result, x, y);
       refresh();
@@ -1924,18 +1924,18 @@ public class UiAction : UserControl
       await Task.Delay(delay).ContinueWith(_ => Legend());
    }
 
-   public async Task ResultLegendAsync(Result<string> _result, int x, int y) => await ResultLegendAsync(_result, x, y, 2.Seconds());
+   public async Task ResultLegendAsync(Optional<string> _result, int x, int y) => await ResultLegendAsync(_result, x, y, 2.Seconds());
 
-   public void ResultLegendTemp(Result<string> _result, TimeSpan delay) => this.Do(() => Task.Run(() => ResultLegendAsync(_result, delay)));
+   public void ResultLegendTemp(Optional<string> _result, TimeSpan delay) => this.Do(() => Task.Run(() => ResultLegendAsync(_result, delay)));
 
-   public void ResultLegendTemp(Result<string> _result) => ResultLegendTemp(_result, 2.Seconds());
+   public void ResultLegendTemp(Optional<string> _result) => ResultLegendTemp(_result, 2.Seconds());
 
-   public void ResultLegendTemp(Result<string> _result, int x, int y, TimeSpan delay)
+   public void ResultLegendTemp(Optional<string> _result, int x, int y, TimeSpan delay)
    {
       this.Do(() => Task.Run(() => ResultLegendAsync(_result, x, y, delay)));
    }
 
-   public void ResultLegendTemp(Result<string> _result, int x, int y) => ResultLegendTemp(_result, x, y, 2.Seconds());
+   public void ResultLegendTemp(Optional<string> _result, int x, int y) => ResultLegendTemp(_result, x, y, 2.Seconds());
 
    public SubText ResultLegend((string, UiActionType) result)
    {
@@ -2055,7 +2055,7 @@ public class UiAction : UserControl
 
    public bool ShowFocus { get; set; }
 
-   public Maybe<string> EmptyTextTitle { get; set; }
+   public Optional<string> EmptyTextTitle { get; set; }
 
    public async Task<Completion<TResult>> ExecuteAsync<TArgument, TResult>(TArgument argument, Func<TArgument, Completion<TResult>> func,
       Action<TResult> postAction)
@@ -2215,7 +2215,7 @@ public class UiAction : UserControl
       }
    }
 
-   public Maybe<string> FailureToolTip => _failureToolTip;
+   public Optional<string> FailureToolTip => _failureToolTip;
 
    public void FloatingException(Exception exception)
    {
@@ -2245,7 +2245,7 @@ public class UiAction : UserControl
 
    public bool FlipFlop { get; set; }
 
-   public Maybe<string> ExceptionToolTip => _exceptionToolTip;
+   public Optional<string> ExceptionToolTip => _exceptionToolTip;
 
    public bool HasFloatingFailureOrException => _failureToolTip || _exceptionToolTip;
 
@@ -2277,7 +2277,7 @@ public class UiAction : UserControl
       }
    }
 
-   public Maybe<SubText> ProgressSubText
+   public Optional<SubText> ProgressSubText
    {
       get => _progressSubText;
       set

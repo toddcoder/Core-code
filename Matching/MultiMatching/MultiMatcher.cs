@@ -52,7 +52,7 @@ public class MultiMatcher<T>
    public static MultiMatcher<T> operator &(MultiMatcher<T> multiMatcher, Func<string, T> func) => multiMatcher.Else(func);
 
    protected List<PatternAction> patternActions;
-   protected Maybe<Func<string, T>> _defaultResult;
+   protected Optional<Func<string, T>> _defaultResult;
 
    internal MultiMatcher()
    {
@@ -155,7 +155,7 @@ public class MultiMatcher
    public static MultiMatcher operator &(MultiMatcher multiMatcher, Action<string> action) => multiMatcher.Else(action);
 
    protected List<PatternAction> patternActions;
-   protected Maybe<Action<string>> _defaultAction;
+   protected Optional<Action<string>> _defaultAction;
 
    internal MultiMatcher()
    {

@@ -9,7 +9,7 @@ namespace Core.Configurations;
 
 public class Configuration : Setting
 {
-   public static Result<Configuration> Open(FileName file)
+   public static Optional<Configuration> Open(FileName file)
    {
       return
          from source in file.TryTo.Text
@@ -17,7 +17,7 @@ public class Configuration : Setting
          select new Configuration(file, setting.items);
    }
 
-   public static Result<Configuration> Serialize(FileName file, Type type, object obj, bool save = true, string name = ROOT_NAME)
+   public static Optional<Configuration> Serialize(FileName file, Type type, object obj, bool save = true, string name = ROOT_NAME)
    {
       var _setting = Serialize(type, obj, name);
       if (_setting is (true, var setting))
@@ -38,7 +38,7 @@ public class Configuration : Setting
       }
    }
 
-   public static Result<Configuration> Serialize<T>(FileName file, T obj, bool save = true, string name = ROOT_NAME) where T : class, new()
+   public static Optional<Configuration> Serialize<T>(FileName file, T obj, bool save = true, string name = ROOT_NAME) where T : class, new()
    {
       return tryTo(() => Serialize(file, typeof(T), obj, save, name));
    }
@@ -53,5 +53,5 @@ public class Configuration : Setting
 
    public FileName File => file;
 
-   public Result<Configuration> Save() => file.TryTo.SetText(ToString(), Encoding.UTF8).Map(_ => this);
+   public Optional<Configuration> Save() => file.TryTo.SetText(ToString(), Encoding.UTF8).Map(_ => this);
 }

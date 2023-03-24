@@ -65,12 +65,12 @@ public static class AssertionFunctions
       return hash.AnyHash().Map(dictionaryImage) | hash.ToString;
    }
 
-   public static string maybeImage<T>(Maybe<T> maybe)
+   public static string maybeImage<T>(Optional<T> maybe)
    {
       return maybe.Map(v => v.ToNonNullString()) | (() => $"none<{typeof(T).Name}>");
    }
 
-   public static string resultImage<T>(Result<T> result)
+   public static string resultImage<T>(Optional<T> result)
    {
       return result.Map(v => v.ToNonNullString()).Recover(e => $"failure<{typeof(T).Name}>({e.Message})");
    }
@@ -200,22 +200,22 @@ public static class AssertionFunctions
       return convert<T, TResult>(assertion);
    }
 
-   public static Result<T> orFailure<T>(IAssertion<T> assertion)
+   public static Optional<T> orFailure<T>(IAssertion<T> assertion)
    {
       return assertion.Constraints.FirstOrNone(c => !c.IsTrue()).Map(c => c.Message.Failure<T>()) | (() => assertion.Value);
    }
 
-   public static Result<T> orFailure<T>(IAssertion<T> assertion, string message)
+   public static Optional<T> orFailure<T>(IAssertion<T> assertion, string message)
    {
       return assertion.Constraints.Any(c => !c.IsTrue()) ? message.Failure<T>() : assertion.Value;
    }
 
-   public static Result<T> orFailure<T>(IAssertion<T> assertion, Func<string> messageFunc)
+   public static Optional<T> orFailure<T>(IAssertion<T> assertion, Func<string> messageFunc)
    {
       return assertion.Constraints.Any(c => !c.IsTrue()) ? messageFunc().Failure<T>() : assertion.Value;
    }
 
-   public static Maybe<T> orNone<T>(IAssertion<T> assertion)
+   public static Optional<T> orNone<T>(IAssertion<T> assertion)
    {
       return maybe(assertion.Constraints.All(c => c.IsTrue()), () => assertion.Value);
    }

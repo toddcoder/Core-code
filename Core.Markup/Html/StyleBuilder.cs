@@ -11,7 +11,7 @@ public class StyleBuilder
 {
    // ReSharper disable once CollectionNeverUpdated.Global
    protected AutoStringHash<List<string>> styles;
-   protected Maybe<string> _key;
+   protected Optional<string> _key;
 
    public StyleBuilder()
    {

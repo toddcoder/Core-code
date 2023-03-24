@@ -12,7 +12,7 @@ namespace Core.Markup.Xml;
 
 public class MarkupBuilder
 {
-   public static Result<MarkupBuilder> HtmlFromString(string html)
+   public static Optional<MarkupBuilder> HtmlFromString(string html)
    {
       try
       {

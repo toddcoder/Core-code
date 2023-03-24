@@ -71,7 +71,7 @@ public class Time : IComparable<DateTime>, IComparable<Time>
 
    protected static int absoluteDifference(int value1, int value2) => Sign(value1 - value2);
 
-   public static string ToLongString(int days, int hours, int minutes, int seconds, Maybe<int> _milliseconds)
+   public static string ToLongString(int days, int hours, int minutes, int seconds, Optional<int> _milliseconds)
    {
       var builder = new List<string>();
 
@@ -115,7 +115,7 @@ public class Time : IComparable<DateTime>, IComparable<Time>
          timeSpan.Minutes, timeSpan.Seconds, maybe(includeMilliseconds, () => timeSpan.Milliseconds));
    }
 
-   public static string ToShortString(int days, int hours, int minutes, int seconds, Maybe<int> _milliseconds)
+   public static string ToShortString(int days, int hours, int minutes, int seconds, Optional<int> _milliseconds)
    {
       var list = new List<string>();
 

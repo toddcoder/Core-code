@@ -6,7 +6,7 @@ public interface IInfixData<TValue, TInfix>
 {
    TValue Value { get; }
 
-   Maybe<TInfix> Infix { get; }
+   Optional<TInfix> Infix { get; }
 
-   void Deconstruct(out TValue value, out Maybe<TInfix> _infix);
+   void Deconstruct(out TValue value, out Optional<TInfix> _infix);
 }

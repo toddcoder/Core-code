@@ -129,13 +129,13 @@ public class FolderNameAssertion : IAssertion<FolderName>
       return forceConvert<FolderName, TException, TResult>(this, args);
    }
 
-   public Result<FolderName> OrFailure() => orFailure(this);
+   public Optional<FolderName> OrFailure() => orFailure(this);
 
-   public Result<FolderName> OrFailure(string message) => orFailure(this, message);
+   public Optional<FolderName> OrFailure(string message) => orFailure(this, message);
 
-   public Result<FolderName> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
+   public Optional<FolderName> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
 
-   public Maybe<FolderName> OrNone() => orNone(this);
+   public Optional<FolderName> OrNone() => orNone(this);
 
    public async Task<Completion<FolderName>> OrFailureAsync(CancellationToken token) => await orFailureAsync(this, token);
 

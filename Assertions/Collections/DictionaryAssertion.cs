@@ -147,13 +147,13 @@ public class DictionaryAssertion<TKey, TValue> : IAssertion<Dictionary<TKey, TVa
       return forceConvert<Dictionary<TKey, TValue>, TException, TResult>(this, args);
    }
 
-   public Result<Dictionary<TKey, TValue>> OrFailure() => orFailure(this);
+   public Optional<Dictionary<TKey, TValue>> OrFailure() => orFailure(this);
 
-   public Result<Dictionary<TKey, TValue>> OrFailure(string message) => orFailure(this, message);
+   public Optional<Dictionary<TKey, TValue>> OrFailure(string message) => orFailure(this, message);
 
-   public Result<Dictionary<TKey, TValue>> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
+   public Optional<Dictionary<TKey, TValue>> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
 
-   public Maybe<Dictionary<TKey, TValue>> OrNone() => orNone(this);
+   public Optional<Dictionary<TKey, TValue>> OrNone() => orNone(this);
 
    public async Task<Completion<Dictionary<TKey, TValue>>> OrFailureAsync(CancellationToken token) =>
       await orFailureAsync(this, token);

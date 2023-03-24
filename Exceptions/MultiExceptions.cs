@@ -17,7 +17,7 @@ public class MultiExceptions : Exception, IList<Exception>
 
    public void Add(string exceptionMessage) => Add(new ApplicationException(exceptionMessage));
 
-   public void Add<T>(Result<T> result)
+   public void Add<T>(Optional<T> result)
    {
       if (!result)
       {

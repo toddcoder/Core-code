@@ -19,8 +19,8 @@ public abstract class Plugin
    protected Address address;
    protected int retries;
    protected string finalExceptionMessage;
-   protected Maybe<Scheduler> _scheduler;
-   protected Maybe<Retrier> _retrier;
+   protected Optional<Scheduler> _scheduler;
+   protected Optional<Retrier> _retrier;
    protected bool dispatchEnabled;
    protected string applicationName;
 
@@ -48,7 +48,7 @@ public abstract class Plugin
    {
    }
 
-   public abstract Result<Unit> Dispatch();
+   public abstract Optional<Unit> Dispatch();
 
    public virtual void OnStart()
    {
@@ -104,7 +104,7 @@ public abstract class Plugin
       serviceMessage.EmitExceptionAttempt(new PluginException(this, exception), retry);
    }
 
-   public virtual Result<Unit> SetUp()
+   public virtual Optional<Unit> SetUp()
    {
       try
       {
@@ -177,14 +177,14 @@ public abstract class Plugin
       }
    }
 
-   protected static Maybe<Scheduler> getScheduler(string source) => maybe<Scheduler>() & source != "none" & (() => new Scheduler(source));
+   protected static Optional<Scheduler> getScheduler(string source) => maybe<Scheduler>() & source != "none" & (() => new Scheduler(source));
 
    protected virtual void createScheduler()
    {
       _scheduler = jobSetting.Maybe.String("schedule").Map(getScheduler);
    }
 
-   public Maybe<Scheduler> Scheduler() => _scheduler;
+   public Optional<Scheduler> Scheduler() => _scheduler;
 
    public virtual void BeforeDispatch(Schedule schedule)
    {
@@ -206,7 +206,7 @@ public abstract class Plugin
 
    public IServiceMessage ServiceMessage => serviceMessage;
 
-   public Maybe<AfterPlugin> After { get; set; }
+   public Optional<AfterPlugin> After { get; set; }
 
    public bool Tracing { get; set; }
 }

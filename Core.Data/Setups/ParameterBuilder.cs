@@ -22,13 +22,13 @@ public class ParameterBuilder
    };
 
    protected SqlSetupBuilder setupBuilder;
-   protected Maybe<string> _name;
-   protected Maybe<string> _signature;
-   protected Maybe<Type> _type;
-   protected Maybe<int> _size;
+   protected Optional<string> _name;
+   protected Optional<string> _signature;
+   protected Optional<Type> _type;
+   protected Optional<int> _size;
    protected bool output;
-   protected Maybe<string> _value;
-   protected Maybe<string> _default;
+   protected Optional<string> _value;
+   protected Optional<string> _default;
 
    public ParameterBuilder(SqlSetupBuilder setupBuilder)
    {
@@ -86,7 +86,7 @@ public class ParameterBuilder
       return this;
    }
 
-   public Result<Parameter> Build()
+   public Optional<Parameter> Build()
    {
       if (_name is (true, var name))
       {

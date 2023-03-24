@@ -285,10 +285,10 @@ public static class AssertionExtensions
       return (ObjectAssertion)assertion.Named($"{(value == null ? "Object" : value.GetType().Name)} {name}");
    }
 
-   public static MaybeAssertion<T> Must<T>(this Maybe<T> value) => new(value);
+   public static MaybeAssertion<T> Must<T>(this Optional<T> value) => new(value);
 
    [Obsolete("Use value version")]
-   public static MaybeAssertion<T> Must<T>(this Expression<Func<Maybe<T>>> expression)
+   public static MaybeAssertion<T> Must<T>(this Expression<Func<Optional<T>>> expression)
    {
       var (name, value) = resolve(expression);
       var assertion = value.Must();
@@ -296,7 +296,7 @@ public static class AssertionExtensions
       return (MaybeAssertion<T>)assertion.Named($"Optional of {typeof(T).Name} {name}");
    }
 
-   public static MaybeAssertion<T> Must<T>(this (Maybe<T>, string) tuple)
+   public static MaybeAssertion<T> Must<T>(this (Optional<T>, string) tuple)
    {
       var (value, name) = tuple;
       var assertion = value.Must();
@@ -304,10 +304,10 @@ public static class AssertionExtensions
       return (MaybeAssertion<T>)assertion.Named($"Optional of {typeof(T).Name} {name}");
    }
 
-   public static ResultAssertion<T> Must<T>(this Result<T> value) => new(value);
+   public static ResultAssertion<T> Must<T>(this Optional<T> value) => new(value);
 
    [Obsolete("Use value version")]
-   public static ResultAssertion<T> Must<T>(this Expression<Func<Result<T>>> expression)
+   public static ResultAssertion<T> Must<T>(this Expression<Func<Optional<T>>> expression)
    {
       var (name, value) = resolve(expression);
       var assertion = value.Must();
@@ -315,7 +315,7 @@ public static class AssertionExtensions
       return (ResultAssertion<T>)assertion.Named($"Result of {typeof(T).Name} {name}");
    }
 
-   public static ResultAssertion<T> Must<T>(this (Result<T>, string) tuple)
+   public static ResultAssertion<T> Must<T>(this (Optional<T>, string) tuple)
    {
       var (value, name) = tuple;
       var assertion = value.Must();

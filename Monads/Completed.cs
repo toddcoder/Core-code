@@ -137,17 +137,17 @@ public class Completed<T> : Completion<T>, IEquatable<Completed<T>>
       return predicate(value) ? this : exceptionMessage().Interrupted<T>();
    }
 
-   public override T DefaultTo(Func<Maybe<Exception>, T> defaultFunc) => value;
+   public override T DefaultTo(Func<Optional<Exception>, T> defaultFunc) => value;
 
-   public override Maybe<T> Maybe() => value;
+   public override Optional<T> Maybe() => value;
 
-   public override Result<T> Result() => value;
+   public override Optional<T> Result() => value;
 
    public override Optional<T> Optional() => value;
 
    public override Exception Exception => throw fail("Completed has no Exception");
 
-   public override Maybe<Exception> AnyException => nil;
+   public override Optional<Exception> AnyException => nil;
 
    public override object ToObject() => value;
 

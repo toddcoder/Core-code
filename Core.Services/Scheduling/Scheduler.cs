@@ -14,9 +14,9 @@ public class Scheduler
 
    protected Schedule[] schedules;
    protected int lastScheduleIndex;
-   protected Maybe<DateTime> _lastTargetDateTime;
+   protected Optional<DateTime> _lastTargetDateTime;
    protected int nextScheduleIndex;
-   protected Maybe<DateTime> _nextTargetDateTime;
+   protected Optional<DateTime> _nextTargetDateTime;
 
    public Scheduler(string source, bool autoNext = false, bool noSchedules = false)
    {

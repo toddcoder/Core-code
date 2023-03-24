@@ -30,7 +30,7 @@ public abstract class Parser
 
    public abstract string Pattern { get; }
 
-   public Maybe<ScheduleIncrement> Parse(string source)
+   public Optional<ScheduleIncrement> Parse(string source)
    {
       var _tokens = source.Matches(Pattern + PATTERN_BRACKET).Map(r => r.Groups(0));
       if (_tokens)

@@ -86,7 +86,7 @@ public class Pattern : IEquatable<Pattern>
       return pattern + pattern2;
    }
 
-   public static Maybe<MatchResult> operator &(Pattern pattern, string input) => input.Matches(pattern);
+   public static Optional<MatchResult> operator &(Pattern pattern, string input) => input.Matches(pattern);
 
    protected static StringHash<string> friendlyPatterns;
    protected static StringHash<RRegex> compiledRegex;

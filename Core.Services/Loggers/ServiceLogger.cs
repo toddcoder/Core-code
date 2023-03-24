@@ -19,7 +19,7 @@ public class ServiceLogger : BaseWriter, IServiceMessage
    public const string THIN_SEPARATOR = "--------------------------------------------------------------------------------";
    public const string FAT_SEPARATOR = "================================================================================";
 
-   protected static Result<FolderName> getBaseFolder(Configuration configuration, string jobName)
+   protected static Optional<FolderName> getBaseFolder(Configuration configuration, string jobName)
    {
       try
       {
@@ -40,8 +40,8 @@ public class ServiceLogger : BaseWriter, IServiceMessage
       }
    }
 
-   protected static Result<ServiceLogger> fromConfiguration(Configuration configuration,
-      Func<FolderName, string, int, TimeSpan, Maybe<EventLogger>, Result<ServiceLogger>> creator)
+   protected static Optional<ServiceLogger> fromConfiguration(Configuration configuration,
+      Func<FolderName, string, int, TimeSpan, Optional<EventLogger>, Optional<ServiceLogger>> creator)
    {
       var _jobName = configuration.Maybe.String("name");
       if (_jobName)
@@ -49,7 +49,7 @@ public class ServiceLogger : BaseWriter, IServiceMessage
          var _loggingSetting = configuration.Maybe.Setting("logging");
          var sizeLimit = _loggingSetting.Map(g => g.Maybe.Int32("sizeLimit")) | 1000000;
          var expiry = _loggingSetting.Map(g => g.Maybe.TimeSpan("expiry")) | (() => 7.Days());
-         Maybe<EventLogger> _eventLogger;
+         Optional<EventLogger> _eventLogger;
          try
          {
             _eventLogger = new EventLogger(_jobName);
@@ -67,9 +67,9 @@ public class ServiceLogger : BaseWriter, IServiceMessage
       }
    }
 
-   public static Result<ServiceLogger> FromConfiguration(Configuration configuration)
+   public static Optional<ServiceLogger> FromConfiguration(Configuration configuration)
    {
-      static Result<ServiceLogger> creator(FolderName baseFolder, string jobName, int sizeLimit, TimeSpan expiry, Maybe<EventLogger> _eventLogger)
+      static Optional<ServiceLogger> creator(FolderName baseFolder, string jobName, int sizeLimit, TimeSpan expiry, Optional<EventLogger> _eventLogger)
       {
          return new ServiceLogger(baseFolder, jobName, sizeLimit, expiry, _eventLogger);
       }
@@ -80,12 +80,12 @@ public class ServiceLogger : BaseWriter, IServiceMessage
    protected FolderName baseFolder;
    protected string jobName;
    protected string compareTimeStamp;
-   protected Maybe<EventLogger> _eventLogger;
+   protected Optional<EventLogger> _eventLogger;
    protected Stopwatch stopwatch;
    protected FileName currentLog;
    protected object locker;
 
-   internal ServiceLogger(FolderName baseFolder, string jobName, int sizeLimit, TimeSpan expiry, Maybe<EventLogger> _eventLogger)
+   internal ServiceLogger(FolderName baseFolder, string jobName, int sizeLimit, TimeSpan expiry, Optional<EventLogger> _eventLogger)
    {
       this.baseFolder = baseFolder;
       this.jobName = jobName;

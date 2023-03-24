@@ -39,7 +39,7 @@ public class PriorityQueue<T> : IQueue<T>, IEnumerable<T>, IEquatable<PriorityQu
 
    public bool Contains(T item) => list.Contains(item);
 
-   public Result<T[]> ToArray(int arrayIndex = 0)
+   public Optional<T[]> ToArray(int arrayIndex = 0)
    {
       return
          from assertion in arrayIndex.Must().BeBetween(0).Until(Count).OrFailure()
@@ -71,9 +71,9 @@ public class PriorityQueue<T> : IQueue<T>, IEnumerable<T>, IEquatable<PriorityQu
       }
    }
 
-   public Maybe<T> Peek() => maybe(IsNotEmpty, () => list[0]);
+   public Optional<T> Peek() => maybe(IsNotEmpty, () => list[0]);
 
-   public Maybe<T> Dequeue()
+   public Optional<T> Dequeue()
    {
       if (list.Count == 0)
       {
