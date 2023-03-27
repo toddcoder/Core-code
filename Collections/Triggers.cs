@@ -25,8 +25,7 @@ public class Triggers : StringHash<Triggers.TriggerType>
 
    public void Set(string key)
    {
-      var _triggerType = Maybe[key];
-      if (!_triggerType)
+      if (!Maybe[key])
       {
          this[key] = TriggerType.Set;
       }
@@ -36,8 +35,7 @@ public class Triggers : StringHash<Triggers.TriggerType>
 
    public void Trigger(string key)
    {
-      var _triggerType = Maybe[key];
-      if (_triggerType && _triggerType == TriggerType.Set)
+      if (Maybe[key] is(true, TriggerType.Set))
       {
          this[key] = TriggerType.Triggered;
       }
@@ -47,8 +45,7 @@ public class Triggers : StringHash<Triggers.TriggerType>
 
    public void Update(string key)
    {
-      var _triggerType = Maybe[key];
-      if (_triggerType is (true, var triggerType))
+      if (Maybe[key] is (true, var triggerType))
       {
          if (triggerType == TriggerType.Set)
          {

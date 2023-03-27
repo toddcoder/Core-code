@@ -30,9 +30,9 @@ public class HelpGenerator
       var table = new TableMaker(("Command", Justification.Left), ("Help", Justification.Left)) { Title = "Commands" };
       foreach (var (command, (_helpText, _, _)) in commandHelp)
       {
-         if (_helpText)
+         if (_helpText is (true,var helpText ))
          {
-            table.Add(command, _helpText);
+            table.Add(command, helpText);
          }
       }
 
@@ -73,11 +73,11 @@ public class HelpGenerator
       }
       else if (commandHelp.Maybe[command] is (true, var (_helpText, _switchPattern, replacements)))
       {
-         if (_helpText)
+         if (_helpText is (true, var helpText))
          {
-            if (_switchPattern)
+            if (_switchPattern is(true, var switchPattern))
             {
-               var formatter = new SwitchHelpFormatter(command, _helpText, _switchPattern, switchHelp, prefix, shortCut, replacements);
+               var formatter = new SwitchHelpFormatter(command, helpText, switchPattern, switchHelp, prefix, shortCut, replacements);
                var _formattedHelp = formatter.Format();
                if (_formattedHelp is (true, var formattedHelp))
                {
@@ -90,7 +90,7 @@ public class HelpGenerator
             }
             else
             {
-               return $"{command} - {_helpText}";
+               return $"{command} - {helpText}";
             }
          }
          else

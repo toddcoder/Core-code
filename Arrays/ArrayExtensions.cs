@@ -430,7 +430,7 @@ public static class ArrayExtensions
    {
       var2 = default;
       var _index = Assign(array, out var0, out var1);
-      if (_index && array.Length >= _index + 1)
+      if (_index is (true, var index) && array.Length >= index + 1)
       {
          var2 = array[2];
          return 3;
@@ -445,7 +445,7 @@ public static class ArrayExtensions
    {
       var3 = default;
       var _index = Assign(array, out var0, out var1, out var2);
-      if (_index && array.Length >= _index + 1)
+      if (_index is (true, var index) && array.Length >= index + 1)
       {
          var3 = array[3];
          return 4;
@@ -461,7 +461,7 @@ public static class ArrayExtensions
    {
       var4 = default;
       var _index = Assign(array, out var0, out var1, out var2, out var3);
-      if (_index && array.Length >= _index + 1)
+      if (_index is (true, var index) && array.Length >= index + 1)
       {
          var4 = array[4];
          return 5;
@@ -477,7 +477,7 @@ public static class ArrayExtensions
    {
       var5 = default;
       var _index = Assign(array, out var0, out var1, out var2, out var3, out var4);
-      if (_index && array.Length >= _index + 1)
+      if (_index is (true, var index) && array.Length >= index + 1)
       {
          var5 = array[5];
          return 6;
@@ -493,7 +493,7 @@ public static class ArrayExtensions
    {
       var6 = default;
       var _index = Assign(array, out var0, out var1, out var2, out var3, out var4, out var5);
-      if (_index && array.Length >= _index + 1)
+      if (_index is (true, var index) && array.Length >= index + 1)
       {
          var6 = array[6];
          return 7;

@@ -55,9 +55,9 @@ public class CommandTextBuilder
    public Result<(string, TimeSpan)> Build()
    {
       var commandTimeout = _commandTimeout | (() => 30.Seconds());
-      if (_commandText)
+      if (_commandText is (true, var commandText))
       {
-         return (_commandText, commandTimeout);
+         return (commandText, commandTimeout);
       }
       else if (_commandTextFile is (true, var commandTextFile))
       {

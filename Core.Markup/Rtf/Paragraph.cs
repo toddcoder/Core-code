@@ -201,9 +201,9 @@ public class Paragraph : Block
                "!" => FieldType.Time,
                _ => nil
             };
-            if (_fieldType)
+            if (_fieldType is (true, var fieldType))
             {
-               ControlWord(match.Index - offset++, _fieldType);
+               ControlWord(match.Index - offset++, fieldType);
                match.Text = "";
             }
          }
@@ -325,9 +325,9 @@ public class Paragraph : Block
    public Maybe<CharFormat> CharFormatFind(string substring, bool ignoreCase = false)
    {
       var _index = text.ToString().Find(substring, ignoreCase: ignoreCase);
-      if (_index)
+      if (_index is (true, var index))
       {
-         return CharFormat(_index, _index + substring.Length - 1);
+         return CharFormat(index, index + substring.Length - 1);
       }
       else
       {
@@ -361,9 +361,9 @@ public class Paragraph : Block
    public IEnumerable<CharFormat> CharFormats(Pattern pattern, int groupIndex = 0)
    {
       var _result = text.ToString().Matches(pattern);
-      if (_result)
+      if (_result is (true, var result))
       {
-         foreach (var charFormat in CharFormats(_result, groupIndex))
+         foreach (var charFormat in CharFormats(result, groupIndex))
          {
             yield return charFormat;
          }
@@ -484,9 +484,9 @@ public class Paragraph : Block
                "!" => FieldType.Time,
                _ => nil
             };
-            if (_fieldType)
+            if (_fieldType is (true, var fieldType))
             {
-               ControlWord(match.Index - offset++, _fieldType);
+               ControlWord(match.Index - offset++, fieldType);
             }
          }
       }

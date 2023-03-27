@@ -96,9 +96,9 @@ public class TypeManager
                   from typeFromAssembly in getTypeFromAssembly(assembly, typeName)
                   from subType in Type(subAssemblyName, subTypeName)
                   select typeFromAssembly.MakeGenericType(subType);
-               if (_genericType)
+               if (_genericType is (true, var genericType))
                {
-                  typeCache[name] = _genericType;
+                  typeCache[name] = genericType;
                }
 
                return _genericType;

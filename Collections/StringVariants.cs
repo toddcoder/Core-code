@@ -79,7 +79,7 @@ public class StringVariants : IHash<string, string>
          from templateName in _templateName
          from mappedTemplate in this.Maybe(templateName)
          select mappedTemplate;
-      if (_template)
+      if (_template is (true, var template))
       {
          var formatter = new Formatter();
          foreach (var alias in aliases)
@@ -91,7 +91,7 @@ public class StringVariants : IHash<string, string>
             }
          }
 
-         return formatter.Format(_template);
+         return formatter.Format(template);
       }
       else
       {

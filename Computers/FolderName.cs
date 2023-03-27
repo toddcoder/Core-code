@@ -241,9 +241,9 @@ public class FolderName : IComparable, IComparable<FolderName>, IEquatable<Folde
          for (var i = 0; i < count; i++)
          {
             _parent = self.Parent;
-            if (_parent)
+            if (_parent is (true, var parent))
             {
-               self = _parent;
+               self = parent;
             }
             else
             {
@@ -513,10 +513,10 @@ public class FolderName : IComparable, IComparable<FolderName>, IEquatable<Folde
          else
          {
             var _candidateFile = targetFolder.File(file).Next();
-            if (_candidateFile)
+            if (_candidateFile is (true, var candidateFile))
             {
-               file.CopyTo(_candidateFile, true);
-               FileSuccess?.Invoke(this, new FileArgs(file, _candidateFile, "Copied"));
+               file.CopyTo(candidateFile, true);
+               FileSuccess?.Invoke(this, new FileArgs(file, candidateFile, "Copied"));
             }
          }
       }

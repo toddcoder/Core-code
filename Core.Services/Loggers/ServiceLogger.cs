@@ -44,7 +44,7 @@ public class ServiceLogger : BaseWriter, IServiceMessage
       Func<FolderName, string, int, TimeSpan, Maybe<EventLogger>, Result<ServiceLogger>> creator)
    {
       var _jobName = configuration.Maybe.String("name");
-      if (_jobName)
+      if (_jobName is (true, var jobName))
       {
          var _loggingSetting = configuration.Maybe.Setting("logging");
          var sizeLimit = _loggingSetting.Map(g => g.Maybe.Int32("sizeLimit")) | 1000000;
@@ -52,14 +52,14 @@ public class ServiceLogger : BaseWriter, IServiceMessage
          Maybe<EventLogger> _eventLogger;
          try
          {
-            _eventLogger = new EventLogger(_jobName);
+            _eventLogger = new EventLogger(jobName);
          }
          catch
          {
             _eventLogger = nil;
          }
 
-         return getBaseFolder(configuration, _jobName).Map(baseFolder => creator(baseFolder, _jobName, sizeLimit, expiry, _eventLogger));
+         return getBaseFolder(configuration, _jobName).Map(baseFolder => creator(baseFolder, jobName, sizeLimit, expiry, _eventLogger));
       }
       else
       {

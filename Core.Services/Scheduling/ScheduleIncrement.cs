@@ -44,14 +44,14 @@ public class ScheduleIncrement
       {
          DateIncrementer now = NowServer.Now;
 
-         if (_day)
+         if (_day is (true, var day))
          {
             if (year > 0)
             {
                var current = now.Clone();
                var _target =
                   from setMonth in current.SetMonth(month)
-                  let dayToUse = moveToEndOfMonthIf(_day, current.Year, current.Month)
+                  let dayToUse = moveToEndOfMonthIf(day, current.Year, current.Month)
                   from setDay in current.SetDay(dayToUse)
                   from setHour in current.SetHour(hour)
                   from setMinute in current.SetMinute(minute)
@@ -61,7 +61,7 @@ public class ScheduleIncrement
                   if (target <= now)
                   {
                      target.Year += year;
-                     var dayToUse = moveToEndOfMonthIf(_day, target.Year, target.Month);
+                     var dayToUse = moveToEndOfMonthIf(day, target.Year, target.Month);
                      target.SetDay(dayToUse);
                   }
 
@@ -75,7 +75,7 @@ public class ScheduleIncrement
             else if (month > 0)
             {
                var current = now.Clone();
-               var dayToUse = moveToEndOfMonthIf(_day, current.Year, current.Month);
+               var dayToUse = moveToEndOfMonthIf(day, current.Year, current.Month);
                var _target =
                   from setDay in current.SetDay(dayToUse)
                   from setHour in current.SetHour(hour)
@@ -86,7 +86,7 @@ public class ScheduleIncrement
                   if (target <= now)
                   {
                      target.Month += month;
-                     dayToUse = moveToEndOfMonthIf(_day, target.Year, target.Month);
+                     dayToUse = moveToEndOfMonthIf(day, target.Year, target.Month);
                      target.SetDay(dayToUse);
                   }
 
@@ -97,7 +97,7 @@ public class ScheduleIncrement
                   return _target.Exception;
                }
             }
-            else if (_day > 0)
+            else if (day > 0)
             {
                var current = now.Clone();
                var _target =
@@ -108,7 +108,7 @@ public class ScheduleIncrement
                {
                   if (target <= now)
                   {
-                     target.Day += _day;
+                     target.Day += day;
                   }
 
                   return target.Date;

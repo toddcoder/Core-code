@@ -29,9 +29,9 @@ public class StyleBuilder
 
    public void Add(string style, string code)
    {
-      if (_key)
+      if (_key is (true, var key))
       {
-         add(_key, style, code);
+         add(key, style, code);
       }
    }
 

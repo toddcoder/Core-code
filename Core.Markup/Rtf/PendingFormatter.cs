@@ -203,34 +203,34 @@ public class PendingFormatter
          _ = formatter | feature;
       }
 
-      if (_alignment)
+      if (_alignment is (true, var alignment))
       {
-         formatter.Alignment(_alignment);
+         formatter.Alignment(alignment);
       }
 
-      if (_foregroundColor)
+      if (_foregroundColor is (true, var foregroundColor))
       {
-         formatter.ForegroundColor(_foregroundColor);
+         formatter.ForegroundColor(foregroundColor);
       }
 
-      if (_backgroundColor)
+      if (_backgroundColor is (true, var backgroundColor))
       {
-         formatter.BackgroundColor(_backgroundColor);
+         formatter.BackgroundColor(backgroundColor);
       }
 
-      if (_hyperlink)
+      if (_hyperlink is (true, var hyperlink))
       {
-         formatter.Hyperlink(_hyperlink);
+         formatter.Hyperlink(hyperlink);
       }
 
-      if (_font)
+      if (_font is (true, var font))
       {
-         formatter.Font(_font);
+         formatter.Font(font);
       }
 
-      if (_fontSize)
+      if (_fontSize is (true, var fontSize))
       {
-         formatter.FontSize(_fontSize);
+         formatter.FontSize(fontSize);
       }
 
       if (_firstLineIndent is (true, var firstLineIndent))

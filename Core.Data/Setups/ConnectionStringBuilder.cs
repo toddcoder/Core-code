@@ -101,13 +101,13 @@ public class ConnectionStringBuilder
       var applicationName = _applicationName | "";
       var readOnly = _readonly | false;
 
-      if (_connectionString)
+      if (_connectionString is (true, var connectionString))
       {
-         return new SqlConnectionString(_connectionString, connectionTimeout);
+         return new SqlConnectionString(connectionString, connectionTimeout);
       }
-      else if (_server && _database)
+      else if (_server is (true, var server) && _database is (true, var database))
       {
-         return new SqlConnectionString(_server, _database, applicationName, connectionTimeout, _user, _password, readOnly);
+         return new SqlConnectionString(server, database, applicationName, connectionTimeout, _user, _password, readOnly);
       }
       else
       {

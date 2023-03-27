@@ -193,9 +193,9 @@ public abstract class CommandProcessor : IDisposable
       {
          return (commandLine, "");
       }
-      else if (_length.ValueOf(commandLine.Matches("^ /('config') /s+ ('get' | 'set') /b; f").Map(r => r.FirstGroup.Length)))
+      else if (_length.ValueOf(commandLine.Matches("^ /('config') /s+ ('get' | 'set') /b; f").Map(r => r.FirstGroup.Length)) is (true, var length))
       {
-         return ("config", commandLine.Drop(_length).TrimLeft());
+         return ("config", commandLine.Drop(length).TrimLeft());
       }
       else
       {
@@ -462,9 +462,9 @@ public abstract class CommandProcessor : IDisposable
    public virtual void GetConfiguration(string key)
    {
       var _value = configuration.Maybe.String(key);
-      if (_value)
+      if (_value is (true, var value))
       {
-         StandardWriter.WriteLine($"{key} -> {_value}");
+         StandardWriter.WriteLine($"{key} -> {value}");
       }
       else
       {

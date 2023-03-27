@@ -15,9 +15,9 @@ public class Parameters : IEnumerable<Parameter>, IHash<string, Parameter>
    {
       foreach (var _parameter in input.Unjoin("/s* ',' /s*; f").Select(Parameter.FromString))
       {
-         if (_parameter)
+         if (_parameter is (true, var parameter))
          {
-            yield return _parameter;
+            yield return parameter;
          }
       }
    }

@@ -396,9 +396,9 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
                         {
                            var generatedKey = Parser.GenerateKey();
                            var _elementSetting = Serialize(elementType, array.GetValue(i), generatedKey);
-                           if (_elementSetting)
+                           if (_elementSetting is (true, var elementSetting))
                            {
-                              arraySetting.SetItem(generatedKey, _elementSetting);
+                              arraySetting.SetItem(generatedKey, elementSetting);
                            }
                            else
                            {
@@ -412,9 +412,9 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
                   else
                   {
                      var _propertySetting = Serialize(propertyType, value, key);
-                     if (_propertySetting)
+                     if (_propertySetting is (true, var propertySetting))
                      {
-                        setting.SetItem(key, _propertySetting);
+                        setting.SetItem(key, propertySetting);
                      }
                      else
                      {

@@ -49,10 +49,9 @@ public class Logger : IDisposable
 
    public void PopIndentation()
    {
-      var _oldIndentation = indentations.Pop();
-      if (_oldIndentation)
+      if (indentations.Pop() is (true, var oldIndentation))
       {
-         indentation = _oldIndentation;
+         indentation = oldIndentation;
       }
    }
 

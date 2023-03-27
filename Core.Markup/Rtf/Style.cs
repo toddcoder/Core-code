@@ -1,6 +1,7 @@
 ﻿using Core.Collections;
 using Core.Monads;
 using static Core.Monads.MonadFunctions;
+using static Core.Objects.ConversionFunctions;
 
 namespace Core.Markup.Rtf;
 
@@ -65,9 +66,9 @@ public class Style
 
    public void SetParagraph(Paragraph paragraph)
    {
-      if (_alignment)
+      if (_alignment is (true, var alignment))
       {
-         paragraph.Alignment = _alignment;
+         paragraph.Alignment = alignment;
       }
 
       if (_firstLineIndent is (true, var firstLineIndent))
@@ -76,24 +77,24 @@ public class Style
       }
 
       var (_left, _top, _right, _bottom) = margins;
-      if (_left)
+      if (_left is (true, var left))
       {
-         paragraph.Margins[Direction.Left] = _left;
+         paragraph.Margins[Direction.Left] = left;
       }
 
-      if (_top)
+      if (_top is (true, var top))
       {
-         paragraph.Margins[Direction.Top] = _top;
+         paragraph.Margins[Direction.Top] = top;
       }
 
-      if (_right)
+      if (_right is (true, var right))
       {
-         paragraph.Margins[Direction.Right] = _right;
+         paragraph.Margins[Direction.Right] = right;
       }
 
-      if (_bottom)
+      if (_bottom is (true, var bottom))
       {
-         paragraph.Margins[Direction.Bottom] = _bottom;
+         paragraph.Margins[Direction.Bottom] = bottom;
       }
    }
 
@@ -115,30 +116,30 @@ public class Style
          }
       }
 
-      if (_foregroundColor)
+      if (_foregroundColor is (true, var foregroundColor))
       {
-         charFormat.ForegroundColor = _foregroundColor.CastAs<ColorDescriptor>();
+         charFormat.ForegroundColor = Value.Cast<ColorDescriptor>(foregroundColor);
       }
 
-      if (_backgroundColor)
+      if (_backgroundColor is (true, var backgroundColor))
       {
-         charFormat.BackgroundColor = _backgroundColor.CastAs<ColorDescriptor>();
+         charFormat.BackgroundColor = Value.Cast<ColorDescriptor>(backgroundColor);
       }
 
-      if (_hyperlink)
+      if (_hyperlink is (true, var hyperlink))
       {
-         charFormat.Hyperlink = _hyperlink.Map(l => l.Link);
-         charFormat.HyperlinkTip = _hyperlink.Map(l => l.LinkTip);
+         charFormat.Hyperlink = hyperlink.Link;
+         charFormat.HyperlinkTip = hyperlink.LinkTip;
       }
 
-      if (_font)
+      if (_font is (true, var font))
       {
-         charFormat.Font = _font;
+         charFormat.Font = font;
       }
 
-      if (_fontSize)
+      if (_fontSize is (true, var fontSize))
       {
-         charFormat.FontSize = _fontSize;
+         charFormat.FontSize = fontSize;
       }
    }
 
@@ -298,34 +299,34 @@ public class Style
          _ = formatter | feature;
       }
 
-      if (_alignment)
+      if (_alignment is (true, var alignment))
       {
-         formatter.Alignment(_alignment);
+         formatter.Alignment(alignment);
       }
 
-      if (_foregroundColor)
+      if (_foregroundColor is (true, var foregroundColor))
       {
-         formatter.ForegroundColor(_foregroundColor);
+         formatter.ForegroundColor(foregroundColor);
       }
 
-      if (_backgroundColor)
+      if (_backgroundColor is (true, var backgroundColor))
       {
-         formatter.BackgroundColor(_backgroundColor);
+         formatter.BackgroundColor(backgroundColor);
       }
 
-      if (_hyperlink)
+      if (_hyperlink is (true, var hyperlink))
       {
-         formatter.Hyperlink(_hyperlink);
+         formatter.Hyperlink(hyperlink);
       }
 
-      if (_font)
+      if (_font is (true, var font))
       {
-         formatter.Font(_font);
+         formatter.Font(font);
       }
 
-      if (_fontSize)
+      if (_fontSize is (true, var fontSize))
       {
-         formatter.FontSize(_fontSize);
+         formatter.FontSize(fontSize);
       }
 
       if (_firstLineIndent is (true, var firstLineIndent))
@@ -345,34 +346,34 @@ public class Style
          _ = formatter | feature;
       }
 
-      if (_alignment)
+      if (_alignment is (true, var alignment))
       {
-         formatter.Alignment(_alignment);
+         formatter.Alignment(alignment);
       }
 
-      if (_foregroundColor)
+      if (_foregroundColor is (true, var foregroundColor))
       {
-         formatter.ForegroundColor(_foregroundColor);
+         formatter.ForegroundColor(foregroundColor);
       }
 
-      if (_backgroundColor)
+      if (_backgroundColor is (true, var backgroundColor))
       {
-         formatter.BackgroundColor(_backgroundColor);
+         formatter.BackgroundColor(backgroundColor);
       }
 
-      if (_hyperlink)
+      if (_hyperlink is (true, var hyperlink))
       {
-         formatter.Hyperlink(_hyperlink);
+         formatter.Hyperlink(hyperlink);
       }
 
-      if (_font)
+      if (_font is (true, var font))
       {
-         formatter.Font(_font);
+         formatter.Font(font);
       }
 
-      if (_fontSize)
+      if (_fontSize is (true, var fontSize))
       {
-         formatter.FontSize(_fontSize);
+         formatter.FontSize(fontSize);
       }
 
       if (_firstLineIndent is (true, var firstLineIndent))

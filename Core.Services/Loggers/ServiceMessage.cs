@@ -327,9 +327,9 @@ public class ServiceMessage : IServiceMessage
    {
       beginIfAutoBegin();
 
-      if (_result)
+      if (_result is (true, var result))
       {
-         EmitMessage(ifSuccessful(_result));
+         EmitMessage(ifSuccessful(result));
       }
       else
       {
@@ -341,9 +341,9 @@ public class ServiceMessage : IServiceMessage
    {
       beginIfAutoBegin();
 
-      if (_result)
+      if (_result is (true, var result))
       {
-         EmitMessage(ifSuccessful(_result));
+         EmitMessage(ifSuccessful(result));
       }
       else
       {
@@ -355,9 +355,9 @@ public class ServiceMessage : IServiceMessage
    {
       beginIfAutoBegin();
 
-      if (_result)
+      if (_result is (true, var result))
       {
-         EmitMessage(ifSuccessful(_result));
+         EmitMessage(ifSuccessful(result));
       }
    }
 

@@ -85,9 +85,9 @@ public class Element : IRendering
       siblings = new Elements();
       siblings.ElementAdded += (_, e) =>
       {
-         if (_parent)
+         if (_parent is (true, var parent))
          {
-            e.Element.Parent = _parent;
+            e.Element.Parent = parent;
          }
       };
       children = new Elements();

@@ -52,7 +52,7 @@ public class Scheduler
       {
          var schedule = schedules[i];
          schedule.Next();
-         if (_nextTargetDateTime && _nextTargetDateTime > schedule.TargetDateTime || !_nextTargetDateTime)
+         if (_nextTargetDateTime is (true, var nextTargetDateTime) && nextTargetDateTime > schedule.TargetDateTime || !_nextTargetDateTime)
          {
             nextScheduleIndex = i;
             _nextTargetDateTime = schedule.TargetDateTime;
@@ -62,9 +62,9 @@ public class Scheduler
 
    protected void setLastTargetDateTime()
    {
-      if (_nextTargetDateTime)
+      if (_nextTargetDateTime is (true, var nextTargetDateTime))
       {
-         _lastTargetDateTime = _nextTargetDateTime;
+         _lastTargetDateTime = nextTargetDateTime;
          lastScheduleIndex = nextScheduleIndex;
       }
    }
@@ -100,7 +100,7 @@ public class Scheduler
       for (var i = 0; i < schedules.Length; i++)
       {
          var schedule = schedules[i];
-         if (_nextTargetDateTime && _nextTargetDateTime > schedule.TargetDateTime || !_nextTargetDateTime)
+         if (_nextTargetDateTime is (true, var nextTargetDateTime) && nextTargetDateTime > schedule.TargetDateTime || !_nextTargetDateTime)
          {
             nextScheduleIndex = i;
             _nextTargetDateTime = schedule.TargetDateTime;

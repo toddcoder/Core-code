@@ -37,9 +37,9 @@ public class SqlConnectionString : IConnectionString
    public static string GetConnectionString(string server, string database, string application, Maybe<string> _user, Maybe<string> _password,
       bool readOnly = false)
    {
-      if (_user && _password)
+      if (_user is (true, var user) && _password is (true, var password))
       {
-         return GetConnectionString(server, database, application, _user, _password, readOnly);
+         return GetConnectionString(server, database, application, user, password, readOnly);
       }
       else
       {
@@ -66,9 +66,9 @@ public class SqlConnectionString : IConnectionString
    public static Result<SqlConnectionString> FromConnection(Connection connection)
    {
       var _connectionString = connection.Maybe()["connection"];
-      if (_connectionString)
+      if (_connectionString is (true, var connectionString))
       {
-         return new SqlConnectionString(_connectionString, connection.Timeout);
+         return new SqlConnectionString(connectionString, connection.Timeout);
       }
       else
       {

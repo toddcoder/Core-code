@@ -89,11 +89,11 @@ public static class ConsoleFunctions
                case ConsoleKey.Backspace when key.Modifiers.HasFlag(ConsoleModifiers.Control):
                {
                   var _length = _input.Map(i => i.Length);
-                  if (_length && _length > 0)
+                  if (_length is (true, var length and > 0))
                   {
-                     var backspaces = '\b'.Repeat(_length);
+                     var backspaces = '\b'.Repeat(length);
                      Console.Write(backspaces);
-                     Console.Write(" ".Repeat(_length));
+                     Console.Write(" ".Repeat(length));
                      Console.Write(backspaces);
                      _input = "";
                   }

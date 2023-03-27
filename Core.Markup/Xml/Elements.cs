@@ -35,13 +35,13 @@ public class Elements : IRendering
       get
       {
          var _value = elements.Where(e => e.Name == name).FirstOrNone();
-         if (_value)
+         if (_value is (true, var element))
          {
-            return _value;
+            return element;
          }
          else
          {
-            var element = new Element { Name = name, Text = "" };
+            element = new Element { Name = name, Text = "" };
             elements.Add(element);
 
             return element;

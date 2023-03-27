@@ -393,9 +393,9 @@ public static class HashExtensions
       foreach (var item in enumerable)
       {
          var _selector = valueSelector(item);
-         if (_selector)
+         if (_selector is (true, var selector))
          {
-            result[keySelector(item)] = _selector;
+            result[keySelector(item)] = selector;
          }
          else
          {
@@ -413,9 +413,9 @@ public static class HashExtensions
       foreach (var item in enumerable)
       {
          var _selector = valueSelector(item);
-         if (_selector)
+         if (_selector is (true, var selector))
          {
-            result[keySelector(item)] = _selector;
+            result[keySelector(item)] = selector;
          }
          else
          {
@@ -433,9 +433,9 @@ public static class HashExtensions
       foreach (var item in enumerable)
       {
          var _selector = valueSelector(item);
-         if (_selector)
+         if (_selector is (true, var selector))
          {
-            result[keySelector(item)] = _selector;
+            result[keySelector(item)] = selector;
          }
          else
          {
@@ -516,9 +516,9 @@ public static class HashExtensions
       foreach (var item in enumerable)
       {
          var _selector = tryTo(() => valueSelector(item));
-         if (_selector)
+         if (_selector is (true, var selector))
          {
-            result[keySelector(item)] = _selector;
+            result[keySelector(item)] = selector;
          }
          else
          {
@@ -536,9 +536,9 @@ public static class HashExtensions
       foreach (var item in enumerable)
       {
          var _selector = tryTo(() => valueSelector(item));
-         if (_selector)
+         if (_selector is (true, var selector))
          {
-            result[keySelector(item)] = _selector;
+            result[keySelector(item)] = selector;
          }
          else
          {
@@ -556,9 +556,9 @@ public static class HashExtensions
       foreach (var item in enumerable)
       {
          var _selector = tryTo(() => valueSelector(item));
-         if (_selector)
+         if (_selector is (true, var selector))
          {
-            result[keySelector(item)] = _selector;
+            result[keySelector(item)] = selector;
          }
          else
          {
@@ -698,9 +698,9 @@ public static class HashExtensions
       foreach (var (name, pattern) in patterns)
       {
          var _result = input.Matches(pattern);
-         if (_result)
+         if (_result is (true, var result))
          {
-            return new TaggedValue<MatchResult>(name, _result);
+            return new TaggedValue<MatchResult>(name, result);
          }
       }
 

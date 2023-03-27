@@ -64,9 +64,9 @@ public class Synchronizer
    {
       var targetFile = currentTargetFolder + sourceFile;
       var _file = copyIfNeeded(sourceFile, targetFile);
-      if (_file)
+      if (_file is (true, var file))
       {
-         Success?.Invoke(this, new FileArgs(_file, targetFile, $"{sourceFile} {(move ? "moved" : "copied")} to {targetFile}"));
+         Success?.Invoke(this, new FileArgs(file, targetFile, $"{sourceFile} {(move ? "moved" : "copied")} to {targetFile}"));
       }
       else if (_file.AnyException)
       {

@@ -55,9 +55,9 @@ public class Command
       Name = commandSetting.Key;
       var _text = lazy.maybe<string>();
       var _fileName = lazy.maybe<string>();
-      if (_text.ValueOf(commandSetting.Maybe.String("text")))
+      if (_text.ValueOf(commandSetting.Maybe.String("text")) is (true, var text))
       {
-         Text = _text;
+         Text = text;
       }
       else if (_fileName.ValueOf(commandSetting.Maybe.String("file")) is (true, var fileName))
       {

@@ -47,9 +47,9 @@ public class Subscription : Plugin, IRequiresTypeManager
    public override Result<Unit> Dispatch()
    {
       var _jobsSetting = configuration.Result.Setting("jobs");
-      if (_jobsSetting)
+      if (_jobsSetting is (true, var jobsSetting))
       {
-         var tasks = getJobs(_jobsSetting).Select(job => Task.Run(job.ExecutePlugin)).ToArray();
+         var tasks = getJobs(jobsSetting).Select(job => Task.Run(job.ExecutePlugin)).ToArray();
          Task.WaitAll(tasks);
 
          return unit;

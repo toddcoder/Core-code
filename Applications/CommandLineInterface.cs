@@ -258,35 +258,35 @@ public abstract class CommandLineInterface : IDisposable
          }
 
          var _rest = commandLine.Matches(itemPrefix).Map(r => r.FirstGroup);
-         if (_rest)
+         if (_rest is (true, var rest))
          {
             if (type == typeof(bool))
             {
-               return getBoolean(_rest, suffix).Success();
+               return getBoolean(rest, suffix).Success();
             }
             else if (type == typeof(string) || type == typeof(FileName) || type == typeof(FolderName))
             {
-               return getString(_rest, type).Success();
+               return getString(rest, type).Success();
             }
             else if (type == typeof(int))
             {
-               return getInt32(_rest).Success();
+               return getInt32(rest).Success();
             }
             else if (type == typeof(float) || type == typeof(double))
             {
-               return getFloatingPoint(_rest, type).Success();
+               return getFloatingPoint(rest, type).Success();
             }
             else if (type.IsEnum)
             {
-               return getEnum(_rest, type).Success();
+               return getEnum(rest, type).Success();
             }
             else if (type == typeof(string[]))
             {
-               return getStringArray(_rest).Success();
+               return getStringArray(rest).Success();
             }
             else if (this is IMissingArgument missingArgument)
             {
-               return missingArgument.BadType(name, type, _rest);
+               return missingArgument.BadType(name, type, rest);
             }
             else
             {
@@ -340,9 +340,9 @@ public abstract class CommandLineInterface : IDisposable
          {
             var key = match.FirstGroup[0];
             var _replacement = shortcuts.Maybe[key];
-            if (_replacement)
+            if (_replacement is (true, var replacement))
             {
-               match.Text = $"{prefix}{_replacement}{suffix}";
+               match.Text = $"{prefix}{replacement}{suffix}";
             }
             else
             {
@@ -423,9 +423,9 @@ public abstract class CommandLineInterface : IDisposable
       commandLine = removeExecutableFromCommandLine(commandLine);
 
       var _newCommandLine = getCommandsFromFile(prefix, suffix, commandLine);
-      if (_newCommandLine)
+      if (_newCommandLine is(true, var newCommandLine))
       {
-         commandLine = _newCommandLine;
+         commandLine = newCommandLine;
       }
 
       var _command = getCommand(commandLine);
@@ -441,9 +441,9 @@ public abstract class CommandLineInterface : IDisposable
          else
          {
             var _replacement = aliases.Maybe[command];
-            if (_replacement)
+            if (_replacement is (true, var replacement))
             {
-               commandLine = _replacement;
+               commandLine = replacement;
             }
          }
       }

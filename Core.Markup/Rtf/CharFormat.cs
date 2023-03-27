@@ -247,16 +247,15 @@ public class CharFormat
 
       foreach (var fontStyleFlag in fontStyleFlags())
       {
-         var _keyword = fontStyleKeyword(fontStyleFlag);
-         if (_keyword)
+         if (fontStyleKeyword(fontStyleFlag) is (true, var keyword))
          {
             if (FontStyle.ContainsStyleAdd(fontStyleFlag))
             {
-               result.Append($@"\{_keyword}");
+               result.Append($@"\{keyword}");
             }
             else if (FontStyle.ContainsStyleRemove(fontStyleFlag))
             {
-               result.Append($@"\{_keyword}0");
+               result.Append($@"\{keyword}0");
             }
          }
       }
@@ -284,9 +283,9 @@ public class CharFormat
          }
       }
 
-      if (_bookmark)
+      if (_bookmark is (true, var bookmark))
       {
-         result.Append($@"{{\*\bkmkstart {_bookmark}}}");
+         result.Append($@"{{\*\bkmkstart {bookmark}}}");
       }
 
       return result.ToString();
@@ -296,9 +295,9 @@ public class CharFormat
    {
       var result = new StringBuilder(string.Empty);
 
-      if (_bookmark)
+      if (_bookmark is (true, var bookmark))
       {
-         result.Append($@"{{\*\bkmkend {_bookmark}}}");
+         result.Append($@"{{\*\bkmkend {bookmark}}}");
       }
 
       result.Append("}");

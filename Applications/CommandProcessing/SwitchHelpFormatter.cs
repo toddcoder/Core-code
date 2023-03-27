@@ -60,9 +60,9 @@ public class SwitchHelpFormatter
       foreach (var (name, (type, argument, _shortCut)) in switchHelp)
       {
          var builder = new StringBuilder($"{prefix}{name}");
-         if (_shortCut)
+         if (_shortCut is (true, var shortCut))
          {
-            builder.Append($" ({shortCutPrefix}{_shortCut})");
+            builder.Append($" ({shortCutPrefix}{shortCut})");
          }
 
          if (!type.IsMatch("^ 'bool' ('ean')? $; f"))
@@ -110,12 +110,12 @@ public class SwitchHelpFormatter
                   var name = match.FirstGroup;
                   var optional = match.SecondGroup == "?";
                   var _replacement = replacements.Maybe[name];
-                  if (_replacement)
+                  if (_replacement is (true, var replacement))
                   {
                      var indent = _indent | " ";
                      var prefix = optional ? $"{indent}[" : indent;
                      var suffix = optional ? "]\r\n" : "\r\n";
-                     match.Text = $"{prefix}{_replacement}{suffix}";
+                     match.Text = $"{prefix}{replacement}{suffix}";
 
                      if (!_indent)
                      {

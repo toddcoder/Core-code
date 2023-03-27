@@ -223,7 +223,7 @@ internal class Parser
          var _comment = lazy.maybe<int>();
          var _key = lazy.maybe<(string, int)>();
          var _string = lazy.result<(string, string, bool)>();
-         if (_openSetting.ValueOf(source.Matches("^ /s* '['; f").Map(r => r.Length)))
+         if (_openSetting.ValueOf(source.Matches("^ /s* '['; f").Map(r => r.Length)) is (true, var openSetting))
          {
             var key = GetKey("?");
             var setting = new Setting(key);
@@ -239,7 +239,7 @@ internal class Parser
 
             stack.Push(setting);
 
-            source = source.Drop(_openSetting);
+            source = source.Drop(openSetting);
          }
          else if (_settingKey.ValueOf(source.Matches($"^ /s* {REGEX_KEY} /s* '['; f").Map(r => r.FirstGroupAndLength)) is
                   (true, var (settingKey, settingLength)))
@@ -260,7 +260,7 @@ internal class Parser
 
             source = source.Drop(settingLength);
          }
-         else if (_closeSetting.ValueOf(source.Matches("^ /s* ']'; f").Map(r => r.Length)))
+         else if (_closeSetting.ValueOf(source.Matches("^ /s* ']'; f").Map(r => r.Length)) is (true, var closeSetting))
          {
             var _setting = popSetting();
             if (_setting is (true, var setting))
@@ -280,7 +280,7 @@ internal class Parser
                return fail("Not closing on setting");
             }
 
-            source = source.Drop(_closeSetting);
+            source = source.Drop(closeSetting);
          }
          else if (_oneLineKey.ValueOf(source.Matches($"^ /s* {REGEX_KEY} '.'; f").Map(r => r.FirstGroupAndLength)) is
                   (true, var (oneLineKey, oneLineLength)))
@@ -299,10 +299,10 @@ internal class Parser
 
             source = source.Drop(oneLineLength);
          }
-         else if (_comment.ValueOf(source.Matches("^ /s* '#' -[/r /n]*; f").Map(r => r.Length)))
+         else if (_comment.ValueOf(source.Matches("^ /s* '#' -[/r /n]*; f").Map(r => r.Length)) is (true, var commentLength))
          {
             var key = GenerateKey();
-            var remainder = source.Drop(_openSetting);
+            var remainder = source.Drop(commentLength);
             var _stringTuple = getString(remainder);
             if (_stringTuple is (true, var (aSource, value, isArray)))
             {
@@ -379,8 +379,7 @@ internal class Parser
 
       while (popSetting() is (true, var setting))
       {
-         var _parentSetting = popSetting();
-         if (_parentSetting is (true, var parentSetting))
+         if (popSetting() is (true, var parentSetting))
          {
             parentSetting.SetItem(setting.Key, setting);
          }

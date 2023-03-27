@@ -47,10 +47,10 @@ public abstract class Table<TKey, TValue> : IEnumerable<TValue>, IHash<TKey, TVa
          connection.Open();
          using var command = connection.CreateCommand();
          var _result = database.ExecuteFirstRow(command, $"SELECT {fieldNames.Value} FROM {TableName} WHERE {whereClause}", ("$key", key));
-         if (_result)
+         if (_result is (true, var result))
          {
             var value = new TValue();
-            value.ToObject(_result);
+            value.ToObject(result);
 
             return value;
          }

@@ -119,10 +119,10 @@ public class GitPrompt
             var hasRemote = false;
             var aheadBehind = "";
             var _tripleDotsIndex = firstLine.Find("...");
-            if (_tripleDotsIndex)
+            if (_tripleDotsIndex is (true, var tripleDotsIndex))
             {
-               var local = firstLine.Keep(_tripleDotsIndex).TrimRight();
-               var remote = firstLine.Drop(_tripleDotsIndex + 3).TrimLeft();
+               var local = firstLine.Keep(tripleDotsIndex).TrimRight();
+               var remote = firstLine.Drop(tripleDotsIndex + 3).TrimLeft();
                hasRemote = true;
 
                var _branch = local.Matches("^ '##' /s+ /(.+); f").Map(r => r.FirstGroup);

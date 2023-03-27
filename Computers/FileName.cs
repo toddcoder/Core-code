@@ -429,9 +429,9 @@ public class FileName : IComparable, IComparable<FileName>, IEquatable<FileName>
       {
          var clone = Clone();
          var _folder = clone.Folder.Parent;
-         if (_folder)
+         if (_folder is (true, var folderValue))
          {
-            clone.Folder = _folder;
+            clone.Folder = folderValue;
             return clone;
          }
          else
@@ -1057,10 +1057,9 @@ public class FileName : IComparable, IComparable<FileName>, IEquatable<FileName>
    public FileName Serialize(int limit = 1000)
    {
       var baseName = name;
-      var _length = baseName.Matches("'-' /d+ $").Map(r => r.Length);
-      if (_length)
+      if (baseName.Matches("'-' /d+ $").Map(r => r.Length) is (true, var length))
       {
-         baseName = baseName.Drop(-_length);
+         baseName = baseName.Drop(-length);
       }
 
       var currentFile = new FileName(folder, baseName, extension);
