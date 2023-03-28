@@ -126,6 +126,7 @@ public class UiAction : UserControl
    }
 
    protected const float START_AMOUNT = .9f;
+   protected const string CLICK_TO_CANCEL = "🖰 ⇒ 🗙";
 
    protected static Hash<UiActionType, Color> globalForeColors;
    protected static Hash<UiActionType, Color> globalBackColors;
@@ -477,6 +478,8 @@ public class UiAction : UserControl
          refresh();
       }
    }
+
+   public bool ClickToCancel { get; set; }
 
    public bool Checked
    {
@@ -1139,6 +1142,21 @@ public class UiAction : UserControl
       }
 
       drawAllSubTexts(e.Graphics, type);
+
+      if (ClickToCancel)
+      {
+         using var font = new Font("Courier", 9);
+         var textSize = TextRenderer.MeasureText(e.Graphics, CLICK_TO_CANCEL, font);
+         var x = clientRectangle.Width - textSize.Width - 8;
+         var y = (clientRectangle.Height - textSize.Height) / 2;
+         var textLocation = new Point(x, y);
+         var textBounds = new Rectangle(textLocation, textSize);
+         var foreColor = getBackColor();
+         var backColor = getForeColor();
+         using var brush = new SolidBrush(backColor);
+         e.Graphics.FillRectangle(brush, textBounds);
+         TextRenderer.DrawText(e.Graphics, CLICK_TO_CANCEL, font, textBounds, foreColor);
+      }
 
       Painting?.Invoke(this, e);
    }

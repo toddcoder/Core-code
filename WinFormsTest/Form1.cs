@@ -38,6 +38,7 @@ public partial class Form1 : Form
          uiAction.RunWorkerAsync();
       };
       uiAction.ClickText = "CopyFile";
+      uiAction.ClickToCancel = true;
       uiAction.DoWork += (_, _) =>
       {
          var _result = sourceFile.CopyToNotify(targetFolder);
