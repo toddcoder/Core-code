@@ -250,6 +250,7 @@ public class UiAction : UserControl
    protected Maybe<SubText> _progressSubText;
    protected bool flipOn;
    protected Maybe<SubText> _flipFlop;
+   protected bool clickToCancel;
 
    public event EventHandler<AutomaticMessageArgs> AutomaticMessage;
    public event EventHandler<PaintEventArgs> Painting;
@@ -419,6 +420,7 @@ public class UiAction : UserControl
       _oldTitle = nil;
       _progressSubText = nil;
       _flipFlop = nil;
+      clickToCancel = false;
 
       ClickGlyph = true;
       ImageAlignment = ImageAlignment.Center;
@@ -479,7 +481,15 @@ public class UiAction : UserControl
       }
    }
 
-   public bool ClickToCancel { get; set; }
+   public bool ClickToCancel
+   {
+      get => clickToCancel;
+      set
+      {
+         clickToCancel = value;
+         refresh();
+      }
+   }
 
    public bool Checked
    {
@@ -1143,12 +1153,19 @@ public class UiAction : UserControl
 
       drawAllSubTexts(e.Graphics, type);
 
+      drawClipToCancel(e, clientRectangle);
+
+      Painting?.Invoke(this, e);
+   }
+
+   protected void drawClipToCancel(PaintEventArgs e, Rectangle clientRectangle)
+   {
       if (ClickToCancel)
       {
          using var font = new Font("Courier", 9);
          var textSize = TextRenderer.MeasureText(e.Graphics, CLICK_TO_CANCEL, font);
          var x = clientRectangle.Width - textSize.Width - 8;
-         var y = (clientRectangle.Height - textSize.Height) / 2;
+         var y = clientRectangle.Height - textSize.Height - 8;
          var textLocation = new Point(x, y);
          var textBounds = new Rectangle(textLocation, textSize);
          var foreColor = getBackColor();
@@ -1157,8 +1174,6 @@ public class UiAction : UserControl
          e.Graphics.FillRectangle(brush, textBounds);
          TextRenderer.DrawText(e.Graphics, CLICK_TO_CANCEL, font, textBounds, foreColor);
       }
-
-      Painting?.Invoke(this, e);
    }
 
    protected void drawAllSubTexts(Graphics graphics, UiActionType type)

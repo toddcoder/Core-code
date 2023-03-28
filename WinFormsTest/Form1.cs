@@ -29,6 +29,7 @@ public partial class Form1 : Form
 
       uiAction.Click += (_, _) =>
       {
+         uiAction.ClickToCancel = true;
          sourceFile.Percentage += (_, e) => uiAction.Progress((int)e.Percentage);
          sourceFile.Finished += (_, e) =>
          {
@@ -38,12 +39,13 @@ public partial class Form1 : Form
          uiAction.RunWorkerAsync();
       };
       uiAction.ClickText = "CopyFile";
-      uiAction.ClickToCancel = true;
+      //uiAction.ClickToCancel = true;
       uiAction.DoWork += (_, _) =>
       {
          var _result = sourceFile.CopyToNotify(targetFolder);
          uiAction.Result(_result.Map(_ => "Copied"));
       };
+      uiAction.RunWorkerCompleted += (_, _) => uiAction.ClickToCancel = false;
 
       uiButton = new UiAction(this, true);
       uiButton.SetUpInPanel(panel2);
