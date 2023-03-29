@@ -185,6 +185,7 @@ public class UiAction : UserControl
          [UiActionType.Http] = MessageStyle.Bold
       };
       toggler = new Lazy<CheckToggler>(() => new CheckToggler());
+      MainForm = nil;
    }
 
    public static Hash<UiActionType, Color> GlobalForeColors => globalForeColors;
@@ -194,6 +195,8 @@ public class UiAction : UserControl
    public static Hash<UiActionType, MessageStyle> GlobalStyles => globalStyles;
 
    public static CheckToggler Toggler => toggler.Value;
+
+   public static Maybe<Form> MainForm { get; set; }
 
    protected Font italicFont;
    protected Font boldFont;
@@ -853,6 +856,17 @@ public class UiAction : UserControl
 
    public int Minimum { get; set; }
 
+   protected IntPtr getHandle() => (MainForm | ParentForm).Handle;
+
+   protected TaskBarProgress getTaskBarProgress(int value) => new(getHandle(), value);
+
+   protected TaskBarProgress getTaskBarProgress()
+   {
+      var taskBarProgress = getTaskBarProgress(0);
+      taskBarProgress.State = WinForms.Controls.TaskBarProgress.TaskBarState.Indeterminate;
+      return taskBarProgress;
+   }
+
    public int Maximum
    {
       get => maximum;
@@ -860,7 +874,7 @@ public class UiAction : UserControl
       {
          maximum = value;
          index = Minimum;
-         _taskBarProgress = maybe<TaskBarProgress>() & TaskBarProgress & (() => new TaskBarProgress(ParentForm.Handle, value));
+         _taskBarProgress = maybe<TaskBarProgress>() & TaskBarProgress & (() => getTaskBarProgress(value));
       }
    }
 
@@ -944,7 +958,7 @@ public class UiAction : UserControl
 
       if (!_taskBarProgress)
       {
-         _taskBarProgress = new TaskBarProgress(ParentForm.Handle, 0) { State = WinForms.Controls.TaskBarProgress.TaskBarState.Indeterminate };
+         _taskBarProgress = getTaskBarProgress();
       }
 
       this.Do(() => timerPaint.Enabled = true);
@@ -1525,7 +1539,7 @@ public class UiAction : UserControl
 
       if (!_taskBarProgress)
       {
-         _taskBarProgress = new TaskBarProgress(ParentForm.Handle, 0) { State = WinForms.Controls.TaskBarProgress.TaskBarState.Indeterminate };
+         _taskBarProgress = getTaskBarProgress();
       }
 
       this.Do(() => timerPaint.Enabled = enabled);
