@@ -251,6 +251,7 @@ public class UiAction : UserControl
    protected bool flipOn;
    protected Maybe<SubText> _flipFlop;
    protected bool clickToCancel;
+   protected Maybe<TaskBarProgress> _taskBarProgress;
 
    public event EventHandler<AutomaticMessageArgs> AutomaticMessage;
    public event EventHandler<PaintEventArgs> Painting;
@@ -424,6 +425,7 @@ public class UiAction : UserControl
 
       ClickGlyph = true;
       ImageAlignment = ImageAlignment.Center;
+      _taskBarProgress = nil;
    }
 
    protected void activateProcessor(Graphics graphics)
@@ -490,6 +492,8 @@ public class UiAction : UserControl
          refresh();
       }
    }
+
+   public bool TaskBarProgress { get; set; }
 
    public bool Checked
    {
@@ -714,6 +718,13 @@ public class UiAction : UserControl
          httpHandlerAdded = false;
       }
 
+      if (_taskBarProgress is (true, var taskBarProgress))
+      {
+         taskBarProgress.State = WinForms.Controls.TaskBarProgress.TaskBarState.NoProgress;
+      }
+
+      _taskBarProgress = nil;
+
       refresh();
    }
 
@@ -849,6 +860,7 @@ public class UiAction : UserControl
       {
          maximum = value;
          index = Minimum;
+         _taskBarProgress = maybe<TaskBarProgress>() & TaskBarProgress & (() => new TaskBarProgress(ParentForm.Handle, value));
       }
    }
 
@@ -874,6 +886,11 @@ public class UiAction : UserControl
 
       MessageShown?.Invoke(this, new MessageShownArgs(Text, type));
 
+      if (_taskBarProgress is (true, var taskBarProgress))
+      {
+         taskBarProgress.Value = value;
+      }
+
       refresh();
    }
 
@@ -885,6 +902,11 @@ public class UiAction : UserControl
       type = UiActionType.ProgressDefinite;
 
       MessageShown?.Invoke(this, new MessageShownArgs(Text, type));
+
+      if (_taskBarProgress is (true, var taskBarProgress))
+      {
+         taskBarProgress.Value = value;
+      }
 
       refresh();
    }
@@ -898,6 +920,11 @@ public class UiAction : UserControl
       type = UiActionType.MuteProgress;
 
       MessageShown?.Invoke(this, new MessageShownArgs("", type));
+
+      if (_taskBarProgress is (true, var taskBarProgress))
+      {
+         taskBarProgress.Value = _percentage | 0;
+      }
 
       refresh();
    }

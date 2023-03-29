@@ -87,6 +87,7 @@
     <Compile Include="Controls\LineChangedEventArgs.cs" />
     <Compile Include="Controls\MessageShownArgs.cs" />
     <Compile Include="Controls\SubTextSet.cs" />
+    <Compile Include="Controls\TaskBarProgress.cs" />
     <Compile Include="Controls\UiActionScroller.cs" />
     <Compile Include="Controls\UiActionWriter.cs" />
     <Compile Include="Controls\UiActionType.cs" />
