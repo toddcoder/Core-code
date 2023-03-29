@@ -856,7 +856,15 @@ public class UiAction : UserControl
 
    public int Minimum { get; set; }
 
-   protected IntPtr getHandle() => (MainForm | ParentForm).Handle;
+   protected IntPtr getHandle()
+   {
+      if (MainForm is (true, var mainForm))
+      {
+         return mainForm.Get(() => mainForm.Handle);
+      }
+
+      return ParentForm.Get(() => ParentForm.Handle);
+   }
 
    protected TaskBarProgress getTaskBarProgress(int value) => new(getHandle(), value);
 
