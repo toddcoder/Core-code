@@ -87,4 +87,25 @@ public static class ListViewExtensions
 
       return nil;
    }
+
+   public static Maybe<ListViewItem> FindItem(this ListView listView, Func<ListViewItem, bool> predicate)
+   {
+      foreach (ListViewItem item in listView.Items)
+      {
+         if (predicate(item))
+         {
+            return item;
+         }
+      }
+
+      return nil;
+   }
+
+   public static IEnumerable<ListViewItem> FindItems(this ListView listView, Func<ListViewItem, bool> predicate)
+   {
+      foreach (ListViewItem item in listView.Items)
+      {
+         yield return item;
+      }
+   }
 }
