@@ -5,7 +5,6 @@ using Core.Computers;
 using Core.Dates;
 using Core.Matching;
 using Core.Numbers;
-using Core.WinForms;
 using Core.WinForms.Controls;
 using Core.WinForms.Documents;
 using static Core.WinForms.Documents.MenuBuilderFunctions;
@@ -94,8 +93,17 @@ public partial class Form1 : Form
 
    protected void button2_Click(object sender, EventArgs e)
    {
-      _ = new StandardDialog { Title = "Test", FileName = "foobar.txt", InitialFolder = (FolderName)@"C:\Temp" }
-         .OpenFileDialog(this, "Text");
+      /*_ = new StandardDialog { Title = "Test", FileName = "foobar.txt", InitialFolder = (FolderName)@"C:\Temp" }
+         .OpenFileDialog(this, "Text");*/
+      uiAction.TaskBarProgress = true;
+      if (uiAction.IsABusyType)
+      {
+         uiAction.Success("Done");
+      }
+      else
+      {
+         uiAction.Busy(true);
+      }
    }
 
    protected void button3_Click(object sender, EventArgs e)

@@ -942,6 +942,11 @@ public class UiAction : UserControl
 
       MessageShown?.Invoke(this, new MessageShownArgs(Text, type));
 
+      if (!_taskBarProgress)
+      {
+         _taskBarProgress = new TaskBarProgress(ParentForm.Handle, 0) { State = WinForms.Controls.TaskBarProgress.TaskBarState.Indeterminate };
+      }
+
       this.Do(() => timerPaint.Enabled = true);
       refresh();
    }
@@ -1516,6 +1521,11 @@ public class UiAction : UserControl
       {
          Text = "";
          type = UiActionType.Busy;
+      }
+
+      if (!_taskBarProgress)
+      {
+         _taskBarProgress = new TaskBarProgress(ParentForm.Handle, 0) { State = WinForms.Controls.TaskBarProgress.TaskBarState.Indeterminate };
       }
 
       this.Do(() => timerPaint.Enabled = enabled);
