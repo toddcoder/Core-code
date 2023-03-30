@@ -92,6 +92,9 @@
     <Compile Include="Applications\Loggers\Logger.cs" />
     <Compile Include="Applications\Loggers\LogItemType.cs" />
     <Compile Include="Applications\Loggers\MultiLogger.cs" />
+    <Compile Include="Applications\Messaging\IMessageQueueListener.cs" />
+    <Compile Include="Applications\Messaging\Message.cs" />
+    <Compile Include="Applications\Messaging\MessageQueue.cs" />
     <Compile Include="Applications\ParallelProcessor.cs" />
     <Compile Include="Applications\Resources.cs" />
     <Compile Include="Applications\Retrier.cs" />
