@@ -60,6 +60,7 @@
     <Compile Include="Controls\ArgumentsArgs.cs" />
     <Compile Include="Controls\AutomaticMessageArgs.cs" />
     <Compile Include="Controls\BusyProcessor.cs" />
+    <Compile Include="Controls\BusyProcessor2.cs" />
     <Compile Include="Controls\BusyTextProcessor.cs" />
     <Compile Include="Controls\CheckStyleChangedArgs.cs" />
     <Compile Include="Controls\CheckStyle.cs" />

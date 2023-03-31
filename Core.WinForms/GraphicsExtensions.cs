@@ -38,4 +38,11 @@ public static class GraphicsExtensions
       graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
       graphics.SmoothingMode = SmoothingMode.AntiAlias;
    }
+
+   public static void SetPixel(this Graphics graphics, int x, int y, Color color)
+   {
+      using var bitmap = new Bitmap(1, 1);
+      bitmap.SetPixel(0, 0, color);
+      graphics.DrawImageUnscaled(bitmap, x, y);
+   }
 }
