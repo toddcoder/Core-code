@@ -220,7 +220,6 @@
     <Compile Include="Configurations\IConfigurationItem.cs" />
     <Compile Include="Configurations\Item.cs" />
     <Compile Include="Configurations\Parser.cs" />
-    <Compile Include="DataStructures\EnumerableQueue.cs" />
     <Compile Include="DataStructures\IQueue.cs" />
     <Compile Include="DataStructures\MaybeQueue.cs" />
     <Compile Include="DataStructures\MaybeStack.cs" />
@@ -264,7 +263,9 @@
     <Compile Include="Enumerables\AllButFirst.cs" />
     <Compile Include="Enumerables\AllButLast.cs" />
     <Compile Include="Enumerables\DateTimeRange.cs" />
+    <Compile Include="Enumerables\EnumerableCycle.cs" />
     <Compile Include="Enumerables\EnumerableExtensions.cs" />
+    <Compile Include="Enumerables\EnumerableQueue.cs" />
     <Compile Include="Enumerables\Int32Range.cs" />
     <Compile Include="Enumerables\IntegerEnumerable.cs" />
     <Compile Include="Enumerables\IntIterator.cs" />

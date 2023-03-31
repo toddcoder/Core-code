@@ -3,6 +3,7 @@ using System.Threading;
 using System.Windows.Forms;
 using Core.Computers;
 using Core.Dates;
+using Core.Enumerables;
 using Core.Matching;
 using Core.Numbers;
 using Core.WinForms.Controls;
@@ -15,17 +16,24 @@ public partial class Form1 : Form
 {
    protected UiAction uiAction;
    protected UiAction uiButton;
+   protected EnumerableCycle<CardinalAlignment> messageAlignments;
 
    public Form1()
    {
       InitializeComponent();
 
-      uiAction = new UiAction(this, true);
+      uiAction = new UiAction(this);
       uiAction.SetUpInPanel(panel1);
       uiAction.Message("Progress /arrow /paws-left.end/paws-right");
 
       FileName sourceFile = @"C:\Temp\GoogleChromeStandaloneEnterprise_108.0.5359.125_x64_tw60560-67391.msi";
       FolderName targetFolder = @"C:\Users\tebennett\Working";
+
+      messageAlignments = new EnumerableCycle<CardinalAlignment>(new[]
+      {
+         CardinalAlignment.Center, CardinalAlignment.West, CardinalAlignment.East, CardinalAlignment.North, CardinalAlignment.South,
+         CardinalAlignment.NorthWest, CardinalAlignment.NorthEast, CardinalAlignment.SouthWest, CardinalAlignment.SouthEast
+      });
 
       uiAction.Click += (_, _) =>
       {
@@ -47,10 +55,10 @@ public partial class Form1 : Form
       };
       uiAction.RunWorkerCompleted += (_, _) => uiAction.ClickToCancel = false;
 
-      uiButton = new UiAction(this, true);
+      uiButton = new UiAction(this);
       uiButton.SetUpInPanel(panel2);
       uiButton.Image = imageList1.Images[0];
-      uiButton.ImageAlignment = ImageAlignment.Center;
+      uiButton.CardinalAlignment = CardinalAlignment.Center;
       uiButton.Click += (_, _) => { };
       uiButton.ClickText = "Click";
       uiButton.ClickGlyph = false;
@@ -93,17 +101,9 @@ public partial class Form1 : Form
 
    protected void button2_Click(object sender, EventArgs e)
    {
-      /*_ = new StandardDialog { Title = "Test", FileName = "foobar.txt", InitialFolder = (FolderName)@"C:\Temp" }
-         .OpenFileDialog(this, "Text");*/
-      uiAction.TaskBarProgress = true;
-      if (uiAction.IsABusyType)
-      {
-         uiAction.Success("Done");
-      }
-      else
-      {
-         uiAction.Busy(true);
-      }
+      var messageAlignment = messageAlignments.Next();
+      uiAction.MessageAlignment = messageAlignment;
+      uiAction.Message(messageAlignment.ToString());
    }
 
    protected void button3_Click(object sender, EventArgs e)

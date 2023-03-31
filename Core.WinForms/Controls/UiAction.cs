@@ -272,9 +272,8 @@ public class UiAction : UserControl
    public event EventHandler<MessageShownArgs> MessageShown;
    public event EventHandler<DrawToolTipEventArgs> PaintToolTip;
 
-   public UiAction(Control control, bool center = false, bool is3D = true)
+   public UiAction(Control control, bool is3D = true)
    {
-      Center = center;
       Is3D = is3D;
 
       italicFont = new Font(base.Font, FontStyle.Italic);
@@ -300,6 +299,7 @@ public class UiAction : UserControl
       _image = nil;
       subTexts = new Hash<Guid, SubText>();
       CheckStyle = CheckStyle.None;
+      MessageAlignment = CardinalAlignment.Center;
       stopwatch = new Lazy<Stopwatch>(() => new Stopwatch());
 
       timerPaint = new Timer
@@ -427,7 +427,7 @@ public class UiAction : UserControl
       clickToCancel = false;
 
       ClickGlyph = true;
-      ImageAlignment = ImageAlignment.Center;
+      CardinalAlignment = CardinalAlignment.Center;
       _taskBarProgress = nil;
    }
 
@@ -514,6 +514,8 @@ public class UiAction : UserControl
          Refresh();
       }
    }
+
+   public CardinalAlignment MessageAlignment { get; set; }
 
    internal void SetCheckStyle(CheckStyle checkStyle)
    {
@@ -651,8 +653,6 @@ public class UiAction : UserControl
       }
    }
 
-   public bool Center { get; set; }
-
    public bool Is3D { get; set; }
 
    public AutoHash<UiActionType, Color> ForeColors => foreColors;
@@ -678,7 +678,7 @@ public class UiAction : UserControl
 
    public bool StretchImage { get; set; }
 
-   public ImageAlignment ImageAlignment { get; set; }
+   public CardinalAlignment CardinalAlignment { get; set; }
 
    protected Font getFont() => getStyle() switch
    {
@@ -1026,7 +1026,7 @@ public class UiAction : UserControl
 
       if (!Enabled)
       {
-         var disabledWriter = new UiActionWriter(Center, CheckStyle.None, EmptyTextTitle)
+         var disabledWriter = new UiActionWriter(MessageAlignment, CheckStyle.None, EmptyTextTitle)
          {
             Rectangle = ClientRectangle,
             Font = italicFont,
@@ -1085,7 +1085,7 @@ public class UiAction : UserControl
          UiActionType.Busy or UiActionType.BusyText or UiActionType.ProgressDefinite or UiActionType.MuteProgress => CheckStyle.None,
          _ => CheckStyle
       };
-      var writer = new Lazy<UiActionWriter>(() => new UiActionWriter(Center, style, EmptyTextTitle)
+      var writer = new Lazy<UiActionWriter>(() => new UiActionWriter(MessageAlignment, style, EmptyTextTitle)
       {
          Rectangle = clientRectangle,
          Font = getFont(),
@@ -1464,17 +1464,17 @@ public class UiAction : UserControl
             var y = new Lazy<int>(() => centerVertical(image));
             var right = new Lazy<int>(() => rightHorizontal(image));
             var bottom = new Lazy<int>(() => bottomVertical(image));
-            var location = ImageAlignment switch
+            var location = CardinalAlignment switch
             {
-               ImageAlignment.Center => new Point(x.Value, y.Value),
-               ImageAlignment.North => new Point(x.Value, 0),
-               ImageAlignment.NorthEast => new Point(right.Value, 0),
-               ImageAlignment.East => new Point(right.Value, y.Value),
-               ImageAlignment.SouthEast => new Point(right.Value, bottom.Value),
-               ImageAlignment.South => new Point(x.Value, bottom.Value),
-               ImageAlignment.SouthWest => new Point(0, bottom.Value),
-               ImageAlignment.West => new Point(0, y.Value),
-               ImageAlignment.NorthWest => new Point(0, 0),
+               CardinalAlignment.Center => new Point(x.Value, y.Value),
+               CardinalAlignment.North => new Point(x.Value, 0),
+               CardinalAlignment.NorthEast => new Point(right.Value, 0),
+               CardinalAlignment.East => new Point(right.Value, y.Value),
+               CardinalAlignment.SouthEast => new Point(right.Value, bottom.Value),
+               CardinalAlignment.South => new Point(x.Value, bottom.Value),
+               CardinalAlignment.SouthWest => new Point(0, bottom.Value),
+               CardinalAlignment.West => new Point(0, y.Value),
+               CardinalAlignment.NorthWest => new Point(0, 0),
                _ => new Point(0, 0)
             };
             pevent.Graphics.DrawImage(image, location);

@@ -1,6 +1,6 @@
 ﻿namespace Core.WinForms.Controls;
 
-public enum ImageAlignment
+public enum CardinalAlignment
 {
    NorthWest,
    North,

@@ -103,7 +103,7 @@ public class UiToolTip : ToolTip
          bounds = bounds with { Y = bounds.Y + 20, Height = bounds.Height - 20 };
       }
 
-      var writer = new UiActionWriter(true, CheckStyle.None, nil)
+      var writer = new UiActionWriter(CardinalAlignment.Center, CheckStyle.None, nil)
       {
          Font = font,
          Color = foreColor,
@@ -122,7 +122,7 @@ public class UiToolTip : ToolTip
          using var brush = new SolidBrush(backColor);
          graphics.FillRectangle(brush, smallBounds);
 
-         var writer = new UiActionWriter(true, CheckStyle.None, nil)
+         var writer = new UiActionWriter(CardinalAlignment.Center, CheckStyle.None, nil)
          {
             Font = smallFont,
             Color = foreColor,

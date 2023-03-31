@@ -7,7 +7,7 @@ public class RoundedUiAction : UiAction
 {
    public int CornerRadius { get; set; }
 
-   public RoundedUiAction(Control control, bool center = false) : base(control, center, false)
+   public RoundedUiAction(Control control, bool center = false) : base(control, false)
    {
       CornerRadius = 8;
    }

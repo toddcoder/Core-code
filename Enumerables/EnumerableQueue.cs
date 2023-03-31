@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Core.Monads;
 using static Core.Monads.MonadFunctions;
 
-namespace Core.DataStructures;
+namespace Core.Enumerables;
 
 public class EnumerableQueue<T>
 {

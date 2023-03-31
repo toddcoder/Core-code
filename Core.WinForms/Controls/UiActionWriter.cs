@@ -4,6 +4,7 @@ using System.Drawing.Text;
 using System.Windows.Forms;
 using Core.Matching;
 using Core.Monads;
+using Core.Numbers;
 using Core.Strings;
 using static Core.Monads.Lazy.LazyMonads;
 using static Core.Monads.MonadFunctions;
@@ -29,15 +30,60 @@ public class UiActionWriter
       return flags;
    }
 
+   public static TextFormatFlags GetFlags(CardinalAlignment alignment)
+   {
+      Bits32<TextFormatFlags> flags = TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix;
+      switch (alignment)
+      {
+         case CardinalAlignment.NorthWest:
+            break;
+         case CardinalAlignment.North:
+            flags[TextFormatFlags.Top] = true;
+            flags[TextFormatFlags.HorizontalCenter] = true;
+            break;
+         case CardinalAlignment.NorthEast:
+            flags[TextFormatFlags.Top] = true;
+            flags[TextFormatFlags.Right] = true;
+            break;
+         case CardinalAlignment.East:
+            flags[TextFormatFlags.Right] = true;
+            flags[TextFormatFlags.VerticalCenter] = true;
+            break;
+         case CardinalAlignment.SouthEast:
+            flags[TextFormatFlags.Bottom] = true;
+            flags[TextFormatFlags.Right] = true;
+            break;
+         case CardinalAlignment.South:
+            flags[TextFormatFlags.Bottom] = true;
+            flags[TextFormatFlags.HorizontalCenter] = true;
+            break;
+         case CardinalAlignment.SouthWest:
+            flags[TextFormatFlags.Bottom] = true;
+            flags[TextFormatFlags.Left] = true;
+            break;
+         case CardinalAlignment.West:
+            flags[TextFormatFlags.Left] = true;
+            flags[TextFormatFlags.VerticalCenter] = true;
+            break;
+         case CardinalAlignment.Center:
+            flags[TextFormatFlags.HorizontalCenter] = true;
+            flags[TextFormatFlags.VerticalCenter] = true;
+            break;
+      }
+
+      return flags;
+   }
+
    protected CheckStyle checkStyle;
    protected Maybe<string> _emptyTextTitle;
    protected Result<Rectangle> _rectangle;
    protected Result<Font> _font;
    protected Result<Color> _color;
 
-   public UiActionWriter(bool center, CheckStyle checkStyle, Maybe<string> emptyTextTitle)
+   public UiActionWriter(CardinalAlignment messageAlignment, CheckStyle checkStyle, Maybe<string> emptyTextTitle)
    {
-      Center(center || checkStyle != CheckStyle.None);
+      //Center(center || checkStyle != CheckStyle.None);
+      Align(messageAlignment);
       this.checkStyle = checkStyle;
       _emptyTextTitle = emptyTextTitle;
 
@@ -47,6 +93,8 @@ public class UiActionWriter
    }
 
    public void Center(bool center) => Flags = GetFlags(center);
+
+   public void Align(CardinalAlignment messageAlignment) => Flags = GetFlags(messageAlignment);
 
    public Rectangle Rectangle
    {

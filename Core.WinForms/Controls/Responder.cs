@@ -50,7 +50,7 @@ public class Responder : UserControl, IHash<string, Responder.ResponderButton>
       protected string label;
 
       public ResponderButton(Control control, ResponderPersonality personality, string label, string key, bool center = false, bool is3D = true) :
-         base(control, center, is3D)
+         base(control, is3D)
       {
          Personality = personality;
          this.label = label;

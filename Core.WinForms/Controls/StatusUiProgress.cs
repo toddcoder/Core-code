@@ -18,7 +18,6 @@ public class StatusUiProgress : UiAction
       State = state;
 
       Is3D = false;
-      Center = true;
 
       Click += (_, _) =>
       {
