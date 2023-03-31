@@ -1,4 +1,6 @@
 ﻿using System;
+using Core.Collections;
+using Core.Enumerables;
 using Core.Numbers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -21,6 +23,27 @@ public class NumberTest
          else
          {
             Console.WriteLine(_words.Exception.Message);
+         }
+      }
+   }
+
+   [TestMethod]
+   public void RandomExtensionTest()
+   {
+      var random = new Random();
+      var hash = new AutoHash<int, int>(_ => 0, true);
+      for (var i = 0; i < 1000; i++)
+      {
+         var number = random.Next(0, 740, 20);
+         hash[number]++;
+      }
+
+      foreach (var key in hash.KeyArray().Order())
+      {
+         var _value = hash.Maybe[key];
+         if (_value is (true, var value))
+         {
+            Console.WriteLine($"{key}: {value}");
          }
       }
    }

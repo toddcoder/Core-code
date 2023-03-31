@@ -391,4 +391,16 @@ public static class NumberExtensions
    };
 
    public static Result<string> ToWords(this long amount) => convert(amount);
+
+   public static Result<string> ToWords(this int amount) => convert(amount);
+
+   public static double Next(this Random random, double lowerBound, double upperBound)
+   {
+      return random.NextDouble() * (upperBound - lowerBound) + lowerBound;
+   }
+
+   public static int Next(this Random random, int lowerBound, int upperBound, int increment)
+   {
+      return random.Next((upperBound - lowerBound) / increment) * increment + lowerBound;
+   }
 }

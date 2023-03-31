@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Drawing.Text;
 using Core.Collections;
+using static Core.Numbers.NumberExtensions;
 
 namespace Core.WinForms.Controls;
 
@@ -23,7 +24,8 @@ public class BusyProcessor2
       height = clientRectangle.Height;
       margin = 2;
 
-      start = 0.0;
+      var random = new Random();
+      start = random.Next(0, 740, 20);
       sineValues = new Hash<double, double>();
       yValues = new Hash<double, int>();
       xValues = new Hash<double, int>();
