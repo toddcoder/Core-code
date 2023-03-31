@@ -217,7 +217,7 @@ public class UiAction : UserControl
    protected Maybe<string> _clickText;
    protected LazyMaybe<BusyTextProcessor> _busyTextProcessor;
    protected LazyMaybe<ProgressDefiniteProcessor> _progressDefiniteProcessor;
-   protected LazyMaybe<BusyProcessor2> _busyProcessor;
+   protected LazyMaybe<BusyProcessor> _busyProcessor;
    protected LazyMaybe<LabelProcessor> _labelProcessor;
    protected Maybe<int> _percentage;
    protected Maybe<Color> _foreColor;
@@ -360,7 +360,7 @@ public class UiAction : UserControl
 
       _busyTextProcessor = lazy.maybe<BusyTextProcessor>();
       _progressDefiniteProcessor = lazy.maybe<ProgressDefiniteProcessor>();
-      _busyProcessor = lazy.maybe<BusyProcessor2>();
+      _busyProcessor = lazy.maybe<BusyProcessor>();
       _labelProcessor = lazy.maybe<LabelProcessor>();
 
       Resize += (_, _) =>
@@ -453,7 +453,7 @@ public class UiAction : UserControl
          case UiActionType.Busy:
          {
             var clientRectangle = getRectangle();
-            _busyProcessor.Activate(() => new BusyProcessor2(clientRectangle));
+            _busyProcessor.Activate(() => new BusyProcessor(clientRectangle));
             break;
          }
          case UiActionType.ProgressDefinite:
