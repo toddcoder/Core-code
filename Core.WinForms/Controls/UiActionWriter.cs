@@ -139,6 +139,7 @@ public class UiActionWriter
                "not-equal" => "≠",
                "error" => "ℯ",
                "ellipsis" => "…",
+               "hourglass" => "⧖",
                _ => nil
             };
             if (_replacement is (true, var replacement))
