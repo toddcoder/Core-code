@@ -11,11 +11,31 @@ public abstract class Optional<T>
 
       public static Optional<T> operator &(If @if, T value) => @if.test ? value : nil;
 
-      public static Optional<T> operator &(If @if, Func<T> func) => @if.test ? func() : nil;
+      public static Optional<T> operator &(If @if, Func<T> func)
+      {
+         try
+         {
+            return @if.test ? func() : nil;
+         }
+         catch (Exception exception)
+         {
+            return exception;
+         }
+      }
 
       public static Optional<T> operator &(If @if, Optional<T> optional) => @if.test ? optional : nil;
 
-      public static Optional<T> operator &(If @if, Func<Optional<T>> optional) => @if.test ? optional() : nil;
+      public static Optional<T> operator &(If @if, Func<Optional<T>> optional)
+      {
+         try
+         {
+            return @if.test ? optional() : nil;
+         }
+         catch (Exception exception)
+         {
+            return exception;
+         }
+      }
 
       protected bool test;
 
