@@ -137,6 +137,7 @@ public class UiActionWriter
                "paws-left" => "„",
                "paws-right" => "“",
                "not-equal" => "≠",
+               "error" => "ℯ",
                _ => nil
             };
             if (_replacement is (true, var replacement))
