@@ -106,9 +106,6 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Controls\SelectedState.cs" />
-    <Compile Include="Controls\StatusUiProgress.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
     <Compile Include="Controls\SubText.cs" />
     <Compile Include="Controls\UiToolTip.cs">
       <SubType>Component</SubType>

@@ -129,4 +129,6 @@ public static class MonadFunctions
    public static Maybe<T>.If maybe<T>() => new(true);
 
    public static Result<T>.If result<T>() => new(true, nil, nil);
+
+   public static Optional<T>.If optional<T>() => new(true);
 }

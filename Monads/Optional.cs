@@ -1,9 +1,30 @@
 ﻿using System;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads;
 
 public abstract class Optional<T>
 {
+   public class If
+   {
+      public static If operator &(If @if, bool test) => @if.test && test ? new If(test) : new If(false);
+
+      public static Optional<T> operator &(If @if, T value) => @if.test ? value : nil;
+
+      public static Optional<T> operator &(If @if, Func<T> func) => @if.test ? func() : nil;
+
+      public static Optional<T> operator &(If @if, Optional<T> optional) => @if.test ? optional : nil;
+
+      public static Optional<T> operator &(If @if, Func<Optional<T>> optional) => @if.test ? optional() : nil;
+
+      protected bool test;
+
+      internal If(bool test)
+      {
+         this.test = test;
+      }
+   }
+
    public static Optional<T> operator |(Optional<T> left, Optional<T> right)
    {
       if (left)
