@@ -78,10 +78,11 @@ public class SubText : IEquatable<SubText>
 
    protected SubText draw(Graphics graphics, Color foreColor, Color backColor)
    {
+      var text = UiActionWriter.Substitutions(Text);
       using var font = new Font(FontName, FontSize, FontStyle);
       var location = new Point(X, Y);
       var flags = TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix | TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter;
-      var measuredSize = TextRenderer.MeasureText(graphics, Text, font, new Size(int.MaxValue, int.MaxValue), flags);
+      var measuredSize = TextRenderer.MeasureText(graphics, text, font, new Size(int.MaxValue, int.MaxValue), flags);
 
       var rectangle = new Rectangle(location, measuredSize);
 
@@ -99,7 +100,7 @@ public class SubText : IEquatable<SubText>
          graphics.DrawRectangle(pen, rectangle);
       }
 
-      TextRenderer.DrawText(graphics, Text, font, rectangle, foreColorToUse, flags);
+      TextRenderer.DrawText(graphics, text, font, rectangle, foreColorToUse, flags);
 
       return this;
    }

@@ -113,7 +113,7 @@ public class UiActionWriter
 
    public TextFormatFlags Flags { get; set; }
 
-   protected static string substitutions(string text)
+   public static string Substitutions(string text)
    {
       var _result = text.Matches("-(< '//') /('//' /([/w '-']+) '.'?); f");
       if (_result is (true, var result))
@@ -158,7 +158,7 @@ public class UiActionWriter
 
    public Result<Unit> Write(string text, Graphics graphics)
    {
-      text = substitutions(text);
+      text = Substitutions(text);
 
       var _existingRectangle = lazy.result(_rectangle);
       var _existingFont = _existingRectangle.Then(_font);
