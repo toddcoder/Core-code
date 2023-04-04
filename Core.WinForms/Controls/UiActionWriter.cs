@@ -140,6 +140,9 @@ public class UiActionWriter
                "error" => "ℯ",
                "ellipsis" => "…",
                "hourglass" => "⧖",
+               "empty" => "∅",
+               "left-angle" => "〈",
+               "right-angle" => "〉",
                _ => nil
             };
             if (_replacement is (true, var replacement))
