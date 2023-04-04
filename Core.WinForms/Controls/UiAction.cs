@@ -1205,7 +1205,7 @@ public class UiAction : UserControl
          drawRectangle(e.Graphics, dashedPen, rectangle);
       }
 
-      drawAllSubTexts(e.Graphics, type);
+      drawAllSubTexts(e.Graphics, type, clientRectangle);
 
       drawClipToCancel(e, clientRectangle);
 
@@ -1230,7 +1230,7 @@ public class UiAction : UserControl
       }
    }
 
-   protected void drawAllSubTexts(Graphics graphics, UiActionType type)
+   protected void drawAllSubTexts(Graphics graphics, UiActionType type, Rectangle clientRectangle)
    {
       if (type is UiActionType.Busy or UiActionType.BusyText or UiActionType.ProgressDefinite or UiActionType.MuteProgress)
       {
@@ -1253,6 +1253,7 @@ public class UiAction : UserControl
 
       foreach (var subText in subTexts.Values)
       {
+         subText.SetLocation(clientRectangle);
          subText.Draw(graphics, foreColor.Value, backColor.Value);
       }
    }
@@ -2391,6 +2392,17 @@ public class UiAction : UserControl
       {
          return type is UiActionType.Busy or UiActionType.BusyText or UiActionType.ProgressDefinite or UiActionType.ProgressIndefinite
             or UiActionType.MuteProgress;
+      }
+   }
+
+   protected override void OnResize(EventArgs e)
+   {
+      base.OnResize(e);
+
+      foreach (var (_, subText) in subTexts)
+      {
+         var clientRectangle = getClientRectangle(nil);
+         subText.SetLocation(clientRectangle);
       }
    }
 }

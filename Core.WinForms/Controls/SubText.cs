@@ -13,6 +13,8 @@ public class SubText : IEquatable<SubText>
    protected bool invert;
    protected Maybe<Color> _foreColor;
    protected Maybe<Color> _backColor;
+   protected Maybe<CardinalAlignment> _alignment;
+   protected int margin;
 
    public SubText(string text, int x, int y, Size size, bool invert = false)
    {
@@ -26,6 +28,8 @@ public class SubText : IEquatable<SubText>
 
       _foreColor = nil;
       _backColor = nil;
+      _alignment = nil;
+      margin = 0;
 
       FontName = "Consolas";
       FontSize = 12;
@@ -76,33 +80,115 @@ public class SubText : IEquatable<SubText>
       return this;
    }
 
-   protected SubText draw(Graphics graphics, Color foreColor, Color backColor)
+   public void SetAlignment(CardinalAlignment alignment) => _alignment = alignment;
+
+   public void SetMargin(int margin) => this.margin = margin;
+
+   protected (Size measuredSize, string text, TextFormatFlags flags, Font font) textSize(Maybe<Graphics> _graphics)
    {
       var text = UiActionWriter.Substitutions(Text);
-      using var font = new Font(FontName, FontSize, FontStyle);
-      var location = new Point(X, Y);
+      var font = new Font(FontName, FontSize, FontStyle);
       var flags = TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix | TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter;
-      var measuredSize = TextRenderer.MeasureText(graphics, text, font, new Size(int.MaxValue, int.MaxValue), flags);
-
-      var rectangle = new Rectangle(location, measuredSize);
-
-      graphics.HighQuality();
-      graphics.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
-
-      var foreColorToUse = Invert ? backColor : foreColor;
-      var backColorToUse = Invert ? foreColor : backColor;
-
-      using var brush = new SolidBrush(backColorToUse);
-      graphics.FillRectangle(brush, rectangle);
-      if (!invert && Outline)
+      var proposedSize = new Size(int.MaxValue, int.MaxValue);
+      Size measuredSize;
+      if (_graphics is (true, var graphics))
       {
-         using var pen = new Pen(foreColorToUse);
-         graphics.DrawRectangle(pen, rectangle);
+         measuredSize = TextRenderer.MeasureText(graphics, text, font, proposedSize, flags);
+      }
+      else
+      {
+         measuredSize = TextRenderer.MeasureText(text, font, proposedSize, flags);
       }
 
-      TextRenderer.DrawText(graphics, text, font, rectangle, foreColorToUse, flags);
+      return (measuredSize, text, flags, font);
+   }
 
-      return this;
+   public void SetLocation(Rectangle clientRectangle)
+   {
+      if (_alignment is (true, var alignment))
+      {
+         var (measuredSize, _, _, _) = textSize(nil);
+
+         int centerX() => (clientRectangle.Width - measuredSize.Width) / 2 + clientRectangle.X;
+         int centerY() => (clientRectangle.Height - measuredSize.Height) / 2 + clientRectangle.Y;
+         int nearX() => clientRectangle.X + margin;
+         int nearY() => clientRectangle.Y + margin;
+         int farX() => clientRectangle.Right - measuredSize.Width - margin;
+         int farY() => clientRectangle.Bottom - measuredSize.Height - margin;
+
+         switch (alignment)
+         {
+            case CardinalAlignment.NorthWest:
+               X = nearX();
+               Y = nearY();
+               break;
+            case CardinalAlignment.North:
+               X = centerX();
+               Y = nearY();
+               break;
+            case CardinalAlignment.NorthEast:
+               X = farX();
+               Y = nearY();
+               break;
+            case CardinalAlignment.East:
+               X = farX();
+               Y = centerY();
+               break;
+            case CardinalAlignment.SouthEast:
+               X = farX();
+               Y = farY();
+               break;
+            case CardinalAlignment.South:
+               X = centerX();
+               Y = farY();
+               break;
+            case CardinalAlignment.SouthWest:
+               X = nearX();
+               Y = farY();
+               break;
+            case CardinalAlignment.West:
+               X = nearX();
+               Y = centerY();
+               break;
+            case CardinalAlignment.Center:
+               X = centerX();
+               Y = centerY();
+               break;
+         }
+      }
+   }
+
+   protected SubText draw(Graphics graphics, Color foreColor, Color backColor)
+   {
+      var (measuredSize, text, flags, font) = textSize(graphics);
+
+      try
+      {
+         var location = new Point(X, Y);
+         var rectangle = new Rectangle(location, measuredSize);
+
+         graphics.HighQuality();
+         graphics.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
+
+         var foreColorToUse = Invert ? backColor : foreColor;
+         var backColorToUse = Invert ? foreColor : backColor;
+
+         using var brush = new SolidBrush(backColorToUse);
+         graphics.FillRectangle(brush, rectangle);
+         if (!invert && Outline)
+         {
+            using var pen = new Pen(foreColorToUse);
+            graphics.DrawRectangle(pen, rectangle);
+         }
+
+         TextRenderer.DrawText(graphics, text, font, rectangle, foreColorToUse, flags);
+
+         return this;
+      }
+      finally
+      {
+         font.Dispose();
+      }
    }
 
    public SubText Draw(Graphics graphics, Color foreColor, Color backColor)

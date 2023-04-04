@@ -90,65 +90,80 @@ public class SubTextSet
       return TextRenderer.MeasureText(text, font);
    }
 
-   public SubTextSet GoToUpperLeft(int margin) => X(margin).Y(margin);
+   public SubTextSet GoToUpperLeft(int margin)
+   {
+      subText.SetAlignment(CardinalAlignment.NorthWest);
+      subText.SetMargin(margin);
+
+      return this;
+   }
 
    public SubTextSet GoToUpperRight(int margin)
    {
-      var textSize = getTextSize();
-      var x = size.Width - textSize.Width - margin;
+      subText.SetAlignment(CardinalAlignment.NorthEast);
+      subText.SetMargin(margin);
 
-      return X(x).Y(margin);
+      return this;
    }
 
    public SubTextSet GoToLowerLeft(int margin)
    {
-      var textSize = getTextSize();
-      var y = size.Height - textSize.Height - margin;
+      subText.SetAlignment(CardinalAlignment.SouthWest);
+      subText.SetMargin(margin);
 
-      return Y(y).X(margin);
+      return this;
    }
 
    public SubTextSet GoToLowerRight(int margin)
    {
-      var textSize = getTextSize();
-      var x = size.Width - textSize.Width - margin;
-      var y = size.Height - textSize.Height - margin;
+      subText.SetAlignment(CardinalAlignment.SouthEast);
+      subText.SetMargin(margin);
 
-      return X(x).Y(y);
+      return this;
    }
 
    public SubTextSet GoToMiddleLeft(int margin)
    {
-      var textSize = getTextSize();
-      var y = (size.Height - textSize.Height) / 2;
+      subText.SetAlignment(CardinalAlignment.West);
+      subText.SetMargin(margin);
 
-      return X(margin).Y(y);
+      return this;
    }
 
    public SubTextSet GoToMiddleRight(int margin)
    {
-      var textSize = getTextSize();
-      var x = size.Width - textSize.Width - margin;
-      var y = (size.Height - textSize.Height) / 2;
+      subText.SetAlignment(CardinalAlignment.East);
+      subText.SetMargin(margin);
 
-      return X(x).Y(y);
+      return this;
    }
 
    public SubTextSet GoToTop(int margin)
    {
-      var textSize = getTextSize();
-      var x = (size.Width - textSize.Width) / 2;
+      subText.SetAlignment(CardinalAlignment.North);
+      subText.SetMargin(margin);
 
-      return X(x).Y(margin);
+      return this;
    }
 
    public SubTextSet GoToBottom(int margin)
    {
-      var textSize = getTextSize();
-      var x = (size.Width - textSize.Width) / 2;
-      var y = size.Height - margin;
+      subText.SetAlignment(CardinalAlignment.South);
+      subText.SetMargin(margin);
 
-      return X(x).Y(y);
+      return this;
+   }
+
+   public SubTextSet Alignment(CardinalAlignment alignment)
+   {
+      subText.SetAlignment(alignment);
+      return this;
+   }
+
+   public SubTextSet Margin(int margin)
+   {
+      subText.SetMargin(margin);
+      return this;
    }
 
    public SubTextSet Small() => FontSize(8);

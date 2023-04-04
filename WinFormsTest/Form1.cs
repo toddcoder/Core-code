@@ -5,9 +5,11 @@ using Core.Computers;
 using Core.Dates;
 using Core.Enumerables;
 using Core.Matching;
+using Core.Monads;
 using Core.Numbers;
 using Core.WinForms.Controls;
 using Core.WinForms.Documents;
+using static Core.Monads.MonadFunctions;
 using static Core.WinForms.Documents.MenuBuilderFunctions;
 
 namespace WinFormsTest;
@@ -17,6 +19,7 @@ public partial class Form1 : Form
    protected UiAction uiAction;
    protected UiAction uiButton;
    protected EnumerableCycle<CardinalAlignment> messageAlignments;
+   protected Maybe<SubText> _subText;
 
    public Form1()
    {
@@ -34,6 +37,7 @@ public partial class Form1 : Form
          CardinalAlignment.Center, CardinalAlignment.West, CardinalAlignment.East, CardinalAlignment.North, CardinalAlignment.South,
          CardinalAlignment.NorthWest, CardinalAlignment.NorthEast, CardinalAlignment.SouthWest, CardinalAlignment.SouthEast
       });
+      _subText = nil;
 
       uiAction.Click += (_, _) =>
       {
@@ -101,9 +105,17 @@ public partial class Form1 : Form
 
    protected void button2_Click(object sender, EventArgs e)
    {
-      var messageAlignment = messageAlignments.Next();
-      uiAction.MessageAlignment = messageAlignment;
-      uiAction.Message(messageAlignment.ToString());
+      var alignment = messageAlignments.Next();
+      if (_subText is (true, var subText))
+      {
+         subText.SetAlignment(alignment);
+      }
+      else
+      {
+         _subText = uiAction.SubText("foobar", 0, 0).Set.Alignment(alignment).Invert().Margin(8).End;
+      }
+
+      uiAction.Refresh();
    }
 
    protected void button3_Click(object sender, EventArgs e)
@@ -117,6 +129,7 @@ public partial class Form1 : Form
 
          Thread.Sleep(500);
       }
+
       uiAction.Success("Done");
    }
 }

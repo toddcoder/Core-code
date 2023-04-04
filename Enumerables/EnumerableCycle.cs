@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Core.Enumerables;
 
-public class EnumerableCycle<T>
+public class EnumerableCycle<T> : IEnumerable<T>
 {
    protected T[] array;
    protected int index;
@@ -40,4 +41,14 @@ public class EnumerableCycle<T>
    public int Length => length;
 
    public int Cycle => cycle;
+
+   public IEnumerator<T> GetEnumerator()
+   {
+      foreach (var item in array)
+      {
+         yield return item;
+      }
+   }
+
+   IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }
