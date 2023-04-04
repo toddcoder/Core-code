@@ -814,7 +814,8 @@ public class UiAction : UserControl
       }
    }
 
-   public void AttachTo(string text, Control control, string fontName = "Segoe UI", float fontSize = 9, int left = -1, bool stretch = false)
+   public void AttachTo(string text, Control control, string fontName = "Segoe UI", float fontSize = 9, int left = -1, bool stretch = false,
+      int width = -1)
    {
       this.text = text;
       type = UiActionType.ControlLabel;
@@ -835,7 +836,10 @@ public class UiAction : UserControl
          left = control.Left;
       }
 
-      var width = stretch ? control.Width - left : size.Width + 20;
+      if (width == -1)
+      {
+         width = stretch ? control.Width - left : size.Width + 20;
+      }
 
       this.SetUp(left, control.Top - size.Height - 3, width, size.Height + 4, fontName, fontSize);
 
