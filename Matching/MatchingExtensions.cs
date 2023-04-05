@@ -174,7 +174,7 @@ public static class MatchingExtensions
       }
    }
 
-   public static Optional<MatchResult> Matched(this string input, Pattern pattern) => pattern.MatchedBy(input);
+   public static Optional<MatchResult> MatchedBy(this string pattern, string input) => ((Pattern)pattern).MatchedBy(input);
 
    public static Maybe<MatchResult> Matches(this string input, Pattern pattern) => pattern.MatchedBy(input).Maybe();
 
