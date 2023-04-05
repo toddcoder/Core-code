@@ -1292,7 +1292,7 @@ public class UiAction : UserControl
    {
       if (!Enabled)
       {
-         using var disabledBrush = new HatchBrush(HatchStyle.ForwardDiagonal, Color.White, Color.Gray);
+         using var disabledBrush = new HatchBrush(HatchStyle.BackwardDiagonal, Color.Black, Color.Gold);
          fillRectangle(pevent.Graphics, disabledBrush, ClientRectangle);
 
          var disabledRectangle = ClientRectangle;

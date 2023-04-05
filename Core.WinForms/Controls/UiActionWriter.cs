@@ -82,7 +82,6 @@ public class UiActionWriter
 
    public UiActionWriter(CardinalAlignment messageAlignment, CheckStyle checkStyle, Maybe<string> emptyTextTitle)
    {
-      //Center(center || checkStyle != CheckStyle.None);
       Align(messageAlignment);
       this.checkStyle = checkStyle;
       _emptyTextTitle = emptyTextTitle;

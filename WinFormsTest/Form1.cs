@@ -120,16 +120,6 @@ public partial class Form1 : Form
 
    protected void button3_Click(object sender, EventArgs e)
    {
-      uiAction.TaskBarProgress = true;
-      uiAction.Maximum = 12;
-      for (var i = 1; i <= 12; i++)
-      {
-         uiAction.Progress(i.MonthName() | "?");
-         Application.DoEvents();
-
-         Thread.Sleep(500);
-      }
-
-      uiAction.Success("Done");
+      uiAction.Enabled = !uiAction.Enabled;
    }
 }
