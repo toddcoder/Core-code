@@ -142,6 +142,8 @@ public class UiActionWriter
                "empty" => "∅",
                "left-angle" => "〈",
                "right-angle" => "〉",
+               "locked" => "🔒",
+               "unlocked" => "🔓",
                _ => nil
             };
             if (_replacement is (true, var replacement))
