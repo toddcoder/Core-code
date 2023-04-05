@@ -296,9 +296,21 @@ public static class DateTimeExtensions
       _ => dateOnly.ToString("MMMM d, yyyy")
    };
 
-   public static string DescriptionFromNow(this DateTime date)
+   public static string DescriptionBetweenDates(this DateTime date1, DateTime date2)
    {
-      var now = NowServer.Now;
+      DateTime date;
+      DateTime now;
+      if (date1 < date2)
+      {
+         date = date1;
+         now = date2;
+      }
+      else
+      {
+         date = date2;
+         now = date1;
+      }
+
       var dateOnly = date.Truncate();
       var minuteDifference = new Lazy<int>(() => (int)now.Subtract(date).TotalMinutes);
       var _minutes = lazy.maybe<string>();
@@ -306,17 +318,23 @@ public static class DateTimeExtensions
       var _hours = lazy.maybe<string>();
       var dayDifference = new Lazy<int>(() => (int)now.Subtract(dateOnly).TotalDays);
 
-      if (_minutes.ValueOf(differenceInMinutes(minuteDifference.Value)))
+      if (_minutes.ValueOf(differenceInMinutes(minuteDifference.Value)) is (true, var minutes))
       {
-         return _minutes;
+         return minutes;
       }
-      else if (_hours.ValueOf(differenceInHours(hourDifference.Value)))
+      else if (_hours.ValueOf(differenceInHours(hourDifference.Value)) is (true, var hours))
       {
-         return _hours;
+         return hours;
       }
       else
       {
          return differenceInDays(dayDifference.Value, now, dateOnly);
       }
+   }
+
+   public static string DescriptionFromNow(this DateTime date)
+   {
+      var now = NowServer.Now;
+      return date.DescriptionBetweenDates(now);
    }
 }
