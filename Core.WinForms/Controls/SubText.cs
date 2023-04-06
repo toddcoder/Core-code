@@ -11,18 +11,20 @@ public class SubText : IEquatable<SubText>
 {
    protected Size size;
    protected bool invert;
+   protected bool transparentBackground;
    protected Maybe<Color> _foreColor;
    protected Maybe<Color> _backColor;
    protected Maybe<CardinalAlignment> _alignment;
    protected int margin;
 
-   public SubText(string text, int x, int y, Size size, bool invert = false)
+   public SubText(string text, int x, int y, Size size, bool invert = false, bool transparentBackground = false)
    {
       Text = text;
       X = x;
       Y = y;
       this.size = size;
       this.invert = invert;
+      this.transparentBackground = transparentBackground;
 
       Id = Guid.NewGuid();
 
@@ -57,6 +59,12 @@ public class SubText : IEquatable<SubText>
    {
       get => invert;
       set => invert = value;
+   }
+
+   public bool TransparentBackground
+   {
+      get => transparentBackground;
+      set=> transparentBackground = value;
    }
 
    public Guid Id { get; }
@@ -173,12 +181,15 @@ public class SubText : IEquatable<SubText>
          var foreColorToUse = Invert ? backColor : foreColor;
          var backColorToUse = Invert ? foreColor : backColor;
 
-         using var brush = new SolidBrush(backColorToUse);
-         graphics.FillRectangle(brush, rectangle);
-         if (!invert && Outline)
+         if (!transparentBackground)
          {
-            using var pen = new Pen(foreColorToUse);
-            graphics.DrawRectangle(pen, rectangle);
+            using var brush = new SolidBrush(backColorToUse);
+            graphics.FillRectangle(brush, rectangle);
+            if (!invert && Outline)
+            {
+               using var pen = new Pen(foreColorToUse);
+               graphics.DrawRectangle(pen, rectangle);
+            }
          }
 
          TextRenderer.DrawText(graphics, text, font, rectangle, foreColorToUse, flags);

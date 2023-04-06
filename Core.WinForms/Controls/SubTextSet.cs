@@ -83,6 +83,12 @@ public class SubTextSet
       return this;
    }
 
+   public SubTextSet TransparentBackground(bool transparentBackground = false)
+   {
+      subText.TransparentBackground = transparentBackground;
+      return this;
+   }
+
    protected Size getTextSize()
    {
       var text = subText.Text;
