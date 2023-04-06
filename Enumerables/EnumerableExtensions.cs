@@ -1151,4 +1151,30 @@ public static class EnumerableExtensions
          }
       }
    }
+
+   public static Maybe<int> Find<T>(this IEnumerable<T> items, T item, int startIndex = 0)
+   {
+      var array = items.ToArray();
+      for (var i = startIndex; i < array.Length; i++)
+      {
+         if (array[i].Equals(item))
+         {
+            return i;
+         }
+      }
+
+      return nil;
+   }
+
+   public static IEnumerable<int> FindAll<T>(this IEnumerable<T> items, T item, int startIndex = 0)
+   {
+      var array = items.ToArray();
+      for (var i = startIndex; i < array.Length; i++)
+      {
+         if (array[i].Equals(item))
+         {
+            yield return i;
+         }
+      }
+   }
 }
