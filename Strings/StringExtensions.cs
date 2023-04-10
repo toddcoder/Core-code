@@ -2476,6 +2476,15 @@ public static class StringExtensions
       return source.Lines().Select(line => $"{indent}{line}").ToString("\r\n");
    }
 
+   public static IEnumerable<string> IndentedLines(this IEnumerable<string> lines, int indentation = 3)
+   {
+      var indent = " ".Repeat(indentation);
+      foreach (var line in lines)
+      {
+         yield return $"{indent}{line}";
+      }
+   }
+
    public static IEnumerable<string> Words(this string source)
    {
       var builder = new StringBuilder();
