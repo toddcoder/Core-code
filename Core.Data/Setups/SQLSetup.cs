@@ -106,7 +106,7 @@ public class SqlSetup : ISetup, ISetupWithInfo
       var connectionString = setupData.Must().HaveValueAt("connectionString").Value;
       ConnectionString = new SqlConnectionString(connectionString, 30.Seconds());
       CommandText = setupData.Must().HaveValueAt("commandText").Value;
-      CommandTimeout = setupData.Maybe("commandTimeout").Map(Maybe.TimeSpan) | (() => 30.Seconds());
+      CommandTimeout = setupData.Items["commandTimeout"].Map(Maybe.TimeSpan) | (() => 30.Seconds());
 
       if (parameterSpecifiers.IsNotEmpty())
       {

@@ -144,6 +144,8 @@ public class Scraper : IHash<string, string>
 
    public Result<Hash<string, string>> AnyHash() => variables;
 
+   public HashInterfaceMaybe<string, string> Items => new(this);
+
    public Optional<Scraper> Push(Pattern pattern)
    {
       var _length = pattern.MatchedBy(source.Current).Map(r => r.Length);

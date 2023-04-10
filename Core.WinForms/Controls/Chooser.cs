@@ -223,7 +223,7 @@ public partial class Chooser : Form
 
    protected Maybe<Chosen> getChosen(ListViewItem item)
    {
-      return choices.Maybe(item.Text).Map(value => new Chosen(value, item));
+      return choices.Items[item.Text].Map(value => new Chosen(value, item));
    }
 
    protected void listViewItems_SelectedIndexChanged(object sender, EventArgs e)

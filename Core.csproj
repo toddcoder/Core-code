@@ -160,6 +160,7 @@
     <Compile Include="Collections\HashArgs.cs" />
     <Compile Include="Collections\HashExtensions.cs" />
     <Compile Include="Collections\CollectionFunctions.cs" />
+    <Compile Include="Collections\HashInterfaceMaybe.cs" />
     <Compile Include="Collections\HashMaybe.cs" />
     <Compile Include="Collections\HashTrying.cs" />
     <Compile Include="Collections\IEnumerableHash.cs" />

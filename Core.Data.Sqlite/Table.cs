@@ -133,4 +133,6 @@ public abstract class Table<TKey, TValue> : IEnumerable<TValue>, IHash<TKey, TVa
    }
 
    public Result<Hash<TKey, TValue>> AnyHash() => this.ToHash(KeyFromValue);
+
+   public HashInterfaceMaybe<TKey, TValue> Items => new(this);
 }

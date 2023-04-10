@@ -437,7 +437,7 @@ public class Menus : IHash<string, ToolStripMenuItem>
    public Maybe<Delegate> ReplaceHandler(string parentText, string text, EventHandler handler)
    {
       var _submenus = LazyMonads.lazy.maybe(() => Submenus(parentText));
-      var _item = _submenus.Then(submenus => submenus.Maybe(text));
+      var _item = _submenus.Then(submenus => submenus.Items[text]);
       var _delegate = _item.Then(item => item.ClearEvent("Click"));
       if (_delegate is (true, var @delegate) && _item is (true, var item))
       {
@@ -640,7 +640,9 @@ public class Menus : IHash<string, ToolStripMenuItem>
 
    public Result<Hash<string, ToolStripMenuItem>> AnyHash() => menuItems.ToHash(i => i.Key, i => (ToolStripMenuItem)i.Value);
 
-   public Maybe<Submenus> Submenus(string parentText) => this.Maybe(parentText).Map(p => new Submenus(p));
+   public HashInterfaceMaybe<string, ToolStripMenuItem> Items => new(this);
+
+   public Maybe<Submenus> Submenus(string parentText) => Items[parentText].Map(p => new Submenus(p));
 
    public void RefreshText()
    {

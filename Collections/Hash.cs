@@ -138,6 +138,8 @@ public class Hash<TKey, TValue> : Dictionary<TKey, TValue>, IHash<TKey, TValue>
 
    public Result<Hash<TKey, TValue>> AnyHash() => this;
 
+   public HashInterfaceMaybe<TKey, TValue> Items => new(this);
+
    public TValue Find(TKey key, Func<TKey, TValue> defaultValue, bool addIfNotFound = false)
    {
       var _result = Maybe[key];
@@ -259,7 +261,7 @@ public class Hash<TKey, TValue> : Dictionary<TKey, TValue>, IHash<TKey, TValue>
 
    public Maybe<TValue> Replace(TKey key, TValue newValue)
    {
-      var oldValue = this.Maybe(key);
+      var oldValue = Items[key];
       this[key] = newValue;
 
       return oldValue;

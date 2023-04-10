@@ -151,6 +151,8 @@ public class SqlDataSource : DataSource, IBulkCopyTarget, IHash<string, string>
 
    public Result<Hash<string, string>> AnyHash() => attributes;
 
+   public HashInterfaceMaybe<string, string> Items => new(this);
+
    public override IDbConnection GetConnection()
    {
       var connectionString = ConnectionString;

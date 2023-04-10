@@ -57,6 +57,8 @@ public class Parameters : IEnumerable<Parameter>, IHash<string, Parameter>
 
    public Result<Hash<string, Parameter>> AnyHash() => parameters.AsHash;
 
+   public HashInterfaceMaybe<string, Parameter> Items => new(this);
+
    public int Count => parameters.Count;
 
    public void DeterminePropertyTypes(object entity)

@@ -58,9 +58,9 @@ public class Fields : IEnumerable<Field>
       ordered.Add(field.Name);
    }
 
-   public Maybe<Field> this[string name] => fields.Maybe(name);
+   public Maybe<Field> this[string name] => fields.Items[name];
 
-   public Maybe<Field> Ordered(int index) => fields.Maybe(ordered[index]);
+   public Maybe<Field> Ordered(int index) => fields.Items[ordered[index]];
 
    public void DeterminePropertyTypes(object entity)
    {

@@ -105,6 +105,8 @@ public class Formatter : IHash<string, string>
 
    public Result<Hash<string, string>> AnyHash() => names.Success<Hash<string, string>>();
 
+   public HashInterfaceMaybe<string, string> Items => new(this);
+
    public string[] Names => names.Select(item => item.Key).ToArray();
 
    public string[] Values => names.Select(item => item.Value).ToArray();

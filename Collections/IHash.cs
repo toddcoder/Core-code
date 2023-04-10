@@ -9,4 +9,6 @@ public interface IHash<TKey, TValue>
    bool ContainsKey(TKey key);
 
    Result<Hash<TKey, TValue>> AnyHash();
+
+   HashInterfaceMaybe<TKey, TValue> Items { get; }
 }

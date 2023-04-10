@@ -59,4 +59,6 @@ public class CondensedList : IHash<string, int>
    public bool ContainsKey(string key) => counts.ContainsKey(key);
 
    public Result<Hash<string, int>> AnyHash() => counts;
+
+   public HashInterfaceMaybe<string, int> Items => new(this);
 }

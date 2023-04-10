@@ -82,7 +82,7 @@ public static class HashExtensions
 
    public static string Format(this Hash<string, string> hash, string format) => new Formatter(hash).Format(format);
 
-   [Obsolete("Use Maybe")]
+   [Obsolete("Use Items")]
    public static bool Map<TKey, TValue>(this IHash<TKey, TValue> hash, TKey key, out TValue value)
    {
       if (hash.ContainsKey(key))
@@ -97,6 +97,7 @@ public static class HashExtensions
       }
    }
 
+   [Obsolete("Use Items")]
    public static Maybe<TValue> Maybe<TKey, TValue>(this IHash<TKey, TValue> hash, TKey key)
    {
       if (hash.ContainsKey(key))
@@ -109,46 +110,46 @@ public static class HashExtensions
       }
    }
 
-   [Obsolete("Use Maybe")]
+   [Obsolete("Use Items")]
    public static Maybe<TValue> Map<TKey, TValue>(this IHash<TKey, TValue> hash, TKey key)
    {
       return maybe(hash.ContainsKey(key), () => hash[key]);
    }
 
-   [Obsolete("Use Maybe")]
+   [Obsolete("Use Items")]
    public static Maybe<TValue> Of<TKey, TValue>(this IHash<TKey, TValue> hash, TKey key)
    {
       return maybe(hash.ContainsKey(key), () => hash[key]);
    }
 
-   [Obsolete("Use Maybe")]
+   [Obsolete("Use Items")]
    public static Maybe<TResult> Map<TKey, TValue, TResult>(this IHash<TKey, TValue> hash, TKey key,
       Func<TValue, TResult> func)
    {
       return maybe(hash.ContainsKey(key), () => func(hash[key]));
    }
 
-   [Obsolete("Use Maybe")]
+   [Obsolete("Use Items")]
    public static Maybe<TResult> Map<TKey, TValue, TResult>(this IHash<TKey, TValue> hash, TKey key,
       Func<TValue, Maybe<TResult>> func)
    {
       return maybe(hash.ContainsKey(key), () => func(hash[key]));
    }
 
-   [Obsolete("Use Maybe")]
+   [Obsolete("Use Items")]
    public static TValue FlatMap<TKey, TValue>(this IHash<TKey, TValue> hash, TKey key, Func<TValue> defaultFunc)
    {
       return hash.ContainsKey(key) ? hash[key] : defaultFunc();
    }
 
-   [Obsolete("Use Maybe")]
+   [Obsolete("Use Items")]
    public static TResult FlatMap<TKey, TValue, TResult>(this IHash<TKey, TValue> hash, TKey key,
       Func<TValue, TResult> ifTrue, Func<TResult> ifFalse)
    {
       return hash.ContainsKey(key) ? ifTrue(hash[key]) : ifFalse();
    }
 
-   [Obsolete("Use Maybe")]
+   [Obsolete("Use Items")]
    public static TResult FlatMap<TKey, TValue, TResult>(this IHash<TKey, TValue> hash, TKey key,
       Func<TValue, TResult> ifTrue, TResult ifFalse)
    {
@@ -167,7 +168,7 @@ public static class HashExtensions
       return hash.ContainsKey(key) ? hash[key] : defaultValue;
    }
 
-   [Obsolete("Use Maybe")]
+   [Obsolete("Use Items")]
    public static Maybe<TValue> Get<TKey, TValue>(this IHash<TKey, TValue> hash, TKey key)
    {
       return maybe(hash.ContainsKey(key), () => hash[key]);
@@ -680,7 +681,7 @@ public static class HashExtensions
          foreach (var item in enumerable)
          {
             var key = keyFunc(item);
-            var _value = hash.Maybe(key);
+            var _value = hash.Maybe[key];
             var value = valueFunc(_value, item);
             hash[key] = value;
          }

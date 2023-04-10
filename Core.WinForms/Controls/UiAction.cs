@@ -46,8 +46,8 @@ public class UiAction : UserControl
       protected Maybe<List<UiAction>> getUiActionList(Guid id)
       {
          return
-            from @group in uiActions.Maybe(id)
-            from list in groups.Maybe(@group)
+            from @group in uiActions.Items[id]
+            from list in groups.Items[@group]
             select list;
       }
 

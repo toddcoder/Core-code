@@ -16,9 +16,9 @@ public class HashMaybe<TKey, TValue>
    {
       get
       {
-         if (hash.ContainsKey(key))
+         if (hash.TryGetValue(key, out var item))
          {
-            return hash[key];
+            return item;
          }
          else
          {

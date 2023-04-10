@@ -97,6 +97,8 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
 
    public Result<Hash<string, string>> AnyHash() => items.ToStringHash(i => i.Key, i => i.Value.ToString(), true);
 
+   HashInterfaceMaybe<string, string> IHash<string, string>.Items => new(this);
+
    public StringHash ToStringHash() => Items().ToHash(t => t.key, t => t.text).ToStringHash(true);
 
    public override IEnumerable<(string key, string text)> Items()

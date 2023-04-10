@@ -35,7 +35,7 @@ public class PropertyInterface
    public Maybe<object> GetValue(object entity)
    {
       evaluator = GetEvaluator(entity);
-      return ((IHash<string, object>)evaluator).Maybe(Signature);
+      return ((IHash<string, object>)evaluator).Items[Signature];
    }
 
    public void SetValue(object entity, object value)

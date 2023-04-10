@@ -59,6 +59,8 @@ public class StringVariants : IHash<string, string>
 
    public Result<Hash<string, string>> AnyHash() => templates;
 
+   public HashInterfaceMaybe<string, string> Items => new(this);
+
    public StringVariants Alias(string alias, string key, string value)
    {
       keyValues[alias] = new KeyValue(key, value);
@@ -77,7 +79,7 @@ public class StringVariants : IHash<string, string>
    {
       var _template =
          from templateName in _templateName
-         from mappedTemplate in this.Maybe(templateName)
+         from mappedTemplate in Items[templateName]
          select mappedTemplate;
       if (_template is (true, var template))
       {

@@ -36,6 +36,8 @@ public class Connection : IHash<string, string>
 
    public Result<Hash<string, string>> AnyHash() => data.AsHash;
 
+   public HashInterfaceMaybe<string, string> Items => new(this);
+
    public string Type { get; set; }
 
    public TimeSpan Timeout { get; set; }

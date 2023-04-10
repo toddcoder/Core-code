@@ -125,7 +125,9 @@ public class ExpiringCache<TKey, TValue> : IHash<TKey, TValue>
       }
    }
 
-   public Result<Hash<TKey, TValue>> AnyHash() => cache.Success();
+   public Result<Hash<TKey, TValue>> AnyHash() => cache;
+
+   public HashInterfaceMaybe<TKey, TValue> Items => new(this);
 
    public void Remove(TKey key)
    {

@@ -22,6 +22,8 @@ public class Submenus : IHash<string, ToolStripMenuItem>, IEnumerable<ToolStripM
 
    public Result<Hash<string, ToolStripMenuItem>> AnyHash() => fail("Not implemented");
 
+   public HashInterfaceMaybe<string, ToolStripMenuItem> Items => new(this);
+
    ToolStripMenuItem IHash<string, ToolStripMenuItem>.this[string text]
    {
       get

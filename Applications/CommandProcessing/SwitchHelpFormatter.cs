@@ -70,7 +70,7 @@ public class SwitchHelpFormatter
             builder.Append($" <{type}>");
          }
 
-         var newArgument = commandReplacements.Maybe(name) | argument;
+         var newArgument = commandReplacements.Items[name] | argument;
          builder.Append($" : {newArgument}");
 
          replacements[$"${name}"] = builder.ToString();

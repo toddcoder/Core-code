@@ -39,17 +39,17 @@ public class Responder : UserControl, IHash<string, Responder.ResponderButton>
                _ => ResponderPersonality.Neutral
             };
 
-            return new ResponderButton(control, personality, label, key, true);
+            return new ResponderButton(control, personality, label, key);
          }
          else
          {
-            return new ResponderButton(control, ResponderPersonality.Failed, $"{specifier}?", uniqueID(), true);
+            return new ResponderButton(control, ResponderPersonality.Failed, $"{specifier}?", uniqueID());
          }
       }
 
       protected string label;
 
-      public ResponderButton(Control control, ResponderPersonality personality, string label, string key, bool center = false, bool is3D = true) :
+      public ResponderButton(Control control, ResponderPersonality personality, string label, string key, bool is3D = true) :
          base(control, is3D)
       {
          Personality = personality;
@@ -200,6 +200,8 @@ public class Responder : UserControl, IHash<string, Responder.ResponderButton>
    public bool ContainsKey(string key) => responderButtons.ContainsKey(key);
 
    public Result<Hash<string, ResponderButton>> AnyHash() => responderButtons;
+
+   public HashInterfaceMaybe<string, ResponderButton> Items => new(this);
 
    protected override void OnEnabledChanged(EventArgs e)
    {

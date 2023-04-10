@@ -25,6 +25,10 @@ public class DataContainerEvaluator : IEvaluator, IHash<string, object>, IHash<S
       return Signatures.Select(s => (key: s.Name, value: data[s.Name])).ToHash(i => i.key, i => i.value).Success();
    }
 
+   HashInterfaceMaybe<Signature, object> IHash<Signature, object>.Items => new(this);
+
+   HashInterfaceMaybe<string, object> IHash<string, object>.Items => new(this);
+
    object IEvaluator.this[Signature signature]
    {
       get => data[signature.Name];

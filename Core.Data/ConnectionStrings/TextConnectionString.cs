@@ -14,7 +14,7 @@ public class TextConnectionString : IConnectionString
    public TextConnectionString(Connection connection)
    {
       fileName = connection.Value("file");
-      header = (connection.Maybe("header") | "true") == "true" ? "YES" : "NO";
+      header = (connection.Items["header"] | "true") == "true" ? "YES" : "NO";
       delimited = connection.Value("delimited");
       delimited = delimited switch
       {
