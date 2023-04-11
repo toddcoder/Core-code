@@ -2,6 +2,7 @@
 using Core.Computers;
 using Core.Computers.Synchronization;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static Core.Monads.Lazy.LazyRepeatingMonads;
 
 namespace Core.Tests;
 
@@ -97,5 +98,31 @@ public class FileNameTests
    {
       FileName file = @"~\source\repos\toddcoder\Core\Core.Tests\TestData\connections.txt";
       file.Open();
+   }
+
+   [TestMethod]
+   public void FileNameWriterTest()
+   {
+      FileName testFile = @"C:\Temp\test.txt";
+      var _file = testFile.Unique();
+      if (_file is (true, var file))
+      {
+         Console.WriteLine($"Using {file.FullPath}");
+
+         using (var writer = file.Writer(true))
+         {
+            for (var i = 0; i < 10; i++)
+            {
+               writer.WriteLine(i);
+            }
+         }
+
+         using var reader = file.Reader();
+         var _line = lazyRepeating.optional<string>();
+         while (_line.ValueOf(reader.ReadLine()) is (true, var line))
+         {
+            Console.WriteLine(line);
+         }
+      }
    }
 }

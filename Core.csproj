@@ -187,6 +187,7 @@
     <Compile Include="Computers\FileCopyProgressArgs.cs" />
     <Compile Include="Computers\FileExceptionArgs.cs" />
     <Compile Include="Computers\FileFolderExtensions.cs" />
+    <Compile Include="Computers\FileNameReader.cs" />
     <Compile Include="Computers\FileNameWriter.cs" />
     <Compile Include="Computers\FullPathFunctions.cs" />
     <Compile Include="Computers\FileName.cs" />

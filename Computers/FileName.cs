@@ -1199,4 +1199,14 @@ public class FileName : IComparable, IComparable<FileName>, IEquatable<FileName>
          return exception;
       }
    }
+
+   public FileNameWriter CreateWriter(bool @new, bool readable = false) => new(this, true, @new, false, false, readable);
+
+   public FileNameWriter AppendWriter() => new(this, false, false, true, false, false);
+
+   public FileNameWriter TruncateWriter() => new(this, false, false, false, true, false);
+
+   public FileNameWriter Writer(bool create = false, bool readable = false) => new(this, create, false, false, false, readable);
+
+   public FileNameReader Reader(bool writable = false) => new(this, writable);
 }

@@ -95,7 +95,7 @@ public abstract class Optional<T>
       return left;
    }
 
-   public static implicit operator Optional<T>(T value) => new Just<T>(value);
+   public static implicit operator Optional<T>(T value) => value.Just();
 
    public static implicit operator Optional<T>(Exception exception) => new Failed<T>(exception);
 
