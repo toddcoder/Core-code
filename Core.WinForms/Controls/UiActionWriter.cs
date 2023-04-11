@@ -84,10 +84,10 @@ public class UiActionWriter
 
    public UiActionWriter(CardinalAlignment messageAlignment, CheckStyle checkStyle, Maybe<string> emptyTextTitle, bool isFile)
    {
+      this.isFile = isFile;
       Align(messageAlignment);
       this.checkStyle = checkStyle;
       _emptyTextTitle = emptyTextTitle;
-      this.isFile = isFile;
 
       _rectangle = fail("Rectangle not set");
       _font = fail("Font not set");
