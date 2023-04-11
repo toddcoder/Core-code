@@ -1181,4 +1181,22 @@ public class FileName : IComparable, IComparable<FileName>, IEquatable<FileName>
       var targetFile = folder + NameExtension;
       return CopyToNotify(targetFile, overwrite, noBuffering);
    }
+
+   [DllImport("shlwapi.dll", CharSet = CharSet.Auto)]
+   protected static extern bool PathCompactPathEx([Out] StringBuilder @out, string path, int charMax, int flags);
+
+   public Result<string> CompactPath(int wantedLength)
+   {
+      try
+      {
+         var builder = new StringBuilder(wantedLength + 1);
+         PathCompactPathEx(builder, fullPath, wantedLength + 1, 0);
+
+         return builder.ToString();
+      }
+      catch (Exception exception)
+      {
+         return exception;
+      }
+   }
 }

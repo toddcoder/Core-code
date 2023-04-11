@@ -517,6 +517,8 @@ public class UiAction : UserControl
 
    public CardinalAlignment MessageAlignment { get; set; }
 
+   public bool IsFile { get; set; }
+
    internal void SetCheckStyle(CheckStyle checkStyle)
    {
       this.checkStyle = checkStyle;
@@ -1030,7 +1032,7 @@ public class UiAction : UserControl
 
       if (!Enabled)
       {
-         var disabledWriter = new UiActionWriter(MessageAlignment, CheckStyle.None, EmptyTextTitle)
+         var disabledWriter = new UiActionWriter(MessageAlignment, CheckStyle.None, EmptyTextTitle, IsFile)
          {
             Rectangle = ClientRectangle,
             Font = italicFont,
@@ -1089,7 +1091,7 @@ public class UiAction : UserControl
          UiActionType.Busy or UiActionType.BusyText or UiActionType.ProgressDefinite or UiActionType.MuteProgress => CheckStyle.None,
          _ => CheckStyle
       };
-      var writer = new Lazy<UiActionWriter>(() => new UiActionWriter(MessageAlignment, style, EmptyTextTitle)
+      var writer = new Lazy<UiActionWriter>(() => new UiActionWriter(MessageAlignment, style, EmptyTextTitle, IsFile)
       {
          Rectangle = clientRectangle,
          Font = getFont(),

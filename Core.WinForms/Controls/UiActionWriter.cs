@@ -30,9 +30,10 @@ public class UiActionWriter
       return flags;
    }
 
-   public static TextFormatFlags GetFlags(CardinalAlignment alignment)
+   protected TextFormatFlags getFlags(CardinalAlignment alignment)
    {
       Bits32<TextFormatFlags> flags = TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix;
+      flags[TextFormatFlags.PathEllipsis] = isFile;
       switch (alignment)
       {
          case CardinalAlignment.NorthWest:
@@ -76,15 +77,17 @@ public class UiActionWriter
 
    protected CheckStyle checkStyle;
    protected Maybe<string> _emptyTextTitle;
+   protected bool isFile;
    protected Result<Rectangle> _rectangle;
    protected Result<Font> _font;
    protected Result<Color> _color;
 
-   public UiActionWriter(CardinalAlignment messageAlignment, CheckStyle checkStyle, Maybe<string> emptyTextTitle)
+   public UiActionWriter(CardinalAlignment messageAlignment, CheckStyle checkStyle, Maybe<string> emptyTextTitle, bool isFile)
    {
       Align(messageAlignment);
       this.checkStyle = checkStyle;
       _emptyTextTitle = emptyTextTitle;
+      this.isFile = isFile;
 
       _rectangle = fail("Rectangle not set");
       _font = fail("Font not set");
@@ -93,7 +96,7 @@ public class UiActionWriter
 
    public void Center(bool center) => Flags = GetFlags(center);
 
-   public void Align(CardinalAlignment messageAlignment) => Flags = GetFlags(messageAlignment);
+   public void Align(CardinalAlignment messageAlignment) => Flags = getFlags(messageAlignment);
 
    public Rectangle Rectangle
    {

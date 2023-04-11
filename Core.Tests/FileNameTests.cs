@@ -16,7 +16,7 @@ public class FileNameTests
    [TestMethod]
    public void TruncateBySubfolderTest()
    {
-      FileName file = @"C:\Enterprise\Test\Sql Data\test.sql";
+      FileName file = @"\\pdfsevolv01corp\data\ProductionSupport\SLE\estreamProd-04102023.csv";
       var name = file.TruncateBySubfolder(2);
       Console.WriteLine(name);
       name = file.TruncateBySubfolder(0);
