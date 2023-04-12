@@ -126,7 +126,7 @@ public class UiAction : UserControl
    }
 
    protected const float START_AMOUNT = .9f;
-   protected const string CLICK_TO_CANCEL = "🖰 ⇒ 🗙";
+   protected const string CLICK_TO_CANCEL = "🖰 ⇒ 🛑";
 
    protected static Hash<UiActionType, Color> globalForeColors;
    protected static Hash<UiActionType, Color> globalBackColors;
@@ -1062,7 +1062,7 @@ public class UiAction : UserControl
          if (Stopwatch)
          {
             var elapsed = stopwatch.Value.Elapsed.ToString(@"mm\:ss");
-            using var font = new Font("Consolas", 12);
+            using var font = new Font("Consolas", 10);
             var size = TextRenderer.MeasureText(e.Graphics, elapsed, font);
             var location = new Point(clientRectangle.Width - size.Width - 20, 4);
             var rectangle = new Rectangle(location, size);
@@ -1220,7 +1220,7 @@ public class UiAction : UserControl
 
    protected void drawClipToCancel(PaintEventArgs e, Rectangle clientRectangle)
    {
-      if (ClickToCancel)
+      if (clickToCancel)
       {
          using var font = new Font("Courier", 9);
          var textSize = TextRenderer.MeasureText(e.Graphics, CLICK_TO_CANCEL, font);
