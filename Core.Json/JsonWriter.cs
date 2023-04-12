@@ -1,8 +1,10 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Text;
 using Core.Dates;
 using Core.Monads;
+using Core.Strings;
 using Newtonsoft.Json;
 
 namespace Core.Json;
@@ -117,6 +119,19 @@ public class JsonWriter : IDisposable
    {
       writer.WritePropertyName(propertyName);
       writer.WriteValue(value);
+   }
+
+   public void Write(string propertyName, string[] values)
+   {
+      writer.WritePropertyName(propertyName);
+      var serializer = new JsonSerializer();
+      serializer.Serialize(writer, values);
+   }
+
+   public void Write<T>(string propertyName, T[] values)
+   {
+      var stringArray = values.Select(o => o.ToNonNullString()).ToArray();
+      Write(propertyName, stringArray);
    }
 
    public void WriteNull(string propertyName)

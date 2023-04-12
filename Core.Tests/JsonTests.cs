@@ -91,4 +91,14 @@ public class JsonTests
       var json = writer.ToString();
       Console.WriteLine(json);
    }
+
+   [TestMethod]
+   public void ArrayTest()
+   {
+      using var writer = new JsonWriter();
+      writer.BeginObject();
+      writer.Write("array", new[] { "alpha", "bravo", "charlie" });
+      writer.EndObject();
+      Console.WriteLine(writer);
+   }
 }
