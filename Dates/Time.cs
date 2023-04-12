@@ -163,22 +163,22 @@ public class Time : IComparable<DateTime>, IComparable<Time>
 
       if (days > 0)
       {
-         list.Add($"{days} d");
+         list.Add($"{days}d");
       }
 
       if (hours > 0)
       {
-         list.Add($"{hours} h");
+         list.Add($"{hours}h");
       }
 
       if (minutes > 0)
       {
-         list.Add($"{minutes} m");
+         list.Add($"{minutes}m");
       }
 
       if (seconds > 0)
       {
-         list.Add($"{seconds} s");
+         list.Add($"{seconds}s");
       }
 
       return list.ToString(" ");
