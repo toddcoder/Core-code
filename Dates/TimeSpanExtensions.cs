@@ -65,6 +65,8 @@ public static class TimeSpanExtensions
       return Time.ToShortString(span, includeMilliseconds);
    }
 
+   public static string ToVeryShortString(this TimeSpan span) => Time.ToVeryShortString(span);
+
    public static Result<TimeSpan> TimeSpan(this string source)
    {
       var intervals = source.Unjoin("/s* (',' | 'and') /s*; f");

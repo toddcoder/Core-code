@@ -115,6 +115,11 @@ public class Time : IComparable<DateTime>, IComparable<Time>
          timeSpan.Minutes, timeSpan.Seconds, maybe(includeMilliseconds, () => timeSpan.Milliseconds));
    }
 
+   public static string ToVeryShortString(TimeSpan timeSpan)
+   {
+      return ToVeryShortString(timeSpan.Days, timeSpan.Hours, timeSpan.Minutes, timeSpan.Seconds);
+   }
+
    public static string ToShortString(int days, int hours, int minutes, int seconds, Maybe<int> _milliseconds)
    {
       var list = new List<string>();
@@ -147,6 +152,33 @@ public class Time : IComparable<DateTime>, IComparable<Time>
       if (list.Count == 0)
       {
          list.Add("0 secs");
+      }
+
+      return list.ToString(" ");
+   }
+
+   public static string ToVeryShortString(int days, int hours, int minutes, int seconds)
+   {
+      var list = new List<string>();
+
+      if (days > 0)
+      {
+         list.Add($"{days} d");
+      }
+
+      if (hours > 0)
+      {
+         list.Add($"{hours} h");
+      }
+
+      if (minutes > 0)
+      {
+         list.Add($"{minutes} m");
+      }
+
+      if (seconds > 0)
+      {
+         list.Add($"{seconds} s");
       }
 
       return list.ToString(" ");
