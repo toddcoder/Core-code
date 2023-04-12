@@ -53,5 +53,9 @@ public class FileNameWriter : IDisposable
 
    public async Task WriteLineAsync(object value)=> await writer.WriteLineAsync(getString(value));
 
+   public void Flush() => writer.Flush();
+
+   public async Task FlushAsync() => await writer.FlushAsync();
+
    public void Dispose() => writer?.Dispose();
 }
