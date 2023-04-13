@@ -403,4 +403,12 @@ public static class NumberExtensions
    {
       return random.Next((upperBound - lowerBound) / increment) * increment + lowerBound;
    }
+
+   private static Lazy<Random> random = new(() => new Random());
+
+   public static int nextRandom(this int maxSize) => random.Value.Next(maxSize);
+
+   public static int nextRandom(this int minSize, int maxSize) => random.Value.Next(minSize, maxSize);
+
+   public static int nextRandom(this int lowerBound, int upperBound, int increment) => random.Value.Next(lowerBound, upperBound, increment);
 }

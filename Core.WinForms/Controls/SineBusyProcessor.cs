@@ -6,7 +6,7 @@ using static Core.Numbers.NumberExtensions;
 
 namespace Core.WinForms.Controls;
 
-public class BusyProcessor2
+public class SineBusyProcessor : BusyProcessor
 {
    protected const double MAXIMUM_VALUE = 720.0;
 
@@ -18,20 +18,19 @@ public class BusyProcessor2
    protected Hash<double, int> yValues;
    protected Hash<double, int> xValues;
 
-   public BusyProcessor2(Rectangle clientRectangle)
+   public SineBusyProcessor(Rectangle clientRectangle) : base(clientRectangle)
    {
       width = clientRectangle.Width;
       height = clientRectangle.Height;
       margin = 2;
 
-      var random = new Random();
-      start = random.Next(0, 740, 20);
+      start = 0.nextRandom(740, 20);
       sineValues = new Hash<double, double>();
       yValues = new Hash<double, int>();
       xValues = new Hash<double, int>();
    }
 
-   public void Advance()
+   public override void Advance()
    {
       if (start < MAXIMUM_VALUE)
       {
@@ -43,7 +42,7 @@ public class BusyProcessor2
       }
    }
 
-   public void OnPaint(Graphics graphics)
+   public override void OnPaint(Graphics graphics)
    {
       void draw(double i)
       {

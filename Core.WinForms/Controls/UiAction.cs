@@ -132,6 +132,7 @@ public class UiAction : UserControl
    protected static Hash<UiActionType, Color> globalBackColors;
    protected static Hash<UiActionType, MessageStyle> globalStyles;
    protected static Lazy<CheckToggler> toggler;
+   protected static BusyStyle busyStyle;
 
    static UiAction()
    {
@@ -186,6 +187,7 @@ public class UiAction : UserControl
       };
       toggler = new Lazy<CheckToggler>(() => new CheckToggler());
       MainForm = nil;
+      busyStyle = BusyStyle.Default;
    }
 
    public static Hash<UiActionType, Color> GlobalForeColors => globalForeColors;
@@ -197,6 +199,12 @@ public class UiAction : UserControl
    public static CheckToggler Toggler => toggler.Value;
 
    public static Maybe<Form> MainForm { get; set; }
+
+   public static BusyStyle BusyStyle
+   {
+      get => busyStyle;
+      set => busyStyle = value;
+   }
 
    protected Font italicFont;
    protected Font boldFont;
@@ -431,6 +439,14 @@ public class UiAction : UserControl
       _taskBarProgress = nil;
    }
 
+   protected BusyProcessor getBusyProcessor(Rectangle clientRectangle) => busyStyle switch
+   {
+      BusyStyle.Default => new DefaultBusyProcessor(clientRectangle),
+      BusyStyle.Sine => new SineBusyProcessor(clientRectangle),
+      BusyStyle.Rectangle => new RectangleBusyProcessor(clientRectangle),
+      _ => new DefaultBusyProcessor(clientRectangle)
+   };
+
    protected void activateProcessor(Graphics graphics)
    {
       if (_label is (true, var label))
@@ -453,7 +469,7 @@ public class UiAction : UserControl
          case UiActionType.Busy:
          {
             var clientRectangle = getRectangle();
-            _busyProcessor.Activate(() => new BusyProcessor(clientRectangle));
+            _busyProcessor.Activate(() => getBusyProcessor(clientRectangle));
             break;
          }
          case UiActionType.ProgressDefinite:

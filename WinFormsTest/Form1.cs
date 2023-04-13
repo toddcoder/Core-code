@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 using System.Windows.Forms;
 using Core.Computers;
 using Core.Dates;
@@ -24,6 +23,8 @@ public partial class Form1 : Form
    public Form1()
    {
       InitializeComponent();
+
+      UiAction.BusyStyle = BusyStyle.Sine;
 
       uiAction = new UiAction(this);
       uiAction.SetUpInPanel(panel1);
@@ -120,6 +121,7 @@ public partial class Form1 : Form
 
    protected void button3_Click(object sender, EventArgs e)
    {
-      uiAction.Enabled = !uiAction.Enabled;
+      //uiAction.Enabled = !uiAction.Enabled;
+      uiAction.Busy(true);
    }
 }
