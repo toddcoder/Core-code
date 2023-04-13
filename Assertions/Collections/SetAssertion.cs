@@ -134,6 +134,14 @@ public class SetAssertion<T> : IAssertion<Set<T>>
 
    public Maybe<Set<T>> OrNone() => orNone(this);
 
+   public Optional<Set<T>> OrEmpty() => orEmpty(this);
+
+   public Optional<Set<T>> OrFailed() => orFailed(this);
+
+   public Optional<Set<T>> OrFailed(string message) => orFailed(this, message);
+
+   public Optional<Set<T>> OrFailed(Func<string> messageFunc) => orFailed(this, messageFunc);
+
    public async Task<Completion<Set<T>>> OrFailureAsync(CancellationToken token) => await orFailureAsync(this, token);
 
    public async Task<Completion<Set<T>>> OrFailureAsync(string message, CancellationToken token) => await orFailureAsync(this, message, token);

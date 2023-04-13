@@ -94,6 +94,14 @@ public class TypedAssertion<T> : IAssertion<T>
 
    public Maybe<T> OrNone() => orNone(this);
 
+   public Optional<T> OrEmpty() => orEmpty(this);
+
+   public Optional<T> OrFailed() => orFailed(this);
+
+   public Optional<T> OrFailed(string message) => orFailed(this, message);
+
+   public Optional<T> OrFailed(Func<string> messageFunc) => orFailed(this, messageFunc);
+
    public async Task<Completion<T>> OrFailureAsync(CancellationToken token) => await orFailureAsync(assertion: this, token);
 
    public async Task<Completion<T>> OrFailureAsync(string message, CancellationToken token) => await orFailureAsync(this, message, token);

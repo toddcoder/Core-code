@@ -46,6 +46,14 @@ public interface IAssertion<T> : ICanBeTrue
 
    Maybe<T> OrNone();
 
+   Optional<T> OrEmpty();
+
+   Optional<T> OrFailed();
+
+   Optional<T> OrFailed(string message);
+
+   Optional<T> OrFailed(Func<string> messageFunc);
+
    Task<Completion<T>> OrFailureAsync(CancellationToken token);
 
    Task<Completion<T>> OrFailureAsync(string message, CancellationToken token);

@@ -156,6 +156,14 @@ public class TypeAssertion : IAssertion<Type>
 
    public Maybe<Type> OrNone() => orNone(this);
 
+   public Optional<Type> OrEmpty() => orEmpty(this);
+
+   public Optional<Type> OrFailed() => orFailed(this);
+
+   public Optional<Type> OrFailed(string message) => orFailed(this, message);
+
+   public Optional<Type> OrFailed(Func<string> messageFunc) => orFailed(this, messageFunc);
+
    public async Task<Completion<Type>> OrFailureAsync(CancellationToken token) => await orFailureAsync(assertion: this, token);
 
    public async Task<Completion<Type>> OrFailureAsync(string message, CancellationToken token) => await orFailureAsync(this, message, token);

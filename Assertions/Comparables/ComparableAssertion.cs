@@ -133,12 +133,12 @@ public class ComparableAssertion<T> : IAssertion<T> where T : struct, IComparabl
    public ComparableAssertion<T> BeIn(params object[] objects)
    {
       var objectsString = objects.Select(o => o == null ? "null" : objects.ToString()).ToString(", ");
-      return add(objects, c => inList(comparable, objects), $"$name must $not be in {objectsString}");
+      return add(objects, _ => inList(comparable, objects), $"$name must $not be in {objectsString}");
    }
 
    public ComparableAssertion<T> BeOfType(Type type)
    {
-      return add(0, c => comparable.GetType() == type, $"$name must $not be of type {type}");
+      return add(0, _ => comparable.GetType() == type, $"$name must $not be of type {type}");
    }
 
    protected bool betweenAnd(T original, T comparable1, T comparable2)
@@ -154,13 +154,13 @@ public class ComparableAssertion<T> : IAssertion<T> where T : struct, IComparabl
    public ComparableAssertion<T> And(T comparable2)
    {
       var message = $"$name must $not be between {Comparable1} and {comparable2}";
-      return add(comparable2, c => betweenAnd(Comparable, Comparable1, comparable2), message);
+      return add(comparable2, _ => betweenAnd(Comparable, Comparable1, comparable2), message);
    }
 
    public ComparableAssertion<T> Until(T comparable2)
    {
       var message = $"$name must $not be between {Comparable1} and {comparable2} exclusively";
-      return add(comparable2, c => betweenUntil(Comparable, Comparable1, comparable2), message);
+      return add(comparable2, _ => betweenUntil(Comparable, Comparable1, comparable2), message);
    }
 
    public ComparableAssertion<T> BeBetween(T comparable1)
@@ -220,6 +220,14 @@ public class ComparableAssertion<T> : IAssertion<T> where T : struct, IComparabl
    public Result<T> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
 
    public Maybe<T> OrNone() => orNone(this);
+
+   public Optional<T> OrEmpty() => orEmpty(this);
+
+   public Optional<T> OrFailed() => orFailed(this);
+
+   public Optional<T> OrFailed(string message) => orFailed(this, message);
+
+   public Optional<T> OrFailed(Func<string> messageFunc) => orFailed(this, messageFunc);
 
    public async Task<Completion<T>> OrFailureAsync(CancellationToken token) => await orFailureAsync(this, token);
 

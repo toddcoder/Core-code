@@ -137,6 +137,14 @@ public class FolderNameAssertion : IAssertion<FolderName>
 
    public Maybe<FolderName> OrNone() => orNone(this);
 
+   public Optional<FolderName> OrEmpty() => orEmpty(this);
+
+   public Optional<FolderName> OrFailed() => orFailed(this);
+
+   public Optional<FolderName> OrFailed(string message) => orFailed(this, message);
+
+   public Optional<FolderName> OrFailed(Func<string> messageFunc) => orFailed(this, messageFunc);
+
    public async Task<Completion<FolderName>> OrFailureAsync(CancellationToken token) => await orFailureAsync(this, token);
 
    public async Task<Completion<FolderName>> OrFailureAsync(string message, CancellationToken token) =>

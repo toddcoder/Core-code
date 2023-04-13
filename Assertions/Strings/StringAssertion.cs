@@ -185,6 +185,14 @@ public class StringAssertion : IAssertion<string>
 
    public Maybe<string> OrNone() => orNone(this);
 
+   public Optional<string> OrEmpty() => orEmpty(this);
+
+   public Optional<string> OrFailed() => orFailed(this);
+
+   public Optional<string> OrFailed(string message) => orFailed(this, message);
+
+   public Optional<string> OrFailed(Func<string> messageFunc) => orFailed(this, messageFunc);
+
    public async Task<Completion<string>> OrFailureAsync(CancellationToken token) => await orFailureAsync(this, token);
 
    public async Task<Completion<string>> OrFailureAsync(string message, CancellationToken token) => await orFailureAsync(this, message, token);

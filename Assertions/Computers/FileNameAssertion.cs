@@ -159,6 +159,14 @@ public class FileNameAssertion : IAssertion<FileName>
 
    public Maybe<FileName> OrNone() => orNone(this);
 
+   public Optional<FileName> OrEmpty() => orEmpty(this);
+
+   public Optional<FileName> OrFailed() => orFailed(this);
+
+   public Optional<FileName> OrFailed(string message) => orFailed(this, message);
+
+   public Optional<FileName> OrFailed(Func<string> messageFunc) => orFailed(this, messageFunc);
+
    public async Task<Completion<FileName>> OrFailureAsync(CancellationToken token) => await orFailureAsync(this, token);
 
    public async Task<Completion<FileName>> OrFailureAsync(string message, CancellationToken token) => await orFailureAsync(this, message, token);

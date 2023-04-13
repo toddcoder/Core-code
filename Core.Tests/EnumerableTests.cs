@@ -56,7 +56,7 @@ public class EnumerableTests
    public void FirstOrFailTest()
    {
       var testArray = 0.UpUntil(10).ToArray();
-      var _first = testArray.FirstOrFail("Not found");
+      var _first = testArray.FirstOrFailure("Not found");
       if (_first is (true, var first))
       {
          Console.WriteLine(first);
@@ -67,7 +67,7 @@ public class EnumerableTests
       }
 
       testArray = array<int>();
-      _first = testArray.FirstOrFail("Not found");
+      _first = testArray.FirstOrFailure("Not found");
       if (_first is (true, var first2))
       {
          Console.WriteLine(first2);

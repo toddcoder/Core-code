@@ -119,7 +119,7 @@ public class FolderNameTests
    public void MultipleLocalAndParentFilesTest()
    {
       var result = defaultFolderNames().LocalAndParentFiles().Where(f => f.NameExtension == "tsqlcop.sql.format.options.xml")
-         .FirstOrFail("failed");
+         .FirstOrFailure("failed");
       Console.WriteLine(result.Map(f => f.FullPath).Recover(e => e.Message));
    }
 

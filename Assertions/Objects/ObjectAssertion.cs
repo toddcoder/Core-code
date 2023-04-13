@@ -107,6 +107,14 @@ public class ObjectAssertion : IAssertion<object>
 
    public Maybe<object> OrNone() => orNone(this);
 
+   public Optional<object> OrEmpty() => orEmpty(this);
+
+   public Optional<object> OrFailed() => orFailed(this);
+
+   public Optional<object> OrFailed(string message) => orFailed(this, message);
+
+   public Optional<object> OrFailed(Func<string> messageFunc) => orFailed(this, messageFunc);
+
    public async Task<Completion<object>> OrFailureAsync(CancellationToken token) => await orFailureAsync(assertion: this, token);
 
    public async Task<Completion<object>> OrFailureAsync(string message, CancellationToken token) => await orFailureAsync(this, message, token);

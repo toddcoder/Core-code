@@ -130,6 +130,13 @@ public class ListAssertion<T> : IAssertion<List<T>>
    public Result<List<T>> OrFailure(Func<string> messageFunc) => orFailure(this, messageFunc);
 
    public Maybe<List<T>> OrNone() => orNone(this);
+   public Optional<List<T>> OrEmpty() => orEmpty(this);
+
+   public Optional<List<T>> OrFailed() => orFailed(this);
+
+   public Optional<List<T>> OrFailed(string message) => orFailed(this, message);
+
+   public Optional<List<T>> OrFailed(Func<string> messageFunc) => orFailed(this, messageFunc);
 
    public async Task<Completion<List<T>>> OrFailureAsync(CancellationToken token) => await orFailureAsync(this, token);
 

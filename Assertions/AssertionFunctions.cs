@@ -5,6 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Core.Applications.Messaging;
 using Core.Collections;
 using Core.Enumerables;
 using Core.Matching;
@@ -237,6 +238,50 @@ public static class AssertionFunctions
    {
       return await runAsync(t => assertion.Constraints.Any(c => !c.IsTrue()) ? messageFunc().Interrupted<T>() : assertion.Value.Completed(t),
          token);
+   }
+
+   public static Optional<T> orEmpty<T>(IAssertion<T> assertion)
+   {
+      return optional<T>() & assertion.Constraints.All(c => c.IsTrue()) & assertion.Value;
+   }
+
+   public static Optional<T> orFailed<T>(IAssertion<T> assertion)
+   {
+      var _failedConstraint = assertion.Constraints.FirstOrNone(c => !c.IsTrue());
+      if (_failedConstraint is (true, var failedConstraint))
+      {
+         return fail(failedConstraint.Message);
+      }
+      else
+      {
+         return assertion.Value;
+      }
+   }
+
+   public static Optional<T> orFailed<T>(IAssertion<T> assertion, string message)
+   {
+      var _failedConstraint = assertion.Constraints.FirstOrNone(c => !c.IsTrue());
+      if (_failedConstraint)
+      {
+         return fail(message);
+      }
+      else
+      {
+         return assertion.Value;
+      }
+   }
+
+   public static Optional<T> orFailed<T>(IAssertion<T> assertion, Func<string> messageFunc)
+   {
+      var _failedConstraint = assertion.Constraints.FirstOrNone(c => !c.IsTrue());
+      if (_failedConstraint)
+      {
+         return fail(messageFunc());
+      }
+      else
+      {
+         return assertion.Value;
+      }
    }
 
    public static bool orReturn<T>(IAssertion<T> assertion) => !assertion.BeEquivalentToTrue();

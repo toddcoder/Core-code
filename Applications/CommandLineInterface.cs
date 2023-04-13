@@ -127,7 +127,7 @@ public abstract class CommandLineInterface : IDisposable
          .GetMethods()
          .Select(mi => (methodInfo: mi, attr: mi.GetCustomAttribute<EntryPointAttribute>()))
          .Where(t => t.attr != null)
-         .FirstOrFail("")
+         .FirstOrFailure("")
          .Map(t => (t.methodInfo, t.attr.Type));
    }
 
@@ -518,7 +518,7 @@ public abstract class CommandLineInterface : IDisposable
    protected void useWithObject(MethodInfo methodInfo, string prefix, string suffix, string commandLine)
    {
       var _argument =
-         from parameterInfo in methodInfo.GetParameters().Take(1).FirstOrFail("Couldn't retrieve object information")
+         from parameterInfo in methodInfo.GetParameters().Take(1).FirstOrFailure("Couldn't retrieve object information")
          from obj in parameterInfo.ParameterType.TryCreate()
          from filledObject in fillObject(obj, prefix, suffix, commandLine)
          select filledObject;

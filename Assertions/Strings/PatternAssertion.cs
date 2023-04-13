@@ -91,6 +91,14 @@ public class PatternAssertion : IAssertion<Pattern>
 
    public Maybe<Pattern> OrNone() => orNone(this);
 
+   public Optional<Pattern> OrEmpty() => orEmpty(this);
+
+   public Optional<Pattern> OrFailed() => orFailed(this);
+
+   public Optional<Pattern> OrFailed(string message) => orFailed(this, message);
+
+   public Optional<Pattern> OrFailed(Func<string> messageFunc) => orFailed(this, messageFunc);
+
    public async Task<Completion<Pattern>> OrFailureAsync(CancellationToken token) => await orFailureAsync(this, token);
 
    public async Task<Completion<Pattern>> OrFailureAsync(string message, CancellationToken token) => await orFailureAsync(this, message, token);

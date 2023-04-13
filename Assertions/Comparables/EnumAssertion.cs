@@ -133,6 +133,14 @@ public class EnumAssertion<TEnum> : IAssertion<TEnum> where TEnum : struct, Enum
 
    public Maybe<TEnum> OrNone() => orNone(this);
 
+   public Optional<TEnum> OrEmpty() => orEmpty(this);
+
+   public Optional<TEnum> OrFailed() => orFailed(this);
+
+   public Optional<TEnum> OrFailed(string message) => orFailed(this, message);
+
+   public Optional<TEnum> OrFailed(Func<string> messageFunc) => orFailed(this, messageFunc);
+
    public async Task<Completion<TEnum>> OrFailureAsync(CancellationToken token) => await orFailureAsync(this, token);
 
    public async Task<Completion<TEnum>> OrFailureAsync(string message, CancellationToken token) => await orFailureAsync(this, message, token);

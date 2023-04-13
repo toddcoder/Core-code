@@ -109,6 +109,14 @@ public class BooleanAssertion : IAssertion<bool>
 
    public Maybe<bool> OrNone() => orNone(this);
 
+   public Optional<bool> OrEmpty() => orEmpty(this);
+
+   public Optional<bool> OrFailed() => orFailed(this);
+
+   public Optional<bool> OrFailed(string message) => orFailed(this, message);
+
+   public Optional<bool> OrFailed(Func<string> messageFunc) => orFailed(this, messageFunc);
+
    public async Task<Completion<bool>> OrFailureAsync(CancellationToken token) => await orFailureAsync(this, token);
 
    public async Task<Completion<bool>> OrFailureAsync(string message, CancellationToken token) => await orFailureAsync(this, message, token);

@@ -97,6 +97,14 @@ public class MatchResultAssertion : IAssertion<MatchResult>
 
    public Maybe<MatchResult> OrNone() => orNone(this);
 
+   public Optional<MatchResult> OrEmpty() => orEmpty(this);
+
+   public Optional<MatchResult> OrFailed() => orFailed(this);
+
+   public Optional<MatchResult> OrFailed(string message) => orFailed(this, message);
+
+   public Optional<MatchResult> OrFailed(Func<string> messageFunc) => orFailed(this, messageFunc);
+
    public async Task<Completion<MatchResult>> OrFailureAsync(CancellationToken token) => await orFailureAsync(this, token);
 
    public async Task<Completion<MatchResult>> OrFailureAsync(string message, CancellationToken token) =>

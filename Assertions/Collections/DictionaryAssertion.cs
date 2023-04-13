@@ -100,9 +100,9 @@ public class DictionaryAssertion<TKey, TValue> : IAssertion<Dictionary<TKey, TVa
 
    public ResultAssertion<TValue> HaveValueAt(TKey key, Func<string> failureMessage)
    {
-      if (dictionary.ContainsKey(key))
+      if (dictionary.TryGetValue(key, out var value))
       {
-         return dictionary[key].Success().Must();
+         return value.Success().Must();
       }
       else
       {
@@ -155,8 +155,18 @@ public class DictionaryAssertion<TKey, TValue> : IAssertion<Dictionary<TKey, TVa
 
    public Maybe<Dictionary<TKey, TValue>> OrNone() => orNone(this);
 
-   public async Task<Completion<Dictionary<TKey, TValue>>> OrFailureAsync(CancellationToken token) =>
-      await orFailureAsync(this, token);
+   public Optional<Dictionary<TKey, TValue>> OrEmpty() => orEmpty(this);
+
+   public Optional<Dictionary<TKey, TValue>> OrFailed() => orFailed(this);
+
+   public Optional<Dictionary<TKey, TValue>> OrFailed(string message) => orFailed(this, message);
+
+   public Optional<Dictionary<TKey, TValue>> OrFailed(Func<string> messageFunc) => orFailed(this, messageFunc);
+
+   public async Task<Completion<Dictionary<TKey, TValue>>> OrFailureAsync(CancellationToken token)
+   {
+      return await orFailureAsync(this, token);
+   }
 
    public async Task<Completion<Dictionary<TKey, TValue>>> OrFailureAsync(string message, CancellationToken token)
    {

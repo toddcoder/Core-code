@@ -402,7 +402,7 @@ public class ConfigurationTests
 
       if (Setting.FromString(source) is (true, var setting))
       {
-         var _innerSetting = setting.Settings().FirstOrFail("No outer group");
+         var _innerSetting = setting.Settings().FirstOrFailure("No outer group");
          if (_innerSetting is (true, var (_, innerSetting)))
          {
             foreach (var (key, value) in innerSetting.Items())
