@@ -57,6 +57,58 @@ public class Some<T> : Maybe<T>, IEquatable<Some<T>>
 
    public override Maybe<T> Where(Predicate<T> predicate) => predicate(value) ? this : nil;
 
+   public override Maybe<TResult> SelectMany<TResult>(Func<T, Result<TResult>> projection)
+   {
+      var _result = projection(value);
+      if (_result is (true, var result))
+      {
+         return result;
+      }
+      else
+      {
+         return nil;
+      }
+   }
+
+   public override Maybe<T2> SelectMany<T1, T2>(Func<T, Result<T1>> func, Func<T, T1, T2> projection)
+   {
+      var _t1 = func(value);
+      if (_t1 is (true, var t1))
+      {
+         return projection(value, t1);
+      }
+      else
+      {
+         return nil;
+      }
+   }
+
+   public override Maybe<T2> SelectMany<T1, T2>(Func<T, Optional<T1>> func, Func<T, T1, T2> projection)
+   {
+      var _t1 = func(value);
+      if (_t1 is (true, var t1))
+      {
+         return projection(value, t1);
+      }
+      else
+      {
+         return nil;
+      }
+   }
+
+   public override Maybe<T2> SelectMany<T1, T2>(Func<T, Completion<T1>> func, Func<T, T1, T2> projection)
+   {
+      var _t1 = func(value);
+      if (_t1 is (true, var t1))
+      {
+         return projection(value, t1);
+      }
+      else
+      {
+         return nil;
+      }
+   }
+
    public override Maybe<T> Initialize(Func<T> initializer) => this;
 
    public override object ToObject() => value;

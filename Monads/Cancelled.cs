@@ -64,7 +64,15 @@ public class Cancelled<T> : Completion<T>, IEquatable<Cancelled<T>>
 
    public override Completion<TResult> SelectMany<TResult>(Func<T, Completion<TResult>> projection) => nil;
 
+   public override Completion<TResult> SelectMany<TResult>(Func<T, Maybe<TResult>> projection) => nil;
+
+   public override Completion<TResult> SelectMany<TResult>(Func<T, Optional<TResult>> projection) => nil;
+
    public override Completion<T2> SelectMany<T1, T2>(Func<T, Completion<T1>> func, Func<T, T1, T2> projection) => nil;
+
+   public override Completion<T2> SelectMany<T1, T2>(Func<T, Maybe<T1>> func, Func<T, T1, T2> projection) => nil;
+
+   public override Completion<T2> SelectMany<T1, T2>(Func<T, Optional<T1>> func, Func<T, T1, T2> projection) => nil;
 
    public override Completion<TResult> SelectMany<TResult>(Func<T, TResult> func) => nil;
 

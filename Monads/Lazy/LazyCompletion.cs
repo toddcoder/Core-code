@@ -244,7 +244,31 @@ public class LazyCompletion<T> : Completion<T>
       return _value.SelectMany(projection);
    }
 
+   public override Completion<TResult> SelectMany<TResult>(Func<T, Maybe<TResult>> projection)
+   {
+      ensureValue();
+      return _value.SelectMany(projection);
+   }
+
+   public override Completion<TResult> SelectMany<TResult>(Func<T, Optional<TResult>> projection)
+   {
+      ensureValue();
+      return _value.SelectMany(projection);
+   }
+
    public override Completion<T2> SelectMany<T1, T2>(Func<T, Completion<T1>> func, Func<T, T1, T2> projection)
+   {
+      ensureValue();
+      return _value.SelectMany(func, projection);
+   }
+
+   public override Completion<T2> SelectMany<T1, T2>(Func<T, Maybe<T1>> func, Func<T, T1, T2> projection)
+   {
+      ensureValue();
+      return _value.SelectMany(func, projection);
+   }
+
+   public override Completion<T2> SelectMany<T1, T2>(Func<T, Optional<T1>> func, Func<T, T1, T2> projection)
    {
       ensureValue();
       return _value.SelectMany(func, projection);

@@ -223,7 +223,43 @@ public class LazyOptional<T> : Optional<T>, IEquatable<LazyOptional<T>>
       return _value.SelectMany(projection);
    }
 
+   public override Optional<TResult> SelectMany<TResult>(Func<T, Maybe<TResult>> projection)
+   {
+      ensureValue();
+      return _value.SelectMany(projection);
+   }
+
+   public override Optional<TResult> SelectMany<TResult>(Func<T, Result<TResult>> projection)
+   {
+      ensureValue();
+      return _value.SelectMany(projection);
+   }
+
+   public override Optional<TResult> SelectMany<TResult>(Func<T, Completion<TResult>> projection)
+   {
+      ensureValue();
+      return _value.SelectMany(projection);
+   }
+
    public override Optional<T2> SelectMany<T1, T2>(Func<T, Optional<T1>> func, Func<T, T1, T2> projection)
+   {
+      ensureValue();
+      return _value.SelectMany(func, projection);
+   }
+
+   public override Optional<T2> SelectMany<T1, T2>(Func<T, Maybe<T1>> func, Func<T, T1, T2> projection)
+   {
+      ensureValue();
+      return _value.SelectMany(func, projection);
+   }
+
+   public override Optional<T2> SelectMany<T1, T2>(Func<T, Result<T1>> func, Func<T, T1, T2> projection)
+   {
+      ensureValue();
+      return _value.SelectMany(func, projection);
+   }
+
+   public override Optional<T2> SelectMany<T1, T2>(Func<T, Completion<T1>> func, Func<T, T1, T2> projection)
    {
       ensureValue();
       return _value.SelectMany(func, projection);

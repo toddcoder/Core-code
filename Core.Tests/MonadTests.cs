@@ -691,4 +691,22 @@ public class MonadTests
             break;
       }
    }
+
+   [TestMethod]
+   public void MaxedChainingTest()
+   {
+      Optional<string> _one = "one";
+      Maybe<string> _two = "two";
+      Result<string> _three = "three";
+
+      var _all =
+         from one in _one
+         from two in _two
+         from three in _three
+         select one + two + three;
+      if (_all is (true, var all))
+      {
+         Console.WriteLine(all);
+      }
+   }
 }

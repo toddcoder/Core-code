@@ -39,6 +39,13 @@ public class None<T> : Maybe<T>, IEquatable<None<T>>
    public override Maybe<TResult> CastAs<TResult>() => nil;
 
    public override Maybe<T> Where(Predicate<T> predicate) => this;
+   public override Maybe<TResult> SelectMany<TResult>(Func<T, Result<TResult>> projection) => nil;
+
+   public override Maybe<T2> SelectMany<T1, T2>(Func<T, Result<T1>> func, Func<T, T1, T2> projection) => nil;
+
+   public override Maybe<T2> SelectMany<T1, T2>(Func<T, Optional<T1>> func, Func<T, T1, T2> projection) => nil;
+
+   public override Maybe<T2> SelectMany<T1, T2>(Func<T, Completion<T1>> func, Func<T, T1, T2> projection) => nil;
 
    public override Maybe<T> Initialize(Func<T> initializer) => initializer();
 

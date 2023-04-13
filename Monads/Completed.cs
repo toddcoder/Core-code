@@ -64,11 +64,70 @@ public class Completed<T> : Completion<T>, IEquatable<Completed<T>>
 
    public override Completion<TResult> SelectMany<TResult>(Func<T, Completion<TResult>> projection) => projection(value);
 
+   public override Completion<TResult> SelectMany<TResult>(Func<T, Maybe<TResult>> projection)
+   {
+      if (projection(value) is (true, var maybe))
+      {
+         return maybe;
+      }
+      else
+      {
+         return nil;
+      }
+   }
+
+   public override Completion<TResult> SelectMany<TResult>(Func<T, Optional<TResult>> projection)
+   {
+      var _optional = projection(value);
+      if (_optional is (true, var optional))
+      {
+         return optional;
+      }
+      else if (_optional.AnyException)
+      {
+         return _optional.Exception;
+      }
+      else
+      {
+         return nil;
+      }
+   }
+
    public override Completion<T2> SelectMany<T1, T2>(Func<T, Completion<T1>> func, Func<T, T1, T2> projection)
    {
 #pragma warning disable CS0618
       return func(value).Map(t1 => projection(value, t1).Completed(), cancelled<T2>, interrupted<T2>);
 #pragma warning restore CS0618
+   }
+
+   public override Completion<T2> SelectMany<T1, T2>(Func<T, Maybe<T1>> func, Func<T, T1, T2> projection)
+   {
+      var _t1 = func(value);
+      if (_t1 is (true, var t1))
+      {
+         return projection(value, t1);
+      }
+      else
+      {
+         return nil;
+      }
+   }
+
+   public override Completion<T2> SelectMany<T1, T2>(Func<T, Optional<T1>> func, Func<T, T1, T2> projection)
+   {
+      var _t1 = func(value);
+      if (_t1 is (true, var t1))
+      {
+         return projection(value, t1);
+      }
+      else if (_t1.AnyException)
+      {
+         return _t1.Exception;
+      }
+      else
+      {
+         return nil;
+      }
    }
 
    public override Completion<TResult> SelectMany<TResult>(Func<T, TResult> func) => func(value).Completed();

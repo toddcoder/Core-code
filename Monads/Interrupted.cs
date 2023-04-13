@@ -67,7 +67,15 @@ public class Interrupted<T> : Completion<T>, IEquatable<Interrupted<T>>
 
    public override Completion<TResult> SelectMany<TResult>(Func<T, Completion<TResult>> projection) => exception;
 
+   public override Completion<TResult> SelectMany<TResult>(Func<T, Maybe<TResult>> projection) => exception;
+
+   public override Completion<TResult> SelectMany<TResult>(Func<T, Optional<TResult>> projection) => exception;
+
    public override Completion<T2> SelectMany<T1, T2>(Func<T, Completion<T1>> func, Func<T, T1, T2> projection) => exception;
+
+   public override Completion<T2> SelectMany<T1, T2>(Func<T, Maybe<T1>> func, Func<T, T1, T2> projection) => exception;
+
+   public override Completion<T2> SelectMany<T1, T2>(Func<T, Optional<T1>> func, Func<T, T1, T2> projection) => exception;
 
    public override Completion<TResult> SelectMany<TResult>(Func<T, TResult> func) => exception;
 

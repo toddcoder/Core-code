@@ -45,10 +45,22 @@ public class Failed<T> : Optional<T>, IEquatable<Failed<T>>
 
    public override Optional<TResult> SelectMany<TResult>(Func<T, Optional<TResult>> projection) => new Failed<TResult>(exception);
 
+   public override Optional<TResult> SelectMany<TResult>(Func<T, Maybe<TResult>> projection) => new Failed<TResult>(exception);
+
+   public override Optional<TResult> SelectMany<TResult>(Func<T, Result<TResult>> projection) => new Failed<TResult>(exception);
+
+   public override Optional<TResult> SelectMany<TResult>(Func<T, Completion<TResult>> projection) => new Failed<TResult>(exception);
+
    public override Optional<T2> SelectMany<T1, T2>(Func<T, Optional<T1>> func, Func<T, T1, T2> projection)
    {
       return new Failed<T2>(exception);
    }
+
+   public override Optional<T2> SelectMany<T1, T2>(Func<T, Maybe<T1>> func, Func<T, T1, T2> projection) => new Failed<T2>(exception);
+
+   public override Optional<T2> SelectMany<T1, T2>(Func<T, Result<T1>> func, Func<T, T1, T2> projection) => new Failed<T2>(exception);
+
+   public override Optional<T2> SelectMany<T1, T2>(Func<T, Completion<T1>> func, Func<T, T1, T2> projection) => new Failed<T2>(exception);
 
    public override Optional<TResult> SelectMany<TResult>(Func<T, TResult> func) => new Failed<TResult>(exception);
 

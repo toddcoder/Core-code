@@ -75,7 +75,15 @@ public abstract class Completion<T>
 
    public abstract Completion<TResult> SelectMany<TResult>(Func<T, Completion<TResult>> projection);
 
+   public abstract Completion<TResult> SelectMany<TResult>(Func<T, Maybe<TResult>> projection);
+
+   public abstract Completion<TResult> SelectMany<TResult>(Func<T, Optional<TResult>> projection);
+
    public abstract Completion<T2> SelectMany<T1, T2>(Func<T, Completion<T1>> func, Func<T, T1, T2> projection);
+
+   public abstract Completion<T2> SelectMany<T1, T2>(Func<T, Maybe<T1>> func, Func<T, T1, T2> projection);
+
+   public abstract Completion<T2> SelectMany<T1, T2>(Func<T, Optional<T1>> func, Func<T, T1, T2> projection);
 
    public abstract Completion<TResult> SelectMany<TResult>(Func<T, TResult> func);
 

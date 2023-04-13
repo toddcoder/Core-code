@@ -104,12 +104,24 @@ public abstract class Maybe<T>
 
    public abstract Maybe<T> Where(Predicate<T> predicate);
 
-   public Maybe<TResult> SelectMany<TResult>(Func<T, Maybe<TResult>> projection) => Map(projection);
+   public virtual Maybe<TResult> SelectMany<TResult>(Func<T, Maybe<TResult>> projection) => Map(projection);
+
+   public abstract Maybe<TResult> SelectMany<TResult>(Func<T, Result<TResult>> projection);
+
+   public virtual Maybe<TResult> SelectMany<TResult>(Func<T, Optional<TResult>> projection) => Map(v => projection(v).Maybe());
+
+   public virtual Maybe<TResult> SelectMany<TResult>(Func<T, Completion<TResult>> projection) => Map(v => projection(v).Maybe());
 
    public Maybe<T2> SelectMany<T1, T2>(Func<T, Maybe<T1>> func, Func<T, T1, T2> projection)
    {
       return Map(outer => func(outer).Map(inner => projection(outer, inner)));
    }
+
+   public abstract Maybe<T2> SelectMany<T1, T2>(Func<T, Result<T1>> func, Func<T, T1, T2> projection);
+
+   public abstract Maybe<T2> SelectMany<T1, T2>(Func<T, Optional<T1>> func, Func<T, T1, T2> projection);
+
+   public abstract Maybe<T2> SelectMany<T1, T2>(Func<T, Completion<T1>> func, Func<T, T1, T2> projection);
 
    public Maybe<TResult> Select<TResult>(Func<T, TResult> func) => Map(func);
 

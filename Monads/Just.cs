@@ -59,9 +59,94 @@ public class Just<T> : Optional<T>, IEquatable<Just<T>>
 
    public override Optional<TResult> SelectMany<TResult>(Func<T, Optional<TResult>> projection) => projection(value);
 
+   public override Optional<TResult> SelectMany<TResult>(Func<T, Maybe<TResult>> projection)
+   {
+      if (projection(value) is (true, var result))
+      {
+         return result;
+      }
+      else
+      {
+         return nil;
+      }
+   }
+
+   public override Optional<TResult> SelectMany<TResult>(Func<T, Result<TResult>> projection)
+   {
+      var _result = projection(value);
+      if (_result is (true, var result))
+      {
+         return result;
+      }
+      else
+      {
+         return _result.Exception;
+      }
+   }
+
+   public override Optional<TResult> SelectMany<TResult>(Func<T, Completion<TResult>> projection)
+   {
+      var _completion = projection(value);
+      if (_completion is (true, var completion))
+      {
+         return completion;
+      }
+      else if (_completion.AnyException)
+      {
+         return _completion.Exception;
+      }
+      else
+      {
+         return nil;
+      }
+   }
+
    public override Optional<T2> SelectMany<T1, T2>(Func<T, Optional<T1>> func, Func<T, T1, T2> projection)
    {
       return func(value).Map(t1 => projection(value, t1).Just(), () => nil, e => e);
+   }
+
+   public override Optional<T2> SelectMany<T1, T2>(Func<T, Maybe<T1>> func, Func<T, T1, T2> projection)
+   {
+      var _t1 = func(value);
+      if (_t1 is (true, var t1))
+      {
+         return projection(value, t1);
+      }
+      else
+      {
+         return nil;
+      }
+   }
+
+   public override Optional<T2> SelectMany<T1, T2>(Func<T, Result<T1>> func, Func<T, T1, T2> projection)
+   {
+      var _t1 = func(value);
+      if (_t1 is (true, var t1))
+      {
+         return projection(value, t1);
+      }
+      else
+      {
+         return _t1.Exception;
+      }
+   }
+
+   public override Optional<T2> SelectMany<T1, T2>(Func<T, Completion<T1>> func, Func<T, T1, T2> projection)
+   {
+      var _t1 = func(value);
+      if (_t1 is (true, var t1))
+      {
+         return projection(value, t1);
+      }
+      else if (_t1.AnyException)
+      {
+         return _t1.Exception;
+      }
+      else
+      {
+         return nil;
+      }
    }
 
    public override Optional<TResult> SelectMany<TResult>(Func<T, TResult> func) => func(value);
