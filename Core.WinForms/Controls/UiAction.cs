@@ -263,6 +263,7 @@ public class UiAction : UserControl
    protected Maybe<SubText> _flipFlop;
    protected bool clickToCancel;
    protected Maybe<TaskBarProgress> _taskBarProgress;
+   protected bool cancelled;
 
    public event EventHandler<AutomaticMessageArgs> AutomaticMessage;
    public event EventHandler<PaintEventArgs> Painting;
@@ -380,6 +381,14 @@ public class UiAction : UserControl
       };
       _percentage = nil;
 
+      Click += (_, _) =>
+      {
+         if (clickToCancel && !cancelled)
+         {
+            cancelled = true;
+         }
+      };
+
       _foreColor = nil;
       _backColor = nil;
       _style = nil;
@@ -437,6 +446,7 @@ public class UiAction : UserControl
       ClickGlyph = true;
       CardinalAlignment = CardinalAlignment.Center;
       _taskBarProgress = nil;
+      cancelled = true;
    }
 
    protected BusyProcessor getBusyProcessor(Rectangle clientRectangle) => busyStyle switch
@@ -482,6 +492,12 @@ public class UiAction : UserControl
    }
 
    public Guid Id => id;
+
+   public bool Cancelled
+   {
+      get => cancelled;
+      set => cancelled = value;
+   }
 
    protected SubText getWorking()
    {
