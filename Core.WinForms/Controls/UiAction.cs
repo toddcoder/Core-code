@@ -832,6 +832,50 @@ public class UiAction : UserControl
       }
    }
 
+   public void Optional(Optional<string> _message, string nilMessage)
+   {
+      if (_message is (true, var message))
+      {
+         Success(message);
+      }
+      else if (_message.AnyException)
+      {
+         Exception(_message.Exception);
+      }
+      else
+      {
+         Failure(nilMessage);
+      }
+   }
+
+   public void Optional(Optional<string> _message, Func<string> nilMessageFunc)
+   {
+      if (_message is (true, var message))
+      {
+         Success(message);
+      }
+      else if (_message.AnyException)
+      {
+         Exception(_message.Exception);
+      }
+      else
+      {
+         Failure(nilMessageFunc());
+      }
+   }
+
+   public void Optional(Optional<string> _message)
+   {
+      if (_message is (true, var message))
+      {
+         Success(message);
+      }
+      else if (_message.AnyException)
+      {
+         Exception(_message.Exception);
+      }
+   }
+
    public void AttachTo(string text, Control control, string fontName = "Segoe UI", float fontSize = 9, int left = -1, bool stretch = false,
       int width = -1)
    {
