@@ -2,6 +2,7 @@
 using Core.Markup.Rtf;
 using Core.Monads;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static Core.Arrays.ArrayFunctions;
 using static Core.Markup.Rtf.RtfFunctions;
 using static Core.Markup.Rtf.RtfStripperFunction;
 using static Core.Monads.MonadFunctions;
@@ -288,5 +289,23 @@ public class RtfTests
       table.SetInnerBorder(BorderStyle.Single, 1f);
 
       document.Save(@"C:\Temp\Bug2.rtf");
+   }
+
+   [TestMethod]
+   public void RowsBuilderTest()
+   {
+      var headers = array("Column 1", "Column 2", "Column 3");
+
+      var document = new Document();
+      var font = document.Font("Times New Roman");
+      var style = new Style() | font | 12;
+      var headerStyle = ~style | bold;
+      document.DefaultCharFormat.Style = style;
+
+      var table = document.Table(12f);
+      _ = table | headers | headerStyle;
+      _ = table | "111" | "222" | "333";
+
+      document.Save(@"C:\Temp\rows-builder.rtf");
    }
 }

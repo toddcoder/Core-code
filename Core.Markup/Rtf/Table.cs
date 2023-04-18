@@ -45,6 +45,8 @@ public class Table : Block
       return rowBuilder.Row(columnText);
    }
 
+   public static RowsBuilder operator |(Table table, string[] columnTexts) => new(table, columnTexts);
+
    protected Alignment alignment;
    protected Margins margins;
    protected int rowCount;
