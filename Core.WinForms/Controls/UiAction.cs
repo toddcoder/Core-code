@@ -736,6 +736,7 @@ public class UiAction : UserControl
    {
       FloatingException(false);
       Busy(false);
+      Working = false;
       this.type = type;
       Text = message;
 
