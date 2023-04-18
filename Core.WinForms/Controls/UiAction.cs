@@ -988,6 +988,7 @@ public class UiAction : UserControl
 
       Text = text;
       type = UiActionType.ProgressDefinite;
+      Working = false;
 
       MessageShown?.Invoke(this, new MessageShownArgs(Text, type));
 
@@ -1005,6 +1006,7 @@ public class UiAction : UserControl
 
       Text = text;
       type = UiActionType.ProgressDefinite;
+      Working = false;
 
       MessageShown?.Invoke(this, new MessageShownArgs(Text, type));
 
@@ -1023,6 +1025,7 @@ public class UiAction : UserControl
       EmptyTextTitle = nil;
       Text = "";
       type = UiActionType.MuteProgress;
+      Working = false;
 
       MessageShown?.Invoke(this, new MessageShownArgs("", type));
 
@@ -1044,6 +1047,7 @@ public class UiAction : UserControl
    {
       Text = text;
       type = UiActionType.BusyText;
+      Working = false;
 
       MessageShown?.Invoke(this, new MessageShownArgs(Text, type));
 
@@ -1627,6 +1631,7 @@ public class UiAction : UserControl
       {
          Text = "";
          type = UiActionType.Busy;
+         Working = false;
       }
 
       if (!_taskBarProgress)
