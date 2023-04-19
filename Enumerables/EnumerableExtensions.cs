@@ -1184,12 +1184,12 @@ public static class EnumerableExtensions
       }
    }
 
-   public static IEnumerable<T> SortByList<T>(this IEnumerable<T> enumerable, Func<T, string> keyMap, bool unique, params string[] keys)
+   /*public static IEnumerable<T> SortByList<T>(this IEnumerable<T> enumerable, Func<T, string> keyMap, bool unique, params string[] keys)
    {
       return unique ? sortByListUnique(enumerable, keyMap, keys) : sortByList(enumerable, keyMap, keys);
-   }
+   }*/
 
-   private static IEnumerable<T> sortByListUnique<T>(IEnumerable<T> enumerable, Func<T, string> keyMap, string[] keys)
+   public static IEnumerable<T> SortByList<T>(this IEnumerable<T> enumerable, Func<T, string> keyMap, params string[] keys)
    {
       var keySet = new StringSet(true, keys);
       var matching = new StringHash<T>(true);
@@ -1221,10 +1221,10 @@ public static class EnumerableExtensions
       }
    }
 
-   private static IEnumerable<T> sortByList<T>(IEnumerable<T> enumerable, Func<T, string> keyMap, string[] keys)
+   private static IEnumerable<T> SortByList<T>(this IEnumerable<T> enumerable, Func<T, string> keyMap, IComparer<T> comparer, params string[] keys)
    {
       var keySet = new StringSet(true, keys);
-      var matching = new AutoStringHash<List<T>>(true, _ => new List<T>(), true);
+      var matching = new AutoStringHash<SortedSet<T>>(true, _ => new SortedSet<T>(comparer), true);
       var remainder = new List<T>();
       foreach (var item in enumerable)
       {
