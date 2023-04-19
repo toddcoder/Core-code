@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Core.Arrays;
@@ -1185,12 +1184,7 @@ public static class EnumerableExtensions
       }
    }
 
-   /*public static IEnumerable<T> SortByList<T>(this IEnumerable<T> enumerable, Func<T, string> keyMap, bool unique, params string[] keys)
-   {
-      return unique ? sortByListUnique(enumerable, keyMap, keys) : sortByList(enumerable, keyMap, keys);
-   }*/
-
-   public static IEnumerable<T> SortByList<T>(this IEnumerable<T> enumerable, Func<T, string> keyMap, params string[] keys)
+  public static IEnumerable<T> SortByList<T>(this IEnumerable<T> enumerable, Func<T, string> keyMap, params string[] keys)
    {
       var keySet = new StringSet(true, keys);
       var matching = new StringHash<T>(true);
@@ -1228,7 +1222,8 @@ public static class EnumerableExtensions
       var comparer = Comparer<T>.Create((x, y) => compareFunc(x, y));
       var keySet = new StringSet(true, keys);
       var matching = new AutoStringHash<SortedSet<T>>(true, _ => new SortedSet<T>(comparer), true);
-      var remainder = new List<T>();
+      var remainder = new SortedSet<T>(comparer);
+
       foreach (var item in enumerable)
       {
          var key = keyMap(item);
@@ -1253,7 +1248,7 @@ public static class EnumerableExtensions
          }
       }
 
-      foreach (var item in remainder.OrderBy(keyMap))
+      foreach (var item in remainder)
       {
          yield return item;
       }
