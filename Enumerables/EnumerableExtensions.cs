@@ -1184,7 +1184,12 @@ public static class EnumerableExtensions
       }
    }
 
-   public static IEnumerable<T> SortByList<T>(this IEnumerable<T> enumerable, Func<T, string> keyMap, params string[] keys)
+   public static IEnumerable<T> SortByList<T>(this IEnumerable<T> enumerable, Func<T, string> keyMap, bool unique, params string[] keys)
+   {
+      return unique ? sortByListUnique(enumerable, keyMap, keys) : sortByList(enumerable, keyMap, keys);
+   }
+
+   private static IEnumerable<T> sortByListUnique<T>(IEnumerable<T> enumerable, Func<T, string> keyMap, string[] keys)
    {
       var keySet = new StringSet(true, keys);
       var matching = new StringHash<T>(true);
@@ -1207,6 +1212,41 @@ public static class EnumerableExtensions
          if (matching.Maybe[key] is (true, var item))
          {
             yield return item;
+         }
+      }
+
+      foreach (var item in remainder.OrderBy(keyMap))
+      {
+         yield return item;
+      }
+   }
+
+   private static IEnumerable<T> sortByList<T>(IEnumerable<T> enumerable, Func<T, string> keyMap, string[] keys)
+   {
+      var keySet = new StringSet(true, keys);
+      var matching = new AutoStringHash<List<T>>(true, _ => new List<T>(), true);
+      var remainder = new List<T>();
+      foreach (var item in enumerable)
+      {
+         var key = keyMap(item);
+         if (keySet.Contains(key))
+         {
+            matching[key].Add(item);
+         }
+         else
+         {
+            remainder.Add(item);
+         }
+      }
+
+      foreach (var key in keySet)
+      {
+         if (matching.Maybe[key] is (true, var list))
+         {
+            foreach (var item in list)
+            {
+               yield return item;
+            }
          }
       }
 
