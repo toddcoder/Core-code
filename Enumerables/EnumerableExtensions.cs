@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Core.Arrays;
@@ -1221,8 +1222,10 @@ public static class EnumerableExtensions
       }
    }
 
-   private static IEnumerable<T> SortByList<T>(this IEnumerable<T> enumerable, Func<T, string> keyMap, IComparer<T> comparer, params string[] keys)
+   private static IEnumerable<T> SortByList<T>(this IEnumerable<T> enumerable, Func<T, string> keyMap, Func<T, T, int> compareFunc,
+      params string[] keys)
    {
+      var comparer = Comparer<T>.Create((x, y) => compareFunc(x, y));
       var keySet = new StringSet(true, keys);
       var matching = new AutoStringHash<SortedSet<T>>(true, _ => new SortedSet<T>(comparer), true);
       var remainder = new List<T>();
