@@ -47,15 +47,21 @@ public class JobPool
       {
          if (multiThreaded)
          {
-            foreach (var job in jobs)
+            var thread = new Thread(() =>
             {
-               job.JobException += (sender, e) => JobException?.Invoke(sender, e);
-               job.EmptyQueue += balanceQueues;
+               foreach (var job in jobs)
+               {
+                  job.JobException += (sender, e) => JobException?.Invoke(sender, e);
+                  job.EmptyQueue += balanceQueues;
 
-               job.Dispatch(queue);
-            }
+                  job.Dispatch(queue);
+               }
 
-            WaitHandle.WaitAll(manualResetEvents);
+               WaitHandle.WaitAll(manualResetEvents);
+            });
+            thread.SetApartmentState(ApartmentState.MTA);
+            thread.Start();
+            //thread.Join();
          }
          else
          {

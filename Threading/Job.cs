@@ -97,6 +97,7 @@ public class Job
          }
       });
 
+      thread.SetApartmentState(ApartmentState.MTA);
       thread.Start();
    }
 

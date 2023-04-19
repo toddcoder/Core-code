@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Windows.Forms;
+using Core.Applications.Messaging;
 using Core.Computers;
 using Core.Dates;
 using Core.Enumerables;
-using Core.Matching;
 using Core.Monads;
 using Core.Numbers;
+using Core.Strings;
 using Core.WinForms.Controls;
 using Core.WinForms.Documents;
 using static Core.Monads.MonadFunctions;
@@ -13,12 +14,13 @@ using static Core.WinForms.Documents.MenuBuilderFunctions;
 
 namespace WinFormsTest;
 
-public partial class Form1 : Form
+public partial class Form1 : Form, IMessageQueueListener
 {
    protected UiAction uiAction;
    protected UiAction uiButton;
    protected EnumerableCycle<CardinalAlignment> messageAlignments;
    protected Maybe<SubText> _subText;
+   protected string test;
 
    public Form1()
    {
@@ -39,6 +41,7 @@ public partial class Form1 : Form
          CardinalAlignment.NorthWest, CardinalAlignment.NorthEast, CardinalAlignment.SouthWest, CardinalAlignment.SouthEast
       });
       _subText = nil;
+      test = "";
 
       uiAction.Click += (_, _) =>
       {
@@ -68,6 +71,8 @@ public partial class Form1 : Form
       uiButton.ClickText = "Click";
       uiButton.ClickGlyph = false;
 
+      MessageQueue.RegisterListener(this, "button1", "button2", "button3");
+
       var menus = new FreeMenus { Form = this };
       menus.Menu("File");
       _ = menus + "Alpha" + (() => uiAction.Message("Alpha")) + Keys.Control + Keys.A + menu;
@@ -84,44 +89,36 @@ public partial class Form1 : Form
 
    protected void button1_Click(object sender, EventArgs e)
    {
-      Pattern pattern1 = "^ 'foobaz' $; f";
-      Pattern pattern2 = "^ 'foo' /(.) /(.) /(.) $; f";
-
-      foreach (var input in new[] { "foobar", "foobaz", "???" })
-      {
-         if ((pattern1 & input) is (true, var result))
-         {
-            uiAction.WriteLine($"1. Foobaz: <{result.ZerothGroup}>");
-         }
-         else if ((pattern2 & input) is (true, var (g1, g2, g3)))
-         {
-            uiAction.WriteLine($"2. Foo<{g1}><{g2}><{g3}>");
-         }
-         else
-         {
-            uiAction.WriteLine("3. No match");
-         }
-      }
+      MessageQueue.Send("button1", "add", "tossed");
    }
 
    protected void button2_Click(object sender, EventArgs e)
    {
-      var alignment = messageAlignments.Next();
-      if (_subText is (true, var subText))
-      {
-         subText.SetAlignment(alignment);
-      }
-      else
-      {
-         _subText = uiAction.SubText("foobar", 0, 0).Set.Alignment(alignment).Invert().Margin(8).End;
-      }
-
-      uiAction.Refresh();
+      MessageQueue.Send("button2", "keep", 4);
    }
 
    protected void button3_Click(object sender, EventArgs e)
    {
-      //uiAction.Enabled = !uiAction.Enabled;
-      uiAction.Busy(true);
+      MessageQueue.Send("button3", "drop", 3);
+   }
+
+   public string Listener => "form1";
+
+   public void MessageFrom(string sender, string subject, object cargo)
+   {
+      switch (sender)
+      {
+         case "button1" when subject == "add" && cargo is string string2:
+            test += string2;
+            break;
+         case "button2" when subject == "keep" && cargo is int count:
+            test = test.Keep(count);
+            break;
+         case "button3" when subject == "drop" && cargo is int count:
+            test = test.Drop(count);
+            break;
+      }
+
+      uiAction.Message($"/left-angle.{test}/right-angle");
    }
 }

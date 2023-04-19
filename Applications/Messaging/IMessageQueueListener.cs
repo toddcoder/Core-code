@@ -4,5 +4,5 @@ public interface IMessageQueueListener
 {
    string Listener { get; }
 
-   void MessageFrom(string sender);
+   void MessageFrom(string sender, string subject, object cargo);
 }
