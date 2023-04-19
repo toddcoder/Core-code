@@ -1222,7 +1222,7 @@ public static class EnumerableExtensions
       }
    }
 
-   private static IEnumerable<T> SortByList<T>(this IEnumerable<T> enumerable, Func<T, string> keyMap, Func<T, T, int> compareFunc,
+   public static IEnumerable<T> SortByList<T>(this IEnumerable<T> enumerable, Func<T, string> keyMap, Func<T, T, int> compareFunc,
       params string[] keys)
    {
       var comparer = Comparer<T>.Create((x, y) => compareFunc(x, y));
