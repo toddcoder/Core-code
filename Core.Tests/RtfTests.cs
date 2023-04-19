@@ -63,13 +63,13 @@ public class RtfTests
       _ = table | "echo" | "e" | "epsilon";
       _ = table | "foxtrot" | "f" | "phi";
 
-      table.Margins[Direction.Bottom] = 20;
-      table.Margins[Direction.Left] = 20;
-      table.SetInnerBorder(BorderStyle.Dotted, 1);
-      table.SetOuterBorder(BorderStyle.Single, 2);
-      table.HeaderBackgroundColor = tableHeaderColor;
-      table.RowBackgroundColor = tableRowColor;
-      table.RowAltBackgroundColor = tableRowAltColor;
+      _ = table | marginBottom | 20f;
+      _ = table | marginLeft | 20f;
+      _ = table | innerBorder | BorderStyle.Dotted | 1f;
+      _ = table | outerBorder | BorderStyle.Single | 1f;
+      _ = table | headerBgColor | tableHeaderColor;
+      _ = table | rowBgColor | tableRowColor;
+      _ = table | rowAltBgColor | tableRowAltColor;
 
       _ = document | "Test 4: " | newPage | "Character Formatting" | consolasFont | 16f | goldColor.Background;
 
@@ -111,8 +111,8 @@ public class RtfTests
       _ = table | "estreamps" | colStyle1 | "" | "http://evokeps".Link() | colStyle2;
       _ = table | "staging10ua" | colStyle1 | "" | "http://evokeuat".Link() | colStyle2;
 
-      table.SetOuterBorder(BorderStyle.Double, 1);
-      table.SetInnerBorder(BorderStyle.Single, 1);
+      _ = table | outerBorder | BorderStyle.Double | 1f;
+      _ = table | innerBorder | BorderStyle.Single | 1f;
 
       document.Save(@"C:\Temp\TableData.rtf");
    }

@@ -53,12 +53,16 @@
     <Compile Include="Rtf\Alignment.cs" />
     <Compile Include="Rtf\BackgroundColorDescriptor.cs" />
     <Compile Include="Rtf\Bookmark.cs" />
+    <Compile Include="Rtf\ColumnWidth.cs" />
     <Compile Include="Rtf\Descriptor.cs" />
     <Compile Include="Rtf\Feature.cs" />
     <Compile Include="Rtf\FieldType.cs" />
     <Compile Include="Rtf\FirstLineIndent.cs" />
     <Compile Include="Rtf\ForegroundColorDescriptor.cs" />
     <Compile Include="Rtf\Formatter.cs" />
+    <Compile Include="Rtf\InnerBorder.cs" />
+    <Compile Include="Rtf\OuterBorder.cs" />
+    <Compile Include="Rtf\RowHeight.cs" />
     <Compile Include="Rtf\RowsBuilder.cs" />
     <Compile Include="Rtf\RtfFunctions.cs" />
     <Compile Include="Rtf\Line.cs" />
@@ -72,6 +76,9 @@
     <Compile Include="Rtf\RtfStripperFunction.cs" />
     <Compile Include="Rtf\RtfWriter.cs" />
     <Compile Include="Rtf\Style.cs" />
+    <Compile Include="Rtf\TableBuilder.cs" />
+    <Compile Include="Rtf\TableBuilderItem.cs" />
+    <Compile Include="Rtf\TableBuilderType.cs" />
     <Compile Include="Rtf\TableCellArgs.cs" />
     <Compile Include="Rtf\VerticalAlignment.cs" />
     <Compile Include="Rtf\Block.cs" />

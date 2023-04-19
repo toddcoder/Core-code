@@ -61,4 +61,26 @@ public static class RtfFunctions
    public static readonly FieldType date = FieldType.Date;
 
    public static readonly FieldType time = FieldType.Time;
+
+   public static readonly TableBuilderType outerBorder = TableBuilderType.OuterBorder;
+
+   public static readonly TableBuilderType innerBorder = TableBuilderType.InnerBorder;
+
+   public static readonly TableBuilderType columnWidth = TableBuilderType.ColumnWidth;
+
+   public static readonly TableBuilderType rowHeight = TableBuilderType.RowHeight;
+
+   public static readonly TableBuilderType rowBgColor = TableBuilderType.RowBackgroundColor;
+
+   public static readonly TableBuilderType headerBgColor = TableBuilderType.HeaderBackgroundColor;
+
+   public static readonly TableBuilderType rowAltBgColor = TableBuilderType.RowAltBackgroundColor;
+
+   public static readonly TableBuilderType marginLeft = TableBuilderType.MarginLeft;
+
+   public static readonly TableBuilderType marginTop = TableBuilderType.MarginTop;
+
+   public static readonly TableBuilderType marginRight = TableBuilderType.MarginRight;
+
+   public static readonly TableBuilderType marginBottom = TableBuilderType.MarginBottom;
 }

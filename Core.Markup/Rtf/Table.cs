@@ -47,6 +47,26 @@ public class Table : Block
 
    public static RowsBuilder operator |(Table table, string[] columnTexts) => new(table, columnTexts);
 
+   public static TableBuilderItem operator |(Table table, TableBuilderType type)
+   {
+      if (!table.TableBuilder)
+      {
+         table.TableBuilder = new TableBuilder();
+      }
+
+      if (table.TableBuilder is (true, var tableBuilder))
+      {
+         var tableBuilderItem = new TableBuilderItem() { Type = type };
+         tableBuilder.Add(tableBuilderItem);
+
+         return tableBuilderItem;
+      }
+      else
+      {
+         return new TableBuilderItem();
+      }
+   }
+
    protected Alignment alignment;
    protected Margins margins;
    protected int rowCount;
@@ -93,6 +113,8 @@ public class Table : Block
 
       _formatAction = nil;
       _currentCell = nil;
+
+      TableBuilder = nil;
    }
 
    public Maybe<CellData> CurrentCell => _currentCell;
@@ -214,6 +236,15 @@ public class Table : Block
       }
 
       arrayCreated = true;
+
+      if (TableBuilder is (true, var tableBuilder))
+      {
+         var _tableBuilderItem = lazyRepeating.maybe<TableBuilderItem>();
+         while (_tableBuilderItem.ValueOf(tableBuilder.Next) is (true, var tableBuilderItem))
+         {
+            tableBuilderItem.SetItem(this);
+         }
+      }
    }
 
    public Maybe<ColorDescriptor> HeaderBackgroundColor { get; set; }
@@ -810,4 +841,6 @@ public class Table : Block
 
       return result.ToString();
    }
+
+   public Maybe<TableBuilder> TableBuilder { get; set; }
 }
