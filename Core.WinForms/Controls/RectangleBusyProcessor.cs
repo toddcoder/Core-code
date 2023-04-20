@@ -5,27 +5,30 @@ namespace Core.WinForms.Controls;
 
 public class RectangleBusyProcessor : BusyProcessor
 {
+   protected const int NUM_RECTANGLES = 10;
+   protected const int RECTANGLE_MARGIN = 4;
+
    protected Rectangle[] rectangles;
    protected int activeIndex;
 
    public RectangleBusyProcessor(Rectangle clientRectangle) : base(clientRectangle)
    {
-      var width = (clientRectangle.Width - 20) / 4;
-      var height = clientRectangle.Height - 8;
-      var top = clientRectangle.Top + 4;
-      rectangles = new Rectangle[4];
-      var offset = width + 4;
-      for (var i = 0; i < 4; i++)
+      var width = (clientRectangle.Width - (NUM_RECTANGLES + 1) * RECTANGLE_MARGIN) / NUM_RECTANGLES;
+      var height = clientRectangle.Height - 2 * RECTANGLE_MARGIN;
+      var top = clientRectangle.Top + RECTANGLE_MARGIN;
+      rectangles = new Rectangle[NUM_RECTANGLES];
+      var offset = width + RECTANGLE_MARGIN;
+      for (var i = 0; i < NUM_RECTANGLES; i++)
       {
          rectangles[i] = new Rectangle(4 + i * offset, top, width, height);
       }
 
-      activeIndex = 4.nextRandom();
+      activeIndex = NUM_RECTANGLES.nextRandom();
    }
 
    public override void Advance()
    {
-      if (activeIndex >= 4)
+      if (activeIndex >= NUM_RECTANGLES)
       {
          activeIndex = 0;
       }
@@ -37,7 +40,7 @@ public class RectangleBusyProcessor : BusyProcessor
 
    public override void OnPaint(Graphics g)
    {
-      for (var i = 0; i < 4; i++)
+      for (var i = 0; i < NUM_RECTANGLES; i++)
       {
          if (i == activeIndex)
          {

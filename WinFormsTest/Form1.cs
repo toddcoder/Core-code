@@ -89,7 +89,8 @@ public partial class Form1 : Form, IMessageQueueListener
 
    protected void button1_Click(object sender, EventArgs e)
    {
-      MessageQueue.Send("button1", "add", "tossed");
+      UiAction.BusyStyle = BusyStyle.Rectangle;
+      uiAction.Busy(true);
    }
 
    protected void button2_Click(object sender, EventArgs e)
