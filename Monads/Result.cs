@@ -107,6 +107,8 @@ public abstract class Result<T>
 
    public static implicit operator Result<T>(Exception exception) => new Failure<T>(exception);
 
+   public static implicit operator Result<T>(Nil _) => new Failure<T>(fail("Result not initialized"));
+
    public static bool operator true(Result<T> value) => value is Success<T> || value is Lazy.LazyResult<T> lazyResult && lazyResult;
 
    public static bool operator false(Result<T> value) => value is Failure<T> || value is Lazy.LazyResult<T> lazyResult && !lazyResult;
