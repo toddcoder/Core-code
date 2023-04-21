@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Core.Collections;
+using Core.Computers;
 using Core.DataStructures;
 using Core.Dates.DateIncrements;
 using Core.Monads;
@@ -784,6 +785,33 @@ public class UiAction : UserControl
    public void Selected(string message) => ShowMessage(message, UiActionType.Selected);
 
    public void Unselected(string message) => ShowMessage(message, UiActionType.Unselected);
+
+   public void FileName(FileName file, bool checkForFileExistence = true)
+   {
+      try
+      {
+         IsFile = true;
+         if (checkForFileExistence)
+         {
+            if (file)
+            {
+               Success(file.FullPath);
+            }
+            else
+            {
+               Failure(file.FullPath);
+            }
+         }
+         else
+         {
+            Message(file.FullPath);
+         }
+      }
+      catch (Exception exception)
+      {
+         Exception(exception);
+      }
+   }
 
    public void Tape()
    {
