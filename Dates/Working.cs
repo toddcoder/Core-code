@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading;
+using Core.Dates.DateIncrements;
 using Core.Dates.Now;
 using Core.Monads;
 using static Core.Monads.MonadFunctions;
@@ -19,16 +21,20 @@ public class Working
 
    protected TimeSpan workingPeriod;
    protected Maybe<DateTime> _targetDateTime;
+   protected TimeSpan sleepPeriod;
 
    protected Working(TimeSpan workingPeriod)
    {
       this.workingPeriod = workingPeriod;
 
       _targetDateTime = nil;
+      sleepPeriod = 500.Milliseconds();
    }
 
    public bool isWorking()
    {
+      Thread.Sleep(sleepPeriod);
+
       if (!_targetDateTime)
       {
          _targetDateTime = NowServer.Now + workingPeriod;
@@ -53,6 +59,12 @@ public class Working
    public TimeSpan WorkingPeriod => workingPeriod;
 
    public DateTime TargetDateTime => _targetDateTime | (() => NowServer.Now + workingPeriod);
+
+   public TimeSpan SleepingPeriod
+   {
+      get => sleepPeriod;
+      set => sleepPeriod = value;
+   }
 
    public TimeSpan Elapsed => _targetDateTime.Map(t => t - DateTime.Now) | TimeSpan.Zero;
 }
