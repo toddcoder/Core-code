@@ -410,6 +410,8 @@
     <Compile Include="Strings\CharacterExtensions.cs" />
     <Compile Include="Strings\CondensedList.cs" />
     <Compile Include="Strings\Csv.cs" />
+    <Compile Include="Strings\Emojis\Emoji.cs" />
+    <Compile Include="Strings\Emojis\EmojiExtensions.cs" />
     <Compile Include="Strings\EqualTo.cs" />
     <Compile Include="Strings\Formatter.cs" />
     <Compile Include="Strings\DelimitedTextStatus.cs" />

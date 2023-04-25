@@ -2,10 +2,10 @@
 using System.Drawing;
 using System.Drawing.Text;
 using System.Windows.Forms;
-using Core.Matching;
 using Core.Monads;
 using Core.Numbers;
 using Core.Strings;
+using Core.Strings.Emojis;
 using static Core.Monads.Lazy.LazyMonads;
 using static Core.Monads.MonadFunctions;
 
@@ -115,57 +115,9 @@ public class UiActionWriter
 
    public TextFormatFlags Flags { get; set; }
 
-   public static string Substitutions(string text)
-   {
-      var _result = text.Matches("-(< '//') /('//' /([/w '-']+) '.'?); f");
-      if (_result is (true, var result))
-      {
-         foreach (var match in result)
-         {
-            Maybe<string> _replacement = match.SecondGroup switch
-            {
-               "arrow" => "⇒",
-               "check" => "✔",
-               "x" => "✘",
-               "dot" => "•",
-               "degree" => "°",
-               "copyright" => "©",
-               "pilcrow" => "¶",
-               "diamond" => "♦",
-               "double-left" => "«",
-               "double-right" => "»",
-               "times" => "×",
-               "divide" => "÷",
-               "paws-left" => "„",
-               "paws-right" => "“",
-               "not-equal" => "≠",
-               "error" => "ℯ",
-               "ellipsis" => "…",
-               "hourglass" => "⧖",
-               "empty" => "∅",
-               "left-angle" => "〈",
-               "right-angle" => "〉",
-               "locked" => "🔒",
-               "unlocked" => "🔓",
-               _ => nil
-            };
-            if (_replacement is (true, var replacement))
-            {
-               match.FirstGroup = replacement;
-            }
-         }
-
-         return result.ToString().Replace("//", "/");
-      }
-      else
-      {
-         return text;
-      }
-   }
-
    public Result<Unit> Write(string text, Graphics graphics)
    {
-      text = Substitutions(text);
+      text = text.EmojiSubstitutions();
 
       var _existingRectangle = lazy.result(_rectangle);
       var _existingFont = _existingRectangle.Then(_font);

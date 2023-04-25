@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Drawing.Text;
 using System.Windows.Forms;
 using Core.Monads;
+using Core.Strings.Emojis;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Controls;
@@ -94,7 +95,7 @@ public class SubText : IEquatable<SubText>
 
    protected (Size measuredSize, string text, TextFormatFlags flags, Font font) textSize(Maybe<Graphics> _graphics)
    {
-      var text = UiActionWriter.Substitutions(Text);
+      var text = Text.EmojiSubstitutions();
       var font = new Font(FontName, FontSize, FontStyle);
       var flags = TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix | TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter;
       var proposedSize = new Size(int.MaxValue, int.MaxValue);
