@@ -1,23 +1,23 @@
 ﻿using static Core.Monads.MonadFunctions;
 
-namespace Core.Monads.Active;
+namespace Core.Monads;
 
-public class ActiveMonads
+public class Monads
 {
-   protected static Maybe<ActiveMonads> _function;
+   protected static Maybe<Monads> _function;
 
-   static ActiveMonads()
+   static Monads()
    {
       _function = nil;
    }
 
-   public static ActiveMonads monads
+   public static Monads monads
    {
       get
       {
          if (!_function)
          {
-            _function = new ActiveMonads();
+            _function = new Monads();
          }
 
          return _function;

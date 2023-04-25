@@ -288,7 +288,7 @@
     <Compile Include="Matching\MultiMatching\MultiMatcher.cs" />
     <Compile Include="Matching\MultiMatching\MultiMatchingFunctions.cs" />
     <Compile Include="Matching\SourceLines.cs" />
-    <Compile Include="Monads\Active\ActiveMonads.cs" />
+    <Compile Include="Monads\Monads.cs" />
     <Compile Include="Monads\AttemptFunctions.cs" />
     <Compile Include="Monads\Cancelled.cs" />
     <Compile Include="Monads\Completed.cs" />
@@ -462,6 +462,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Dates\Relative\Parsers\" />
+    <Folder Include="Monads\Active\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

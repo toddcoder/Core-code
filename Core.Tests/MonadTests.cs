@@ -15,6 +15,7 @@ using static Core.Monads.AttemptFunctions;
 using static Core.Monads.Lazy.LazyMonads;
 using static Core.Monads.Lazy.LazyRepeatingMonads;
 using static Core.Monads.MonadFunctions;
+using static Core.Monads.Monads;
 using static Core.Monads.MultiMatching.MonadMatcherFunctions;
 
 namespace Core.Tests;
@@ -187,15 +188,15 @@ public class MonadTests
    [TestMethod]
    public void MaybeOrTest()
    {
-      Maybe<int> some1 = 1;
-      Maybe<int> some2 = 2;
-      Maybe<int> none = nil;
+      Maybe<int> _some1 = 1;
+      Maybe<int> _some2 = 2;
+      var _none = monads.maybe<int>();
 
-      var or1 = some1 | none;
-      var or2 = none | some2;
-      var or3 = none | none;
-      var or4 = some1 | some2;
-      var or5 = some2 | some1;
+      var or1 = _some1 | _none;
+      var or2 = _none | _some2;
+      var or3 = _none | _none;
+      var or4 = _some1 | _some2;
+      var or5 = _some2 | _some1;
 
       Console.WriteLine($"some1 | none  = {or1}");
       Console.WriteLine($"none  | some2 = {or2}");
@@ -207,15 +208,15 @@ public class MonadTests
    [TestMethod]
    public void ResultOrTest()
    {
-      Result<int> success1 = 1;
-      Result<int> success2 = 2;
-      Result<int> failure = fail("Divide by zero");
+      Result<int> _success1 = 1;
+      Result<int> _success2 = 2;
+      Result<int> _failure = fail("Divide by zero");
 
-      var or1 = success1 | failure;
-      var or2 = failure | success2;
-      var or3 = failure | failure;
-      var or4 = success1 | success2;
-      var or5 = success2 | success1;
+      var or1 = _success1 | _failure;
+      var or2 = _failure | _success2;
+      var or3 = _failure | _failure;
+      var or4 = _success1 | _success2;
+      var or5 = _success2 | _success1;
 
       Console.WriteLine($"success1 | failure  = {or1}");
       Console.WriteLine($"failure  | success2 = {or2}");
