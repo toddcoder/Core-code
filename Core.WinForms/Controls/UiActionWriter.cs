@@ -115,6 +115,13 @@ public class UiActionWriter
 
    public TextFormatFlags Flags { get; set; }
 
+   public Size Size(string text, Graphics graphics)
+   {
+      var font = _font | (() => new Font("Consolas", 12f));
+      var proposedSize = new Size(int.MaxValue, int.MaxValue);
+      return TextRenderer.MeasureText(graphics, text.EmojiSubstitutions(), font, proposedSize, Flags);
+   }
+
    public Result<Unit> Write(string text, Graphics graphics)
    {
       text = text.EmojiSubstitutions();

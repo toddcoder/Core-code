@@ -1144,16 +1144,19 @@ public class UiAction : UserControl
          var disabledWriter = new UiActionWriter(MessageAlignment, CheckStyle.None, EmptyTextTitle, IsFile)
          {
             Rectangle = ClientRectangle,
-            Font = italicFont,
-            Color = Color.White
+            Font = Font,
+            Color = Color.Black
          };
-         disabledWriter.Write(text, e.Graphics);
 
-         using var disabledPen = new Pen(Color.White);
-         disabledPen.DashStyle = DashStyle.Dash;
-         var disabledRectangle = ClientRectangle;
-         disabledRectangle.Inflate(-8, -8);
-         drawRectangle(e.Graphics, disabledPen, disabledRectangle);
+         var textSize = disabledWriter.Size(text, e.Graphics);
+         textSize = textSize with { Height = textSize.Height + 8, Width = textSize.Width + 8 };
+         var x = (ClientRectangle.Width - textSize.Width) / 2;
+         var y = (ClientRectangle.Height - textSize.Height) / 2;
+         var filledRectangle = new Rectangle(x, y, textSize.Width, textSize.Height);
+         fillRectangle(e.Graphics, Brushes.Gold, filledRectangle);
+         drawRectangle(e.Graphics, Pens.Black, filledRectangle);
+
+         disabledWriter.Write(text, e.Graphics);
 
          return;
       }
@@ -1405,11 +1408,6 @@ public class UiAction : UserControl
       {
          using var disabledBrush = new HatchBrush(HatchStyle.BackwardDiagonal, Color.Black, Color.Gold);
          fillRectangle(pevent.Graphics, disabledBrush, ClientRectangle);
-
-         var disabledRectangle = ClientRectangle;
-         disabledRectangle.Inflate(-8, -8);
-         using var disabledBrush2 = new SolidBrush(Color.Gray);
-         fillRectangle(pevent.Graphics, disabledBrush2, disabledRectangle);
 
          return;
       }
