@@ -48,6 +48,8 @@ public class BusyTextProcessor
 
    public Rectangle TextRectangle => textRectangle;
 
+   public Rectangle DrawRectangle => drawRectangle;
+
    protected static double[] generateAngles()
    {
       var angles = new double[SPOKE_COUNT];

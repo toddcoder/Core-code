@@ -8,6 +8,7 @@ using Core.Strings;
 using Core.Strings.Emojis;
 using static Core.Monads.Lazy.LazyMonads;
 using static Core.Monads.MonadFunctions;
+using static Core.WinForms.RectangleExtensions;
 
 namespace Core.WinForms.Controls;
 
@@ -115,12 +116,38 @@ public class UiActionWriter
 
    public TextFormatFlags Flags { get; set; }
 
-   public Size Size(string text, Graphics graphics)
+   public Size TextSize(string text, Graphics graphics)
    {
       var font = _font | (() => new Font("Consolas", 12f));
       var proposedSize = new Size(int.MaxValue, int.MaxValue);
       return TextRenderer.MeasureText(graphics, text.EmojiSubstitutions(), font, proposedSize, Flags);
    }
+
+   public Rectangle TextRectangle(string text, Graphics graphics, Maybe<Rectangle> _rectangleToUse)
+   {
+      Rectangle rectangle;
+      if (_rectangleToUse is (true, var rectangleToUse))
+      {
+         rectangle = rectangleToUse;
+      }
+      else if (_rectangle is (true, var currentRectangle))
+      {
+         rectangle = currentRectangle;
+      }
+      else
+      {
+         rectangle = graphics.ClipBounds.ToRectangle();
+      }
+
+      var textSize = TextSize(text, graphics);
+      textSize = textSize with { Height = textSize.Height + 8, Width = textSize.Width + 8 };
+      var x = (rectangle.Width - textSize.Width) / 2;
+      var y = (rectangle.Height - textSize.Height) / 2;
+
+      return new Rectangle(x, y, textSize.Width, textSize.Height);
+   }
+
+   public Rectangle TextRectangle(string text, Graphics graphics) => TextRectangle(text, graphics, nil);
 
    public Result<Unit> Write(string text, Graphics graphics)
    {

@@ -116,6 +116,7 @@
     <Compile Include="Controls\ValidatedArgs.cs" />
     <Compile Include="ControlWrappers\MessageStyle.cs" />
     <Compile Include="Documents\MenuBuilderFunctions.cs" />
+    <Compile Include="RectangleExtensions.cs" />
     <Compile Include="StandardDialog.cs" />
     <Compile Include="Documents\Colorizer.cs" />
     <Compile Include="Documents\ConsoleConfiguration.cs" />

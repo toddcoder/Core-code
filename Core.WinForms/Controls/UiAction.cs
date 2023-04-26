@@ -1148,11 +1148,7 @@ public class UiAction : UserControl
             Color = Color.Black
          };
 
-         var textSize = disabledWriter.Size(text, e.Graphics);
-         textSize = textSize with { Height = textSize.Height + 8, Width = textSize.Width + 8 };
-         var x = (ClientRectangle.Width - textSize.Width) / 2;
-         var y = (ClientRectangle.Height - textSize.Height) / 2;
-         var filledRectangle = new Rectangle(x, y, textSize.Width, textSize.Height);
+         var filledRectangle = disabledWriter.TextRectangle(text, e.Graphics, ClientRectangle);
          fillRectangle(e.Graphics, Brushes.Gold, filledRectangle);
          drawRectangle(e.Graphics, Pens.Black, filledRectangle);
 
@@ -1269,7 +1265,17 @@ public class UiAction : UserControl
          }
          case UiActionType.BusyText when _busyTextProcessor is (true, var busyTextProcessor):
          {
-            writer.Value.Rectangle = busyTextProcessor.TextRectangle;
+            var allRectangle = writer.Value.TextRectangle(text, e.Graphics, clientRectangle);
+            var allX = allRectangle.X;
+            var allY = allRectangle.Y;
+            var drawX = busyTextProcessor.DrawRectangle.X;
+            var drawY = busyTextProcessor.DrawRectangle.Y;
+            if (allX < drawX || allY < drawY)
+            {
+               allRectangle = busyTextProcessor.TextRectangle;
+            }
+
+            writer.Value.Rectangle = allRectangle;
             writer.Value.Center(true);
             writer.Value.Write(text, e.Graphics);
             break;

@@ -94,12 +94,12 @@ public partial class Form1 : Form, IMessageQueueListener
 
    protected void button2_Click(object sender, EventArgs e)
    {
-      MessageQueue.Send("button2", "keep", 4);
+      uiAction.Busy("Foobar");
    }
 
    protected void button3_Click(object sender, EventArgs e)
    {
-      MessageQueue.Send("button3", "drop", 3);
+      uiAction.Busy("The quick brown fox jumped over the lazy dog. All good men will come to the aid of their party.");
    }
 
    public string Listener => "form1";
