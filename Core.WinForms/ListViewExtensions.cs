@@ -100,12 +100,4 @@ public static class ListViewExtensions
 
       return nil;
    }
-
-   public static IEnumerable<ListViewItem> FindItems(this ListView listView, Func<ListViewItem, bool> predicate)
-   {
-      foreach (ListViewItem item in listView.Items)
-      {
-         yield return item;
-      }
-   }
 }
