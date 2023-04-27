@@ -1268,8 +1268,9 @@ public class UiAction : UserControl
             var allRectangle = writer.Value.TextRectangle(text, e.Graphics, clientRectangle);
             var allX = allRectangle.X;
             var allY = allRectangle.Y;
-            var drawX = busyTextProcessor.DrawRectangle.X;
-            var drawY = busyTextProcessor.DrawRectangle.Y;
+            var drawRectangle = busyTextProcessor.DrawRectangle;
+            var drawX = drawRectangle.X + drawRectangle.Width;
+            var drawY = drawRectangle.Y + drawRectangle.Height;
             if (allX < drawX || allY < drawY)
             {
                allRectangle = busyTextProcessor.TextRectangle;
