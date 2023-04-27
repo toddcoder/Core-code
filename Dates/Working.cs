@@ -22,6 +22,8 @@ public class Working
    protected TimeSpan workingPeriod;
    protected Maybe<DateTime> _targetDateTime;
    protected TimeSpan sleepPeriod;
+   protected bool cancelled;
+   protected bool wasCancelled;
 
    protected Working(TimeSpan workingPeriod)
    {
@@ -29,11 +31,21 @@ public class Working
 
       _targetDateTime = nil;
       sleepPeriod = 500.Milliseconds();
+      cancelled = false;
+      wasCancelled = false;
    }
 
    public bool isWorking()
    {
       Thread.Sleep(sleepPeriod);
+
+      if (cancelled)
+      {
+         cancelled = false;
+         wasCancelled = true;
+
+         return false;
+      }
 
       if (!_targetDateTime)
       {
@@ -67,4 +79,8 @@ public class Working
    }
 
    public TimeSpan Elapsed => _targetDateTime.Map(t => t - DateTime.Now) | TimeSpan.Zero;
+
+   public void Cancel() => cancelled = true;
+
+   public bool WasCancelled => wasCancelled;
 }
