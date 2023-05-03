@@ -11,6 +11,7 @@ using Core.Objects;
 using Core.Strings;
 using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
+using static Core.Monads.Monads;
 
 namespace Core.Monads;
 
@@ -338,7 +339,7 @@ public static class MonadExtensions
    {
       try
       {
-         Maybe<TResult> _firstItem = nil;
+         var _firstItem = monads.maybe<TResult>();
          foreach (var _result in enumerable.Select(item => tryTo(() => func(item))))
          {
             if (_result is (true, var result))

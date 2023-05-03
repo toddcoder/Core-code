@@ -256,7 +256,7 @@ public class MonadTests
    [TestMethod]
    public void BooleanTest()
    {
-      Maybe<string> _string = nil;
+      var _string = monads.maybe<string>();
       if (!_string)
       {
          Console.WriteLine("not");
@@ -402,9 +402,9 @@ public class MonadTests
    [TestMethod]
    public void MonadMatcherTest()
    {
-      Maybe<int> _one = nil;
+      var _one = monads.maybe<int>();
       Maybe<int> _two = 2;
-      Maybe<int> _three = nil;
+      var _three = monads.maybe<int>();
 
       var matcher = maybeMatcher<int, string>()
          & _one & (_ => "one")

@@ -7,6 +7,7 @@ using Core.Monads;
 using Core.Strings;
 using Newtonsoft.Json;
 using static Core.Monads.MonadFunctions;
+using static Core.Monads.Monads;
 
 namespace Core.Json;
 
@@ -35,7 +36,7 @@ public class Deserializer
 
       int itemCount() => peekSetting().Map(setting => setting.AnyHash().Map(h => h.Values.Count)) | 0;
 
-      Maybe<string> _propertyName = nil;
+      var _propertyName = monads.maybe<string>();
 
       void setItem(string value)
       {

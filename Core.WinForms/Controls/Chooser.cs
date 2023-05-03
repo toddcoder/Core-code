@@ -5,6 +5,7 @@ using Core.Collections;
 using Core.Monads;
 using Core.Numbers;
 using static Core.Monads.MonadFunctions;
+using static Core.Monads.Monads;
 
 namespace Core.WinForms.Controls;
 
@@ -114,7 +115,7 @@ public partial class Chooser : Form
 
    protected void addItem(string text, Color foreColor, Color backColor)
    {
-      Maybe<Font> _font = nil;
+      var _font = monads.maybe<Font>();
 
       if (AppearanceOverride is not null)
       {

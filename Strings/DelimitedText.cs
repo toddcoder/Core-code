@@ -8,6 +8,7 @@ using Core.Monads;
 using Core.Numbers;
 using Core.Objects;
 using static Core.Monads.MonadFunctions;
+using static Core.Monads.Monads;
 
 namespace Core.Strings;
 
@@ -141,7 +142,7 @@ public class DelimitedText
       var current = source;
       var insideStart = 0;
       var outsideStart = 0;
-      Maybe<Pattern> _endMatcher = nil;
+      var _endMatcher = monads.maybe<Pattern>();
 
       var i = 0;
       while (i < source.Length)

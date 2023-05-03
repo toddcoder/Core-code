@@ -11,6 +11,7 @@ using static System.Reflection.BindingFlags;
 using static System.Reflection.MemberTypes;
 using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
+using static Core.Monads.Monads;
 
 namespace Core.Objects;
 
@@ -95,7 +96,7 @@ public class ReflectorFormat
             var memberInfos = type.GetMember(reflectorReplacement.MemberName, memberTypes, bindingFlags);
             if (memberInfos.Length != 0)
             {
-               Maybe<IGetter> _chosen = nil;
+               var _chosen = monads.maybe<IGetter>();
                foreach (var info in memberInfos)
                {
                   if (info is FieldInfo fieldInfo)

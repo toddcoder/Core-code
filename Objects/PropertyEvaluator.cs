@@ -8,6 +8,7 @@ using Core.Enumerables;
 using Core.Matching;
 using Core.Monads;
 using static Core.Monads.MonadFunctions;
+using static Core.Monads.Monads;
 
 namespace Core.Objects;
 
@@ -66,7 +67,7 @@ public class PropertyEvaluator : IEvaluator, IHash<string, object>, IHash<Signat
          {
             var current = obj;
 
-            Maybe<ObjectInfo> _lastInfo = nil;
+            var _lastInfo = monads.maybe<ObjectInfo>();
 
             foreach (var info in new SignatureCollection(signature).Select(s => new ObjectInfo(current, s)))
             {
