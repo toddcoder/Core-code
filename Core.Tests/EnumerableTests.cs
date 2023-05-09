@@ -161,7 +161,7 @@ public class EnumerableTests
    public void ByTest()
    {
       var numbers = 1.To(10).ToArray();
-      foreach (var by2 in numbers.By(2))
+      foreach (var by2 in numbers.Cluster(2))
       {
          Console.WriteLine("----------");
          foreach (var value in by2)

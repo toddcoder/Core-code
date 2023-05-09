@@ -1176,7 +1176,7 @@ public static class EnumerableExtensions
       }
    }
 
-   public static IEnumerable<IEnumerable<T>> By<T>(this IEnumerable<T> enumerable, int count)
+   public static IEnumerable<IEnumerable<T>> Cluster<T>(this IEnumerable<T> enumerable, int count)
    {
       var array = enumerable.ToArray();
       for (var i = 0; i < array.Length; i += count)
