@@ -165,6 +165,7 @@ public class SqlDataSource : DataSource, IBulkCopyTarget, IHash<string, string>
       if (Message != null)
       {
          sqlConnection.InfoMessage += Message;
+         sqlConnection.FireInfoMessageEventOnUserErrors = true;
       }
 
       sqlConnection.Open();
