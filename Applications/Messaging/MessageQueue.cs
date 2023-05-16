@@ -95,17 +95,23 @@ public static class MessageQueue
 
    public static void UnregisterListener(IMessageQueueListener messageQueueListener, params string[] senders)
    {
-      foreach (var sender in senders)
+      lock (locker)
       {
-         listeners[sender].Remove(messageQueueListener);
+         foreach (var sender in senders)
+         {
+            listeners[sender].Remove(messageQueueListener);
+         }
       }
    }
 
    public static void UnregisterSyncListener(IMessageQueueSyncListener messageQueueSyncListener, params string[] senders)
    {
-      foreach (var sender in senders)
+      lock (locker)
       {
-         syncListeners[sender].Remove(messageQueueSyncListener);
+         foreach (var sender in senders)
+         {
+            syncListeners[sender].Remove(messageQueueSyncListener);
+         }
       }
    }
 }
