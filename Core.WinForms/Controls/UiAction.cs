@@ -1552,25 +1552,25 @@ public class UiAction : UserControl
       int centerHorizontal(Image image)
       {
          var x = (clientRectangle.Width - image.Width) / 2;
-         return x < 0 ? 0 : x;
+         return x < 0 ? 2 : x;
       }
 
       int rightHorizontal(Image image)
       {
          var x = clientRectangle.Width - image.Width;
-         return x < 0 ? 0 : x;
+         return x < 0 ? 2 : x;
       }
 
       int centerVertical(Image image)
       {
          var y = (clientRectangle.Height - image.Height) / 2;
-         return y < 0 ? 0 : y;
+         return y < 0 ? 2 : y;
       }
 
       int bottomVertical(Image image)
       {
          var y = clientRectangle.Height - image.Height;
-         return y < 0 ? 0 : y;
+         return y < 0 ? 2 : y;
       }
 
       if (_image is (true, var image))
@@ -1588,15 +1588,15 @@ public class UiAction : UserControl
             var location = CardinalAlignment switch
             {
                CardinalAlignment.Center => new Point(x.Value, y.Value),
-               CardinalAlignment.North => new Point(x.Value, 0),
-               CardinalAlignment.NorthEast => new Point(right.Value, 0),
+               CardinalAlignment.North => new Point(x.Value, 2),
+               CardinalAlignment.NorthEast => new Point(right.Value, 2),
                CardinalAlignment.East => new Point(right.Value, y.Value),
                CardinalAlignment.SouthEast => new Point(right.Value, bottom.Value),
                CardinalAlignment.South => new Point(x.Value, bottom.Value),
-               CardinalAlignment.SouthWest => new Point(0, bottom.Value),
-               CardinalAlignment.West => new Point(0, y.Value),
-               CardinalAlignment.NorthWest => new Point(0, 0),
-               _ => new Point(0, 0)
+               CardinalAlignment.SouthWest => new Point(2, bottom.Value),
+               CardinalAlignment.West => new Point(2, y.Value),
+               CardinalAlignment.NorthWest => new Point(2, 2),
+               _ => new Point(2, 2)
             };
             pevent.Graphics.DrawImage(image, location);
          }
