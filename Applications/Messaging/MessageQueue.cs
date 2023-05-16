@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Core.Collections;
+using Core.DataStructures;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Applications.Messaging;
@@ -10,11 +11,15 @@ public static class MessageQueue
 {
    private static AutoStringHash<List<IMessageQueueListener>> listeners;
    private static AutoStringHash<List<IMessageQueueSyncListener>> syncListeners;
+   private static MaybeQueue<Message> syncMessages;
+   private static object locker;
 
    static MessageQueue()
    {
       listeners = new AutoStringHash<List<IMessageQueueListener>>(true, _ => new List<IMessageQueueListener>(), true);
       syncListeners = new AutoStringHash<List<IMessageQueueSyncListener>>(true, _ => new List<IMessageQueueSyncListener>(), true);
+      syncMessages = new MaybeQueue<Message>();
+      locker = new object();
    }
 
    public static void Send(string sender, Message message)
@@ -28,10 +33,16 @@ public static class MessageQueue
 
    public static void SendSync(string sender, Message message)
    {
-      var (subject, cargo) = message;
-      foreach (var syncListener in syncListeners[sender])
+      lock (locker)
       {
-         syncListener.SyncMessageFrom(sender, subject, cargo);
+         syncMessages.Enqueue(message);
+         while (syncMessages.Dequeue() is (true, var (subject, cargo)))
+         {
+            foreach (var syncListener in syncListeners[sender])
+            {
+               syncListener.SyncMessageFrom(sender, subject, cargo);
+            }
+         }
       }
    }
 
