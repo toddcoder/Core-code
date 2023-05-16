@@ -1079,7 +1079,7 @@ public class UiAction : UserControl
 
       MessageShown?.Invoke(this, new MessageShownArgs(Text, type));
 
-      if (!_taskBarProgress)
+      if (TaskBarProgress && !_taskBarProgress)
       {
          _taskBarProgress = getTaskBarProgress();
       }
@@ -1667,7 +1667,7 @@ public class UiAction : UserControl
          Working = false;
       }
 
-      if (!_taskBarProgress)
+      if (TaskBarProgress && !_taskBarProgress)
       {
          _taskBarProgress = getTaskBarProgress();
       }
