@@ -1097,11 +1097,11 @@ public class UiAction : UserControl
 
    protected Color getForeColor(UiActionType type) => foreColors[type];
 
-   protected Color getForeColor() => _foreColor | (() => foreColors[type]);
+   protected Color getForeColor() => type == UiActionType.Display ? ForeColor : _foreColor | (() => foreColors[type]);
 
    protected Color getBackColor(UiActionType type) => backColors[type];
 
-   protected Color getBackColor() => _backColor | (() => backColors[type]);
+   protected Color getBackColor() => type == UiActionType.Display ? BackColor : _backColor | (() => backColors[type]);
 
    protected MessageStyle getStyle(UiActionType type) => styles[type];
 
@@ -2123,9 +2123,9 @@ public class UiAction : UserControl
 
    public SubText ResultLegend(Result<string> _result)
    {
-      if (_result)
+      if (_result is (true, var result))
       {
-         return SuccessLegend(_result);
+         return SuccessLegend(result);
       }
       else
       {
@@ -2135,9 +2135,9 @@ public class UiAction : UserControl
 
    public SubText ResultLegend(Result<string> _result, int x, int y)
    {
-      if (_result)
+      if (_result is (true, var result))
       {
-         return SuccessLegend(_result, x, y);
+         return SuccessLegend(result, x, y);
       }
       else
       {
@@ -2300,9 +2300,9 @@ public class UiAction : UserControl
       Action<TResult> postAction)
    {
       var _result = await ExecuteAsync(argument, func);
-      if (_result)
+      if (_result is (true, var result))
       {
-         postAction(_result);
+         postAction(result);
       }
 
       return _result;
@@ -2332,9 +2332,9 @@ public class UiAction : UserControl
    public async Task<Completion<TResult>> ExecuteAsync<TResult>(Func<Completion<TResult>> func, Action<TResult> postAction)
    {
       var _result = await ExecuteAsync(func);
-      if (_result)
+      if (_result is (true, var result))
       {
-         postAction(_result);
+         postAction(result);
       }
 
       return _result;

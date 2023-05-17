@@ -91,6 +91,8 @@ public partial class Form1 : Form, IMessageQueueListener
    protected void button1_Click(object sender, EventArgs e)
    {
       uiAction.Display("Display test", Color.White, Color.Magenta);
+      uiAction.Legend("foobar");
+      uiAction.Refresh();
    }
 
    protected void button2_Click(object sender, EventArgs e)
