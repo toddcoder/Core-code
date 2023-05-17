@@ -767,6 +767,13 @@ public class UiAction : UserControl
       refresh();
    }
 
+   public void Display(string message, Color foreColor, Color backColor)
+   {
+      ForeColor = foreColor;
+      BackColor = backColor;
+      ShowMessage(message, UiActionType.Display);
+   }
+
    public void Uninitialized(string message) => ShowMessage(message, UiActionType.Uninitialized);
 
    public void Message(string message) => ShowMessage(message, UiActionType.Message);
@@ -1292,6 +1299,10 @@ public class UiAction : UserControl
          case UiActionType.Console:
             scroller.Value.OnPaint(e.Graphics);
             break;
+         case UiActionType.Display:
+            writer.Value.Color = ForeColor;
+            writer.Value.Write(text, e.Graphics);
+            break;
          default:
          {
             if (type != UiActionType.Tape)
@@ -1516,6 +1527,12 @@ public class UiAction : UserControl
          case UiActionType.Console:
             scroller.Value.OnPaintBackground(pevent.Graphics);
             break;
+         case UiActionType.Display:
+         {
+            using var brush = new SolidBrush(BackColor);
+            fillRectangle(pevent.Graphics, brush, clientRectangle);
+            break;
+         }
          default:
          {
             var backColor = getBackColor();

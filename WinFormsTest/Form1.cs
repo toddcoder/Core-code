@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 using Core.Applications.Messaging;
 using Core.Computers;
@@ -89,7 +90,7 @@ public partial class Form1 : Form, IMessageQueueListener
 
    protected void button1_Click(object sender, EventArgs e)
    {
-      uiAction.Enabled = false;
+      uiAction.Display("Display test", Color.White, Color.Magenta);
    }
 
    protected void button2_Click(object sender, EventArgs e)

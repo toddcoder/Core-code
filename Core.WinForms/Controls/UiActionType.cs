@@ -21,5 +21,6 @@ public enum UiActionType
    Button,
    Http,
    Console,
-   MuteProgress
+   MuteProgress,
+   Display
 }
