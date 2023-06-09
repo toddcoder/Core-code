@@ -34,4 +34,6 @@ public class LateLazyTrying<T>
    public Maybe<T> AnyValue => lateLazy.AnyValue;
 
    public bool HasActivator => lateLazy.HasActivator;
+
+   public void Activate() => lateLazy.Activate();
 }

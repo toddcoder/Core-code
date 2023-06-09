@@ -75,4 +75,9 @@ public class LateLazy<T>
    }
 
    public void Reset() => _value = nil;
+
+   public void Activate()
+   {
+      _ = Value;
+   }
 }
