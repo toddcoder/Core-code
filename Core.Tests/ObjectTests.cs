@@ -29,4 +29,15 @@ public class ObjectTests
       hash2 = hashCode() + 154 + "foobaz" + false;
       Console.WriteLine(hash2);
    }
+
+   [TestMethod]
+   public void LateLazyTest()
+   {
+      var i = new LateLazy<int>();
+      i.ActivateWith(() => 153);
+      Console.WriteLine(i * 2);
+
+      i.Reset();
+      Console.WriteLine(i * 10 + 4);
+   }
 }

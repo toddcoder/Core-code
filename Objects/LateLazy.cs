@@ -9,11 +9,12 @@ public class LateLazy<T>
 {
    protected const string DEFAULT_ERROR_MESSAGE = "Activator has not been set";
 
+   public static implicit operator T(LateLazy<T> lazy) => lazy.Value;
+
    protected bool overriding;
    protected string errorMessage;
    protected Maybe<T> _value;
    protected Maybe<Func<T>> _activator;
-   protected bool reset;
 
    public LateLazy(bool overriding = false, string errorMessage = DEFAULT_ERROR_MESSAGE)
    {
@@ -22,19 +23,17 @@ public class LateLazy<T>
 
       _value = nil;
       _activator = nil;
-      reset = false;
    }
 
    public void ActivateWith(Func<T> activator)
    {
       activator.Must().Not.BeNull().OrThrow();
 
-      if (!_activator || overriding || reset)
+      if (!_activator || overriding)
       {
          _activator = activator;
          _value = nil;
          HasActivator = true;
-         reset = false;
       }
    }
 
@@ -75,5 +74,5 @@ public class LateLazy<T>
       set => errorMessage = value;
    }
 
-   public void Reset() => reset = true;
+   public void Reset() => _value = nil;
 }
