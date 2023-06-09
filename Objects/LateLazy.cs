@@ -25,7 +25,7 @@ public class LateLazy<T>
       _activator = nil;
    }
 
-   public void ActivateWith(Func<T> activator)
+   public LateLazy<T> ActivateWith(Func<T> activator)
    {
       activator.Must().Not.BeNull().OrThrow();
 
@@ -35,6 +35,8 @@ public class LateLazy<T>
          _value = nil;
          HasActivator = true;
       }
+
+      return this;
    }
 
    public T Value
