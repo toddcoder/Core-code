@@ -90,14 +90,15 @@ public partial class Form1 : Form, IMessageQueueListener
 
    protected void button1_Click(object sender, EventArgs e)
    {
-      uiAction.Display("Display test", Color.White, Color.Magenta);
-      uiAction.Legend("foobar");
-      uiAction.Refresh();
+      uiAction.Message("Test");
+      uiAction.Maximum = 20;
+      uiAction.ProgressStripe = true;
+      //uiAction.Enabled = false;
    }
 
    protected void button2_Click(object sender, EventArgs e)
    {
-      uiAction.Busy("Foobar");
+      uiAction.Progress();
    }
 
    protected void button3_Click(object sender, EventArgs e)

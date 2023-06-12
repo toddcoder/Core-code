@@ -1053,6 +1053,14 @@ public class UiAction : UserControl
       refresh();
    }
 
+   public bool ProgressStripe { get; set; }
+
+   public void Progress()
+   {
+      value = index++;
+      refresh();
+   }
+
    public void Progress(int percentage)
    {
       _percentage = percentage;
@@ -1160,6 +1168,20 @@ public class UiAction : UserControl
          drawRectangle(e.Graphics, Pens.Black, filledRectangle);
 
          disabledWriter.Write(text, e.Graphics);
+
+         if (ProgressStripe)
+         {
+            if (value < maximum)
+            {
+               var clientRectangleWidth = ClientRectangle.Width;
+               var percentage = getPercentage(clientRectangleWidth);
+               var top = ClientRectangle.Bottom - 4;
+               drawLine(e.Graphics, Color.Gold, ((ClientRectangle.Left, top), (percentage, 0)), 2, false);
+
+               var remainder = clientRectangleWidth - percentage;
+               drawLine(e.Graphics, Color.Black, ((ClientRectangle.Left + percentage, top), (remainder, 0)), 2, false);
+            }
+         }
 
          return;
       }
@@ -1316,10 +1338,14 @@ public class UiAction : UserControl
 
       paintStopwatch();
 
+      var clickGlyphWidth = 0;
+
       if (Clickable)
       {
          var color = getForeColor();
          drawClickGlyph(e, clientRectangle, color);
+
+         clickGlyphWidth = 4;
 
          if (mouseInside || mouseDown)
          {
@@ -1328,6 +1354,22 @@ public class UiAction : UserControl
             var rectangle = clientRectangle;
             rectangle.Inflate(-2, -2);
             drawRectangle(e.Graphics, dashedPen, rectangle);
+         }
+      }
+
+      if (ProgressStripe)
+      {
+         if (value < maximum)
+         {
+            var clientRectangleWidth = clientRectangle.Width - clickGlyphWidth;
+            var percentage = getPercentage(clientRectangleWidth);
+            var top = clientRectangle.Bottom - 8;
+            var color = getBackColor();
+            drawLine(e.Graphics, color, ((clientRectangle.Left, top), (percentage, 0)), 2);
+
+            var remainder = clientRectangleWidth - percentage;
+            color = getForeColor();
+            drawLine(e.Graphics, color, ((clientRectangle.Left + percentage, top), (remainder, 0)), 2);
          }
       }
 
@@ -1763,6 +1805,20 @@ public class UiAction : UserControl
    }
 
    protected virtual void drawRectangle(Graphics graphics, Pen pen, Rectangle rectangle) => graphics.DrawRectangle(pen, rectangle);
+
+   protected virtual void drawLine(Graphics graphics, Color color, ((int x, int y), (int width, int height)) coordinates, float pendWidth = 1,
+      bool dashed = true)
+   {
+      using var pen = new Pen(color, pendWidth);
+      if (dashed)
+      {
+         pen.DashStyle = DashStyle.Dash;
+      }
+      var ((x, y), (width, height)) = coordinates;
+      var x1 = x + width;
+      var y1 = y + height;
+      graphics.DrawLine(pen, x, y, x1, y1);
+   }
 
    protected bool fillArrowRectangle(Graphics graphics, Brush brush, Rectangle rectangle)
    {
