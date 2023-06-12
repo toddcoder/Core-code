@@ -31,6 +31,8 @@ public static class EmojiExtensions
       Emoji.RightAngle => "〉",
       Emoji.Locked => "🔒",
       Emoji.Unlocked => "🔓",
+      Emoji.Text => "🖹",
+      Emoji.Format => "ƒ",
       _ => ""
    };
 
@@ -65,6 +67,8 @@ public static class EmojiExtensions
                "right-angle" => "〉",
                "locked" => "🔒",
                "unlocked" => "🔓",
+               "text" => "🖹",
+               "format" => "ƒ",
                _ => nil
             };
             if (_replacement is (true, var replacement))

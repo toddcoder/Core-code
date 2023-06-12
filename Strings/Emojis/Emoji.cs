@@ -24,5 +24,7 @@ public enum Emoji
    LeftAngle,
    RightAngle,
    Locked,
-   Unlocked
+   Unlocked,
+   Text,
+   Format
 }
