@@ -93,7 +93,7 @@ public partial class Form1 : Form, IMessageQueueListener
       uiAction.Message("Test");
       uiAction.Maximum = 20;
       uiAction.ProgressStripe = true;
-      //uiAction.Enabled = false;
+      uiAction.Enabled = false;
    }
 
    protected void button2_Click(object sender, EventArgs e)

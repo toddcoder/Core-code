@@ -1169,18 +1169,13 @@ public class UiAction : UserControl
 
          disabledWriter.Write(text, e.Graphics);
 
-         if (ProgressStripe)
+         if (ProgressStripe && value < maximum)
          {
-            if (value < maximum)
-            {
-               var clientRectangleWidth = ClientRectangle.Width;
-               var percentage = getPercentage(clientRectangleWidth);
-               var top = ClientRectangle.Bottom - 4;
-               drawLine(e.Graphics, Color.Gold, ((ClientRectangle.Left, top), (percentage, 0)), 2, false);
-
-               var remainder = clientRectangleWidth - percentage;
-               drawLine(e.Graphics, Color.Black, ((ClientRectangle.Left + percentage, top), (remainder, 0)), 2, false);
-            }
+            var clientRectangleWidth = ClientRectangle.Width;
+            var percentage = getPercentage(clientRectangleWidth);
+            var top = ClientRectangle.Bottom - 4;
+            var remainder = clientRectangleWidth - percentage;
+            drawLine(e.Graphics, Color.Black, ((ClientRectangle.Left + percentage, top), (remainder, 0)), 2, false);
          }
 
          return;
@@ -1357,20 +1352,17 @@ public class UiAction : UserControl
          }
       }
 
-      if (ProgressStripe)
+      if (ProgressStripe && value < maximum)
       {
-         if (value < maximum)
-         {
-            var clientRectangleWidth = clientRectangle.Width - clickGlyphWidth;
-            var percentage = getPercentage(clientRectangleWidth);
-            var top = clientRectangle.Bottom - 8;
-            var color = getBackColor();
-            drawLine(e.Graphics, color, ((clientRectangle.Left, top), (percentage, 0)), 2);
+         var clientRectangleWidth = clientRectangle.Width - clickGlyphWidth;
+         var percentage = getPercentage(clientRectangleWidth);
+         var top = clientRectangle.Bottom - 8;
+         var color = getBackColor();
+         drawLine(e.Graphics, color, ((clientRectangle.Left, top), (percentage, 0)), 2);
 
-            var remainder = clientRectangleWidth - percentage;
-            color = getForeColor();
-            drawLine(e.Graphics, color, ((clientRectangle.Left + percentage, top), (remainder, 0)), 2);
-         }
+         var remainder = clientRectangleWidth - percentage;
+         color = getForeColor();
+         drawLine(e.Graphics, color, ((clientRectangle.Left + percentage, top), (remainder, 0)), 2);
       }
 
       if (ShowFocus && Focused)
