@@ -93,7 +93,6 @@ public partial class Form1 : Form, IMessageQueueListener
       uiAction.Message("Test");
       uiAction.Maximum = 20;
       uiAction.ProgressStripe = true;
-      uiAction.Enabled = false;
    }
 
    protected void button2_Click(object sender, EventArgs e)
@@ -103,7 +102,7 @@ public partial class Form1 : Form, IMessageQueueListener
 
    protected void button3_Click(object sender, EventArgs e)
    {
-      uiAction.Busy("The quick brown fox jumped over the lazy dog. All good men will come to the aid of their party.");
+      uiAction.Enabled = !uiAction.Enabled;
    }
 
    public string Listener => "form1";
