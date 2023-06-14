@@ -1356,7 +1356,7 @@ public class UiAction : UserControl
       {
          var clientRectangleWidth = clientRectangle.Width - clickGlyphWidth;
          var percentage = getPercentage(clientRectangleWidth);
-         var top = clientRectangle.Bottom - 8;
+         var top = clientRectangle.Bottom - 4;
          var color = getBackColor();
          drawLine(e.Graphics, color, ((clientRectangle.Left, top), (percentage, 0)));
 
