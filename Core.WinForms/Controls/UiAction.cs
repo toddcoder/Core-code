@@ -1175,7 +1175,7 @@ public class UiAction : UserControl
             var percentage = getPercentage(clientRectangleWidth);
             var top = ClientRectangle.Bottom - 4;
             var remainder = clientRectangleWidth - percentage;
-            drawLine(e.Graphics, Color.Black, ((ClientRectangle.Left + percentage, top), (remainder, 0)), 2, false);
+            drawLine(e.Graphics, Color.Black, ((ClientRectangle.Left + percentage, top), (remainder, 0)));
          }
 
          return;
@@ -1358,11 +1358,11 @@ public class UiAction : UserControl
          var percentage = getPercentage(clientRectangleWidth);
          var top = clientRectangle.Bottom - 8;
          var color = getBackColor();
-         drawLine(e.Graphics, color, ((clientRectangle.Left, top), (percentage, 0)), 2);
+         drawLine(e.Graphics, color, ((clientRectangle.Left, top), (percentage, 0)));
 
          var remainder = clientRectangleWidth - percentage;
          color = getForeColor();
-         drawLine(e.Graphics, color, ((clientRectangle.Left + percentage, top), (remainder, 0)), 2);
+         drawLine(e.Graphics, color, ((clientRectangle.Left + percentage, top), (remainder, 0)));
       }
 
       if (ShowFocus && Focused)
@@ -1798,17 +1798,23 @@ public class UiAction : UserControl
 
    protected virtual void drawRectangle(Graphics graphics, Pen pen, Rectangle rectangle) => graphics.DrawRectangle(pen, rectangle);
 
-   protected virtual void drawLine(Graphics graphics, Color color, ((int x, int y), (int width, int height)) coordinates, float pendWidth = 1,
+   protected virtual void drawLine(Graphics graphics, Color color, ((int x, int y), (int width, int height)) coordinates, float penWidth = 4,
       bool dashed = true)
    {
-      using var pen = new Pen(color, pendWidth);
-      if (dashed)
-      {
-         pen.DashStyle = DashStyle.Dash;
-      }
       var ((x, y), (width, height)) = coordinates;
       var x1 = x + width;
       var y1 = y + height;
+
+      graphics.HighQuality();
+
+      using var pen = new Pen(color, penWidth);
+      if (dashed)
+      {
+         //pen.DashStyle = DashStyle.DashDotDot;
+         //pen.DashCap = DashCap.Round;
+         pen.DashPattern = new[] { 3.0f, 1.0f };
+      }
+
       graphics.DrawLine(pen, x, y, x1, y1);
    }
 
