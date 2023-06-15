@@ -2,10 +2,8 @@
 using System.Windows.Forms;
 using Core.Applications.Messaging;
 using Core.Computers;
-using Core.Dates;
 using Core.Enumerables;
 using Core.Monads;
-using Core.Numbers;
 using Core.Strings;
 using Core.WinForms.Controls;
 using Core.WinForms.Documents;
@@ -45,14 +43,11 @@ public partial class Form1 : Form, IMessageQueueListener
 
       uiAction.Click += (_, _) =>
       {
-         uiAction.ClickToCancel = true;
-         sourceFile.Percentage += (_, e) => uiAction.Progress((int)e.Percentage);
-         sourceFile.Finished += (_, e) =>
-         {
-            uiAction.SubText(e.BytesTransferred.ByteSize()).Set.GoToUpperLeft(8);
-            uiAction.SubText(e.ElapsedTime.ToLongString(true)).Set.GoToUpperRight(8);
-         };
-         uiAction.RunWorkerAsync();
+         var _ = uiAction
+            .Choose("Test")
+            .Choices("f-acct-203518-intercompanycustomerreport", "f-acct-203518-intercompanycustomerreport-2r",
+               "Selection dropdown for resolution branches in working window needs to be wider")
+            .SizeToText(true).Choose();
       };
       uiAction.ClickText = "CopyFile";
       //uiAction.ClickToCancel = true;
