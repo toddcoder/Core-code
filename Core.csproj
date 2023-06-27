@@ -157,6 +157,8 @@
     <Compile Include="Collections\Expiring\SlidingExpiration.cs" />
     <Compile Include="Collections\FastSet.cs" />
     <Compile Include="Collections\FastStringSet.cs" />
+    <Compile Include="Collections\Fibonacci\Heap.cs" />
+    <Compile Include="Collections\Fibonacci\Node.cs" />
     <Compile Include="Collections\Hash.cs" />
     <Compile Include="Collections\HashArgs.cs" />
     <Compile Include="Collections\HashExtensions.cs" />
