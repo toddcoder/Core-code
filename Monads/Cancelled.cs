@@ -140,6 +140,10 @@ public class Cancelled<T> : Completion<T>, IEquatable<Cancelled<T>>
 
    public override Completion<T> Initialize(Func<T> initializer) => initializer();
 
+   public override void MapOf(Action<T> action)
+   {
+   }
+
    public bool Equals(Cancelled<T> other) => true;
 
    public override bool Equals(object obj) => obj is Cancelled<T> other && Equals(other);

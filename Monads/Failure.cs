@@ -124,6 +124,10 @@ public class Failure<T> : Result<T>, IEquatable<Failure<T>>
 
    public override Result<T> Initialize(Func<T> initializer) => initializer();
 
+   public override void MapOf(Action<T> action)
+   {
+   }
+
    public bool Equals(Failure<T> other)
    {
       return other is not null && ReferenceEquals(this, other) || Equals(exception, other.exception);

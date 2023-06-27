@@ -192,4 +192,6 @@ public abstract class Optional<T>
    public abstract object ToObject();
 
    public abstract Optional<T> Initialize(Func<T> initializer);
+
+   public abstract void MapOf(Action<T> action);
 }

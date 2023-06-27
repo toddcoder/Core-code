@@ -144,4 +144,6 @@ public abstract class Completion<T>
    public abstract object ToObject();
 
    public abstract Completion<T> Initialize(Func<T> initializer);
+
+   public abstract void MapOf(Action<T> action);
 }

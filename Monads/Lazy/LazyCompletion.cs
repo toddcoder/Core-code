@@ -442,5 +442,11 @@ public class LazyCompletion<T> : Completion<T>
       return _value.Initialize(initializer);
    }
 
+   public override void MapOf(Action<T> action)
+   {
+      ensureValue();
+      _value.MapOf(action);
+   }
+
    public override string ToString() => _value.ToString();
 }

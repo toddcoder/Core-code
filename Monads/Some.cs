@@ -39,6 +39,8 @@ public class Some<T> : Maybe<T>, IEquatable<Some<T>>
       return this;
    }
 
+   public override void MapOf(Action<T> action) => action(value);
+
    public override bool EqualToValueOf(Maybe<T> otherMaybe) => otherMaybe.Map(ValueEqualTo) | false;
 
    public override bool ValueEqualTo(T otherValue) => value.Equals(otherValue);

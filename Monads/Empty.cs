@@ -91,6 +91,10 @@ public class Empty<T> : Optional<T>, IEquatable<Empty<T>>
 
    public override Optional<T> Initialize(Func<T> initializer) => initializer();
 
+   public override void MapOf(Action<T> action)
+   {
+   }
+
    public bool Equals(Empty<T> other) => true;
 
    public override bool Equals(object obj) => obj is Empty<T>;

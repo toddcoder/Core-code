@@ -212,6 +212,8 @@ public class Completed<T> : Completion<T>, IEquatable<Completed<T>>
 
    public override Completion<T> Initialize(Func<T> initializer) => this;
 
+   public override void MapOf(Action<T> action) => action(value);
+
    public bool Equals(Completed<T> other)
    {
       return other is not null && (ReferenceEquals(this, other) || EqualityComparer<T>.Default.Equals(value, other.value));

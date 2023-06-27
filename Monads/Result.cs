@@ -187,4 +187,6 @@ public abstract class Result<T>
    public abstract object ToObject();
 
    public abstract Result<T> Initialize(Func<T> initializer);
+
+   public abstract void MapOf(Action<T> action);
 }

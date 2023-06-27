@@ -32,6 +32,10 @@ public class None<T> : Maybe<T>, IEquatable<None<T>>
    [Obsolete("Use if")]
    public override Maybe<T> IfThen(Action<T> action) => this;
 
+   public override void MapOf(Action<T> action)
+   {
+   }
+
    public override bool EqualToValueOf(Maybe<T> otherMaybe) => false;
 
    public override bool ValueEqualTo(T otherValue) => false;

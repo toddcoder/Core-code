@@ -181,6 +181,8 @@ public class Just<T> : Optional<T>, IEquatable<Just<T>>
 
    public override Optional<T> Initialize(Func<T> initializer) => this;
 
+   public override void MapOf(Action<T> action) => action(value);
+
    public bool Equals(Just<T> other) => value.Equals(other.value);
 
    public override bool Equals(object obj) => obj is Just<T> other && Equals(other);
