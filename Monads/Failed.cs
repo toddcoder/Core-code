@@ -94,6 +94,10 @@ public class Failed<T> : Optional<T>, IEquatable<Failed<T>>
 
    public override Optional<T> Initialize(Func<T> initializer) => initializer();
 
+   public override void MapOf(Action<T> action)
+   {
+   }
+
    public bool Equals(Failed<T> other) => Equals(exception, other.exception);
 
    public override bool Equals(object obj) => obj is Failed<T> other && Equals(other);

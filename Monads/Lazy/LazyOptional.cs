@@ -337,6 +337,12 @@ public class LazyOptional<T> : Optional<T>, IEquatable<LazyOptional<T>>
       return _value.Initialize(initializer);
    }
 
+   public override void MapOf(Action<T> action)
+   {
+      ensureValue();
+      _value.MapOf(action);
+   }
+
    public bool Equals(LazyOptional<T> other) => _value == other._value;
 
    public override bool Equals(object obj) => obj is LazyOptional<T> other && Equals(other);

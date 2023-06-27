@@ -199,6 +199,12 @@ public class LazyMaybe<T> : Maybe<T>, IEquatable<LazyMaybe<T>>
       return _value.IfThen(action);
    }
 
+   public override void MapOf(Action<T> action)
+   {
+      ensureValue();
+      _value.MapOf(action);
+   }
+
    public override bool EqualToValueOf(Maybe<T> otherMaybe)
    {
       ensureValue();

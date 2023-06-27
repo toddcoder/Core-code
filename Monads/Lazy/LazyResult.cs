@@ -324,6 +324,12 @@ public class LazyResult<T> : Result<T>, IEquatable<LazyResult<T>>
       return _value.Initialize(initializer);
    }
 
+   public override void MapOf(Action<T> action)
+   {
+      ensureValue();
+      _value.MapOf(action);
+   }
+
    public bool Equals(LazyResult<T> other)
    {
       ensureValue();

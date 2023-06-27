@@ -154,6 +154,8 @@ public class Success<T> : Result<T>, IEquatable<Success<T>>
 
    public override Result<T> Initialize(Func<T> initializer) => this;
 
+   public override void MapOf(Action<T> action) => action(value);
+
    public bool Equals(Success<T> other)
    {
       return other is not null && ReferenceEquals(this, other) || EqualityComparer<T>.Default.Equals(value, other.value);

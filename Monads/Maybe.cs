@@ -96,6 +96,8 @@ public abstract class Maybe<T>
    [Obsolete("Use if")]
    public abstract Maybe<T> IfThen(Action<T> action);
 
+   public abstract void MapOf(Action<T> action);
+
    public abstract bool EqualToValueOf(Maybe<T> otherMaybe);
 
    public abstract bool ValueEqualTo(T otherValue);
