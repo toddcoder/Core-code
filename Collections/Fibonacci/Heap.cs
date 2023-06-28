@@ -38,7 +38,7 @@ public class Heap<T, TKey> where T : IEquatable<T> where TKey : IComparable<TKey
       var _y = x.Parent;
       if (_y is (true, var y) && x.Key.CompareTo(y.Key) < 0)
       {
-         //Cut(x, y);
+         cut(x, y);
          cascadingCut(y);
       }
 
@@ -50,13 +50,13 @@ public class Heap<T, TKey> where T : IEquatable<T> where TKey : IComparable<TKey
       return unit;
    }
 
-   public Result<Unit> Delete(Node<T, TKey> x)
+   public Maybe<T> Delete(Node<T, TKey> x)
    {
       return
-         from minKey in _minKey.Result("Minimum key not set")
-         from decreased in DecreaseKey(x, minKey)
-         from removed in RemoveMin().Result("Minimum key not found")
-         select decreased;
+         from minKey in _minKey
+         from decreased in DecreaseKey(x, minKey).Maybe()
+         from removed in RemoveMin()
+         select removed.Data;
    }
 
    public void Insert(Node<T, TKey> node)
@@ -66,10 +66,7 @@ public class Heap<T, TKey> where T : IEquatable<T> where TKey : IComparable<TKey
          node.Left = minNode;
          node.Right = minNode.Right;
          minNode.Right = node;
-         if (node.Right is (true, var right))
-         {
-            right.Left = node;
-         }
+         node.Right.MapOf(r => r.Left = node);
 
          if (node.Key.CompareTo(minNode.Key) < 0)
          {
@@ -83,6 +80,10 @@ public class Heap<T, TKey> where T : IEquatable<T> where TKey : IComparable<TKey
 
       nNodes++;
    }
+
+   public void Enqueue(TKey key, T value) => Insert(new Node<T, TKey>(value, key));
+
+   public Maybe<T> Dequeue() => RemoveMin().Map(n => n.Data);
 
    public Maybe<Node<T, TKey>> Min => _minNode;
 
@@ -98,40 +99,23 @@ public class Heap<T, TKey> where T : IEquatable<T> where TKey : IComparable<TKey
          while (numKids > 0)
          {
             var _tempRight = _oldMinChildRight;
-            if (_oldMinChildLeft is (true, var oldMinChildLeft))
-            {
-               oldMinChildLeft.Right = _oldMinChildRight;
-            }
-
-            if (_oldMinChildRight is (true, var oldMinChildRight))
-            {
-               oldMinChildRight.Left = _oldMinChildLeft;
-            }
+            _oldMinChildLeft.MapOf(l => l.Right = _oldMinChildRight);
+            _oldMinChildRight.MapOf(r => r.Left = _oldMinChildLeft);
 
             if (_oldMinChild is (true, var oldMinChild))
             {
                oldMinChild.Left = _minNode;
                oldMinChild.Right = _minNode.Map(n => n.Right);
                minNode.Right = oldMinChild;
-               if (_oldMinChildRight is (true, var oldMinChildRight2))
-               {
-                  oldMinChildRight2.Left = _oldMinChildLeft;
-               }
+               _oldMinChildRight.MapOf(r => r.Left = oldMinChild);
 
                oldMinChild.Parent = nil;
                _oldMinChild = _tempRight;
                numKids--;
             }
 
-            if (minNode.Left is (true, var minNodeLeft))
-            {
-               minNodeLeft.Right = minNode.Right;
-            }
-
-            if (minNode.Right is (true, var minNodeRight))
-            {
-               minNodeRight.Left = minNode.Left;
-            }
+            minNode.Left.MapOf(l => l.Right = minNode.Right);
+            minNode.Right.MapOf(r => r.Left = minNode.Left);
 
             if (minNode.Right is (true, var rightComparison) && minNode == rightComparison)
             {
@@ -159,42 +143,36 @@ public class Heap<T, TKey> where T : IEquatable<T> where TKey : IComparable<TKey
             _minNode = h1._minNode
          };
 
-         if (h._minNode is (true, var minNode))
+         h._minNode = h1._minNode;
+
+         if (h._minNode is (true, var hMinNode))
          {
-            if (h2._minNode is (true, var minNode2))
+            if (h2._minNode is (true, var h2MinNode))
             {
-               if (minNode.Right is (true, var right))
-               {
-                  right.Left = minNode2.Left;
-               }
+               hMinNode.Right.MapOf(r => r.Left = h2MinNode.Left);
+               h2MinNode.Left.MapOf(l => l.Right = hMinNode.Right);
+               hMinNode.Right = h2MinNode;
+               h2MinNode.Left = hMinNode;
 
-               if (minNode2.Left is (true, var left2))
-               {
-                  left2.Right = minNode.Right;
-               }
-
-               minNode.Right = minNode2;
-               minNode2.Left = minNode;
-
-               if (h1._minNode is (true, var minNode1) && minNode.Key.CompareTo(minNode1.Key) < 0)
+               if (h1._minNode is (true, var h1MinNode) && h2MinNode.Key.CompareTo(h1MinNode.Key) < 0)
                {
                   h._minNode = h2._minNode;
                }
             }
-            else
-            {
-               h._minNode = h2._minNode;
-            }
-
-            h.nNodes = h1.nNodes + h2.nNodes;
          }
+         else
+         {
+            h._minNode = h2._minNode;
+         }
+
+         h.nNodes = h1.nNodes + h2.nNodes;
+
+         return h;
       }
       else
       {
          return nil;
       }
-
-      return h2;
    }
 
    protected void cascadingCut(Node<T, TKey> y)
@@ -209,7 +187,7 @@ public class Heap<T, TKey> where T : IEquatable<T> where TKey : IComparable<TKey
          }
          else
          {
-            //Cut(y, z);
+            cut(y, z);
             cascadingCut(z);
          }
       }
@@ -227,64 +205,112 @@ public class Heap<T, TKey> where T : IEquatable<T> where TKey : IComparable<TKey
       var numRoots = 0;
       var _x = _minNode;
 
-      if (_x is (true, var xRight))
+      while (_x is (true, var x0) && _minNode is (true, var minNode) && x0 != minNode)
       {
          numRoots++;
-         _x = xRight.Right;
-
-         while (_x is (true, var x0) && _minNode is (true, var minNode) && x0 == minNode)
-         {
-            numRoots++;
-            _x = x0.Right;
-         }
+         _x = x0.Right;
       }
 
-      while (_x is (true, var x) && numRoots > 0)
+      while (numRoots > 0)
       {
-         var degree = x.Degree;
-         var _next = x.Right;
-
-         while (true)
+         if (_x is (true, var x))
          {
-            var _y = array[degree];
-            if (_y is (true, var y))
+            var degree = x.Degree;
+            var _next = x.Right;
+
+            while (array[degree] is (true, var y))
             {
                if (x.Key.CompareTo(y.Key) > 0)
                {
                   (y, x) = (x, y);
                }
 
-               //link(y, x);
+               link(y, x);
 
                array[degree] = nil;
                degree++;
             }
-            else
-            {
-               break;
-            }
+
+            array[degree] = x;
+            _x = _next;
+            numRoots++;
          }
-
-         array[degree] = x;
-         _x = _next;
-         numRoots++;
       }
-
-      _minNode = nil;
 
       for (var i = 0; i < arraySize; i++)
       {
-         var _y = array[i];
-         if (_y is (true, var y))
+         if (array[i] is (true, var y))
          {
             if (_minNode is (true, var minNode))
             {
+               y.Left.MapOf(l => l.Right = y.Right);
+               y.Right.MapOf(r => r.Left = y.Left);
+
+               y.Left = minNode;
+               y.Right = minNode.Right;
+               minNode.Right = y;
+               y.Right.MapOf(r => r.Left = y);
+
+               if (y.Key.CompareTo(minNode.Key) < 0)
+               {
+                  _minNode = y;
+               }
+            }
+            else
+            {
+               _minNode = y;
             }
          }
-         else
-         {
-            continue;
-         }
       }
+   }
+
+   protected void cut(Node<T, TKey> x, Node<T, TKey> y)
+   {
+      x.Left.MapOf(l => l.Right = x.Right);
+      x.Right.MapOf(r => r.Left = x.Left);
+      y.Degree--;
+
+      if (y.Child is (true, var child) && child == y)
+      {
+         y.Child = x.Right;
+      }
+
+      if (y.Degree == 0)
+      {
+         y.Child = nil;
+      }
+
+      x.Left = _minNode;
+      y.Right = _minNode.Map(n => n.Right);
+      _minNode.MapOf(n => n.Right = x);
+      x.Right.MapOf(n => n.Left = x);
+
+      x.Parent = nil;
+      x.Mark = false;
+   }
+
+   protected void link(Node<T, TKey> newChild, Node<T, TKey> newParent)
+   {
+      newChild.Left.MapOf(l => l.Right = newChild.Right);
+      newChild.Right.MapOf(r => r.Left = newChild.Left);
+
+      newChild.Parent = newParent;
+
+      if (newParent.Child is (true, var newParentChild))
+      {
+         newChild.Left = newParent.Child;
+         newChild.Right = newParent.Child.Map(c => c.Right);
+         newParentChild.Right = newChild;
+         newChild.Right.MapOf(r => r.Left = newChild);
+      }
+      else
+      {
+         newParent.Child = newChild;
+         newChild.Right = newChild;
+         newChild.Left = newChild;
+      }
+
+      newParent.Degree++;
+      newChild.Mark = false;
    }
 }

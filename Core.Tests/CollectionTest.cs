@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using Core.Assertions;
 using Core.Collections;
+using Core.Collections.Fibonacci;
 using Core.Collections.Infix;
 using Core.DataStructures;
 using Core.Dates;
@@ -195,5 +196,23 @@ public class CollectionTest
          var item = ring.Next();
          Console.WriteLine($"{i}: {item}");
       }
+   }
+
+   [TestMethod]
+   public void HeapTest()
+   {
+      var heap = new Heap<string, int>(-1);
+      heap.Enqueue(111, "one hundred eleven");
+      heap.Enqueue(153, "one fifty three");
+      heap.Enqueue(123, "one two three");
+      heap.Enqueue(999, "nine nine nine");
+      heap.Enqueue(666, "six sixty six");
+
+      var _item = lazyRepeating.maybe<string>();
+      while (_item.ValueOf(heap.Dequeue) is (true, var item))
+      {
+         Console.WriteLine(item);
+      }
+
    }
 }
