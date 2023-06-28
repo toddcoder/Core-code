@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Core.DataStructures;
@@ -708,6 +709,18 @@ public class MonadTests
       if (_all is (true, var all))
       {
          Console.WriteLine(all);
+      }
+   }
+
+   [TestMethod]
+   public void MapOfOperatorTest()
+   {
+      var _builder = monads.maybe<StringBuilder>();
+      _builder = new StringBuilder();
+      _ = _builder * (sb => sb.Append("test"));
+      if (_builder is (true, var builder))
+      {
+         Console.WriteLine(builder);
       }
    }
 }

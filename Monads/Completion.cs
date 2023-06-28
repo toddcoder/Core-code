@@ -48,6 +48,12 @@ public abstract class Completion<T>
 
    public static T operator |(Completion<T> completion, Func<T> defaultFunc) => completion ? completion : defaultFunc();
 
+   public static Completion<T> operator *(Completion<T> completion, Action<T> action)
+   {
+      completion.MapOf(action);
+      return completion;
+   }
+
    public abstract Completion<TResult> Map<TResult>(Func<T, Completion<TResult>> ifCompleted);
 
    public abstract Completion<TResult> Map<TResult>(Func<T, TResult> ifCompleted);

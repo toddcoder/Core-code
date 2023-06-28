@@ -79,6 +79,12 @@ public abstract class Maybe<T>
       _ => throw new InvalidCastException("Must be a Some to return a value")
    };
 
+   public static Maybe<T> operator *(Maybe<T> maybe, Action<T> action)
+   {
+      maybe.MapOf(action);
+      return maybe;
+   }
+
    public abstract Maybe<TResult> Map<TResult>(Func<T, TResult> ifSome);
 
    public abstract Maybe<TResult> Map<TResult>(Func<T, Maybe<TResult>> ifSome);

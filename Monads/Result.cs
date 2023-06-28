@@ -126,6 +126,12 @@ public abstract class Result<T>
       _ => throw new InvalidCastException("Must be a Success to return a value")
    };
 
+   public static Result<T> operator *(Result<T> result, Action<T> action)
+   {
+      result.MapOf(action);
+      return result;
+   }
+
    public abstract Result<TResult> Map<TResult>(Func<T, Result<TResult>> ifSuccessful);
 
    public abstract Result<TResult> Map<TResult>(Func<T, TResult> ifSuccessful);

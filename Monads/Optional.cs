@@ -136,6 +136,12 @@ public abstract class Optional<T>
 
    public static T operator |(Optional<T> optional, Func<Maybe<Exception>, T> defaultFunc) => optional.DefaultTo(defaultFunc);
 
+   public static Optional<T> operator *(Optional<T> optional, Action<T> action)
+   {
+      optional.MapOf(action);
+      return optional;
+   }
+
    public abstract Exception Exception { get; }
 
    public abstract Maybe<Exception> AnyException { get; }
