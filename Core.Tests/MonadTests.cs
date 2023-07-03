@@ -723,4 +723,21 @@ public class MonadTests
          Console.WriteLine(builder);
       }
    }
+
+   [TestMethod]
+   public void ItemTest()
+   {
+      var array = new[] { "alpha", "bravo", "charlie" };
+      var _within = array.Item(0);
+      if (_within is (true, var item0))
+      {
+         Console.WriteLine(item0);
+      }
+
+      var _without = array.Item(10);
+      if (!_without)
+      {
+         Console.WriteLine("Without");
+      }
+   }
 }

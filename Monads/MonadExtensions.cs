@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Core.Enumerables;
 using Core.Matching;
+using Core.Numbers;
 using Core.Objects;
 using Core.Strings;
 using static Core.Monads.AttemptFunctions;
@@ -72,6 +73,8 @@ public static class MonadExtensions
    public static Maybe<string> NotEmpty(this string text) => maybe(text.IsNotEmpty(), text.Some);
 
    public static Maybe<int> NotNegative(this int number) => maybe<int>() & number > -1 & number;
+
+   public static Maybe<T> Item<T>(this T[] array, int index) => maybe<T>() & index.Between(0).Until(array.Length) & (() => array[index]);
 
    public static Maybe<Type> UnderlyingType(this object obj)
    {
