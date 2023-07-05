@@ -7,6 +7,7 @@ public enum UiActionType
    Exception,
    Success,
    Failure,
+   NoStatus,
    Busy,
    Selected,
    Unselected,
@@ -22,6 +23,5 @@ public enum UiActionType
    Http,
    Console,
    MuteProgress,
-   Display,
-   ProgressStripe
+   Display
 }

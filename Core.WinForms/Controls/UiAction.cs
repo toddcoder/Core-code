@@ -144,6 +144,7 @@ public class UiAction : UserControl
          [UiActionType.Exception] = Color.White,
          [UiActionType.Success] = Color.White,
          [UiActionType.Failure] = Color.Black,
+         [UiActionType.NoStatus] = Color.Black,
          [UiActionType.Selected] = Color.White,
          [UiActionType.Unselected] = Color.White,
          [UiActionType.ProgressIndefinite] = Color.White,
@@ -165,6 +166,7 @@ public class UiAction : UserControl
          [UiActionType.Exception] = Color.Red,
          [UiActionType.Success] = Color.Green,
          [UiActionType.Failure] = Color.Gold,
+         [UiActionType.NoStatus] = Color.Aqua,
          [UiActionType.Selected] = Color.FromArgb(0, 127, 0),
          [UiActionType.Unselected] = Color.FromArgb(127, 0, 0),
          [UiActionType.Automatic] = Color.White,
@@ -181,6 +183,7 @@ public class UiAction : UserControl
          [UiActionType.Exception] = MessageStyle.Bold,
          [UiActionType.Success] = MessageStyle.Bold,
          [UiActionType.Failure] = MessageStyle.Bold,
+         [UiActionType.NoStatus]= MessageStyle.Bold,
          [UiActionType.BusyText] = MessageStyle.ItalicBold,
          [UiActionType.Caution] = MessageStyle.Bold,
          [UiActionType.ControlLabel] = MessageStyle.Bold,
@@ -256,8 +259,10 @@ public class UiAction : UserControl
    protected Lazy<UiActionScroller> scroller;
    protected Maybe<string> _failureToolTip;
    protected Maybe<string> _exceptionToolTip;
+   protected Maybe<string> _noStatusToolTip;
    protected Maybe<SubText> _failureSubText;
    protected Maybe<SubText> _exceptionSubText;
+   protected Maybe<SubText> _noStatusSubText;
    protected Maybe<string> _oldTitle;
    protected Maybe<SubText> _progressSubText;
    protected bool flipOn;
@@ -437,8 +442,10 @@ public class UiAction : UserControl
       scroller = new Lazy<UiActionScroller>(() => new UiActionScroller(marqueeFont.Value, getClientRectangle(nil), getForeColor(), getBackColor()));
       _failureToolTip = nil;
       _exceptionToolTip = nil;
+      _noStatusToolTip = nil;
       _failureSubText = nil;
       _exceptionSubText = nil;
+      _noStatusSubText = nil;
       _oldTitle = nil;
       _progressSubText = nil;
       _flipFlop = nil;
@@ -613,6 +620,21 @@ public class UiAction : UserControl
          });
          this.Do(() => toolTip.SetToolTip(this, exceptionToolTip));
       }
+      else if (_noStatusToolTip is (true, var noStatusToolTip))
+      {
+         if (!toolTip.Action)
+         {
+            _oldTitle = toolTip.ToolTipTitle.NotEmpty();
+         }
+
+         toolTip.ToolTipTitle = "no status";
+         toolTip.Action = action<object, DrawToolTipEventArgs>((_, e) =>
+         {
+            toolTip.DrawTextInRectangle(e.Graphics, noStatusToolTip, toolTip.Font, Color.Black, Color.Aqua, e.Bounds);
+            toolTip.DrawTitle(e.Graphics, toolTip.Font, Color.Aqua, Color.Black, e.Bounds);
+         });
+         this.Do(() => toolTip.SetToolTip(this, noStatusToolTip));
+      }
       else if (type == UiActionType.Failure)
       {
          if (!toolTip.Action)
@@ -640,6 +662,21 @@ public class UiAction : UserControl
          {
             toolTip.DrawTextInRectangle(e.Graphics, text, toolTip.Font, Color.White, Color.Red, e.Bounds);
             toolTip.DrawTitle(e.Graphics, toolTip.Font, Color.Red, Color.White, e.Bounds);
+         });
+         this.Do(() => toolTip.SetToolTip(this, text));
+      }
+      else if (type == UiActionType.NoStatus)
+      {
+         if (!toolTip.Action)
+         {
+            _oldTitle = toolTip.ToolTipTitle.NotEmpty();
+         }
+
+         toolTip.ToolTipTitle = "no status";
+         toolTip.Action = action<object, DrawToolTipEventArgs>((_, e) =>
+         {
+            toolTip.DrawTextInRectangle(e.Graphics, text, toolTip.Font, Color.Black, Color.Aqua, e.Bounds);
+            toolTip.DrawTitle(e.Graphics, toolTip.Font, Color.Aqua, Color.Black, e.Bounds);
          });
          this.Do(() => toolTip.SetToolTip(this, text));
       }
@@ -786,6 +823,8 @@ public class UiAction : UserControl
    public void Success(string message) => ShowMessage(message, UiActionType.Success);
 
    public void Failure(string message) => ShowMessage(message, UiActionType.Failure);
+
+   public void NoStatus(string message) => ShowMessage(message, UiActionType.NoStatus);
 
    public void Caution(string message) => ShowMessage(message, UiActionType.Caution);
 
@@ -2508,7 +2547,33 @@ public class UiAction : UserControl
       }
    }
 
+   public void FloatingNoStatus(string message)
+   {
+      FloatingNoStatus(false);
+
+      _noStatusToolTip = message;
+      _noStatusSubText = SubText("no status").Set.GoToUpperLeft(0).Font("Consolas", 8).ForeColor(Color.Black).BackColor(Color.Aqua).End;
+   }
+
+   public void FloatingNoStatus(bool set = true)
+   {
+      _noStatusToolTip = nil;
+      if (_noStatusSubText is (true, var noStatusSubText))
+      {
+         subTexts.Remove(noStatusSubText.Id);
+      }
+
+      _noStatusSubText = nil;
+
+      if (set)
+      {
+         setToolTip();
+      }
+   }
+
    public Maybe<string> FailureToolTip => _failureToolTip;
+
+   public Maybe<string> NoStatusToolTip => _noStatusToolTip;
 
    public void FloatingException(Exception exception)
    {
@@ -2546,6 +2611,7 @@ public class UiAction : UserControl
    {
       FloatingFailure(false);
       FloatingException(false);
+      FloatingNoStatus(false);
 
       setToolTip();
    }

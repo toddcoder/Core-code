@@ -84,9 +84,7 @@ public partial class Form1 : Form, IMessageQueueListener
 
    protected void button1_Click(object sender, EventArgs e)
    {
-      uiAction.Message("Test");
-      uiAction.Maximum = 20;
-      uiAction.ProgressStripe = true;
+      uiAction.NoStatus("Test");
    }
 
    protected void button2_Click(object sender, EventArgs e)
