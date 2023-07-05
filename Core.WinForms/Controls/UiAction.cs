@@ -166,7 +166,7 @@ public class UiAction : UserControl
          [UiActionType.Exception] = Color.Red,
          [UiActionType.Success] = Color.Green,
          [UiActionType.Failure] = Color.Gold,
-         [UiActionType.NoStatus] = Color.DarkBlue,
+         [UiActionType.NoStatus] = Color.DarkMagenta,
          [UiActionType.Selected] = Color.FromArgb(0, 127, 0),
          [UiActionType.Unselected] = Color.FromArgb(127, 0, 0),
          [UiActionType.Automatic] = Color.White,
@@ -630,8 +630,8 @@ public class UiAction : UserControl
          toolTip.ToolTipTitle = "no status";
          toolTip.Action = action<object, DrawToolTipEventArgs>((_, e) =>
          {
-            toolTip.DrawTextInRectangle(e.Graphics, noStatusToolTip, toolTip.Font, Color.White, Color.DarkBlue, e.Bounds);
-            toolTip.DrawTitle(e.Graphics, toolTip.Font, Color.DarkBlue, Color.White, e.Bounds);
+            toolTip.DrawTextInRectangle(e.Graphics, noStatusToolTip, toolTip.Font, Color.White, Color.DarkMagenta, e.Bounds);
+            toolTip.DrawTitle(e.Graphics, toolTip.Font, Color.DarkMagenta, Color.White, e.Bounds);
          });
          this.Do(() => toolTip.SetToolTip(this, noStatusToolTip));
       }
@@ -675,8 +675,8 @@ public class UiAction : UserControl
          toolTip.ToolTipTitle = "no status";
          toolTip.Action = action<object, DrawToolTipEventArgs>((_, e) =>
          {
-            toolTip.DrawTextInRectangle(e.Graphics, text, toolTip.Font, Color.White, Color.DarkBlue, e.Bounds);
-            toolTip.DrawTitle(e.Graphics, toolTip.Font, Color.DarkBlue, Color.White, e.Bounds);
+            toolTip.DrawTextInRectangle(e.Graphics, text, toolTip.Font, Color.White, Color.DarkMagenta, e.Bounds);
+            toolTip.DrawTitle(e.Graphics, toolTip.Font, Color.DarkMagenta, Color.White, e.Bounds);
          });
          this.Do(() => toolTip.SetToolTip(this, text));
       }
@@ -2552,7 +2552,7 @@ public class UiAction : UserControl
       FloatingNoStatus(false);
 
       _noStatusToolTip = message;
-      _noStatusSubText = SubText("no status").Set.GoToUpperLeft(0).Font("Consolas", 8).ForeColor(Color.White).BackColor(Color.DarkBlue).End;
+      _noStatusSubText = SubText("no status").Set.GoToUpperLeft(0).Font("Consolas", 8).ForeColor(Color.White).BackColor(Color.DarkMagenta).End;
    }
 
    public void FloatingNoStatus(bool set = true)
