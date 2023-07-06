@@ -27,22 +27,62 @@ public class ChooserSet
       return this;
    }
 
+   protected void workingOn()
+   {
+      if (chooser.Working)
+      {
+         chooser.UiAction.Working = true;
+      }
+   }
+
+   protected void workingOff()
+   {
+      if (chooser.Working)
+      {
+         chooser.UiAction.Working = false;
+      }
+   }
+
    public ChooserSet Choices(StringHash choices)
    {
-      chooser.Choices = choices;
-      return this;
+      try
+      {
+         workingOn();
+         chooser.Choices = choices;
+         return this;
+      }
+      finally
+      {
+         workingOff();
+      }
    }
 
    public ChooserSet Choices(params string[] choices)
    {
-      chooser.Choices = choices.ToStringHash(c => c, c => c, true);
-      return this;
+      try
+      {
+         workingOn();
+         chooser.Choices = choices.ToStringHash(c => c, c => c, true);
+         return this;
+      }
+      finally
+      {
+         workingOff();
+      }
    }
 
    public ChooserSet Choices(params (string key, string value)[] choices)
    {
-      chooser.Choices = choices.ToStringHash(true);
-      return this;
+      try
+      {
+         workingOn();
+         chooser.Choices = choices.ToStringHash(true);
+         return this;
+      }
+      finally
+      {
+         workingOff();
+      }
    }
 
    public ChooserSet Choices(IEnumerable<string> choices) => Choices(choices.ToArray());

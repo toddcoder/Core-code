@@ -205,53 +205,38 @@ public partial class Chooser : Form
 
    protected void Chooser_Load(object sender, EventArgs e)
    {
-      try
+      locate();
+      if (_nilItem)
       {
-         if (working)
-         {
-            uiAction.Working = true;
-         }
-
-         locate();
-         if (_nilItem)
-         {
-            addItem(_nilItem, _foreColor | Color.White, _backColor | Color.Blue);
-         }
-
-         if (!_foreColor)
-         {
-            _foreColor = Color.White;
-         }
-
-         if (!_backColor)
-         {
-            _backColor = Color.Green;
-         }
-
-         foreach (var choice in choices.Keys)
-         {
-            addItem(choice, _foreColor, _backColor);
-         }
-
-         listViewItems.Columns[0].Width = ClientSize.Width;
-         listViewItems.Columns[0].Text = title;
-
-         var lastItem = listViewItems.Items[listViewItems.Items.Count - 1];
-         var bounds = lastItem.Bounds;
-         var bottom = bounds.Bottom;
-         Height = bottom + 4;
-         if (_maximumWidth is (true, var maximumWidth))
-         {
-            columnHeader1.Width = maximumWidth;
-            Width = maximumWidth + 8;
-         }
+         addItem(_nilItem, _foreColor | Color.White, _backColor | Color.Blue);
       }
-      finally
+
+      if (!_foreColor)
       {
-         if (working)
-         {
-            uiAction.Working = false;
-         }
+         _foreColor = Color.White;
+      }
+
+      if (!_backColor)
+      {
+         _backColor = Color.Green;
+      }
+
+      foreach (var choice in choices.Keys)
+      {
+         addItem(choice, _foreColor, _backColor);
+      }
+
+      listViewItems.Columns[0].Width = ClientSize.Width;
+      listViewItems.Columns[0].Text = title;
+
+      var lastItem = listViewItems.Items[listViewItems.Items.Count - 1];
+      var bounds = lastItem.Bounds;
+      var bottom = bounds.Bottom;
+      Height = bottom + 4;
+      if (_maximumWidth is (true, var maximumWidth))
+      {
+         columnHeader1.Width = maximumWidth;
+         Width = maximumWidth + 8;
       }
    }
 
