@@ -77,6 +77,12 @@ public class ChooserSet
       return this;
    }
 
+   public ChooserSet Working(bool working = true)
+   {
+      chooser.Working = working;
+      return this;
+   }
+
    public Maybe<Chosen> Choose()
    {
       var _chosen = chooser.Get();

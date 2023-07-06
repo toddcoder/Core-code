@@ -29,6 +29,7 @@ public partial class Chooser : Form
    protected string emptyTitle;
    protected bool sizeToText;
    protected Maybe<int> _maximumWidth;
+   protected bool working;
 
    public event EventHandler<AppearanceOverrideArgs> AppearanceOverride;
 
@@ -45,6 +46,7 @@ public partial class Chooser : Form
       emptyTitle = "";
       sizeToText = false;
       _maximumWidth = nil;
+      working = false;
 
       InitializeComponent();
 
@@ -108,6 +110,12 @@ public partial class Chooser : Form
    {
       get => sizeToText;
       set => sizeToText = value;
+   }
+
+   public bool Working
+   {
+      get => working;
+      set => working = value;
    }
 
    public Maybe<Chosen> Choice { get; set; }
@@ -197,38 +205,53 @@ public partial class Chooser : Form
 
    protected void Chooser_Load(object sender, EventArgs e)
    {
-      locate();
-      if (_nilItem)
+      try
       {
-         addItem(_nilItem, _foreColor | Color.White, _backColor | Color.Blue);
+         if (working)
+         {
+            uiAction.Working = true;
+         }
+
+         locate();
+         if (_nilItem)
+         {
+            addItem(_nilItem, _foreColor | Color.White, _backColor | Color.Blue);
+         }
+
+         if (!_foreColor)
+         {
+            _foreColor = Color.White;
+         }
+
+         if (!_backColor)
+         {
+            _backColor = Color.Green;
+         }
+
+         foreach (var choice in choices.Keys)
+         {
+            addItem(choice, _foreColor, _backColor);
+         }
+
+         listViewItems.Columns[0].Width = ClientSize.Width;
+         listViewItems.Columns[0].Text = title;
+
+         var lastItem = listViewItems.Items[listViewItems.Items.Count - 1];
+         var bounds = lastItem.Bounds;
+         var bottom = bounds.Bottom;
+         Height = bottom + 4;
+         if (_maximumWidth is (true, var maximumWidth))
+         {
+            columnHeader1.Width = maximumWidth;
+            Width = maximumWidth + 8;
+         }
       }
-
-      if (!_foreColor)
+      finally
       {
-         _foreColor = Color.White;
-      }
-
-      if (!_backColor)
-      {
-         _backColor = Color.Green;
-      }
-
-      foreach (var choice in choices.Keys)
-      {
-         addItem(choice, _foreColor, _backColor);
-      }
-
-      listViewItems.Columns[0].Width = ClientSize.Width;
-      listViewItems.Columns[0].Text = title;
-
-      var lastItem = listViewItems.Items[listViewItems.Items.Count - 1];
-      var bounds = lastItem.Bounds;
-      var bottom = bounds.Bottom;
-      Height = bottom + 4;
-      if (_maximumWidth is (true, var maximumWidth))
-      {
-         columnHeader1.Width = maximumWidth;
-         Width = maximumWidth + 8;
+         if (working)
+         {
+            uiAction.Working = false;
+         }
       }
    }
 
