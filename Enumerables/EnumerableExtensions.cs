@@ -1185,7 +1185,7 @@ public static class EnumerableExtensions
       }
    }
 
-  public static IEnumerable<T> SortByList<T>(this IEnumerable<T> enumerable, Func<T, string> keyMap, params string[] keys)
+   public static IEnumerable<T> SortByList<T>(this IEnumerable<T> enumerable, Func<T, string> keyMap, params string[] keys)
    {
       var keySet = new StringSet(true, keys);
       var matching = new StringHash<T>(true);
@@ -1352,5 +1352,21 @@ public static class EnumerableExtensions
             yield return i;
          }
       }
+   }
+
+   public static IEnumerable<TResult> Merge<T1, T2, TResult>(this IEnumerable<T1> left, IEnumerable<T2> right, Func<T1, T2, TResult> map)
+   {
+      var leftQueue = new EnumerableQueue<T1>(left);
+      var rightQueue = new EnumerableQueue<T2>(right);
+
+      while (leftQueue.Next() is (true, var leftValue) && rightQueue.Next() is (true, var rightValue))
+      {
+         yield return map(leftValue, rightValue);
+      }
+   }
+
+   public static IEnumerable<(T1 left, T2 right)> Merge<T1, T2>(this IEnumerable<T1> left, IEnumerable<T2> right)
+   {
+      return left.Merge<T1, T2, (T1, T2)>(right, (t1, t2) => (t1, t2));
    }
 }

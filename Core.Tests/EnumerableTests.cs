@@ -221,4 +221,16 @@ public class EnumerableTests
          Console.WriteLine(item);
       }
    }
+
+   [TestMethod]
+   public void MergeTest()
+   {
+      var left = new[] { 1, 2, 3, 4 };
+      var right = new[] { "a", "b", "c" };
+
+      foreach (var paired in left.Merge(right, (l, r) => l + r))
+      {
+         Console.WriteLine(paired);
+      }
+   }
 }
