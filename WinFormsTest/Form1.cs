@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows.Forms;
 using Core.Applications.Messaging;
 using Core.Computers;
 using Core.Enumerables;
+using Core.Json;
 using Core.Monads;
 using Core.Strings;
 using Core.WinForms.Controls;
@@ -84,7 +86,21 @@ public partial class Form1 : Form, IMessageQueueListener
 
    protected void button1_Click(object sender, EventArgs e)
    {
-      uiAction.NoStatus("Test");
+      //uiAction.NoStatus("Test");
+      FileName jsonFile = @"C:\Users\tebennett\source\repos\toddcoder\Core\Core.Tests\TestData\builds.json";
+      var source = jsonFile.Text;
+      var deserializer = new Deserializer(source);
+      var _setting = deserializer.Deserialize();
+
+      if (_setting is (true, var setting))
+      {
+         uiAction.WriteLine(setting.Count);
+         uiAction.WriteLine(setting);
+      }
+      else
+      {
+         Console.WriteLine($"Exception: {_setting.Exception.Message}");
+      }
    }
 
    protected void button2_Click(object sender, EventArgs e)

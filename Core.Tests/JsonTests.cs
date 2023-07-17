@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Diagnostics;
 using Core.Computers;
+using Core.Dates;
 using Core.Json;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -28,14 +30,22 @@ public class JsonTests
    [TestMethod]
    public void Deserialization2Test()
    {
+      var stopwatch = new Stopwatch();
+      stopwatch.Start();
+
       FileName jsonFile = @"..\..\TestData\builds.json";
       var source = jsonFile.Text;
       var deserializer = new Deserializer(source);
       var _setting = deserializer.Deserialize();
+
+      stopwatch.Stop();
+
+
       if (_setting is (true, var setting))
       {
          Console.WriteLine(setting.Count);
          Console.WriteLine(setting);
+         Console.WriteLine(stopwatch.Elapsed.ToString(true));
       }
       else
       {

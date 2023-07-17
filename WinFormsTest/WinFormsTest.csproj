@@ -87,6 +87,10 @@
       <Project>{FE997A92-D183-4C85-9A1A-FB032311EF62}</Project>
       <Name>Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Core.Json\Core.Json.csproj">
+      <Project>{787B6F39-BCB0-425E-99CB-091BC0FED0CD}</Project>
+      <Name>Core.Json</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Core.WinForms\Core.WinForms.csproj">
       <Project>{efe14f0b-4f5c-45a9-9c74-615cb236bf0b}</Project>
       <Name>Core.WinForms</Name>

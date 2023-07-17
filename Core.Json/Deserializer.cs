@@ -4,7 +4,6 @@ using Core.Configurations;
 using Core.DataStructures;
 using Core.Dates;
 using Core.Monads;
-using Core.Strings;
 using Newtonsoft.Json;
 using static Core.Monads.MonadFunctions;
 using static Core.Monads.Monads;
@@ -34,13 +33,36 @@ public class Deserializer
             select parentGroup;
       }
 
-      int itemCount() => peekSetting().Map(setting => setting.AnyHash().Map(h => h.Values.Count)) | 0;
+      int itemCount()
+      {
+         //return peekSetting().Map(setting => setting.AnyHash().Map(h => h.Values.Count)) | 0;
+         if (peekSetting() is (true, var setting))
+         {
+            return setting.Count;
+         }
+         else
+         {
+            return 0;
+         }
+      }
 
       var _propertyName = monads.maybe<string>();
 
+      string getKey(Maybe<string> _propertyName)
+      {
+         if (_propertyName is (true, var propertyName))
+         {
+            return propertyName;
+         }
+         else
+         {
+            return itemCount().ToString();
+         }
+      }
+
       void setItem(string value)
       {
-         var key = _propertyName | (() => $"${itemCount()}");
+         var key = getKey(_propertyName);
          var _setting = peekSetting();
          if (_setting is (true, var setting))
          {
@@ -52,7 +74,7 @@ public class Deserializer
 
       void setItemNull()
       {
-         var key = _propertyName | (() => $"${itemCount()}");
+         var key = getKey(_propertyName);
          var _setting = peekSetting();
          if (_setting is (true, var setting))
          {
@@ -83,7 +105,7 @@ public class Deserializer
             {
                case JsonToken.StartObject when firstObjectProcessed:
                {
-                  var key = _propertyName | (() => $"${itemCount()}");
+                  var key = getKey(_propertyName);
                   _propertyName = nil;
                   var setting = new Setting(key);
                   var _parentSetting = peekSetting();
@@ -112,7 +134,7 @@ public class Deserializer
                   break;
                case JsonToken.StartArray:
                {
-                  var key = _propertyName | (() => $"${itemCount()}");
+                  var key = getKey(_propertyName);
                   _propertyName = nil;
                   var setting = new Setting(key) { IsArray = true };
                   var _parentSetting = peekSetting();
@@ -138,8 +160,19 @@ public class Deserializer
                   stack.Pop();
                   break;
                case JsonToken.PropertyName:
-                  _propertyName = reader.Value.NotNull().Map(o => o.ToNonNullString());
+               {
+                  //_propertyName = reader.Value.NotNull().Map(o => o.ToNonNullString());
+                  var propertyName = reader.Value;
+                  if (propertyName is null)
+                  {
+                     _propertyName = nil;
+                  }
+                  else
+                  {
+                     _propertyName = reader.Value.ToString();
+                  }
                   break;
+               }
                case JsonToken.String:
                   setItem(getValue());
                   break;
