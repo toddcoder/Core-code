@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Core.Configurations;
-using Core.DataStructures;
 using Core.Dates;
 using Core.Monads;
 using Newtonsoft.Json;
@@ -22,29 +22,9 @@ public class Deserializer
    public Result<Setting> Deserialize()
    {
       var rootSetting = new Setting("/");
-      var stack = new MaybeStack<ConfigurationItem>();
+      var stack = new Stack<Setting>();
       stack.Push(rootSetting);
-
-      Maybe<Setting> peekSetting()
-      {
-         return
-            from parentItem in stack.Peek()
-            from parentGroup in parentItem.IfCast<Setting>()
-            select parentGroup;
-      }
-
-      int itemCount()
-      {
-         //return peekSetting().Map(setting => setting.AnyHash().Map(h => h.Values.Count)) | 0;
-         if (peekSetting() is (true, var setting))
-         {
-            return setting.Count;
-         }
-         else
-         {
-            return 0;
-         }
-      }
+      var parentSetting = rootSetting;
 
       var _propertyName = monads.maybe<string>();
 
@@ -56,31 +36,21 @@ public class Deserializer
          }
          else
          {
-            return itemCount().ToString();
+            return $"${parentSetting.Count}";
          }
       }
 
       void setItem(string value)
       {
          var key = getKey(_propertyName);
-         var _setting = peekSetting();
-         if (_setting is (true, var setting))
-         {
-            setting.SetItem(key, new Item(key, value));
-         }
-
+         parentSetting.SetItem(key, new Item(key, value));
          _propertyName = nil;
       }
 
       void setItemNull()
       {
          var key = getKey(_propertyName);
-         var _setting = peekSetting();
-         if (_setting is (true, var setting))
-         {
-            setting.SetItem(key, new Item(key, "") { IsNull = true });
-         }
-
+         parentSetting.SetItem(key, new Item(key, "") { IsNull = true });
          _propertyName = nil;
       }
 
@@ -108,60 +78,45 @@ public class Deserializer
                   var key = getKey(_propertyName);
                   _propertyName = nil;
                   var setting = new Setting(key);
-                  var _parentSetting = peekSetting();
-                  if (_parentSetting is (true, var parentSetting))
-                  {
-                     parentSetting.SetItem(key, setting);
-                  }
-                  else
-                  {
-                     return fail("No parent setting found");
-                  }
+                  parentSetting.SetItem(key, setting);
 
-                  stack.Push(setting);
+                  stack.Push(parentSetting);
+                  parentSetting = setting;
                   break;
                }
                case JsonToken.StartObject:
                   firstObjectProcessed = true;
                   break;
                case JsonToken.EndObject:
-                  if (stack.IsEmpty)
+                  if (stack.Count == 0)
                   {
                      return fail("No parent group available");
                   }
 
-                  stack.Pop();
+                  parentSetting = stack.Pop();
                   break;
                case JsonToken.StartArray:
                {
                   var key = getKey(_propertyName);
                   _propertyName = nil;
                   var setting = new Setting(key) { IsArray = true };
-                  var _parentSetting = peekSetting();
-                  if (_parentSetting is (true, var parentSetting))
-                  {
-                     parentSetting.SetItem(setting.Key, setting);
-                  }
-                  else
-                  {
-                     return fail("No parent setting found");
-                  }
+                  parentSetting.SetItem(setting.Key, setting);
 
-                  stack.Push(setting);
+                  stack.Push(parentSetting);
+                  parentSetting = setting;
 
                   break;
                }
                case JsonToken.EndArray:
-                  if (stack.IsEmpty)
+                  if (stack.Count == 0)
                   {
                      return fail("No parent setting available");
                   }
 
-                  stack.Pop();
+                  parentSetting = stack.Pop();
                   break;
                case JsonToken.PropertyName:
                {
-                  //_propertyName = reader.Value.NotNull().Map(o => o.ToNonNullString());
                   var propertyName = reader.Value;
                   if (propertyName is null)
                   {
@@ -171,6 +126,7 @@ public class Deserializer
                   {
                      _propertyName = reader.Value.ToString();
                   }
+
                   break;
                }
                case JsonToken.String:

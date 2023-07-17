@@ -55,6 +55,10 @@ public class Item : ConfigurationItem, IConfigurationItemGetter
       {
          return $"{Key}: \"{value}\"";
       }
+      else if (IsNull)
+      {
+         return $"{Key}?";
+      }
       else if (IsArray)
       {
          var destringifier = DelimitedText.AsSql();
