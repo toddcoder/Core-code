@@ -1,12 +1,13 @@
 ﻿using System;
-using System.Diagnostics;
+using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using Core.Applications.Messaging;
 using Core.Computers;
 using Core.Enumerables;
-using Core.Json;
 using Core.Monads;
 using Core.Strings;
+using Core.Strings.Emojis;
 using Core.WinForms.Controls;
 using Core.WinForms.Documents;
 using static Core.Monads.MonadFunctions;
@@ -43,7 +44,7 @@ public partial class Form1 : Form, IMessageQueueListener
       _subText = nil;
       test = "";
 
-      uiAction.Click += (_, _) =>
+      /*uiAction.Click += (_, _) =>
       {
          var _ = uiAction
             .Choose("Test")
@@ -51,14 +52,14 @@ public partial class Form1 : Form, IMessageQueueListener
                "Selection dropdown for resolution branches in working window needs to be wider")
             .SizeToText(true).Choose();
       };
-      uiAction.ClickText = "CopyFile";
+      uiAction.ClickText = "CopyFile";*/
       //uiAction.ClickToCancel = true;
-      uiAction.DoWork += (_, _) =>
+      /*uiAction.DoWork += (_, _) =>
       {
          var _result = sourceFile.CopyToNotify(targetFolder);
          uiAction.Result(_result.Map(_ => "Copied"));
       };
-      uiAction.RunWorkerCompleted += (_, _) => uiAction.ClickToCancel = false;
+      uiAction.RunWorkerCompleted += (_, _) => uiAction.ClickToCancel = false;*/
 
       uiButton = new UiAction(this);
       uiButton.SetUpInPanel(panel2);
@@ -86,21 +87,38 @@ public partial class Form1 : Form, IMessageQueueListener
 
    protected void button1_Click(object sender, EventArgs e)
    {
-      //uiAction.NoStatus("Test");
-      FileName jsonFile = @"C:\Users\tebennett\source\repos\toddcoder\Core\Core.Tests\TestData\builds.json";
-      var source = jsonFile.Text;
-      var deserializer = new Deserializer(source);
-      var _setting = deserializer.Deserialize();
-
-      if (_setting is (true, var setting))
+      var texts = Enumerable.Range(0, 5).Select(i => i switch
       {
-         uiAction.WriteLine(setting.Count);
-         uiAction.WriteLine(setting);
-      }
-      else
+         0 => "one",
+         1 => "two",
+         2 => "three",
+         3 => "four",
+         4 => "five",
+         _ => "???"
+      }).ToArray();
+      uiAction.RectangleCount = 5;
+      uiAction.PaintOnRectangle += (_, e) =>
       {
-         Console.WriteLine($"Exception: {_setting.Exception.Message}");
-      }
+         var text = texts[e.RectangleIndex];
+         var rectangle = uiAction.Rectangles[e.RectangleIndex];
+         using var pen = new Pen(Color.White);
+         e.Graphics.DrawRectangle(pen, rectangle);
+         var writer = new UiActionWriter(CardinalAlignment.Center, CheckStyle.None, nil, false)
+         {
+            Color = Color.White,
+            Font = uiAction.Font,
+            Rectangle = rectangle
+         };
+         writer.Write(text, e.Graphics);
+      };
+      uiAction.ClickOnRectangle += (_, e) =>
+      {
+         texts[e.RectangleIndex] = $"/left-angle.{texts[e.RectangleIndex]}/right-angle".EmojiSubstitutions();
+         uiAction.Refresh();
+      };
+      uiAction.ClickText = "test";
+      uiAction.ClickGlyph = true;
+      uiAction.Refresh();
    }
 
    protected void button2_Click(object sender, EventArgs e)

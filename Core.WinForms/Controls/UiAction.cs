@@ -183,7 +183,7 @@ public class UiAction : UserControl
          [UiActionType.Exception] = MessageStyle.Bold,
          [UiActionType.Success] = MessageStyle.Bold,
          [UiActionType.Failure] = MessageStyle.Bold,
-         [UiActionType.NoStatus]= MessageStyle.Bold,
+         [UiActionType.NoStatus] = MessageStyle.Bold,
          [UiActionType.BusyText] = MessageStyle.ItalicBold,
          [UiActionType.Caution] = MessageStyle.Bold,
          [UiActionType.ControlLabel] = MessageStyle.Bold,
@@ -270,6 +270,7 @@ public class UiAction : UserControl
    protected bool clickToCancel;
    protected Maybe<TaskBarProgress> _taskBarProgress;
    protected bool cancelled;
+   protected Rectangle[] rectangles;
 
    public event EventHandler<AutomaticMessageArgs> AutomaticMessage;
    public event EventHandler<PaintEventArgs> Painting;
@@ -286,6 +287,9 @@ public class UiAction : UserControl
    public new event EventHandler TextChanged;
    public event EventHandler<MessageShownArgs> MessageShown;
    public event EventHandler<DrawToolTipEventArgs> PaintToolTip;
+   public event EventHandler<UiActionRectangleArgs> ClickOnRectangle;
+   public event EventHandler<UiActionRectangleArgs> MouseMoveOnRectangle;
+   public event EventHandler<UiActionRectanglePaintArgs> PaintOnRectangle;
 
    public UiAction(Control control, bool is3D = true)
    {
@@ -395,6 +399,32 @@ public class UiAction : UserControl
          }
       };
 
+      Click += (_, _) =>
+      {
+         var location = PointToClient(Cursor.Position);
+         for (var i = 0; i < rectangles.Length; i++)
+         {
+            if (rectangles[i].Contains(location))
+            {
+               ClickOnRectangle?.Invoke(this, new UiActionRectangleArgs(i));
+               return;
+            }
+         }
+      };
+
+      MouseMove += (_, _) =>
+      {
+         var location = PointToClient(Cursor.Position);
+         for (var i = 0; i < rectangles.Length; i++)
+         {
+            if (rectangles[i].Contains(location))
+            {
+               MouseMoveOnRectangle?.Invoke(this, new UiActionRectangleArgs(i));
+               return;
+            }
+         }
+      };
+
       _foreColor = nil;
       _backColor = nil;
       _style = nil;
@@ -455,6 +485,7 @@ public class UiAction : UserControl
       CardinalAlignment = CardinalAlignment.Center;
       _taskBarProgress = nil;
       cancelled = true;
+      rectangles = Array.Empty<Rectangle>();
    }
 
    protected BusyProcessor getBusyProcessor(Rectangle clientRectangle) => busyStyle switch
@@ -1215,6 +1246,16 @@ public class UiAction : UserControl
             var top = ClientRectangle.Bottom - 4;
             var remainder = clientRectangleWidth - percentage;
             drawLine(e.Graphics, Color.Black, ((ClientRectangle.Left + percentage, top), (remainder, 0)));
+         }
+
+         return;
+      }
+
+      if (PaintOnRectangle is not null && rectangles.Length > 0)
+      {
+         for (var i = 0; i < rectangles.Length; i++)
+         {
+            PaintOnRectangle.Invoke(this, new UiActionRectanglePaintArgs(e.Graphics, i));
          }
 
          return;
@@ -2671,4 +2712,31 @@ public class UiAction : UserControl
          subText.SetLocation(clientRectangle);
       }
    }
+
+   public int RectangleCount
+   {
+      get => rectangles.Length;
+      set
+      {
+         if (value > 0)
+         {
+            var clientWidth = ClientRectangle.Width;
+            var clientHeight = ClientRectangle.Height;
+
+            var paddingWidth = 2;
+            var width = (clientWidth - (value + 1) * paddingWidth) / value;
+            var top = paddingWidth;
+            var height = clientHeight - 2 * paddingWidth;
+            var fullWidth = paddingWidth + width;
+
+            rectangles = Enumerable.Range(0, value).Select(i => new Rectangle(i * fullWidth, top, width, height)).ToArray();
+         }
+         else
+         {
+            rectangles = Array.Empty<Rectangle>();
+         }
+      }
+   }
+
+   public Rectangle[] Rectangles => rectangles;
 }

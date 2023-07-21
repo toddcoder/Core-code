@@ -60,6 +60,7 @@
     <Compile Include="Controls\ArgumentsArgs.cs" />
     <Compile Include="Controls\AutomaticMessageArgs.cs" />
     <Compile Include="Controls\BusyStyle.cs" />
+    <Compile Include="Controls\UiActionRectangleArgs.cs" />
     <Compile Include="Controls\DefaultBusyProcessor.cs" />
     <Compile Include="Controls\SineBusyProcessor.cs" />
     <Compile Include="Controls\RectangleBusyProcessor.cs" />
@@ -92,6 +93,7 @@
     <Compile Include="Controls\MessageShownArgs.cs" />
     <Compile Include="Controls\SubTextSet.cs" />
     <Compile Include="Controls\TaskBarProgress.cs" />
+    <Compile Include="Controls\UiActionRectanglePaintArgs.cs" />
     <Compile Include="Controls\UiActionScroller.cs" />
     <Compile Include="Controls\UiActionWriter.cs" />
     <Compile Include="Controls\UiActionType.cs" />

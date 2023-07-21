@@ -8,7 +8,6 @@ using Core.Strings;
 using Core.Strings.Emojis;
 using static Core.Monads.Lazy.LazyMonads;
 using static Core.Monads.MonadFunctions;
-using static Core.WinForms.RectangleExtensions;
 
 namespace Core.WinForms.Controls;
 
