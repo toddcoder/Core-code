@@ -25,7 +25,7 @@ public class LabelProcessor
 
    public Rectangle Rectangle => labelRectangle;
 
-  public static Maybe<int> LabelWidth(Maybe<string> _label, Font font)
+   public static Maybe<int> LabelWidth(Maybe<string> _label, Font font)
    {
       return _label.Map(label => TextRenderer.MeasureText(label, font).Width + LABEL_MARGIN);
    }
@@ -53,11 +53,12 @@ public class LabelProcessor
    public void OnPaint(Graphics graphics)
    {
       using var labelFont = new Font(font, FontStyle.Bold);
-      var writer = new UiActionWriter(CardinalAlignment.West, CheckStyle.None, _emptyTextTitle, false)
+      var writer = new UiActionWriter(CardinalAlignment.West)
       {
          Rectangle = labelRectangle,
          Font = labelFont,
-         Color = Color.White
+         Color = Color.White,
+         EmptyTextTitle = _emptyTextTitle
       };
       writer.Write(label, graphics);
    }

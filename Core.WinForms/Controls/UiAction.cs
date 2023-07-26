@@ -493,6 +493,7 @@ public class UiAction : UserControl
       BusyStyle.Default => new DefaultBusyProcessor(clientRectangle),
       BusyStyle.Sine => new SineBusyProcessor(clientRectangle),
       BusyStyle.Rectangle => new RectangleBusyProcessor(clientRectangle),
+      BusyStyle.BarberPole => new BarberPoleBusyProcessor(clientRectangle),
       _ => new DefaultBusyProcessor(clientRectangle)
    };
 
@@ -1226,11 +1227,13 @@ public class UiAction : UserControl
 
       if (!Enabled)
       {
-         var disabledWriter = new UiActionWriter(MessageAlignment, CheckStyle.None, EmptyTextTitle, IsFile)
+         var disabledWriter = new UiActionWriter(MessageAlignment)
          {
             Rectangle = ClientRectangle,
             Font = Font,
-            Color = Color.Black
+            Color = Color.Black,
+            EmptyTextTitle = EmptyTextTitle,
+            IsFile = IsFile
          };
 
          var filledRectangle = disabledWriter.TextRectangle(text, e.Graphics, ClientRectangle);
@@ -1303,11 +1306,14 @@ public class UiAction : UserControl
          UiActionType.Busy or UiActionType.BusyText or UiActionType.ProgressDefinite or UiActionType.MuteProgress => CheckStyle.None,
          _ => CheckStyle
       };
-      var writer = new Lazy<UiActionWriter>(() => new UiActionWriter(MessageAlignment, style, EmptyTextTitle, IsFile)
+      var writer = new Lazy<UiActionWriter>(() => new UiActionWriter(MessageAlignment)
       {
          Rectangle = clientRectangle,
          Font = getFont(),
-         Color = getForeColor()
+         Color = getForeColor(),
+         CheckStyle = style,
+         EmptyTextTitle = EmptyTextTitle,
+         IsFile = IsFile
       });
       var httpWriter = new Lazy<HttpWriter>(() => new HttpWriter(text, clientRectangle, getFont()));
 

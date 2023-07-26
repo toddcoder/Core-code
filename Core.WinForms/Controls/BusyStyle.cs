@@ -4,5 +4,6 @@ public enum BusyStyle
 {
    Default,
    Sine,
-   Rectangle
+   Rectangle,
+   BarberPole
 }

@@ -82,12 +82,13 @@ public class UiActionWriter
    protected Result<Font> _font;
    protected Result<Color> _color;
 
-   public UiActionWriter(CardinalAlignment messageAlignment, CheckStyle checkStyle, Maybe<string> emptyTextTitle, bool isFile)
+   public UiActionWriter(CardinalAlignment messageAlignment)
    {
-      this.isFile = isFile;
       Align(messageAlignment);
-      this.checkStyle = checkStyle;
-      _emptyTextTitle = emptyTextTitle;
+
+      isFile = false;
+      checkStyle = CheckStyle.None;
+      _emptyTextTitle = nil;
 
       _rectangle = fail("Rectangle not set");
       _font = fail("Font not set");
@@ -97,6 +98,23 @@ public class UiActionWriter
    public void Center(bool center) => Flags = GetFlags(center);
 
    public void Align(CardinalAlignment messageAlignment) => Flags = getFlags(messageAlignment);
+
+   public CheckStyle CheckStyle
+   {
+      get => checkStyle;
+      set => checkStyle = value;
+   }
+
+   public bool IsFile
+   {
+      get => isFile;
+      set => isFile = value;
+   }
+
+   public Maybe<string> EmptyTextTitle
+   {
+      set => _emptyTextTitle = value;
+   }
 
    public Rectangle Rectangle
    {

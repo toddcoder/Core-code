@@ -59,6 +59,7 @@
     <Compile Include="Consoles\TextBoxReader.cs" />
     <Compile Include="Controls\ArgumentsArgs.cs" />
     <Compile Include="Controls\AutomaticMessageArgs.cs" />
+    <Compile Include="Controls\BarberPoleBusyProcessor.cs" />
     <Compile Include="Controls\BusyStyle.cs" />
     <Compile Include="Controls\UiActionRectangleArgs.cs" />
     <Compile Include="Controls\DefaultBusyProcessor.cs" />

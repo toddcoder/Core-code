@@ -27,7 +27,7 @@ public partial class Form1 : Form, IMessageQueueListener
    {
       InitializeComponent();
 
-      UiAction.BusyStyle = BusyStyle.Sine;
+      UiAction.BusyStyle = BusyStyle.BarberPole;
 
       uiAction = new UiAction(this);
       uiAction.SetUpInPanel(panel1);
@@ -103,7 +103,7 @@ public partial class Form1 : Form, IMessageQueueListener
          var rectangle = uiAction.Rectangles[e.RectangleIndex];
          using var pen = new Pen(Color.White);
          e.Graphics.DrawRectangle(pen, rectangle);
-         var writer = new UiActionWriter(CardinalAlignment.Center, CheckStyle.None, nil, false)
+         var writer = new UiActionWriter(CardinalAlignment.Center)
          {
             Color = Color.White,
             Font = uiAction.Font,
@@ -123,7 +123,7 @@ public partial class Form1 : Form, IMessageQueueListener
 
    protected void button2_Click(object sender, EventArgs e)
    {
-      uiAction.Progress();
+      uiAction.Busy(true);
    }
 
    protected void button3_Click(object sender, EventArgs e)
