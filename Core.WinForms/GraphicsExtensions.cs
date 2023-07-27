@@ -45,4 +45,16 @@ public static class GraphicsExtensions
       bitmap.SetPixel(0, 0, color);
       graphics.DrawImageUnscaled(bitmap, x, y);
    }
+
+   public static Size Resize(this Size size, int widthAmount, int heightAmount) => new(size.Width + widthAmount, size.Height + heightAmount);
+
+   public static Rectangle Resize(this Rectangle rectangle, int widthAmount, int heightAmount)
+   {
+      return rectangle with { Size = rectangle.Size.Resize(widthAmount, heightAmount) };
+   }
+
+   public static Rectangle Reposition(this Rectangle rectangle, int xOffset, int yOffset)
+   {
+      return rectangle with { Location = rectangle.Location, X = rectangle.Left + xOffset, Y = rectangle.Top + yOffset };
+   }
 }
