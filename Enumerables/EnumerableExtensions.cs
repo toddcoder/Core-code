@@ -737,7 +737,7 @@ public static class EnumerableExtensions
       return enumerable.FirstOrFailure(predicate, failMessage).Optional();
    }
 
-   public static Optional<int> FirstOrFail<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate, string failMessage = "Default value")
+   public static Optional<int> FirstIndexOrFail<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate, string failMessage = "Default value")
    {
       var index = 0;
       foreach (var item in enumerable)
