@@ -157,6 +157,22 @@ public static class EnumerableExtensions
       }
    }
 
+   public static Maybe<int> FirstIndexOrNone<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate)
+   {
+      var index = 0;
+      foreach (var item in enumerable)
+      {
+         if (predicate(item))
+         {
+            return index;
+         }
+
+         index++;
+      }
+
+      return nil;
+   }
+
    public static Maybe<T> LastOrNone<T>(this IEnumerable<T> enumerable)
    {
       var last = enumerable.LastOrDefault();
@@ -205,6 +221,22 @@ public static class EnumerableExtensions
       {
          return exception;
       }
+   }
+
+   public static Result<int> FirstIndexOrFailure<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate, string failureMessage = "Default value")
+   {
+      var index = 0;
+      foreach (var item in enumerable)
+      {
+         if (predicate(item))
+         {
+            return index;
+         }
+
+         index++;
+      }
+
+      return fail(failureMessage);
    }
 
    public static Result<(T1, T2)> FirstOrFailure<T1, T2>(this IEnumerable<(T1, T2)> enumerable, Func<T1, T2, bool> predicate,
@@ -288,6 +320,22 @@ public static class EnumerableExtensions
       {
          return exception;
       }
+   }
+
+   public static Result<int> FirstIndexOrFailure<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate, Func<string> failureMessage)
+   {
+      var index = 0;
+      foreach (var item in enumerable)
+      {
+         if (predicate(item))
+         {
+            return index;
+         }
+
+         index++;
+      }
+
+      return fail(failureMessage());
    }
 
    public static Result<(T1, T2)> FirstOrFailure<T1, T2>(this IEnumerable<(T1, T2)> enumerable, Func<T1, T2, bool> predicate,
@@ -627,6 +675,22 @@ public static class EnumerableExtensions
 
    public static Optional<T> FirstOrEmpty<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate) => enumerable.FirstOrNone(predicate).Optional();
 
+   public static Optional<int> FirstIndexOrEmpty<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate)
+   {
+      var index = 0;
+      foreach (var item in enumerable)
+      {
+         if (predicate(item))
+         {
+            return index;
+         }
+
+         index++;
+      }
+
+      return nil;
+   }
+
    public static Optional<(T1, T2)> FirstOrEmpty<T1, T2>(this IEnumerable<(T1, T2)> enumerable, Func<T1, T2, bool> predicate)
    {
       return enumerable.FirstOrNone(predicate).Optional();
@@ -671,6 +735,22 @@ public static class EnumerableExtensions
    public static Optional<T> FirstOrFail<T>(this IEnumerable<T> enumerable, Predicate<T> predicate, string failMessage = "Default value")
    {
       return enumerable.FirstOrFailure(predicate, failMessage).Optional();
+   }
+
+   public static Optional<int> FirstOrFail<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate, string failMessage = "Default value")
+   {
+      var index = 0;
+      foreach (var item in enumerable)
+      {
+         if (predicate(item))
+         {
+            return index;
+         }
+
+         index++;
+      }
+
+      return fail(failMessage);
    }
 
    public static Optional<(T1, T2)> FirstOrFail<T1, T2>(this IEnumerable<(T1, T2)> enumerable, Func<T1, T2, bool> predicate,
