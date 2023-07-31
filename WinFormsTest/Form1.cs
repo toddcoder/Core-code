@@ -19,6 +19,7 @@ public partial class Form1 : Form, IMessageQueueListener
 {
    protected UiAction uiAction;
    protected UiAction uiButton;
+   protected UiAction uiTest;
    protected EnumerableCycle<CardinalAlignment> messageAlignments;
    protected Maybe<SubText> _subText;
    protected string test;
@@ -68,6 +69,10 @@ public partial class Form1 : Form, IMessageQueueListener
       uiButton.Click += (_, _) => { };
       uiButton.ClickText = "Click";
       uiButton.ClickGlyph = false;
+
+      uiTest = new UiAction(this);
+      uiTest.SetUpInPanel(panel3);
+      uiTest.Message("Test");
 
       MessageQueue.RegisterListener(this, "button1", "button2", "button3");
 
@@ -129,7 +134,7 @@ public partial class Form1 : Form, IMessageQueueListener
 
    protected void button3_Click(object sender, EventArgs e)
    {
-      uiAction.Enabled = !uiAction.Enabled;
+      uiTest.Busy(true);
    }
 
    public string Listener => "form1";

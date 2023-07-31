@@ -18,8 +18,8 @@ public class BarberPoleBusyProcessor : BusyProcessor
       width = clientRectangle.Width / SKEW;
       left = 0;
       rightCheck = width * 2;
-      top = -INCREMENT;
-      bottom = clientRectangle.Bottom + INCREMENT;
+      top = -2 * INCREMENT;
+      bottom = clientRectangle.Bottom + 2 * INCREMENT;
    }
 
    public override void Advance()
