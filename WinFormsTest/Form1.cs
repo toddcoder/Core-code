@@ -97,19 +97,20 @@ public partial class Form1 : Form, IMessageQueueListener
          _ => "???"
       }).ToArray();
       uiAction.RectangleCount = 5;
-      uiAction.PaintOnRectangle += (_, e) =>
+      uiAction.MouseMoveOnRectangle += (_, e) =>
       {
          var text = texts[e.RectangleIndex];
          var rectangle = uiAction.Rectangles[e.RectangleIndex];
          using var pen = new Pen(Color.White);
-         e.Graphics.DrawRectangle(pen, rectangle);
+         using var graphics = uiAction.CreateGraphics();
+         graphics.DrawRectangle(pen, rectangle);
          var writer = new UiActionWriter(CardinalAlignment.Center)
          {
             Color = Color.White,
             Font = uiAction.Font,
             Rectangle = rectangle
          };
-         writer.Write(text, e.Graphics);
+         writer.Write(text, graphics);
       };
       uiAction.ClickOnRectangle += (_, e) =>
       {
