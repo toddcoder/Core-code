@@ -406,7 +406,7 @@ public class UiAction : UserControl
          {
             if (rectangles[i].Contains(location))
             {
-               ClickOnRectangle?.Invoke(this, new UiActionRectangleArgs(i));
+               ClickOnRectangle?.Invoke(this, new UiActionRectangleArgs(i, location));
                return;
             }
          }
@@ -419,7 +419,7 @@ public class UiAction : UserControl
          {
             if (rectangles[i].Contains(location))
             {
-               MouseMoveOnRectangle?.Invoke(this, new UiActionRectangleArgs(i));
+               MouseMoveOnRectangle?.Invoke(this, new UiActionRectangleArgs(i, location));
                return;
             }
          }
