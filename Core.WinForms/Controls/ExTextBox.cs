@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
@@ -84,6 +85,11 @@ public class ExTextBox : TextBox
 
    protected WindowExtender windowExtender;
    protected int updatingCount;
+   protected Maybe<Pattern> _allow;
+   protected Maybe<Pattern> _deny;
+
+   public EventHandler<CancelEventArgs> NotAllowed;
+   public EventHandler<CancelEventArgs> Denied;
 
    public new event EventHandler<PaintEventArgs> Paint;
 
@@ -96,7 +102,38 @@ public class ExTextBox : TextBox
    {
       windowExtender = new WindowExtender(this);
       windowExtender.AssignHandle(Handle);
+      _allow = nil;
+      _deny = nil;
+
+      Validating += (_, e) =>
+      {
+         if (_allow is (true, var allow) && !e.Cancel && !Text.IsMatch(allow))
+         {
+            NotAllowed?.Invoke(this, e);
+         }
+
+         if (_deny is (true, var deny) && !e.Cancel && Text.IsMatch(deny))
+         {
+            Denied?.Invoke(this, e);
+         }
+      };
    }
+
+   public Maybe<Pattern> Allow
+   {
+      get => _allow;
+      set => _allow = value;
+   }
+
+   public Maybe<Pattern> Deny
+   {
+      get => _deny;
+      set => _deny = value;
+   }
+
+   public bool IsAllowed => _allow.Map(allowed => Text.IsMatch(allowed)) | true;
+
+   public bool IsDenied => _deny.Map(deny => Text.IsMatch(deny)) | false;
 
    public bool RefreshOnTextChange { get; set; }
 
@@ -192,7 +229,7 @@ public class ExTextBox : TextBox
       return new Rectangle(location, size);
    }
 
-  public Rectangle RectangleFromCurrentSelection(Graphics graphics, bool expand = false)
+   public Rectangle RectangleFromCurrentSelection(Graphics graphics, bool expand = false)
    {
       return RectangleFrom(graphics, SelectionStart, SelectionLength, expand);
    }

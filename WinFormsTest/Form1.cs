@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Windows.Forms;
 using Core.Applications.Messaging;
 using Core.Computers;
 using Core.Enumerables;
+using Core.Matching;
 using Core.Monads;
 using Core.Strings;
 using Core.Strings.Emojis;
+using Core.WinForms;
 using Core.WinForms.Controls;
 using Core.WinForms.Documents;
 using static Core.Monads.MonadFunctions;
@@ -23,6 +26,7 @@ public partial class Form1 : Form, IMessageQueueListener
    protected EnumerableCycle<CardinalAlignment> messageAlignments;
    protected Maybe<SubText> _subText;
    protected string test;
+   protected ExTextBox textBox;
 
    public Form1()
    {
@@ -44,6 +48,22 @@ public partial class Form1 : Form, IMessageQueueListener
       });
       _subText = nil;
       test = "";
+
+      textBox = new ExTextBox(this);
+      textBox.SetUpInPanel(panel4);
+      textBox.Allow = (Pattern)"^/d*$";
+      textBox.RefreshOnTextChange = true;
+      textBox.Paint += (_, e) =>
+      {
+         if (!textBox.IsAllowed)
+         {
+            using var pen = new Pen(Color.Red, 4);
+            pen.DashStyle = DashStyle.Dot;
+            var point1 = ClientRectangle.Location;
+            var point2 = point1 with { X = ClientRectangle.Right };
+            e.Graphics.DrawLine(pen, point1, point2);
+         }
+      };
 
       /*uiAction.Click += (_, _) =>
       {
