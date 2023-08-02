@@ -2,12 +2,14 @@
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 using Core.Applications.Messaging;
 using Core.Computers;
 using Core.Enumerables;
 using Core.Matching;
 using Core.Monads;
+using Core.Numbers;
 using Core.Strings;
 using Core.Strings.Emojis;
 using Core.WinForms;
@@ -159,5 +161,18 @@ public partial class Form1 : Form, IMessageQueueListener
       }
 
       uiAction.Message($"/left-angle.{test}/right-angle");
+   }
+
+   protected void button4_Click(object sender, EventArgs e)
+   {
+      uiAction.Maximum = 100;
+      uiAction.ClickToCancel = true;
+      uiAction.Stopwatch = true;
+      uiAction.StartStopwatch();
+      for (var i = 0; i < 100; i++)
+      {
+         uiAction.Progress(i.ToWords());
+         Thread.Sleep(500);
+      }
    }
 }

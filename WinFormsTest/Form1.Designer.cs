@@ -39,6 +39,7 @@
          this.textBox1 = new System.Windows.Forms.TextBox();
          this.panel3 = new System.Windows.Forms.Panel();
          this.panel4 = new System.Windows.Forms.Panel();
+         this.button4 = new System.Windows.Forms.Button();
          this.SuspendLayout();
          // 
          // button1
@@ -91,37 +92,49 @@
          // 
          // panel2
          // 
-         this.panel2.Location = new System.Drawing.Point(12, 99);
+         this.panel2.Location = new System.Drawing.Point(12, 152);
          this.panel2.Name = "panel2";
          this.panel2.Size = new System.Drawing.Size(20, 20);
          this.panel2.TabIndex = 4;
          // 
          // textBox1
          // 
-         this.textBox1.Location = new System.Drawing.Point(38, 99);
+         this.textBox1.Location = new System.Drawing.Point(38, 152);
          this.textBox1.Name = "textBox1";
          this.textBox1.Size = new System.Drawing.Size(750, 20);
          this.textBox1.TabIndex = 5;
          // 
          // panel3
          // 
-         this.panel3.Location = new System.Drawing.Point(12, 125);
+         this.panel3.Location = new System.Drawing.Point(12, 178);
          this.panel3.Name = "panel3";
          this.panel3.Size = new System.Drawing.Size(776, 20);
          this.panel3.TabIndex = 6;
          // 
          // panel4
          // 
-         this.panel4.Location = new System.Drawing.Point(12, 151);
+         this.panel4.Location = new System.Drawing.Point(12, 204);
          this.panel4.Name = "panel4";
          this.panel4.Size = new System.Drawing.Size(776, 31);
          this.panel4.TabIndex = 7;
+         // 
+         // button4
+         // 
+         this.button4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+         this.button4.Location = new System.Drawing.Point(713, 99);
+         this.button4.Name = "button4";
+         this.button4.Size = new System.Drawing.Size(75, 23);
+         this.button4.TabIndex = 8;
+         this.button4.Text = "button4";
+         this.button4.UseVisualStyleBackColor = true;
+         this.button4.Click += new System.EventHandler(this.button4_Click);
          // 
          // Form1
          // 
          this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
          this.ClientSize = new System.Drawing.Size(800, 450);
+         this.Controls.Add(this.button4);
          this.Controls.Add(this.panel4);
          this.Controls.Add(this.panel3);
          this.Controls.Add(this.textBox1);
@@ -148,6 +161,7 @@
       private System.Windows.Forms.TextBox textBox1;
       private System.Windows.Forms.Panel panel3;
       private System.Windows.Forms.Panel panel4;
+      private System.Windows.Forms.Button button4;
    }
 }
 

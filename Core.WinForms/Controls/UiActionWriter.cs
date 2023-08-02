@@ -140,6 +140,12 @@ public class UiActionWriter
 
    public TextFormatFlags Flags { get; set; }
 
+   public bool AutoSize
+   {
+      get => autoSize;
+      set => autoSize = value;
+   }
+
    public Size TextSize(string text, Graphics graphics)
    {
       var font = _font | (() => new Font("Consolas", 12f));
