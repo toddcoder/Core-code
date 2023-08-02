@@ -128,16 +128,17 @@ public partial class Form1 : Form, IMessageQueueListener
    {
       uiAction.Success("Open Pull Request");
       uiAction.Legend("pull request");
-      uiAction.SubText("http://tfs/LS/_git/Estream/pullrequest/30868?_a=overview").Set.Alignment(CardinalAlignment.SouthWest).FontSize(8);
+      uiAction.SubText("http://tfs/LS/_git/Estream/pullrequest/30868?_a=overview").Set.Alignment(CardinalAlignment.SouthWest).FontSize(8)
+         .IncludeFloor(false);
       uiAction.Refresh();
    }
 
    protected void button3_Click(object sender, EventArgs e)
    {
-     uiAction.Busy("Migration_202308022023_1003_Delete_Everything_That_You_Care_About.sql");
-     uiAction.ClickToCancel = true;
-     uiAction.Stopwatch = true;
-     uiAction.StartStopwatch();
+      uiAction.Busy("Migration_202308022023_1003_Delete_Everything_That_You_Care_About.sql");
+      uiAction.ClickToCancel = true;
+      uiAction.Stopwatch = true;
+      uiAction.StartStopwatch();
    }
 
    public string Listener => "form1";

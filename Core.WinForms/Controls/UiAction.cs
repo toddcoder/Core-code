@@ -1980,22 +1980,34 @@ public class UiAction : UserControl
       }
    }
 
-   protected void setFloorAndCeiling(int x, int y, Size size) => setFloorAndCeiling(new Rectangle(new Point(x, y), size));
+   protected void setFloorAndCeiling(int x, int y, Size size, bool includeFloor, bool includeCeiling)
+   {
+      setFloorAndCeiling(new Rectangle(new Point(x, y), size), includeFloor, includeCeiling);
+   }
 
-   protected void setFloorAndCeiling(int x, int y, int width, int height) => setFloorAndCeiling(x, y, new Size(width, height));
+   protected void setFloorAndCeiling(int x, int y, int width, int height, bool includeFloor, bool includeCeiling)
+   {
+      setFloorAndCeiling(x, y, new Size(width, height), includeFloor, includeCeiling);
+   }
 
-   protected void setFloorAndCeiling(SubText subText) => setFloorAndCeiling(subText.X, subText.Y, subText.TextSize(nil).measuredSize);
+   protected void setFloorAndCeiling(SubText subText)
+   {
+      setFloorAndCeiling(subText.X, subText.Y, subText.TextSize(nil).measuredSize, subText.IncludeFloor, subText.IncludeCeiling);
+   }
 
-   protected void setFloorAndCeiling(Rectangle rectangle)
+   protected void setFloorAndCeiling(Rectangle rectangle, bool includeFloor, bool includeCeiling)
    {
       var halfway = ClientRectangle.Width / 2;
       var floor = rectangle.Left + rectangle.Width;
       var isLeft = floor < halfway;
       if (isLeft)
       {
-         setFloor(floor);
+         if (includeFloor)
+         {
+            setFloor(floor);
+         }
       }
-      else
+      else if (includeCeiling)
       {
          setCeiling(rectangle.Left);
       }
@@ -2008,7 +2020,7 @@ public class UiAction : UserControl
 
       if (checkStyle is not CheckStyle.None)
       {
-         setFloorAndCeiling(2, 2, 12, 12);
+         setFloorAndCeiling(2, 2, 12, 12, true, true);
       }
 
       if (legends.Peek() is (true, var legend))
@@ -2028,7 +2040,7 @@ public class UiAction : UserControl
          var size = TextRenderer.MeasureText(elapsed, font, Size.Empty);
          var location = new Point(ClientRectangle.Width - size.Width - 8, 4);
          var rectangle = new Rectangle(location, size);
-         setFloorAndCeiling(rectangle);
+         setFloorAndCeiling(rectangle, true, true);
       }
 
       if (clickToCancel)
@@ -2039,7 +2051,7 @@ public class UiAction : UserControl
          var y = ClientRectangle.Height - textSize.Height - 8;
          var textLocation = new Point(x, y);
          var textBounds = new Rectangle(textLocation, textSize);
-         setFloorAndCeiling(textBounds);
+         setFloorAndCeiling(textBounds, true, true);
       }
    }
 

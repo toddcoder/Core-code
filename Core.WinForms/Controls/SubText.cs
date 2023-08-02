@@ -40,6 +40,8 @@ public class SubText : IEquatable<SubText>
       FontSize = 12;
       FontStyle = FontStyle.Regular;
       Outline = false;
+      IncludeFloor = true;
+      IncludeCeiling = true;
    }
 
    public string Text { get; set; }
@@ -96,6 +98,10 @@ public class SubText : IEquatable<SubText>
    public void SetAlignment(CardinalAlignment alignment) => _alignment = alignment;
 
    public void SetMargin(int margin) => this.margin = margin;
+
+   public bool IncludeFloor { get; set; }
+
+   public bool IncludeCeiling { get; set; }
 
    public (Size measuredSize, string text, TextFormatFlags flags, Font font) TextSize(Maybe<Graphics> _graphics)
    {

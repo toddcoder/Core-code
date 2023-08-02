@@ -89,6 +89,18 @@ public class SubTextSet
       return this;
    }
 
+   public SubTextSet IncludeFloor(bool includeFloor = true)
+   {
+      subText.IncludeFloor = includeFloor;
+      return this;
+   }
+
+   public SubTextSet IncludeCeiling(bool includeCeiling = true)
+   {
+      subText.IncludeCeiling = includeCeiling;
+      return this;
+   }
+
    protected Size getTextSize()
    {
       var text = subText.Text;

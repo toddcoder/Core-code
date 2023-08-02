@@ -209,7 +209,7 @@ public class UiActionWriter
                   rectangle = rectangle with { Width = ceiling - rectangle.X };
                }
 
-               var writer = new AutoSizingWriter(text, rectangle, color, font) { BackColor = Color.Red };
+               var writer = new AutoSizingWriter(text, rectangle, color, font);
                writer.Write(graphics);
             }
             else
