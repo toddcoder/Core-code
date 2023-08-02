@@ -2026,11 +2026,6 @@ public class UiAction : UserControl
          setFloorAndCeiling(2, 2, 12, 12, true, true);
       }
 
-      if (legends.Peek() is (true, var legend))
-      {
-         setFloorAndCeiling(legend);
-      }
-
       foreach (var subText in subTexts.Values)
       {
          setFloorAndCeiling(subText);
