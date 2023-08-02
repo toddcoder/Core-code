@@ -1,6 +1,7 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
 using Core.Monads;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Controls;
 
@@ -53,7 +54,7 @@ public class LabelProcessor
    public void OnPaint(Graphics graphics)
    {
       using var labelFont = new Font(font, FontStyle.Bold);
-      var writer = new UiActionWriter(CardinalAlignment.West)
+      var writer = new UiActionWriter(CardinalAlignment.West, false, nil, nil)
       {
          Rectangle = labelRectangle,
          Font = labelFont,

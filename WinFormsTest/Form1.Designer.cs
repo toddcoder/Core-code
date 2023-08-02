@@ -54,6 +54,7 @@
          // 
          // button2
          // 
+         this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
          this.button2.Location = new System.Drawing.Point(713, 41);
          this.button2.Name = "button2";
          this.button2.Size = new System.Drawing.Size(75, 23);
@@ -64,6 +65,7 @@
          // 
          // button3
          // 
+         this.button3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
          this.button3.Location = new System.Drawing.Point(713, 70);
          this.button3.Name = "button3";
          this.button3.Size = new System.Drawing.Size(75, 23);
@@ -76,9 +78,9 @@
          // 
          this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-         this.panel1.Location = new System.Drawing.Point(12, 41);
+         this.panel1.Location = new System.Drawing.Point(12, 23);
          this.panel1.Name = "panel1";
-         this.panel1.Size = new System.Drawing.Size(695, 40);
+         this.panel1.Size = new System.Drawing.Size(695, 70);
          this.panel1.TabIndex = 3;
          // 
          // imageList1

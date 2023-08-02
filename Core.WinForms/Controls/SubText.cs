@@ -11,6 +11,7 @@ namespace Core.WinForms.Controls;
 public class SubText : IEquatable<SubText>
 {
    protected Size size;
+   protected bool clickGlyph;
    protected bool invert;
    protected bool transparentBackground;
    protected Maybe<Color> _foreColor;
@@ -18,12 +19,13 @@ public class SubText : IEquatable<SubText>
    protected Maybe<CardinalAlignment> _alignment;
    protected int margin;
 
-   public SubText(string text, int x, int y, Size size, bool invert = false, bool transparentBackground = false)
+   public SubText(string text, int x, int y, Size size, bool clickGlyph, bool invert = false, bool transparentBackground = false)
    {
       Text = text;
       X = x;
       Y = y;
       this.size = size;
+      this.clickGlyph = clickGlyph;
       this.invert = invert;
       this.transparentBackground = transparentBackground;
 
@@ -32,7 +34,7 @@ public class SubText : IEquatable<SubText>
       _foreColor = nil;
       _backColor = nil;
       _alignment = nil;
-      margin = 0;
+      margin = 1;
 
       FontName = "Consolas";
       FontSize = 12;
@@ -45,6 +47,8 @@ public class SubText : IEquatable<SubText>
    public int X { get; set; }
 
    public int Y { get; set; }
+
+   public Size Size => size;
 
    public SubTextSet Set => new(this, size);
 
@@ -65,7 +69,7 @@ public class SubText : IEquatable<SubText>
    public bool TransparentBackground
    {
       get => transparentBackground;
-      set=> transparentBackground = value;
+      set => transparentBackground = value;
    }
 
    public Guid Id { get; }
@@ -93,7 +97,7 @@ public class SubText : IEquatable<SubText>
 
    public void SetMargin(int margin) => this.margin = margin;
 
-   protected (Size measuredSize, string text, TextFormatFlags flags, Font font) textSize(Maybe<Graphics> _graphics)
+   public (Size measuredSize, string text, TextFormatFlags flags, Font font) TextSize(Maybe<Graphics> _graphics)
    {
       var text = Text.EmojiSubstitutions();
       var font = new Font(FontName, FontSize, FontStyle);
@@ -116,13 +120,13 @@ public class SubText : IEquatable<SubText>
    {
       if (_alignment is (true, var alignment))
       {
-         var (measuredSize, _, _, _) = textSize(nil);
+         var (measuredSize, _, _, _) = TextSize(nil);
 
          int centerX() => (clientRectangle.Width - measuredSize.Width) / 2 + clientRectangle.X;
          int centerY() => (clientRectangle.Height - measuredSize.Height) / 2 + clientRectangle.Y;
          int nearX() => clientRectangle.X + margin;
          int nearY() => clientRectangle.Y + margin;
-         int farX() => clientRectangle.Right - measuredSize.Width - margin;
+         int farX() => clientRectangle.Right - measuredSize.Width - margin - (clickGlyph ? 8 : 0);
          int farY() => clientRectangle.Bottom - measuredSize.Height - margin;
 
          switch (alignment)
@@ -169,7 +173,7 @@ public class SubText : IEquatable<SubText>
 
    protected SubText draw(Graphics graphics, Color foreColor, Color backColor)
    {
-      var (measuredSize, text, flags, font) = textSize(graphics);
+      var (measuredSize, text, flags, font) = TextSize(graphics);
 
       try
       {

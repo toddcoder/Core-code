@@ -34,9 +34,11 @@ public partial class Form1 : Form, IMessageQueueListener
 
       UiAction.BusyStyle = BusyStyle.BarberPole;
 
-      uiAction = new UiAction(this);
+      uiAction = new UiAction(this) { AutoSizeText = true };
       uiAction.SetUpInPanel(panel1);
       uiAction.Message("Progress /arrow /paws-left.end/paws-right");
+      uiAction.Click += (_, _) => uiAction.Refresh();
+      uiAction.ClickText = "Refresh";
 
       FileName sourceFile = @"C:\Temp\GoogleChromeStandaloneEnterprise_108.0.5359.125_x64_tw60560-67391.msi";
       FolderName targetFolder = @"C:\Users\tebennett\Working";
@@ -82,7 +84,7 @@ public partial class Form1 : Form, IMessageQueueListener
       };
       uiAction.RunWorkerCompleted += (_, _) => uiAction.ClickToCancel = false;*/
 
-      uiButton = new UiAction(this);
+      /*uiButton = new UiAction(this);
       uiButton.SetUpInPanel(panel2);
       uiButton.Image = imageList1.Images[0];
       uiButton.CardinalAlignment = CardinalAlignment.Center;
@@ -92,7 +94,7 @@ public partial class Form1 : Form, IMessageQueueListener
 
       uiTest = new UiAction(this);
       uiTest.SetUpInPanel(panel3);
-      uiTest.Message("Test");
+      uiTest.Message("Test");*/
 
       MessageQueue.RegisterListener(this, "button1", "button2", "button3");
 
@@ -112,49 +114,30 @@ public partial class Form1 : Form, IMessageQueueListener
 
    protected void button1_Click(object sender, EventArgs e)
    {
-      var texts = Enumerable.Range(0, 5).Select(i => i switch
-      {
-         0 => "one",
-         1 => "two",
-         2 => "three",
-         3 => "four",
-         4 => "five",
-         _ => "???"
-      }).ToArray();
-      uiAction.RectangleCount = 5;
-      uiAction.MouseMoveOnRectangle += (_, e) =>
-      {
-         var text = texts[e.RectangleIndex];
-         var rectangle = uiAction.Rectangles[e.RectangleIndex];
-         using var pen = new Pen(Color.White);
-         using var graphics = uiAction.CreateGraphics();
-         graphics.DrawRectangle(pen, rectangle);
-         var writer = new UiActionWriter(CardinalAlignment.Center)
-         {
-            Color = Color.White,
-            Font = uiAction.Font,
-            Rectangle = rectangle
-         };
-         writer.Write(text, graphics);
-      };
-      uiAction.ClickOnRectangle += (_, e) =>
-      {
-         texts[e.RectangleIndex] = $"/left-angle.{texts[e.RectangleIndex]}/right-angle".EmojiSubstitutions();
-         uiAction.Refresh();
-      };
-      uiAction.ClickText = "test";
-      uiAction.ClickGlyph = true;
+      uiAction.Success("Fixed project for f-ct-remove-unneeded-report-config-grp3-2r");
+      uiAction.Legend("pull request");
+      uiAction.Refresh();
+      uiAction.SubText("r-6.51.0-grp3 |20").Set.Alignment(CardinalAlignment.NorthEast).ForeColor(Color.White).BackColor(Color.Magenta).Outline()
+         .FontSize(8);
+      uiAction.Refresh();
+      uiAction.SubText("1 file saved").Set.Alignment(CardinalAlignment.SouthWest).FontSize(8);
       uiAction.Refresh();
    }
 
    protected void button2_Click(object sender, EventArgs e)
    {
-      uiAction.Busy(true);
+      uiAction.Success("Open Pull Request");
+      uiAction.Legend("pull request");
+      uiAction.SubText("http://tfs/LS/_git/Estream/pullrequest/30868?_a=overview").Set.Alignment(CardinalAlignment.SouthWest).FontSize(8);
+      uiAction.Refresh();
    }
 
    protected void button3_Click(object sender, EventArgs e)
    {
-      uiTest.Busy(true);
+     uiAction.Busy("Migration_202308022023_1003_Delete_Everything_That_You_Care_About.sql");
+     uiAction.ClickToCancel = true;
+     uiAction.Stopwatch = true;
+     uiAction.StartStopwatch();
    }
 
    public string Listener => "form1";

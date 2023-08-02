@@ -119,6 +119,7 @@
     <Compile Include="Controls\ValidatedArgs.cs" />
     <Compile Include="ControlWrappers\MessageStyle.cs" />
     <Compile Include="Documents\MenuBuilderFunctions.cs" />
+    <Compile Include="Drawing\AutoSizingWriter.cs" />
     <Compile Include="RectangleExtensions.cs" />
     <Compile Include="StandardDialog.cs" />
     <Compile Include="Documents\Colorizer.cs" />
@@ -171,5 +172,6 @@
       <Name>Core</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

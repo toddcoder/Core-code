@@ -6,6 +6,7 @@ using Core.Monads;
 using Core.Numbers;
 using Core.Strings;
 using Core.Strings.Emojis;
+using Core.WinForms.Drawing;
 using static Core.Monads.Lazy.LazyMonads;
 using static Core.Monads.MonadFunctions;
 
@@ -75,6 +76,9 @@ public class UiActionWriter
       return flags;
    }
 
+   protected bool autoSize;
+   protected Maybe<int> _floor;
+   protected Maybe<int> _ceiling;
    protected CheckStyle checkStyle;
    protected Maybe<string> _emptyTextTitle;
    protected bool isFile;
@@ -82,9 +86,12 @@ public class UiActionWriter
    protected Result<Font> _font;
    protected Result<Color> _color;
 
-   public UiActionWriter(CardinalAlignment messageAlignment)
+   public UiActionWriter(CardinalAlignment messageAlignment, bool autoSize, Maybe<int> _floor, Maybe<int> _ceiling)
    {
       Align(messageAlignment);
+      this.autoSize = autoSize;
+      this._floor = _floor;
+      this._ceiling = _ceiling;
 
       isFile = false;
       checkStyle = CheckStyle.None;
@@ -190,9 +197,27 @@ public class UiActionWriter
                font = new Font(font, FontStyle.Italic);
             }
 
-            TextRenderer.DrawText(graphics, text, font, rectangle, color, Flags);
+            if (autoSize)
+            {
+               if (_floor is (true, var floor and >= 0))
+               {
+                  rectangle = rectangle with { X = floor, Width = rectangle.Width - floor };
+               }
 
-            if (checkStyle != CheckStyle.None)
+               if (_ceiling is (true, var ceiling))
+               {
+                  rectangle = rectangle with { Width = ceiling - rectangle.X };
+               }
+
+               var writer = new AutoSizingWriter(text, rectangle, color, font) { BackColor = Color.Red };
+               writer.Write(graphics);
+            }
+            else
+            {
+               TextRenderer.DrawText(graphics, text, font, rectangle, color, Flags);
+            }
+
+            if (checkStyle is not CheckStyle.None)
             {
                using var pen = new Pen(color, 1);
                var location = new Point(2, 2);
@@ -200,7 +225,7 @@ public class UiActionWriter
                var boxRectangle = new Rectangle(location, size);
                graphics.DrawRectangle(pen, boxRectangle);
 
-               if (checkStyle == CheckStyle.Checked)
+               if (checkStyle is CheckStyle.Checked)
                {
                   boxRectangle.Offset(1, 0);
                   boxRectangle.Inflate(8, 8);

@@ -13,6 +13,7 @@ using Core.DataStructures;
 using Core.Dates.DateIncrements;
 using Core.Monads;
 using Core.Monads.Lazy;
+using Core.Numbers;
 using Core.Strings;
 using Core.WinForms.ControlWrappers;
 using static Core.Lambdas.LambdaFunctions;
@@ -271,6 +272,8 @@ public class UiAction : UserControl
    protected Maybe<TaskBarProgress> _taskBarProgress;
    protected bool cancelled;
    protected Rectangle[] rectangles;
+   protected Maybe<int> _floor;
+   protected Maybe<int> _ceiling;
 
    public event EventHandler<AutomaticMessageArgs> AutomaticMessage;
    public event EventHandler<PaintEventArgs> Painting;
@@ -291,7 +294,7 @@ public class UiAction : UserControl
    public event EventHandler<UiActionRectangleArgs> MouseMoveOnRectangle;
    public event EventHandler<UiActionRectanglePaintArgs> PaintOnRectangle;
 
-   public UiAction(Control control, bool is3D = true)
+   public UiAction(Control control, bool is3D = false)
    {
       Is3D = is3D;
 
@@ -317,7 +320,7 @@ public class UiAction : UserControl
       _lastStyle = nil;
       _image = nil;
       subTexts = new Hash<Guid, SubText>();
-      CheckStyle = CheckStyle.None;
+      checkStyle = CheckStyle.None;
       MessageAlignment = CardinalAlignment.Center;
       stopwatch = new Lazy<Stopwatch>(() => new Stopwatch());
 
@@ -425,6 +428,8 @@ public class UiAction : UserControl
          }
       };
 
+      Resize += (_, _) => determineFloorAndCeiling();
+
       _foreColor = nil;
       _backColor = nil;
       _style = nil;
@@ -486,7 +491,11 @@ public class UiAction : UserControl
       _taskBarProgress = nil;
       cancelled = true;
       rectangles = Array.Empty<Rectangle>();
+      _floor = nil;
+      _ceiling = nil;
    }
+
+   public bool AutoSizeText { get; set; }
 
    protected BusyProcessor getBusyProcessor(Rectangle clientRectangle) => busyStyle switch
    {
@@ -545,7 +554,7 @@ public class UiAction : UserControl
       var size = TextRenderer.MeasureText("working", font);
       var y = ClientSize.Height - size.Height - 4;
 
-      return new SubText("working", 4, y, ClientSize).Set.FontSize(8).Invert().Outline().End;
+      return new SubText("working", 4, y, ClientSize, ClickGlyph).Set.FontSize(8).Invert().Outline().End;
    }
 
    public UiActionType Type
@@ -583,6 +592,7 @@ public class UiAction : UserControl
       {
          checkStyle = value;
          CheckStyleChanged?.Invoke(this, new CheckStyleChangedArgs(id, checkStyle));
+         determineFloorAndCeiling();
          Refresh();
       }
    }
@@ -797,6 +807,7 @@ public class UiAction : UserControl
    {
       this.Do(() =>
       {
+         determineFloorAndCeiling();
          Invalidate();
          Update();
       });
@@ -1227,7 +1238,7 @@ public class UiAction : UserControl
 
       if (!Enabled)
       {
-         var disabledWriter = new UiActionWriter(MessageAlignment)
+         var disabledWriter = new UiActionWriter(MessageAlignment, AutoSizeText, _floor, _ceiling)
          {
             Rectangle = ClientRectangle,
             Font = Font,
@@ -1279,7 +1290,7 @@ public class UiAction : UserControl
             var elapsed = stopwatch.Value.Elapsed.ToString(@"mm\:ss");
             using var font = new Font("Consolas", 10);
             var size = TextRenderer.MeasureText(e.Graphics, elapsed, font);
-            var location = new Point(clientRectangle.Width - size.Width - 20, 4);
+            var location = new Point(clientRectangle.Width - size.Width - 8, 4);
             var rectangle = new Rectangle(location, size);
             if (StopwatchInverted)
             {
@@ -1306,7 +1317,7 @@ public class UiAction : UserControl
          UiActionType.Busy or UiActionType.BusyText or UiActionType.ProgressDefinite or UiActionType.MuteProgress => CheckStyle.None,
          _ => CheckStyle
       };
-      var writer = new Lazy<UiActionWriter>(() => new UiActionWriter(MessageAlignment)
+      var writer = new Lazy<UiActionWriter>(() => new UiActionWriter(MessageAlignment, AutoSizeText, _floor, _ceiling)
       {
          Rectangle = clientRectangle,
          Font = getFont(),
@@ -1316,6 +1327,8 @@ public class UiAction : UserControl
          IsFile = IsFile
       });
       var httpWriter = new Lazy<HttpWriter>(() => new HttpWriter(text, clientRectangle, getFont()));
+
+      determineFloorAndCeiling();
 
       switch (type)
       {
@@ -1472,7 +1485,7 @@ public class UiAction : UserControl
    {
       if (clickToCancel)
       {
-         using var font = new Font("Courier", 9);
+         using var font = new Font("Consolas", 9);
          var textSize = TextRenderer.MeasureText(e.Graphics, CLICK_TO_CANCEL, font);
          var x = clientRectangle.Width - textSize.Width - 8;
          var y = clientRectangle.Height - textSize.Height - 8;
@@ -1943,19 +1956,109 @@ public class UiAction : UserControl
       }
    }
 
+   protected void setFloor(int amount)
+   {
+      if (_floor is (true, var floor))
+      {
+         _floor = floor.MaxOf(amount);
+      }
+      else
+      {
+         _floor = amount;
+      }
+   }
+
+   protected void setCeiling(int amount)
+   {
+      if (_ceiling is (true, var ceiling))
+      {
+         _ceiling = ceiling.MinOf(amount);
+      }
+      else
+      {
+         _ceiling = amount;
+      }
+   }
+
+   protected void setFloorAndCeiling(int x, int y, Size size) => setFloorAndCeiling(new Rectangle(new Point(x, y), size));
+
+   protected void setFloorAndCeiling(int x, int y, int width, int height) => setFloorAndCeiling(x, y, new Size(width, height));
+
+   protected void setFloorAndCeiling(SubText subText) => setFloorAndCeiling(subText.X, subText.Y, subText.TextSize(nil).measuredSize);
+
+   protected void setFloorAndCeiling(Rectangle rectangle)
+   {
+      var halfway = ClientRectangle.Width / 2;
+      var floor = rectangle.Left + rectangle.Width;
+      var isLeft = floor < halfway;
+      if (isLeft)
+      {
+         setFloor(floor);
+      }
+      else
+      {
+         setCeiling(rectangle.Left);
+      }
+   }
+
+   protected void determineFloorAndCeiling()
+   {
+      _floor = nil;
+      _ceiling = nil;
+
+      if (checkStyle is not CheckStyle.None)
+      {
+         setFloorAndCeiling(2, 2, 12, 12);
+      }
+
+      if (legends.Peek() is (true, var legend))
+      {
+         setFloorAndCeiling(legend);
+      }
+
+      foreach (var subText in subTexts.Values)
+      {
+         setFloorAndCeiling(subText);
+      }
+
+      if (Stopwatch)
+      {
+         var elapsed = stopwatch.Value.Elapsed.ToString(@"mm\:ss");
+         using var font = new Font("Consolas", 10);
+         var size = TextRenderer.MeasureText(elapsed, font, Size.Empty);
+         var location = new Point(ClientRectangle.Width - size.Width - 8, 4);
+         var rectangle = new Rectangle(location, size);
+         setFloorAndCeiling(rectangle);
+      }
+
+      if (clickToCancel)
+      {
+         using var font = new Font("Consolas", 9);
+         var textSize = TextRenderer.MeasureText(CLICK_TO_CANCEL, font, Size.Empty);
+         var x = ClientRectangle.Width - textSize.Width - 8;
+         var y = ClientRectangle.Height - textSize.Height - 8;
+         var textLocation = new Point(x, y);
+         var textBounds = new Rectangle(textLocation, textSize);
+         setFloorAndCeiling(textBounds);
+      }
+   }
+
    public SubText SubText(SubText subText)
    {
       subTexts[subText.Id] = subText;
+      determineFloorAndCeiling();
+
       return subText;
    }
 
-   public SubText SubText(string text, int x, int y) => SubText(new SubText(text, x, y, ClientSize));
+   public SubText SubText(string text, int x, int y) => SubText(new SubText(text, x, y, ClientSize, ClickGlyph));
 
    public SubText SubText(string text) => SubText(text, 0, 0);
 
    public void RemoveSubText(Guid id)
    {
       subTexts.Remove(id);
+      determineFloorAndCeiling();
       refresh();
    }
 
@@ -1964,6 +2067,7 @@ public class UiAction : UserControl
    public void ClearSubTexts()
    {
       subTexts.Clear();
+      determineFloorAndCeiling();
       refresh();
    }
 
@@ -2085,6 +2189,8 @@ public class UiAction : UserControl
          .End;
       legends.Push(legend);
 
+      determineFloorAndCeiling();
+
       return legend;
    }
 
@@ -2097,6 +2203,8 @@ public class UiAction : UserControl
          .Invert(invert)
          .End;
       legends.Push(legend);
+
+      determineFloorAndCeiling();
 
       return legend;
    }
