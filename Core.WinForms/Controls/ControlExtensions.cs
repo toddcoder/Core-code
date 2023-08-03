@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 namespace Core.WinForms.Controls;
 
-public static class ControlSetupExtensions
+public static class ControlExtensions
 {
    private static void setUpFont(Control control, string fontName, float fontSize)
    {
@@ -65,10 +65,12 @@ public static class ControlSetupExtensions
    }
 
    public static void SetupInFlowLayoutPanel(this Control control, FlowLayoutPanel flowLayoutPanel, string fontName = "Consolas",
-      float fontSize = 12f,DockStyle dockStyle = DockStyle.Fill)
+      float fontSize = 12f, DockStyle dockStyle = DockStyle.Fill)
    {
       control.Dock = dockStyle;
       flowLayoutPanel.Controls.Add(control);
       setUpFont(control, fontName, fontSize);
    }
+
+   public static Point CursorPosition(this Control control) => control.PointToClient(Cursor.Position);
 }
