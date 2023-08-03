@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
@@ -122,7 +123,7 @@ public partial class Form1 : Form, IMessageQueueListener
       uiAction.SubText("r-6.51.0-grp3 |20").Set.Alignment(CardinalAlignment.NorthEast).ForeColor(Color.White).BackColor(Color.Magenta).Outline()
          .FontSize(8);
       uiAction.Refresh();
-      uiAction.SubText("1 file saved").Set.Alignment(CardinalAlignment.SouthWest).FontSize(8);
+      uiAction.SubText("1 file saved").Set.Alignment(CardinalAlignment.SouthWest).FontSize(8).Invert();
       uiAction.Refresh();
    }
 
@@ -165,14 +166,19 @@ public partial class Form1 : Form, IMessageQueueListener
 
    protected void button4_Click(object sender, EventArgs e)
    {
-      uiAction.Maximum = 100;
+      var list = new List<string>();
+
+      uiAction.Maximum = 20;
       uiAction.ClickToCancel = true;
       uiAction.Stopwatch = true;
       uiAction.StartStopwatch();
-      for (var i = 0; i < 100; i++)
+      for (var i = 0; i < 20; i++)
       {
-         uiAction.Progress(i.ToWords());
+         list.Add(i.ToWords());
+         uiAction.Progress(list.ToString(", "));
          Thread.Sleep(500);
       }
+
+      uiAction.Success(list.ToString(", "));
    }
 }

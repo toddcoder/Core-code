@@ -34,7 +34,7 @@ public class SubText : IEquatable<SubText>
       _foreColor = nil;
       _backColor = nil;
       _alignment = nil;
-      margin = 1;
+      margin = 2;
 
       FontName = "Consolas";
       FontSize = 12;

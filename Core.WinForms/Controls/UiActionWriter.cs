@@ -215,7 +215,7 @@ public class UiActionWriter
                   rectangle = rectangle with { Width = ceiling - rectangle.X };
                }
 
-               var writer = new AutoSizingWriter(text, rectangle, color, font);
+               var writer = new AutoSizingWriter(text, rectangle, color, font, isFile);
                writer.Write(graphics);
             }
             else

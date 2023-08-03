@@ -2,7 +2,6 @@
 using System.Windows.Forms;
 using Core.Monads;
 using static Core.Monads.MonadFunctions;
-using static Core.Monads.Monads;
 
 namespace Core.WinForms.Drawing;
 
@@ -15,10 +14,10 @@ public class AutoSizingWriter
    protected Maybe<Color> _backColor;
    protected int minimumSize;
    protected int maximumSize;
-   protected bool smallestOnFail;
    protected TextFormatFlags flags;
+   protected TextFormatFlags failFlags;
 
-   public AutoSizingWriter(string text, Rectangle rectangle, Color foreColor, Font font)
+   public AutoSizingWriter(string text, Rectangle rectangle, Color foreColor, Font font, bool isFile)
    {
       this.text = text;
       this.rectangle = rectangle;
@@ -27,11 +26,11 @@ public class AutoSizingWriter
 
       _backColor = nil;
 
-      minimumSize = 8;
+      minimumSize = 6;
       maximumSize = 12;
-      smallestOnFail = true;
 
       flags = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter;
+      failFlags = flags | (isFile ? TextFormatFlags.PathEllipsis : TextFormatFlags.EndEllipsis);
    }
 
    public Maybe<Color> BackColor
@@ -52,27 +51,20 @@ public class AutoSizingWriter
       set => maximumSize = value;
    }
 
-   public bool SmallestOnFail
-   {
-      get => smallestOnFail;
-      set => smallestOnFail = value;
-   }
-
    public TextFormatFlags Flags
    {
       get => flags;
       set => flags = value;
    }
 
+   protected static Font getFont(Font originalFont, int fontSize) => new(originalFont.Name, fontSize, originalFont.Style);
+
    public static Maybe<Font> AdjustedFont(Graphics g, string text, Font originalFont, int containerWidth, int minimumSize, int maximumSize,
-      bool smallestOnFail, TextFormatFlags flags)
+      TextFormatFlags flags)
    {
-      var _testFont = monads.maybe<Font>();
       for (var size = maximumSize; size >= minimumSize; size--)
       {
-         var testFont = new Font(originalFont.Name, size, originalFont.Style);
-         _testFont = testFont;
-
+         var testFont = getFont(originalFont, size);
          var textWidth = TextRenderer.MeasureText(g, text, testFont, Size.Empty, flags).Width;
 
          if (containerWidth > textWidth)
@@ -81,21 +73,14 @@ public class AutoSizingWriter
          }
       }
 
-      if (smallestOnFail && _testFont is (true, var font))
-      {
-         return font;
-      }
-      else
-      {
-         return originalFont;
-      }
+      return nil;
    }
 
    public void Write(Graphics g)
    {
       g.HighQuality();
 
-      var _adjustedFont = AdjustedFont(g, text, font, rectangle.Width, minimumSize, maximumSize, smallestOnFail, flags);
+      var _adjustedFont = AdjustedFont(g, text, font, rectangle.Width, minimumSize, maximumSize, flags);
       if (_adjustedFont is (true, var adjustedFont))
       {
          if (_backColor is (true, var backColor))
@@ -105,6 +90,11 @@ public class AutoSizingWriter
          }
 
          TextRenderer.DrawText(g, text, adjustedFont, rectangle, foreColor, flags);
+      }
+      else
+      {
+         using var smallestFont = getFont(font, minimumSize);
+         TextRenderer.DrawText(g, text, smallestFont, rectangle, foreColor, failFlags);
       }
    }
 }
