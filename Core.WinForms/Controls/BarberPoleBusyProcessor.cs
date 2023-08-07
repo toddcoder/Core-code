@@ -43,11 +43,6 @@ public class BarberPoleBusyProcessor : BusyProcessor
       using var brush = new SolidBrush(Color.LightGreen);
       g.FillRectangle(brush, clientRectangle);
 
-      using var lightPen = new Pen(Color.FromArgb(128, Color.AntiqueWhite), 20);
-      g.DrawLine(lightPen, clientRectangle.Left, lightTop, clientRectangle.Right, lightTop);
-      using var lighterPen = new Pen(Color.FromArgb(128, Color.White), 8);
-      g.DrawLine(lighterPen, clientRectangle.Left, lightTop, clientRectangle.Right, lightTop);
-
       using var pen = new Pen(Color.Blue, width);
       var actualLeft = left - 2 * width;
       for (var i = 0; i < 10; i++)
@@ -55,5 +50,10 @@ public class BarberPoleBusyProcessor : BusyProcessor
          g.DrawLine(pen, actualLeft, bottom, actualLeft + SKEW, top);
          actualLeft += 2 * width;
       }
+
+      using var lightPen = new Pen(Color.FromArgb(128, Color.AntiqueWhite), 20);
+      g.DrawLine(lightPen, clientRectangle.Left, lightTop, clientRectangle.Right, lightTop);
+      using var lighterPen = new Pen(Color.FromArgb(128, Color.White), 8);
+      g.DrawLine(lighterPen, clientRectangle.Left, lightTop, clientRectangle.Right, lightTop);
    }
 }
