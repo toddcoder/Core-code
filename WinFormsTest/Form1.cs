@@ -463,7 +463,7 @@ public partial class Form1 : Form, IMessageQueueListener
 
    protected void button4_Click(object sender, EventArgs e)
    {
-      uiAction.Maximum = set.Count;
+      /*uiAction.Maximum = set.Count;
       uiAction.ClickToCancel = true;
       uiAction.Stopwatch = true;
       uiAction.StartStopwatch();
@@ -471,6 +471,7 @@ public partial class Form1 : Form, IMessageQueueListener
       {
          uiAction.Progress(item);
          Thread.Sleep(1000);
-      }
+      }*/
+      uiAction.Busy(true);
    }
 }

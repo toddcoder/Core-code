@@ -12,6 +12,7 @@ public class BarberPoleBusyProcessor : BusyProcessor
    protected int rightCheck;
    protected int top;
    protected int bottom;
+   protected int lightTop;
 
    public BarberPoleBusyProcessor(Rectangle clientRectangle) : base(clientRectangle)
    {
@@ -20,6 +21,7 @@ public class BarberPoleBusyProcessor : BusyProcessor
       rightCheck = width * 2;
       top = -2 * INCREMENT;
       bottom = clientRectangle.Bottom + 2 * INCREMENT;
+      lightTop = clientRectangle.Height / 3;
    }
 
    public override void Advance()
@@ -40,6 +42,11 @@ public class BarberPoleBusyProcessor : BusyProcessor
 
       using var brush = new SolidBrush(Color.LightGreen);
       g.FillRectangle(brush, clientRectangle);
+
+      using var lightPen = new Pen(Color.FromArgb(128, Color.AntiqueWhite), 20);
+      g.DrawLine(lightPen, clientRectangle.Left, lightTop, clientRectangle.Right, lightTop);
+      using var lighterPen = new Pen(Color.FromArgb(128, Color.White), 8);
+      g.DrawLine(lighterPen, clientRectangle.Left, lightTop, clientRectangle.Right, lightTop);
 
       using var pen = new Pen(Color.Blue, width);
       var actualLeft = left - 2 * width;
