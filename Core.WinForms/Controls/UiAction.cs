@@ -2051,6 +2051,11 @@ public class UiAction : UserControl
          var textBounds = new Rectangle(textLocation, textSize);
          setFloorAndCeiling(textBounds, true, true);
       }
+
+      if (type is UiActionType.BusyText)
+      {
+         setFloorAndCeiling(new Rectangle(0, 0, ClientRectangle.Height, ClientRectangle.Height), true, true);
+      }
    }
 
    public SubText SubText(SubText subText)
