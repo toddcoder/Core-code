@@ -2056,6 +2056,13 @@ public class UiAction : UserControl
       {
          setFloorAndCeiling(new Rectangle(0, 0, ClientRectangle.Height, ClientRectangle.Height), true, true);
       }
+
+      if (type is UiActionType.ProgressDefinite)
+      {
+         var size = TextRenderer.MeasureText("100%", Font, Size.Empty);
+         size = size with { Height = ClientRectangle.Height };
+         setFloorAndCeiling(new Rectangle(ClientRectangle.Location, size), true, true);
+      }
    }
 
    public SubText SubText(SubText subText)
