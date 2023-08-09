@@ -322,7 +322,8 @@ public class ExTextBox : TextBox
       using var brush = new SolidBrush(Color.FromArgb(30, backColor));
       graphics.FillRectangle(brush, rectangle);
 
-      using var pen = new Pen(foreColor) { DashStyle = dashStyle };
+      using var pen = new Pen(foreColor);
+      pen.DashStyle = dashStyle;
       graphics.DrawRectangle(pen, rectangle);
    }
 
