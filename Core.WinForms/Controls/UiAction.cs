@@ -274,6 +274,7 @@ public class UiAction : UserControl
    protected Rectangle[] rectangles;
    protected Maybe<int> _floor;
    protected Maybe<int> _ceiling;
+   protected Maybe<KeyMatch> _keyMatch;
 
    public event EventHandler<AutomaticMessageArgs> AutomaticMessage;
    public event EventHandler<PaintEventArgs> Painting;
@@ -493,6 +494,7 @@ public class UiAction : UserControl
       rectangles = Array.Empty<Rectangle>();
       _floor = nil;
       _ceiling = nil;
+      _keyMatch = nil;
    }
 
    public bool AutoSizeText { get; set; }
@@ -2875,4 +2877,17 @@ public class UiAction : UserControl
    }
 
    public Rectangle[] Rectangles => rectangles;
+
+   public void KeyMatch(Keys keys, string downMessage, string upMessage, TimeSpan elapsedTime)
+   {
+      _keyMatch = new KeyMatch(keys, this, downMessage, upMessage, elapsedTime);
+   }
+
+   public void KeyMatch(Keys keys, string downMessage, string upMessage) => KeyMatch(keys, downMessage, upMessage, 500.Milliseconds());
+
+   public void KeyMatch(string downMessage, string upMessage, TimeSpan elapsedTime) => KeyMatch(Keys.Control, downMessage, upMessage, elapsedTime);
+
+   public void KeyMatch(string downMessage, string upMessage) => KeyMatch(downMessage, upMessage, 500.Milliseconds());
+
+   public bool IsKeyDown => _keyMatch.Map(km => km.IsDown) | false;
 }

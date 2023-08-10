@@ -463,15 +463,18 @@ public partial class Form1 : Form, IMessageQueueListener
 
    protected void button4_Click(object sender, EventArgs e)
    {
-      uiAction.Maximum = set.Count;
-      uiAction.ClickToCancel = true;
-      uiAction.Stopwatch = true;
-      uiAction.StartStopwatch();
-      foreach (var item in set)
+      uiAction.KeyMatch("down", "up");
+      uiAction.Click += (_, _) =>
       {
-         uiAction.Busy(item);
-         Thread.Sleep(100);
-         Application.DoEvents();
-      }
+         if (uiAction.IsKeyDown)
+         {
+            uiAction.Message("Down");
+         }
+         else
+         {
+            uiAction.Message("Up");
+         }
+      };
+      uiAction.ClickText = "Up or down";
    }
 }
