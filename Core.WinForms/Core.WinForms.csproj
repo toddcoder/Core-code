@@ -63,6 +63,11 @@
     <Compile Include="Controls\BusyStyle.cs" />
     <Compile Include="Controls\KeyMatch.cs" />
     <Compile Include="Controls\KeyMatchStatus.cs" />
+    <Compile Include="Controls\MenuSymbolWriter.cs" />
+    <Compile Include="Controls\MinusSymbolWriter.cs" />
+    <Compile Include="Controls\OSymbolWriter.cs" />
+    <Compile Include="Controls\PlusSymbolWriter.cs" />
+    <Compile Include="Controls\SymbolWriter.cs" />
     <Compile Include="Controls\UiActionRectangleArgs.cs" />
     <Compile Include="Controls\DefaultBusyProcessor.cs" />
     <Compile Include="Controls\SineBusyProcessor.cs" />
@@ -98,6 +103,7 @@
     <Compile Include="Controls\TaskBarProgress.cs" />
     <Compile Include="Controls\UiActionRectanglePaintArgs.cs" />
     <Compile Include="Controls\UiActionScroller.cs" />
+    <Compile Include="Controls\UiActionSymbol.cs" />
     <Compile Include="Controls\UiActionWriter.cs" />
     <Compile Include="Controls\UiActionType.cs" />
     <Compile Include="Controls\UiAction.cs">
@@ -119,6 +125,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\ValidatedArgs.cs" />
+    <Compile Include="Controls\XSymbolWriter.cs" />
     <Compile Include="ControlWrappers\MessageStyle.cs" />
     <Compile Include="Documents\MenuBuilderFunctions.cs" />
     <Compile Include="Drawing\AutoSizingWriter.cs" />

@@ -275,6 +275,7 @@ public class UiAction : UserControl
    protected Maybe<int> _floor;
    protected Maybe<int> _ceiling;
    protected Maybe<KeyMatch> _keyMatch;
+   protected Maybe<SymbolWriter> _symbolWriter;
 
    public event EventHandler<AutomaticMessageArgs> AutomaticMessage;
    public event EventHandler<PaintEventArgs> Painting;
@@ -495,6 +496,7 @@ public class UiAction : UserControl
       _floor = nil;
       _ceiling = nil;
       _keyMatch = nil;
+      _symbolWriter = nil;
    }
 
    public bool AutoSizeText { get; set; }
@@ -565,6 +567,7 @@ public class UiAction : UserControl
       set
       {
          type = value;
+         _symbolWriter = nil;
          refresh();
       }
    }
@@ -1424,6 +1427,9 @@ public class UiAction : UserControl
             writer.Value.Color = ForeColor;
             writer.Value.Write(text, e.Graphics);
             break;
+         case UiActionType.Symbol when _symbolWriter is (true, var symbolWriter):
+            symbolWriter.OnPaint(e.Graphics, clientRectangle);
+            break;
          default:
          {
             if (type != UiActionType.Tape)
@@ -1671,6 +1677,9 @@ public class UiAction : UserControl
             fillRectangle(pevent.Graphics, brush, clientRectangle);
             break;
          }
+         case UiActionType.Symbol when _symbolWriter is (true, var symbolWriter):
+            symbolWriter.OnPaintBackground(pevent.Graphics, clientRectangle);
+            break;
          default:
          {
             var backColor = getBackColor();
@@ -2890,4 +2899,33 @@ public class UiAction : UserControl
    public void KeyMatch(string downMessage, string upMessage) => KeyMatch(downMessage, upMessage, 500.Milliseconds());
 
    public bool IsKeyDown => _keyMatch.Map(km => km.IsDown) | false;
+
+   public void Symbol(UiActionSymbol symbol, Color foreColor, Color backColor)
+   {
+      _symbolWriter = symbol switch
+      {
+         UiActionSymbol.Plus => new PlusSymbolWriter(foreColor, backColor),
+         UiActionSymbol.Minus => new MinusSymbolWriter(foreColor, backColor),
+         UiActionSymbol.Menu => new MenuSymbolWriter(foreColor, backColor),
+         UiActionSymbol.X => new XSymbolWriter(foreColor, backColor),
+         UiActionSymbol.O => new OSymbolWriter(foreColor, backColor),
+         _ => nil
+      };
+      if (_symbolWriter)
+      {
+         type = UiActionType.Symbol;
+         refresh();
+      }
+      else
+      {
+         Display($"{symbol}?", foreColor, backColor);
+      }
+   }
+
+   public void Symbol(UiActionSymbol symbol, UiActionType type)
+   {
+      var foreColor = getForeColor(type);
+      var backColor = getBackColor(type);
+      Symbol(symbol, foreColor, backColor);
+   }
 }

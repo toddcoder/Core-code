@@ -23,5 +23,6 @@ public enum UiActionType
    Http,
    Console,
    MuteProgress,
-   Display
+   Display,
+   Symbol
 }

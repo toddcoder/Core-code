@@ -463,18 +463,8 @@ public partial class Form1 : Form, IMessageQueueListener
 
    protected void button4_Click(object sender, EventArgs e)
    {
-      uiAction.KeyMatch("down", "up");
-      uiAction.Click += (_, _) =>
-      {
-         if (uiAction.IsKeyDown)
-         {
-            uiAction.Message("Down");
-         }
-         else
-         {
-            uiAction.Message("Up");
-         }
-      };
-      uiAction.ClickText = "Up or down";
+      var uiSymbol = new UiAction(this);
+      uiSymbol.SetUpInPanel(panel5);
+      uiSymbol.Symbol(UiActionSymbol.O, UiActionType.Success);
    }
 }
