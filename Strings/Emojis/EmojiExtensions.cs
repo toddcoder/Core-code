@@ -33,6 +33,9 @@ public static class EmojiExtensions
       Emoji.Unlocked => "🔓",
       Emoji.Text => "🗛",
       Emoji.Format => "ƒ",
+      Emoji.Copy => "❏",
+      Emoji.Paste => "📋",
+      Emoji.Cut => "✄",
       _ => ""
    };
 
@@ -69,6 +72,9 @@ public static class EmojiExtensions
                "unlocked" => "🔓",
                "text" => "🗛",
                "format" => "ƒ",
+               "copy"=> "❏",
+               "paste"=> "📋",
+               "cut"=> "✄",
                _ => nil
             };
             if (_replacement is (true, var replacement))

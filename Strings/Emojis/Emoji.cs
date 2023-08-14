@@ -26,5 +26,8 @@ public enum Emoji
    Locked,
    Unlocked,
    Text,
-   Format
+   Format,
+   Copy,
+   Paste,
+   Cut
 }
