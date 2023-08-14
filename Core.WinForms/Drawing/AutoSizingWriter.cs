@@ -29,8 +29,8 @@ public class AutoSizingWriter
       minimumSize = 6;
       maximumSize = 12;
 
-      flags = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter;
-      failFlags = flags | (isFile ? TextFormatFlags.PathEllipsis : TextFormatFlags.EndEllipsis);
+      flags = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix;
+      failFlags = flags | (isFile ? TextFormatFlags.PathEllipsis : TextFormatFlags.EndEllipsis) | TextFormatFlags.NoPrefix;
    }
 
    public Maybe<Color> BackColor
