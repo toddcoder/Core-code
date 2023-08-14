@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Drawing.Text;
 using System.Windows.Forms;
 using Core.Monads;
@@ -85,13 +86,15 @@ public class UiActionWriter
    protected Result<Rectangle> _rectangle;
    protected Result<Font> _font;
    protected Result<Color> _color;
+   protected UiActionButtonType buttonType;
 
-   public UiActionWriter(CardinalAlignment messageAlignment, bool autoSize, Maybe<int> _floor, Maybe<int> _ceiling)
+   public UiActionWriter(CardinalAlignment messageAlignment, bool autoSize, Maybe<int> _floor, Maybe<int> _ceiling, UiActionButtonType buttonType)
    {
       Align(messageAlignment);
       this.autoSize = autoSize;
       this._floor = _floor;
       this._ceiling = _ceiling;
+      this.buttonType = buttonType;
 
       isFile = false;
       checkStyle = CheckStyle.None;
@@ -179,7 +182,31 @@ public class UiActionWriter
 
    public Rectangle TextRectangle(string text, Graphics graphics) => TextRectangle(text, graphics, nil);
 
-   public Result<Unit> Write(string text, Graphics graphics)
+   protected void drawButtonType(Graphics g, Rectangle rectangle, Color foreColor)
+   {
+      switch (buttonType)
+      {
+         case UiActionButtonType.Default:
+         {
+            var upper = rectangle.Reposition(1, 1).Location;
+            var lower = upper with { Y = rectangle.Bottom - 1 };
+            using var pen = new Pen(foreColor, 2);
+            g.DrawLine(pen, upper, lower);
+            break;
+         }
+         case UiActionButtonType.Cancel:
+         {
+            var upper = rectangle.Reposition(1, 1).Location;
+            var lower = upper with { Y = rectangle.Bottom - 1 };
+            using var pen = new Pen(Color.FromArgb(128, foreColor), 2);
+            pen.DashStyle = DashStyle.Dot;
+            g.DrawLine(pen, upper, lower);
+            break;
+         }
+      }
+   }
+
+   public Result<Unit> Write(string text, Graphics g)
    {
       text = text.EmojiSubstitutions();
 
@@ -194,8 +221,8 @@ public class UiActionWriter
 
          try
          {
-            graphics.HighQuality();
-            graphics.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
+            g.HighQuality();
+            g.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
             var isReplaced = text.IsEmpty() && _emptyTextTitle;
             if (isReplaced)
             {
@@ -215,12 +242,14 @@ public class UiActionWriter
                   rectangle = rectangle with { Width = ceiling - rectangle.X };
                }
 
+               drawButtonType(g, rectangle, color);
                var writer = new AutoSizingWriter(text, rectangle, color, font, isFile);
-               writer.Write(graphics);
+               writer.Write(g);
             }
             else
             {
-               TextRenderer.DrawText(graphics, text, font, rectangle, color, Flags);
+               drawButtonType(g, rectangle, color);
+               TextRenderer.DrawText(g, text, font, rectangle, color, Flags);
             }
 
             if (checkStyle is not CheckStyle.None)
@@ -229,14 +258,14 @@ public class UiActionWriter
                var location = new Point(2, 2);
                var size = new Size(12, 12);
                var boxRectangle = new Rectangle(location, size);
-               graphics.DrawRectangle(pen, boxRectangle);
+               g.DrawRectangle(pen, boxRectangle);
 
                if (checkStyle is CheckStyle.Checked)
                {
                   boxRectangle.Offset(1, 0);
                   boxRectangle.Inflate(8, 8);
                   using var checkFont = new Font("Consolas", 8, FontStyle.Bold);
-                  TextRenderer.DrawText(graphics, CHECK_MARK, font, boxRectangle, color, Flags);
+                  TextRenderer.DrawText(g, CHECK_MARK, font, boxRectangle, color, Flags);
                }
             }
 

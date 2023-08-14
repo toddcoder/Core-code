@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Linq;
-using System.Threading;
 using System.Windows.Forms;
 using Core.Applications.Messaging;
 using Core.Collections;
@@ -11,10 +8,7 @@ using Core.Computers;
 using Core.Enumerables;
 using Core.Matching;
 using Core.Monads;
-using Core.Numbers;
 using Core.Strings;
-using Core.Strings.Emojis;
-using Core.WinForms;
 using Core.WinForms.Controls;
 using Core.WinForms.Documents;
 using static Core.Monads.MonadFunctions;
@@ -463,8 +457,12 @@ public partial class Form1 : Form, IMessageQueueListener
 
    protected void button4_Click(object sender, EventArgs e)
    {
-      var uiSymbol = new UiAction(this);
-      uiSymbol.SetUpInPanel(panel5);
-      uiSymbol.Symbol(UiActionSymbol.O, UiActionType.Success);
+      uiAction.ButtonType = uiAction.ButtonType switch
+      {
+         UiActionButtonType.Normal => UiActionButtonType.Default,
+         UiActionButtonType.Default => UiActionButtonType.Cancel,
+         _ => UiActionButtonType.Normal
+      };
+      uiAction.Button("Deploy");
    }
 }

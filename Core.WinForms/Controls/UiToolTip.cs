@@ -93,24 +93,24 @@ public class UiToolTip : ToolTip
       }
    }
 
-   public void DrawTextInRectangle(Graphics graphics, string text, Font font, Color foreColor, Color backColor, Rectangle bounds)
+   public void DrawTextInRectangle(Graphics g, string text, Font font, Color foreColor, Color backColor, Rectangle bounds)
    {
       using var brush = new SolidBrush(backColor);
-      graphics.FillRectangle(brush, bounds);
+      g.FillRectangle(brush, bounds);
 
       if (ToolTipTitle.IsNotEmpty())
       {
          bounds = bounds with { Y = bounds.Y + 20, Height = bounds.Height - 20 };
       }
 
-      var writer = new UiActionWriter(CardinalAlignment.Center, false, nil, nil)
+      var writer = new UiActionWriter(CardinalAlignment.Center, false, nil, nil, UiActionButtonType.Normal)
       {
          Font = font,
          Color = foreColor,
          Rectangle = bounds,
          Flags = textFormatFlags
       };
-      writer.Write(text, graphics);
+      writer.Write(text, g);
    }
 
    public void DrawTitle(Graphics graphics, Font font, Color foreColor, Color backColor, Rectangle bounds)
@@ -122,7 +122,7 @@ public class UiToolTip : ToolTip
          using var brush = new SolidBrush(backColor);
          graphics.FillRectangle(brush, smallBounds);
 
-         var writer = new UiActionWriter(CardinalAlignment.Center, false, nil, nil)
+         var writer = new UiActionWriter(CardinalAlignment.Center, false, nil, nil, UiActionButtonType.Normal)
          {
             Font = smallFont,
             Color = foreColor,

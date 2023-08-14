@@ -1243,7 +1243,7 @@ public class UiAction : UserControl
 
       if (!Enabled)
       {
-         var disabledWriter = new UiActionWriter(MessageAlignment, AutoSizeText, _floor, _ceiling)
+         var disabledWriter = new UiActionWriter(MessageAlignment, AutoSizeText, _floor, _ceiling, UiActionButtonType.Normal)
          {
             Rectangle = ClientRectangle,
             Font = Font,
@@ -1322,7 +1322,7 @@ public class UiAction : UserControl
          UiActionType.Busy or UiActionType.BusyText or UiActionType.ProgressDefinite or UiActionType.MuteProgress => CheckStyle.None,
          _ => CheckStyle
       };
-      var writer = new Lazy<UiActionWriter>(() => new UiActionWriter(MessageAlignment, AutoSizeText, _floor, _ceiling)
+      var writer = new Lazy<UiActionWriter>(() => new UiActionWriter(MessageAlignment, AutoSizeText, _floor, _ceiling, ButtonType)
       {
          Rectangle = clientRectangle,
          Font = getFont(),
@@ -1429,6 +1429,9 @@ public class UiAction : UserControl
             break;
          case UiActionType.Symbol when _symbolWriter is (true, var symbolWriter):
             symbolWriter.OnPaint(e.Graphics, clientRectangle);
+            break;
+         case UiActionType.Button:
+            writer.Value.Write(text, e.Graphics);
             break;
          default:
          {
@@ -2928,4 +2931,6 @@ public class UiAction : UserControl
       var backColor = getBackColor(type);
       Symbol(symbol, foreColor, backColor);
    }
+
+   public UiActionButtonType ButtonType { get; set; }
 }
