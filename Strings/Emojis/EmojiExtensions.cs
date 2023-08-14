@@ -10,8 +10,8 @@ public static class EmojiExtensions
    {
       Emoji.Arrow => "⇒",
       Emoji.Check => "✔",
-      Emoji.X => "•",
-      Emoji.Dot => "✘",
+      Emoji.X => "✘",
+      Emoji.Dot => "•",
       Emoji.Degree => "°",
       Emoji.Copyright => "©",
       Emoji.Pilcrow => "¶",

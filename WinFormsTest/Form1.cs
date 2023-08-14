@@ -429,10 +429,9 @@ public partial class Form1 : Form, IMessageQueueListener
 
    protected void button3_Click(object sender, EventArgs e)
    {
-      uiAction.Busy("Migration_202308022023_1003_Delete_Everything_That_You_Care_About.sql");
-      uiAction.ClickToCancel = true;
-      uiAction.Stopwatch = true;
-      uiAction.StartStopwatch();
+      uiTest = new UiAction(this);
+      uiTest.SetUpInPanel(panel5);
+      uiTest.Symbol(UiActionSymbol.Plus, UiActionType.Success);
    }
 
    public string Listener => "form1";
@@ -457,12 +456,7 @@ public partial class Form1 : Form, IMessageQueueListener
 
    protected void button4_Click(object sender, EventArgs e)
    {
-      uiAction.ButtonType = uiAction.ButtonType switch
-      {
-         UiActionButtonType.Normal => UiActionButtonType.Default,
-         UiActionButtonType.Default => UiActionButtonType.Cancel,
-         _ => UiActionButtonType.Normal
-      };
-      uiAction.Button("Deploy");
+      uiTest.Enabled = !uiTest.Enabled;
+      uiAction.Enabled = !uiAction.Enabled;
    }
 }

@@ -1241,7 +1241,7 @@ public class UiAction : UserControl
    {
       base.OnPaint(e);
 
-      if (!Enabled)
+      if (!Enabled && !_symbolWriter)
       {
          var disabledWriter = new UiActionWriter(MessageAlignment, AutoSizeText, _floor, _ceiling, UiActionButtonType.Normal)
          {
@@ -1428,7 +1428,7 @@ public class UiAction : UserControl
             writer.Value.Write(text, e.Graphics);
             break;
          case UiActionType.Symbol when _symbolWriter is (true, var symbolWriter):
-            symbolWriter.OnPaint(e.Graphics, clientRectangle);
+            symbolWriter.OnPaint(e.Graphics, clientRectangle, Enabled);
             break;
          case UiActionType.Button:
             writer.Value.Write(text, e.Graphics);
@@ -1569,7 +1569,7 @@ public class UiAction : UserControl
 
    protected override void OnPaintBackground(PaintEventArgs pevent)
    {
-      if (!Enabled)
+      if (!Enabled && !_symbolWriter)
       {
          using var disabledBrush = new HatchBrush(HatchStyle.BackwardDiagonal, Color.Black, Color.Gold);
          fillRectangle(pevent.Graphics, disabledBrush, ClientRectangle);
@@ -1681,7 +1681,7 @@ public class UiAction : UserControl
             break;
          }
          case UiActionType.Symbol when _symbolWriter is (true, var symbolWriter):
-            symbolWriter.OnPaintBackground(pevent.Graphics, clientRectangle);
+            symbolWriter.OnPaintBackground(pevent.Graphics, clientRectangle, Enabled);
             break;
          default:
          {
@@ -1894,7 +1894,10 @@ public class UiAction : UserControl
       else
       {
          _lastType = type;
-         type = UiActionType.Disabled;
+         if (!_symbolWriter)
+         {
+            type = UiActionType.Disabled;
+         }
 
          _lastEnabled = timerPaint.Enabled;
          timerPaint.Enabled = false;

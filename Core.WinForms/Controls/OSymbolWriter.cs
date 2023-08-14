@@ -1,5 +1,4 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 
 namespace Core.WinForms.Controls;
 
@@ -9,11 +8,12 @@ public class OSymbolWriter : SymbolWriter
    {
    }
 
-   public override void OnPaint(Graphics g, Rectangle clientRectangle)
+   public override void OnPaint(Graphics g, Rectangle clientRectangle, bool enabled)
    {
-      var margin = Math.Min(clientRectangle.Height, clientRectangle.Height) / 10;
+      var margin = getMargin(clientRectangle);
       var rectangle = clientRectangle.Reposition(margin, margin).Resize(-2 * margin, -2 * margin);
-      using var pen = new Pen(foreColor, 2);
+      var color = getColor(enabled);
+      using var pen = new Pen(color, 2);
       g.DrawEllipse(pen, rectangle);
    }
 }

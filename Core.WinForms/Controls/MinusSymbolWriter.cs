@@ -1,5 +1,4 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 
 namespace Core.WinForms.Controls;
 
@@ -9,12 +8,13 @@ public class MinusSymbolWriter : SymbolWriter
    {
    }
 
-   public override void OnPaint(Graphics g, Rectangle clientRectangle)
+   public override void OnPaint(Graphics g, Rectangle clientRectangle, bool enabled)
    {
       var y = clientRectangle.Height / 2;
-      var margin = Math.Min(clientRectangle.Height, clientRectangle.Height) / 10;
+      var margin = getMargin(clientRectangle);
 
-      using var pen = new Pen(foreColor, 2);
+      var color = getColor(enabled);
+      using var pen = new Pen(color, 2);
       g.DrawLine(pen, margin, y, clientRectangle.Right - margin, y);
    }
 }
