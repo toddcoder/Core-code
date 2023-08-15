@@ -146,12 +146,9 @@ public class ExRichTextBox : RichTextBox
                }
                else
                {
-                  while (modificationStates.Count > lineCount)
+                  while (modificationStates.Count > lineCount && CurrentLineNumber < modificationStates.Count)
                   {
-                     if (CurrentLineNumber < modificationStates.Count)
-                     {
-                        modificationStates.RemoveAt(CurrentLineNumber);
-                     }
+                     modificationStates.RemoveAt(CurrentLineNumber);
                   }
                }
 
