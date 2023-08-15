@@ -148,7 +148,10 @@ public class ExRichTextBox : RichTextBox
                {
                   while (modificationStates.Count > lineCount)
                   {
-                     modificationStates.RemoveAt(CurrentLineNumber);
+                     if (CurrentLineNumber < modificationStates.Count)
+                     {
+                        modificationStates.RemoveAt(CurrentLineNumber);
+                     }
                   }
                }
 
@@ -447,7 +450,8 @@ public class ExRichTextBox : RichTextBox
             graphics.FillRectangle(brush, rectangle);
          }
 
-         using var pen = new Pen(foreColor) { DashStyle = dashStyle };
+         using var pen = new Pen(foreColor);
+         pen.DashStyle = dashStyle;
          graphics.DrawRectangle(pen, rectangle);
       }
    }
@@ -469,7 +473,8 @@ public class ExRichTextBox : RichTextBox
          var _count = line.Matches("^ /(/t1%7); f").Map(r => r.FirstGroup.Length);
          if (_count)
          {
-            using var pen = new Pen(Color.Gray) { DashStyle = DashStyle.Dot };
+            using var pen = new Pen(Color.Gray);
+            pen.DashStyle = DashStyle.Dot;
             drawTabLine(graphics, pen, point, offset, height);
 
             for (var i = 0; i < _count; i++)
@@ -749,7 +754,8 @@ public class ExRichTextBox : RichTextBox
       using var brush = new SolidBrush(Color.FromArgb(30, color));
       graphics.FillRectangle(brush, rectangle);
 
-      using var pen = new Pen(Color.Black) { DashStyle = dashStyle };
+      using var pen = new Pen(Color.Black);
+      pen.DashStyle = dashStyle;
       graphics.DrawRectangle(pen, rectangle);
    }
 
