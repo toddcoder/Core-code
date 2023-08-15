@@ -83,9 +83,9 @@ public class Completed<T> : Completion<T>, IEquatable<Completed<T>>
       {
          return optional;
       }
-      else if (_optional.AnyException)
+      else if (_optional.AnyException is (true, var exception))
       {
-         return _optional.Exception;
+         return exception;
       }
       else
       {
@@ -120,9 +120,9 @@ public class Completed<T> : Completion<T>, IEquatable<Completed<T>>
       {
          return projection(value, t1);
       }
-      else if (_t1.AnyException)
+      else if (_t1.AnyException is(true, var exception))
       {
-         return _t1.Exception;
+         return exception;
       }
       else
       {
@@ -204,6 +204,7 @@ public class Completed<T> : Completion<T>, IEquatable<Completed<T>>
 
    public override Optional<T> Optional() => value;
 
+   [Obsolete("Use AnyException")]
    public override Exception Exception => throw fail("Completed has no Exception");
 
    public override Maybe<Exception> AnyException => nil;

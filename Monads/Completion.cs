@@ -40,7 +40,7 @@ public abstract class Completion<T>
    public static implicit operator T(Completion<T> value) => value switch
    {
       (true, var internalValue) => internalValue,
-      Interrupted<T> interrupted => throw interrupted.Exception,
+      Interrupted<T> interrupted => throw interrupted.exception,
       _ => throw new InvalidCastException("Must be a Completed to return a value")
    };
 
@@ -143,6 +143,7 @@ public abstract class Completion<T>
 
    public abstract Optional<T> Optional();
 
+   [Obsolete("Use AnyException")]
    public abstract Exception Exception { get; }
 
    public abstract Maybe<Exception> AnyException { get; }

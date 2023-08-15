@@ -126,7 +126,7 @@ public abstract class Optional<T>
    public static implicit operator T(Optional<T> value) => value switch
    {
       (true, var internalValue) => internalValue,
-      Failed<T> failed => throw failed.Exception,
+      Failed<T> failed => throw failed.exception,
       _ => throw new InvalidCastException("Must be a Optional to return a value")
    };
 
@@ -142,6 +142,7 @@ public abstract class Optional<T>
       return optional;
    }
 
+   [Obsolete("Use AnyException")]
    public abstract Exception Exception { get; }
 
    public abstract Maybe<Exception> AnyException { get; }

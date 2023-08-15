@@ -114,9 +114,9 @@ public class LazyOptional<T> : Optional<T>, IEquatable<LazyOptional<T>>
       {
          return _next.ValueOf(() => func(value));
       }
-      else if (_value.AnyException)
+      else if (_value.AnyException is (true, var exception))
       {
-         return _next.ValueOf(() => _value.Exception);
+         return _next.ValueOf(() => exception);
       }
       else
       {
@@ -135,9 +135,9 @@ public class LazyOptional<T> : Optional<T>, IEquatable<LazyOptional<T>>
       {
          return _next.ValueOf(() => func(value));
       }
-      else if (_value.AnyException)
+      else if (_value.AnyException is (true, var exception))
       {
-         return _next.ValueOf(() => _value.Exception);
+         return _next.ValueOf(() => exception);
       }
       else
       {
@@ -162,6 +162,7 @@ public class LazyOptional<T> : Optional<T>, IEquatable<LazyOptional<T>>
       _value = nil;
    }
 
+   [Obsolete("Use AnyException")]
    public override Exception Exception
    {
       get

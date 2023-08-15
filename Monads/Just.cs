@@ -13,6 +13,7 @@ public class Just<T> : Optional<T>, IEquatable<Just<T>>
       this.value = value;
    }
 
+   [Obsolete("Use AnyException")]
    public override Exception Exception => throw fail("Response has no Exception");
 
    public override Maybe<Exception> AnyException => nil;
@@ -91,9 +92,9 @@ public class Just<T> : Optional<T>, IEquatable<Just<T>>
       {
          return completion;
       }
-      else if (_completion.AnyException)
+      else if (_completion.AnyException is (true, var exception))
       {
-         return _completion.Exception;
+         return exception;
       }
       else
       {
@@ -139,9 +140,9 @@ public class Just<T> : Optional<T>, IEquatable<Just<T>>
       {
          return projection(value, t1);
       }
-      else if (_t1.AnyException)
+      else if (_t1.AnyException is (true, var exception))
       {
-         return _t1.Exception;
+         return exception;
       }
       else
       {

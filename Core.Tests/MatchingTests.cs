@@ -83,9 +83,9 @@ public class MatchingTests
          Console.WriteLine(func1);
          Console.WriteLine(func2);
       }
-      else if (_scraper.AnyException)
+      else if (_scraper.AnyException is (true, var exception))
       {
-         Console.WriteLine($"Exception: {_scraper.Exception.Message}");
+         Console.WriteLine($"Exception: {exception.Message}");
       }
       else
       {
@@ -123,9 +123,9 @@ public class MatchingTests
          {
             Console.WriteLine($"This was the match result: {_text}");
          }
-         else if (_text.AnyException)
+         else if (_text.AnyException is (true, var exception))
          {
-            Console.WriteLine($"Exception: {_text.Exception.Message}");
+            Console.WriteLine($"Exception: {exception.Message}");
          }
          else
          {

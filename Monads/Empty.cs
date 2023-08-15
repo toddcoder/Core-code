@@ -12,6 +12,7 @@ public class Empty<T> : Optional<T>, IEquatable<Empty<T>>
       hashCode = new Lazy<int>(() => typeof(T).GetHashCode());
    }
 
+   [Obsolete("Use AnyException")]
    public override Exception Exception => throw fail("Empty has no Exception");
 
    public override Maybe<Exception> AnyException => nil;

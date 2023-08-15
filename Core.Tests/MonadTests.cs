@@ -66,9 +66,9 @@ public class MonadTests
       {
          Console.WriteLine($"Value is {value}");
       }
-      else if (_value.AnyException)
+      else if (_value.AnyException is (true, var exception))
       {
-         Console.WriteLine($"Interrupted with: {_value.Exception.Message}");
+         Console.WriteLine($"Interrupted with: {exception.Message}");
       }
       else
       {
@@ -88,9 +88,9 @@ public class MonadTests
       {
          Console.WriteLine($"Value is {_value}");
       }
-      else if (_value.AnyException)
+      else if (_value.AnyException is (true, var exception))
       {
-         Console.WriteLine($"Interrupted with: {_value.Exception.Message}");
+         Console.WriteLine($"Interrupted with: {exception.Message}");
       }
       else
       {
@@ -109,9 +109,9 @@ public class MonadTests
       {
          Console.WriteLine($"Value is {_value}");
       }
-      else if (_value.AnyException)
+      else if (_value.AnyException is (true, var exception))
       {
-         Console.WriteLine($"Interrupted with: {_value.Exception.Message}");
+         Console.WriteLine($"Interrupted with: {exception.Message}");
       }
       else
       {
@@ -140,9 +140,9 @@ public class MonadTests
       {
          Console.WriteLine($"Value: {_six}");
       }
-      else if (_six.AnyException)
+      else if (_six.AnyException is (true, var exception))
       {
-         Console.WriteLine($"Exception: {_six.Exception.Message}");
+         Console.WriteLine($"Exception: {exception.Message}");
       }
       else
       {
@@ -715,8 +715,7 @@ public class MonadTests
    [TestMethod]
    public void MapOfOperatorTest()
    {
-      var _builder = monads.maybe<StringBuilder>();
-      _builder = new StringBuilder();
+      Maybe<StringBuilder> _builder = new StringBuilder();
       _ = _builder * (sb => sb.Append("test"));
       if (_builder is (true, var builder))
       {

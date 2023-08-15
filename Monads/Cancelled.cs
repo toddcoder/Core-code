@@ -132,6 +132,7 @@ public class Cancelled<T> : Completion<T>, IEquatable<Cancelled<T>>
 
    public override Optional<T> Optional() => nil;
 
+   [Obsolete("Use AnyException")]
    public override Exception Exception => throw fail("Cancelled has no Exception");
 
    public override Maybe<Exception> AnyException => nil;

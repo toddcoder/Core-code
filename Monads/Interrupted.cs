@@ -9,7 +9,7 @@ public class Interrupted<T> : Completion<T>, IEquatable<Interrupted<T>>
    // ReSharper disable once UnusedParameter.Global
    public static implicit operator bool(Interrupted<T> _) => false;
 
-   protected Exception exception;
+   internal Exception exception;
 
    internal Interrupted(Exception exception)
    {
@@ -133,6 +133,7 @@ public class Interrupted<T> : Completion<T>, IEquatable<Interrupted<T>>
 
    public override Optional<T> Optional() => exception;
 
+   [Obsolete("Use AnyException")]
    public override Exception Exception => exception;
 
    public override Maybe<Exception> AnyException => exception;

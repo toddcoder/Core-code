@@ -5,13 +5,14 @@ namespace Core.Monads;
 
 public class Failed<T> : Optional<T>, IEquatable<Failed<T>>
 {
-   protected readonly Exception exception;
+   internal readonly Exception exception;
 
    public Failed(Exception exception)
    {
       this.exception = exception is FullStackException ? exception : new FullStackException(exception);
    }
 
+   [Obsolete("Use AnyException")]
    public override Exception Exception => exception;
 
    public override Maybe<Exception> AnyException => exception;

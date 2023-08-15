@@ -5,7 +5,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
-using Core.Applications.Messaging;
 using Core.Collections;
 using Core.Enumerables;
 using Core.Matching;
@@ -82,9 +81,9 @@ public static class AssertionFunctions
       {
          return optionalValue.ToNonNullString();
       }
-      else if (optional.AnyException)
+      else if (optional.AnyException is (true, var exception))
       {
-         return $"failed<{typeof(T).Name}>({optional.Exception.Message})";
+         return $"failed<{typeof(T).Name}>({exception.Message})";
       }
       else
       {
@@ -98,9 +97,9 @@ public static class AssertionFunctions
       {
          return completionValue.ToNonNullString();
       }
-      else if (completion.AnyException)
+      else if (completion.AnyException is (true, var exception))
       {
-         return $"interrupted<{typeof(T).Name}>({completion.Exception.Message})";
+         return $"interrupted<{typeof(T).Name}>({exception.Message})";
       }
       else
       {

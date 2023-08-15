@@ -114,9 +114,9 @@ public class LazyCompletion<T> : Completion<T>
       {
          return _next.ValueOf(() => func(value));
       }
-      else if (_value.AnyException)
+      else if (_value.AnyException is (true, var exception))
       {
-         return _next.ValueOf(() => _value.Exception);
+         return _next.ValueOf(() => exception);
       }
       else
       {
@@ -135,9 +135,9 @@ public class LazyCompletion<T> : Completion<T>
       {
          return _next.ValueOf(() => func(value));
       }
-      else if (_value.AnyException)
+      else if (_value.AnyException is (true, var exception))
       {
-         return _next.ValueOf(() => _value.Exception);
+         return _next.ValueOf(() => exception);
       }
       else
       {
@@ -412,6 +412,7 @@ public class LazyCompletion<T> : Completion<T>
       return _value.Optional();
    }
 
+   [Obsolete("Use AnyException")]
    public override Exception Exception
    {
       get
