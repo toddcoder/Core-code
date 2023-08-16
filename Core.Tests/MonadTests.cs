@@ -66,7 +66,7 @@ public class MonadTests
       {
          Console.WriteLine($"Value is {value}");
       }
-      else if (_value.AnyException is (true, var exception))
+      else if (_value.Exception is (true, var exception))
       {
          Console.WriteLine($"Interrupted with: {exception.Message}");
       }
@@ -88,7 +88,7 @@ public class MonadTests
       {
          Console.WriteLine($"Value is {_value}");
       }
-      else if (_value.AnyException is (true, var exception))
+      else if (_value.Exception is (true, var exception))
       {
          Console.WriteLine($"Interrupted with: {exception.Message}");
       }
@@ -109,7 +109,7 @@ public class MonadTests
       {
          Console.WriteLine($"Value is {_value}");
       }
-      else if (_value.AnyException is (true, var exception))
+      else if (_value.Exception is (true, var exception))
       {
          Console.WriteLine($"Interrupted with: {exception.Message}");
       }
@@ -140,7 +140,7 @@ public class MonadTests
       {
          Console.WriteLine($"Value: {_six}");
       }
-      else if (_six.AnyException is (true, var exception))
+      else if (_six.Exception is (true, var exception))
       {
          Console.WriteLine($"Exception: {exception.Message}");
       }

@@ -114,7 +114,7 @@ public class LazyCompletion<T> : Completion<T>
       {
          return _next.ValueOf(() => func(value));
       }
-      else if (_value.AnyException is (true, var exception))
+      else if (_value.Exception is (true, var exception))
       {
          return _next.ValueOf(() => exception);
       }
@@ -135,7 +135,7 @@ public class LazyCompletion<T> : Completion<T>
       {
          return _next.ValueOf(() => func(value));
       }
-      else if (_value.AnyException is (true, var exception))
+      else if (_value.Exception is (true, var exception))
       {
          return _next.ValueOf(() => exception);
       }
@@ -412,22 +412,12 @@ public class LazyCompletion<T> : Completion<T>
       return _value.Optional();
    }
 
-   [Obsolete("Use AnyException")]
-   public override Exception Exception
+   public override Maybe<Exception> Exception
    {
       get
       {
          ensureValue();
          return _value.Exception;
-      }
-   }
-
-   public override Maybe<Exception> AnyException
-   {
-      get
-      {
-         ensureValue();
-         return _value.AnyException;
       }
    }
 

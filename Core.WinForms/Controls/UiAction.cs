@@ -977,7 +977,7 @@ public class UiAction : UserControl
       {
          Success(message);
       }
-      else if (_message.AnyException is (true, var exception))
+      else if (_message.Exception is (true, var exception))
       {
          Exception(exception);
       }
@@ -993,7 +993,7 @@ public class UiAction : UserControl
       {
          Success(message);
       }
-      else if (_message.AnyException is (true, var exception))
+      else if (_message.Exception is (true, var exception))
       {
          Exception(exception);
       }
@@ -1009,7 +1009,7 @@ public class UiAction : UserControl
       {
          Success(message);
       }
-      else if (_message.AnyException is (true, var exception))
+      else if (_message.Exception is (true, var exception))
       {
          Exception(exception);
       }

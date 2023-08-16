@@ -81,7 +81,7 @@ public static class AssertionFunctions
       {
          return optionalValue.ToNonNullString();
       }
-      else if (optional.AnyException is (true, var exception))
+      else if (optional.Exception is (true, var exception))
       {
          return $"failed<{typeof(T).Name}>({exception.Message})";
       }
@@ -97,7 +97,7 @@ public static class AssertionFunctions
       {
          return completionValue.ToNonNullString();
       }
-      else if (completion.AnyException is (true, var exception))
+      else if (completion.Exception is (true, var exception))
       {
          return $"interrupted<{typeof(T).Name}>({exception.Message})";
       }

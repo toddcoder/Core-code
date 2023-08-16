@@ -143,10 +143,7 @@ public abstract class Completion<T>
 
    public abstract Optional<T> Optional();
 
-   [Obsolete("Use AnyException")]
-   public abstract Exception Exception { get; }
-
-   public abstract Maybe<Exception> AnyException { get; }
+   public abstract Maybe<Exception> Exception { get; }
 
    public abstract object ToObject();
 

@@ -29,7 +29,7 @@ public class KeyMatch
       this.downMessage = downMessage;
       this.upMessage = upMessage;
 
-      Alignment = CardinalAlignment.NorthWest;
+      Alignment = CardinalAlignment.NorthEast;
       isDown = false;
       _subText = nil;
 

@@ -25,7 +25,7 @@ public class OptionalIterator<T>
       {
          action(optionalValue);
       }
-      else if (optional.AnyException is (true, var exception) && _failed is (true, var failed))
+      else if (optional.Exception is (true, var exception) && _failed is (true, var failed))
       {
          failed(exception);
       }
@@ -62,7 +62,7 @@ public class OptionalIterator<T>
       foreach (var optional in enumerable)
       {
          handle(optional);
-         if (!optional && optional.AnyException is (true, var exception))
+         if (!optional && optional.Exception is (true, var exception))
          {
             yield return exception;
          }

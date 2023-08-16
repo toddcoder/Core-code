@@ -12,10 +12,7 @@ public class Failed<T> : Optional<T>, IEquatable<Failed<T>>
       this.exception = exception is FullStackException ? exception : new FullStackException(exception);
    }
 
-   [Obsolete("Use AnyException")]
-   public override Exception Exception => exception;
-
-   public override Maybe<Exception> AnyException => exception;
+   public override Maybe<Exception> Exception => exception;
 
    public override Optional<TResult> Map<TResult>(Func<T, Optional<TResult>> ifJust) => new Failed<TResult>(exception);
 

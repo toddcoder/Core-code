@@ -68,7 +68,7 @@ public class Synchronizer
       {
          Success?.Invoke(this, new FileArgs(file, targetFile, $"{sourceFile} {(move ? "moved" : "copied")} to {targetFile}"));
       }
-      else if (_file.AnyException is (true, var exception))
+      else if (_file.Exception is (true, var exception))
       {
          Failure?.Invoke(this, new FailedFileArgs(sourceFile, targetFile, exception));
       }

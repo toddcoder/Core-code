@@ -76,7 +76,7 @@ public abstract class CommandProcessor : IDisposable
                      StandardWriter.WriteLine($"Configuration item {key} set to default value of {value}");
                   }
                }
-               else if (_defaultValues.AnyException is (true, var exception))
+               else if (_defaultValues.Exception is (true, var exception))
                {
                   return exception;
                }

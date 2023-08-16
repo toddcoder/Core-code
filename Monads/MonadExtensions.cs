@@ -589,7 +589,7 @@ public static class MonadExtensions
          {
             return projection(t, u).Completed();
          }
-         else if (_u.AnyException is (true, var exception))
+         else if (_u.Exception is (true, var exception))
          {
             return cancelledOrInterrupted<T3>(exception);
          }
@@ -598,7 +598,7 @@ public static class MonadExtensions
             return nil;
          }
       }
-      else if (_t.AnyException is (true, var exception))
+      else if (_t.Exception is (true, var exception))
       {
          return cancelledOrInterrupted<T3>(exception);
       }
@@ -614,7 +614,7 @@ public static class MonadExtensions
       {
          return completionValue;
       }
-      else if (completion.AnyException is (true, var exception))
+      else if (completion.Exception is (true, var exception))
       {
          return exception;
       }

@@ -12,10 +12,7 @@ public class Empty<T> : Optional<T>, IEquatable<Empty<T>>
       hashCode = new Lazy<int>(() => typeof(T).GetHashCode());
    }
 
-   [Obsolete("Use AnyException")]
-   public override Exception Exception => throw fail("Empty has no Exception");
-
-   public override Maybe<Exception> AnyException => nil;
+   public override Maybe<Exception> Exception => nil;
 
    public override Optional<TResult> Map<TResult>(Func<T, Optional<TResult>> ifJust) => nil;
 

@@ -133,10 +133,7 @@ public class Interrupted<T> : Completion<T>, IEquatable<Interrupted<T>>
 
    public override Optional<T> Optional() => exception;
 
-   [Obsolete("Use AnyException")]
-   public override Exception Exception => exception;
-
-   public override Maybe<Exception> AnyException => exception;
+   public override Maybe<Exception> Exception => exception;
 
    public override object ToObject() => exception;
 

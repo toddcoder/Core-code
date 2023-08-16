@@ -44,9 +44,9 @@ public class CompletionAssertion<T> : IAssertion<T>
 
    public CompletionAssertion<T> BeCompleted() => add(() => completion, "$name must be $not completed");
 
-   public CompletionAssertion<T> BeCancelled() => add(() => completion && !completion.AnyException, "$name must be $not cancelled");
+   public CompletionAssertion<T> BeCancelled() => add(() => completion && !completion.Exception, "$name must be $not cancelled");
 
-   public CompletionAssertion<T> BeInterrupted() => add(() => completion.AnyException, "$name must be $not interrupted");
+   public CompletionAssertion<T> BeInterrupted() => add(() => completion.Exception, "$name must be $not interrupted");
 
    public CompletionAssertion<T> ValueEqualTo(Completion<T> otherCompletion)
    {

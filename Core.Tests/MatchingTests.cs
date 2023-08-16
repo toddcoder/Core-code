@@ -83,7 +83,7 @@ public class MatchingTests
          Console.WriteLine(func1);
          Console.WriteLine(func2);
       }
-      else if (_scraper.AnyException is (true, var exception))
+      else if (_scraper.Exception is (true, var exception))
       {
          Console.WriteLine($"Exception: {exception.Message}");
       }
@@ -123,7 +123,7 @@ public class MatchingTests
          {
             Console.WriteLine($"This was the match result: {_text}");
          }
-         else if (_text.AnyException is (true, var exception))
+         else if (_text.Exception is (true, var exception))
          {
             Console.WriteLine($"Exception: {exception.Message}");
          }

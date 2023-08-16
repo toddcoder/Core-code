@@ -142,10 +142,7 @@ public abstract class Optional<T>
       return optional;
    }
 
-   [Obsolete("Use AnyException")]
-   public abstract Exception Exception { get; }
-
-   public abstract Maybe<Exception> AnyException { get; }
+   public abstract Maybe<Exception> Exception { get; }
 
    public abstract Optional<TResult> Map<TResult>(Func<T, Optional<TResult>> ifJust);
 

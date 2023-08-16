@@ -48,7 +48,7 @@ public class Scraper : IHash<string, string>
          source.Advance(result.Length);
          return this;
       }
-      else if (_result.AnyException is (true, var exception))
+      else if (_result.Exception is (true, var exception))
       {
          return exception;
       }
@@ -77,7 +77,7 @@ public class Scraper : IHash<string, string>
          source.Advance(result.Length);
          return this;
       }
-      else if (_result.AnyException is (true, var exception))
+      else if (_result.Exception is (true, var exception))
       {
          return exception;
       }
@@ -117,7 +117,7 @@ public class Scraper : IHash<string, string>
          source.Advance(result.Length);
          return this;
       }
-      else if (_result.AnyException is (true, var exception))
+      else if (_result.Exception is (true, var exception))
       {
          return exception;
       }
@@ -157,7 +157,7 @@ public class Scraper : IHash<string, string>
 
          return scraper;
       }
-      else if (_length.AnyException is (true, var exception))
+      else if (_length.Exception is (true, var exception))
       {
          return exception;
       }
