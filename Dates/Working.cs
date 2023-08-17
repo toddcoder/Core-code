@@ -7,6 +7,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Dates;
 
+[Obsolete("Use Timeout")]
 public class Working
 {
    public static implicit operator Working(TimeSpan workingPeriod) => new(workingPeriod);

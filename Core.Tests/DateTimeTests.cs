@@ -93,10 +93,10 @@ public class DateTimeTests
    [TestMethod]
    public void WorkingTest()
    {
-      Working working = 10.Seconds();
-      while (working)
+      Timeout timeout = 10.Seconds();
+      while (timeout.IsPending())
       {
-         Console.WriteLine(working.Elapsed.ToLongString(true));
+         Console.WriteLine(timeout.Elapsed.ToLongString(true));
       }
    }
 }
