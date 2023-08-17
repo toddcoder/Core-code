@@ -77,7 +77,7 @@ public class KeyMatch
    public void DisplayMessage(string message)
    {
       _subText = uiAction.SubText(message).Set.Alignment(Alignment).FontSize(8).FontStyle(FontStyle.Italic).ForeColor(Color.Black)
-         .BackColor(Color.White).Outline().End;
+         .BackColor(Color.White).Outline().IncludeFloor(false).IncludeCeiling(false).End;
    }
 
    public void DisplayDown() => DisplayMessage(downMessage);
