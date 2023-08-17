@@ -78,15 +78,15 @@ public class KeyMatch
    {
       Maybe<string> getPrefix() => keys switch
       {
-         Keys.Control => "Ⓒ",
-         Keys.Shift => "Ⓢ",
-         Keys.Alt => "Ⓐ",
+         Keys.Control => "c",
+         Keys.Shift => "s",
+         Keys.Alt => "a",
          _ => nil
       };
 
-      var fullMessage = getPrefix().Map(p => $"{p}/2bar.{message}");
+      var fullMessage = getPrefix().Map(p => $"{p} {message}");
       _subText = uiAction.SubText(fullMessage).Set.Alignment(Alignment).FontSize(8).FontStyle(FontStyle.Bold).ForeColor(Color.Black)
-         .BackColor(Color.White).Outline().IncludeFloor(false).IncludeCeiling(false).Outline().End;
+         .BackColor(Color.White).Outline().IncludeFloor(false).IncludeCeiling(false).Outline().SquareFirstCharacter().End;
       uiAction.Refresh();
    }
 

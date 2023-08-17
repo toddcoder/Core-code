@@ -101,6 +101,12 @@ public class SubTextSet
       return this;
    }
 
+   public SubTextSet SquareFirstCharacter(bool squareFirstCharacter = true)
+   {
+      subText.SquareFirstCharacter = squareFirstCharacter;
+      return this;
+   }
+
    protected Size getTextSize()
    {
       var text = subText.Text;

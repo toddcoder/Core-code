@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Drawing.Text;
 using System.Windows.Forms;
 using Core.Monads;
+using Core.Strings;
 using Core.Strings.Emojis;
 using static Core.Monads.MonadFunctions;
 
@@ -103,6 +104,8 @@ public class SubText : IEquatable<SubText>
 
    public bool IncludeCeiling { get; set; }
 
+   public bool SquareFirstCharacter { get; set; }
+
    public (Size measuredSize, string text, TextFormatFlags flags, Font font) TextSize(Maybe<Graphics> _graphics)
    {
       var text = Text.EmojiSubstitutions();
@@ -184,6 +187,18 @@ public class SubText : IEquatable<SubText>
          }
 
          TextRenderer.DrawText(graphics, text, font, rectangle, foreColorToUse, flags);
+
+         if (SquareFirstCharacter && text.Length > 0)
+         {
+            var character = text.Keep(1);
+            var charSize = TextRenderer.MeasureText(graphics, character, font);
+            var charLocation = rectangle.Location;
+            var charRectangle = new Rectangle(charLocation, charSize).Reposition(2, 2).Resize(-6, -4);
+            using var firstBrush = new SolidBrush(Color.FromArgb(64, Color.Wheat));
+            graphics.FillRectangle(firstBrush, charRectangle);
+            using var firstPen = new Pen(Color.Black);
+            graphics.DrawRectangle(firstPen, charRectangle);
+         }
 
          return this;
       }
