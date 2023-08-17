@@ -36,6 +36,7 @@ public static class EmojiExtensions
       Emoji.Copy => "❏",
       Emoji.Paste => "📋",
       Emoji.Cut => "✄",
+      Emoji.DoubleVertical => "║",
       _ => ""
    };
 
@@ -55,8 +56,8 @@ public static class EmojiExtensions
                "copyright" => "©",
                "pilcrow" => "¶",
                "diamond" => "♦",
-               "double-left" => "«",
-               "double-right" => "»",
+               "double-left" or "2left" => "«",
+               "double-right" or "2right" => "»",
                "times" => "×",
                "divide" => "÷",
                "paws-left" => "„",
@@ -72,9 +73,10 @@ public static class EmojiExtensions
                "unlocked" => "🔓",
                "text" => "🗛",
                "format" => "ƒ",
-               "copy"=> "❏",
-               "paste"=> "📋",
-               "cut"=> "✄",
+               "copy" => "❏",
+               "paste" => "📋",
+               "cut" => "✄",
+               "double-bar" or "2bar" => "║",
                _ => nil
             };
             if (_replacement is (true, var replacement))

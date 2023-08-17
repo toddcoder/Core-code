@@ -456,7 +456,6 @@ public partial class Form1 : Form, IMessageQueueListener
 
    protected void button4_Click(object sender, EventArgs e)
    {
-      uiTest.Enabled = !uiTest.Enabled;
-      uiAction.Enabled = !uiAction.Enabled;
+      uiAction.KeyMatch(Keys.Control, "down", "up");
    }
 }

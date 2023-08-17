@@ -76,8 +76,18 @@ public class KeyMatch
 
    public void DisplayMessage(string message)
    {
-      _subText = uiAction.SubText(message).Set.Alignment(Alignment).FontSize(8).FontStyle(FontStyle.Italic).ForeColor(Color.Black)
-         .BackColor(Color.White).Outline().IncludeFloor(false).IncludeCeiling(false).End;
+      Maybe<string> getPrefix() => keys switch
+      {
+         Keys.Control => "Ⓒ",
+         Keys.Shift => "Ⓢ",
+         Keys.Alt => "Ⓐ",
+         _ => nil
+      };
+
+      var fullMessage = getPrefix().Map(p => $"{p}/2bar.{message}");
+      _subText = uiAction.SubText(fullMessage).Set.Alignment(Alignment).FontSize(8).FontStyle(FontStyle.Bold).ForeColor(Color.Black)
+         .BackColor(Color.White).Outline().IncludeFloor(false).IncludeCeiling(false).Outline().End;
+      uiAction.Refresh();
    }
 
    public void DisplayDown() => DisplayMessage(downMessage);

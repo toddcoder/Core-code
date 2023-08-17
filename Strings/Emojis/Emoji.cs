@@ -29,5 +29,6 @@ public enum Emoji
    Format,
    Copy,
    Paste,
-   Cut
+   Cut,
+   DoubleVertical
 }

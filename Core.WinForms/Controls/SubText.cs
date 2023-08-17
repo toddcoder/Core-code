@@ -122,7 +122,7 @@ public class SubText : IEquatable<SubText>
       return (measuredSize, text, flags, font);
    }
 
-   public void SetLocation(Rectangle clientRectangle)
+   public (int x, int y) LocationFromAlignment(Rectangle clientRectangle)
    {
       if (_alignment is (true, var alignment))
       {
@@ -135,47 +135,27 @@ public class SubText : IEquatable<SubText>
          int farX() => clientRectangle.Right - measuredSize.Width - margin - (clickGlyph ? 8 : 0);
          int farY() => clientRectangle.Bottom - measuredSize.Height - margin;
 
-         switch (alignment)
+         return alignment switch
          {
-            case CardinalAlignment.NorthWest:
-               X = nearX();
-               Y = nearY();
-               break;
-            case CardinalAlignment.North:
-               X = centerX();
-               Y = nearY();
-               break;
-            case CardinalAlignment.NorthEast:
-               X = farX();
-               Y = nearY();
-               break;
-            case CardinalAlignment.East:
-               X = farX();
-               Y = centerY();
-               break;
-            case CardinalAlignment.SouthEast:
-               X = farX();
-               Y = farY();
-               break;
-            case CardinalAlignment.South:
-               X = centerX();
-               Y = farY();
-               break;
-            case CardinalAlignment.SouthWest:
-               X = nearX();
-               Y = farY();
-               break;
-            case CardinalAlignment.West:
-               X = nearX();
-               Y = centerY();
-               break;
-            case CardinalAlignment.Center:
-               X = centerX();
-               Y = centerY();
-               break;
-         }
+            CardinalAlignment.NorthWest => (nearX(), nearY()),
+            CardinalAlignment.North => (centerX(), nearY()),
+            CardinalAlignment.NorthEast => (farX(), nearY()),
+            CardinalAlignment.East => (farX(), centerY()),
+            CardinalAlignment.SouthEast => (farX(), farY()),
+            CardinalAlignment.South => (centerX(), farY()),
+            CardinalAlignment.SouthWest => (nearX(), farY()),
+            CardinalAlignment.West => (nearX(), centerY()),
+            CardinalAlignment.Center => (centerX(), centerY()),
+            _ => (X, Y)
+         };
+      }
+      else
+      {
+         return (X, Y);
       }
    }
+
+   public void SetLocation(Rectangle clientRectangle) => (X, Y) = LocationFromAlignment(clientRectangle);
 
    protected SubText draw(Graphics graphics, Color foreColor, Color backColor)
    {
