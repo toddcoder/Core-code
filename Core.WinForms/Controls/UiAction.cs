@@ -276,6 +276,7 @@ public class UiAction : UserControl
    protected Maybe<int> _ceiling;
    protected Maybe<KeyMatch> _keyMatch;
    protected Maybe<SymbolWriter> _symbolWriter;
+   protected Maybe<Func<UiAction, string>> _dynamicClickText;
 
    public event EventHandler<AutomaticMessageArgs> AutomaticMessage;
    public event EventHandler<PaintEventArgs> Painting;
@@ -497,6 +498,7 @@ public class UiAction : UserControl
       _ceiling = nil;
       _keyMatch = nil;
       _symbolWriter = nil;
+      _dynamicClickText = nil;
    }
 
    public bool AutoSizeText { get; set; }
@@ -637,6 +639,19 @@ public class UiAction : UserControl
       {
          toolTip.Action = action<object, DrawToolTipEventArgs>((_, e) => PaintToolTip.Invoke(this, e));
       }
+      else if (DynamicToolTip)
+      {
+         if (!toolTip.Action)
+         {
+            _oldTitle = toolTip.ToolTipTitle.NotEmpty();
+         }
+
+         toolTip.ToolTipTitle = "";
+         toolTip.Action = action<object, DrawToolTipEventArgs>((_, e) =>
+         {
+            toolTip.DrawTextInRectangle(e.Graphics, text, toolTip.Font, getForeColor(), getBackColor(), e.Bounds);
+         });
+      }
       else if (_failureToolTip is (true, var failureToolTip))
       {
          if (!toolTip.Action)
@@ -726,6 +741,20 @@ public class UiAction : UserControl
             toolTip.DrawTitle(e.Graphics, toolTip.Font, Color.White, Color.Black, e.Bounds);
          });
          this.Do(() => toolTip.SetToolTip(this, text));
+      }
+      else if (_dynamicClickText is (true, var func))
+      {
+         if (!toolTip.Action)
+         {
+            _oldTitle = toolTip.ToolTipTitle.NotEmpty();
+         }
+
+         toolTip.ToolTipTitle = "";
+         toolTip.Action = action<object, DrawToolTipEventArgs>((_, e) =>
+         {
+            var clickText = func(this);
+            toolTip.DrawTextInRectangle(e.Graphics, clickText, toolTip.Font, Color.White, Color.CadetBlue, e.Bounds);
+         });
       }
       else if (Clickable && ClickText.IsNotEmpty())
       {
@@ -1047,7 +1076,7 @@ public class UiAction : UserControl
       Refresh();
    }
 
-   public bool Clickable => _clickText;
+   public bool Clickable => _clickText || _dynamicClickText;
 
    public string ClickText
    {
@@ -2936,4 +2965,11 @@ public class UiAction : UserControl
    }
 
    public UiActionButtonType ButtonType { get; set; }
+
+   public bool DynamicToolTip { get; set; }
+
+   public Func<UiAction, string> DynamicClickText
+   {
+      set => _dynamicClickText = value;
+   }
 }

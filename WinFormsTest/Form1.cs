@@ -408,23 +408,14 @@ public partial class Form1 : Form, IMessageQueueListener
 
    protected void button1_Click(object sender, EventArgs e)
    {
-      uiAction.Success("Fixed project for f-ct-remove-unneeded-report-config-grp3-2r");
-      uiAction.Legend("pull request");
-      uiAction.Refresh();
-      uiAction.SubText("r-6.51.0-grp3 |20").Set.Alignment(CardinalAlignment.NorthEast).ForeColor(Color.White).BackColor(Color.Magenta).Outline()
-         .FontSize(8);
-      uiAction.Refresh();
-      uiAction.SubText("1 file saved").Set.Alignment(CardinalAlignment.SouthWest).FontSize(8).Invert();
-      uiAction.Refresh();
+      uiAction.KeyMatch("down", "up");
+      uiAction.DynamicClickText = u => u.IsKeyDown ? "Down" : "Up";
+      uiAction.Button("Work!");
    }
 
    protected void button2_Click(object sender, EventArgs e)
    {
-      uiAction.Success("Open Pull Request");
-      uiAction.Legend("pull request");
-      uiAction.SubText("http://tfs/LS/_git/Estream/pullrequest/30868?_a=overview").Set.Alignment(CardinalAlignment.SouthWest).FontSize(8)
-         .IncludeFloor(false);
-      uiAction.Refresh();
+      uiAction.Failure("Failure...");
    }
 
    protected void button3_Click(object sender, EventArgs e)
