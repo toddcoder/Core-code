@@ -24,5 +24,6 @@ public enum UiActionType
    Console,
    MuteProgress,
    Display,
-   Symbol
+   Symbol,
+   Alternate
 }

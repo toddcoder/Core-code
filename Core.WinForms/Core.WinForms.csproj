@@ -57,6 +57,7 @@
     <Compile Include="Consoles\TextBoxConsole.cs" />
     <Compile Include="Consoles\TextBoxExtensions.cs" />
     <Compile Include="Consoles\TextBoxReader.cs" />
+    <Compile Include="Controls\AlternateWriter.cs" />
     <Compile Include="Controls\ArgumentsArgs.cs" />
     <Compile Include="Controls\AutomaticMessageArgs.cs" />
     <Compile Include="Controls\BarberPoleBusyProcessor.cs" />
@@ -130,6 +131,9 @@
     <Compile Include="ControlWrappers\MessageStyle.cs" />
     <Compile Include="Documents\MenuBuilderFunctions.cs" />
     <Compile Include="Drawing\AutoSizingWriter.cs" />
+    <Compile Include="MutPoint.cs" />
+    <Compile Include="MutRectangle.cs" />
+    <Compile Include="MutSize.cs" />
     <Compile Include="RectangleExtensions.cs" />
     <Compile Include="StandardDialog.cs" />
     <Compile Include="Documents\Colorizer.cs" />

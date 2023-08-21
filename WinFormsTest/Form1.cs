@@ -408,10 +408,7 @@ public partial class Form1 : Form, IMessageQueueListener
 
    protected void button1_Click(object sender, EventArgs e)
    {
-      uiAction.KeyMatch("down", "up");
-      uiAction.Button("Work!");
-      uiAction.DynamicToolTip = u => u.IsKeyDown ? "Down" : "Up";
-      uiAction.Click += (_, _) => uiAction.Busy(true);
+      uiAction.Alternate("yes", "no", "cancel");
    }
 
    protected void button2_Click(object sender, EventArgs e)

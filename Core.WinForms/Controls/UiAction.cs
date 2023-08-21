@@ -277,6 +277,7 @@ public class UiAction : UserControl
    protected Maybe<KeyMatch> _keyMatch;
    protected Maybe<SymbolWriter> _symbolWriter;
    internal Maybe<Func<UiAction, string>> _dynamicToolTip;
+   protected Maybe<AlternateWriter> _alternateWriter;
 
    public event EventHandler<AutomaticMessageArgs> AutomaticMessage;
    public event EventHandler<PaintEventArgs> Painting;
@@ -499,6 +500,7 @@ public class UiAction : UserControl
       _keyMatch = nil;
       _symbolWriter = nil;
       _dynamicToolTip = nil;
+      _alternateWriter = nil;
    }
 
    public bool AutoSizeText { get; set; }
@@ -1448,6 +1450,9 @@ public class UiAction : UserControl
          case UiActionType.Button:
             writer.Value.Write(text, e.Graphics);
             break;
+         case UiActionType.Alternate when _alternateWriter is (true, var alternateWriter):
+            alternateWriter.OnPaint(e.Graphics);
+            break;
          default:
          {
             if (type != UiActionType.Tape)
@@ -1697,6 +1702,9 @@ public class UiAction : UserControl
          }
          case UiActionType.Symbol when _symbolWriter is (true, var symbolWriter):
             symbolWriter.OnPaintBackground(pevent.Graphics, clientRectangle, Enabled);
+            break;
+         case UiActionType.Alternate when _alternateWriter is (true, var alternateWriter):
+            alternateWriter.OnPaintBackground(pevent.Graphics);
             break;
          default:
          {
@@ -2959,5 +2967,24 @@ public class UiAction : UserControl
          _dynamicToolTip = value;
          setToolTip();
       }
+   }
+
+   public void Alternate(params string[] alternates)
+   {
+      if (alternates.Length < 2)
+      {
+         Failure("You should have at least two alternates");
+         return;
+      }
+
+      type = UiActionType.Alternate;
+      setUpAlternate(alternates);
+      refresh();
+   }
+
+   protected void setUpAlternate(string[] alternates)
+   {
+      RectangleCount = alternates.Length;
+      _alternateWriter = new AlternateWriter(this, alternates);
    }
 }
