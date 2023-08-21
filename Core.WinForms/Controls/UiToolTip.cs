@@ -83,9 +83,13 @@ public class UiToolTip : ToolTip
       {
          e.ToolTipSize = getTextSize(exceptionToolTip);
       }
-      else if (uiAction.Clickable && !uiAction.IsFailureOrException)
+      else if (uiAction._clickText is (true, var clickText) && !uiAction.IsFailureOrException)
       {
-         e.ToolTipSize = getTextSize(uiAction.ClickText);
+         e.ToolTipSize = getTextSize(clickText);
+      }
+      else if (uiAction._dynamicClickText is (true, var func))
+      {
+         e.ToolTipSize = getTextSize(func(uiAction));
       }
       else
       {
@@ -113,14 +117,14 @@ public class UiToolTip : ToolTip
       writer.Write(text, g);
    }
 
-   public void DrawTitle(Graphics graphics, Font font, Color foreColor, Color backColor, Rectangle bounds)
+   public void DrawTitle(Graphics g, Font font, Color foreColor, Color backColor, Rectangle bounds)
    {
       if (ToolTipTitle.IsNotEmpty())
       {
          using var smallFont = new Font(font.FontFamily, 8f);
          var smallBounds = new Rectangle(bounds.Location, bounds.Size with { Height = 20 });
          using var brush = new SolidBrush(backColor);
-         graphics.FillRectangle(brush, smallBounds);
+         g.FillRectangle(brush, smallBounds);
 
          var writer = new UiActionWriter(CardinalAlignment.Center, false, nil, nil, UiActionButtonType.Normal)
          {
@@ -128,7 +132,7 @@ public class UiToolTip : ToolTip
             Color = foreColor,
             Rectangle = smallBounds
          };
-         writer.Write(ToolTipTitle, graphics);
+         writer.Write(ToolTipTitle, g);
       }
    }
 

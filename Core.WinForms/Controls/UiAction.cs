@@ -227,7 +227,7 @@ public class UiAction : UserControl
    protected bool mouseInside;
    protected bool mouseDown;
    protected UiToolTip toolTip;
-   protected Maybe<string> _clickText;
+   internal Maybe<string> _clickText;
    protected LazyMaybe<BusyTextProcessor> _busyTextProcessor;
    protected LazyMaybe<ProgressDefiniteProcessor> _progressDefiniteProcessor;
    protected LazyMaybe<BusyProcessor> _busyProcessor;
@@ -276,7 +276,7 @@ public class UiAction : UserControl
    protected Maybe<int> _ceiling;
    protected Maybe<KeyMatch> _keyMatch;
    protected Maybe<SymbolWriter> _symbolWriter;
-   protected Maybe<Func<UiAction, string>> _dynamicClickText;
+   internal Maybe<Func<UiAction, string>> _dynamicClickText;
 
    public event EventHandler<AutomaticMessageArgs> AutomaticMessage;
    public event EventHandler<PaintEventArgs> Painting;
