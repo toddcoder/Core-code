@@ -87,7 +87,7 @@ public class UiToolTip : ToolTip
       {
          e.ToolTipSize = getTextSize(clickText);
       }
-      else if (uiAction._dynamicClickText is (true, var func))
+      else if (uiAction._dynamicToolTip is (true, var func))
       {
          e.ToolTipSize = getTextSize(func(uiAction));
       }
