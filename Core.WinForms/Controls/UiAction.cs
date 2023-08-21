@@ -2954,6 +2954,10 @@ public class UiAction : UserControl
 
    public Func<UiAction, string> DynamicToolTip
    {
-      set => _dynamicToolTip = value;
+      set
+      {
+         _dynamicToolTip = value;
+         setToolTip();
+      }
    }
 }
