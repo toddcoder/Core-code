@@ -1040,4 +1040,23 @@ public static class MonadExtensions
          }
       }
    }
+
+   [DebuggerStepThrough]
+   public static Optional<TResult> SelectMany<T, TResult>(this Optional<T> maybe, Func<T, Optional<TResult>> projection)
+   {
+      return maybe.Map(projection) | (() => fail("Value not provided"));
+   }
+
+   [DebuggerStepThrough]
+   public static Optional<TResult> Select<T, TResult>(this Optional<T> result, Func<T, TResult> func)
+   {
+      if (result is (true, var resultValue))
+      {
+         return func(resultValue);
+      }
+      else
+      {
+         return result.Exception;
+      }
+   }
 }
