@@ -86,6 +86,18 @@ public class AlternateWriter
       return maybe<Color>() & index.Between(0).Until(alternates.Length) & (() => backColors.Maybe[alternates[index]]);
    }
 
+   public void SetColors(string text, UiActionType type)
+   {
+      SetForeColor(text, uiAction.GetForeColor(type));
+      SetBackColor(text, uiAction.GetBackColor(type));
+   }
+
+   public void SetColors(int index, UiActionType type)
+   {
+      SetForeColor(index, uiAction.GetForeColor(type));
+      SetBackColor(index, uiAction.GetBackColor(type));
+   }
+
    public int SelectedIndex
    {
       get => selectedIndex;

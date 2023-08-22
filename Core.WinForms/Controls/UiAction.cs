@@ -3098,4 +3098,20 @@ public class UiAction : UserControl
    }
 
    public Maybe<Color> GetBackColor(int index) => _alternateWriter.Map(w => w.GetBackColor(index));
+
+   public Color GetForeColor(UiActionType type) => getForeColor(type);
+
+   public Color GetBackColor(UiActionType type) => getBackColor(type);
+
+   public void SetColors(string text, UiActionType type)
+   {
+      SetForeColor(text, GetForeColor(type));
+      SetBackColor(text, GetBackColor(type));
+   }
+
+   public void SetColors(int index, UiActionType type)
+   {
+      SetForeColor(index, GetForeColor(type));
+      SetBackColor(index, GetBackColor(type));
+   }
 }
