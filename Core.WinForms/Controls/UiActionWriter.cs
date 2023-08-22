@@ -77,7 +77,7 @@ public class UiActionWriter
       return flags;
    }
 
-   protected bool autoSize;
+   protected bool autoSizeText;
    protected Maybe<int> _floor;
    protected Maybe<int> _ceiling;
    protected CheckStyle checkStyle;
@@ -88,10 +88,10 @@ public class UiActionWriter
    protected Result<Color> _color;
    protected UiActionButtonType buttonType;
 
-   public UiActionWriter(CardinalAlignment messageAlignment, bool autoSize, Maybe<int> _floor, Maybe<int> _ceiling, UiActionButtonType buttonType)
+   public UiActionWriter(CardinalAlignment messageAlignment, bool autoSizeText, Maybe<int> _floor, Maybe<int> _ceiling, UiActionButtonType buttonType)
    {
       Align(messageAlignment);
-      this.autoSize = autoSize;
+      this.autoSizeText = autoSizeText;
       this._floor = _floor;
       this._ceiling = _ceiling;
       this.buttonType = buttonType;
@@ -145,8 +145,8 @@ public class UiActionWriter
 
    public bool AutoSize
    {
-      get => autoSize;
-      set => autoSize = value;
+      get => autoSizeText;
+      set => autoSizeText = value;
    }
 
    public Size TextSize(string text, Graphics graphics)
@@ -230,7 +230,7 @@ public class UiActionWriter
                font = new Font(font, FontStyle.Italic);
             }
 
-            if (autoSize)
+            if (autoSizeText)
             {
                if (_floor is (true, var floor and >= 0))
                {

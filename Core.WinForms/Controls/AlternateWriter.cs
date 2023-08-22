@@ -1,7 +1,7 @@
 ﻿using System.Drawing;
 using System.Drawing.Drawing2D;
 using Core.Enumerables;
-using static Core.Monads.MonadFunctions;
+using Core.Monads;
 
 namespace Core.WinForms.Controls;
 
@@ -9,12 +9,18 @@ public class AlternateWriter
 {
    protected UiAction uiAction;
    protected string[] alternates;
+   protected bool autoSizeText;
+   protected Maybe<int> _floor;
+   protected Maybe<int> _ceiling;
    protected int selectedIndex;
 
-   public AlternateWriter(UiAction uiAction, string[] alternates)
+   public AlternateWriter(UiAction uiAction, string[] alternates, bool autoSizeText, Maybe<int> _floor, Maybe<int> _ceiling)
    {
       this.uiAction = uiAction;
       this.alternates = alternates;
+      this.autoSizeText = autoSizeText;
+      this._floor = _floor;
+      this._ceiling = _ceiling;
 
       selectedIndex = 0;
    }
@@ -89,7 +95,7 @@ public class AlternateWriter
 
    public void OnPaint(Graphics g)
    {
-      var writer = new UiActionWriter(CardinalAlignment.Center, true, nil, nil, UiActionButtonType.Normal)
+      var writer = new UiActionWriter(CardinalAlignment.Center, autoSizeText, _floor , _ceiling, UiActionButtonType.Normal)
       {
          Font = uiAction.Font
       };

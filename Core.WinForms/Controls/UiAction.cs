@@ -3007,7 +3007,7 @@ public class UiAction : UserControl
    protected void setUpAlternate(string[] alternates)
    {
       RectangleCount = alternates.Length;
-      _alternateWriter = new AlternateWriter(this, alternates);
+      _alternateWriter = new AlternateWriter(this, alternates, AutoSizeText, _floor, _ceiling);
    }
 
    public int SelectedIndex
