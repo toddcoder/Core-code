@@ -143,7 +143,7 @@ public class UiActionWriter
 
    public TextFormatFlags Flags { get; set; }
 
-   public bool AutoSize
+   public bool AutoSizeText
    {
       get => autoSizeText;
       set => autoSizeText = value;
@@ -232,16 +232,7 @@ public class UiActionWriter
 
             if (autoSizeText)
             {
-               if (_floor is (true, var floor and >= 0))
-               {
-                  rectangle = rectangle with { X = floor, Width = rectangle.Width - floor };
-               }
-
-               if (_ceiling is (true, var ceiling))
-               {
-                  rectangle = rectangle with { Width = ceiling - rectangle.X };
-               }
-
+               rectangle = AutoSizingWriter.NarrowRectangle(rectangle, _floor, _ceiling);
                drawButtonType(g, rectangle, color);
                var writer = new AutoSizingWriter(text, rectangle, color, font, isFile);
                writer.Write(g);

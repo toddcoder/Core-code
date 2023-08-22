@@ -408,7 +408,7 @@ public partial class Form1 : Form, IMessageQueueListener
 
    protected void button1_Click(object sender, EventArgs e)
    {
-      uiAction.Alternate("yes", "no", "cancel", "disabled");
+      uiAction.Alternate("Merge Request Received", "Merge Request Rejected", "Merged to r-6.51.0-grp1", "Merged to r-6.51.0-grp7a");
       uiAction.DisabledIndex = 3;
       uiAction.ClickOnAlternate += (_, e) => Text = e.Alternate;
    }

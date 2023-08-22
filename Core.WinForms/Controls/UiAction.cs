@@ -1402,14 +1402,14 @@ public class UiAction : UserControl
             break;
          case UiActionType.ProgressDefinite when _progressDefiniteProcessor is (true, var progressDefiniteProcessor):
          {
-            var autoSize = writer.Value.AutoSize;
-            writer.Value.AutoSize = false;
+            var autoSize = writer.Value.AutoSizeText;
+            writer.Value.AutoSizeText = false;
             var percentText = $"{getPercentage()}%";
             writer.Value.Rectangle = progressDefiniteProcessor.PercentRectangle;
             writer.Value.Center(true);
             writer.Value.Color = Color.Black;
             writer.Value.Write(e.Graphics, percentText);
-            writer.Value.AutoSize = autoSize;
+            writer.Value.AutoSizeText = autoSize;
 
             writer.Value.Rectangle = progressDefiniteProcessor.TextRectangle;
             writer.Value.Color = getForeColor();

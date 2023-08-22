@@ -1,12 +1,41 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
 using Core.Monads;
+using Core.Strings.Emojis;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Drawing;
 
 public class AutoSizingWriter
 {
+   public static Rectangle NarrowRectangle(Rectangle rectangle, Maybe<int> _floor, Maybe<int> _ceiling)
+   {
+      if (_floor is (true, var floor and >= 0))
+      {
+         rectangle = rectangle with { X = floor, Width = rectangle.Width - floor };
+      }
+
+      if (_ceiling is (true, var ceiling))
+      {
+         rectangle = rectangle with { Width = ceiling - rectangle.X };
+      }
+
+      return rectangle;
+   }
+
+   public static (Size size, Font font) TextSize(Graphics g, string text, Font font, int containerWidth, int minimumSize, int maximumSize,
+      TextFormatFlags flags)
+   {
+      var _adjustedFont = AdjustedFont(g, text, font, containerWidth, minimumSize, maximumSize, flags);
+      var adjustedFont = _adjustedFont | (() => new Font(font.Name, minimumSize, font.Style));
+      if (!_adjustedFont)
+      {
+         flags = flags | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix;
+      }
+
+      return (TextRenderer.MeasureText(g, text.EmojiSubstitutions(), adjustedFont, Size.Empty, flags), adjustedFont);
+   }
+
    protected string text;
    protected Rectangle rectangle;
    protected Color foreColor;

@@ -99,27 +99,27 @@ public class AlternateWriter
       g.FillRectangle(brush, rectangle);
    }
 
-   protected void drawSelected(Graphics g, Rectangle rectangle)
+   protected void drawSelected(Graphics g, Rectangle rectangle, Color foreColor, Color backColor)
    {
-      using var pen = new Pen(Color.Black, 2);
-      drawUnselected(g, pen, rectangle);
+      using var pen = new Pen(foreColor, 2);
+      drawUnselected(g, pen, rectangle, foreColor, backColor);
       pen.StartCap = LineCap.Triangle;
       pen.EndCap = LineCap.Triangle;
       g.DrawLine(pen, rectangle.NorthWest(4), rectangle.SouthEast(4));
       g.DrawLine(pen, rectangle.NorthEast(4), rectangle.SouthWest(4));
    }
 
-   protected void drawUnselected(Graphics g, Pen pen, Rectangle rectangle)
+   protected void drawUnselected(Graphics g, Pen pen, Rectangle rectangle, Color foreColor, Color backColor)
    {
-      using var brush = new SolidBrush(Color.White);
+      using var brush = new SolidBrush(backColor);
       g.FillRectangle(brush, rectangle);
       g.DrawRectangle(pen, rectangle);
    }
 
-   protected void drawUnselected(Graphics g, Rectangle rectangle)
+   protected void drawUnselected(Graphics g, Rectangle rectangle, Color foreColor, Color backColor)
    {
-      using var pen = new Pen(Color.Black, 2);
-      drawUnselected(g, pen, rectangle);
+      using var pen = new Pen(foreColor, 2);
+      drawUnselected(g, pen, rectangle, foreColor, backColor);
    }
 
    public void OnPaint(Graphics g)
@@ -131,14 +131,18 @@ public class AlternateWriter
          var (indicatorRectangle, textRectangle) = splitRectangle(rectangle);
          if (index == disabledIndex)
          {
-            using var disabledBrush = new HatchBrush(HatchStyle.BackwardDiagonal, Color.Black, Color.Gold);
-            g.FillRectangle(disabledBrush, rectangle);
-            var filledRectangle = writer.TextRectangle(alternates[index], g, rectangle);
-            g.FillRectangle(Brushes.Gold, filledRectangle);
-            g.DrawRectangle(Pens.Black, filledRectangle);
-            writer.Rectangle = rectangle;
+            g.FillRectangle(Brushes.LightGray, textRectangle);
+            writer.Rectangle = textRectangle;
             writer.Font = disabledFont.Value;
             writer.Color = Color.Black;
+            if (index == selectedIndex)
+            {
+               drawSelected(g, indicatorRectangle, Color.Black, Color.LightGray);
+            }
+            else
+            {
+               drawUnselected(g, indicatorRectangle, Color.Black, Color.LightGray);
+            }
          }
          else
          {
@@ -148,11 +152,11 @@ public class AlternateWriter
             fillRectangle(g, textRectangle, color);
             if (index == selectedIndex)
             {
-               drawSelected(g, indicatorRectangle);
+               drawSelected(g, indicatorRectangle, Color.Black, Color.White);
             }
             else
             {
-               drawUnselected(g, indicatorRectangle);
+               drawUnselected(g, indicatorRectangle, Color.Black, Color.White);
             }
 
             writer.Rectangle = textRectangle;
