@@ -56,6 +56,8 @@ public class AlternateWriter
 
    public string Alternate => alternates[selectedIndex];
 
+   public string[] Alternates => alternates;
+
    protected void fillRectangle(Graphics g, Rectangle rectangle, Color color)
    {
       using var brush = new SolidBrush(color);

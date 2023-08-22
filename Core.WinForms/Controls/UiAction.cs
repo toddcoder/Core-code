@@ -11,6 +11,7 @@ using Core.Collections;
 using Core.Computers;
 using Core.DataStructures;
 using Core.Dates.DateIncrements;
+using Core.Enumerables;
 using Core.Monads;
 using Core.Monads.Lazy;
 using Core.Numbers;
@@ -2992,9 +2993,9 @@ public class UiAction : UserControl
 
    public void Alternate(params string[] alternates)
    {
-      if (alternates.Length < 2)
+      if (alternates.Length < 1)
       {
-         Failure("You should have at least two alternates");
+         Failure("You should have at least one alternate");
          return;
       }
 
@@ -3023,6 +3024,22 @@ public class UiAction : UserControl
                var location = Rectangles[rectangleIndex].Location;
                var alternate = alternateWriter.Alternate;
                ClickOnAlternate.Invoke(this, new UiActionAlternateArgs(rectangleIndex, location, alternate));
+            }
+         }
+      }
+   }
+
+   public string SelectedAlternate
+   {
+      get => _alternateWriter.Map(w => w.Alternate);
+      set
+      {
+         if (_alternateWriter is (true, var alternateWriter))
+         {
+            var _index = alternateWriter.Alternates.Find(value);
+            if (_index is (true, var selectedIndex))
+            {
+               alternateWriter.SelectedIndex = selectedIndex;
             }
          }
       }
