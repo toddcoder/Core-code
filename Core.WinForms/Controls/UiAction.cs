@@ -3058,4 +3058,36 @@ public class UiAction : UserControl
          }
       }
    }
+
+   public void SetForeColor(string text, Color color)
+   {
+      if (_alternateWriter is (true, var alternateWriter))
+      {
+         alternateWriter.SetForeColor(text, color);
+      }
+   }
+
+   public void SetForeColor(int index, Color color)
+   {
+      if (_alternateWriter is (true, var alternateWriter))
+      {
+         alternateWriter.SetForeColor(index, color);
+      }
+   }
+
+   public void SetBackColor(string text, Color color)
+   {
+      if (_alternateWriter is (true, var alternateWriter))
+      {
+         alternateWriter.SetBackColor(text, color);
+      }
+   }
+
+   public void SetBackColor(int index, Color color)
+   {
+      if (_alternateWriter is (true, var alternateWriter))
+      {
+         alternateWriter.SetBackColor(index, color);
+      }
+   }
 }

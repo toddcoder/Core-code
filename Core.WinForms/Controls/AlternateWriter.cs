@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using Core.Collections;
 using Core.Enumerables;
 using Core.Monads;
+using Core.Numbers;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Controls;
@@ -17,6 +19,8 @@ public class AlternateWriter
    protected int selectedIndex;
    protected Maybe<int> _disabledIndex;
    protected Lazy<Font> disabledFont;
+   protected StringHash<Color> foreColors;
+   protected StringHash<Color> backColors;
 
    public AlternateWriter(UiAction uiAction, string[] alternates, bool autoSizeText, Maybe<int> _floor, Maybe<int> _ceiling)
    {
@@ -29,6 +33,8 @@ public class AlternateWriter
       selectedIndex = 0;
       _disabledIndex = nil;
       disabledFont = new Lazy<Font>(() => new Font(uiAction.Font, FontStyle.Italic));
+      foreColors = new StringHash<Color>(true);
+      backColors = new StringHash<Color>(true);
    }
 
    protected (Rectangle indicatorRectangle, Rectangle textRectangle) splitRectangle(Rectangle rectangle)
@@ -44,6 +50,26 @@ public class AlternateWriter
       textRectangle.Width -= height;
 
       return (indicatorRectangle, textRectangle);
+   }
+
+   public void SetForeColor(string text, Color color) => foreColors[text] = color;
+
+   public void SetForeColor(int index, Color color)
+   {
+      if (index.Between(0).Until(alternates.Length))
+      {
+         SetForeColor(alternates[index], color);
+      }
+   }
+
+   public void SetBackColor(string text, Color color) => backColors[text] = color;
+
+   public void SetBackColor(int index, Color color)
+   {
+      if (index.Between(0).Until(alternates.Length))
+      {
+         SetBackColor(alternates[index], color);
+      }
    }
 
    public int SelectedIndex
@@ -129,12 +155,17 @@ public class AlternateWriter
       foreach (var (index, rectangle) in uiAction.Rectangles.Indexed())
       {
          var (indicatorRectangle, textRectangle) = splitRectangle(rectangle);
+         var alternate = alternates[index];
+
          if (index == disabledIndex)
          {
-            g.FillRectangle(Brushes.LightGray, textRectangle);
+            var foreColor = foreColors.Maybe[alternate] | Color.Black;
+            var backColor = backColors.Maybe[alternate] | Color.LightGray;
+            using var brush = new SolidBrush(backColor);
+            g.FillRectangle(brush, textRectangle);
             writer.Rectangle = textRectangle;
             writer.Font = disabledFont.Value;
-            writer.Color = Color.Black;
+            writer.Color = foreColor;
             if (index == selectedIndex)
             {
                drawSelected(g, indicatorRectangle, Color.Black, Color.LightGray);
@@ -147,9 +178,14 @@ public class AlternateWriter
          else
          {
             writer.Font = uiAction.Font;
-            var color = index == selectedIndex ? Color.Teal : Color.Wheat;
-            writer.Color = index == selectedIndex ? Color.White : Color.Black;
+
+            var _foreColor = foreColors.Maybe[alternate];
+            writer.Color = _foreColor | (() => index == selectedIndex ? Color.White : Color.Black);
+
+            var _backColor = backColors.Maybe[alternate];
+            var color = _backColor | (() => index == selectedIndex ? Color.Teal : Color.Wheat);
             fillRectangle(g, textRectangle, color);
+
             if (index == selectedIndex)
             {
                drawSelected(g, indicatorRectangle, Color.Black, Color.White);
@@ -162,12 +198,12 @@ public class AlternateWriter
             writer.Rectangle = textRectangle;
          }
 
-         writer.Write(g, alternates[index]);
+         writer.Write(g, alternate);
       }
    }
 
    public void OnPaintBackground(Graphics g)
    {
-      fillRectangle(g, uiAction.ClientRectangle, Color.AliceBlue);
+      fillRectangle(g, uiAction.ClientRectangle, Color.White);
    }
 }

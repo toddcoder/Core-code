@@ -409,6 +409,14 @@ public partial class Form1 : Form, IMessageQueueListener
    protected void button1_Click(object sender, EventArgs e)
    {
       uiAction.Alternate("Merge Request Received", "Merge Request Rejected", "Merged to r-6.51.0-grp1", "Merged to r-6.51.0-grp7a");
+      uiAction.SetForeColor(0, Color.White);
+      uiAction.SetBackColor(0, Color.Blue);
+      uiAction.SetForeColor(1, Color.Black);
+      uiAction.SetBackColor(1, Color.Gold);
+      uiAction.SetForeColor(2, Color.White);
+      uiAction.SetBackColor(2, Color.Green);
+      uiAction.SetForeColor(3, Color.White);
+      uiAction.SetBackColor(3, Color.Green);
       uiAction.DisabledIndex = 3;
       uiAction.ClickOnAlternate += (_, e) => Text = e.Alternate;
    }
