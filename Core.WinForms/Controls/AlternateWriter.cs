@@ -54,6 +54,8 @@ public class AlternateWriter
 
    public void SetForeColor(string text, Color color) => foreColors[text] = color;
 
+   public Maybe<Color> GetForeColor(string text) => foreColors.Maybe[text];
+
    public void SetForeColor(int index, Color color)
    {
       if (index.Between(0).Until(alternates.Length))
@@ -62,7 +64,14 @@ public class AlternateWriter
       }
    }
 
+   public Maybe<Color> GetForeColor(int index)
+   {
+      return maybe<Color>() & index.Between(0).Until(alternates.Length) & (() => foreColors.Maybe[alternates[index]]);
+   }
+
    public void SetBackColor(string text, Color color) => backColors[text] = color;
+
+   public Maybe<Color> GetBackColor(string text) => backColors.Maybe[text];
 
    public void SetBackColor(int index, Color color)
    {
@@ -70,6 +79,11 @@ public class AlternateWriter
       {
          SetBackColor(alternates[index], color);
       }
+   }
+
+   public Maybe<Color> GetBackColor(int index)
+   {
+      return maybe<Color>() & index.Between(0).Until(alternates.Length) & (() => backColors.Maybe[alternates[index]]);
    }
 
    public int SelectedIndex

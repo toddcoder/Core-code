@@ -3067,6 +3067,8 @@ public class UiAction : UserControl
       }
    }
 
+   public Maybe<Color> GetForeColor(string text) => _alternateWriter.Map(w => w.GetForeColor(text));
+
    public void SetForeColor(int index, Color color)
    {
       if (_alternateWriter is (true, var alternateWriter))
@@ -3074,6 +3076,8 @@ public class UiAction : UserControl
          alternateWriter.SetForeColor(index, color);
       }
    }
+
+   public Maybe<Color> GetForeColor(int index) => _alternateWriter.Map(w => w.GetForeColor(index));
 
    public void SetBackColor(string text, Color color)
    {
@@ -3083,6 +3087,8 @@ public class UiAction : UserControl
       }
    }
 
+   public Maybe<Color> GetBackColor(string text) => _alternateWriter.Map(w => w.GetBackColor(text));
+
    public void SetBackColor(int index, Color color)
    {
       if (_alternateWriter is (true, var alternateWriter))
@@ -3090,4 +3096,6 @@ public class UiAction : UserControl
          alternateWriter.SetBackColor(index, color);
       }
    }
+
+   public Maybe<Color> GetBackColor(int index) => _alternateWriter.Map(w => w.GetBackColor(index));
 }
