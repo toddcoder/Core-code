@@ -61,6 +61,6 @@ public class LabelProcessor
          Color = Color.White,
          EmptyTextTitle = _emptyTextTitle
       };
-      writer.Write(label, graphics);
+      writer.Write(graphics, label);
    }
 }

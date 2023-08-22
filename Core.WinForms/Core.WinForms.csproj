@@ -123,6 +123,7 @@
     </Compile>
     <Compile Include="Controls\SelectedState.cs" />
     <Compile Include="Controls\SubText.cs" />
+    <Compile Include="Controls\UiActionAlternateArgs.cs" />
     <Compile Include="Controls\UiToolTip.cs">
       <SubType>Component</SubType>
     </Compile>

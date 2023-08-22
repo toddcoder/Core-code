@@ -297,6 +297,7 @@ public class UiAction : UserControl
    public event EventHandler<UiActionRectangleArgs> ClickOnRectangle;
    public event EventHandler<UiActionRectangleArgs> MouseMoveOnRectangle;
    public event EventHandler<UiActionRectanglePaintArgs> PaintOnRectangle;
+   public event EventHandler<UiActionAlternateArgs> ClickOnAlternate;
 
    public UiAction(Control control, bool is3D = false)
    {
@@ -414,6 +415,14 @@ public class UiAction : UserControl
             if (rectangles[i].Contains(location))
             {
                ClickOnRectangle?.Invoke(this, new UiActionRectangleArgs(i, location));
+
+               if (_alternateWriter is (true, var alternateWriter))
+               {
+                  alternateWriter.SelectedIndex = i;
+                  refresh();
+                  ClickOnAlternate?.Invoke(this, new UiActionAlternateArgs(i, location, alternateWriter.Alternate));
+               }
+
                return;
             }
          }
@@ -422,12 +431,23 @@ public class UiAction : UserControl
       MouseMove += (_, _) =>
       {
          var location = PointToClient(Cursor.Position);
+         var invoked = false;
+
          for (var i = 0; i < rectangles.Length; i++)
          {
-            if (rectangles[i].Contains(location))
+            if (!invoked && rectangles[i].Contains(location))
             {
                MouseMoveOnRectangle?.Invoke(this, new UiActionRectangleArgs(i, location));
-               return;
+               invoked = true;
+
+               if (_alternateWriter)
+               {
+                  using var pen = new Pen(Color.Black);
+                  pen.DashStyle = DashStyle.Dot;
+                  var rectangle = rectangles[i].Shrink(2);
+                  using var g = CreateGraphics();
+                  g.DrawRectangle(pen, rectangle);
+               }
             }
          }
       };
@@ -865,6 +885,7 @@ public class UiAction : UserControl
       }
 
       _taskBarProgress = nil;
+      _alternateWriter = nil;
 
       refresh();
    }
@@ -1273,7 +1294,7 @@ public class UiAction : UserControl
          fillRectangle(e.Graphics, Brushes.Gold, filledRectangle);
          drawRectangle(e.Graphics, Pens.Black, filledRectangle);
 
-         disabledWriter.Write(text, e.Graphics);
+         disabledWriter.Write(e.Graphics, text);
 
          if (ProgressStripe && value < maximum)
          {
@@ -1355,7 +1376,7 @@ public class UiAction : UserControl
       switch (type)
       {
          case UiActionType.ProgressIndefinite:
-            writer.Value.Write(text, e.Graphics);
+            writer.Value.Write(e.Graphics, text);
             break;
          case UiActionType.Busy when FlipFlop:
          {
@@ -1385,12 +1406,12 @@ public class UiAction : UserControl
             writer.Value.Rectangle = progressDefiniteProcessor.PercentRectangle;
             writer.Value.Center(true);
             writer.Value.Color = Color.Black;
-            writer.Value.Write(percentText, e.Graphics);
+            writer.Value.Write(e.Graphics, percentText);
             writer.Value.AutoSize = autoSize;
 
             writer.Value.Rectangle = progressDefiniteProcessor.TextRectangle;
             writer.Value.Color = getForeColor();
-            writer.Value.Write(text, e.Graphics);
+            writer.Value.Write(e.Graphics, text);
 
             if (_progressSubText is (true, var progressSubText))
             {
@@ -1402,7 +1423,7 @@ public class UiAction : UserControl
          case UiActionType.MuteProgress:
          {
             var percentText = $"{getPercentage()}%";
-            writer.Value.Write(percentText, e.Graphics);
+            writer.Value.Write(e.Graphics, percentText);
 
             if (_progressSubText is (true, var progressSubText))
             {
@@ -1426,11 +1447,11 @@ public class UiAction : UserControl
 
             writer.Value.Rectangle = allRectangle;
             writer.Value.Center(true);
-            writer.Value.Write(text, e.Graphics);
+            writer.Value.Write(e.Graphics, text);
             break;
          }
          case UiActionType.ControlLabel:
-            writer.Value.Write(text, e.Graphics);
+            writer.Value.Write(e.Graphics, text);
             break;
          case UiActionType.Http:
          {
@@ -1442,13 +1463,13 @@ public class UiAction : UserControl
             break;
          case UiActionType.Display:
             writer.Value.Color = ForeColor;
-            writer.Value.Write(text, e.Graphics);
+            writer.Value.Write(e.Graphics, text);
             break;
          case UiActionType.Symbol when _symbolWriter is (true, var symbolWriter):
             symbolWriter.OnPaint(e.Graphics, clientRectangle, Enabled);
             break;
          case UiActionType.Button:
-            writer.Value.Write(text, e.Graphics);
+            writer.Value.Write(e.Graphics, text);
             break;
          case UiActionType.Alternate when _alternateWriter is (true, var alternateWriter):
             alternateWriter.OnPaint(e.Graphics);
@@ -1457,7 +1478,7 @@ public class UiAction : UserControl
          {
             if (type != UiActionType.Tape)
             {
-               writer.Value.Write(text, e.Graphics);
+               writer.Value.Write(e.Graphics, text);
             }
 
             break;
@@ -2986,5 +3007,24 @@ public class UiAction : UserControl
    {
       RectangleCount = alternates.Length;
       _alternateWriter = new AlternateWriter(this, alternates);
+   }
+
+   public int SelectedIndex
+   {
+      get => _alternateWriter.Map(w => w.SelectedIndex) | -1;
+      set
+      {
+         if (_alternateWriter is (true, var alternateWriter))
+         {
+            alternateWriter.SelectedIndex = value;
+            if (ClickOnAlternate is not null)
+            {
+               var rectangleIndex = alternateWriter.SelectedIndex;
+               var location = Rectangles[rectangleIndex].Location;
+               var alternate = alternateWriter.Alternate;
+               ClickOnAlternate.Invoke(this, new UiActionAlternateArgs(rectangleIndex, location, alternate));
+            }
+         }
+      }
    }
 }

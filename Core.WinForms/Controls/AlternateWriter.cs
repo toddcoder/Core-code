@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using System.Drawing.Drawing2D;
 using Core.Enumerables;
 using static Core.Monads.MonadFunctions;
 
@@ -20,26 +21,40 @@ public class AlternateWriter
 
    protected (Rectangle indicatorRectangle, Rectangle textRectangle) splitRectangle(Rectangle rectangle)
    {
-      var width = rectangle.Height;
+      var height = rectangle.Height;
 
-      MutRectangle indicatorRectangle = rectangle;
-      indicatorRectangle.Width = width - 4;
-      indicatorRectangle.Height = width - 4;
-      indicatorRectangle.X += 2;
-      indicatorRectangle.Y += 2;
+      var indicatorRectangle = rectangle.Reposition(2, 2);
+      indicatorRectangle.Width = height - 4;
+      indicatorRectangle.Height = height - 4;
 
-      MutRectangle textRectangle = rectangle;
-      textRectangle.X = width;
-      textRectangle.Width -= width;
+      var textRectangle = rectangle;
+      textRectangle.X += height;
+      textRectangle.Width -= height;
 
       return (indicatorRectangle, textRectangle);
    }
 
-   protected void drawRectangle(Graphics g, Rectangle rectangle, Color color)
+   public int SelectedIndex
    {
-      using var pen = new Pen(color);
-      g.DrawRectangle(pen, rectangle);
+      get => selectedIndex;
+      set
+      {
+         if (value < 0)
+         {
+            selectedIndex = 0;
+         }
+         else if (value >= alternates.Length)
+         {
+            selectedIndex = alternates.Length - 1;
+         }
+         else
+         {
+            selectedIndex = value;
+         }
+      }
    }
+
+   public string Alternate => alternates[selectedIndex];
 
    protected void fillRectangle(Graphics g, Rectangle rectangle, Color color)
    {
@@ -47,16 +62,27 @@ public class AlternateWriter
       g.FillRectangle(brush, rectangle);
    }
 
-   protected void drawX(Graphics g, Rectangle rectangle, Color color)
+   protected void drawSelected(Graphics g, Rectangle rectangle)
    {
-      using var pen = new Pen(color);
-      MutPoint p1 = rectangle.Location;
-      MutPoint p2 = new Point(rectangle.Right, rectangle.Bottom);
-      g.DrawLine(pen, p1, p2);
+      using var pen = new Pen(Color.Black, 2);
+      drawUnselected(g, pen, rectangle);
+      pen.StartCap = LineCap.Triangle;
+      pen.EndCap = LineCap.Triangle;
+      g.DrawLine(pen, rectangle.NorthWest(4), rectangle.SouthEast(4));
+      g.DrawLine(pen, rectangle.NorthEast(4), rectangle.SouthWest(4));
+   }
 
-      p1.X += rectangle.Width;
-      p2.X -= rectangle.Width;
-      g.DrawLine(pen, p1, p2);
+   protected void drawUnselected(Graphics g, Pen pen, Rectangle rectangle)
+   {
+      using var brush = new SolidBrush(Color.White);
+      g.FillRectangle(brush, rectangle);
+      g.DrawRectangle(pen, rectangle);
+   }
+
+   protected void drawUnselected(Graphics g, Rectangle rectangle)
+   {
+      using var pen = new Pen(Color.Black, 2);
+      drawUnselected(g, pen, rectangle);
    }
 
    public void OnPaint(Graphics g)
@@ -68,16 +94,20 @@ public class AlternateWriter
       foreach (var (index, rectangle) in uiAction.Rectangles.Indexed())
       {
          var (indicatorRectangle, textRectangle) = splitRectangle(rectangle);
-         var color = index == selectedIndex ? Color.Red : Color.Black;
-         drawRectangle(g, indicatorRectangle, Color.Black);
+         var color = index == selectedIndex ? Color.Teal : Color.Wheat;
+         writer.Color = index == selectedIndex ? Color.White : Color.Black;
+         fillRectangle(g, textRectangle, color);
          if (index == selectedIndex)
          {
-            drawX(g, indicatorRectangle, color);
+            drawSelected(g, indicatorRectangle);
+         }
+         else
+         {
+            drawUnselected(g, indicatorRectangle);
          }
 
-         drawRectangle(g, textRectangle, color);
          writer.Rectangle = textRectangle;
-         writer.Write(alternates[index], g);
+         writer.Write(g, alternates[index]);
       }
    }
 

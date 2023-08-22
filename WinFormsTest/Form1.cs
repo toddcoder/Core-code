@@ -409,11 +409,12 @@ public partial class Form1 : Form, IMessageQueueListener
    protected void button1_Click(object sender, EventArgs e)
    {
       uiAction.Alternate("yes", "no", "cancel");
+      uiAction.ClickOnAlternate += (_, e) => Text = e.Alternate;
    }
 
    protected void button2_Click(object sender, EventArgs e)
    {
-      uiAction.Failure("Failure...");
+      uiAction.SelectedIndex = 2;
    }
 
    protected void button3_Click(object sender, EventArgs e)

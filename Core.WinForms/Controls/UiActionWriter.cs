@@ -206,7 +206,7 @@ public class UiActionWriter
       }
    }
 
-   public Result<Unit> Write(string text, Graphics g)
+   public Result<Unit> Write(Graphics g, string text)
    {
       text = text.EmojiSubstitutions();
 
