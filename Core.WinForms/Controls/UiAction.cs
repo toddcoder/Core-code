@@ -433,6 +433,7 @@ public class UiAction : UserControl
       {
          var location = PointToClient(Cursor.Position);
          var invoked = false;
+         var disabledIndex = DisabledIndex;
 
          for (var i = 0; i < rectangles.Length; i++)
          {
@@ -441,7 +442,7 @@ public class UiAction : UserControl
                MouseMoveOnRectangle?.Invoke(this, new UiActionRectangleArgs(i, location));
                invoked = true;
 
-               if (_alternateWriter)
+               if (_alternateWriter && disabledIndex != i)
                {
                   using var pen = new Pen(Color.Black);
                   pen.DashStyle = DashStyle.Dot;
@@ -3041,6 +3042,19 @@ public class UiAction : UserControl
             {
                alternateWriter.SelectedIndex = selectedIndex;
             }
+         }
+      }
+   }
+
+   public int DisabledIndex
+   {
+      get => _alternateWriter.Map(w => w.DisabledIndex) | -1;
+      set
+      {
+         if (_alternateWriter is (true, var alternateWriter))
+         {
+            alternateWriter.DisabledIndex = value;
+            refresh();
          }
       }
    }

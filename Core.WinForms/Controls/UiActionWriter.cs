@@ -174,8 +174,8 @@ public class UiActionWriter
 
       var textSize = TextSize(text, graphics);
       textSize = textSize with { Height = textSize.Height + 8, Width = textSize.Width + 8 };
-      var x = (rectangle.Width - textSize.Width) / 2;
-      var y = (rectangle.Height - textSize.Height) / 2;
+      var x = rectangle.X + (rectangle.Width - textSize.Width) / 2;
+      var y = rectangle.Y + (rectangle.Height - textSize.Height) / 2;
 
       return new Rectangle(x, y, textSize.Width, textSize.Height);
    }

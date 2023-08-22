@@ -408,7 +408,8 @@ public partial class Form1 : Form, IMessageQueueListener
 
    protected void button1_Click(object sender, EventArgs e)
    {
-      uiAction.Alternate("yes", "no", "cancel");
+      uiAction.Alternate("yes", "no", "cancel", "disabled");
+      uiAction.DisabledIndex = 3;
       uiAction.ClickOnAlternate += (_, e) => Text = e.Alternate;
    }
 
@@ -419,9 +420,8 @@ public partial class Form1 : Form, IMessageQueueListener
 
    protected void button3_Click(object sender, EventArgs e)
    {
-      uiTest = new UiAction(this);
-      uiTest.SetUpInPanel(panel5);
-      uiTest.Symbol(UiActionSymbol.Plus, UiActionType.Success);
+      uiAction.NoStatus("foobar");
+      uiAction.Enabled = false;
    }
 
    public string Listener => "form1";
