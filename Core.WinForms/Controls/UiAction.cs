@@ -444,7 +444,8 @@ public class UiAction : UserControl
 
                if (_alternateWriter && disabledIndex != i)
                {
-                  using var pen = new Pen(Color.Black);
+                  var color = GetForeColor(i);
+                  using var pen = new Pen(color);
                   pen.DashStyle = DashStyle.Dot;
                   var rectangle = rectangles[i].Shrink(2);
                   using var g = CreateGraphics();
