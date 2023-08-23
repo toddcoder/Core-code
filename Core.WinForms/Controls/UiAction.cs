@@ -421,7 +421,7 @@ public class UiAction : UserControl
                {
                   alternateWriter.SelectedIndex = i;
                   refresh();
-                  ClickOnAlternate?.Invoke(this, new UiActionAlternateArgs(i, location, alternateWriter.Alternate));
+                  ClickOnAlternate?.Invoke(this, new UiActionAlternateArgs(i, location, alternateWriter.Alternate, true));
                }
 
                return;
@@ -3030,7 +3030,7 @@ public class UiAction : UserControl
                var rectangleIndex = alternateWriter.SelectedIndex;
                var location = Rectangles[rectangleIndex].Location;
                var alternate = alternateWriter.Alternate;
-               ClickOnAlternate.Invoke(this, new UiActionAlternateArgs(rectangleIndex, location, alternate));
+               ClickOnAlternate.Invoke(this, new UiActionAlternateArgs(rectangleIndex, location, alternate, false));
             }
          }
       }
