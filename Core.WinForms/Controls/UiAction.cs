@@ -3001,6 +3001,11 @@ public class UiAction : UserControl
          return;
       }
 
+      FloatingException(false);
+      Busy(false);
+      Working = false;
+      _taskBarProgress = nil;
+
       type = UiActionType.Alternate;
       setUpAlternate(alternates);
       refresh();
