@@ -19,8 +19,8 @@ public class AlternateWriter
    protected int selectedIndex;
    protected Maybe<int> _disabledIndex;
    protected Lazy<Font> disabledFont;
-   protected StringHash<Color> foreColors;
-   protected StringHash<Color> backColors;
+   protected Hash<int, Color> foreColors;
+   protected Hash<int, Color> backColors;
 
    public AlternateWriter(UiAction uiAction, string[] alternates, bool autoSizeText, Maybe<int> _floor, Maybe<int> _ceiling)
    {
@@ -33,8 +33,8 @@ public class AlternateWriter
       selectedIndex = 0;
       _disabledIndex = nil;
       disabledFont = new Lazy<Font>(() => new Font(uiAction.Font, FontStyle.Italic));
-      foreColors = new StringHash<Color>(true);
-      backColors = new StringHash<Color>(true);
+      foreColors = new Hash<int, Color>();
+      backColors = new Hash<int, Color>();
    }
 
    protected (Rectangle indicatorRectangle, Rectangle textRectangle) splitRectangle(Rectangle rectangle)
@@ -52,45 +52,13 @@ public class AlternateWriter
       return (indicatorRectangle, textRectangle);
    }
 
-   public void SetForeColor(string text, Color color) => foreColors[text] = color;
+   public void SetForeColor(int index, Color color) => foreColors[index] = color;
 
-   public Maybe<Color> GetForeColor(string text) => foreColors.Maybe[text];
+   public Maybe<Color> GetForeColor(int index) => foreColors.Maybe[index];
 
-   public void SetForeColor(int index, Color color)
-   {
-      if (index.Between(0).Until(alternates.Length))
-      {
-         SetForeColor(alternates[index], color);
-      }
-   }
+   public void SetBackColor(int index, Color color) => backColors[index] = color;
 
-   public Maybe<Color> GetForeColor(int index)
-   {
-      return maybe<Color>() & index.Between(0).Until(alternates.Length) & (() => foreColors.Maybe[alternates[index]]);
-   }
-
-   public void SetBackColor(string text, Color color) => backColors[text] = color;
-
-   public Maybe<Color> GetBackColor(string text) => backColors.Maybe[text];
-
-   public void SetBackColor(int index, Color color)
-   {
-      if (index.Between(0).Until(alternates.Length))
-      {
-         SetBackColor(alternates[index], color);
-      }
-   }
-
-   public Maybe<Color> GetBackColor(int index)
-   {
-      return maybe<Color>() & index.Between(0).Until(alternates.Length) & (() => backColors.Maybe[alternates[index]]);
-   }
-
-   public void SetColors(string text, UiActionType type)
-   {
-      SetForeColor(text, uiAction.GetForeColor(type));
-      SetBackColor(text, uiAction.GetBackColor(type));
-   }
+   public Maybe<Color> GetBackColor(int index) => backColors.Maybe[index];
 
    public void SetColors(int index, UiActionType type)
    {
@@ -174,6 +142,62 @@ public class AlternateWriter
       drawUnselected(g, pen, rectangle, foreColor, backColor);
    }
 
+   public Color GetAlternateForeColor(int index)
+   {
+      var _foreColor = foreColors.Maybe[index];
+      if (_disabledIndex is (true, var disabledIndex))
+      {
+         if (index == disabledIndex)
+         {
+            return _foreColor | Color.Black;
+         }
+         else if (index == selectedIndex)
+         {
+            return _foreColor | Color.Black;
+         }
+         else
+         {
+            return _foreColor | Color.LightGray;
+         }
+      }
+      else if (index == selectedIndex)
+      {
+         return _foreColor | Color.White;
+      }
+      else
+      {
+         return _foreColor | Color.Black;
+      }
+   }
+
+   public Color GetAlternateBackColor(int index)
+   {
+      var _backColor = backColors.Maybe[index];
+      if (_disabledIndex is (true, var disabledIndex))
+      {
+         if (index == disabledIndex)
+         {
+            return _backColor | Color.LightGray;
+         }
+         else if (index == selectedIndex)
+         {
+            return _backColor | Color.Teal;
+         }
+         else
+         {
+            return _backColor | Color.Wheat;
+         }
+      }
+      else if (index == selectedIndex)
+      {
+         return _backColor | Color.Teal;
+      }
+      else
+      {
+         return _backColor | Color.Wheat;
+      }
+   }
+
    public void OnPaint(Graphics g)
    {
       var writer = new UiActionWriter(CardinalAlignment.Center, autoSizeText, _floor, _ceiling, UiActionButtonType.Normal);
@@ -185,8 +209,8 @@ public class AlternateWriter
 
          if (index == disabledIndex)
          {
-            var foreColor = foreColors.Maybe[alternate] | Color.Black;
-            var backColor = backColors.Maybe[alternate] | Color.LightGray;
+            var foreColor = GetAlternateForeColor(index);
+            var backColor = GetAlternateBackColor(index);
             using var brush = new SolidBrush(backColor);
             g.FillRectangle(brush, textRectangle);
             writer.Rectangle = textRectangle;
@@ -205,12 +229,10 @@ public class AlternateWriter
          {
             writer.Font = uiAction.Font;
 
-            var _foreColor = foreColors.Maybe[alternate];
-            writer.Color = _foreColor | (() => index == selectedIndex ? Color.White : Color.Black);
+            writer.Color = GetAlternateForeColor(index);
 
-            var _backColor = backColors.Maybe[alternate];
-            var color = _backColor | (() => index == selectedIndex ? Color.Teal : Color.Wheat);
-            fillRectangle(g, textRectangle, color);
+            var backColor = GetAlternateBackColor(index);
+            fillRectangle(g, textRectangle, backColor);
 
             if (index == selectedIndex)
             {

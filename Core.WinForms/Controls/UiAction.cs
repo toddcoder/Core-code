@@ -442,9 +442,9 @@ public class UiAction : UserControl
                MouseMoveOnRectangle?.Invoke(this, new UiActionRectangleArgs(i, location));
                invoked = true;
 
-               if (_alternateWriter && disabledIndex != i)
+               if (_alternateWriter is (true, var alternateWriter) && disabledIndex != i)
                {
-                  var color = GetForeColor(i);
+                  var color = alternateWriter.GetAlternateForeColor(i);
                   using var pen = new Pen(color);
                   pen.DashStyle = DashStyle.Dot;
                   var rectangle = rectangles[i].Shrink(2);
@@ -3066,16 +3066,6 @@ public class UiAction : UserControl
       }
    }
 
-   public void SetForeColor(string text, Color color)
-   {
-      if (_alternateWriter is (true, var alternateWriter))
-      {
-         alternateWriter.SetForeColor(text, color);
-      }
-   }
-
-   public Maybe<Color> GetForeColor(string text) => _alternateWriter.Map(w => w.GetForeColor(text));
-
    public void SetForeColor(int index, Color color)
    {
       if (_alternateWriter is (true, var alternateWriter))
@@ -3085,16 +3075,6 @@ public class UiAction : UserControl
    }
 
    public Maybe<Color> GetForeColor(int index) => _alternateWriter.Map(w => w.GetForeColor(index));
-
-   public void SetBackColor(string text, Color color)
-   {
-      if (_alternateWriter is (true, var alternateWriter))
-      {
-         alternateWriter.SetBackColor(text, color);
-      }
-   }
-
-   public Maybe<Color> GetBackColor(string text) => _alternateWriter.Map(w => w.GetBackColor(text));
 
    public void SetBackColor(int index, Color color)
    {
@@ -3110,15 +3090,13 @@ public class UiAction : UserControl
 
    public Color GetBackColor(UiActionType type) => getBackColor(type);
 
-   public void SetColors(string text, UiActionType type)
-   {
-      SetForeColor(text, GetForeColor(type));
-      SetBackColor(text, GetBackColor(type));
-   }
-
    public void SetColors(int index, UiActionType type)
    {
       SetForeColor(index, GetForeColor(type));
       SetBackColor(index, GetBackColor(type));
    }
+
+   public Maybe<Color> GetAlternateForeColor(int index) => _alternateWriter.Map(w => w.GetAlternateForeColor(index));
+
+   public Maybe<Color> GetAlternateBackColor(int index) => _alternateWriter.Map(w => w.GetAlternateBackColor(index));
 }
