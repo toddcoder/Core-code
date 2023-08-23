@@ -2995,16 +2995,16 @@ public class UiAction : UserControl
 
    public void Alternate(params string[] alternates)
    {
+      FloatingException(false);
+      Busy(false);
+      Working = false;
+      _taskBarProgress = nil;
+
       if (alternates.Length < 1)
       {
          Failure("You should have at least one alternate");
          return;
       }
-
-      FloatingException(false);
-      Busy(false);
-      Working = false;
-      _taskBarProgress = nil;
 
       type = UiActionType.Alternate;
       setUpAlternate(alternates);

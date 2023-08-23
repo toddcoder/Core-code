@@ -418,12 +418,16 @@ public partial class Form1 : Form, IMessageQueueListener
       uiAction.SetForeColor(3, Color.White);
       uiAction.SetBackColor(3, Color.Green);
       uiAction.DisabledIndex = 3;
-      uiAction.ClickOnAlternate += (_, e) => Text = e.Alternate;
+      uiAction.ClickOnAlternate += (_, e) =>
+      {
+         Text = e.Alternate;
+         uiAction.DisabledIndex = e.RectangleIndex;
+      };
    }
 
    protected void button2_Click(object sender, EventArgs e)
    {
-      uiAction.SelectedIndex = 2;
+      uiAction.Busy(true);
    }
 
    protected void button3_Click(object sender, EventArgs e)
