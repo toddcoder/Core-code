@@ -3031,6 +3031,7 @@ public class UiAction : UserControl
                var location = Rectangles[rectangleIndex].Location;
                var alternate = alternateWriter.Alternate;
                ClickOnAlternate.Invoke(this, new UiActionAlternateArgs(rectangleIndex, location, alternate, false));
+               refresh();
             }
          }
       }
