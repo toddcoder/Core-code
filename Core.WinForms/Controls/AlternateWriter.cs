@@ -19,6 +19,7 @@ public class AlternateWriter
    protected Lazy<Font> disabledFont;
    protected Hash<int, Color> foreColors;
    protected Hash<int, Color> backColors;
+   protected int checkSize;
 
    public AlternateWriter(UiAction uiAction, string[] alternates, bool autoSizeText, Maybe<int> _floor, Maybe<int> _ceiling)
    {
@@ -33,6 +34,7 @@ public class AlternateWriter
       disabledFont = new Lazy<Font>(() => new Font(uiAction.Font, FontStyle.Italic));
       foreColors = new Hash<int, Color>();
       backColors = new Hash<int, Color>();
+      checkSize = 3;
    }
 
    protected (Rectangle indicatorRectangle, Rectangle textRectangle) splitRectangle(Rectangle rectangle)
@@ -119,7 +121,7 @@ public class AlternateWriter
 
    protected void drawSelected(Graphics g, Rectangle rectangle, Color foreColor, Color backColor)
    {
-      using var pen = new Pen(foreColor, 3);
+      using var pen = new Pen(foreColor, checkSize);
       drawUnselected(g, pen, rectangle, backColor);
       pen.StartCap = LineCap.Triangle;
       pen.EndCap = LineCap.Triangle;
@@ -182,6 +184,7 @@ public class AlternateWriter
          var (indicatorRectangle, textRectangle) = splitRectangle(rectangle);
          var checkRectangle = getCheckRectangle(indicatorRectangle);
          var alternate = alternates[index];
+         checkSize = rectangle.Height >= 40 ? 3 : 1;
 
          if (index == disabledIndex)
          {
