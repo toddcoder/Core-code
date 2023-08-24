@@ -20,6 +20,7 @@ public class AlternateWriter
    protected Hash<int, Color> foreColors;
    protected Hash<int, Color> backColors;
    protected int checkSize;
+   protected int checkMargin;
 
    public AlternateWriter(UiAction uiAction, string[] alternates, bool autoSizeText, Maybe<int> _floor, Maybe<int> _ceiling)
    {
@@ -35,6 +36,7 @@ public class AlternateWriter
       foreColors = new Hash<int, Color>();
       backColors = new Hash<int, Color>();
       checkSize = 3;
+      checkMargin = 4;
    }
 
    protected (Rectangle indicatorRectangle, Rectangle textRectangle) splitRectangle(Rectangle rectangle)
@@ -125,8 +127,8 @@ public class AlternateWriter
       drawUnselected(g, pen, rectangle, backColor);
       pen.StartCap = LineCap.Triangle;
       pen.EndCap = LineCap.Triangle;
-      g.DrawLine(pen, rectangle.NorthWest(4), rectangle.SouthEast(4));
-      g.DrawLine(pen, rectangle.NorthEast(4), rectangle.SouthWest(4));
+      g.DrawLine(pen, rectangle.NorthWest(checkMargin), rectangle.SouthEast(checkMargin));
+      g.DrawLine(pen, rectangle.NorthEast(checkMargin), rectangle.SouthWest(checkMargin));
    }
 
    protected void drawUnselected(Graphics g, Pen pen, Rectangle rectangle, Color backColor)
@@ -184,7 +186,9 @@ public class AlternateWriter
          var (indicatorRectangle, textRectangle) = splitRectangle(rectangle);
          var checkRectangle = getCheckRectangle(indicatorRectangle);
          var alternate = alternates[index];
-         checkSize = rectangle.Height >= 40 ? 3 : 1;
+         var isLarge = rectangle.Height >= 40;
+         checkSize = isLarge ? 3 : 1;
+         checkMargin = isLarge ? 4 : 2;
 
          if (index == disabledIndex)
          {
