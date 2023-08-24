@@ -4,7 +4,6 @@ using System.Drawing.Drawing2D;
 using Core.Collections;
 using Core.Enumerables;
 using Core.Monads;
-using Core.Numbers;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Controls;
@@ -41,9 +40,9 @@ public class AlternateWriter
    {
       var height = rectangle.Height;
 
-      var indicatorRectangle = rectangle.Reposition(2, 2);
-      indicatorRectangle.Width = height - 4;
-      indicatorRectangle.Height = height - 4;
+      var indicatorRectangle = rectangle.Reposition(8, 8);
+      indicatorRectangle.Width = height - 16;
+      indicatorRectangle.Height = height - 16;
 
       var textRectangle = rectangle;
       textRectangle.X += height;
@@ -122,14 +121,14 @@ public class AlternateWriter
    protected void drawSelected(Graphics g, Rectangle rectangle, Color foreColor, Color backColor)
    {
       using var pen = new Pen(foreColor, 2);
-      drawUnselected(g, pen, rectangle, foreColor, backColor);
+      drawUnselected(g, pen, rectangle, backColor);
       pen.StartCap = LineCap.Triangle;
       pen.EndCap = LineCap.Triangle;
       g.DrawLine(pen, rectangle.NorthWest(4), rectangle.SouthEast(4));
       g.DrawLine(pen, rectangle.NorthEast(4), rectangle.SouthWest(4));
    }
 
-   protected void drawUnselected(Graphics g, Pen pen, Rectangle rectangle, Color foreColor, Color backColor)
+   protected void drawUnselected(Graphics g, Pen pen, Rectangle rectangle, Color backColor)
    {
       using var brush = new SolidBrush(backColor);
       g.FillRectangle(brush, rectangle);
@@ -139,7 +138,7 @@ public class AlternateWriter
    protected void drawUnselected(Graphics g, Rectangle rectangle, Color foreColor, Color backColor)
    {
       using var pen = new Pen(foreColor, 2);
-      drawUnselected(g, pen, rectangle, foreColor, backColor);
+      drawUnselected(g, pen, rectangle, backColor);
    }
 
    public Color GetAlternateForeColor(int index)
@@ -252,6 +251,14 @@ public class AlternateWriter
 
    public void OnPaintBackground(Graphics g)
    {
-      fillRectangle(g, uiAction.ClientRectangle, Color.White);
+      using var backBrush = new SolidBrush(Color.White);
+      g.FillRectangle(backBrush, uiAction.ClientRectangle);
+
+      foreach (var (index, rectangle) in uiAction.Rectangles.Indexed())
+      {
+         var backColor = GetAlternateBackColor(index);
+         using var brush = new SolidBrush(backColor);
+         g.FillRectangle(brush, rectangle);
+      }
    }
 }
