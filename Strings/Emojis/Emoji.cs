@@ -30,5 +30,7 @@ public enum Emoji
    Copy,
    Paste,
    Cut,
-   DoubleVertical
+   Bar,
+   No,
+   Refresh
 }

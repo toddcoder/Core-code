@@ -36,7 +36,9 @@ public static class EmojiExtensions
       Emoji.Copy => "❏",
       Emoji.Paste => "📋",
       Emoji.Cut => "✄",
-      Emoji.DoubleVertical => "║",
+      Emoji.Bar => "║",
+      Emoji.No => "🚫",
+      Emoji.Refresh => "🗘",
       _ => ""
    };
 
@@ -76,7 +78,9 @@ public static class EmojiExtensions
                "copy" => "❏",
                "paste" => "📋",
                "cut" => "✄",
-               "double-bar" or "2bar" => "║",
+               "bar" => "║",
+               "no" => "🚫",
+               "refresh" => "🗘",
                _ => nil
             };
             if (_replacement is (true, var replacement))
