@@ -4,7 +4,6 @@ using System.Drawing.Drawing2D;
 using Core.Collections;
 using Core.Enumerables;
 using Core.Monads;
-using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Controls;
 
@@ -16,7 +15,7 @@ public class AlternateWriter
    protected Maybe<int> _floor;
    protected Maybe<int> _ceiling;
    protected int selectedIndex;
-   protected Maybe<int> _disabledIndex;
+   protected int disabledIndex;
    protected Lazy<Font> disabledFont;
    protected Hash<int, Color> foreColors;
    protected Hash<int, Color> backColors;
@@ -30,7 +29,7 @@ public class AlternateWriter
       this._ceiling = _ceiling;
 
       selectedIndex = 0;
-      _disabledIndex = nil;
+      disabledIndex = -1;
       disabledFont = new Lazy<Font>(() => new Font(uiAction.Font, FontStyle.Italic));
       foreColors = new Hash<int, Color>();
       backColors = new Hash<int, Color>();
@@ -39,16 +38,20 @@ public class AlternateWriter
    protected (Rectangle indicatorRectangle, Rectangle textRectangle) splitRectangle(Rectangle rectangle)
    {
       var height = rectangle.Height;
-
-      var indicatorRectangle = rectangle.Reposition(8, 8);
-      indicatorRectangle.Width = height - 16;
-      indicatorRectangle.Height = height - 16;
+      var indicatorRectangle = rectangle with { Width = height, Height = height };
 
       var textRectangle = rectangle;
-      textRectangle.X += height;
-      textRectangle.Width -= height;
+      textRectangle.X += rectangle.Height;
+      textRectangle.Width -= rectangle.Height;
+      textRectangle.Height = rectangle.Height;
 
       return (indicatorRectangle, textRectangle);
+   }
+
+   protected Rectangle getCheckRectangle(Rectangle rectangle)
+   {
+      var height = rectangle.Height / 3;
+      return new Rectangle(rectangle.X + height, rectangle.Y + height, rectangle.Width - 2 * height, rectangle.Height - 2 * height);
    }
 
    public void SetForeColor(int index, Color color) => foreColors[index] = color;
@@ -70,7 +73,7 @@ public class AlternateWriter
       get => selectedIndex;
       set
       {
-         if (_disabledIndex is (true, var disabledIndex) && disabledIndex != value || !_disabledIndex)
+         if (disabledIndex != value)
          {
             if (value < 0)
             {
@@ -90,20 +93,16 @@ public class AlternateWriter
 
    public int DisabledIndex
    {
-      get => _disabledIndex | -1;
+      get => disabledIndex;
       set
       {
-         if (value < 0)
+         if (value < 0 || value>=alternates.Length)
          {
-            _disabledIndex = 0;
-         }
-         else if (value >= alternates.Length)
-         {
-            _disabledIndex = alternates.Length - 1;
+            disabledIndex = -1;
          }
          else
          {
-            _disabledIndex = value;
+            disabledIndex = value;
          }
       }
    }
@@ -120,7 +119,7 @@ public class AlternateWriter
 
    protected void drawSelected(Graphics g, Rectangle rectangle, Color foreColor, Color backColor)
    {
-      using var pen = new Pen(foreColor, 2);
+      using var pen = new Pen(foreColor, 3);
       drawUnselected(g, pen, rectangle, backColor);
       pen.StartCap = LineCap.Triangle;
       pen.EndCap = LineCap.Triangle;
@@ -144,20 +143,9 @@ public class AlternateWriter
    public Color GetAlternateForeColor(int index)
    {
       var _foreColor = foreColors.Maybe[index];
-      if (_disabledIndex is (true, var disabledIndex))
+      if (index == disabledIndex)
       {
-         if (index == disabledIndex)
-         {
-            return _foreColor | Color.Black;
-         }
-         else if (index == selectedIndex)
-         {
-            return _foreColor | Color.Black;
-         }
-         else
-         {
-            return _foreColor | Color.LightGray;
-         }
+         return Color.Black;
       }
       else if (index == selectedIndex)
       {
@@ -172,20 +160,9 @@ public class AlternateWriter
    public Color GetAlternateBackColor(int index)
    {
       var _backColor = backColors.Maybe[index];
-      if (_disabledIndex is (true, var disabledIndex))
+      if (index == disabledIndex)
       {
-         if (index == disabledIndex)
-         {
-            return _backColor | Color.LightGray;
-         }
-         else if (index == selectedIndex)
-         {
-            return _backColor | Color.Teal;
-         }
-         else
-         {
-            return _backColor | Color.Wheat;
-         }
+         return Color.LightGray;
       }
       else if (index == selectedIndex)
       {
@@ -200,10 +177,10 @@ public class AlternateWriter
    public void OnPaint(Graphics g)
    {
       var writer = new UiActionWriter(CardinalAlignment.Center, autoSizeText, _floor, _ceiling, UiActionButtonType.Normal);
-      var disabledIndex = _disabledIndex | -1;
       foreach (var (index, rectangle) in uiAction.Rectangles.Indexed())
       {
          var (indicatorRectangle, textRectangle) = splitRectangle(rectangle);
+         var checkRectangle = getCheckRectangle(indicatorRectangle);
          var alternate = alternates[index];
 
          if (index == disabledIndex)
@@ -211,17 +188,17 @@ public class AlternateWriter
             var foreColor = GetAlternateForeColor(index);
             var backColor = GetAlternateBackColor(index);
             using var brush = new SolidBrush(backColor);
-            g.FillRectangle(brush, textRectangle);
+            g.FillRectangle(brush, rectangle);
             writer.Rectangle = textRectangle;
             writer.Font = disabledFont.Value;
             writer.Color = foreColor;
             if (index == selectedIndex)
             {
-               drawSelected(g, indicatorRectangle, Color.Black, Color.LightGray);
+               drawSelected(g, checkRectangle, Color.Black, Color.LightGray);
             }
             else
             {
-               drawUnselected(g, indicatorRectangle, Color.Black, Color.LightGray);
+               drawUnselected(g, checkRectangle, Color.Black, Color.LightGray);
             }
          }
          else
@@ -231,15 +208,15 @@ public class AlternateWriter
             writer.Color = GetAlternateForeColor(index);
 
             var backColor = GetAlternateBackColor(index);
-            fillRectangle(g, textRectangle, backColor);
+            fillRectangle(g, rectangle, backColor);
 
             if (index == selectedIndex)
             {
-               drawSelected(g, indicatorRectangle, Color.Black, Color.White);
+               drawSelected(g, checkRectangle, Color.Black, Color.White);
             }
             else
             {
-               drawUnselected(g, indicatorRectangle, Color.Black, Color.White);
+               drawUnselected(g, checkRectangle, Color.Black, Color.White);
             }
 
             writer.Rectangle = textRectangle;
@@ -251,8 +228,8 @@ public class AlternateWriter
 
    public void OnPaintBackground(Graphics g)
    {
-      using var backBrush = new SolidBrush(Color.White);
-      g.FillRectangle(backBrush, uiAction.ClientRectangle);
+      /*using var backBrush = new SolidBrush(Color.White);
+      g.FillRectangle(backBrush, uiAction.ClientRectangle);*/
 
       foreach (var (index, rectangle) in uiAction.Rectangles.Indexed())
       {

@@ -413,7 +413,7 @@ public class UiAction : UserControl
          var location = PointToClient(Cursor.Position);
          for (var i = 0; i < rectangles.Length; i++)
          {
-            if (rectangles[i].Contains(location))
+            if (rectangles[i].Contains(location) && DisabledIndex != i)
             {
                ClickOnRectangle?.Invoke(this, new UiActionRectangleArgs(i, location));
 
@@ -433,7 +433,6 @@ public class UiAction : UserControl
       {
          var location = PointToClient(Cursor.Position);
          var invoked = false;
-         var disabledIndex = DisabledIndex;
 
          for (var i = 0; i < rectangles.Length; i++)
          {
@@ -442,7 +441,7 @@ public class UiAction : UserControl
                MouseMoveOnRectangle?.Invoke(this, new UiActionRectangleArgs(i, location));
                invoked = true;
 
-               if (_alternateWriter is (true, var alternateWriter) && disabledIndex != i)
+               if (_alternateWriter is (true, var alternateWriter) && DisabledIndex != i)
                {
                   var color = alternateWriter.GetAlternateForeColor(i);
                   using var pen = new Pen(color);

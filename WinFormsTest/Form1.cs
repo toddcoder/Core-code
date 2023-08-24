@@ -409,7 +409,21 @@ public partial class Form1 : Form, IMessageQueueListener
    protected void button1_Click(object sender, EventArgs e)
    {
       uiAction.Alternate("Merge Request Received", "Merge Request Rejected", "Merged to r-6.51.0-grp1", "Merged to r-6.51.0-grp7a");
-      /*uiAction.SetForeColor(0, Color.White);
+      uiAction.ClickOnAlternate += (_, e) =>
+      {
+         Text = e.Alternate;
+         uiAction.DisabledIndex = e.RectangleIndex;
+      };
+   }
+
+   protected void button2_Click(object sender, EventArgs e)
+   {
+      uiAction.DisabledIndex = 1;
+   }
+
+   protected void button3_Click(object sender, EventArgs e)
+   {
+      uiAction.SetForeColor(0, Color.White);
       uiAction.SetBackColor(0, Color.Blue);
       uiAction.SetForeColor(1, Color.Black);
       uiAction.SetBackColor(1, Color.Gold);
@@ -418,22 +432,6 @@ public partial class Form1 : Form, IMessageQueueListener
       uiAction.SetForeColor(3, Color.White);
       uiAction.SetBackColor(3, Color.Green);
       uiAction.DisabledIndex = 3;
-      uiAction.ClickOnAlternate += (_, e) =>
-      {
-         Text = e.Alternate;
-         uiAction.DisabledIndex = e.RectangleIndex;
-      };*/
-   }
-
-   protected void button2_Click(object sender, EventArgs e)
-   {
-      uiAction.Busy(true);
-   }
-
-   protected void button3_Click(object sender, EventArgs e)
-   {
-      uiAction.NoStatus("foobar");
-      uiAction.Enabled = false;
    }
 
    public string Listener => "form1";
