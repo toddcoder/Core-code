@@ -39,23 +39,26 @@ public class AlternateWriter
       checkMargin = 4;
    }
 
-   protected (Rectangle indicatorRectangle, Rectangle textRectangle) splitRectangle(Rectangle rectangle)
+   protected static (Rectangle indicatorRectangle, Rectangle textRectangle, int oldHeight) splitRectangle(Rectangle rectangle)
    {
       var height = rectangle.Height;
-      var indicatorRectangle = rectangle with { Width = height, Height = height };
+      var width = height / 3;
+      var indicatorRectangle = rectangle with { Width = width, Height = width };
 
       var textRectangle = rectangle;
-      textRectangle.X += rectangle.Height;
-      textRectangle.Width -= rectangle.Height;
+      textRectangle.X += width;
+      textRectangle.Width -= width;
       textRectangle.Height = rectangle.Height;
 
-      return (indicatorRectangle, textRectangle);
+      return (indicatorRectangle, textRectangle, height);
    }
 
-   protected Rectangle getCheckRectangle(Rectangle rectangle)
+   protected static Rectangle getCheckRectangle(Rectangle rectangle, int oldHeight)
    {
-      var height = rectangle.Height / 3;
-      return new Rectangle(rectangle.X + height, rectangle.Y + height, rectangle.Width - 2 * height, rectangle.Height - 2 * height);
+      var margin = 2;
+      var x = rectangle.X + margin;
+      var y = (oldHeight - rectangle.Width) / 2 + margin;
+      return rectangle with { X = x, Y = y };
    }
 
    public void SetForeColor(int index, Color color) => foreColors[index] = color;
@@ -100,7 +103,7 @@ public class AlternateWriter
       get => disabledIndex;
       set
       {
-         if (value < 0 || value>=alternates.Length)
+         if (value < 0 || value >= alternates.Length)
          {
             disabledIndex = -1;
          }
@@ -123,7 +126,7 @@ public class AlternateWriter
 
    protected void drawSelected(Graphics g, Rectangle rectangle, Color foreColor, Color backColor)
    {
-      using var pen = new Pen(foreColor, checkSize);
+      using var pen = new Pen(foreColor, 1);
       drawUnselected(g, pen, rectangle, backColor);
       pen.StartCap = LineCap.Triangle;
       pen.EndCap = LineCap.Triangle;
@@ -140,7 +143,7 @@ public class AlternateWriter
 
    protected void drawUnselected(Graphics g, Rectangle rectangle, Color foreColor, Color backColor)
    {
-      using var pen = new Pen(foreColor, 2);
+      using var pen = new Pen(foreColor, 1);
       drawUnselected(g, pen, rectangle, backColor);
    }
 
@@ -183,8 +186,8 @@ public class AlternateWriter
       var writer = new UiActionWriter(CardinalAlignment.Center, autoSizeText, _floor, _ceiling, UiActionButtonType.Normal);
       foreach (var (index, rectangle) in uiAction.Rectangles.Indexed())
       {
-         var (indicatorRectangle, textRectangle) = splitRectangle(rectangle);
-         var checkRectangle = getCheckRectangle(indicatorRectangle);
+         var (indicatorRectangle, textRectangle, width) = splitRectangle(rectangle);
+         var checkRectangle = getCheckRectangle(indicatorRectangle, width);
          var alternate = alternates[index];
          var isLarge = rectangle.Height >= 40;
          checkSize = isLarge ? 3 : 1;
