@@ -50,6 +50,10 @@ public class AlternateWriter
       };
 
       var penSize = rectangle.Height / 40;
+      if (penSize <= 0)
+      {
+         penSize = 1;
+      }
 
       return (checkRectangle, penSize, textRectangle);
    }
@@ -123,8 +127,8 @@ public class AlternateWriter
       drawUnselected(g, pen, rectangle, backColor);
       pen.StartCap = LineCap.Triangle;
       pen.EndCap = LineCap.Triangle;
-      g.DrawLine(pen, rectangle.NorthWest(checkMargin), rectangle.SouthEast(checkMargin));
-      g.DrawLine(pen, rectangle.NorthEast(checkMargin), rectangle.SouthWest(checkMargin));
+      g.DrawLine(pen, rectangle.NorthWest(penSize), rectangle.SouthEast(penSize));
+      g.DrawLine(pen, rectangle.NorthEast(penSize), rectangle.SouthWest(penSize));
    }
 
    protected void drawUnselected(Graphics g, Pen pen, Rectangle rectangle, Color backColor)
