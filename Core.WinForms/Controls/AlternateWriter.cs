@@ -39,26 +39,19 @@ public class AlternateWriter
       checkMargin = 4;
    }
 
-   protected static (Rectangle indicatorRectangle, Rectangle textRectangle, int oldHeight) splitRectangle(Rectangle rectangle)
+   protected static (Rectangle checkRectangle, int penSize, Rectangle textRectangle) splitRectangle(Rectangle rectangle)
    {
-      var height = rectangle.Height;
-      var width = height / 3;
-      var indicatorRectangle = rectangle with { Width = width, Height = width };
+      var checkSize = rectangle.Height / 3;
+      var checkSizeWithMargin = checkSize + 8;
+      var checkRectangle = rectangle with { X = rectangle.X + 4, Y = (rectangle.Height - checkSize) / 2 + 2, Width = checkSize, Height = checkSize };
+      var textRectangle = rectangle with
+      {
+         X = rectangle.X + checkSizeWithMargin, Width = rectangle.Width - checkSizeWithMargin, Height = rectangle.Height
+      };
 
-      var textRectangle = rectangle;
-      textRectangle.X += width;
-      textRectangle.Width -= width;
-      textRectangle.Height = rectangle.Height;
+      var penSize = rectangle.Height / 40;
 
-      return (indicatorRectangle, textRectangle, height);
-   }
-
-   protected static Rectangle getCheckRectangle(Rectangle rectangle, int oldHeight)
-   {
-      var margin = 2;
-      var x = rectangle.X + margin;
-      var y = (oldHeight - rectangle.Width) / 2 + margin;
-      return rectangle with { X = x, Y = y };
+      return (checkRectangle, penSize, textRectangle);
    }
 
    public void SetForeColor(int index, Color color) => foreColors[index] = color;
@@ -124,9 +117,9 @@ public class AlternateWriter
       g.FillRectangle(brush, rectangle);
    }
 
-   protected void drawSelected(Graphics g, Rectangle rectangle, Color foreColor, Color backColor)
+   protected void drawSelected(Graphics g, Rectangle rectangle, Color foreColor, Color backColor, int penSize)
    {
-      using var pen = new Pen(foreColor, 1);
+      using var pen = new Pen(foreColor, penSize);
       drawUnselected(g, pen, rectangle, backColor);
       pen.StartCap = LineCap.Triangle;
       pen.EndCap = LineCap.Triangle;
@@ -141,9 +134,9 @@ public class AlternateWriter
       g.DrawRectangle(pen, rectangle);
    }
 
-   protected void drawUnselected(Graphics g, Rectangle rectangle, Color foreColor, Color backColor)
+   protected void drawUnselected(Graphics g, Rectangle rectangle, Color foreColor, Color backColor, int penSize)
    {
-      using var pen = new Pen(foreColor, 1);
+      using var pen = new Pen(foreColor, penSize);
       drawUnselected(g, pen, rectangle, backColor);
    }
 
@@ -186,12 +179,11 @@ public class AlternateWriter
       var writer = new UiActionWriter(CardinalAlignment.Center, autoSizeText, _floor, _ceiling, UiActionButtonType.Normal);
       foreach (var (index, rectangle) in uiAction.Rectangles.Indexed())
       {
-         var (indicatorRectangle, textRectangle, width) = splitRectangle(rectangle);
-         var checkRectangle = getCheckRectangle(indicatorRectangle, width);
+         var (checkRectangle, penSize, textRectangle) = splitRectangle(rectangle);
+
+         using var whitePen = new Pen(Color.White);
+         g.DrawRectangle(whitePen, textRectangle);
          var alternate = alternates[index];
-         var isLarge = rectangle.Height >= 40;
-         checkSize = isLarge ? 3 : 1;
-         checkMargin = isLarge ? 4 : 2;
 
          if (index == disabledIndex)
          {
@@ -204,11 +196,11 @@ public class AlternateWriter
             writer.Color = foreColor;
             if (index == selectedIndex)
             {
-               drawSelected(g, checkRectangle, Color.Black, Color.LightGray);
+               drawSelected(g, checkRectangle, Color.Black, Color.LightGray, penSize);
             }
             else
             {
-               drawUnselected(g, checkRectangle, Color.Black, Color.LightGray);
+               drawUnselected(g, checkRectangle, Color.Black, Color.LightGray, penSize);
             }
          }
          else
@@ -222,11 +214,11 @@ public class AlternateWriter
 
             if (index == selectedIndex)
             {
-               drawSelected(g, checkRectangle, Color.Black, Color.White);
+               drawSelected(g, checkRectangle, Color.Black, Color.White, penSize);
             }
             else
             {
-               drawUnselected(g, checkRectangle, Color.Black, Color.White);
+               drawUnselected(g, checkRectangle, Color.Black, Color.White, penSize);
             }
 
             writer.Rectangle = textRectangle;
@@ -238,14 +230,10 @@ public class AlternateWriter
 
    public void OnPaintBackground(Graphics g)
    {
-      /*using var backBrush = new SolidBrush(Color.White);
-      g.FillRectangle(backBrush, uiAction.ClientRectangle);*/
-
-      foreach (var (index, rectangle) in uiAction.Rectangles.Indexed())
+      /*foreach (var (index, rectangle) in uiAction.Rectangles.Indexed())
       {
          var backColor = GetAlternateBackColor(index);
-         using var brush = new SolidBrush(backColor);
-         g.FillRectangle(brush, rectangle);
-      }
+         g.FillRectangle(backColor, rectangle);
+      }*/
    }
 }

@@ -93,4 +93,16 @@ public static class GraphicsExtensions
    {
       return rectangle.Reposition(-offset, -offset).Resize(2 * offset, 2 * offset);
    }
+
+   public static void FillRectangle(this Graphics g, Color color, Rectangle rectangle)
+   {
+      using var brush = new SolidBrush(color);
+      g.FillRectangle(brush, rectangle);
+   }
+
+   public static void DrawRectangle(this Graphics g, Color color, Rectangle rectangle, float width = 1f)
+   {
+      using var pen = new Pen(color, width);
+      g.DrawRectangle(pen, rectangle);
+   }
 }

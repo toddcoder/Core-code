@@ -346,7 +346,7 @@ public partial class Form1 : Form, IMessageQueueListener
       test = "";
 
       textBox = new ExTextBox(this);
-      textBox.SetUpInPanel(panel4);
+      textBox.SetUpInPanel(panel4, dockStyle: DockStyle.Fill);
       textBox.Allow = (Pattern)"^/d*$";
       textBox.RefreshOnTextChange = true;
       textBox.Paint += (_, e) =>
@@ -456,6 +456,7 @@ public partial class Form1 : Form, IMessageQueueListener
 
    protected void button4_Click(object sender, EventArgs e)
    {
-      uiAction.KeyMatch(Keys.Control, "down", "up");
+      panel1.Height += 20;
+      uiAction.Height += 20;
    }
 }
