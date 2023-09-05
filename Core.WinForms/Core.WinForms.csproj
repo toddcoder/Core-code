@@ -62,6 +62,7 @@
     <Compile Include="Controls\AutomaticMessageArgs.cs" />
     <Compile Include="Controls\BarberPoleBusyProcessor.cs" />
     <Compile Include="Controls\BusyStyle.cs" />
+    <Compile Include="Controls\CheckBoxWriter.cs" />
     <Compile Include="Controls\KeyMatch.cs" />
     <Compile Include="Controls\KeyMatchStatus.cs" />
     <Compile Include="Controls\MenuSymbolWriter.cs" />

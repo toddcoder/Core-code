@@ -19,8 +19,6 @@ public class AlternateWriter
    protected Lazy<Font> disabledFont;
    protected Hash<int, Color> foreColors;
    protected Hash<int, Color> backColors;
-   protected int checkSize;
-   protected int checkMargin;
 
    public AlternateWriter(UiAction uiAction, string[] alternates, bool autoSizeText, Maybe<int> _floor, Maybe<int> _ceiling)
    {
@@ -35,8 +33,6 @@ public class AlternateWriter
       disabledFont = new Lazy<Font>(() => new Font(uiAction.Font, FontStyle.Italic));
       foreColors = new Hash<int, Color>();
       backColors = new Hash<int, Color>();
-      checkSize = 3;
-      checkMargin = 4;
    }
 
    protected static (Rectangle checkRectangle, int penSize, Rectangle textRectangle) splitRectangle(Rectangle rectangle)
@@ -230,14 +226,5 @@ public class AlternateWriter
 
          writer.Write(g, alternate);
       }
-   }
-
-   public void OnPaintBackground(Graphics g)
-   {
-      /*foreach (var (index, rectangle) in uiAction.Rectangles.Indexed())
-      {
-         var backColor = GetAlternateBackColor(index);
-         g.FillRectangle(backColor, rectangle);
-      }*/
    }
 }

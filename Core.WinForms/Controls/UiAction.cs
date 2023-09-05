@@ -411,20 +411,33 @@ public class UiAction : UserControl
       Click += (_, _) =>
       {
          var location = PointToClient(Cursor.Position);
-         for (var i = 0; i < rectangles.Length; i++)
+         switch (type)
          {
-            if (rectangles[i].Contains(location) && DisabledIndex != i)
+            case UiActionType.Alternate:
             {
-               ClickOnRectangle?.Invoke(this, new UiActionRectangleArgs(i, location));
-
-               if (_alternateWriter is (true, var alternateWriter))
+               for (var i = 0; i < rectangles.Length; i++)
                {
-                  alternateWriter.SelectedIndex = i;
-                  refresh();
-                  ClickOnAlternate?.Invoke(this, new UiActionAlternateArgs(i, location, alternateWriter.Alternate, true));
+                  if (rectangles[i].Contains(location) && DisabledIndex != i)
+                  {
+                     ClickOnRectangle?.Invoke(this, new UiActionRectangleArgs(i, location));
+
+                     if (_alternateWriter is (true, var alternateWriter))
+                     {
+                        alternateWriter.SelectedIndex = i;
+                        refresh();
+                        ClickOnAlternate?.Invoke(this, new UiActionAlternateArgs(i, location, alternateWriter.Alternate, true));
+                     }
+
+                     return;
+                  }
                }
 
-               return;
+               break;
+            }
+            case UiActionType.CheckBox when _alternateWriter is (true, CheckBoxWriter checkBoxWriter):
+            {
+               checkBoxWriter.BoxChecked = !checkBoxWriter.BoxChecked;
+               break;
             }
          }
       };
@@ -1476,6 +1489,9 @@ public class UiAction : UserControl
          case UiActionType.Alternate when _alternateWriter is (true, var alternateWriter):
             alternateWriter.OnPaint(e.Graphics);
             break;
+         case UiActionType.CheckBox when _alternateWriter is (true, var alternateWriter):
+            alternateWriter.OnPaint(e.Graphics);
+            break;
          default:
          {
             if (type != UiActionType.Tape)
@@ -1725,9 +1741,6 @@ public class UiAction : UserControl
          }
          case UiActionType.Symbol when _symbolWriter is (true, var symbolWriter):
             symbolWriter.OnPaintBackground(pevent.Graphics, clientRectangle, Enabled);
-            break;
-         case UiActionType.Alternate when _alternateWriter is (true, var alternateWriter):
-            alternateWriter.OnPaintBackground(pevent.Graphics);
             break;
          default:
          {
@@ -3010,10 +3023,29 @@ public class UiAction : UserControl
       refresh();
    }
 
+   public void CheckBox(string message, bool initialValue)
+   {
+      FloatingException(false);
+      Busy(false);
+      Working = false;
+      _taskBarProgress = nil;
+
+      type = UiActionType.CheckBox;
+      setUpCheckBox(message, initialValue);
+      refresh();
+   }
+
    protected void setUpAlternate(string[] alternates)
    {
       RectangleCount = alternates.Length;
       _alternateWriter = new AlternateWriter(this, alternates, AutoSizeText, _floor, _ceiling);
+   }
+
+   protected void setUpCheckBox(string message, bool initialValue)
+   {
+      RectangleCount = 1;
+      var checkBoxWriter = new CheckBoxWriter(this, new[] { message }, AutoSizeText, _floor, _ceiling) { BoxChecked = initialValue };
+      _alternateWriter = checkBoxWriter;
    }
 
    public int SelectedIndex
@@ -3061,6 +3093,18 @@ public class UiAction : UserControl
          {
             alternateWriter.DisabledIndex = value;
             refresh();
+         }
+      }
+   }
+
+   public bool BoxChecked
+   {
+      get => _alternateWriter.Map(w => ((CheckBoxWriter)w).BoxChecked) | false;
+      set
+      {
+         if (_alternateWriter is (true, CheckBoxWriter checkBoxWriter))
+         {
+            checkBoxWriter.BoxChecked = value;
          }
       }
    }

@@ -25,5 +25,6 @@ public enum UiActionType
    MuteProgress,
    Display,
    Symbol,
-   Alternate
+   Alternate,
+   CheckBox
 }

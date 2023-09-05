@@ -100,9 +100,10 @@ public static class GraphicsExtensions
       g.FillRectangle(brush, rectangle);
    }
 
-   public static void DrawRectangle(this Graphics g, Color color, Rectangle rectangle, float width = 1f)
+   public static void DrawRectangle(this Graphics g, Color color, Rectangle rectangle, DashStyle dashStyle = DashStyle.Solid, float width = 1f)
    {
       using var pen = new Pen(color, width);
+      pen.DashStyle = dashStyle;
       g.DrawRectangle(pen, rectangle);
    }
 }
