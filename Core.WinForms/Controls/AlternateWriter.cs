@@ -117,7 +117,7 @@ public class AlternateWriter
       g.FillRectangle(brush, rectangle);
    }
 
-   protected void drawSelected(Graphics g, Rectangle rectangle, Color foreColor, Color backColor, int penSize)
+   protected virtual void drawSelected(Graphics g, Rectangle rectangle, Color foreColor, Color backColor, int penSize)
    {
       using var pen = new Pen(foreColor, penSize);
       drawUnselected(g, pen, rectangle, backColor);
@@ -127,7 +127,7 @@ public class AlternateWriter
       g.DrawLine(pen, rectangle.NorthEast(penSize), rectangle.SouthWest(penSize));
    }
 
-   protected void drawUnselected(Graphics g, Pen pen, Rectangle rectangle, Color backColor)
+   protected virtual void drawUnselected(Graphics g, Pen pen, Rectangle rectangle, Color backColor)
    {
       using var brush = new SolidBrush(backColor);
       g.FillRectangle(brush, rectangle);
