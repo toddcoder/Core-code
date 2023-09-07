@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Collections;
 
@@ -8,7 +9,8 @@ public class Triggers : StringHash<Triggers.TriggerType>
    public enum TriggerType
    {
       Set,
-      Triggered
+      Triggered,
+      Read
    }
 
    public Triggers(bool ignoreCase) : base(ignoreCase)
@@ -31,26 +33,40 @@ public class Triggers : StringHash<Triggers.TriggerType>
       }
    }
 
-   public bool IsSet(string key) => Maybe[key].Map(tt => tt == TriggerType.Set) | false;
-
    public void Trigger(string key)
    {
-      if (Maybe[key] is(true, TriggerType.Set))
+      if (Maybe[key] is (true, TriggerType.Set))
       {
          this[key] = TriggerType.Triggered;
       }
    }
 
+   public void Read(string key)
+   {
+      if (Maybe[key] is (true, TriggerType.Triggered))
+      {
+         this[key] = TriggerType.Read;
+      }
+   }
+
+   public void Reset(string key) => Maybe[key] = nil;
+
    public bool IsTriggered(string key) => Maybe[key].Map(tt => tt == TriggerType.Triggered) | false;
+
+   public bool IsSet(string key) => Maybe[key].Map(tt => tt == TriggerType.Set) | false;
+
+   public bool IsRead(string key) => Maybe[key].Map(tt => tt == TriggerType.Read) | false;
 
    public void Update(string key)
    {
       if (Maybe[key] is (true, var triggerType))
       {
-         if (triggerType == TriggerType.Set)
+         this[key] = triggerType switch
          {
-            this[key] = TriggerType.Triggered;
-         }
+            TriggerType.Set => TriggerType.Triggered,
+            TriggerType.Triggered => TriggerType.Read,
+            _ => this[key]
+         };
       }
       else
       {
@@ -61,4 +77,6 @@ public class Triggers : StringHash<Triggers.TriggerType>
    public int SetCount => Values.Count(v => v == TriggerType.Set);
 
    public int TriggeredCount => Values.Count(v => v == TriggerType.Triggered);
+
+   public int ReadCount => Values.Count(v => v == TriggerType.Read);
 }

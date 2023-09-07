@@ -416,7 +416,10 @@ public partial class Form1 : Form, IMessageQueueListener
 
    protected void button2_Click(object sender, EventArgs e)
    {
-      uiAction.DisabledIndex = 1;
+      //uiAction.DisabledIndex = 1;
+      //uiAction.FloatingException(fail("Test exception"));
+      uiAction.ClearFloating();
+      uiAction.FloatingFailure("Test failure");
    }
 
    protected void button3_Click(object sender, EventArgs e)
