@@ -408,18 +408,20 @@ public partial class Form1 : Form, IMessageQueueListener
 
    protected void button1_Click(object sender, EventArgs e)
    {
-      /*uiAction.Alternate("Merge Request Received", "Merge Request Rejected", "Merged to r-6.51.0-grp1", "Merged to r-6.51.0-grp7a");
-      uiAction.ClickOnAlternate += (_, e) => Text = e.Alternate;*/
-      uiAction.CheckBox("Selected", false);
-      uiAction.Click += (_, _) => Text = uiAction.BoxChecked ? "Checked" : "Unchecked";
+      uiAction.EmptyTextTitle = "Click to add new items";
+      uiAction.AlternateDeletable("Merge Request Received", "Merge Request Rejected", "Merged to r-6.51.0-grp1", "Merged to r-6.51.0-grp7a");
+      uiAction.ClickOnAlternate += (_, e) => Text = e.Alternate;
+      uiAction.DeleteOnAlternate += (_, e) => uiAction.RemoveAlternate(e.RectangleIndex);
+      /*uiAction.CheckBox("Selected", false);
+      uiAction.Click += (_, _) => Text = uiAction.BoxChecked ? "Checked" : "Unchecked";*/
    }
 
    protected void button2_Click(object sender, EventArgs e)
    {
-      //uiAction.DisabledIndex = 1;
-      //uiAction.FloatingException(fail("Test exception"));
-      uiAction.ClearFloating();
-      uiAction.FloatingFailure("Test failure");
+      uiAction.DisabledIndex = 1;
+      uiAction.FloatingException(fail("Test exception"));
+      /*uiAction.ClearFloating();
+      uiAction.FloatingFailure("Test failure");*/
    }
 
    protected void button3_Click(object sender, EventArgs e)

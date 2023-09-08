@@ -6,7 +6,7 @@ namespace Core.WinForms.Controls;
 public class CheckBoxWriter : AlternateWriter
 {
    public CheckBoxWriter(UiAction uiAction, string[] alternates, bool autoSizeText, Maybe<int> _floor, Maybe<int> _ceiling) :
-      base(uiAction, alternates, autoSizeText, _floor, _ceiling)
+      base(uiAction, alternates, autoSizeText, _floor, _ceiling, false)
    {
    }
 

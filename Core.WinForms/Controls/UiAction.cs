@@ -7,6 +7,7 @@ using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Core.Arrays;
 using Core.Collections;
 using Core.Computers;
 using Core.DataStructures;
@@ -299,6 +300,7 @@ public class UiAction : UserControl
    public event EventHandler<UiActionRectangleArgs> MouseMoveOnRectangle;
    public event EventHandler<UiActionRectanglePaintArgs> PaintOnRectangle;
    public event EventHandler<UiActionAlternateArgs> ClickOnAlternate;
+   public event EventHandler<UiActionAlternateArgs> DeleteOnAlternate;
 
    public UiAction(Control control, bool is3D = false)
    {
@@ -426,6 +428,15 @@ public class UiAction : UserControl
                         alternateWriter.SelectedIndex = i;
                         refresh();
                         ClickOnAlternate?.Invoke(this, new UiActionAlternateArgs(i, location, alternateWriter.Alternate, true));
+
+                        if (Deletable && i < alternateWriter.DeletableRectangles.Length)
+                        {
+                           var deletableRectangle = alternateWriter.DeletableRectangles[i];
+                           if (deletableRectangle.Contains(location))
+                           {
+                              DeleteOnAlternate?.Invoke(this, new UiActionAlternateArgs(i, location, alternateWriter.Alternate, true));
+                           }
+                        }
                      }
 
                      return;
@@ -462,6 +473,15 @@ public class UiAction : UserControl
                   var rectangle = rectangles[i].Shrink(2);
                   using var g = CreateGraphics();
                   g.DrawRectangle(pen, rectangle);
+
+                  if (Deletable && i < alternateWriter.DeletableRectangles.Length)
+                  {
+                     var deletableRectangle = alternateWriter.DeletableRectangles[i];
+                     if (deletableRectangle.Contains(location))
+                     {
+                        g.DrawRectangle(pen, deletableRectangle);
+                     }
+                  }
                }
             }
          }
@@ -539,6 +559,8 @@ public class UiAction : UserControl
    }
 
    public bool AutoSizeText { get; set; }
+
+   public bool Deletable { get; set; }
 
    protected BusyProcessor getBusyProcessor(Rectangle clientRectangle) => busyStyle switch
    {
@@ -3005,21 +3027,26 @@ public class UiAction : UserControl
       }
    }
 
-   public void Alternate(params string[] alternates)
+   public void Alternate(params string[] alternates) => createAlternate(alternates, false);
+
+   public void AlternateDeletable(params string[] alternates) => createAlternate(alternates, true);
+
+   private void createAlternate(string[] alternates, bool deletable)
    {
       FloatingException(false);
       Busy(false);
       Working = false;
       _taskBarProgress = nil;
 
-      if (alternates.Length < 1)
+      if (alternates.Length < 1 && !deletable)
       {
          Failure("You should have at least one alternate");
          return;
       }
 
       type = UiActionType.Alternate;
-      setUpAlternate(alternates);
+      setUpAlternate(alternates, deletable);
+      Deletable = deletable;
       refresh();
    }
 
@@ -3035,10 +3062,10 @@ public class UiAction : UserControl
       refresh();
    }
 
-   protected void setUpAlternate(string[] alternates)
+   protected void setUpAlternate(string[] alternates, bool deletable)
    {
       RectangleCount = alternates.Length;
-      _alternateWriter = new AlternateWriter(this, alternates, AutoSizeText, _floor, _ceiling);
+      _alternateWriter = new AlternateWriter(this, alternates, AutoSizeText, _floor, _ceiling, deletable);
    }
 
    protected void setUpCheckBox(string message, bool initialValue)
@@ -3105,6 +3132,7 @@ public class UiAction : UserControl
          if (_alternateWriter is (true, CheckBoxWriter checkBoxWriter))
          {
             checkBoxWriter.BoxChecked = value;
+            Refresh();
          }
       }
    }
@@ -3142,4 +3170,17 @@ public class UiAction : UserControl
    public Maybe<Color> GetAlternateForeColor(int index) => _alternateWriter.Map(w => w.GetAlternateForeColor(index));
 
    public Maybe<Color> GetAlternateBackColor(int index) => _alternateWriter.Map(w => w.GetAlternateBackColor(index));
+
+   public void RemoveAlternate(int index)
+   {
+      if (_alternateWriter is (true, var alternateWriter))
+      {
+         var alternates = alternateWriter.Alternates;
+         if (index < alternates.Length)
+         {
+            alternates = alternates.RemoveAt(index);
+            createAlternate(alternates, Deletable);
+         }
+      }
+   }
 }

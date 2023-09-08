@@ -663,4 +663,6 @@ public static class ArrayExtensions
          return true;
       }
    }
+
+   public static T[] RemoveAt<T>(this T[] array, int index) => array.Indexed().Where(t => t.Item1 != index).Select(t => t.Item2).ToArray();
 }
