@@ -410,7 +410,7 @@ public partial class Form1 : Form, IMessageQueueListener
    {
       uiAction.EmptyTextTitle = "Click to add new items";
       uiAction.AutoSizeText = true;
-      uiAction.AlternateDeletable("Merge Request Received", "Merge Request Rejected", "Merged to r-6.51.0-grp1", "Merged to r-6.51.0-grp7a");
+      uiAction.AlternateDeletable("Merge Request Received", "Merge Request Rejected", "Merged to r-6.51.0-grp1", "Merged to r-6.51.0-grp7a", "Add status");
       uiAction.ClickOnAlternate += (_, e) => Text = e.Alternate;
       uiAction.DeleteOnAlternate += (_, e) => uiAction.RemoveAlternate(e.RectangleIndex);
       /*uiAction.CheckBox("Selected", false);
