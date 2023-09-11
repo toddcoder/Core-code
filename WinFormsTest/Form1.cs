@@ -409,6 +409,7 @@ public partial class Form1 : Form, IMessageQueueListener
    protected void button1_Click(object sender, EventArgs e)
    {
       uiAction.EmptyTextTitle = "Click to add new items";
+      uiAction.AutoSizeText = true;
       uiAction.AlternateDeletable("Merge Request Received", "Merge Request Rejected", "Merged to r-6.51.0-grp1", "Merged to r-6.51.0-grp7a");
       uiAction.ClickOnAlternate += (_, e) => Text = e.Alternate;
       uiAction.DeleteOnAlternate += (_, e) => uiAction.RemoveAlternate(e.RectangleIndex);

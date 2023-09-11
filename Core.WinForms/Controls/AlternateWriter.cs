@@ -10,6 +10,10 @@ namespace Core.WinForms.Controls;
 
 public class AlternateWriter
 {
+   protected const int DELETABLE_SIZE = 8;
+   protected const int DELETABLE_MARGIN = 2;
+   protected const int FULL_DELETABLE_SIZE = DELETABLE_SIZE + DELETABLE_MARGIN;
+
    protected UiAction uiAction;
    protected string[] alternates;
    protected bool autoSizeText;
@@ -51,11 +55,10 @@ public class AlternateWriter
 
       if (deletable)
       {
-         var textRectangle = rectangle with { Y = rectangle.Y + 10, Height = rectangle.Height - 20 };
-         var deletableRectangle = new Rectangle(rectangle.NorthEast(10), new Size(8, 8))
-         {
-            Y = rectangle.Y + 2
-         };
+         var textRectangle = rectangle;
+         var deletableRectangle = new Rectangle(rectangle.X + (rectangle.Width - FULL_DELETABLE_SIZE) - 1, rectangle.Y + DELETABLE_MARGIN,
+            FULL_DELETABLE_SIZE, FULL_DELETABLE_SIZE);
+
          return (Rectangle.Empty, penSize, textRectangle, deletableRectangle);
       }
       else
@@ -165,16 +168,27 @@ public class AlternateWriter
       drawUnselected(g, pen, rectangle, backColor);
    }
 
-   public void drawDeletable(Graphics g, Rectangle rectangle, Color foreColor, bool enabled)
+   protected void drawDeletable(Graphics g, Rectangle rectangle, Color foreColor, bool enabled)
    {
       if (enabled && deletable)
       {
          using var pen = new Pen(foreColor, 1);
          pen.StartCap = LineCap.Triangle;
          pen.EndCap = LineCap.Triangle;
-         g.DrawLine(pen, rectangle.NorthWest(1), rectangle.SouthEast(1));
-         g.DrawLine(pen, rectangle.NorthEast(1), rectangle.SouthWest(1));
+         g.DrawLine(pen, rectangle.NorthWest(DELETABLE_MARGIN), rectangle.SouthEast(DELETABLE_MARGIN));
+         g.DrawLine(pen, rectangle.NorthEast(DELETABLE_MARGIN), rectangle.SouthWest(DELETABLE_MARGIN));
       }
+   }
+
+   public void DrawBoldDeletable(Graphics g, int index)
+   {
+      var rectangle = deletableRectangles[index];
+      var foreColor = GetAlternateForeColor(index);
+      using var pen = new Pen(foreColor, 2);
+      pen.StartCap = LineCap.Triangle;
+      pen.EndCap = LineCap.Triangle;
+      g.DrawLine(pen, rectangle.NorthWest(DELETABLE_MARGIN), rectangle.SouthEast(DELETABLE_MARGIN));
+      g.DrawLine(pen, rectangle.NorthEast(DELETABLE_MARGIN), rectangle.SouthWest(DELETABLE_MARGIN));
    }
 
    public Color GetAlternateForeColor(int index)

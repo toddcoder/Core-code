@@ -479,8 +479,12 @@ public class UiAction : UserControl
                      var deletableRectangle = alternateWriter.DeletableRectangles[i];
                      if (deletableRectangle.Contains(location))
                      {
-                        g.DrawRectangle(pen, deletableRectangle);
+                        alternateWriter.DrawBoldDeletable(g, i);
                      }
+                  }
+                  else
+                  {
+                     refresh();
                   }
                }
             }

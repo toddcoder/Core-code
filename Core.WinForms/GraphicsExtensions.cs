@@ -76,21 +76,45 @@ public static class GraphicsExtensions
 
    public static Point OffsetY(this Point point, int yOffset) => point with { Y = point.Y + yOffset };
 
-   public static Point North(this Rectangle rectangle, int offset = 0) => new(rectangle.Left + rectangle.Width / 2, rectangle.Top + offset);
+   public static Point North(this Rectangle rectangle, int xOffset = 0) => new(rectangle.Left + rectangle.Width / 2, rectangle.Top + xOffset);
 
-   public static Point NorthEast(this Rectangle rectangle, int offset = 0) => new(rectangle.Right - offset, rectangle.Top + offset);
+   public static Point North(this Rectangle rectangle, int xOffset, int yOffset) =>
+      new(rectangle.Left + rectangle.Width / 2 + xOffset, rectangle.Top + yOffset);
 
-   public static Point East(this Rectangle rectangle, int offset = 0) => new(rectangle.Right - offset, rectangle.Top + rectangle.Height / 2);
+   public static Point NorthEast(this Rectangle rectangle, int xOffset = 0) => new(rectangle.Right - xOffset, rectangle.Top + xOffset);
 
-   public static Point SouthEast(this Rectangle rectangle, int offset = 0) => new(rectangle.Right - offset, rectangle.Bottom - offset);
+   public static Point NorthEast(this Rectangle rectangle, int xOffset, int yOffset) => new(rectangle.Right + xOffset, rectangle.Top + yOffset);
 
-   public static Point South(this Rectangle rectangle, int offset = 0) => new(rectangle.Left + rectangle.Width / 2, rectangle.Bottom - offset);
+   public static Point East(this Rectangle rectangle, int xOffset = 0) => new(rectangle.Right - xOffset, rectangle.Top + rectangle.Height / 2);
 
-   public static Point SouthWest(this Rectangle rectangle, int offset = 0) => new(rectangle.Left + offset, rectangle.Bottom - offset);
+   public static Point East(this Rectangle rectangle, int xOffset, int yOffset) =>
+      new(rectangle.Right + xOffset, rectangle.Top + rectangle.Height / 2 + yOffset);
 
-   public static Point West(this Rectangle rectangle, int offset = 0) => new(rectangle.Left + offset, rectangle.Top + rectangle.Height / 2);
+   public static Point SouthEast(this Rectangle rectangle, int xOffset = 0) => new(rectangle.Right - xOffset, rectangle.Bottom - xOffset);
 
-   public static Point NorthWest(this Rectangle rectangle, int offset = 0) => new(rectangle.Left + offset, rectangle.Top + offset);
+   public static Point SouthEast(this Rectangle rectangle, int xOffset, int yOffset) => new(rectangle.Right + xOffset, rectangle.Bottom + yOffset);
+
+   public static Point South(this Rectangle rectangle, int xOffset = 0) => new(rectangle.Left + rectangle.Width / 2, rectangle.Bottom - xOffset);
+
+   public static Point South(this Rectangle rectangle, int xOffset, int yOffset)
+   {
+      return new Point(rectangle.Left + rectangle.Width / 2 + xOffset, rectangle.Bottom + yOffset);
+   }
+
+   public static Point SouthWest(this Rectangle rectangle, int xOffset = 0) => new(rectangle.Left + xOffset, rectangle.Bottom - xOffset);
+
+   public static Point SouthWest(this Rectangle rectangle, int xOffset, int yOffset) => new(rectangle.Left + xOffset, rectangle.Bottom + yOffset);
+
+   public static Point West(this Rectangle rectangle, int xOffset = 0) => new(rectangle.Left + xOffset, rectangle.Top + rectangle.Height / 2);
+
+   public static Point West(this Rectangle rectangle, int xOffset, int yOffset)
+   {
+      return new Point(rectangle.Left + xOffset, rectangle.Top + rectangle.Height / 2 + yOffset);
+   }
+
+   public static Point NorthWest(this Rectangle rectangle, int xOffset = 0) => new(rectangle.Left + xOffset, rectangle.Top + xOffset);
+
+   public static Point NorthWest(this Rectangle rectangle, int xOffset, int yOffset) => new(rectangle.Left + xOffset, rectangle.Top + yOffset);
 
    public static Rectangle Shrink(this Rectangle rectangle, int offset = 0)
    {
