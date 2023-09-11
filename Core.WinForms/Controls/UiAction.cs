@@ -429,9 +429,9 @@ public class UiAction : UserControl
                         refresh();
                         ClickOnAlternate?.Invoke(this, new UiActionAlternateArgs(i, location, alternateWriter.Alternate, true));
 
-                        if (Deletable && i < alternateWriter.DeletableRectangles.Length)
+                        if (_alternateWriter is (true, DeletableWriter deletableWriter))
                         {
-                           var deletableRectangle = alternateWriter.DeletableRectangles[i];
+                           var deletableRectangle = deletableWriter.DeletableRectangles[i];
                            if (deletableRectangle.Contains(location))
                            {
                               DeleteOnAlternate?.Invoke(this, new UiActionAlternateArgs(i, location, alternateWriter.Alternate, true));
@@ -474,12 +474,12 @@ public class UiAction : UserControl
                   using var g = CreateGraphics();
                   g.DrawRectangle(pen, rectangle);
 
-                  if (Deletable && i < alternateWriter.DeletableRectangles.Length)
+                  if (_alternateWriter is (true, DeletableWriter deletableWriter))
                   {
-                     var deletableRectangle = alternateWriter.DeletableRectangles[i];
+                     var deletableRectangle = deletableWriter.DeletableRectangles[i];
                      if (deletableRectangle.Contains(location))
                      {
-                        alternateWriter.DrawBoldDeletable(g, i);
+                        deletableWriter.DrawBoldDeletable(g, i);
                      }
                   }
                   else
@@ -564,7 +564,7 @@ public class UiAction : UserControl
 
    public bool AutoSizeText { get; set; }
 
-   public bool Deletable { get; set; }
+   //public Maybe<DeletableWriter> Deletable => _alternateWriter.Map(Maybe.Cast<DeletableWriter>);
 
    protected BusyProcessor getBusyProcessor(Rectangle clientRectangle) => busyStyle switch
    {
@@ -3031,26 +3031,39 @@ public class UiAction : UserControl
       }
    }
 
-   public void Alternate(params string[] alternates) => createAlternate(alternates, false);
+   public void Alternate(params string[] alternates) => createAlternate(alternates);
 
-   public void AlternateDeletable(params string[] alternates) => createAlternate(alternates, true);
+   public void AlternateDeletable(params string[] alternates) => createDeletable(alternates);
 
-   private void createAlternate(string[] alternates, bool deletable)
+   protected void createAlternate(string[] alternates)
    {
       FloatingException(false);
       Busy(false);
       Working = false;
       _taskBarProgress = nil;
 
-      if (alternates.Length < 1 && !deletable)
+      if (alternates.Length < 1)
       {
          Failure("You should have at least one alternate");
          return;
       }
 
       type = UiActionType.Alternate;
-      setUpAlternate(alternates, deletable);
-      Deletable = deletable;
+      RectangleCount = alternates.Length;
+      _alternateWriter = new AlternateWriter(this, alternates, AutoSizeText, _floor, _ceiling);
+      refresh();
+   }
+
+   protected void createDeletable(string[] alternates)
+   {
+      FloatingException(false);
+      Busy(false);
+      Working = false;
+      _taskBarProgress = nil;
+
+      type = UiActionType.Alternate;
+      RectangleCount = alternates.Length;
+      _alternateWriter = new DeletableWriter(this, alternates, AutoSizeText, _floor, _ceiling);
       refresh();
    }
 
@@ -3064,12 +3077,6 @@ public class UiAction : UserControl
       type = UiActionType.CheckBox;
       setUpCheckBox(message, initialValue);
       refresh();
-   }
-
-   protected void setUpAlternate(string[] alternates, bool deletable)
-   {
-      RectangleCount = alternates.Length;
-      _alternateWriter = new AlternateWriter(this, alternates, AutoSizeText, _floor, _ceiling, deletable);
    }
 
    protected void setUpCheckBox(string message, bool initialValue)
@@ -3183,7 +3190,14 @@ public class UiAction : UserControl
          if (index < alternates.Length)
          {
             alternates = alternates.RemoveAt(index);
-            createAlternate(alternates, Deletable);
+            if (alternateWriter is DeletableWriter)
+            {
+               createDeletable(alternates);
+            }
+            else
+            {
+               createAlternate(alternates);
+            }
          }
       }
    }
