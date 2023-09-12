@@ -8,8 +8,7 @@ namespace Core.WinForms.Controls;
 public class DeletableWriter : AlternateWriter
 {
    protected const int DELETABLE_SIZE = 8;
-   protected const int DELETABLE_MARGIN = 2;
-   protected const int FULL_DELETABLE_SIZE = DELETABLE_SIZE + DELETABLE_MARGIN;
+   protected const int DELETABLE_MARGIN = 3;
 
    protected Rectangle[] deletableRectangles;
 
@@ -24,8 +23,8 @@ public class DeletableWriter : AlternateWriter
       var penSize = getPenSize(rectangle);
 
       var textRectangle = rectangle;
-      var deletableRectangle = new Rectangle(rectangle.X + (rectangle.Width - FULL_DELETABLE_SIZE) - 1, rectangle.Y + DELETABLE_MARGIN,
-         FULL_DELETABLE_SIZE, FULL_DELETABLE_SIZE);
+      var deletableRectangle = new Rectangle(0, 0, DELETABLE_SIZE, DELETABLE_SIZE)
+         .Align(rectangle, CardinalAlignment.NorthEast, DELETABLE_MARGIN, DELETABLE_MARGIN);
 
       return (penSize, textRectangle, deletableRectangle);
    }
@@ -39,8 +38,8 @@ public class DeletableWriter : AlternateWriter
          using var pen = new Pen(foreColor, 1);
          pen.StartCap = LineCap.Triangle;
          pen.EndCap = LineCap.Triangle;
-         g.DrawLine(pen, rectangle.NorthWest(DELETABLE_MARGIN), rectangle.SouthEast(DELETABLE_MARGIN));
-         g.DrawLine(pen, rectangle.NorthEast(DELETABLE_MARGIN), rectangle.SouthWest(DELETABLE_MARGIN));
+         g.DrawLine(pen, rectangle.NorthWest(), rectangle.SouthEast());
+         g.DrawLine(pen, rectangle.NorthEast(), rectangle.SouthWest());
       }
    }
 
@@ -51,8 +50,8 @@ public class DeletableWriter : AlternateWriter
       using var pen = new Pen(foreColor, 2);
       pen.StartCap = LineCap.Triangle;
       pen.EndCap = LineCap.Triangle;
-      g.DrawLine(pen, rectangle.NorthWest(DELETABLE_MARGIN), rectangle.SouthEast(DELETABLE_MARGIN));
-      g.DrawLine(pen, rectangle.NorthEast(DELETABLE_MARGIN), rectangle.SouthWest(DELETABLE_MARGIN));
+      g.DrawLine(pen, rectangle.NorthWest(), rectangle.SouthEast());
+      g.DrawLine(pen, rectangle.NorthEast(), rectangle.SouthWest());
    }
 
    protected override void onPaint(Graphics g, int index, Rectangle rectangle, UiActionWriter writer, string alternate)

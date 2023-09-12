@@ -1,5 +1,6 @@
 ﻿using System.Drawing;
 using System.Drawing.Drawing2D;
+using Core.WinForms.Controls;
 
 namespace Core.WinForms;
 
@@ -78,17 +79,51 @@ public static class GraphicsExtensions
 
    public static Point North(this Rectangle rectangle, int xOffset = 0) => new(rectangle.Left + rectangle.Width / 2, rectangle.Top + xOffset);
 
-   public static Point North(this Rectangle rectangle, int xOffset, int yOffset) =>
-      new(rectangle.Left + rectangle.Width / 2 + xOffset, rectangle.Top + yOffset);
+   public static Point North(this Rectangle rectangle, int xOffset, int yOffset)
+   {
+      return new Point(rectangle.Left + rectangle.Width / 2 + xOffset, rectangle.Top + yOffset);
+   }
 
    public static Point NorthEast(this Rectangle rectangle, int xOffset = 0) => new(rectangle.Right - xOffset, rectangle.Top + xOffset);
 
    public static Point NorthEast(this Rectangle rectangle, int xOffset, int yOffset) => new(rectangle.Right + xOffset, rectangle.Top + yOffset);
 
+   public static Rectangle Align(this Rectangle innerRectangle, Rectangle outerRectangle, CardinalAlignment alignment, int xMargin = 0,
+      int yMargin = 0)
+   {
+      int north() => outerRectangle.Y + yMargin;
+
+      int south() => outerRectangle.Bottom - innerRectangle.Height - yMargin;
+
+      int west() => outerRectangle.X + xMargin;
+
+      int east() => outerRectangle.Right - innerRectangle.Width - xMargin;
+
+      int centerX() => outerRectangle.X + (outerRectangle.Width - innerRectangle.Width) / 2;
+
+      int centerY() => outerRectangle.Y + (outerRectangle.Height - innerRectangle.Height) / 2;
+
+      return alignment switch
+      {
+         CardinalAlignment.NorthWest => innerRectangle with { X = west(), Y = north() },
+         CardinalAlignment.North => innerRectangle with { X = centerX(), Y = north() },
+         CardinalAlignment.NorthEast => innerRectangle with { X = east(), Y = north() },
+         CardinalAlignment.East => innerRectangle with { X = east(), Y = centerY() },
+         CardinalAlignment.SouthEast => innerRectangle with { X = east(), Y = south() },
+         CardinalAlignment.South => innerRectangle with { X = centerX(), Y = south() },
+         CardinalAlignment.SouthWest => innerRectangle with { X = west(), Y = south() },
+         CardinalAlignment.West => innerRectangle with { X = west(), Y = centerY() },
+         CardinalAlignment.Center => innerRectangle with { X = centerX(), Y = centerY() },
+         _ => innerRectangle
+      };
+   }
+
    public static Point East(this Rectangle rectangle, int xOffset = 0) => new(rectangle.Right - xOffset, rectangle.Top + rectangle.Height / 2);
 
-   public static Point East(this Rectangle rectangle, int xOffset, int yOffset) =>
-      new(rectangle.Right + xOffset, rectangle.Top + rectangle.Height / 2 + yOffset);
+   public static Point East(this Rectangle rectangle, int xOffset, int yOffset)
+   {
+      return new Point(rectangle.Right + xOffset, rectangle.Top + rectangle.Height / 2 + yOffset);
+   }
 
    public static Point SouthEast(this Rectangle rectangle, int xOffset = 0) => new(rectangle.Right - xOffset, rectangle.Bottom - xOffset);
 
