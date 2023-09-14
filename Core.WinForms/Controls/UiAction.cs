@@ -3201,4 +3201,13 @@ public class UiAction : UserControl
          }
       }
    }
+
+   public Maybe<int> CurrentPositionIndex
+   {
+      get
+      {
+         var position = this.CursorPosition();
+         return rectangles.Indexed().FirstOrNone(t => t.item.Contains(position)).Map(t => t.index);
+      }
+   }
 }

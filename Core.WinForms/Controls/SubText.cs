@@ -11,6 +11,9 @@ namespace Core.WinForms.Controls;
 
 public class SubText : IEquatable<SubText>
 {
+   protected const string POSITIVE = "✅";
+   protected const string NEGATIVE = "❎";
+
    protected Size size;
    protected bool clickGlyph;
    protected bool invert;
@@ -29,6 +32,7 @@ public class SubText : IEquatable<SubText>
       this.clickGlyph = clickGlyph;
       this.invert = invert;
       this.transparentBackground = transparentBackground;
+      Option = SubTextOption.None;
 
       Id = Guid.NewGuid();
 
@@ -52,6 +56,8 @@ public class SubText : IEquatable<SubText>
    public int Y { get; set; }
 
    public Size Size => size;
+
+   public SubTextOption Option { get; set; }
 
    public SubTextSet Set => new(this, size);
 

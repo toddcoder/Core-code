@@ -196,5 +196,11 @@ public class SubTextSet
 
    public SubTextSet Bold() => FontStyle(System.Drawing.FontStyle.Bold);
 
+   public SubTextSet Option(SubTextOption option)
+   {
+      subText.Option = option;
+      return this;
+   }
+
    public SubText End => subText;
 }

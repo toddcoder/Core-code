@@ -130,7 +130,7 @@ public static class EnumerableExtensions
 
    public static IEnumerable<T> Then<T>(this T seed, Func<T, T> next) => seed.Then(next, _ => false);
 
-   public static IEnumerable<(int, T)> Indexed<T>(this IEnumerable<T> enumerable)
+   public static IEnumerable<(int index, T item)> Indexed<T>(this IEnumerable<T> enumerable)
    {
       var index = 0;
       foreach (var item in enumerable)
