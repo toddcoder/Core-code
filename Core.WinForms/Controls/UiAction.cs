@@ -278,7 +278,6 @@ public class UiAction : UserControl
    protected Maybe<int> _ceiling;
    protected Maybe<KeyMatch> _keyMatch;
    protected Maybe<SymbolWriter> _symbolWriter;
-   //internal Maybe<Func<UiAction, string>> _dynamicToolTip;
    protected Maybe<AlternateWriter> _alternateWriter;
 
    public event EventHandler<AutomaticMessageArgs> AutomaticMessage;
@@ -707,7 +706,7 @@ public class UiAction : UserControl
       }
       else if (DynamicToolTip is not null)
       {
-         var args = new DynamicToolTipArgs();
+         var args = new DynamicToolTipArgs(CurrentPositionIndex);
          DynamicToolTip?.Invoke(this, args);
          if (args.ToolTipText is (true, var toolTipText))
          {
@@ -1151,7 +1150,7 @@ public class UiAction : UserControl
    {
       if (DynamicToolTip is not null)
       {
-         var args = new DynamicToolTipArgs();
+         var args = new DynamicToolTipArgs(CurrentPositionIndex);
          DynamicToolTip.Invoke(this, args);
          return args.ToolTipText;
       }

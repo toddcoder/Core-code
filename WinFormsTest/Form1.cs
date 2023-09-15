@@ -417,25 +417,22 @@ public partial class Form1 : Form, IMessageQueueListener
       uiAction.DeleteOnAlternate += (_, e) => uiAction.RemoveAlternate(e.RectangleIndex);
       uiAction.DynamicToolTip += (_, e) =>
       {
-         if (uiAction.Get(() => uiAction.CurrentPositionIndex) is (true, var index))
+         if (e.RectangleIndex is (true, var index))
          {
-            e.ToolTipText = uiAction.Get(() => uiAction.GetAlternate(index));
+            e.ToolTipText = uiAction.GetAlternate(index);
          }
-         else
+
+         if (!e.ToolTipText)
          {
             e.ToolTipText = "not there";
          }
       };
-      /*uiAction.CheckBox("Selected", false);
-      uiAction.Click += (_, _) => Text = uiAction.BoxChecked ? "Checked" : "Unchecked";*/
    }
 
    protected void button2_Click(object sender, EventArgs e)
    {
       uiAction.DisabledIndex = 1;
       uiAction.FloatingException(fail("Test exception"));
-      /*uiAction.ClearFloating();
-      uiAction.FloatingFailure("Test failure");*/
    }
 
    protected void button3_Click(object sender, EventArgs e)
@@ -448,7 +445,6 @@ public partial class Form1 : Form, IMessageQueueListener
       uiAction.SetBackColor(2, Color.Green);
       uiAction.SetForeColor(3, Color.White);
       uiAction.SetBackColor(3, Color.Green);
-      //uiAction.DisabledIndex = 3;
    }
 
    public string Listener => "form1";
