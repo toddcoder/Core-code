@@ -72,5 +72,5 @@ public static class ControlExtensions
       setUpFont(control, fontName, fontSize);
    }
 
-   public static Point CursorPosition(this Control control) => control.PointToClient(Cursor.Position);
+   public static Point CursorPosition(this Control control) => control.Get(() => control.PointToClient(Cursor.Position));
 }
