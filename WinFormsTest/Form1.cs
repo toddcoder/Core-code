@@ -9,6 +9,7 @@ using Core.Enumerables;
 using Core.Matching;
 using Core.Monads;
 using Core.Strings;
+using Core.WinForms;
 using Core.WinForms.Controls;
 using Core.WinForms.Documents;
 using static Core.Monads.MonadFunctions;
@@ -332,7 +333,7 @@ public partial class Form1 : Form, IMessageQueueListener
       uiAction.SetUpInPanel(panel1);
       uiAction.Message("Progress /arrow /paws-left.end/paws-right");
       uiAction.Click += (_, _) => uiAction.Refresh();
-      uiAction.ClickText = "Refresh";
+      //uiAction.ClickText = "Refresh";
 
       FileName sourceFile = @"C:\Temp\GoogleChromeStandaloneEnterprise_108.0.5359.125_x64_tw60560-67391.msi";
       FolderName targetFolder = @"C:\Users\tebennett\Working";
@@ -410,9 +411,21 @@ public partial class Form1 : Form, IMessageQueueListener
    {
       uiAction.EmptyTextTitle = "Click to add new items";
       uiAction.AutoSizeText = true;
-      uiAction.AlternateDeletable("Merge Request Received", "Merge Request Rejected", "Merged to r-6.51.0-grp1", "Merged to r-6.51.0-grp7a", "Add status");
+      uiAction.AlternateDeletable("Merge Request Received", "Merge Request Rejected", "Merged to r-6.51.0-grp1", "Merged to r-6.51.0-grp7a",
+         "Add status");
       uiAction.ClickOnAlternate += (_, e) => Text = e.Alternate;
       uiAction.DeleteOnAlternate += (_, e) => uiAction.RemoveAlternate(e.RectangleIndex);
+      uiAction.DynamicToolTip += (_, e) =>
+      {
+         if (uiAction.Get(() => uiAction.CurrentPositionIndex) is (true, var index))
+         {
+            e.ToolTipText = uiAction.Get(() => uiAction.GetAlternate(index));
+         }
+         else
+         {
+            e.ToolTipText = "not there";
+         }
+      };
       /*uiAction.CheckBox("Selected", false);
       uiAction.Click += (_, _) => Text = uiAction.BoxChecked ? "Checked" : "Unchecked";*/
    }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using Core.Assertions;
 using Core.Collections;
 using Core.Enumerables;
 using Core.Monads;
@@ -120,6 +121,8 @@ public class AlternateWriter
    public string Alternate => alternates[selectedIndex];
 
    public string[] Alternates => alternates;
+
+   public Maybe<string> GetAlternate(int index) => alternates.Must().HaveIndexOf(index).OrNone().Map(a => a[index]);
 
    protected void fillRectangle(Graphics g, Rectangle rectangle, Color color)
    {

@@ -278,7 +278,7 @@ public class UiAction : UserControl
    protected Maybe<int> _ceiling;
    protected Maybe<KeyMatch> _keyMatch;
    protected Maybe<SymbolWriter> _symbolWriter;
-   internal Maybe<Func<UiAction, string>> _dynamicToolTip;
+   //internal Maybe<Func<UiAction, string>> _dynamicToolTip;
    protected Maybe<AlternateWriter> _alternateWriter;
 
    public event EventHandler<AutomaticMessageArgs> AutomaticMessage;
@@ -301,6 +301,7 @@ public class UiAction : UserControl
    public event EventHandler<UiActionRectanglePaintArgs> PaintOnRectangle;
    public event EventHandler<UiActionAlternateArgs> ClickOnAlternate;
    public event EventHandler<UiActionAlternateArgs> DeleteOnAlternate;
+   public event EventHandler<DynamicToolTipArgs> DynamicToolTip;
 
    public UiAction(Control control, bool is3D = false)
    {
@@ -455,6 +456,8 @@ public class UiAction : UserControl
 
       MouseMove += (_, _) =>
       {
+         UpdateDynamicToolTip();
+
          var location = PointToClient(Cursor.Position);
          var invoked = false;
 
@@ -558,7 +561,7 @@ public class UiAction : UserControl
       _ceiling = nil;
       _keyMatch = nil;
       _symbolWriter = nil;
-      _dynamicToolTip = nil;
+      //_dynamicToolTip = nil;
       _alternateWriter = nil;
    }
 
@@ -702,18 +705,24 @@ public class UiAction : UserControl
       {
          toolTip.Action = action<object, DrawToolTipEventArgs>((_, e) => PaintToolTip.Invoke(this, e));
       }
-      else if (_dynamicToolTip is (true, var dynamicToolTip))
+      else if (DynamicToolTip is not null)
       {
-         if (!toolTip.Action)
+         var args = new DynamicToolTipArgs();
+         DynamicToolTip?.Invoke(this, args);
+         if (args.ToolTipText is (true, var toolTipText))
          {
-            _oldTitle = toolTip.ToolTipTitle.NotEmpty();
-         }
+            if (!toolTip.Action)
+            {
+               _oldTitle = toolTip.ToolTipTitle.NotEmpty();
+            }
 
-         toolTip.ToolTipTitle = "";
-         toolTip.Action = action<object, DrawToolTipEventArgs>((_, e) =>
-         {
-            toolTip.DrawTextInRectangle(e.Graphics, dynamicToolTip(this), toolTip.Font, Color.White, Color.CadetBlue, e.Bounds);
-         });
+            toolTip.ToolTipTitle = "";
+            toolTip.Text = toolTipText;
+            toolTip.Action = action<object, DrawToolTipEventArgs>((_, e) =>
+            {
+               toolTip.DrawTextInRectangle(e.Graphics, toolTip.Font, Color.White, Color.CadetBlue, e.Bounds);
+            });
+         }
       }
       else if (_failureToolTip is (true, var failureToolTip))
       {
@@ -723,9 +732,10 @@ public class UiAction : UserControl
          }
 
          toolTip.ToolTipTitle = "failure";
+         toolTip.Text = failureToolTip;
          toolTip.Action = action<object, DrawToolTipEventArgs>((_, e) =>
          {
-            toolTip.DrawTextInRectangle(e.Graphics, failureToolTip, toolTip.Font, Color.Black, Color.Gold, e.Bounds);
+            toolTip.DrawTextInRectangle(e.Graphics, toolTip.Font, Color.Black, Color.Gold, e.Bounds);
             toolTip.DrawTitle(e.Graphics, toolTip.Font, Color.Gold, Color.Black, e.Bounds);
          });
          this.Do(() => toolTip.SetToolTip(this, failureToolTip));
@@ -738,9 +748,10 @@ public class UiAction : UserControl
          }
 
          toolTip.ToolTipTitle = "exception";
+         toolTip.Text = exceptionToolTip;
          toolTip.Action = action<object, DrawToolTipEventArgs>((_, e) =>
          {
-            toolTip.DrawTextInRectangle(e.Graphics, exceptionToolTip, toolTip.Font, Color.White, Color.Red, e.Bounds);
+            toolTip.DrawTextInRectangle(e.Graphics, toolTip.Font, Color.White, Color.Red, e.Bounds);
             toolTip.DrawTitle(e.Graphics, toolTip.Font, Color.Red, Color.White, e.Bounds);
          });
          this.Do(() => toolTip.SetToolTip(this, exceptionToolTip));
@@ -753,9 +764,10 @@ public class UiAction : UserControl
          }
 
          toolTip.ToolTipTitle = "no status";
+         toolTip.Text = noStatusToolTip;
          toolTip.Action = action<object, DrawToolTipEventArgs>((_, e) =>
          {
-            toolTip.DrawTextInRectangle(e.Graphics, noStatusToolTip, toolTip.Font, Color.Black, Color.White, e.Bounds);
+            toolTip.DrawTextInRectangle(e.Graphics, toolTip.Font, Color.Black, Color.White, e.Bounds);
             toolTip.DrawTitle(e.Graphics, toolTip.Font, Color.White, Color.Black, e.Bounds);
          });
          this.Do(() => toolTip.SetToolTip(this, noStatusToolTip));
@@ -768,9 +780,10 @@ public class UiAction : UserControl
          }
 
          toolTip.ToolTipTitle = "failure";
+         toolTip.Text = text;
          toolTip.Action = action<object, DrawToolTipEventArgs>((_, e) =>
          {
-            toolTip.DrawTextInRectangle(e.Graphics, text, toolTip.Font, Color.Black, Color.Gold, e.Bounds);
+            toolTip.DrawTextInRectangle(e.Graphics, toolTip.Font, Color.Black, Color.Gold, e.Bounds);
             toolTip.DrawTitle(e.Graphics, toolTip.Font, Color.Gold, Color.Black, e.Bounds);
          });
          this.Do(() => toolTip.SetToolTip(this, text));
@@ -783,9 +796,10 @@ public class UiAction : UserControl
          }
 
          toolTip.ToolTipTitle = "exception";
+         toolTip.Text = text;
          toolTip.Action = action<object, DrawToolTipEventArgs>((_, e) =>
          {
-            toolTip.DrawTextInRectangle(e.Graphics, text, toolTip.Font, Color.White, Color.Red, e.Bounds);
+            toolTip.DrawTextInRectangle(e.Graphics, toolTip.Font, Color.White, Color.Red, e.Bounds);
             toolTip.DrawTitle(e.Graphics, toolTip.Font, Color.Red, Color.White, e.Bounds);
          });
          this.Do(() => toolTip.SetToolTip(this, text));
@@ -798,9 +812,10 @@ public class UiAction : UserControl
          }
 
          toolTip.ToolTipTitle = "no status";
+         toolTip.Text = text;
          toolTip.Action = action<object, DrawToolTipEventArgs>((_, e) =>
          {
-            toolTip.DrawTextInRectangle(e.Graphics, text, toolTip.Font, Color.Black, Color.White, e.Bounds);
+            toolTip.DrawTextInRectangle(e.Graphics, toolTip.Font, Color.Black, Color.White, e.Bounds);
             toolTip.DrawTitle(e.Graphics, toolTip.Font, Color.White, Color.Black, e.Bounds);
          });
          this.Do(() => toolTip.SetToolTip(this, text));
@@ -817,6 +832,7 @@ public class UiAction : UserControl
             toolTip.ToolTipTitle = "";
          }
 
+         toolTip.Text = ClickText;
          toolTip.Action = nil;
          this.Do(() => toolTip.SetToolTip(this, ClickText));
       }
@@ -832,6 +848,7 @@ public class UiAction : UserControl
             toolTip.ToolTipTitle = "";
          }
 
+         toolTip.Text = text;
          toolTip.Action = nil;
          this.Do(() => toolTip.SetToolTip(this, text));
       }
@@ -1126,7 +1143,31 @@ public class UiAction : UserControl
       Refresh();
    }
 
-   public bool Clickable => _clickText || _dynamicToolTip;
+   public bool Clickable => _clickText || HasDynamicToolTip;
+
+   public bool HasDynamicToolTip => DynamicToolTip is not null;
+
+   public Maybe<string> RaiseDynamicToolTip()
+   {
+      if (DynamicToolTip is not null)
+      {
+         var args = new DynamicToolTipArgs();
+         DynamicToolTip.Invoke(this, args);
+         return args.ToolTipText;
+      }
+      else
+      {
+         return nil;
+      }
+   }
+
+   public void UpdateDynamicToolTip()
+   {
+      if (DynamicToolTip is not null)
+      {
+         setToolTip();
+      }
+   }
 
    public string ClickText
    {
@@ -3022,14 +3063,14 @@ public class UiAction : UserControl
 
    public UiActionButtonType ButtonType { get; set; }
 
-   public Func<UiAction, string> DynamicToolTip
+   /*public Func<UiAction, string> DynamicToolTip
    {
       set
       {
          _dynamicToolTip = value;
          setToolTip();
       }
-   }
+   }*/
 
    public void Alternate(params string[] alternates) => createAlternate(alternates);
 
@@ -3210,4 +3251,8 @@ public class UiAction : UserControl
          return rectangles.Indexed().FirstOrNone(t => t.item.Contains(position)).Map(t => t.index);
       }
    }
+
+   public string[] Alternates => _alternateWriter.Map(w => w.Alternates) | Array.Empty<string>;
+
+   public Maybe<string> GetAlternate(int index) => _alternateWriter.Map(w => w.GetAlternate(index));
 }

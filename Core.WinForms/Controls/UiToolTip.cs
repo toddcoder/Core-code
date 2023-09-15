@@ -20,6 +20,7 @@ public class UiToolTip : ToolTip
    {
       this.uiAction = uiAction;
       font = this.uiAction.Font;
+      Text = string.Empty;
 
       _action = nil;
       textFormatFlags = TextFormatFlags.VerticalCenter | TextFormatFlags.LeftAndRightPadding | TextFormatFlags.HorizontalCenter |
@@ -51,11 +52,13 @@ public class UiToolTip : ToolTip
 
    public bool ToolTipBox { get; set; }
 
+   public string Text { get; set; }
+
    protected void onPopUp(object sender, PopupEventArgs e)
    {
-      Size getTextSize(string text)
+      Size getTextSize()
       {
-         var size = TextRenderer.MeasureText(text, font, Size.Empty, textFormatFlags);
+         var size = TextRenderer.MeasureText(Text, font, Size.Empty, textFormatFlags);
          var extraHeight = 0;
          if (ToolTipTitle.IsNotEmpty())
          {
@@ -77,27 +80,36 @@ public class UiToolTip : ToolTip
 
       if (uiAction.FailureToolTip is (true, var failureToolTip))
       {
-         e.ToolTipSize = getTextSize(failureToolTip);
+         Text = failureToolTip;
+         e.ToolTipSize = getTextSize();
       }
       else if (uiAction.ExceptionToolTip is (true, var exceptionToolTip))
       {
-         e.ToolTipSize = getTextSize(exceptionToolTip);
+         Text = exceptionToolTip;
+         e.ToolTipSize = getTextSize();
       }
       else if (uiAction._clickText is (true, var clickText) && !uiAction.IsFailureOrException)
       {
-         e.ToolTipSize = getTextSize(clickText);
+         Text = clickText;
+         e.ToolTipSize = getTextSize();
       }
-      else if (uiAction._dynamicToolTip is (true, var func))
+      else if (uiAction.HasDynamicToolTip)
       {
-         e.ToolTipSize = getTextSize(func(uiAction));
+         var _toolTipText = uiAction.RaiseDynamicToolTip();
+         if (_toolTipText is (true, var toolTipText))
+         {
+            Text = toolTipText;
+            e.ToolTipSize = getTextSize();
+         }
       }
       else
       {
-         e.ToolTipSize = getTextSize(uiAction.Text);
+         Text = uiAction.Text;
+         e.ToolTipSize = getTextSize();
       }
    }
 
-   public void DrawTextInRectangle(Graphics g, string text, Font font, Color foreColor, Color backColor, Rectangle bounds)
+   public void DrawTextInRectangle(Graphics g, Font font, Color foreColor, Color backColor, Rectangle bounds)
    {
       using var brush = new SolidBrush(backColor);
       g.FillRectangle(brush, bounds);
@@ -114,7 +126,7 @@ public class UiToolTip : ToolTip
          Rectangle = bounds,
          Flags = textFormatFlags
       };
-      writer.Write(g, text);
+      writer.Write(g, Text);
    }
 
    public void DrawTitle(Graphics g, Font font, Color foreColor, Color backColor, Rectangle bounds)
@@ -148,7 +160,7 @@ public class UiToolTip : ToolTip
          var foreColor = Color.White;
          var backColor = Color.CadetBlue;
 
-         DrawTextInRectangle(e.Graphics, e.ToolTipText, font, foreColor, backColor, e.Bounds);
+         DrawTextInRectangle(e.Graphics, font, foreColor, backColor, e.Bounds);
          DrawTitle(e.Graphics, font, backColor, foreColor, e.Bounds);
 
          if (ToolTipBox)
