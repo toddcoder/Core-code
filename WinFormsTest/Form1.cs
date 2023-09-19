@@ -419,7 +419,7 @@ public partial class Form1 : Form, IMessageQueueListener
       {
          if (e.RectangleIndex is (true, var index))
          {
-            e.ToolTipText = uiAction.GetAlternate(index);
+            e.ToolTipText = index.ToString(); //uiAction.GetAlternate(index);
          }
 
          if (!e.ToolTipText)
