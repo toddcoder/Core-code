@@ -1640,10 +1640,10 @@ public class UiAction : UserControl
 
    protected void drawAllSubTexts(Graphics graphics, UiActionType type, Rectangle clientRectangle)
    {
-      if (type is UiActionType.Busy or UiActionType.BusyText or UiActionType.ProgressDefinite or UiActionType.MuteProgress)
+      /*if (type is UiActionType.Busy or UiActionType.BusyText or UiActionType.ProgressDefinite or UiActionType.MuteProgress)
       {
          return;
-      }
+      }*/
 
       var foreColor = new Lazy<Color>(getForeColor);
       var backColor = new Lazy<Color>(getBackColor);

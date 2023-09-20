@@ -431,8 +431,10 @@ public partial class Form1 : Form, IMessageQueueListener
 
    protected void button2_Click(object sender, EventArgs e)
    {
-      uiAction.DisabledIndex = 1;
-      uiAction.FloatingException(fail("Test exception"));
+      /*uiAction.DisabledIndex = 1;
+      uiAction.FloatingException(fail("Test exception"));*/
+      uiAction.Busy("Busy");
+      uiAction.SubText("busy").Set.Alignment(CardinalAlignment.SouthEast).FontSize(8).Invert();
    }
 
    protected void button3_Click(object sender, EventArgs e)
