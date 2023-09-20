@@ -433,8 +433,7 @@ public partial class Form1 : Form, IMessageQueueListener
    {
       /*uiAction.DisabledIndex = 1;
       uiAction.FloatingException(fail("Test exception"));*/
-      uiAction.Busy("Busy");
-      uiAction.SubText("busy").Set.Alignment(CardinalAlignment.SouthEast).FontSize(8).Invert();
+      uiAction.Title = "r-6.52.0-grp4a-sec-fix";
    }
 
    protected void button3_Click(object sender, EventArgs e)

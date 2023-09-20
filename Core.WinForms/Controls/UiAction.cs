@@ -18,6 +18,7 @@ using Core.Monads.Lazy;
 using Core.Numbers;
 using Core.Strings;
 using Core.WinForms.ControlWrappers;
+using Core.WinForms.Drawing;
 using static Core.Lambdas.LambdaFunctions;
 using static Core.Monads.Lazy.LazyMonads;
 using static Core.Monads.MonadFunctions;
@@ -562,6 +563,7 @@ public class UiAction : UserControl
       _symbolWriter = nil;
       //_dynamicToolTip = nil;
       _alternateWriter = nil;
+      Title = nil;
    }
 
    public bool AutoSizeText { get; set; }
@@ -697,6 +699,8 @@ public class UiAction : UserControl
          toolTip.Font = value;
       }
    }
+
+   public Maybe<string> Title { get; set; }
 
    protected void setToolTip()
    {
@@ -1617,7 +1621,59 @@ public class UiAction : UserControl
 
       drawClipToCancel(e, clientRectangle);
 
+      drawTitle(e.Graphics, clientRectangle);
+
       Painting?.Invoke(this, e);
+   }
+
+   protected void drawTitle(Graphics g, Rectangle clientRectangle)
+   {
+      if (Title is (true, var title))
+      {
+         var rectangle = AutoSizingWriter.NarrowRectangle(clientRectangle, _floor, _ceiling);
+         var font = new Font(Font.FontFamily, 8, Font.Style);
+         var textFormatFlags = TextFormatFlags.EndEllipsis | TextFormatFlags.HidePrefix | TextFormatFlags.HorizontalCenter |
+            TextFormatFlags.VerticalCenter;
+         var size = UiActionWriter.TextSize(g, title, font, textFormatFlags);
+         var margin = (rectangle.Width - size.Width) / 2;
+         if (margin > 0)
+         {
+            var titleRectangle = rectangle with
+            {
+               X = rectangle.X + margin - 3, Height = size.Height + 6, Width = rectangle.Width - 2 * margin + 6
+            };
+            var foreColor = getBackColor();
+            var backColor = getForeColor();
+
+            using var brush = new SolidBrush(backColor);
+            g.FillRectangle(brush, titleRectangle);
+
+            using var pen = new Pen(Color.Black, 2);
+            pen.StartCap = LineCap.Round;
+            pen.EndCap = LineCap.Round;
+
+            var p1 = titleRectangle.NorthWest();
+            var p2 = titleRectangle.SouthWest();
+
+            g.DrawLine(pen, p1, p2);
+
+            p1 = titleRectangle.NorthEast();
+            p2 = titleRectangle.SouthEast();
+
+            g.DrawLine(pen, p1, p2);
+
+            p1 = titleRectangle.SouthWest();
+            p2 = titleRectangle.SouthEast();
+
+            g.DrawLine(pen, p1, p2);
+
+            using var textBrush = new SolidBrush(foreColor);
+            var stringFormat = new StringFormat(StringFormatFlags.NoWrap);
+            stringFormat.Alignment = StringAlignment.Center;
+            stringFormat.LineAlignment = StringAlignment.Center;
+            g.DrawString(title, font, textBrush, titleRectangle.ToRectangleF(), stringFormat);
+         }
+      }
    }
 
    protected void drawClipToCancel(PaintEventArgs e, Rectangle clientRectangle)

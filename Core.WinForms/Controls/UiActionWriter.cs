@@ -149,11 +149,16 @@ public class UiActionWriter
       set => autoSizeText = value;
    }
 
-   public Size TextSize(string text, Graphics graphics)
+   public Size TextSize(Graphics g, string text)
    {
       var font = _font | (() => new Font("Consolas", 12f));
+      return TextSize(g, text, font, Flags);
+   }
+
+   public static Size TextSize(Graphics g, string text, Font font, TextFormatFlags flags)
+   {
       var proposedSize = new Size(int.MaxValue, int.MaxValue);
-      return TextRenderer.MeasureText(graphics, text.EmojiSubstitutions(), font, proposedSize, Flags);
+      return TextRenderer.MeasureText(g, text.EmojiSubstitutions(), font, proposedSize, flags);
    }
 
    public Rectangle TextRectangle(string text, Graphics graphics, Maybe<Rectangle> _rectangleToUse)
@@ -172,7 +177,7 @@ public class UiActionWriter
          rectangle = graphics.ClipBounds.ToRectangle();
       }
 
-      var textSize = TextSize(text, graphics);
+      var textSize = TextSize(graphics, text);
       textSize = textSize with { Height = textSize.Height + 8, Width = textSize.Width + 8 };
       var x = rectangle.X + (rectangle.Width - textSize.Width) / 2;
       var y = rectangle.Y + (rectangle.Height - textSize.Height) / 2;
