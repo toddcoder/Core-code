@@ -1640,7 +1640,7 @@ public class UiAction : UserControl
          {
             var titleRectangle = rectangle with
             {
-               X = rectangle.X + margin - 3, Height = size.Height + 6, Width = rectangle.Width - 2 * margin + 6
+               X = rectangle.X + margin - 3, Height = size.Height + 2, Width = rectangle.Width - 2 * margin + 6
             };
             var foreColor = Color.Black;
             var backColor = Color.AntiqueWhite;
