@@ -1642,13 +1642,13 @@ public class UiAction : UserControl
             {
                X = rectangle.X + margin - 3, Height = size.Height + 6, Width = rectangle.Width - 2 * margin + 6
             };
-            var foreColor = getBackColor();
-            var backColor = getForeColor();
+            var foreColor = Color.Black;
+            var backColor = Color.AntiqueWhite;
 
             using var brush = new SolidBrush(backColor);
             g.FillRectangle(brush, titleRectangle);
 
-            using var pen = new Pen(Color.Black, 2);
+            using var pen = new Pen(foreColor, 2);
             pen.StartCap = LineCap.Round;
             pen.EndCap = LineCap.Round;
 
