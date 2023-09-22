@@ -1440,17 +1440,12 @@ public class UiAction : UserControl
          }
       }
 
-      var style = type switch
-      {
-         UiActionType.Busy or UiActionType.BusyText or UiActionType.ProgressDefinite or UiActionType.MuteProgress => CheckStyle.None,
-         _ => CheckStyle
-      };
       var writer = new Lazy<UiActionWriter>(() => new UiActionWriter(MessageAlignment, AutoSizeText, _floor, _ceiling, ButtonType)
       {
          Rectangle = clientRectangle,
          Font = getFont(),
          Color = getForeColor(),
-         CheckStyle = style,
+         CheckStyle = checkStyle,
          EmptyTextTitle = EmptyTextTitle,
          IsFile = IsFile
       });
