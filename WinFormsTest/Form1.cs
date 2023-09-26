@@ -8,6 +8,7 @@ using Core.Computers;
 using Core.Enumerables;
 using Core.Matching;
 using Core.Monads;
+using Core.Numbers;
 using Core.Strings;
 using Core.WinForms;
 using Core.WinForms.Controls;
@@ -432,7 +433,14 @@ public partial class Form1 : Form, IMessageQueueListener
    protected void button2_Click(object sender, EventArgs e)
    {
       uiAction.CheckStyle = CheckStyle.Checked;
-      uiAction.Busy("with check");
+      uiAction.Legend("action");
+      //uiAction.Busy("with check");
+      uiAction.Maximum = 100;
+      for (var i = 0; i < 100; i++)
+      {
+         uiAction.Progress(i.ToWords());
+      }
+      uiAction.Success("Done");
    }
 
    protected void button3_Click(object sender, EventArgs e)

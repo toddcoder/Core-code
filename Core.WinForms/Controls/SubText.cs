@@ -112,6 +112,8 @@ public class SubText : IEquatable<SubText>
 
    public bool SquareFirstCharacter { get; set; }
 
+   public bool HalfTone { get; set; }
+
    public (Size measuredSize, string text, TextFormatFlags flags, Font font) TextSize(Maybe<Graphics> _graphics)
    {
       var text = Text.EmojiSubstitutions();
@@ -180,6 +182,12 @@ public class SubText : IEquatable<SubText>
 
          var foreColorToUse = Invert ? backColor : foreColor;
          var backColorToUse = Invert ? foreColor : backColor;
+
+         if (HalfTone)
+         {
+            foreColorToUse = Color.FromArgb(128, foreColorToUse);
+            backColorToUse = Color.FromArgb(128, backColorToUse);
+         }
 
          if (!transparentBackground)
          {

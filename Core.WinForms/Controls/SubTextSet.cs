@@ -107,6 +107,12 @@ public class SubTextSet
       return this;
    }
 
+   public SubTextSet HalfTone(bool halfTone = true)
+   {
+      subText.HalfTone = halfTone;
+      return this;
+   }
+
    protected Size getTextSize()
    {
       var text = subText.Text;

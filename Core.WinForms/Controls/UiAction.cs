@@ -1691,10 +1691,7 @@ public class UiAction : UserControl
 
    protected void drawAllSubTexts(Graphics graphics, UiActionType type, Rectangle clientRectangle)
    {
-      /*if (type is UiActionType.Busy or UiActionType.BusyText or UiActionType.ProgressDefinite or UiActionType.MuteProgress)
-      {
-         return;
-      }*/
+      var halfTone = type is UiActionType.Busy or UiActionType.BusyText or UiActionType.ProgressDefinite or UiActionType.MuteProgress;
 
       var foreColor = new Lazy<Color>(getForeColor);
       var backColor = new Lazy<Color>(getBackColor);
@@ -1702,16 +1699,19 @@ public class UiAction : UserControl
       var _legend = legends.Peek();
       if (_legend is (true, var legend))
       {
+         legend.HalfTone = halfTone;
          legend.Draw(graphics, foreColor.Value, backColor.Value);
       }
 
       if (Working && _working is (true, var working))
       {
+         working.HalfTone = halfTone;
          working.Draw(graphics, foreColor.Value, backColor.Value);
       }
 
       foreach (var subText in subTexts.Values)
       {
+         subText.HalfTone = halfTone;
          subText.SetLocation(clientRectangle);
          subText.Draw(graphics, foreColor.Value, backColor.Value);
       }
