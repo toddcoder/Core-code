@@ -419,7 +419,7 @@ public partial class Form1 : Form, IMessageQueueListener
       {
          if (e.RectangleIndex is (true, var index))
          {
-            e.ToolTipText = index.ToString(); //uiAction.GetAlternate(index);
+            e.ToolTipText = index.ToString();
          }
 
          if (!e.ToolTipText)
@@ -431,9 +431,8 @@ public partial class Form1 : Form, IMessageQueueListener
 
    protected void button2_Click(object sender, EventArgs e)
    {
-      /*uiAction.DisabledIndex = 1;
-      uiAction.FloatingException(fail("Test exception"));*/
-      uiAction.Title = "r-6.52.0-grp4a-sec-fix";
+      uiAction.CheckStyle = CheckStyle.Checked;
+      uiAction.Busy("with check");
    }
 
    protected void button3_Click(object sender, EventArgs e)
