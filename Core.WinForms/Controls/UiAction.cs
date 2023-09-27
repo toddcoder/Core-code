@@ -518,6 +518,7 @@ public class UiAction : UserControl
 
       legends = new MaybeStack<SubText>();
       _working = nil;
+      StopwatchInverted = true;
       EmptyTextTitle = nil;
 
       workingTimer = new Timer { Interval = 1000 };
@@ -1411,7 +1412,7 @@ public class UiAction : UserControl
 
       var clientRectangle = getRectangle();
 
-      void paintStopwatch()
+      void drawStopwatch()
       {
          if (Stopwatch)
          {
@@ -1568,7 +1569,7 @@ public class UiAction : UserControl
          }
       }
 
-      paintStopwatch();
+      drawStopwatch();
 
       var clickGlyphWidth = 0;
 
@@ -1675,7 +1676,7 @@ public class UiAction : UserControl
    {
       if (clickToCancel)
       {
-         using var font = new Font("Consolas", 9);
+         using var font = new Font("Consolas", 8);
          var textSize = TextRenderer.MeasureText(e.Graphics, CLICK_TO_CANCEL, font);
          var x = clientRectangle.Width - textSize.Width - 8;
          var y = clientRectangle.Height - textSize.Height - 8;
@@ -1691,7 +1692,7 @@ public class UiAction : UserControl
 
    protected void drawAllSubTexts(Graphics graphics, UiActionType type, Rectangle clientRectangle)
    {
-      var halfTone = type is UiActionType.Busy or UiActionType.BusyText or UiActionType.ProgressDefinite or UiActionType.MuteProgress;
+      var halfTone = type is UiActionType.BusyText or UiActionType.ProgressDefinite or UiActionType.MuteProgress;
 
       var foreColor = new Lazy<Color>(getForeColor);
       var backColor = new Lazy<Color>(getBackColor);

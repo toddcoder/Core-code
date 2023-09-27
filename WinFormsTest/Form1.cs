@@ -434,13 +434,17 @@ public partial class Form1 : Form, IMessageQueueListener
    {
       uiAction.CheckStyle = CheckStyle.Checked;
       uiAction.Legend("action");
+      uiAction.ClickToCancel = true;
       //uiAction.Busy("with check");
       uiAction.Maximum = 100;
+      uiAction.Stopwatch = true;
+      uiAction.StartStopwatch();
       for (var i = 0; i < 100; i++)
       {
          uiAction.Progress(i.ToWords());
       }
-      uiAction.Success("Done");
+      uiAction.Busy(true);
+      uiAction.StopStopwatch();
    }
 
    protected void button3_Click(object sender, EventArgs e)
