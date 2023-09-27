@@ -1416,7 +1416,7 @@ public class UiAction : UserControl
          if (Stopwatch)
          {
             var elapsed = stopwatch.Value.Elapsed.ToString(@"mm\:ss");
-            using var font = new Font("Consolas", 10);
+            using var font = new Font("Consolas", 8);
             var size = TextRenderer.MeasureText(e.Graphics, elapsed, font);
             var location = new Point(clientRectangle.Width - size.Width - 8, 4);
             var rectangle = new Rectangle(location, size);
