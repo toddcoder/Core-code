@@ -71,6 +71,8 @@
     <Compile Include="Controls\MinusSymbolWriter.cs" />
     <Compile Include="Controls\OSymbolWriter.cs" />
     <Compile Include="Controls\PlusSymbolWriter.cs" />
+    <Compile Include="Controls\ShiftKey.cs" />
+    <Compile Include="Controls\ShiftKeyStatus.cs" />
     <Compile Include="Controls\SubTextOption.cs" />
     <Compile Include="Controls\SymbolWriter.cs" />
     <Compile Include="Controls\UiActionButtonType.cs" />

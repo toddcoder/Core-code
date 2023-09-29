@@ -23,6 +23,9 @@ public class SubText : IEquatable<SubText>
    protected Maybe<CardinalAlignment> _alignment;
    protected int margin;
 
+   public event EventHandler<PaintEventArgs> Painting;
+   public event EventHandler<PaintEventArgs> PaintingBackground;
+
    public SubText(string text, int x, int y, Size size, bool clickGlyph, bool invert = false, bool transparentBackground = false)
    {
       Text = text;
@@ -168,17 +171,27 @@ public class SubText : IEquatable<SubText>
 
    public void SetLocation(Rectangle clientRectangle) => (X, Y) = LocationFromAlignment(clientRectangle);
 
-   protected SubText draw(Graphics graphics, Color foreColor, Color backColor)
+   protected SubText draw(Graphics g, Color foreColor, Color backColor)
    {
-      var (measuredSize, text, flags, font) = TextSize(graphics);
+      var (measuredSize, text, flags, font) = TextSize(g);
 
       try
       {
+         g.HighQuality();
+         g.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
+
+         var clientRectangle = Rectangle.Empty;
+
+         PaintingBackground?.Invoke(this, new PaintEventArgs(g, clientRectangle));
+
+         if (Painting is not null)
+         {
+            Painting.Invoke(this, new PaintEventArgs(g, clientRectangle));
+            return this;
+         }
+
          var location = new Point(X, Y);
          var rectangle = new Rectangle(location, measuredSize);
-
-         graphics.HighQuality();
-         graphics.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
 
          var foreColorToUse = Invert ? backColor : foreColor;
          var backColorToUse = Invert ? foreColor : backColor;
@@ -192,26 +205,26 @@ public class SubText : IEquatable<SubText>
          if (!transparentBackground)
          {
             using var brush = new SolidBrush(backColorToUse);
-            graphics.FillRectangle(brush, rectangle);
+            g.FillRectangle(brush, rectangle);
             if (!invert && Outline)
             {
                using var pen = new Pen(foreColorToUse);
-               graphics.DrawRectangle(pen, rectangle);
+               g.DrawRectangle(pen, rectangle);
             }
          }
 
-         TextRenderer.DrawText(graphics, text, font, rectangle, foreColorToUse, flags);
+         TextRenderer.DrawText(g, text, font, rectangle, foreColorToUse, flags);
 
          if (SquareFirstCharacter && text.Length > 0)
          {
             var character = text.Keep(1);
-            var charSize = TextRenderer.MeasureText(graphics, character, font);
+            var charSize = TextRenderer.MeasureText(g, character, font);
             var charLocation = rectangle.Location;
             var charRectangle = new Rectangle(charLocation, charSize).Reposition(2, 2).Resize(-6, -4);
             using var firstBrush = new SolidBrush(Color.FromArgb(64, Color.Wheat));
-            graphics.FillRectangle(firstBrush, charRectangle);
+            g.FillRectangle(firstBrush, charRectangle);
             using var firstPen = new Pen(Color.Black);
-            graphics.DrawRectangle(firstPen, charRectangle);
+            g.DrawRectangle(firstPen, charRectangle);
          }
 
          return this;
