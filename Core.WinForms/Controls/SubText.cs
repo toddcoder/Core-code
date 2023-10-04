@@ -255,6 +255,18 @@ public class SubText : IEquatable<SubText>
       }
    }
 
+   public void LeftOf(SubText rightSubText, int margin = 2)
+   {
+      X = rightSubText.X - TextSize(nil).measuredSize.Width - margin;
+      Y = rightSubText.Y;
+   }
+
+   public void RightOf(SubText leftSubText, int margin = 2)
+   {
+      X = leftSubText.X + leftSubText.TextSize(nil).measuredSize.Width + margin;
+      Y = leftSubText.Y;
+   }
+
    public bool Equals(SubText other) => Id.Equals(other.Id);
 
    public override bool Equals(object obj) => obj is SubText other && Equals(other);

@@ -208,5 +208,17 @@ public class SubTextSet
       return this;
    }
 
+   public SubTextSet LeftOf(SubText rightSubText, int margin = 2)
+   {
+      subText.LeftOf(rightSubText, margin);
+      return this;
+   }
+
+   public SubTextSet RightOf(SubText leftSubText, int margin = 2)
+   {
+      subText.RightOf(leftSubText, margin);
+      return this;
+   }
+
    public SubText End => subText;
 }

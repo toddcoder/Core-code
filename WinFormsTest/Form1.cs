@@ -443,6 +443,7 @@ public partial class Form1 : Form, IMessageQueueListener
       {
          uiAction.Progress(i.ToWords());
       }
+
       uiAction.Busy(true);
       uiAction.StopStopwatch();
    }
@@ -481,7 +482,14 @@ public partial class Form1 : Form, IMessageQueueListener
 
    protected void button4_Click(object sender, EventArgs e)
    {
-      panel1.Height += 20;
-      uiAction.Height += 20;
+      var rightSubText = uiAction.SubText("right").Set.Alignment(CardinalAlignment.NorthEast).Invert().End;
+      uiAction.Refresh();
+      uiAction.SubText("left").Set.LeftOf(rightSubText).Invert();
+      uiAction.Refresh();
+
+      var leftSubText = uiAction.SubText("left").Set.Alignment(CardinalAlignment.SouthWest).Invert().End;
+      uiAction.Refresh();
+      uiAction.SubText("right").Set.RightOf(leftSubText).Invert();
+      uiAction.Refresh();
    }
 }
