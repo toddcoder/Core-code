@@ -3306,4 +3306,18 @@ public class UiAction : UserControl
    public string[] Alternates => _alternateWriter.Map(w => w.Alternates) | Array.Empty<string>;
 
    public Maybe<string> GetAlternate(int index) => _alternateWriter.Map(w => w.GetAlternate(index));
+
+   public void SetLocation(SubText subText)
+   {
+      var clientRectangle = getClientRectangle(nil);
+      subText.SetLocation(clientRectangle);
+   }
+
+   public void SetLocation(Guid subTextId)
+   {
+      if (subTexts.Maybe[subTextId] is (true, var subText))
+      {
+         SetLocation(subText);
+      }
+   }
 }
