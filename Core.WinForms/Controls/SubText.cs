@@ -22,6 +22,7 @@ public class SubText : IEquatable<SubText>
    protected Maybe<Color> _backColor;
    protected Maybe<CardinalAlignment> _alignment;
    protected int margin;
+   protected bool locationIsSet;
 
    public event EventHandler<PaintEventArgs> Painting;
    public event EventHandler<PaintEventArgs> PaintingBackground;
@@ -43,6 +44,7 @@ public class SubText : IEquatable<SubText>
       _backColor = nil;
       _alignment = nil;
       margin = 2;
+      locationIsSet = false;
 
       FontName = "Consolas";
       FontSize = 12;
@@ -169,7 +171,14 @@ public class SubText : IEquatable<SubText>
       }
    }
 
-   public void SetLocation(Rectangle clientRectangle) => (X, Y) = LocationFromAlignment(clientRectangle);
+   public void SetLocation(Rectangle clientRectangle)
+   {
+      if (!locationIsSet)
+      {
+         (X, Y) = LocationFromAlignment(clientRectangle);
+         locationIsSet = true;
+      }
+   }
 
    protected SubText draw(Graphics g, Color foreColor, Color backColor)
    {
