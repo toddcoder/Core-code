@@ -68,6 +68,7 @@
     <Compile Include="Controls\DynamicToolTipArgs.cs" />
     <Compile Include="Controls\KeyMatch.cs" />
     <Compile Include="Controls\KeyMatchStatus.cs" />
+    <Compile Include="Controls\LocationLockStatus.cs" />
     <Compile Include="Controls\MenuSymbolWriter.cs" />
     <Compile Include="Controls\MinusSymbolWriter.cs" />
     <Compile Include="Controls\OSymbolWriter.cs" />

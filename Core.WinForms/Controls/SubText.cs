@@ -22,7 +22,7 @@ public class SubText : IEquatable<SubText>
    protected Maybe<Color> _backColor;
    protected Maybe<CardinalAlignment> _alignment;
    protected int margin;
-   protected bool locationIsSet;
+   protected LocationLockStatus locationLockStatus;
 
    public event EventHandler<PaintEventArgs> Painting;
    public event EventHandler<PaintEventArgs> PaintingBackground;
@@ -44,7 +44,7 @@ public class SubText : IEquatable<SubText>
       _backColor = nil;
       _alignment = nil;
       margin = 2;
-      locationIsSet = false;
+      locationLockStatus = LocationLockStatus.Floating;
 
       FontName = "Consolas";
       FontSize = 12;
@@ -107,7 +107,14 @@ public class SubText : IEquatable<SubText>
       return this;
    }
 
-   public void SetAlignment(CardinalAlignment alignment) => _alignment = alignment;
+   public void SetAlignment(CardinalAlignment alignment)
+   {
+      _alignment = alignment;
+      if (_alignment)
+      {
+         locationLockStatus = LocationLockStatus.Unlocked;
+      }
+   }
 
    public void SetMargin(int margin) => this.margin = margin;
 
@@ -173,10 +180,13 @@ public class SubText : IEquatable<SubText>
 
    public void SetLocation(Rectangle clientRectangle)
    {
-      if (!locationIsSet)
+      if (locationLockStatus != LocationLockStatus.Locked)
       {
          (X, Y) = LocationFromAlignment(clientRectangle);
-         locationIsSet = true;
+         if (locationLockStatus == LocationLockStatus.Unlocked)
+         {
+            locationLockStatus = LocationLockStatus.Locked;
+         }
       }
    }
 
