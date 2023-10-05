@@ -43,6 +43,12 @@ public class ChooserSet
       }
    }
 
+   public ChooserSet Sorting(ChooserSorting sorting)
+   {
+      chooser.Sorting = sorting;
+      return this;
+   }
+
    public ChooserSet Choices(StringHash choices)
    {
       try

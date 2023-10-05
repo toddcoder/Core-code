@@ -63,6 +63,7 @@
     <Compile Include="Controls\BarberPoleBusyProcessor.cs" />
     <Compile Include="Controls\BusyStyle.cs" />
     <Compile Include="Controls\CheckBoxWriter.cs" />
+    <Compile Include="Controls\ChooserSorting.cs" />
     <Compile Include="Controls\DeletableWriter.cs" />
     <Compile Include="Controls\DynamicToolTipArgs.cs" />
     <Compile Include="Controls\KeyMatch.cs" />

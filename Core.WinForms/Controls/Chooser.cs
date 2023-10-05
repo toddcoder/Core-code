@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using Core.Collections;
+using Core.Enumerables;
 using Core.Monads;
 using Core.Numbers;
 using static Core.Monads.MonadFunctions;
@@ -30,6 +32,8 @@ public partial class Chooser : Form
    protected bool sizeToText;
    protected Maybe<int> _maximumWidth;
    protected bool working;
+   protected ChooserSorting sorting;
+   protected Maybe<Func<string, string>> _customSorter;
 
    public event EventHandler<AppearanceOverrideArgs> AppearanceOverride;
 
@@ -47,6 +51,8 @@ public partial class Chooser : Form
       sizeToText = false;
       _maximumWidth = nil;
       working = false;
+      sorting = ChooserSorting.None;
+      _customSorter = nil;
 
       InitializeComponent();
 
@@ -116,6 +122,18 @@ public partial class Chooser : Form
    {
       get => working;
       set => working = value;
+   }
+
+   public ChooserSorting Sorting
+   {
+      get => sorting;
+      set => sorting = value;
+   }
+
+   public Maybe<Func<string, string>> CustomSorter
+   {
+      get => _customSorter;
+      set => _customSorter = value;
    }
 
    public Maybe<Chosen> Choice { get; set; }
@@ -221,9 +239,38 @@ public partial class Chooser : Form
          _backColor = Color.Green;
       }
 
-      foreach (var choice in choices.Keys)
+      switch (sorting)
       {
-         addItem(choice, _foreColor, _backColor);
+         case ChooserSorting.None:
+            foreach (var choice in choices.Keys)
+            {
+               addItem(choice, _foreColor, _backColor);
+            }
+
+            break;
+         case ChooserSorting.Ascending:
+            foreach (var choice in choices.Keys.Order())
+            {
+               addItem(choice, _foreColor, _backColor);
+            }
+
+            break;
+         case ChooserSorting.Descending:
+            foreach (var choice in choices.Keys.OrderDescending())
+            {
+               addItem(choice, _foreColor, _backColor);
+            }
+
+            break;
+         case ChooserSorting.Custom when _customSorter is (true, var customSorter):
+            foreach (var choice in choices.Keys.OrderBy(customSorter))
+            {
+               addItem(choice, _foreColor, _backColor);
+            }
+
+            break;
+         default:
+            goto case ChooserSorting.None;
       }
 
       listViewItems.Columns[0].Width = ClientSize.Width;
