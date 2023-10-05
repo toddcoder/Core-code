@@ -3320,4 +3320,20 @@ public class UiAction : UserControl
          SetLocation(subText);
       }
    }
+
+   public void SetLocation(SubText subText, int index)
+   {
+      if (index.Between(0).Until(rectangles.Length))
+      {
+         subText.SetLocation(rectangles[index]);
+      }
+   }
+
+   public void SetLocation(Guid subTextId, int index)
+   {
+      if (subTexts.Maybe[subTextId] is (true, var subText))
+      {
+         SetLocation(subText, index);
+      }
+   }
 }
