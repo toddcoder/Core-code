@@ -482,15 +482,6 @@ public partial class Form1 : Form, IMessageQueueListener
 
    protected void button4_Click(object sender, EventArgs e)
    {
-      var rightSubText = uiAction.SubText("right").Set.Alignment(CardinalAlignment.NorthEast).Invert().End;
-      uiAction.SetLocation(rightSubText);
-      var nextSubText = uiAction.SubText("left").Set.LeftOf(rightSubText).Invert().End;
-      uiAction.SetLocation(nextSubText);
-
-      var leftSubText = uiAction.SubText("left").Set.Alignment(CardinalAlignment.SouthWest).Invert().End;
-      uiAction.SetLocation(leftSubText);
-      nextSubText = uiAction.SubText("right").Set.RightOf(leftSubText).Invert().End;
-      uiAction.SetLocation(nextSubText);
-      uiAction.Refresh();
+      uiAction.KeyMatch("down", "up");
    }
 }

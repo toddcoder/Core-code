@@ -3038,6 +3038,7 @@ public class UiAction : UserControl
 
       foreach (var (_, subText) in subTexts)
       {
+         subText.ResetLock();
          var clientRectangle = getClientRectangle(nil);
          subText.SetLocation(clientRectangle);
       }

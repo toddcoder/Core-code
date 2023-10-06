@@ -85,8 +85,8 @@ public class KeyMatch
       };
 
       var fullMessage = getPrefix().Map(p => $"{p} {message}");
-      _subText = uiAction.SubText(fullMessage).Set.Alignment(Alignment).FontSize(8).FontStyle(FontStyle.Bold).ForeColor(Color.Black)
-         .BackColor(Color.White).Outline().IncludeFloor(false).IncludeCeiling(false).Outline().SquareFirstCharacter().End;
+      _subText = uiAction.SubText(fullMessage).Set.FontSize(8).FontStyle(FontStyle.Bold).ForeColor(Color.Black).BackColor(Color.White).Outline()
+         .IncludeFloor(false).IncludeCeiling(false).Outline().SquareFirstCharacter().Alignment(Alignment).End;
       uiAction.Refresh();
    }
 

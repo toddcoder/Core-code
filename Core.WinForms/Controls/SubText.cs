@@ -158,6 +158,8 @@ public class SubText : IEquatable<SubText>
          int farX() => clientRectangle.Right - measuredSize.Width - margin - (clickGlyph ? 8 : 0);
          int farY() => clientRectangle.Bottom - measuredSize.Height - margin;
 
+         locationLockStatus = LocationLockStatus.Locked;
+
          return alignment switch
          {
             CardinalAlignment.NorthWest => (nearX(), nearY()),
@@ -174,6 +176,7 @@ public class SubText : IEquatable<SubText>
       }
       else
       {
+         locationLockStatus = LocationLockStatus.Floating;
          return (X, Y);
       }
    }
@@ -183,10 +186,18 @@ public class SubText : IEquatable<SubText>
       if (locationLockStatus != LocationLockStatus.Locked)
       {
          (X, Y) = LocationFromAlignment(clientRectangle);
-         if (locationLockStatus == LocationLockStatus.Unlocked)
-         {
-            locationLockStatus = LocationLockStatus.Locked;
-         }
+      }
+   }
+
+   public void ResetLock()
+   {
+      if (_alignment)
+      {
+         locationLockStatus = LocationLockStatus.Unlocked;
+      }
+      else
+      {
+         locationLockStatus = LocationLockStatus.Floating;
       }
    }
 
