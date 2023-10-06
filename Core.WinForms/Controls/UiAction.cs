@@ -414,6 +414,20 @@ public class UiAction : UserControl
       Click += (_, _) =>
       {
          var location = PointToClient(Cursor.Position);
+
+         foreach (var subText in subTexts.Values)
+         {
+            if (subText is ClickableSubText clickableSubText)
+            {
+               using var g = CreateGraphics();
+               if (clickableSubText.Contains(g, location))
+               {
+                  clickableSubText.RaiseClick();
+                  return;
+               }
+            }
+         }
+
          switch (type)
          {
             case UiActionType.Alternate:
@@ -490,6 +504,15 @@ public class UiAction : UserControl
                      refresh();
                   }
                }
+            }
+         }
+
+         foreach (var subText in subTexts.Values)
+         {
+            if (subText is ClickableSubText clickableSubText)
+            {
+               using var g = CreateGraphics();
+               clickableSubText.DrawFocus(g, getForeColor(), location);
             }
          }
       };
@@ -2267,9 +2290,20 @@ public class UiAction : UserControl
       return subText;
    }
 
-   public SubText SubText(string text, int x, int y) => SubText(new SubText(text, x, y, ClientSize, ClickGlyph));
+   public SubText SubText(string text, int x, int y, bool clickable = false)
+   {
+      var subText = clickable ? new ClickableSubText(text, x, y, ClientSize, ClickGlyph) : new SubText(text, x, y, ClientSize, ClickGlyph);
+      return SubText(subText);
+   }
 
-   public SubText SubText(string text) => SubText(text, 0, 0);
+   public SubText SubText(string text, bool clickable = false) => SubText(text, 0, 0, clickable);
+
+   public ClickableSubText ClickableSubText(string text, int x, int y)
+   {
+      return (ClickableSubText)SubText(new ClickableSubText(text, x, y, ClientSize, ClickGlyph));
+   }
+
+   public ClickableSubText ClickableSubText(string text) => ClickableSubText(text, 0, 0);
 
    public void RemoveSubText(Guid id)
    {

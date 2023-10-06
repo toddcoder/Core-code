@@ -201,7 +201,7 @@ public class SubText : IEquatable<SubText>
       }
    }
 
-   protected SubText draw(Graphics g, Color foreColor, Color backColor)
+   protected virtual SubText draw(Graphics g, Color foreColor, Color backColor)
    {
       var (measuredSize, text, flags, font) = TextSize(g);
 
@@ -265,7 +265,7 @@ public class SubText : IEquatable<SubText>
       }
    }
 
-   public SubText Draw(Graphics graphics, Color foreColor, Color backColor)
+   public virtual SubText Draw(Graphics graphics, Color foreColor, Color backColor)
    {
       foreColor = _foreColor | foreColor;
       backColor = _backColor | backColor;
@@ -273,7 +273,7 @@ public class SubText : IEquatable<SubText>
       return draw(graphics, foreColor, backColor);
    }
 
-   public Maybe<SubText> Draw(Graphics graphics)
+   public virtual Maybe<SubText> Draw(Graphics graphics)
    {
       if (_foreColor is (true, var foreColor) && _backColor is (true, var backColor))
       {

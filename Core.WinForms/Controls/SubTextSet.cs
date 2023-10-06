@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace Core.WinForms.Controls;
@@ -220,5 +221,10 @@ public class SubTextSet
       return this;
    }
 
+   [Obsolete("Use SubText or ClickableSubText")]
    public SubText End => subText;
+
+   public SubText SubText => subText;
+
+   public ClickableSubText ClickableSubText => (ClickableSubText)subText;
 }
