@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -27,116 +26,12 @@ namespace Core.WinForms.Controls;
 
 public class UiAction : UserControl
 {
-   public class CheckToggler
-   {
-      protected Hash<Guid, string> uiActions;
-      protected AutoStringHash<List<UiAction>> groups;
-      protected Result<string> _group;
-
-      public CheckToggler()
-      {
-         uiActions = new Hash<Guid, string>();
-         groups = new AutoStringHash<List<UiAction>>(true, _ => new List<UiAction>(), true);
-         _group = fail("Group not set");
-      }
-
-      public CheckToggler Group(string group)
-      {
-         _group = group;
-         return this;
-      }
-
-      public CheckToggler Group(Control control) => Group(control.Name);
-
-      protected Maybe<List<UiAction>> getUiActionList(Guid id)
-      {
-         return
-            from @group in uiActions.Items[id]
-            from list in groups.Items[@group]
-            select list;
-      }
-
-      protected void checkChanged(CheckStyleChangedArgs e)
-      {
-         var id = e.Id;
-         if (e.CheckStyle == CheckStyle.Checked)
-         {
-            var _actionList = getUiActionList(id);
-            if (_actionList is (true, var actionList))
-            {
-               foreach (var uiAction in actionList.Where(uiAction => uiAction.Id != id))
-               {
-                  uiAction.SetCheckStyle(CheckStyle.None);
-               }
-            }
-         }
-      }
-
-      public CheckToggler Add(UiAction uiAction)
-      {
-         uiAction.CheckStyleChanged += (_, e) => checkChanged(e);
-         uiActions[uiAction.Id] = _group;
-         groups[_group].Add(uiAction);
-
-         return this;
-      }
-
-      public CheckToggler Add(params UiAction[] uiActions) => AddRange(uiActions);
-
-      public CheckToggler AddRange(IEnumerable<UiAction> uiActions)
-      {
-         foreach (var uiAction in uiActions)
-         {
-            Add(uiAction);
-         }
-
-         return this;
-      }
-   }
-
-   public class LabelSetter
-   {
-      protected UiAction uiAction;
-
-      public LabelSetter(UiAction uiAction)
-      {
-         this.uiAction = uiAction;
-      }
-
-      public LabelSetter Label(string label)
-      {
-         uiAction._label = label.NotEmpty();
-         return this;
-      }
-
-      public LabelSetter Label()
-      {
-         uiAction._label = nil;
-         return this;
-      }
-
-      public LabelSetter LabelWidth(int labelWidth)
-      {
-         uiAction._labelWidth = labelWidth;
-         return this;
-      }
-
-      public LabelSetter LabelWidth()
-      {
-         uiAction._labelWidth = nil;
-         return this;
-      }
-
-      public UiAction End => uiAction;
-   }
-
    protected const float START_AMOUNT = .9f;
    protected const string CLICK_TO_CANCEL = "🖰 ⇒ 🛑";
 
    protected static Hash<UiActionType, Color> globalForeColors;
    protected static Hash<UiActionType, Color> globalBackColors;
    protected static Hash<UiActionType, MessageStyle> globalStyles;
-   protected static Lazy<CheckToggler> toggler;
    protected static BusyStyle busyStyle;
 
    static UiAction()
@@ -193,7 +88,6 @@ public class UiAction : UserControl
          [UiActionType.ControlLabel] = MessageStyle.Bold,
          [UiActionType.Http] = MessageStyle.Bold
       };
-      toggler = new Lazy<CheckToggler>(() => new CheckToggler());
       MainForm = nil;
       busyStyle = BusyStyle.Default;
    }
@@ -203,8 +97,6 @@ public class UiAction : UserControl
    public static Hash<UiActionType, Color> GlobalBackColors => globalBackColors;
 
    public static Hash<UiActionType, MessageStyle> GlobalStyles => globalStyles;
-
-   public static CheckToggler Toggler => toggler.Value;
 
    public static Maybe<Form> MainForm { get; set; }
 
@@ -234,7 +126,6 @@ public class UiAction : UserControl
    protected LazyMaybe<BusyTextProcessor> _busyTextProcessor;
    protected LazyMaybe<ProgressDefiniteProcessor> _progressDefiniteProcessor;
    protected LazyMaybe<BusyProcessor> _busyProcessor;
-   protected LazyMaybe<LabelProcessor> _labelProcessor;
    protected Maybe<int> _percentage;
    protected Maybe<Color> _foreColor;
    protected Maybe<Color> _backColor;
@@ -248,8 +139,6 @@ public class UiAction : UserControl
    protected Hash<Guid, SubText> subTexts;
    protected Lazy<Stopwatch> stopwatch;
    protected Lazy<BackgroundWorker> backgroundWorker;
-   protected Maybe<string> _label;
-   protected Maybe<int> _labelWidth;
    protected bool oneTimeTimer;
    protected Maybe<SubText> _working;
    protected Timer workingTimer;
@@ -392,14 +281,12 @@ public class UiAction : UserControl
       _busyTextProcessor = lazy.maybe<BusyTextProcessor>();
       _progressDefiniteProcessor = lazy.maybe<ProgressDefiniteProcessor>();
       _busyProcessor = lazy.maybe<BusyProcessor>();
-      _labelProcessor = lazy.maybe<LabelProcessor>();
 
       Resize += (_, _) =>
       {
          _busyTextProcessor.Reset();
          _progressDefiniteProcessor.Reset();
          _busyProcessor.Reset();
-         _labelProcessor.Reset();
       };
       _percentage = nil;
 
@@ -533,9 +420,6 @@ public class UiAction : UserControl
          return worker;
       });
 
-      _label = nil;
-      _labelWidth = nil;
-
       control.Controls.Add(this);
       control.Resize += (_, _) => Refresh();
 
@@ -564,7 +448,7 @@ public class UiAction : UserControl
       httpHandlerAdded = false;
       isUrlGood = false;
       marqueeFont = new Lazy<Font>(() => new Font("Consolas", 8));
-      scroller = new Lazy<UiActionScroller>(() => new UiActionScroller(marqueeFont.Value, getClientRectangle(nil), getForeColor(), getBackColor()));
+      scroller = new Lazy<UiActionScroller>(() => new UiActionScroller(marqueeFont.Value, getClientRectangle(), getForeColor(), getBackColor()));
       _failureToolTip = nil;
       _exceptionToolTip = nil;
       _noStatusToolTip = nil;
@@ -605,32 +489,23 @@ public class UiAction : UserControl
 
    protected void activateProcessor(Graphics graphics)
    {
-      if (_label is (true, var label))
-      {
-         _labelProcessor.Activate(new LabelProcessor(label, _labelWidth, getFont(), EmptyTextTitle, graphics, ClientRectangle));
-      }
-      else
-      {
-         _labelProcessor.Reset();
-      }
-
       switch (type)
       {
          case UiActionType.BusyText:
          {
-            var clientRectangle = getRectangle();
+            var clientRectangle = getClientRectangle();
             _busyTextProcessor.Activate(() => new BusyTextProcessor(Color.White, clientRectangle));
             break;
          }
          case UiActionType.Busy:
          {
-            var clientRectangle = getRectangle();
+            var clientRectangle = getClientRectangle();
             _busyProcessor.Activate(() => getBusyProcessor(clientRectangle));
             break;
          }
          case UiActionType.ProgressDefinite:
          {
-            var clientRectangle = getRectangle();
+            var clientRectangle = getClientRectangle();
             _progressDefiniteProcessor.Activate(() => new ProgressDefiniteProcessor(Font, graphics, clientRectangle));
             break;
          }
@@ -651,7 +526,7 @@ public class UiAction : UserControl
       var size = TextRenderer.MeasureText("working", font);
       var y = ClientSize.Height - size.Height - 4;
 
-      return new SubText("working", 4, y, ClientSize, ClickGlyph).Set.FontSize(8).Invert().Outline().End;
+      return new SubText("working", 4, y, ClientSize, ClickGlyph).Set.FontSize(8).Invert().Outline().SubText;
    }
 
    public UiActionType Type
@@ -1068,32 +943,6 @@ public class UiAction : UserControl
       }
    }
 
-   public void Result(Result<(string label, string text)> _result, int labelWidth)
-   {
-      if (_result is (true, var (label, message)))
-      {
-         Label(label).LabelWidth(labelWidth).End.Success(message);
-      }
-      else
-      {
-         _label = nil;
-         Exception(_result.Exception);
-      }
-   }
-
-   public void Result(Result<(string label, string text)> _result)
-   {
-      if (_result is (true, var (label, message)))
-      {
-         Label(label).End.Success(message);
-      }
-      else
-      {
-         _label = nil;
-         Exception(_result.Exception);
-      }
-   }
-
    public void Optional(Optional<string> _message, string nilMessage)
    {
       if (_message is (true, var message))
@@ -1349,7 +1198,7 @@ public class UiAction : UserControl
 
    protected MessageStyle getStyle() => _style | (() => styles[type]);
 
-   protected Rectangle getClientRectangle(Maybe<Rectangle> _labelRectangle)
+   protected Rectangle getClientRectangle()
    {
       if (Arrow)
       {
@@ -1357,28 +1206,9 @@ public class UiAction : UserControl
          var remainder = ClientRectangle.Width - arrowSection;
          return ClientRectangle with { X = Width - arrowSection, Width = Width - 2 * remainder };
       }
-      else if (_labelRectangle is (true, var labelRectangle))
-      {
-         return ClientRectangle with
-         {
-            X = ClientRectangle.X + labelRectangle.Width, Width = ClientRectangle.Width - labelRectangle.Width
-         };
-      }
       else
       {
          return ClientRectangle;
-      }
-   }
-
-   protected Rectangle getRectangle()
-   {
-      if (_labelProcessor is (true, var labelProcessor))
-      {
-         return getClientRectangle(labelProcessor.Rectangle);
-      }
-      else
-      {
-         return getClientRectangle(nil);
       }
    }
 
@@ -1428,12 +1258,8 @@ public class UiAction : UserControl
       }
 
       activateProcessor(e.Graphics);
-      if (_labelProcessor is (true, var labelProcessor))
-      {
-         labelProcessor.OnPaint(e.Graphics);
-      }
 
-      var clientRectangle = getRectangle();
+      var clientRectangle = getClientRectangle();
 
       void drawStopwatch()
       {
@@ -1486,7 +1312,7 @@ public class UiAction : UserControl
          {
             var foreColor = flipOn ? Color.White : Color.Black;
             var backColor = flipOn ? Color.Black : Color.White;
-            var flipFlop = SubText("starting").Set.ForeColor(foreColor).BackColor(backColor).GoToUpperLeft(2).End;
+            var flipFlop = SubText("starting").Set.ForeColor(foreColor).BackColor(backColor).GoToUpperLeft(2).SubText;
             if (_flipFlop is (true, var oldFlipFlop))
             {
                RemoveSubText(oldFlipFlop);
@@ -1780,12 +1606,8 @@ public class UiAction : UserControl
       base.OnPaintBackground(pevent);
 
       activateProcessor(pevent.Graphics);
-      if (_labelProcessor is (true, var labelProcessor))
-      {
-         labelProcessor.OnPaintBackground(pevent.Graphics);
-      }
 
-      var clientRectangle = getRectangle();
+      var clientRectangle = getClientRectangle();
 
       switch (type)
       {
@@ -2407,26 +2229,7 @@ public class UiAction : UserControl
 
    public bool TimerEnabled => timer.Enabled;
 
-   protected (int, int) legendLocation()
-   {
-      if (_labelWidth is (true, var labelWidth))
-      {
-         return (labelWidth + 2, 2);
-      }
-      else if (_label is (true, var label))
-      {
-         var width = LabelProcessor.LabelWidth(label, getFont()) | 2;
-         return (width + 2, 2);
-      }
-      else if (CheckStyle != CheckStyle.None)
-      {
-         return (20, 2);
-      }
-      else
-      {
-         return (2, 2);
-      }
-   }
+   protected (int, int) legendLocation() => CheckStyle != CheckStyle.None ? (20, 2) : (2, 2);
 
    public SubText Legend(string text, bool invert = true)
    {
@@ -2436,7 +2239,7 @@ public class UiAction : UserControl
          .FontSize(8)
          .Outline()
          .Invert(invert)
-         .End;
+         .SubText;
       legends.Push(legend);
 
       determineFloorAndCeiling();
@@ -2451,7 +2254,7 @@ public class UiAction : UserControl
          .FontSize(8)
          .Outline()
          .Invert(invert)
-         .End;
+         .SubText;
       legends.Push(legend);
 
       determineFloorAndCeiling();
@@ -2498,12 +2301,12 @@ public class UiAction : UserControl
 
    public SubText SuccessLegend(string text)
    {
-      return Legend(text, false).Set.ForeColor(Color.White).BackColor(Color.Green).End;
+      return Legend(text, false).Set.ForeColor(Color.White).BackColor(Color.Green).SubText;
    }
 
    public SubText SuccessLegend(string text, int x, int y)
    {
-      return Legend(text, x, y, false).Set.ForeColor(Color.White).BackColor(Color.Green).End;
+      return Legend(text, x, y, false).Set.ForeColor(Color.White).BackColor(Color.Green).SubText;
    }
 
    public async Task SuccessLegendAsync(string text, TimeSpan delay)
@@ -2539,12 +2342,12 @@ public class UiAction : UserControl
 
    public SubText FailureLegend(string text)
    {
-      return Legend(text, false).Set.ForeColor(Color.Black).BackColor(Color.Gold).End;
+      return Legend(text, false).Set.ForeColor(Color.Black).BackColor(Color.Gold).SubText;
    }
 
    public SubText FailureLegend(string text, int x, int y)
    {
-      return Legend(text, x, y, false).Set.ForeColor(Color.Black).BackColor(Color.Gold).End;
+      return Legend(text, x, y, false).Set.ForeColor(Color.Black).BackColor(Color.Gold).SubText;
    }
 
    public async Task FailureLegendAsync(string text, TimeSpan delay)
@@ -2580,12 +2383,12 @@ public class UiAction : UserControl
 
    public SubText ExceptionLegend(Exception exception)
    {
-      return Legend(exception.Message, false).Set.ForeColor(Color.White).BackColor(Color.Red).End;
+      return Legend(exception.Message, false).Set.ForeColor(Color.White).BackColor(Color.Red).SubText;
    }
 
    public SubText ExceptionLegend(Exception exception, int x, int y)
    {
-      return Legend(exception.Message, x, y, false).Set.ForeColor(Color.White).BackColor(Color.Red).End;
+      return Legend(exception.Message, x, y, false).Set.ForeColor(Color.White).BackColor(Color.Red).SubText;
    }
 
    public async Task ExceptionLegendSync(Exception exception, TimeSpan delay)
@@ -2729,9 +2532,9 @@ public class UiAction : UserControl
 
    public void ResultLegendTemp((string, UiActionType) result, int x, int y) => ResultLegendTemp(result, x, y, 2.Seconds());
 
-   public SubText Notify(string text) => Legend(text, false).Set.ForeColor(Color.Black).BackColor(Color.White).End;
+   public SubText Notify(string text) => Legend(text, false).Set.ForeColor(Color.Black).BackColor(Color.White).SubText;
 
-   public SubText Notify(string text, int x, int y) => Legend(text, x, y, false).Set.ForeColor(Color.Black).BackColor(Color.White).End;
+   public SubText Notify(string text, int x, int y) => Legend(text, x, y, false).Set.ForeColor(Color.Black).BackColor(Color.White).SubText;
 
    public async Task NotifyAsync(string text, TimeSpan delay)
    {
@@ -2889,10 +2692,6 @@ public class UiAction : UserControl
 
    public void ControlLabel(string text) => ShowMessage(text, UiActionType.ControlLabel);
 
-   public LabelSetter Label(string label) => new LabelSetter(this).Label(label);
-
-   public LabelSetter Label() => new LabelSetter(this).Label();
-
    public void Http(string url)
    {
       isUrlGood = HttpWriter.IsGoodUrl(url);
@@ -2931,7 +2730,7 @@ public class UiAction : UserControl
       FloatingFailure(false);
 
       _failureToolTip = message;
-      _failureSubText = SubText("failure").Set.GoToUpperLeft(0).Font("Consolas", 8).ForeColor(Color.Black).BackColor(Color.Gold).End;
+      _failureSubText = SubText("failure").Set.GoToUpperLeft(0).Font("Consolas", 8).ForeColor(Color.Black).BackColor(Color.Gold).SubText;
 
       setToolTip();
    }
@@ -2957,7 +2756,7 @@ public class UiAction : UserControl
       FloatingNoStatus(false);
 
       _noStatusToolTip = message;
-      _noStatusSubText = SubText("no status").Set.GoToUpperLeft(0).Font("Consolas", 8).ForeColor(Color.Black).BackColor(Color.White).End;
+      _noStatusSubText = SubText("no status").Set.GoToUpperLeft(0).Font("Consolas", 8).ForeColor(Color.Black).BackColor(Color.White).SubText;
    }
 
    public void FloatingNoStatus(bool set = true)
@@ -2985,7 +2784,7 @@ public class UiAction : UserControl
       FloatingException(false);
 
       _exceptionToolTip = exception.Message;
-      _exceptionSubText = SubText("exception").Set.GoToUpperLeft(0).Font("Consolas", 8).ForeColor(Color.White).BackColor(Color.Red).End;
+      _exceptionSubText = SubText("exception").Set.GoToUpperLeft(0).Font("Consolas", 8).ForeColor(Color.White).BackColor(Color.Red).SubText;
 
       setToolTip();
    }
@@ -3073,7 +2872,7 @@ public class UiAction : UserControl
       foreach (var (_, subText) in subTexts)
       {
          subText.ResetLock();
-         var clientRectangle = getClientRectangle(nil);
+         var clientRectangle = getClientRectangle();
          subText.SetLocation(clientRectangle);
       }
    }
@@ -3344,7 +3143,7 @@ public class UiAction : UserControl
 
    public void SetLocation(SubText subText)
    {
-      var clientRectangle = getClientRectangle(nil);
+      var clientRectangle = getClientRectangle();
       subText.SetLocation(clientRectangle);
    }
 

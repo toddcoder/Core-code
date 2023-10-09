@@ -59,7 +59,7 @@ public class Responder : UserControl, IHash<string, Responder.ResponderButton>
 
       public ResponderPersonality Personality { get; set; }
 
-      public new string Label => label;
+      public string Label => label;
 
       public string Key { get; }
    }

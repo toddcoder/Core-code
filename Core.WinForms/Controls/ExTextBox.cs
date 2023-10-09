@@ -88,9 +88,8 @@ public class ExTextBox : TextBox
    protected Maybe<Pattern> _allow;
    protected Maybe<Pattern> _deny;
 
-   public EventHandler<CancelEventArgs> NotAllowed;
-   public EventHandler<CancelEventArgs> Denied;
-
+   public event EventHandler<CancelEventArgs> NotAllowed;
+   public event EventHandler<CancelEventArgs> Denied;
    public new event EventHandler<PaintEventArgs> Paint;
 
    public ExTextBox(Control control) : this()

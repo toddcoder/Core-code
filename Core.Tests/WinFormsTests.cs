@@ -6,7 +6,6 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using Core.Dates.DateIncrements;
-using Core.Monads;
 using Core.Strings;
 using Core.WinForms;
 using Core.WinForms.Controls;
@@ -159,7 +158,7 @@ public class WinFormsTests
    public void ArrowMessageTest()
    {
       var form = new Form();
-      var message = new UiAction(form, false) { Arrow = true };
+      var message = new UiAction(form) { Arrow = true };
       message.SetUp(4, 4, form.ClientSize.Width - 20, 100, AnchorStyles.Left);
       message.Message("Arrow");
       form.ShowDialog();
@@ -376,50 +375,6 @@ public class WinFormsTests
             Thread.Sleep(500.Milliseconds());
          }
       };
-
-      form.ShowDialog();
-   }
-
-   [TestMethod]
-   public void LabeledTest()
-   {
-      var form = new Form();
-      var uiAction = new UiAction(form);
-      form.Controls.Add(uiAction);
-      uiAction.SetUp(0, 0, 400, 40);
-      uiAction.Label("Name").End.Success("July Maintenance Window");
-      form.ShowDialog();
-   }
-
-   [TestMethod]
-   public void LabeledCenterTest()
-   {
-      var form = new Form();
-      var uiAction = new UiAction(form);
-      uiAction.SetUp(0, 0, 400, 40);
-      uiAction.Label("Name").End.Failure("July Maintenance Window");
-      uiAction.Legend("center");
-      form.ShowDialog();
-   }
-
-   [TestMethod]
-   public void LabelWidthTest()
-   {
-      var form = new Form();
-
-      const int labelWidth = 110;
-
-      var uiFirstName = new UiAction(form);
-      uiFirstName.SetUp(0, 0, 400, 40);
-      uiFirstName.Label("First Name").LabelWidth(labelWidth).End.Message("Todd");
-
-      var uiMiddleName = new UiAction(form);
-      uiMiddleName.SetUp(0, 50, 400, 40);
-      uiMiddleName.Label("Middle Name").LabelWidth(labelWidth).End.Message("Edward");
-
-      var uiLastName = new UiAction(form);
-      uiLastName.SetUp(0, 100, 400, 40);
-      uiLastName.Label("Last Name").LabelWidth(labelWidth).End.Message("Bennett");
 
       form.ShowDialog();
    }
@@ -674,33 +629,6 @@ public class WinFormsTests
    }
 
    [TestMethod]
-   public void TogglerTest()
-   {
-      var form = new Form();
-      var uiAction1 = new UiAction(form);
-      uiAction1.SetUp(0, 0, 200, 40);
-      uiAction1.Checked = true;
-      uiAction1.Click += (_, _) => uiAction1.Checked = true;
-      uiAction1.ClickText = "Check 1";
-
-      var uiAction2 = new UiAction(form);
-      uiAction2.SetUp(210, 0, 200, 40);
-      uiAction2.Checked = false;
-      uiAction2.Click += (_, _) => uiAction2.Checked = true;
-      uiAction2.ClickText = "Check 2";
-
-      var uiAction3 = new UiAction(form);
-      uiAction3.SetUp(420, 0, 200, 40);
-      uiAction3.Checked = false;
-      uiAction3.Click += (_, _) => uiAction3.Checked = true;
-      uiAction3.ClickText = "Check 3";
-
-      UiAction.Toggler.Group("test").Add(uiAction1, uiAction2, uiAction3);
-
-      form.ShowDialog();
-   }
-
-   [TestMethod]
    public void HttpTest()
    {
       var form = new Form();
@@ -803,25 +731,6 @@ public class WinFormsTests
    }
 
    [TestMethod]
-   public void LabelResultTest()
-   {
-      var form = new Form();
-      var uiAction = new UiAction(form);
-      uiAction.SetUp(0, 0, 400, 40);
-
-      Result<(string, string)> _result = fail("failed");
-
-      form.Click += (_, _) =>
-      {
-         _result = ("Test", "Test");
-         uiAction.Result(_result);
-      };
-
-      uiAction.Busy(true);
-      form.ShowDialog();
-   }
-
-   [TestMethod]
    public void LegendChangingTest()
    {
       var form = new Form();
@@ -835,16 +744,6 @@ public class WinFormsTests
       form.ShowDialog();
    }
 
-   [TestMethod]
-   public void LabelBusyTest()
-   {
-      var form = new Form();
-      var uiAction = new UiAction(form);
-      uiAction.SetUp(0, 0, 400, 40);
-      uiAction.Label("Busy").End.Busy(true);
-
-      form.ShowDialog();
-   }
 
    [TestMethod]
    public void FloatingFailureTest()
