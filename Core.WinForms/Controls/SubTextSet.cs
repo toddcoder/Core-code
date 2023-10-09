@@ -108,9 +108,9 @@ public class SubTextSet
       return this;
    }
 
-   public SubTextSet HalfTone(bool halfTone = true)
+   public SubTextSet Transparency(SubTextTransparency transparency)
    {
-      subText.HalfTone = halfTone;
+      subText.Transparency = transparency;
       return this;
    }
 

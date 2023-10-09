@@ -27,10 +27,8 @@ public class ClickableSubText : SubText
 
          if (rectangle.Contains(mouseLocation))
          {
-            if (HalfTone)
-            {
-               color = Color.FromArgb(128, color);
-            }
+            var alpha = alphaFromTransparency();
+            color = Color.FromArgb(alpha, color);
 
             g.HighQuality();
             g.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;

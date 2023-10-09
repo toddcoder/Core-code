@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Drawing.Text;
 using System.Windows.Forms;
 using Core.Applications;
+using Core.Collections;
+using Core.DataStructures;
 using Core.Matching;
 using Core.Monads;
 using Core.Strings;
@@ -87,6 +90,10 @@ public class ExTextBox : TextBox
    protected int updatingCount;
    protected Maybe<Pattern> _allow;
    protected Maybe<Pattern> _deny;
+   protected Hash<Guid, SubText> subTexts;
+   protected MaybeStack<SubText> legends;
+   protected Maybe<SubText> _lastSubText;
+   protected Maybe<int> _leftMargin;
 
    public event EventHandler<CancelEventArgs> NotAllowed;
    public event EventHandler<CancelEventArgs> Denied;
@@ -103,6 +110,10 @@ public class ExTextBox : TextBox
       windowExtender.AssignHandle(Handle);
       _allow = nil;
       _deny = nil;
+      subTexts = new Hash<Guid, SubText>();
+      legends = new MaybeStack<SubText>();
+      _lastSubText = nil;
+      _leftMargin = nil;
 
       Validating += (_, e) =>
       {
@@ -133,6 +144,96 @@ public class ExTextBox : TextBox
    public bool IsAllowed => _allow.Map(allowed => Text.IsMatch(allowed)) | true;
 
    public bool IsDenied => _deny.Map(deny => Text.IsMatch(deny)) | false;
+
+   public Maybe<int> LeftMargin
+   {
+      get => _leftMargin;
+      set => _leftMargin = value;
+   }
+
+   public int GetLeftMargin() => (int)User32.SendMessage(Handle, User32.Messages.GetMargins, User32.LEFT_MARGIN, 0);
+
+   public SubText SubText(string text, Color foreColor, Color backColor)
+   {
+      var subText = new SubText(text, 0, 0, ClientSize, false)
+         .Set
+         .ForeColor(foreColor)
+         .BackColor(backColor)
+         .FontName("Consolas")
+         .FontSize(9)
+         .SubText;
+      if (subTexts.Count == 0)
+      {
+         subText.SetAlignment(CardinalAlignment.NorthEast);
+      }
+      else if (_lastSubText is (true, var lastSubText))
+      {
+         subText.LeftOf(lastSubText);
+         subText.SetLocation(ClientRectangle);
+         _lastSubText = subText;
+      }
+
+      subText.SetLocation(ClientRectangle);
+      var rightMargin = ClientSize.Width - subText.TextSize(nil).measuredSize.Width;
+      User32.SendMessage(Handle, User32.Messages.SetMargins, User32.RIGHT_MARGIN, rightMargin - 2);
+      subTexts[subText.Id] = subText;
+
+      return subText;
+   }
+
+   public void RemoveSubText(Guid id)
+   {
+      subTexts.Remove(id);
+      Refresh();
+   }
+
+   public void RemoveSubText(SubText subText) => RemoveSubText(subText.Id);
+
+   public void ClearSubTexts()
+   {
+      subTexts.Clear();
+      Refresh();
+   }
+
+   public SubText Legend(string text)
+   {
+      var legend = new SubText(text, 0, 0, ClientSize, false)
+         .Set
+         .FontName("Consolas")
+         .FontSize(9)
+         .ForeColor(Color.White)
+         .BackColor(Color.Black)
+         .Outline()
+         .Alignment(CardinalAlignment.NorthWest)
+         .SubText;
+      legends.Push(legend);
+
+      if (_leftMargin is (true, var leftMargin))
+      {
+      }
+      else
+      {
+         using var g = CreateGraphics();
+         var length = legend.TextSize(g).measuredSize.Width;
+         leftMargin = length + 2;
+      }
+
+      User32.SendMessage(Handle, User32.Messages.SetMargins, User32.LEFT_MARGIN, leftMargin);
+
+      return legend;
+   }
+
+   public void Legend()
+   {
+      legends.Pop();
+      Refresh();
+   }
+
+   public void ClearAllLegends()
+   {
+      legends.Clear();
+      Refresh();
+   }
 
    public bool RefreshOnTextChange { get; set; }
 
@@ -170,7 +271,29 @@ public class ExTextBox : TextBox
       base.Dispose(disposing);
    }
 
-   protected override void OnPaint(PaintEventArgs e) => Paint?.Invoke(this, e);
+   protected override void OnPaint(PaintEventArgs e)
+   {
+      Paint?.Invoke(this, e);
+
+      drawAllSubTexts(e.Graphics, e.ClipRectangle);
+   }
+
+   protected void drawAllSubTexts(Graphics graphics, Rectangle clientRectangle)
+   {
+      graphics.HighQuality();
+      graphics.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
+      var _legend = legends.Peek();
+      if (_legend is (true, var legend))
+      {
+         legend.Draw(graphics, legend.ForeColor | Color.White, legend.BackColor | Color.Black);
+      }
+
+      foreach (var subText in subTexts.Values)
+      {
+         subText.SetLocation(clientRectangle);
+         subText.Draw(graphics, subText.ForeColor | Color.White, subText.BackColor | Color.Black);
+      }
+   }
 
    protected override void OnResize(EventArgs e)
    {

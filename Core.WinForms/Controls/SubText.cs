@@ -90,11 +90,13 @@ public class SubText : IEquatable<SubText>
 
    public Maybe<Color> ForeColor
    {
+      get => _foreColor;
       set => _foreColor = value;
    }
 
    public Maybe<Color> BackColor
    {
+      get => _backColor;
       set => _backColor = value;
    }
 
@@ -124,7 +126,7 @@ public class SubText : IEquatable<SubText>
 
    public bool SquareFirstCharacter { get; set; }
 
-   public bool HalfTone { get; set; }
+   public SubTextTransparency Transparency { get; set; }
 
    public (Size measuredSize, string text, TextFormatFlags flags, Font font) TextSize(Maybe<Graphics> _graphics)
    {
@@ -201,6 +203,14 @@ public class SubText : IEquatable<SubText>
       }
    }
 
+   protected int alphaFromTransparency() => Transparency switch
+   {
+      SubTextTransparency.Quarter => 64,
+      SubTextTransparency.Half => 128,
+      SubTextTransparency.ThreeQuarters => 192,
+      _ => 255
+   };
+
    protected virtual SubText draw(Graphics g, Color foreColor, Color backColor)
    {
       var (measuredSize, text, flags, font) = TextSize(g);
@@ -226,11 +236,10 @@ public class SubText : IEquatable<SubText>
          var foreColorToUse = Invert ? backColor : foreColor;
          var backColorToUse = Invert ? foreColor : backColor;
 
-         if (HalfTone)
-         {
-            foreColorToUse = Color.FromArgb(128, foreColorToUse);
-            backColorToUse = Color.FromArgb(128, backColorToUse);
-         }
+         var alpha = alphaFromTransparency();
+
+         foreColorToUse = Color.FromArgb(alpha, foreColorToUse);
+         backColorToUse = Color.FromArgb(alpha, backColorToUse);
 
          if (!transparentBackground)
          {

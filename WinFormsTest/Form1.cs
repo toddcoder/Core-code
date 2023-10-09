@@ -10,7 +10,6 @@ using Core.Matching;
 using Core.Monads;
 using Core.Numbers;
 using Core.Strings;
-using Core.WinForms;
 using Core.WinForms.Controls;
 using Core.WinForms.Documents;
 using static Core.Monads.MonadFunctions;
@@ -482,9 +481,7 @@ public partial class Form1 : Form, IMessageQueueListener
 
    protected void button4_Click(object sender, EventArgs e)
    {
-      var subText = uiAction.ClickableSubText("mini-click").Set.Invert().Outline().Alignment(CardinalAlignment.NorthEast).ClickableSubText;
-      subText.Click += (_, _) => uiAction.Message(DateTime.Now.ToLongTimeString());
-      uiAction.Click += (_, _) => uiAction.Message(DateTime.Now.ToLongDateString());
-      uiAction.ClickText = "Date";
+      textBox.Legend("foobar");
+      textBox.SubText("test", Color.White, Color.Green);
    }
 }
