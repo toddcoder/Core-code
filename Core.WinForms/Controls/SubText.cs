@@ -14,6 +14,7 @@ public class SubText : IEquatable<SubText>
    protected const string POSITIVE = "✅";
    protected const string NEGATIVE = "❎";
 
+   protected string text;
    protected Size size;
    protected bool clickGlyph;
    protected bool invert;
@@ -29,7 +30,7 @@ public class SubText : IEquatable<SubText>
 
    public SubText(string text, int x, int y, Size size, bool clickGlyph, bool invert = false, bool transparentBackground = false)
    {
-      Text = text;
+      this.text = text;
       X = x;
       Y = y;
       this.size = size;
@@ -54,7 +55,15 @@ public class SubText : IEquatable<SubText>
       IncludeCeiling = true;
    }
 
-   public string Text { get; set; }
+   public string Text
+   {
+      get => text;
+      set
+      {
+         text = value;
+         ResetLock();
+      }
+   }
 
    public int X { get; set; }
 
@@ -114,7 +123,7 @@ public class SubText : IEquatable<SubText>
       _alignment = alignment;
       if (_alignment)
       {
-         locationLockStatus = LocationLockStatus.Unlocked;
+         ResetLock();
       }
    }
 
@@ -130,21 +139,21 @@ public class SubText : IEquatable<SubText>
 
    public (Size measuredSize, string text, TextFormatFlags flags, Font font) TextSize(Maybe<Graphics> _graphics)
    {
-      var text = Text.EmojiSubstitutions();
+      var newText = text.EmojiSubstitutions();
       var font = new Font(FontName, FontSize, FontStyle);
       var flags = TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix | TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter;
       var proposedSize = new Size(int.MaxValue, int.MaxValue);
       Size measuredSize;
       if (_graphics is (true, var graphics))
       {
-         measuredSize = TextRenderer.MeasureText(graphics, text, font, proposedSize, flags);
+         measuredSize = TextRenderer.MeasureText(graphics, newText, font, proposedSize, flags);
       }
       else
       {
-         measuredSize = TextRenderer.MeasureText(text, font, proposedSize, flags);
+         measuredSize = TextRenderer.MeasureText(newText, font, proposedSize, flags);
       }
 
-      return (measuredSize, text, flags, font);
+      return (measuredSize, newText, flags, font);
    }
 
    public (int x, int y) LocationFromAlignment(Rectangle clientRectangle)
