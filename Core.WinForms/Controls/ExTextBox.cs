@@ -288,7 +288,7 @@ public class ExTextBox : TextBox
          if (shadowText.Length > 0)
          {
             var size = MeasureString(e.Graphics, text, Font);
-            var left = size.Width;
+            var left = (legends.Peek().Map(l => l.TextSize(e.Graphics).measuredSize.Width + 2) | 0) + size.Width;
             var top = 0;
             TextRenderer.DrawText(e.Graphics, shadowText, Font, new Point(left, top), Color.Gray);
          }

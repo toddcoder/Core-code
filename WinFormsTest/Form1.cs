@@ -481,6 +481,7 @@ public partial class Form1 : Form, IMessageQueueListener
 
    protected void button4_Click(object sender, EventArgs e)
    {
+      textBox.Legend("release");
       textBox.ShadowText = "r-#.##.#";
    }
 }
