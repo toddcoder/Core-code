@@ -12,6 +12,7 @@ using Core.Numbers;
 using Core.Strings;
 using Core.WinForms.Controls;
 using Core.WinForms.Documents;
+using static Core.Lambdas.LambdaFunctions;
 using static Core.Monads.MonadFunctions;
 using static Core.WinForms.Documents.MenuBuilderFunctions;
 
@@ -348,18 +349,46 @@ public partial class Form1 : Form, IMessageQueueListener
 
       textBox = new ExTextBox(this);
       textBox.SetUpInPanel(panel4, dockStyle: DockStyle.Fill);
-      textBox.Allow = (Pattern)@"^ 'r-' /(/d+) '.' /(/d+) '.' /(/d+) $; f";
+      textBox.Allow = func<string, bool>(text => text.IsMatch(@"^ 'r-' /(/d+) '.' /(/d+) '.' /(/d+) $; f") || text == "master");
       textBox.RefreshOnTextChange = true;
-      textBox.Paint += (_, e) =>
+      /*textBox.Paint += (_, e) =>
       {
-         if (!textBox.IsAllowed)
+         textBox.ClearSubTexts();
+         if (textBox.IsAllowed)
+         {
+            textBox.SubText("allowed", Color.White, Color.Green).Set.FontSize(8).Alignment(CardinalAlignment.East);
+         }
+         else
+         {
+            textBox.SubText("disallowed", Color.White, Color.Red).Set.FontSize(8).Alignment(CardinalAlignment.East);
+         }
+         /*if (!textBox.IsAllowed)
          {
             using var pen = new Pen(Color.Red, 4);
             pen.DashStyle = DashStyle.Dot;
             var point1 = ClientRectangle.Location;
             var point2 = point1 with { X = ClientRectangle.Right };
             e.Graphics.DrawLine(pen, point1, point2);
+         }#1#
+      };*/
+      textBox.Allowed += (_, _) =>
+      {
+         textBox.ClearSubTexts();
+         textBox.SubText("allowed", Color.White, Color.Green).Set.FontSize(8).Alignment(CardinalAlignment.NorthEast);
+      };
+      textBox.NotAllowed += (_, e) =>
+      {
+         if ("master".StartsWith(e.Text))
+         {
+            textBox.ShadowText = "master";
          }
+         else
+         {
+            textBox.ShadowText = "r-#.##.#";
+         }
+         textBox.ClearSubTexts();
+         textBox.SubText("disallowed", Color.White, Color.Red).Set.FontSize(8).Alignment(CardinalAlignment.NorthEast);
+         //textBox.Refresh();
       };
 
       /*uiAction.Click += (_, _) =>

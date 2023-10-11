@@ -196,6 +196,7 @@ public static class User32
       SetOptions = User + 77,
       GetOptions = User + 78,
       FindTextEx = User + 79,
+      SetCueBanner = User + 0x1101,
 
       TabDeleteItem = 0x1308,
       TabInsertItem = 0x133E,
@@ -336,6 +337,9 @@ public static class User32
 
    [DllImport("User32.dll", EntryPoint = "SendMessage", CharSet = CharSet.Auto)]
    public static extern int SendMessage(IntPtr hWnd, int msg, int wparam, int lparam);
+
+   [DllImport("User32.dll", EntryPoint = "SendMessage", CharSet = CharSet.Auto)]
+   public static extern int SendMessage(IntPtr hWnd, int msg, bool wparam, string lparam);
 
    [DllImport("User32.dll", EntryPoint = "SendMessage", CharSet = CharSet.Auto)]
    public static extern int SendMessageRef(IntPtr hWnd, int msg, out int wparam, out int lparam);

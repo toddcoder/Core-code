@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Text;
@@ -88,15 +87,18 @@ public class ExTextBox : TextBox
 
    protected WindowExtender windowExtender;
    protected int updatingCount;
-   protected Maybe<Pattern> _allow;
-   protected Maybe<Pattern> _deny;
+   protected Maybe<Func<string, bool>> _allow;
+   protected Maybe<Func<string, bool>> _deny;
    protected Hash<Guid, SubText> subTexts;
    protected MaybeStack<SubText> legends;
    protected Maybe<SubText> _lastSubText;
    protected Maybe<int> _leftMargin;
+   protected string cueBanner;
 
-   public event EventHandler<CancelEventArgs> NotAllowed;
-   public event EventHandler<CancelEventArgs> Denied;
+   public event EventHandler<TextEventArgs> Allowed;
+   public event EventHandler<TextEventArgs> NotAllowed;
+   public event EventHandler<TextEventArgs> Denied;
+   public event EventHandler<TextEventArgs> NotDenied;
    public new event EventHandler<PaintEventArgs> Paint;
 
    public ExTextBox(Control control) : this()
@@ -114,37 +116,47 @@ public class ExTextBox : TextBox
       legends = new MaybeStack<SubText>();
       _lastSubText = nil;
       _leftMargin = nil;
+      cueBanner = string.Empty;
       ShadowText = nil;
 
-      Validating += (_, e) =>
+      TextChanged += (_, _) =>
       {
-         if (_allow is (true, var allow) && !e.Cancel && !Text.IsMatch(allow))
+         var e = new TextEventArgs(Text);
+         if (IsAllowed)
+         {
+            Allowed?.Invoke(this, e);
+         }
+         else
          {
             NotAllowed?.Invoke(this, e);
          }
 
-         if (_deny is (true, var deny) && !e.Cancel && Text.IsMatch(deny))
+         if (IsDenied)
          {
             Denied?.Invoke(this, e);
+         }
+         else
+         {
+            NotDenied?.Invoke(this, e);
          }
       };
    }
 
-   public Maybe<Pattern> Allow
+   public Maybe<Func<string, bool>> Allow
    {
       get => _allow;
       set => _allow = value;
    }
 
-   public Maybe<Pattern> Deny
+   public Maybe<Func<string, bool>> Deny
    {
       get => _deny;
       set => _deny = value;
    }
 
-   public bool IsAllowed => _allow.Map(allowed => Text.IsMatch(allowed)) | true;
+   public bool IsAllowed => _allow.Map(allowed => allowed(Text)) | true;
 
-   public bool IsDenied => _deny.Map(deny => Text.IsMatch(deny)) | false;
+   public bool IsDenied => _deny.Map(deny => deny(Text)) | false;
 
    public Maybe<int> LeftMargin
    {
@@ -274,12 +286,23 @@ public class ExTextBox : TextBox
       base.Dispose(disposing);
    }
 
+   public string CueBanner
+   {
+      get => cueBanner;
+      set
+      {
+         cueBanner = value;
+         User32.SendMessage(Handle, (int)User32.Messages.SetCueBanner, true, cueBanner);
+      }
+   }
+
    protected override void OnPaint(PaintEventArgs e)
    {
-      Paint?.Invoke(this, e);
-
-      e.Graphics.HighQuality();
+      e.Graphics.CompositingQuality = CompositingQuality.HighQuality;
+      e.Graphics.SmoothingMode = SmoothingMode.HighQuality;
+      e.Graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
       e.Graphics.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
+      e.Graphics.CompositingMode = CompositingMode.SourceCopy;
 
       if (ShadowText is (true, var shadowText))
       {
@@ -287,30 +310,44 @@ public class ExTextBox : TextBox
          shadowText = shadowText.Drop(text.Length);
          if (shadowText.Length > 0)
          {
-            var size = MeasureString(e.Graphics, text, Font);
-            var left = (legends.Peek().Map(l => l.TextSize(e.Graphics).measuredSize.Width + 2) | 0) + size.Width;
+            var textSize = text.IsNotEmpty() ? MeasureString(e.Graphics, text, Font) : Size.Empty;
+
+            var shadowSize = MeasureString(e.Graphics, shadowText, Font);
+            var bitmap = new Bitmap(shadowSize.Width, shadowSize.Height);
+            using var g = Graphics.FromImage(bitmap);
+            g.CompositingQuality = CompositingQuality.HighQuality;
+            g.SmoothingMode = SmoothingMode.HighQuality;
+            g.PixelOffsetMode = PixelOffsetMode.HighQuality;
+            g.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
+            TextRenderer.DrawText(g, shadowText, Font, new Point(0, 0), Color.LightGray);
+
+            var left = (legends.Peek().Map(l => l.TextSize(e.Graphics).measuredSize.Width + 2) | 0) + textSize.Width;
             var top = 0;
-            TextRenderer.DrawText(e.Graphics, shadowText, Font, new Point(left, top), Color.Gray);
+            e.Graphics.DrawImage(bitmap, left, top);
          }
       }
 
       drawAllSubTexts(e.Graphics, e.ClipRectangle);
+
+      Paint?.Invoke(this, e);
    }
 
-   protected void drawAllSubTexts(Graphics graphics, Rectangle clientRectangle)
+   protected void drawAllSubTexts(Graphics g, Rectangle clientRectangle)
    {
-      graphics.HighQuality();
-      graphics.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
+      g.CompositingQuality = CompositingQuality.HighQuality;
+      g.SmoothingMode = SmoothingMode.HighQuality;
+      g.PixelOffsetMode = PixelOffsetMode.HighQuality;
+      g.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
       var _legend = legends.Peek();
       if (_legend is (true, var legend))
       {
-         legend.Draw(graphics, legend.ForeColor | Color.White, legend.BackColor | Color.Black);
+         legend.Draw(g, legend.ForeColor | Color.White, legend.BackColor | Color.Black);
       }
 
       foreach (var subText in subTexts.Values)
       {
          subText.SetLocation(clientRectangle);
-         subText.Draw(graphics, subText.ForeColor | Color.White, subText.BackColor | Color.Black);
+         subText.Draw(g, subText.ForeColor | Color.White, subText.BackColor | Color.Black);
       }
    }
 

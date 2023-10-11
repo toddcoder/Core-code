@@ -79,6 +79,7 @@
     <Compile Include="Controls\SubTextOption.cs" />
     <Compile Include="Controls\SubTextTransparency.cs" />
     <Compile Include="Controls\SymbolWriter.cs" />
+    <Compile Include="Controls\TextEventArgs.cs" />
     <Compile Include="Controls\UiActionButtonType.cs" />
     <Compile Include="Controls\UiActionRectangleArgs.cs" />
     <Compile Include="Controls\DefaultBusyProcessor.cs" />
