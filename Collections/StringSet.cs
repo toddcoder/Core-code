@@ -17,14 +17,26 @@ public class StringSet : Set<string>
       this.ignoreCase = ignoreCase;
    }
 
+   public StringSet(UserStringComparer stringComparer) : base(stringComparer)
+   {
+   }
+
    public StringSet(bool ignoreCase, IEnumerable<string> strings) : base(strings, stringComparer(ignoreCase))
    {
       this.ignoreCase = ignoreCase;
    }
 
+   public StringSet(UserStringComparer stringComparer, IEnumerable<string> strings) : base(strings, stringComparer)
+   {
+   }
+
    public StringSet(bool ignoreCase, params string[] strings) : base(strings, stringComparer(ignoreCase))
    {
       this.ignoreCase = ignoreCase;
+   }
+
+   public StringSet(UserStringComparer stringComparer, params string[] strings) : base(strings, stringComparer)
+   {
    }
 
    public Maybe<string> FirstStartsWith(string needle) => this.FirstOrNone(i => i.StartsWith(needle, ignoreCase, CultureInfo.CurrentCulture));

@@ -348,7 +348,7 @@ public partial class Form1 : Form, IMessageQueueListener
 
       textBox = new ExTextBox(this);
       textBox.SetUpInPanel(panel4, dockStyle: DockStyle.Fill);
-      textBox.Allow = (Pattern)"^/d*$";
+      textBox.Allow = (Pattern)@"^ 'r-' /(/d+) '.' /(/d+) '.' /(/d+) $; f";
       textBox.RefreshOnTextChange = true;
       textBox.Paint += (_, e) =>
       {
@@ -481,7 +481,6 @@ public partial class Form1 : Form, IMessageQueueListener
 
    protected void button4_Click(object sender, EventArgs e)
    {
-      textBox.Legend("foobar");
-      textBox.SubText("test", Color.White, Color.Green);
+      textBox.ShadowText = "r-#.##.#";
    }
 }

@@ -114,6 +114,7 @@ public class ExTextBox : TextBox
       legends = new MaybeStack<SubText>();
       _lastSubText = nil;
       _leftMargin = nil;
+      ShadowText = nil;
 
       Validating += (_, e) =>
       {
@@ -235,6 +236,8 @@ public class ExTextBox : TextBox
       Refresh();
    }
 
+   public Maybe<string> ShadowText { get; set; }
+
    public bool RefreshOnTextChange { get; set; }
 
    public void StopUpdating()
@@ -274,6 +277,22 @@ public class ExTextBox : TextBox
    protected override void OnPaint(PaintEventArgs e)
    {
       Paint?.Invoke(this, e);
+
+      e.Graphics.HighQuality();
+      e.Graphics.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
+
+      if (ShadowText is (true, var shadowText))
+      {
+         var text = Text;
+         shadowText = shadowText.Drop(text.Length);
+         if (shadowText.Length > 0)
+         {
+            var size = MeasureString(e.Graphics, text, Font);
+            var left = size.Width;
+            var top = 0;
+            TextRenderer.DrawText(e.Graphics, shadowText, Font, new Point(left, top), Color.Gray);
+         }
+      }
 
       drawAllSubTexts(e.Graphics, e.ClipRectangle);
    }

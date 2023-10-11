@@ -181,6 +181,7 @@
     <Compile Include="Collections\StringVariants.cs" />
     <Compile Include="Collections\Triggers.cs" />
     <Compile Include="Collections\TwoKeyHash.cs" />
+    <Compile Include="Collections\UserStringComparer.cs" />
     <Compile Include="Computers\ComputerExtensions.cs" />
     <Compile Include="Computers\ComputerFunctions.cs" />
     <Compile Include="Computers\FileArgs.cs" />
