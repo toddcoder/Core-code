@@ -57,6 +57,7 @@
     <Compile Include="Consoles\TextBoxConsole.cs" />
     <Compile Include="Consoles\TextBoxExtensions.cs" />
     <Compile Include="Consoles\TextBoxReader.cs" />
+    <Compile Include="Controls\AllowanceStatus.cs" />
     <Compile Include="Controls\AlternateWriter.cs" />
     <Compile Include="Controls\ArgumentsArgs.cs" />
     <Compile Include="Controls\AutomaticMessageArgs.cs" />

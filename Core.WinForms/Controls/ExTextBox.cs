@@ -10,6 +10,7 @@ using Core.DataStructures;
 using Core.Matching;
 using Core.Monads;
 using Core.Strings;
+using static Core.Lambdas.LambdaFunctions;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Controls;
@@ -87,16 +88,25 @@ public class ExTextBox : TextBox
 
    protected WindowExtender windowExtender;
    protected int updatingCount;
+   protected Maybe<Func<string, AllowanceStatus>> _validate;
    protected Maybe<Func<string, bool>> _allow;
+   protected Maybe<Func<string, bool>> _trend;
    protected Maybe<Func<string, bool>> _deny;
+   protected string allowMessage;
+   protected string trendMessage;
+   protected string denyMessage;
    protected Hash<Guid, SubText> subTexts;
    protected MaybeStack<SubText> legends;
    protected Maybe<SubText> _lastSubText;
    protected Maybe<int> _leftMargin;
    protected string cueBanner;
+   protected Maybe<SubText> _validateMessage;
+   protected bool validatesMessages;
 
    public event EventHandler<TextEventArgs> Allowed;
    public event EventHandler<TextEventArgs> NotAllowed;
+   public event EventHandler<TextEventArgs> Trending;
+   public event EventHandler<TextEventArgs> NotTrending;
    public event EventHandler<TextEventArgs> Denied;
    public event EventHandler<TextEventArgs> NotDenied;
    public new event EventHandler<PaintEventArgs> Paint;
@@ -110,36 +120,115 @@ public class ExTextBox : TextBox
    {
       windowExtender = new WindowExtender(this);
       windowExtender.AssignHandle(Handle);
+      _validate = func<string, AllowanceStatus>(_ => AllowanceStatus.None);
       _allow = nil;
+      _trend = nil;
       _deny = nil;
+      allowMessage = "allowed";
+      trendMessage = "trending";
+      denyMessage = "denied";
       subTexts = new Hash<Guid, SubText>();
       legends = new MaybeStack<SubText>();
       _lastSubText = nil;
       _leftMargin = nil;
       cueBanner = string.Empty;
+      _validateMessage = nil;
+      validatesMessages = false;
       ShadowText = nil;
 
-      TextChanged += (_, _) =>
+      TextChanged += (_, _) => { validateText(); };
+   }
+
+   protected void validateText()
+   {
+      var e = new TextEventArgs(Text);
+
+      if (_validate)
       {
-         var e = new TextEventArgs(Text);
-         if (IsAllowed)
+         var status = ValidStatus;
+         switch (status)
          {
-            Allowed?.Invoke(this, e);
-         }
-         else
-         {
-            NotAllowed?.Invoke(this, e);
+            case AllowanceStatus.Allowed:
+               Allowed?.Invoke(this, e);
+               break;
+            case AllowanceStatus.Trending:
+               Trending?.Invoke(this, e);
+               break;
+            case AllowanceStatus.Denied:
+               Denied?.Invoke(this, e);
+               break;
          }
 
-         if (IsDenied)
+         if (validatesMessages)
          {
-            Denied?.Invoke(this, e);
+            (var validateMessage, _validateMessage) = _validateMessage.Create(() =>
+               SubText("", Color.White, Color.Black).Set.FontSize(8).Alignment(CardinalAlignment.NorthEast).SubText);
+
+            switch (status)
+            {
+               case AllowanceStatus.Allowed:
+                  validateMessage.Text = allowMessage;
+                  validateMessage.ForeColor = Color.White;
+                  validateMessage.BackColor = Color.Green;
+                  break;
+               case AllowanceStatus.Trending:
+                  validateMessage.Text = trendMessage;
+                  validateMessage.ForeColor = Color.Black;
+                  validateMessage.BackColor = Color.Yellow;
+                  break;
+               case AllowanceStatus.Denied:
+                  validateMessage.Text = denyMessage;
+                  validateMessage.ForeColor = Color.White;
+                  validateMessage.BackColor = Color.Red;
+                  break;
+            }
          }
-         else
-         {
-            NotDenied?.Invoke(this, e);
-         }
-      };
+
+         return;
+      }
+
+      if (IsAllowed)
+      {
+         Allowed?.Invoke(this, e);
+      }
+      else
+      {
+         NotAllowed?.Invoke(this, e);
+      }
+
+      if (IsTrending)
+      {
+         Trending?.Invoke(this, e);
+      }
+      else
+      {
+         NotTrending?.Invoke(this, e);
+      }
+
+      if (IsDenied)
+      {
+         Denied?.Invoke(this, e);
+      }
+      else
+      {
+         NotDenied?.Invoke(this, e);
+      }
+   }
+
+   public bool ValidateMessages
+   {
+      get => validatesMessages;
+      set
+      {
+         validatesMessages = value;
+         validateText();
+      }
+   }
+
+   public Maybe<Func<string, AllowanceStatus>> Validate
+   {
+      get => _validate;
+      set => _validate = value;
    }
 
    public Maybe<Func<string, bool>> Allow
@@ -148,15 +237,43 @@ public class ExTextBox : TextBox
       set => _allow = value;
    }
 
+   public Maybe<Func<string, bool>> Trend
+   {
+      get => _trend;
+      set => _trend = value;
+   }
+
    public Maybe<Func<string, bool>> Deny
    {
       get => _deny;
       set => _deny = value;
    }
 
+   public AllowanceStatus ValidStatus => _validate.Map(valid => valid(Text)) | AllowanceStatus.None;
+
    public bool IsAllowed => _allow.Map(allowed => allowed(Text)) | true;
 
    public bool IsDenied => _deny.Map(deny => deny(Text)) | false;
+
+   public bool IsTrending => _trend.Map(trend => trend(Text)) | false;
+
+   public string AllowMessage
+   {
+      get => allowMessage;
+      set => allowMessage = value;
+   }
+
+   public string TrendMessage
+   {
+      get => trendMessage;
+      set => trendMessage = value;
+   }
+
+   public string DenyMessage
+   {
+      get => denyMessage;
+      set => denyMessage = value;
+   }
 
    public Maybe<int> LeftMargin
    {
@@ -214,22 +331,18 @@ public class ExTextBox : TextBox
          .Set
          .FontName("Consolas")
          .FontSize(9)
-         .ForeColor(Color.White)
-         .BackColor(Color.Black)
-         .Outline()
+         .ForeColor(BackColor)
+         .BackColor(ForeColor)
          .Alignment(CardinalAlignment.NorthWest)
          .SubText;
       legends.Push(legend);
 
-      if (_leftMargin is (true, var leftMargin))
-      {
-      }
-      else
+      (var leftMargin, _leftMargin) = _leftMargin.Create(() =>
       {
          using var g = CreateGraphics();
          var length = legend.TextSize(g).measuredSize.Width;
-         leftMargin = length + 2;
-      }
+         return length + 2;
+      });
 
       User32.SendMessage(Handle, User32.Messages.SetMargins, User32.LEFT_MARGIN, leftMargin);
 
@@ -292,7 +405,7 @@ public class ExTextBox : TextBox
       set
       {
          cueBanner = value;
-         User32.SendMessage(Handle, (int)User32.Messages.SetCueBanner, true, cueBanner);
+         User32.SendMessage(Handle, User32.Messages.SetCueBanner, true, cueBanner);
       }
    }
 
@@ -319,7 +432,7 @@ public class ExTextBox : TextBox
             g.SmoothingMode = SmoothingMode.HighQuality;
             g.PixelOffsetMode = PixelOffsetMode.HighQuality;
             g.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
-            TextRenderer.DrawText(g, shadowText, Font, new Point(0, 0), Color.LightGray);
+            TextRenderer.DrawText(g, shadowText, Font, new Point(0, 0), SystemColors.GrayText, BackColor);
 
             var left = (legends.Peek().Map(l => l.TextSize(e.Graphics).measuredSize.Width + 2) | 0) + textSize.Width;
             var top = 0;

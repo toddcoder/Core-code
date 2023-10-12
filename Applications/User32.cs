@@ -339,7 +339,7 @@ public static class User32
    public static extern int SendMessage(IntPtr hWnd, int msg, int wparam, int lparam);
 
    [DllImport("User32.dll", EntryPoint = "SendMessage", CharSet = CharSet.Auto)]
-   public static extern int SendMessage(IntPtr hWnd, int msg, bool wparam, string lparam);
+   public static extern int SendMessage(IntPtr hWnd, [MarshalAs(UnmanagedType.I4)] Messages msg, bool wparam, string lparam);
 
    [DllImport("User32.dll", EntryPoint = "SendMessage", CharSet = CharSet.Auto)]
    public static extern int SendMessageRef(IntPtr hWnd, int msg, out int wparam, out int lparam);

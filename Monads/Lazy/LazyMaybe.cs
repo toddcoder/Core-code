@@ -259,6 +259,12 @@ public class LazyMaybe<T> : Maybe<T>, IEquatable<LazyMaybe<T>>
       return _value.Initialize(initializer);
    }
 
+   public override (T value, Maybe<T> maybe) Create(Func<T> initializer)
+   {
+      ensureValue();
+      return _value.Create(initializer);
+   }
+
    public override object ToObject()
    {
       ensureValue();

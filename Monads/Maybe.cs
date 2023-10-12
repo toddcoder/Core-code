@@ -141,5 +141,7 @@ public abstract class Maybe<T>
 
    public abstract Maybe<T> Initialize(Func<T> initializer);
 
+   public abstract (T value, Maybe<T> maybe) Create(Func<T> initializer);
+
    public abstract object ToObject();
 }

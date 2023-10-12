@@ -113,6 +113,8 @@ public class Some<T> : Maybe<T>, IEquatable<Some<T>>
 
    public override Maybe<T> Initialize(Func<T> initializer) => this;
 
+   public override (T value, Maybe<T> maybe) Create(Func<T> initializer) => (value, this);
+
    public override object ToObject() => value;
 
    public bool Equals(Some<T> other)

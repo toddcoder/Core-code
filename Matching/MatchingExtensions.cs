@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Core.DataStructures;
+using Core.Enumerables;
 using Core.Monads;
 using Core.Strings;
 using static Core.Monads.MonadFunctions;
+using static Core.Monads.Monads;
 using RRegex = System.Text.RegularExpressions.Regex;
 
 namespace Core.Matching;

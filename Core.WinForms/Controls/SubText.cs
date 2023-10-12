@@ -222,7 +222,7 @@ public class SubText : IEquatable<SubText>
 
    protected virtual SubText draw(Graphics g, Color foreColor, Color backColor)
    {
-      var (measuredSize, text, flags, font) = TextSize(g);
+      var (measuredSize, sizedText, flags, font) = TextSize(g);
 
       try
       {
@@ -259,13 +259,16 @@ public class SubText : IEquatable<SubText>
                using var pen = new Pen(foreColorToUse);
                g.DrawRectangle(pen, rectangle);
             }
+            TextRenderer.DrawText(g, sizedText, font, rectangle, foreColorToUse, backColorToUse, flags);
+         }
+         else
+         {
+            TextRenderer.DrawText(g, sizedText, font, rectangle, foreColorToUse, flags);
          }
 
-         TextRenderer.DrawText(g, text, font, rectangle, foreColorToUse, flags);
-
-         if (SquareFirstCharacter && text.Length > 0)
+         if (SquareFirstCharacter && sizedText.Length > 0)
          {
-            var character = text.Keep(1);
+            var character = sizedText.Keep(1);
             var charSize = TextRenderer.MeasureText(g, character, font);
             var charLocation = rectangle.Location;
             var charRectangle = new Rectangle(charLocation, charSize).Reposition(2, 2).Resize(-6, -4);

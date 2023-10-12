@@ -349,7 +349,32 @@ public partial class Form1 : Form, IMessageQueueListener
 
       textBox = new ExTextBox(this);
       textBox.SetUpInPanel(panel4, dockStyle: DockStyle.Fill);
-      textBox.Allow = func<string, bool>(text => text.IsMatch(@"^ 'r-' /(/d+) '.' /(/d+) '.' /(/d+) $; f") || text == "master");
+      //textBox.Allow = func<string, bool>(text => text.IsMatch(@"^ 'r-' /(/d+) '.' /(/d+) '.' /(/d+) $; f") || text == "master");
+      textBox.AllowMessage = "matching";
+      textBox.TrendMessage = "matching 'master'";
+      textBox.DenyMessage = "not matching";
+      textBox.Validate = func<string, AllowanceStatus>(text =>
+      {
+         if (text.IsEmpty())
+         {
+            return AllowanceStatus.Denied;
+         }
+
+         if (text.IsMatch(@"^ 'r-' (/d) '.' (/d2) '.' (/d) $; f") || text == "master")
+         {
+            return AllowanceStatus.Allowed;
+         }
+         else if ("master".StartsWith(text))
+         {
+            return AllowanceStatus.Trending;
+         }
+         else
+         {
+            return AllowanceStatus.Denied;
+         }
+      });
+      textBox.Trending += (_, e) => textBox.ShadowText = "master".StartsWith(e.Text) ? "master" : "r-#.##.# ";
+      textBox.Denied += (_, _) => textBox.ShadowText = "r-#.##.# ";
       textBox.RefreshOnTextChange = true;
       /*textBox.Paint += (_, e) =>
       {
@@ -371,7 +396,8 @@ public partial class Form1 : Form, IMessageQueueListener
             e.Graphics.DrawLine(pen, point1, point2);
          }#1#
       };*/
-      textBox.Allowed += (_, _) =>
+      textBox.ValidateMessages = true;
+      /*textBox.Allowed += (_, _) =>
       {
          textBox.ClearSubTexts();
          textBox.SubText("allowed", Color.White, Color.Green).Set.FontSize(8).Alignment(CardinalAlignment.NorthEast);
@@ -389,7 +415,7 @@ public partial class Form1 : Form, IMessageQueueListener
          textBox.ClearSubTexts();
          textBox.SubText("disallowed", Color.White, Color.Red).Set.FontSize(8).Alignment(CardinalAlignment.NorthEast);
          //textBox.Refresh();
-      };
+      };*/
 
       /*uiAction.Click += (_, _) =>
       {
@@ -512,5 +538,6 @@ public partial class Form1 : Form, IMessageQueueListener
    {
       textBox.Legend("release");
       textBox.ShadowText = "r-#.##.#";
+      textBox.ValidateMessages = true;
    }
 }
