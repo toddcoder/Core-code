@@ -115,6 +115,6 @@ public class StringParser : BaseParser
          }
       }
 
-      throw fail("Open string");
+      return nil;
    }
 }
