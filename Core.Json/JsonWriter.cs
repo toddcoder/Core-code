@@ -5,28 +5,24 @@ using System.Text;
 using Core.Dates;
 using Core.Monads;
 using Core.Strings;
-using Newtonsoft.Json;
+using System.Text.Json;
+using Core.Arrays;
 
 namespace Core.Json;
 
 public class JsonWriter : IDisposable
 {
    protected MemoryStream stream;
-   protected StreamWriter streamWriter;
-   protected JsonTextWriter writer;
+   protected Utf8JsonWriter writer;
 
    public JsonWriter()
    {
       stream = new MemoryStream();
-      streamWriter = new StreamWriter(stream);
-      writer = new JsonTextWriter(streamWriter)
+      var options = new JsonWriterOptions
       {
-         Formatting = Formatting.Indented,
-         Indentation = 2,
-         QuoteChar = '"',
-         IndentChar = ' ',
-         QuoteName = true
+         Indented = true
       };
+      writer = new Utf8JsonWriter(stream, options);
    }
 
    public void BeginObject() => writer.WriteStartObject();
@@ -49,27 +45,27 @@ public class JsonWriter : IDisposable
 
    public void EndObject() => writer.WriteEndObject();
 
-   public void Write(string value) => writer.WriteValue(value);
+   public void Write(string value) => writer.WriteStringValue(value);
 
-   public void Write(int value) => writer.WriteValue(value);
+   public void Write(int value) => writer.WriteNumberValue(value);
 
-   public void Write(double value) => writer.WriteValue(value);
+   public void Write(double value) => writer.WriteNumberValue(value);
 
-   public void Write(bool value) => writer.WriteValue(value);
+   public void Write(bool value) => writer.WriteBooleanValue(value);
 
    public void Write(DateTime value, bool zulu = false)
    {
       if (zulu)
       {
-         writer.WriteValue(value.Zulu());
+         writer.WriteStringValue(value.Zulu());
       }
       else
       {
-         writer.WriteValue(value);
+         writer.WriteStringValue(value);
       }
    }
 
-   public void Write(Guid value) => writer.WriteValue(value);
+   public void Write(Guid value) => writer.WriteStringValue(value);
 
    public void WritePropertyNameIf(Maybe<string> _propertyName)
    {
@@ -79,47 +75,19 @@ public class JsonWriter : IDisposable
       }
    }
 
-   public void Write(string propertyName, string value)
-   {
-      writer.WritePropertyName(propertyName);
-      writer.WriteValue(value);
-   }
+   public void Write(string propertyName, string value) => writer.WriteString(propertyName, value);
 
-   public void Write(string propertyName, int value)
-   {
-      writer.WritePropertyName(propertyName);
-      writer.WriteValue(value);
-   }
+   public void Write(string propertyName, int value) => writer.WriteNumber(propertyName, value);
 
-   public void Write(string propertyName, double value)
-   {
-      writer.WritePropertyName(propertyName);
-      writer.WriteValue(value);
-   }
+   public void Write(string propertyName, double value) => writer.WriteNumber(propertyName, value);
 
-   public void Write(string propertyName, bool value)
-   {
-      writer.WritePropertyName(propertyName);
-      writer.WriteValue(value);
-   }
+   public void Write(string propertyName, bool value) => writer.WriteBoolean(propertyName, value);
 
-   public void Write(string propertyName, DateTime value)
-   {
-      writer.WritePropertyName(propertyName);
-      writer.WriteValue(value);
-   }
+   public void Write(string propertyName, DateTime value) => writer.WriteString(propertyName, value);
 
-   public void Write(string propertyName, Guid value)
-   {
-      writer.WritePropertyName(propertyName);
-      writer.WriteValue(value);
-   }
+   public void Write(string propertyName, Guid value) => writer.WriteString(propertyName, value);
 
-   public void Write(string propertyName, byte[] value)
-   {
-      writer.WritePropertyName(propertyName);
-      writer.WriteValue(value);
-   }
+   public void Write(string propertyName, byte[] value) => writer.WriteString(propertyName, value.ToBase64());
 
    public void Write(string propertyName, string[] values)
    {

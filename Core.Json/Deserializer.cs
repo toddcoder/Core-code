@@ -1,12 +1,13 @@
 ﻿using System;
+using System.Buffers;
 using System.Collections.Generic;
-using System.IO;
+using System.Text;
+using System.Text.Json;
 using Core.Configurations;
-using Core.Dates;
 using Core.Monads;
-using Newtonsoft.Json;
 using static Core.Monads.MonadFunctions;
 using static Core.Monads.Monads;
+using static Core.Objects.ConversionFunctions;
 
 namespace Core.Json;
 
@@ -56,24 +57,17 @@ public class Deserializer
 
       try
       {
-         using var textReader = new StringReader(source);
-         using var reader = new JsonTextReader(textReader);
-         reader.DateFormatString = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fff'Z'";
+         var bytes = Encoding.UTF8.GetBytes(source);
+         var sequence = new ReadOnlySequence<byte>(bytes);
+         var options = new JsonReaderOptions();
+         var reader = new Utf8JsonReader(sequence, options);
          var firstObjectProcessed = false;
-
-         string getValue() => reader.Value?.ToString() ?? "";
-
-         string getDateTime()
-         {
-            var dateTime = (DateTime)reader.Value;
-            return dateTime.Zulu();
-         }
 
          while (reader.Read())
          {
             switch (reader.TokenType)
             {
-               case JsonToken.StartObject when firstObjectProcessed:
+               case JsonTokenType.StartObject when firstObjectProcessed:
                {
                   var key = getKey(_propertyName);
                   _propertyName = nil;
@@ -84,10 +78,10 @@ public class Deserializer
                   parentSetting = setting;
                   break;
                }
-               case JsonToken.StartObject:
+               case JsonTokenType.StartObject:
                   firstObjectProcessed = true;
                   break;
-               case JsonToken.EndObject:
+               case JsonTokenType.EndObject:
                   if (stack.Count == 0)
                   {
                      return fail("No parent group available");
@@ -95,7 +89,7 @@ public class Deserializer
 
                   parentSetting = stack.Pop();
                   break;
-               case JsonToken.StartArray:
+               case JsonTokenType.StartArray:
                {
                   var key = getKey(_propertyName);
                   _propertyName = nil;
@@ -107,7 +101,7 @@ public class Deserializer
 
                   break;
                }
-               case JsonToken.EndArray:
+               case JsonTokenType.EndArray:
                   if (stack.Count == 0)
                   {
                      return fail("No parent setting available");
@@ -115,36 +109,58 @@ public class Deserializer
 
                   parentSetting = stack.Pop();
                   break;
-               case JsonToken.PropertyName:
+               case JsonTokenType.PropertyName:
                {
-                  var propertyName = reader.Value;
+                  var propertyName = reader.GetString();
                   if (propertyName is null)
                   {
                      _propertyName = nil;
                   }
                   else
                   {
-                     _propertyName = reader.Value.ToString();
+                     _propertyName = propertyName;
                   }
 
                   break;
                }
-               case JsonToken.String:
-                  setItem(getValue());
+               case JsonTokenType.String:
+               {
+                  var value = reader.GetString();
+                  if (Maybe.DateTime(value) is (true, var dateTime))
+                  {
+                     setItem(dateTime.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fff'Z'"));
+                  }
+                  else
+                  {
+                     setItem(value);
+                  }
+
                   break;
-               case JsonToken.Integer:
-                  setItem(getValue());
+               }
+               case JsonTokenType.Number:
+               {
+                  if (reader.TryGetInt32(out var intValue))
+                  {
+                     setItem(intValue.ToString());
+                  }
+                  else if (reader.TryGetSingle(out var floatValue))
+                  {
+                     setItem(floatValue.ToString("F"));
+                  }
+                  else
+                  {
+                     setItem(reader.GetString());
+                  }
+
                   break;
-               case JsonToken.Float:
-                  setItem(getValue());
+               }
+               case JsonTokenType.False:
+                  setItem("false");
                   break;
-               case JsonToken.Boolean:
-                  setItem(getValue().ToLower());
+               case JsonTokenType.True:
+                  setItem("true");
                   break;
-               case JsonToken.Date:
-                  setItem(getDateTime());
-                  break;
-               case JsonToken.Null:
+               case JsonTokenType.Null:
                   setItemNull();
                   break;
                default:
