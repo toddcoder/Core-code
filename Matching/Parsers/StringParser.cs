@@ -1,6 +1,5 @@
 ﻿using System.Text;
 using Core.Monads;
-using static Core.Monads.MonadFunctions;
 
 namespace Core.Matching.Parsers;
 
@@ -115,6 +114,7 @@ public class StringParser : BaseParser
          }
       }
 
-      return nil;
+      index = source.Length;
+      return escape(contents.ToString()).Enclose(enclose);
    }
 }
