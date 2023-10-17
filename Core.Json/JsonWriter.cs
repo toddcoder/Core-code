@@ -27,19 +27,11 @@ public class JsonWriter : IDisposable
 
    public void BeginObject() => writer.WriteStartObject();
 
-   public void BeginObject(string propertyName)
-   {
-      writer.WritePropertyName(propertyName);
-      writer.WriteStartObject();
-   }
+   public void BeginObject(string propertyName) => writer.WriteStartObject(propertyName);
 
    public void BeginArray() => writer.WriteStartArray();
 
-   public void BeginArray(string propertyName)
-   {
-      writer.WritePropertyName(propertyName);
-      writer.WriteStartArray();
-   }
+   public void BeginArray(string propertyName) => writer.WriteStartArray(propertyName);
 
    public void EndArray() => writer.WriteEndArray();
 
@@ -91,9 +83,14 @@ public class JsonWriter : IDisposable
 
    public void Write(string propertyName, string[] values)
    {
-      writer.WritePropertyName(propertyName);
-      var serializer = new JsonSerializer();
-      serializer.Serialize(writer, values);
+      //writer.WritePropertyName(propertyName);
+      //JsonSerializer.Serialize(writer, values);
+      writer.WriteStartArray(propertyName);
+      foreach (var value in values)
+      {
+         writer.WriteStringValue(value);
+      }
+      writer.WriteEndArray();
    }
 
    public void Write<T>(string propertyName, T[] values)
@@ -102,11 +99,7 @@ public class JsonWriter : IDisposable
       Write(propertyName, stringArray);
    }
 
-   public void WriteNull(string propertyName)
-   {
-      writer.WritePropertyName(propertyName);
-      writer.WriteNull();
-   }
+   public void WriteNull(string propertyName) => writer.WriteNull(propertyName);
 
    public override string ToString()
    {
@@ -114,8 +107,5 @@ public class JsonWriter : IDisposable
       return Encoding.UTF8.GetString(stream.ToArray());
    }
 
-   public void Dispose()
-   {
-      stream?.Dispose();
-   }
+   public void Dispose() => stream?.Dispose();
 }

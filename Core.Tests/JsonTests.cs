@@ -81,23 +81,27 @@ public class JsonTests
    {
       var branchFilters = new[] { "+refs/heads/master", "+refs/heads/r-6.43.0*" };
       using var writer = new JsonWriter();
-      writer.BeginArray();
+      writer.BeginObject();
+      writer.BeginArray("data");
 
       writer.BeginObject();
       writer.Write("op", "replace");
       writer.Write("path", "/triggers/branchFilters");
 
-      writer.BeginArray("value");
+      writer.Write("value", branchFilters);
+
+      /*writer.BeginArray("value");
 
       foreach (var branchFilter in branchFilters)
       {
          writer.Write(branchFilter);
       }
 
-      writer.EndArray();
+      writer.EndArray();*/
       writer.EndObject();
 
       writer.EndArray();
+      writer.EndObject();
       var json = writer.ToString();
       Console.WriteLine(json);
    }
