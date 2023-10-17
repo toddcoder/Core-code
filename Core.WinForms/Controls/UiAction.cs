@@ -878,12 +878,16 @@ public class UiAction : UserControl
 
    public void Unselected(string message) => ShowMessage(message, UiActionType.Unselected);
 
-   public void FileName(FileName file, bool checkForFileExistence = true)
+   public void FileName(FileName file, bool checkForFileExistence = true, bool isFailure = false)
    {
       try
       {
          IsFile = true;
-         if (checkForFileExistence)
+         if (isFailure)
+         {
+            Failure(file.FullPath);
+         }
+         else if (checkForFileExistence)
          {
             if (file)
             {
