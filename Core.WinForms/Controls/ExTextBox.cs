@@ -290,7 +290,7 @@ public class ExTextBox : TextBox
          .ForeColor(foreColor)
          .BackColor(backColor)
          .FontName("Consolas")
-         .FontSize(9)
+         .FontSize(Font.Size)
          .SubText;
       if (subTexts.Count == 0)
       {
@@ -411,6 +411,8 @@ public class ExTextBox : TextBox
 
    protected override void OnPaint(PaintEventArgs e)
    {
+      base.OnPaint(e);
+
       e.Graphics.CompositingQuality = CompositingQuality.HighQuality;
       e.Graphics.SmoothingMode = SmoothingMode.HighQuality;
       e.Graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
