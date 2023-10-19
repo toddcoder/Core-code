@@ -100,7 +100,7 @@ public class ExTextBox : TextBox
    protected Maybe<SubText> _lastSubText;
    protected Maybe<int> _leftMargin;
    protected string cueBanner;
-   protected Maybe<SubText> _validateMessage;
+   protected Maybe<SubText> _validateSubText;
    protected bool validatesMessages;
 
    public event EventHandler<TextEventArgs> Allowed;
@@ -132,11 +132,11 @@ public class ExTextBox : TextBox
       _lastSubText = nil;
       _leftMargin = nil;
       cueBanner = string.Empty;
-      _validateMessage = nil;
+      _validateSubText = nil;
       validatesMessages = false;
       ShadowText = nil;
 
-      TextChanged += (_, _) => { validateText(); };
+      TextChanged += (_, _) => validateText();
    }
 
    protected void validateText()
@@ -161,25 +161,25 @@ public class ExTextBox : TextBox
 
          if (validatesMessages)
          {
-            (var validateMessage, _validateMessage) = _validateMessage.Create(() =>
+            (var validateSubText, _validateSubText) = _validateSubText.Create(() =>
                SubText("", Color.White, Color.Black).Set.FontSize(8).Alignment(CardinalAlignment.NorthEast).SubText);
 
             switch (status)
             {
                case AllowanceStatus.Allowed:
-                  validateMessage.Text = allowMessage;
-                  validateMessage.ForeColor = Color.White;
-                  validateMessage.BackColor = Color.Green;
+                  validateSubText.Text = allowMessage;
+                  validateSubText.ForeColor = Color.White;
+                  validateSubText.BackColor = Color.Green;
                   break;
                case AllowanceStatus.Trending:
-                  validateMessage.Text = trendMessage;
-                  validateMessage.ForeColor = Color.Black;
-                  validateMessage.BackColor = Color.Yellow;
+                  validateSubText.Text = trendMessage;
+                  validateSubText.ForeColor = Color.Black;
+                  validateSubText.BackColor = Color.Yellow;
                   break;
                case AllowanceStatus.Denied:
-                  validateMessage.Text = denyMessage;
-                  validateMessage.ForeColor = Color.White;
-                  validateMessage.BackColor = Color.Red;
+                  validateSubText.Text = denyMessage;
+                  validateSubText.ForeColor = Color.White;
+                  validateSubText.BackColor = Color.Red;
                   break;
             }
          }
