@@ -627,6 +627,56 @@ public class ExTextBox : TextBox
       graphics.DrawLine(pen, rectangle.Left, rectangle.Bottom, rectangle.Right, rectangle.Bottom);
    }
 
+   public void DrawStrikeout(Graphics graphics, Rectangle rectangle, Color color, DashStyle dashStyle = DashStyle.Solid, int alpha = 255,
+      float penSize = 2f)
+   {
+      using var pen = new Pen(Color.FromArgb(alpha, color), penSize);
+      pen.DashStyle = dashStyle;
+      var y = (rectangle.Bottom - rectangle.Top) / 2;
+      graphics.DrawLine(pen, rectangle.Left, y, rectangle.Right, y);
+   }
+
+   public void DrawLineOnTop(Graphics graphics, Rectangle rectangle, Color color, DashStyle dashStyle = DashStyle.Solid, int alpha = 255,
+      float penSize = 2f)
+   {
+      using var pen = new Pen(Color.FromArgb(alpha, color), penSize);
+      pen.DashStyle = dashStyle;
+      var y = rectangle.Top;
+      graphics.DrawLine(pen, rectangle.Left, y, rectangle.Right, y);
+   }
+
+   public void DrawLineOnBottom(Graphics graphics, Rectangle rectangle, Color color, DashStyle dashStyle = DashStyle.Solid, int alpha = 255,
+      float penSize = 2f)
+   {
+      using var pen = new Pen(Color.FromArgb(alpha, color), penSize);
+      pen.DashStyle = dashStyle;
+      var y = rectangle.Bottom;
+      graphics.DrawLine(pen, rectangle.Left, y, rectangle.Right, y);
+   }
+
+   public void DrawSideLines(Graphics graphics, Rectangle rectangle, Color color, DashStyle dashStyle = DashStyle.Solid, int alpha = 255,
+      float penSize = 2f)
+   {
+      using var pen = new Pen(Color.FromArgb(alpha, color), penSize);
+      pen.DashStyle = dashStyle;
+      graphics.DrawLine(pen, rectangle.Left - 2, rectangle.Top, rectangle.Left - 2, rectangle.Bottom);
+      graphics.DrawLine(pen, rectangle.Right + 2, rectangle.Top, rectangle.Right + 2, rectangle.Bottom);
+   }
+
+   public void BoxRectangle(Graphics graphics, Rectangle rectangle, Color boxColor, Color backColor, DashStyle dashStyle = DashStyle.Solid,
+      int alpha = 64, float penSize = 2f, int widthOffset = 4, int heightOffset = 2)
+   {
+      using var brush = new SolidBrush(Color.FromArgb(alpha, backColor));
+      rectangle = rectangle.Resize(widthOffset, heightOffset).OffsetX(-widthOffset / 2).OffsetY(heightOffset / 2);
+      graphics.FillRectangle(brush, rectangle);
+      if (penSize > 0)
+      {
+         using var pen = new Pen(boxColor, penSize);
+         pen.DashStyle = dashStyle;
+         graphics.DrawRectangle(pen, rectangle);
+      }
+   }
+
    public void DrawWhitespace(Graphics graphics)
    {
       var brush = Brushes.Gray;

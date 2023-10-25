@@ -536,8 +536,15 @@ public partial class Form1 : Form, IMessageQueueListener
 
    protected void button4_Click(object sender, EventArgs e)
    {
-      textBox.Legend("release");
+      /*textBox.Legend("release");
       textBox.ShadowText = "r-#.##.#";
-      textBox.ValidateMessages = true;
+      textBox.ValidateMessages = true;*/
+      textBox.Paint += (_, e) =>
+      {
+         foreach (var (rectangle, _) in textBox.RectangleWords(e.Graphics))
+         {
+            textBox.BoxRectangle(e.Graphics, rectangle, Color.White, Color.Green);
+         }
+      };
    }
 }
