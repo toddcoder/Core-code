@@ -2581,6 +2581,8 @@ public class UiAction : UserControl
       refresh();
    }
 
+   public Maybe<SubText> CurrentLegend => legends.Peek();
+
    public bool Working
    {
       get => workingTimer.Enabled;
