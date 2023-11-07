@@ -227,11 +227,11 @@ public class SubTextSet
    {
       if (subTextHost.CurrentLegend is (true, var legend))
       {
-         return RightOf(legend, margin);
+         return IncludeFloor(false).IncludeCeiling(false).RightOf(legend, margin);
       }
       else
       {
-         return Alignment(alignment);
+         return IncludeFloor(false).IncludeCeiling(false).Alignment(alignment);
       }
    }
 
