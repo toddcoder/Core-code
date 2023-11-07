@@ -14,6 +14,7 @@ public class SubText : IEquatable<SubText>
    protected const string POSITIVE = "✅";
    protected const string NEGATIVE = "❎";
 
+   protected ISubTextHost subTextHost;
    protected string text;
    protected Size size;
    protected bool clickGlyph;
@@ -28,8 +29,10 @@ public class SubText : IEquatable<SubText>
    public event EventHandler<PaintEventArgs> Painting;
    public event EventHandler<PaintEventArgs> PaintingBackground;
 
-   public SubText(string text, int x, int y, Size size, bool clickGlyph, bool invert = false, bool transparentBackground = false)
+   public SubText(ISubTextHost subTextHost, string text, int x, int y, Size size, bool clickGlyph, bool invert = false,
+      bool transparentBackground = false)
    {
+      this.subTextHost = subTextHost;
       this.text = text;
       X = x;
       Y = y;
@@ -73,7 +76,7 @@ public class SubText : IEquatable<SubText>
 
    public SubTextOption Option { get; set; }
 
-   public SubTextSet Set => new(this, size);
+   public SubTextSet Set => new(this, size, subTextHost);
 
    public string FontName { get; set; }
 
@@ -259,6 +262,7 @@ public class SubText : IEquatable<SubText>
                using var pen = new Pen(foreColorToUse);
                g.DrawRectangle(pen, rectangle);
             }
+
             TextRenderer.DrawText(g, sizedText, font, rectangle, foreColorToUse, backColorToUse, flags);
          }
          else

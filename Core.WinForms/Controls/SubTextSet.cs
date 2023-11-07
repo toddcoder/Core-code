@@ -8,11 +8,13 @@ public class SubTextSet
 {
    protected SubText subText;
    protected Size size;
+   protected ISubTextHost subTextHost;
 
-   internal SubTextSet(SubText subText, Size size)
+   internal SubTextSet(SubText subText, Size size, ISubTextHost subTextHost)
    {
       this.subText = subText;
       this.size = size;
+      this.subTextHost = subTextHost;
    }
 
    public SubTextSet Text(string text)
@@ -220,6 +222,19 @@ public class SubTextSet
       subText.RightOf(leftSubText, margin);
       return this;
    }
+
+   public SubTextSet RightOfLegend(CardinalAlignment alignment = CardinalAlignment.NorthEast, int margin = 2)
+   {
+      if (subTextHost.CurrentLegend is (true, var legend))
+      {
+         return RightOf(legend, margin);
+      }
+      else
+      {
+         return Alignment(alignment);
+      }
+   }
+
 
    [Obsolete("Use SubText or ClickableSubText")]
    public SubText End => subText;

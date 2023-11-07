@@ -15,7 +15,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Controls;
 
-public class ExTextBox : TextBox
+public class ExTextBox : TextBox, ISubTextHost
 {
    public class WindowExtender : NativeWindow
    {
@@ -285,7 +285,7 @@ public class ExTextBox : TextBox
 
    public SubText SubText(string text, Color foreColor, Color backColor)
    {
-      var subText = new SubText(text, 0, 0, ClientSize, false)
+      var subText = new SubText(this, text, 0, 0, ClientSize, false)
          .Set
          .ForeColor(foreColor)
          .BackColor(backColor)
@@ -327,7 +327,7 @@ public class ExTextBox : TextBox
 
    public SubText Legend(string text)
    {
-      var legend = new SubText(text, 0, 0, ClientSize, false)
+      var legend = new SubText(this, text, 0, 0, ClientSize, false)
          .Set
          .FontName("Consolas")
          .FontSize(9)
@@ -771,4 +771,6 @@ public class ExTextBox : TextBox
          Refresh();
       }
    }
+
+   public Maybe<SubText> CurrentLegend => legends.Peek();
 }

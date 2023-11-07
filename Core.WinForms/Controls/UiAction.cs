@@ -24,7 +24,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Controls;
 
-public class UiAction : UserControl
+public class UiAction : UserControl, ISubTextHost
 {
    protected const float START_AMOUNT = .9f;
    protected const string CLICK_TO_CANCEL = "🖰 ⇒ 🛑";
@@ -526,7 +526,7 @@ public class UiAction : UserControl
       var size = TextRenderer.MeasureText("working", font);
       var y = ClientSize.Height - size.Height - 4;
 
-      return new SubText("working", 4, y, ClientSize, ClickGlyph).Set.FontSize(8).Invert().Outline().SubText;
+      return new SubText(this, "working", 4, y, ClientSize, ClickGlyph).Set.FontSize(8).Invert().Outline().SubText;
    }
 
    public UiActionType Type
@@ -2119,7 +2119,7 @@ public class UiAction : UserControl
 
    public SubText SubText(string text, int x, int y, bool clickable = false)
    {
-      var subText = clickable ? new ClickableSubText(text, x, y, ClientSize, ClickGlyph) : new SubText(text, x, y, ClientSize, ClickGlyph);
+      var subText = clickable ? new ClickableSubText(this, text, x, y, ClientSize, ClickGlyph) : new SubText(this, text, x, y, ClientSize, ClickGlyph);
       return SubText(subText);
    }
 
@@ -2127,7 +2127,7 @@ public class UiAction : UserControl
 
    public ClickableSubText ClickableSubText(string text, int x, int y)
    {
-      return (ClickableSubText)SubText(new ClickableSubText(text, x, y, ClientSize, ClickGlyph));
+      return (ClickableSubText)SubText(new ClickableSubText(this, text, x, y, ClientSize, ClickGlyph));
    }
 
    public ClickableSubText ClickableSubText(string text) => ClickableSubText(text, 0, 0);
@@ -2239,7 +2239,7 @@ public class UiAction : UserControl
    public SubText Legend(string text, bool invert = true)
    {
       var (x, y) = legendLocation();
-      var legend = new SubText(text, x, y, ClientSize, true)
+      var legend = new SubText(this, text, x, y, ClientSize, true)
          .Set
          .FontSize(8)
          .Outline()
@@ -2254,7 +2254,7 @@ public class UiAction : UserControl
 
    public SubText Legend(string text, int x, int y, bool invert = true)
    {
-      var legend = new SubText(text, x, y, ClientSize, true)
+      var legend = new SubText(this, text, x, y, ClientSize, true)
          .Set
          .FontSize(8)
          .Outline()

@@ -68,6 +68,7 @@
     <Compile Include="Controls\ClickableSubText.cs" />
     <Compile Include="Controls\DeletableWriter.cs" />
     <Compile Include="Controls\DynamicToolTipArgs.cs" />
+    <Compile Include="Controls\ISubTextHost.cs" />
     <Compile Include="Controls\KeyMatch.cs" />
     <Compile Include="Controls\KeyMatchStatus.cs" />
     <Compile Include="Controls\LocationLockStatus.cs" />
